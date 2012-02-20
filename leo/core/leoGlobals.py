@@ -2448,8 +2448,6 @@ def readFileIntoString (fn,
         g.trace('unexpected exception reading %s' % (fn),color='red')
         g.es_exception()
 
-    import leo.core.leoTest as leoTest
-    leoTest.fail()
     return None,None
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
 #@+at Stephen P. Schaefer 9/7/2002
@@ -4517,20 +4515,19 @@ def handleScriptException (c,p,script,script1):
 def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     script_search=True,script_change=True):
 
-    import leo.core.leoTest as leoTest
     import leo.core.leoGlobals as g
 
     # Find the scripts.
     p = c.p
-    u = leoTest.testUtils(c)
-    find_p = u.findNodeInTree(p,findHeadline)
+    tm = c.testManager
+    find_p = tm.findNodeInTree(p,findHeadline)
     if find_p:
         find_text = find_p.b
     else:
         g.es("no Find script node",color="red")
         return
     if changeHeadline:
-        change_p = u.findNodeInTree(p,changeHeadline)
+        change_p = tm.findNodeInTree(p,changeHeadline)
     else:
         change_p = None
     if change_p:

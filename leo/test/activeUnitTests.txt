@@ -67,10 +67,8 @@ test\\unittest\\output\\outlineToCweb.txt
 #@+node:ekr.20100830114008.5967: *3* @common leoEditCommands test code
 @others
 #@+node:ekr.20100830114008.5968: *4* runEditCommandTest
-import leo.core.leoTest as leoTest
-
 @
-This is an updated version of leo.core.leoTest.runEditCommandTest,
+This is an updated version of c.testManager.runEditCommandTest,
 moved here to take advantage of EKR's new common-test-code-sharing
 mechanism. It should be okay to delete the old code and replace
 all uses with:
@@ -89,7 +87,8 @@ def runEditCommandTest (c,p,inHeadline=False):
     tests the command in the body.
     '''
 
-    u = leoTest.testUtils(c) ; atTest = p.copy()
+    tm = c.testManager
+    atTest = p.copy()
 
     h = atTest.h
     assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
@@ -101,7 +100,7 @@ def runEditCommandTest (c,p,inHeadline=False):
     command = c.commandsDict.get(commandName)
     assert command, 'no command: %s' % (commandName)
 
-    work,before,after = u.findChildrenOf(atTest)
+    work,before,after = tm.findChildrenOf(atTest)
     before_h = 'before sel='
     after_h = 'after sel='
     for node,h in ((work,'work'),(before,before_h),(after,after_h)):
@@ -343,9 +342,7 @@ def set_got (self,expected,got):
 
     return got_html,got_rst
 #@+node:ekr.20090703080553.5000: ** @suite run all doctests
-import unittest
-import leo.core.leoTest as leoTest
-import sys
+tm = c.testManager
 
 if g.isPython3:
     # Some tests now fail on Python 2.x.
@@ -355,12 +352,12 @@ if g.isPython3:
         << define exclude >>
     else:
         exclude = []
-    
-    modules = leoTest.importAllModulesInPath(path,exclude=exclude)
-    suite = leoTest.createUnitTestsFromDoctests(modules)
+
+    modules = tm.importAllModulesInPath(path,exclude=exclude)
+    suite   = tm.createUnitTestsFromDoctests(modules)
 else:
     # Create a dummy suite.
-    suite = leoTest.generalTestCase(c,p)
+    suite = tm.generalTestCase(p)
     
 if suite: g.app.scriptDict['suite'] = suite
     
@@ -814,8 +811,6 @@ else:
 
 assert n == 4,repr(n)
 #@+node:ekr.20100205230621.5383: *3* @test leoTest.checkFileSyntax
-import leo.core.leoTest as leoTest
-
 s = '''
 # syntax error
 def spam:
@@ -823,12 +818,11 @@ def spam:
 '''
 
 try:
-    leoTest.checkFileSyntax('<fileName>',s,suppress=True)
+    c.testManager.checkFileSyntax('<fileName>',s,suppress=True)
     assert False
 except SyntaxError:
     pass
 #@+node:ekr.20100205235740.5392: *3* @test syntax of all files
-import leo.core.leoTest as leoTest
 import os
 
 tkPass = (
@@ -901,18 +895,17 @@ failed = []
 for z in files:
     fn = g.shortFileName(z)
     s,e = g.readFileIntoString(z)
-    if not leoTest.checkFileSyntax(fn,s,reraise=False,suppress=False):
+    if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
         failed.append(fn)
 
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 #@+node:ekr.20110612071416.3311: *3* @test syntax of setup.py
-import leo.core.leoTest as leoTest
 fn = g.os_path_finalize_join(g.app.loadDir,'..','..','setup.py')
 
 # Only run this test if setup.py exists: it may not in the actual distribution.
 if g.os_path_exists(fn):
     s,e = g.readFileIntoString(fn)
-    leoTest.checkFileSyntax(fn,s,reraise=True,suppress=False)
+    c.testManager.checkFileSyntax(fn,s,reraise=True,suppress=False)
 #@+node:ekr.20050208051418: ** Unicode tests
 #@+node:ekr.20050206201145: *3* @test % operator with unicode
 @first # -*- coding: utf-8 -*-
@@ -1387,8 +1380,7 @@ if not g.app.isExternalUnitTest:
 # Doesn't work when run externally because the copy operation changes the gnx.
 if not g.app.isExternalUnitTest:
 
-    import leo.core.leoTest as leoTest
-    leoTest.runAtFileTest(c,p)
+    c.testManager.runAtFileTest(p)
 #@+node:ekr.20040707141957.13: *6* #@thin
 Line 1
 
@@ -1406,9 +1398,7 @@ Line 1
 #@-leo
 last line 1: no newline
 #@+node:ekr.20041021065844: *4* @test @asis
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20041021065903: *5* #@asis
 # Test that @nosent generates no sentinels
 
@@ -1432,9 +1422,7 @@ last line
 section line 1
 unnamed node line 1
 #@+node:ekr.20090627070131.4971: *4* @test @auto (newlines at end of nodes)
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20090627070131.4975: *5* #@auto
 @language python
 @tabwidth -4
@@ -1457,9 +1445,7 @@ def cheese():
     pass
 #end
 #@+node:ekr.20100801125533.5787: *4* @test @auto (no newline at end of nodes)
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20100801125533.5788: *5* #@auto
 @language python
 @tabwidth -4
@@ -1482,9 +1468,7 @@ def cheese():
     pass
 #end
 #@+node:ekr.20090225102051.2: *4* @test @edit
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20090225102051.3: *5* #@edit
 Line 1
 
@@ -1494,9 +1478,7 @@ Line 1
 
 Last line: no newline
 #@+node:ekr.20110524120515.3489: *4* @test @raw
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20110524120515.3490: *5* #@file
 # before
 
@@ -1992,9 +1974,7 @@ assert d.get('tabwidth') == -4
 assert d.get('pagewidth') == 120
 #@+node:ekr.20101021210253.6018: *4* Unused
 #@+node:ekr.20040712101754.103: *5* @@test @file no newline
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20040712101754.104: *6* #@file
 Line 1
 
@@ -2016,9 +1996,7 @@ Line 1
 #@-leo
 last line 1: no newline
 #@+node:ekr.20040712101754.106: *5* @@test @file one newline
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20040712101754.107: *6* #@file
 Line 1
 
@@ -2038,9 +2016,7 @@ Line 1
 #@-leo
 last line 1: newline
 #@+node:ekr.20040712101754.109: *5* @@test @file two newlines
-import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)
+c.testManager.runAtFileTest(p)
 #@+node:ekr.20040712101754.110: *6* #@file
 Line 1
 
@@ -4412,21 +4388,20 @@ assert errors == 0, "Check Outline reported %d errors" % errors
 #@+node:ekr.20040713070526: *5* Scripts
 @language python 
 
-import leo.core.leoTest as leoTest
-
-u = leoTest.testUtils(c)
 dump = False 
 all = False 
+
+tm = c.testManager
 
 if all:
     c.prettyPrintAllPythonCode(dump=dump)
 else:
     # Warning: at present the before and after text is unprotected:
     # Running Pretty Print on these nodes will negate the value of the test.
-    temp = u.findNodeInTree(p,"tempNode")
+    temp = tm.findNodeInTree(p,"tempNode")
     c.setBodyString(temp,"")
-    before = u.findNodeInTree(p,"before")
-    after = u.findNodeInTree(p,"after")
+    before = tm.findNodeInTree(p,"before")
+    after = tm.findNodeInTree(p,"after")
     temp.scriptSetBodyString(before.b)
     c.prettyPrintPythonCode(p=temp,dump=dump)
     assert temp.b == after.b,"Pretty Print Test failed"
@@ -4796,8 +4771,7 @@ g.app.gui = oldGui
 #@+node:ekr.20071113192611: *3* leoEditCommands
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.79: *6* work
 first line
  line 1
@@ -4817,8 +4791,7 @@ first line
  line b
 last line
 #@+node:ekr.20061101121602.82: *5* @test add-tab-to-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.83: *6* work
 first line
     line 1
@@ -4851,8 +4824,7 @@ if not g.app.isExternalUnitTest:
 
     c.helpCommands.aproposFindCommands()
 #@+node:ekr.20061101121602.86: *5* @test back-char
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.87: *6* work
 first line
 line 1
@@ -4875,8 +4847,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.90: *5* @test back-char-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.91: *6* work
 first line
 line 1
@@ -4899,8 +4870,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.94: *5* @test back-paragraph
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.95: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -4959,8 +4929,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20061101121602.98: *5* @test back-paragraph-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.99: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -5019,8 +4988,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20061101121602.102: *5* @test back-sentence
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.103: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5040,8 +5008,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.106: *5* @test back-sentence-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.107: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5061,8 +5028,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.110: *5* @test back-to-indentation
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.111: *6* work
 first line
 line 1
@@ -5085,8 +5051,7 @@ line 1
 line c
 last line
 #@+node:ekr.20090427104851.7: *5* @test back-to-home (at start of line)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20090427104851.8: *6* work
 if a:
     b = 'xyz'
@@ -5097,8 +5062,7 @@ if a:
 if a:
     b = 'xyz'
 #@+node:ekr.20090427104851.15: *5* @test back-to-home (at indentation
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20090427104851.16: *6* work
 if a:
     b = 'xyz'
@@ -5109,8 +5073,7 @@ if a:
 if a:
     b = 'xyz'
 #@+node:ekr.20090427104851.11: *5* @test back-to-home (at end of line)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20090427104851.12: *6* work
 if a:
     b = 'xyz'
@@ -5121,8 +5084,7 @@ if a:
 if a:
     b = 'xyz'
 #@+node:ekr.20061101121602.114: *5* @test back-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.115: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5142,8 +5104,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.118: *5* @test back-word-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.119: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5163,8 +5124,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.122: *5* @test backward-delete-char
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.123: *6* work
 first lie
 line 1
@@ -5187,8 +5147,7 @@ line 1
 line c
 last line
 #@+node:ekr.20071007121529: *5* @test backward-delete-char  (middle of line)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071007121529.1: *6* work
 firstline
 last line
@@ -5199,8 +5158,7 @@ last line
 firstline
 last line
 #@+node:ekr.20071007120947: *5* @test backward-delete-char (last char)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071007120947.6: *6* work
 first line
 last lin
@@ -5211,8 +5169,7 @@ last line
 first line
 last lin
 #@+node:ekr.20100817131738.5886: *5* @test backward-delete-word (no selection)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20100817131738.5887: *6* work
 aaaacccc dddd
 #@+node:ekr.20100817131738.5888: *6* before sel=1.10,1.10
@@ -5220,8 +5177,7 @@ aaaa bbbb cccc dddd
 #@+node:ekr.20100817131738.5889: *6* after sel=1.4,1.4
 aaaacccc dddd
 #@+node:ekr.20100817131738.5894: *5* @test backward-delete-word (selection)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20100817131738.5895: *6* work
 aaaa bbcc dddd
 #@+node:ekr.20100817131738.5896: *6* before sel=1.7,1.12
@@ -5229,8 +5185,7 @@ aaaa bbbb cccc dddd
 #@+node:ekr.20100817131738.5897: *6* after sel=1.7,1.7
 aaaa bbcc dddd
 #@+node:ekr.20061101121602.126: *5* @test backward-kill-paragraph
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.127: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -5285,8 +5240,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20070131173932: *5* @test backward-kill-sentence
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070131173932.1: *6* work
 This is the first sentence.  This
 is the second sentence.
@@ -5298,8 +5252,7 @@ this is the last sentence.
 This is the first sentence.  This
 is the second sentence.
 #@+node:ekr.20081215084144.2: *5* @test backward-kill-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20081215084144.3: *6* work
 This is the first sentence.  This
 is the second sentence.  And
@@ -5313,8 +5266,7 @@ This is the first sentence.  This
 is the second sentence.  And
  is the last sentence.
 #@+node:ekr.20061101121602.130: *5* @test beginning-of-buffer
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.131: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5334,8 +5286,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.134: *5* @test beginning-of-buffer-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.135: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5355,8 +5306,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.138: *5* @test beginning-of-line
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.139: *6* work
 first line
 line 1
@@ -5379,8 +5329,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.142: *5* @test beginning-of-line-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.143: *6* work
 first line
 line 1
@@ -5411,8 +5360,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 #@+node:ekr.20081111084046.2: *4*  Commands C-E
 #@+node:ekr.20061101121602.146: *5* @test capitalize-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.147: *6* work
 first line
 line 1
@@ -5437,8 +5385,7 @@ last line
 #@+node:ekr.20061101121602.150: *5* @test center-line
 @pagewidth 70 # Required for unit test.
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.151: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5475,8 +5422,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 #@+node:ekr.20061101121602.154: *5* @test center-region
 @pagewidth 70 # Required for unit test.
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.155: *6* work
 Some 90% of all presidentially declared disasters are weather related,
 leading to around 500 deaths per year and nearly $14 billion in damage.
@@ -5499,8 +5445,7 @@ leading to around 500 deaths per year and nearly $14 billion in damage.
 skills needed to save lives and property– before and during the event.
 StormReady helps community leaders and emergency managers strengthen local safety programs.
 #@+node:ekr.20061101121602.158: *5* @test clear-selected-text
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.159: *6* work
 first line
 line    line b
@@ -5547,8 +5492,7 @@ if not g.app.isExternalUnitTest:
 #@+node:ekr.20120212130242.3948: *7* a
 #@+node:ekr.20120212130242.3949: *8* b
 #@+node:ekr.20061101121602.162: *5* @test count-region
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.163: *6* work
 first line
 line 1
@@ -5571,8 +5515,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.166: *5* @test delete-char
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.167: *6* work
 firstline
 line 1
@@ -5595,8 +5538,7 @@ line 1
 line c
 last line
 #@+node:ekr.20071007120750.3: *5* @test delete-indentation
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071007121115.1: *6* work
 first line
 line 1
@@ -5632,8 +5574,7 @@ if not g.app.isExternalUnitTest:
     finally:
         tear_down(p)
 #@+node:ekr.20070131162935: *5* @test delete-spaces
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070131162935.1: *6* work
 first line
 line 1
@@ -5679,8 +5620,7 @@ aaaa bbbb cccc dddd
 #@+node:ekr.20100830113702.5980: *6* after sel=1.7,1.7
 aaaa bbcc dddd
 #@+node:ekr.20061101121602.170: *5* @test do-nothing
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.171: *6* work
 first line
 line 1
@@ -5703,8 +5643,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.174: *5* @test downcase-region
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 assert g.app.unitTestDict.get('colorized')
 #@+node:ekr.20061101121602.175: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -5725,8 +5664,7 @@ some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.178: *5* @test downcase-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 assert g.app.unitTestDict.get('colorized')
 #@+node:ekr.20061101121602.179: *6* work
 xyzzy line
@@ -5750,8 +5688,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.182: *5* @test end-of-buffer
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.183: *6* work
 first line
 line 1
@@ -5774,8 +5711,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.186: *5* @test end-of-buffer-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.187: *6* work
 first line
 line 1
@@ -5798,8 +5734,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.190: *5* @test end-of-line
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.191: *6* work
 first line
 line 1
@@ -5822,8 +5757,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061128082002: *5* @test end-of-line 2
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061128082002.1: *6* work
 first line
 line 1
@@ -5846,8 +5780,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.194: *5* @test end-of-line-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.195: *6* work
 first line
 line 1
@@ -5870,8 +5803,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.198: *5* @test exchange-point-mark
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.199: *6* work
 first line
 line 1
@@ -5894,8 +5826,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.202: *5* @test extend-to-line
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.203: *6* work
 first line
 line 1
@@ -5918,8 +5849,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.206: *5* @test extend-to-paragraph
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.207: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -5978,8 +5908,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20061101121602.210: *5* @test extend-to-sentence
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.211: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -5999,8 +5928,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.214: *5* @test extend-to-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.215: *6* work
 first line
 line 1
@@ -6030,8 +5958,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20070131175538.1: *4*  Commands F-L
 #@+node:ekr.20061128090441: *5* @@test kill-line end-2
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061128090441.1: *6* work
 line 1
 line 2
@@ -6045,8 +5972,7 @@ line 2
 @pagewidth 80
     # Required for external unit test.
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.219: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6090,8 +6016,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 @pagewidth 80
     # Required for external unit test.
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071007121312.1: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -6168,8 +6093,7 @@ StormReady can help communities save lives. Does StormReady make a difference?
 @pagewidth 80
     # Required for external unit test.
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071007124202.1: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -6235,8 +6159,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20061101121602.222: *5* @test forward-char
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.223: *6* work
 first line
 line 1
@@ -6259,8 +6182,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.226: *5* @test forward-char-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.227: *6* work
 first line
 line 1
@@ -6283,8 +6205,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.230: *5* @test forward-end-word (end of line)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.231: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6304,8 +6225,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.234: *5* @test forward-end-word (start of word)
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.235: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6325,8 +6245,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.238: *5* @test forward-end-word-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.239: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6346,8 +6265,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.242: *5* @test forward-paragraph
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.243: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -6406,8 +6324,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20061101121602.246: *5* @test forward-paragraph-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.247: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -6466,8 +6383,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20061101121602.250: *5* @test forward-sentence
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.251: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6487,8 +6403,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.254: *5* @test forward-sentence-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.255: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6508,8 +6423,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.258: *5* @test forward-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.259: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6529,8 +6443,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.262: *5* @test forward-word-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.263: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -6565,8 +6478,7 @@ p3 = c.p
 result = c.helpCommands.getBindingsForCommand('help-for-command')
 assert result.strip().lower()=='f1'
 #@+node:ekr.20061101121602.266: *5* @test indent-relative
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.267: *6* work
 first line
 line 1
@@ -6589,8 +6501,7 @@ line 1
         line c
 last line
 #@+node:ekr.20061101121602.270: *5* @test indent-rigidly
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.271: *6* work
 first line
 	line 1
@@ -6613,9 +6524,8 @@ first line
 	line c
 last line
 #@+node:ekr.20071007120750.5: *5* @test indent-to-comment-column
-import leo.core.leoTest as leoTest
 c.editCommands.ccolumn = 4 # Set the comment column
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071007121312.5: *6* work
 first line
     line b
@@ -6629,8 +6539,7 @@ first line
     line b
 last line
 #@+node:ekr.20061101121602.274: *5* @test insert-newline
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.275: *6* work
 first li
 ne
@@ -6655,8 +6564,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.278: *5* @test insert-parentheses
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.279: *6* work
 first() line
 line 1
@@ -6679,8 +6587,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061128090338: *5* @test kill-line end-1
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061128090338.1: *6* work
 line 1
 line 2
@@ -6694,8 +6601,7 @@ line 1
 line 2
 
 #@+node:ekr.20061128090021: *5* @test kill-line middle-1
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061128090021.1: *6* work
 line 1
 line 2
@@ -6712,8 +6618,7 @@ line 2
 
 line 4
 #@+node:ekr.20061128090147: *5* @test kill-line middle-2
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061128090147.1: *6* work
 line 1
 line 2
@@ -6728,8 +6633,7 @@ line 1
 line 2
 line 4
 #@+node:ekr.20061101121602.282: *5* @test kill-paragraph
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.283: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -6778,8 +6682,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 #@+node:ekr.20070131172706: *5* @test kill-sentence
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070131172706.1: *6* work
 This is the first sentence.  And
 this is the last sentence.
@@ -6791,8 +6694,7 @@ this is the last sentence.
 This is the first sentence.  And
 this is the last sentence.
 #@+node:ekr.20081215084144.7: *5* @test kill-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20081215084144.8: *6* work
 This is the first sentence.  This
 is the  sentence.  And
@@ -7053,8 +6955,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.286: *5* @test move-lines-down
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.287: *6* work
 first line
 line 1
@@ -7077,8 +6978,7 @@ line c
         line b
 last line
 #@+node:ekr.20061101121602.290: *5* @test move-lines-up
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.291: *6* work
 line 1
 first line
@@ -7124,8 +7024,7 @@ if not g.app.isExternalUnitTest:
     finally:
         tear_down(p,'Moved marked nodes')
 #@+node:ekr.20061101121602.294: *5* @test move-past-close
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.295: *6* work
 first (line)
 line 1
@@ -7148,8 +7047,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.298: *5* @test move-past-close-extend-selection
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.299: *6* work
 first line
 line 1
@@ -7172,8 +7070,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.302: *5* @test newline-and-indent
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.303: *6* work
 first line
 line 1
@@ -7198,8 +7095,7 @@ line 1
 line c
 last line
 #@+node:ekr.20070315065720: *5* @test next-line
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070315065720.1: *6* work
 a
 
@@ -7213,8 +7109,7 @@ a
 
 b
 #@+node:ekr.20070315065849: *5* @test previous-line
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070315065849.1: *6* work
 a
 
@@ -7228,8 +7123,7 @@ a
 
 b
 #@+node:ekr.20070217071121.1: *5* @test rectangle-clear
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070217071121.2: *6* work
 before
 aaa   bbb
@@ -7252,8 +7146,7 @@ aaa   bbb
 aaa   bbb
 after
 #@+node:ekr.20070217071121.5: *5* @test rectangle-close
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070217071121.6: *6* work
 before
 aaabbb
@@ -7276,8 +7169,7 @@ aaabbb
 aaabbb
 after
 #@+node:ekr.20070217071121.9: *5* @test rectangle-delete
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070217071121.10: *6* work
 before
 aaabbb
@@ -7300,8 +7192,7 @@ aaabbb
 aaabbb
 after
 #@+node:ekr.20070217071121.17: *5* @test rectangle-kill
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070217071121.18: *6* work
 before
 aaabbb
@@ -7324,8 +7215,7 @@ aaabbb
 aaabbb
 after
 #@+node:ekr.20070217071121.13: *5* @test rectangle-open
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070217071121.14: *6* work
 before
 aaa   xxxbbb
@@ -7348,8 +7238,7 @@ aaa   xxxbbb
 aaa   xxxbbb
 after
 #@+node:ekr.20070217071121.21: *5* @test rectangle-string
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070217071121.22: *6* work
 before
 aaas...sbbb
@@ -7372,8 +7261,7 @@ aaas...sbbb
 aaas...sbbb
 after
 #@+node:ekr.20070217071121.25: *5* @test rectangle-yank
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20070217071121.26: *6* work
 before
 aaaY1Ybbb
@@ -7396,8 +7284,7 @@ aaaY3Ybbb
 aaaY4Ybbb
 after
 #@+node:ekr.20061101121602.306: *5* @test remove-blank-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.307: *6* work
 first line
 line 1
@@ -7422,8 +7309,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.310: *5* @test remove-space-from-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.311: *6* work
 first line
 
@@ -7452,8 +7338,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.314: *5* @test remove-tab-from-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.315: *6* work
 first line
 line 1
@@ -7476,8 +7361,7 @@ line a
 line c
 last line
 #@+node:ekr.20061101121602.318: *5* @test reverse-region
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.319: *6* work
 
 last line
@@ -7502,8 +7386,7 @@ line c
 line 1
 first line
 #@+node:ekr.20071113081247: *5* @test reverse-sort-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071113081247.1: *6* work
 z
 x
@@ -7523,8 +7406,7 @@ e
 d
 a
 #@+node:ekr.20071113082531: *5* @test reverse-sort-lines-ignoring-case
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071113082531.1: *6* work
 z
 Y
@@ -7603,8 +7485,7 @@ c.editCommands.setFillPrefix(event=None)
 prefix = c.editCommands.fillPrefix
 assert prefix == 'xxxx.yyyy',repr(prefix)
 #@+node:ekr.20061101121602.322: *5* @test sort-columns
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.323: *6* work
         line b
     line a
@@ -7627,8 +7508,7 @@ last line
 line 1
 line c
 #@+node:ekr.20061101121602.326: *5* @test sort-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.327: *6* work
 first line
         line b
@@ -7651,8 +7531,7 @@ line 1
 line c
 last line
 #@+node:ekr.20071113081247.8: *5* @test sort-lines-ignoring-case
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20071113081247.9: *6* work
 A
 B
@@ -7695,8 +7574,7 @@ finally:
 #@+node:ekr.20100212104817.5349: *6* a
 #@+node:ekr.20100212104817.5350: *6* c
 #@+node:ekr.20061101121602.330: *5* @test split-line
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.331: *6* work
 first
  line
@@ -7721,8 +7599,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.334: *5* @test tabify
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.335: *6* work
 first line
 line 1
@@ -7745,8 +7622,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.338: *5* @test transpose-chars
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.339: *6* work
 frist line
 line 1
@@ -7769,8 +7645,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.342: *5* @test transpose-lines
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.343: *6* work
 line 1
 first line
@@ -7793,8 +7668,7 @@ first line
 line c
 last line
 #@+node:ekr.20061101121602.346: *5* @test untabify
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.347: *6* work
 first line
 line 1
@@ -7817,8 +7691,7 @@ line 1
 line c
 last line
 #@+node:ekr.20061101121602.350: *5* @test upcase-region
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 assert g.app.unitTestDict.get('colorized')
 #@+node:ekr.20061101121602.351: *6* work
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -7839,8 +7712,7 @@ SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING T
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 #@+node:ekr.20061101121602.354: *5* @test upcase-word
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 assert g.app.unitTestDict.get('colorized')
 #@+node:ekr.20061101121602.355: *6* work
 first line
@@ -7877,8 +7749,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3745: *7* work
 Honor this line that has a hanging
   indentation, please. Hanging
@@ -7906,8 +7777,7 @@ Next paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3754: *7* work
 Honor this line that has a hanging
   indentation, please. Hanging
@@ -7936,8 +7806,7 @@ Next paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3763: *7* work
 Honor this line that has a hanging
   indentation, please. Hanging
@@ -7969,8 +7838,7 @@ Next Paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3772: *7* work
 Americans live in the most severe
 weather-prone country on Earth. Each
@@ -8021,8 +7889,7 @@ Last paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3780: *7* work
 Americans live in the most severe
 weather-prone country on Earth. Each
@@ -8103,8 +7970,7 @@ Last paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3788: *7* work
 Americans live in the most severe
 weather-prone country on Earth. Each
@@ -8209,8 +8075,7 @@ Last paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3799: *7* work
 This paragraph leads of this test. It is
 the "lead" paragraph.
@@ -8262,8 +8127,7 @@ paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3809: *7* work
 This paragraph leads of this test. It is
 the "lead" paragraph.
@@ -8315,8 +8179,7 @@ paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3817: *7* work
 This paragraph leads of this test. It is
 the "lead" paragraph.
@@ -8368,8 +8231,7 @@ paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3825: *7* work
 This paragraph leads of this test. It is
 the "lead" paragraph.
@@ -8421,8 +8283,7 @@ paragraph.
 @pagewidth 40
 @tabwidth 8
 
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)
+c.testManager.runEditCommandTest(p)
 #@+node:ekr.20110118082508.3833: *7* work
 This paragraph leads of this test. It is
 the "lead" paragraph.
@@ -8600,9 +8461,8 @@ for spot,result in (('1.0',0),(5,5)):
 #@+node:ekr.20051107115231: *4*  Typing
 # These are mysteriously fragile tests, so they go first
 #@+node:ekr.20060208072415: *5* @test Delete key sticks in body
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 s = 'ABC'
@@ -8622,9 +8482,8 @@ finally:
         c.setBodyString(p,'')
         c.redraw(p)
 #@+node:ekr.20051125170139: *5* @test Delete key sticks in headline
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
@@ -8637,12 +8496,8 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051109091333: *5* @test deleting the last body character text redraws the screen (and icon)
-# Not ready yet: generating a backspace seems impossible!
-
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.setBodyString(p,'a')
@@ -8662,12 +8517,10 @@ finally:
         c.setBodyString(p,'')
         c.redraw_now()
 #@+node:ekr.20051107115231.15: *5* @test editLabel selects entire headline
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = '@test editLabel selects entire headline'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -8704,13 +8557,13 @@ try:
 finally:
     c.undoer.undo()
 #@+node:ekr.20051107115231.18: *5* @test paste and undo in headline - at end
-
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
+frame = c.frame
+tree = frame.tree
+canvas = tree.canvas
 c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
 try:
@@ -8729,11 +8582,10 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051107115231.20: *5* @test paste and undo in headline - with selection
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -8753,11 +8605,10 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051107115231.16: *5* @test paste at end of headline
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
@@ -8780,11 +8631,9 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20060208072307: *5* @test paste from menu into body sticks
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-
 if c.k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = c.testManager.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redraw(p)
     c.bodyWantsFocus()
@@ -8805,9 +8654,8 @@ if c.k.defaultUnboundKeyAction == 'insert':
             c.setBodyString(p,'')
             c.redraw(p)
 #@+node:ekr.20060208072331: *5* @test paste from menu into headline sticks
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.frame.tree.editLabel(p)
@@ -8829,10 +8677,9 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051107115231.24: *5* @test paste from menu to body recolors the body
-# Should be a comment# Should be a comment# Should be a comment# Should be a comment
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+# Should be a comment
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocus()
@@ -8854,10 +8701,8 @@ finally:
         c.setBodyString(p,'')
         c.redraw(p)
 #@+node:ekr.20051107115231.14: *5* @test return ends editing of headline
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-
 h = '@test return ends editing of headline'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
@@ -8869,11 +8714,10 @@ g.app.gui.event_generate(c,'\n','Return',w)
 c.outerUpdate()
 assert w != c.get_focus(),'oops2: focus in headline'
 #@+node:ekr.20051107115231.28: *5* @test selecting new node retains paste in headline
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -8895,13 +8739,12 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051107115231.21: *5* @test selecting new node retains typing in headline
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = c.testManager.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redraw(p) # To make node visible
     tree.editLabel(p)
@@ -8921,13 +8764,12 @@ if k.defaultUnboundKeyAction == 'insert':
             c.setHeadString(p,h) # Essential
             c.redraw(p)
 #@+node:ekr.20051107115231.17: *5* @test typing and undo in headline - at end
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = c.testManager.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redrawAndEdit(p) # To make the node visible.
     w = c.edit_widget(p)
@@ -8960,10 +8802,8 @@ if k.defaultUnboundKeyAction == 'insert':
 # This test is too flaky for Tk.
 if g.app.gui.guiName() != 'tkinter':
 
-    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h)
+    p = c.testManager.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.bodyWantsFocus()
@@ -8985,10 +8825,8 @@ if g.app.gui.guiName() != 'tkinter':
             c.setBodyString(p,'')
             c.redraw(p)
 #@+node:ekr.20051109091731: *5* @test typing in non-empty body text does not redraw the screen
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.setBodyString(p,'a')
 c.redraw(p) # To make node visible
@@ -9005,9 +8843,8 @@ finally:
         c.setBodyString(p,'')
         c.redraw(p)
 #@+node:ekr.20051120115046: *5* @test undoing insert node restores previous node's body text
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 body = 'This is a test'
@@ -10444,25 +10281,14 @@ g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20090529141856.4685: *5* @suite Export tests
 # Create unit tests in g.app.scriptDict["suite"]
 
-
-import unittest
-import leo.core.leoTest as leoTest
-
-@others
-
-suite = leoTest.makeImportExportSuite(c,"exportTests",doImport=False)
+suite = c.testManager.makeImportExportSuite("exportTests",doImport=False)
 
 g.app.scriptDict['suite'] = suite
 #@+node:ekr.20090529141856.4698: *4*  Import tests
 #@+node:ekr.20090529141856.4699: *5* @suite Import tests
 # Create unit tests in g.app.scriptDict["suite"]
 
-import unittest
-import leo.core.leoTest as leoTest
-
-@others
-
-suite = leoTest.makeImportExportSuite(c,"importTests",doImport=True)
+suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
 
 g.app.scriptDict['suite'] = suite
 #@+node:ekr.20090529141856.4790: *4*  Test files
@@ -12260,8 +12086,8 @@ for ch in special:
 lines = c.k.printBindings()
 # assert lines[0].strip().endswith('Alt+Ctrl+Shift')
 #@+node:ekr.20100131171342.5607: *4* @test k.registerCommand
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-k = c.k ; p = c.p ; w = c.edit_widget(p)
+k = c.k ; p = c.p
+w = c.edit_widget(p)
 commandName = 'test-registerCommand'
 
 def callback (event=None,c=c): # Must have an event param to pass later unit test.
@@ -17587,9 +17413,7 @@ This eliminates references to nodes that no longer exist in the present outline.
 #@+node:ekr.20040712101754.37: *4* @suite Edit body tests
 # Create unit tests in g.app.scriptDict["suite"]
 
-import leo.core.leoTest as leoTest
-
-suite = leoTest.makeEditBodySuite(c,p)
+suite = c.testManager.makeEditBodySuite(p)
 
 g.app.scriptDict['suite'] = suite
 #@+node:ekr.20040712101754.38: *5* editBodyTests
@@ -17916,7 +17740,6 @@ if hasattr(c.frame.tree,'item2position'):
 '''Imports all plugins or just tests their syntax,
 epending on a switch in PluginTestCase.runTest.'''
 
-import leo.core.leoTest as leoTest
 import glob
 import sys
 import unittest
@@ -17980,9 +17803,7 @@ def fail (self,msg=None):
     g.app.unitTestDict["fail"] = g.callerName(2)
 #@+node:ekr.20050120095423.16: *5* runTest
 def runTest(self):
-    
-    import leo.core.leoTest as leoTest
-    
+
     trace = False
     c = self.c ; path = self.path
     path,base = g.os_path_split(path)
@@ -18018,7 +17839,7 @@ def runTest(self):
         f = open(self.path,'r')
         s = f.read()
         f.close
-        assert leoTest.checkFileSyntax(fn,s,reraise=False,suppress=False)
+        assert c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False)
     else: # Good for initial tests, but pollutes all other unit tests.
         exec('import leo.plugins.%s' % fn)
     
@@ -18317,12 +18138,10 @@ for fn in files:
 #@+node:ekr.20100131171342.5501: *3* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c) # This *is* used
 
 c.contractAllHeadlines()
 h = 'All unit tests'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 if p:
     p.expand()
     g.app.unitTestDict['restoreSelectedNode']=False
@@ -18885,8 +18704,6 @@ static exit_values_ty indent_main_loop(void)
     }                           /* end of main infinite loop */
 }
 #@+node:ekr.20111105221757.3833: *3* @test findAllUnitTestNodes
-import leo.core.leoTest as leoTest
-
 p1 = p.copy()
 
 def found(p,result):
@@ -18899,7 +18716,8 @@ table = (('all',None,True,False),('marked',None,False,True))
 try:
     p.setMarked()
     for kind,limit,all,marked in table:
-        result = leoTest.findAllUnitTestNodes(c,p,limit,all,marked,lookForMark=False,lookForNodes=True)
+        result = c.testManager.findAllUnitTestNodes(
+            p,limit,all,marked,lookForMark=False,lookForNodes=True)
         assert found(p,result)
     assert p == p1
 finally:

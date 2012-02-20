@@ -30,6 +30,7 @@ import leo.core.leoGlobals as g
     # import leo.core.leoRst as leoRst
     # import leo.core.leoShadow as leoShadow
     # import leo.core.leoTangle as leoTangle
+    # import leo.core.leoTest as leoTest
     # import leo.core.leoUndo as leoUndo
 
 import leo.core.leoNodes as leoNodes
@@ -270,6 +271,7 @@ class Commands (object):
         self.registerCommands = None
         self.searchCommands = None
         self.spellCommands = None
+        self.leoTestManager = None
         
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self,gui):
@@ -306,16 +308,18 @@ class Commands (object):
         import leo.core.leoRst as leoRst
         import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
+        import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
         
         self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
-        self.chapterController = leoChapters.chapterController(c)
-        self.shadowController = leoShadow.shadowController(c)
+        self.chapterController   = leoChapters.chapterController(c)
+        self.shadowController    = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
         self.rstCommands    = leoRst.rstCommands(c)
         self.tangleCommands = leoTangle.tangleCommands(c)
+        self.testManager    = leoTest.TestManager(c)
         
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()

@@ -8,51 +8,32 @@
 
 # These work well with the qttabs gui.
 #@+node:ekr.20040712101754.3: *3* @test test.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","test","test.leo")
-leoTest.runLeoTest(c,path,verbose=False,full=True)
-
+c.testManager.runLeoTest(path,verbose=False,full=True)
 #@+node:ekr.20040803090901: *3* @test leoDist.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","dist","leoDist.leo")
-leoTest.runLeoTest(c,path,verbose=False,full=True)
+c.testManager.runLeoTest(path,verbose=False,full=True)
 #@+node:ekr.20081121164135.1: *3* @test leoGuiPluginsRef.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
-leoTest.runLeoTest(c,path,verbose=False,full=True)
+c.testManager.runLeoTest(path,verbose=False,full=True)
 #@+node:ekr.20040712101754.4: *3* @test LeoPyRef.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","core","LeoPyRef.leo")
-leoTest.runLeoTest(c,path)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20040712101754.5: *3* @test leoPluginsRef.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","plugins","leoPluginsRef.leo")
-leoTest.runLeoTest(c,path)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20040712101754.6: *3* @test LeoDocs.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","doc","LeoDocs.leo")
-leoTest.runLeoTest(c,path)
+c.testManager.runLeoTest(path)
 #@+node:ekr.20040730181601: *3* @test minimalLeoFile.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile.leo")
-leoTest.runLeoTest(c,path,verbose=False,full=True)
+c.testManager.runLeoTest(path,verbose=False,full=True)
 #@+node:ekr.20040730181610: *3* @test minimalLeoFile2.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile2.leo")
-leoTest.runLeoTest(c,path,verbose=False,full=True)
+c.testManager.runLeoTest(path,verbose=False,full=True)
 #@+node:ekr.20040831104758: *3* @test minimalLeoFile3.leo
-import leo.core.leoTest as leoTest
-
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile3.leo")
-leoTest.runLeoTest(c,path,verbose=False,full=True)
+c.testManager.runLeoTest(path,verbose=False,full=True)
 #@+node:ekr.20080405085247.1: ** slow tests
 #@+node:ekr.20060208195054: *3* @@test k.inverseCommandsDict is inverse of c.commandsDict
 # c.commandsDict: keys are emacs command names, values are functions f.
@@ -431,22 +412,23 @@ g.pr(os.getcwd())
 name = g.os_path_join("test","removeSentTest.txt")
 c.importCommands.removeSentinelsCommand(name)
 #@+node:ekr.20051104081502.105: *4* Test new docutils stull
-import leoTest
 import glob
 
 g.pr('-' * 40)
 
+tm = c.testManager
+
 if 0:
     g.pr("modules in test.leo...")
-    paths = leoTest.findAllAtFileNodes(c)
-    modules = leoTest.importAllModulesInPathList(paths)
+    paths = tm.findAllAtFileNodes(c)
+    modules = tm.importAllModulesInPathList(paths)
     for module in modules:
         g.pr(module)
 
 if 1:
     g.pr("modules in leo/src...")
     path = g.os_path_join(g.app.loadDir,"..","src")
-    modules = leoTest.importAllModulesInPath(path)
+    modules = tm.importAllModulesInPath(path)
     for module in modules:
         g.pr(module)
 
@@ -454,19 +436,16 @@ if 0:
     directory = g.os_path_join(g.app.loadDir,"..","src")
     glob_path = g.os_path_join(directory,"leo*.py")
     files = glob.glob(glob_path)
-    modules = leoTest.importAllModulesInPathList(files)
+    modules = tm.importAllModulesInPathList(files)
     for module in modules:
         g.pr(module)
-#@+node:ekr.20040712101754.221: *4* Manual test of testUtils.replaceOutline
-import leoTest
-
-u = leoTest.testUtils(c)
+#@+node:ekr.20040712101754.221: *4* Manual test of TM.replaceOutline
 outline1 = p.firstChild()
 outline2 = outline1.next()
 assert(outline1.h=="outline1")
 assert(outline2.h=="outline2")
 
-u.replaceOutline(outline1,outline2)
+c.testManager.replaceOutline(outline1,outline2)
 c.redraw()
 c.checkOutline()
 #@+node:ekr.20040712101754.222: *5* outline1
@@ -677,7 +656,8 @@ g.pdb()
 #@+node:ekr.20051104081502.107: *4* Redundant: @suite run all doctests in @file nodes
 import doctest
 import unittest
-import leoTest
+
+tm = c.testManager
 
 createUnitTest = True
 
@@ -686,11 +666,11 @@ if createUnitTest:
 else:
     suite = None
 
-paths = leoTest.findAllAtFileNodes(c)
-modules = leoTest.importAllModulesInPathList(paths)
+paths   = tm.findAllAtFileNodes(c)
+modules = tm.importAllModulesInPathList(paths)
 
 if createUnitTest:
-    suite = leoTest.createUnitTestsFromDoctests(modules)
+    suite = tm.createUnitTestsFromDoctests(modules)
 else:
     for module in modules:
         doctest.testmod(module,verbose=True,report=False)
@@ -1159,16 +1139,14 @@ for p in c.allNodes_iter():
 
 g.pr("done")
 #@+node:ekr.20051104081502.146: *5* Print fundChildrenOf and
-import leoTest
-
-u = leoTest.testUtils(c)
+tm = c.testManager
 
 g.pr("children", '-' * 20)
-children = u.findChildrenOf(p)
+children = tm.findChildrenOf(p)
 for child in children: g.pr(child.h)
 
 g.pr("subtree", '-' * 20)
-descendants = u.findSubnodesOf(p)
+descendants = tm.findSubnodesOf(p)
 for descendant in descendants: g.pr(descendant.h)
 #@+node:ekr.20051104081502.147: *5* Tests of pickle & hexlify
 import binascii
@@ -1549,9 +1527,7 @@ for p in c.allNodes_iter():
         if val:
            g.es('str_ekr_attribute is: %s' % val)
 #@+node:ekr.20051104081502.316: *4* test of an exception in another module
-import leoTest
-
-leoTest.throwAssertionError()
+c.testManager.throwAssertionError()
 #@+node:ekr.20051104081502.210: *4* Test of autocompleter
 @language python
 
@@ -1559,7 +1535,7 @@ leoTest.throwAssertionError()
 leoTest
 
 # Type an open paren to bring up calltip.
-leoTest.findAllAtFileNodes
+c.testManager.findAllAtFileNodes
 #@+node:ekr.20051104081502.322: *4* Test of g.getScript with forcePythonSentinels = False
 @language html
 #@+node:ekr.20051104081502.323: *5* g.getScript
@@ -6144,10 +6120,9 @@ if 0:
         w.deleteEditor()
 #@+node:ekr.20051107115231.25: *3* @@test typing in headline recomputes width
 # getWidth no longer exists.
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
+p = c.testManager.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)

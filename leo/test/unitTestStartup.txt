@@ -7,11 +7,10 @@
 #@+node:ekr.20110617104931.3322: *4* @button print isOrphan
 print(p.v.isOrphan(),p.h)
 #@+node:ekr.20080529114722.1: *3* @button timeit
-import leo.core.leoTest as leoTest
-leoTest.runTimerOnNode(c,p,count=100)
+c.testManager.runTimerOnNode(p,count=100)
 #@+node:ekr.20080529115911.1: *3* @button profile
-import leo.core.leoTest as leoTest
-leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
+c.testManager.runProfileOnNode(p,outputPath=None)
+    # Defaults to leo\test\profileStats.txt
 #@+node:ekr.20070515150433: ** @chapters
 #@+node:ekr.20111015113758.3721: *3* @chapter aaa
 #@+node:ekr.20111015113758.3722: *4* aaa node 1

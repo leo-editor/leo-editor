@@ -317,9 +317,13 @@ Ran 1 test in 0.051s
 
 FAILED (failures=1)
 End of Do @test</t>
-<t tx="ekr.20050618061835.19">With the aforementioned possibilities of running all @test nodes in a subtree with a single click on a button, the sharing of input/expected data, and the sharing of setUp/tearDown code, there hardly seems a need for the @suite nodes.
+<t tx="ekr.20050618061835.19">With the aforementioned possibilities of running all @test nodes in a subtree
+with a single click on a button, the sharing of input/expected data, and the
+sharing of setUp/tearDown code, there hardly seems a need for the @suite nodes.
 
-On Leo's website (http://webpages.charter.net/edreamleo/scripting.html#unit-testing-with-test-and-suite) I could still find some extra info on @suite nodes, not found in LeoDocs.leo:
+On Leo's website
+(http://webpages.charter.net/edreamleo/scripting.html#unit-testing-with-test-and-suite)
+I could still find some extra info on @suite nodes, not found in LeoDocs.leo:
 
 &lt;quote&gt;
 
@@ -335,15 +339,19 @@ The difference between @test and @suite is:
     * Leo creates a unit test from script in an @test node by creating an instance of generalTestCase, a subclass of unittest.TestCase.
     * The script in an @suite node creates the test suite.
 
-An @suite nodes allows us to create "legacy" unit tests simply. For example, rather than rewriting all the reformatParagraph unit tests to use @test nodes, I simply wrote an @suite node with the following body.
-import leoGlobals as g
-import leoTest ; reload(leoTest)
-suite = leoTest.makeReformatParagraphSuite()
-g.app.scriptDict['suite'] = suite
+An @suite nodes allows us to create "legacy" unit tests simply. For example,
+rather than rewriting all the reformatParagraph unit tests to use @test nodes, I
+simply wrote an @suite node with the following body.
+
+    suite = c.testManager.makeReformatParagraphSuite()
+    g.app.scriptDict['suite'] = suite
 
 &lt;/quote&gt;
 
-Well, that's almost, but not quite completely, totally incomprehensible to me. Fortunately, since Leo's creator removed most of this quote from LeoDocs.leo and test.leo, this information appears to be outdated.</t>
+Well, that's almost, but not quite completely, totally incomprehensible to me.
+Fortunately, since Leo's creator removed most of this quote from LeoDocs.leo and
+test.leo, this information appears to be outdated
+.</t>
 <t tx="ekr.20050618061835.2"></t>
 <t tx="ekr.20050618061835.20">Don't forget to read the node
 Users Guide--&gt;Chapter 7: Scripting Leo with Python--&gt;Unit testing with @test, @suite
@@ -374,10 +382,8 @@ To get the button right away in the tool bar, I have to assume that you started 
 We'll see the use of this added button soon, but before that, read up on the 'assert' function in the Python manuals, since it is used a lot in testing. It won't be long before you're back here!</t>
 <t tx="ekr.20050618061835.4">@color
 
-import leoTest
-
 g.pr("\nStart of Do @test")
-leoTest.doTests(c,all=False)
+c.testManager.doTests(all=False)
 g.pr("End of Do @test")</t>
 <t tx="ekr.20050618061835.5">The first child node of the node you're reading right now, contains the simplest succeeding test possible.
 Select it, and press the button 'Do @test'.
@@ -440,7 +446,7 @@ To make unit tests, do the following:
 <t tx="ekr.20070217065840.1">try:
     p1 = p.insertAfter()
     c.setHeadString(p1,'@test ')
-    body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
+    body = 'c.testManager.runEditCommandTest(c,p)'
     c.setBodyString(p1,body)
     for s in ('work','before','after'):
         p2 = p1.insertAsLastChild()

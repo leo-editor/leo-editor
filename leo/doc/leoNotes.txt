@@ -6823,5 +6823,20 @@ def trace_tag (name, *args):
     if (not minus and '*' in t) or name.lower() in t:
         s = name + ": " + message
         g.es(s) # Traces _always_ get printed.
+#@+node:ekr.20051104075904.92: *3* oldTestPlugin (from leoTest)
+
+def oldTestPlugin (fileName,verbose=False):
+
+    path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+
+    module = g.importFromPath(fileName,path)
+    assert module, "Can not import %s" % path
+
+    # Run any unit tests in the module itself.
+    if hasattr(module,"unitTest"):
+        if verbose:
+            g.trace("Executing unitTest in plugins/%s..." % fileName)
+
+        module.unitTest(verbose=verbose)
 #@-all
 #@-leo

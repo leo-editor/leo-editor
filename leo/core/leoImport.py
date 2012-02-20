@@ -99,7 +99,7 @@
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
 # Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
-import leo.core.leoTest as leoTest
+
 import string
 
 if g.isPython3:
@@ -438,7 +438,7 @@ class leoImportCommands (scanUtility):
             theFile = open(fileName,'w')
         except IOError:
             g.es("can not open",fileName,color="blue")
-            leoTest.fail()
+            c.testManager.fail()
             return
         for p in p.self_and_subtree():
             head = p.moreHead(firstLevel,useVerticalBar=True)
@@ -464,7 +464,7 @@ class leoImportCommands (scanUtility):
             theFile = open(fileName,'w')
         except IOError:
             g.es("can not open",fileName,color="blue")
-            leoTest.fail()
+            c.testManager.fail()
             return
 
         for p in p.self_and_subtree():
@@ -494,7 +494,7 @@ class leoImportCommands (scanUtility):
             theFile = open(fileName,'w')
         except IOError:
             g.es("can not open",fileName,color="blue")
-            leoTest.fail()
+            c.testManager.fail()
             return
 
         self.treeType = "@file"
