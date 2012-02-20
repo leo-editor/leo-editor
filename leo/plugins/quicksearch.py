@@ -155,6 +155,10 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.scon.doNodeHistory()
 
+    def timeline(event):
+        c.frame.log.selectTab('Nav')
+        wdg.scon.doTimeline()
+
     c.k.registerCommand(
         'find-quick',None,focus_quicksearch_entry)
     c.k.registerCommand(
@@ -163,6 +167,8 @@ def install_qt_quicksearch_tab(c):
         'focus-to-nav', None,focus_to_nav)
     c.k.registerCommand(
         'find-quick-test-failures', None,show_unittest_failures)
+    c.k.registerCommand(
+        'find-quick-timeline', None, timeline)
     c.k.registerCommand(
         'history', None, nodehistory)
 
@@ -339,6 +345,14 @@ class QuickSearchController:
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
+    #@+node:tbrown.20120220091254.45207: *3* doTimeline
+    def doTimeline(self):
+
+        c = self.c
+        timeline = [p.copy() for p in c.all_unique_positions()]
+        timeline.sort(key=lambda x: x.gnx, reverse=True)
+        self.clear()
+        self.addHeadlineMatches(timeline)
     #@+node:ekr.20111015194452.15692: *3* doSearch
     def doSearch(self, pat):
 
