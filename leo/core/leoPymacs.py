@@ -37,7 +37,7 @@ pymacsFile = __file__
 # print('leoPymacs:pymacsFile',pymacsFile)
 
 #@+others
-#@+node:ekr.20061024131236: ** dump
+#@+node:ekr.20061024131236: ** dump (pymacs)
 def dump (anObject):
 
     global g
@@ -45,7 +45,7 @@ def dump (anObject):
     init()
 
     return str(g.toEncodedString(repr(anObject),encoding='ascii'))
-#@+node:ekr.20061024130957: ** getters
+#@+node:ekr.20061024130957: ** getters (pymacs)
 def get_app ():
     '''Scripts can use g.app.scriptDict for communication with pymacs.'''
     global g
@@ -61,12 +61,12 @@ def script_result():
     global g
     init()
     return g.app.scriptResult
-#@+node:ekr.20061024060248.3: ** hello
+#@+node:ekr.20061024060248.3: ** hello (pymacs)
 def hello():
 
     init()
     return 'Hello from Leo.  g.app: %s' % g.app
-#@+node:ekr.20061024075542: ** init
+#@+node:ekr.20061024075542: ** init  (pymacs)
 def init ():
 
     global inited

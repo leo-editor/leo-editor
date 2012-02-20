@@ -15251,7 +15251,7 @@ def runTests (self):
 
     old_silent_mode = g.app.silentMode
     g.app.silentMode = True
-    c2 = c.new(gui=leoGui.nullGui())
+    c2 = c.new(gui=g.app.nullGui)
     g.app.silentMode = old_silent_mode
     found = self.createOutline(c2)
     if found:
@@ -15474,7 +15474,7 @@ def runTests (self):
 
     old_silent_mode = g.app.silentMode
     g.app.silentMode = True
-    c2 = c.new(gui=leoGui.nullGui())
+    c2 = c.new(gui=g.app.nullGui)
     g.app.silentMode = old_silent_mode
     found = self.createOutline(c2)
     if found:
@@ -17322,7 +17322,6 @@ def getPaneBinding (self,stroke,w):
                     table = ('previous-line','next-line',)
                     if key == 'text' and name == 'head' and si.commandName in table:
                         if trace: g.trace('***** special case',si.commandName)
-                        pass
                     else:
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                             key,name,repr(si.stroke),si.commandName))
@@ -20569,7 +20568,7 @@ def __init__ (self,c,p,dialog,temp_p,doImport):
     self.doImport = doImport
 
     self.old_p = c.p
-#@+node:ekr.20051104075904.81: *6*  fail
+#@+node:ekr.20051104075904.81: *6*  fail (importExportTestCase)
 def fail (self,msg=None):
 
     """Mark a unit test as having failed."""
@@ -24960,7 +24959,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
-    if not k.check_bind_key(pane,shortcut):
+    if not k.check_bind_key(commandName,pane,shortcut):
         return False
 
     aList = k.bindingsDict.get(shortcut,[])
@@ -24998,7 +24997,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
 
 bindShortcut = bindKey # For compatibility
 #@+node:ekr.20120130074511.10228: *7* k.check_bind_key
-def check_bind_key(self,pane,shortcut):
+def check_bind_key(self,commandName,pane,shortcut):
     
     if not shortcut:
         return False
@@ -25077,8 +25076,6 @@ def bindKeyToDict (self,pane,stroke,si):
     d = k.masterBindingsDict.get(pane,{})
     d[stroke] = si
     k.masterBindingsDict [pane] = d
-    
-    if trace: g.trace(pane,stroke,commandName)
 #@+node:ekr.20061031131434.94: *7* k.bindOpenWith
 def bindOpenWith (self,shortcut,name,data):
 
@@ -25318,8 +25315,6 @@ def bindKeyToDict (self,pane,stroke,si):
     d = k.masterBindingsDict.get(pane,{})
     d[stroke] = si
     k.masterBindingsDict [pane] = d
-    
-    if trace: g.trace(pane,stroke,commandName)
 #@+node:ekr.20061031131434.176: *6* k.computeInverseBindingDict
 def computeInverseBindingDict (self):
 
@@ -25484,7 +25479,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
 
     trace = False and not g.unitTesting
     k = self ; c = k.c
-    if not k.check_bind_key(pane,shortcut):
+    if not k.check_bind_key(commandName,pane,shortcut):
         return False
 
     aList = k.bindingsDict.get(shortcut,[])
@@ -25522,7 +25517,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
 
 bindShortcut = bindKey # For compatibility
 #@+node:ekr.20120130074511.10228: *6* k.check_bind_key
-def check_bind_key(self,pane,shortcut):
+def check_bind_key(self,commandName,pane,shortcut):
     
     if not shortcut:
         return False
@@ -25601,8 +25596,6 @@ def bindKeyToDict (self,pane,stroke,si):
     d = k.masterBindingsDict.get(pane,{})
     d[stroke] = si
     k.masterBindingsDict [pane] = d
-    
-    if trace: g.trace(pane,stroke,commandName)
 #@+node:ekr.20061031131434.94: *6* k.bindOpenWith
 def bindOpenWith (self,shortcut,name,data):
 

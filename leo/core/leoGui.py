@@ -18,11 +18,11 @@ Plugins may define their own gui classes by setting g.app.gui."""
 #@+node:ekr.20120219194520.10466: ** << imports >> (qtGui.py)
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind # for nullFindTab.
-import leo.core.leoFrame as leoFrame # for nullGui.
+import leo.core.leoFrame as leoFrame # for nullGui and stringTextWidget.
 #@-<< imports >>
 
 #@+others
-#@+node:ekr.20070228160107: ** class leoKeyEvent (leoGui)
+#@+node:ekr.20070228160107: ** class leoKeyEvent (leoGui.py)
 class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
@@ -190,10 +190,6 @@ class leoGui:
 
     def runPropertiesDialog(self,title='Properties', data={}, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
-        self.oops()
-    #@+node:ekr.20061031173016: *4* app.gui.createKeyHandlerClass
-    def createKeyHandlerClass (self,c):
-
         self.oops()
     #@+node:ekr.20031218072017.3731: *4* app.gui file dialogs
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
@@ -375,12 +371,6 @@ class nullGui(leoGui):
         self.isNullGui = True
         self.bodyTextWidget  = leoFrame.stringTextWidget
         self.plainTextWidget = leoFrame.stringTextWidget
-    #@+node:ekr.20070123092623: *4* nullGui.createKeyHandlerClass
-    def createKeyHandlerClass (self,c):
-
-        import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
-
-        return leoKeys.keyHandlerClass(c)
     #@+node:ekr.20031218072017.2229: *4* nullGui.runMainLoop
     def runMainLoop(self):
 

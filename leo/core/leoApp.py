@@ -9,12 +9,7 @@
 
 #@+<< imports >>
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
-
 import leo.core.leoGlobals as g
-
-import leo.core.leoCache as leoCache
-import leo.core.leoGui as leoGui
-import leo.core.leoVersion as leoVersion
 
 import os
 import optparse
@@ -78,6 +73,8 @@ class LeoApp:
         self.machineDir = None      # The machine-specific directory.
         
         # Global data...
+        self.globalKillBuffer = []      # The global kill buffer.
+        self.globalRegisters = {}       # The global register list.
         self.leoID = None               # The id part of gnx's.
         self.lossage = []               # List of last 100 keystrokes.
         self.numberOfUntitledWindows=0  # Number of opened untitled windows.
@@ -117,6 +114,12 @@ class LeoApp:
         self.signon = ''
         self.signon2 = ''
         self.signon_printed = False
+        
+        # Global types.
+        import leo.core.leoFrame as leoFrame
+        import leo.core.leoGui as leoGui
+        self.nullGui = leoGui.nullGui()
+        self.nullLog = leoFrame.nullLog()
         
         #### To be moved to OpenWithManager.
         
@@ -413,6 +416,8 @@ class LeoApp:
     def computeSignon (self):
 
         app = self
+        
+        import leo.core.leoVersion as leoVersion
         build,date  = leoVersion.build,leoVersion.date
         guiVersion  = app.gui and app.gui.getFullVersion() or 'no gui!'
         leoVer      = leoVersion.version
@@ -452,45 +457,20 @@ class LeoApp:
         if argName in ('qt','qttabs'): # 2011/06/15.
             app.createQtGui(fileName,verbose=verbose)
         elif argName == 'null':
-            app.createNullGui()
+            g.app.gui = g.app.nullGui
         elif argName == 'curses':
             app.createCursesGui()
 
         if not app.gui:
             print('Leo requires Qt to be installed.')
-    #@+node:ekr.20090202191501.5: *4* app.createNullGui
-    def createNullGui (self):
-
-        # Don't import this at the top level:
-        # it might interfere with Leo's startup logic.
-        
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('********** leoApp.createNullGui')
-
-        app = self
-
-        try:
-            import leo.core.leoGui as leoGui
-        except ImportError:
-            g.trace('can not import leo.core.leoGui')
-            leoGui = None
-
-        if leoGui:
-            app.gui = leoGui.nullGui()
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
     def createNullGuiWithScript (self,script=None):
 
         app = self
-
-        try:
-            import leo.core.leoGui as leoGui
-        except ImportError:
-            leoGui = None
-
-        if leoGui:
-            app.batchMode = True
-            app.gui = leoGui.nullGui()
-            app.gui.setScript(script)
+        
+        app.batchMode = True
+        app.gui = g.app.nullGui
+        app.gui.setScript(script)
     #@+node:ekr.20090202191501.1: *4* app.createQtGui
     def createQtGui (self,fileName='',verbose=False):
 
@@ -627,24 +607,6 @@ class LeoApp:
             self.destroyWindow(w)
 
         self.finishQuit()
-    #@+node:ekr.20120211121736.10809: *3* app.init (NEW)
-    def init (self):
-        
-        import leo.core.leoCache as leoCache
-        import leo.core.leoConfig as leoConfig
-        import leo.core.leoNodes as leoNodes
-        
-        app = self
-
-        # Force the user to set g.app.leoID.
-        app.setLeoID()
-        app.config = leoConfig.configClass()
-        app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-        app.pluginsController.finishCreate()
-        
-        #### Do this early.  We no longer read files twice.
-        # Fixes bug 670108.
-        app.db = leoCache.cacher().initGlobalDB()
     #@+node:ekr.20031218072017.2188: *3* app.newCommander & helper
     def newCommander(self,fileName,relativeFileName=None,gui=None):
 
@@ -683,8 +645,8 @@ class LeoApp:
 
         """
 
-
         # Fixes bug 670108.
+        import leo.core.leoCache as leoCache
         g.app.db = leoCache.cacher().initGlobalDB()
     #@+node:ekr.20031218072017.1978: *3* app.setLeoID
     def setLeoID (self,verbose=True):
@@ -1174,7 +1136,7 @@ class LoadManager:
         
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
-        nullGui = leoGui.nullGui()
+        nullGui = g.app.nullGui
         c1,c2,path = None,None,lm.computeLeoSettingsPath()
         if path:
             c1 = g.openWithFileName(path,
@@ -1455,7 +1417,6 @@ class LoadManager:
     #@+node:ekr.20120214165710.10726: *5* lm.createSettingsDicts (new_config)
     def createSettingsDicts(self,c,localFlag):
         
-        #### Should the SettingsTreeParser class be defined in leoApp?
         import leo.core.leoConfig as leoConfig
 
         assert g.new_config
@@ -1586,8 +1547,9 @@ class LoadManager:
 
         if g.app.gui:
             if g.new_config:
-                import leo.core.leoGui as leoGui
-                assert isinstance(g.app.gui,leoGui.nullGui)
+                # import leo.core.leoGui as leoGui
+                # assert isinstance(g.app.gui,g.app.nullGui)
+                assert g.app.gui == g.app.nullGui
                 g.app.gui = None # Enable g.app.createDefaultGui 
                 g.app.createDefaultGui(__file__)
             else:
@@ -1654,6 +1616,9 @@ class LoadManager:
             return None
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
     def initApp (self,verbose):
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('LM.initApp')
         
         assert g.app.loadManager
         

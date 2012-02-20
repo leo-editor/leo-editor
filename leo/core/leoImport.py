@@ -5021,7 +5021,6 @@ def headToPrevNode(event):
 
     '''Move the code following a def to end of previous node.'''
 
-    # import leo.core.leoImport as leoImport
     c = event.get('c')
     if not c: return
     p = c.p
