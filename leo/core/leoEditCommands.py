@@ -12,7 +12,7 @@ Modelled after Emacs and Vim commands.'''
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind
 import leo.core.leoKeys as leoKeys
-import leo.core.leoTest as leoTest
+# import leo.core.leoTest as leoTest
 
 try:
     import enchant
@@ -1396,40 +1396,34 @@ class debugCommandsClass (baseEditCommandsClass):
     def runAllUnitTestsLocally (self,event=None):
         '''Run all unit tests contained in the presently selected outline.
         Tests are run in the outline's process, so tests *can* change the outline.'''
-        c = self.c
-        leoTest.doTests(c,all=True)
+        self.c.testManager.doTests(all=True)
         
     def runMarkedUnitTestsLocally (self,event=None):
         '''Run marked unit tests in the outline.
         Tests are run in the outline's process, so tests *can* change the outline.'''
-        c = self.c
-        leoTest.doTests(c,all=True,marked=True)
+        self.c.testManager.doTests(all=True,marked=True)
 
     def runSelectedUnitTestsLocally (self,event=None):
         '''Run all unit tests contained in the presently selected outline.
         Tests are run in the outline's process, so tests *can* change the outline.'''
-        c = self.c
-        leoTest.doTests(c,all=False,marked=False)
+        self.c.testManager.doTests(all=False,marked=False)
         
     # Externally run tests...
 
     def runAllUnitTestsExternally (self,event=None):
         '''Run all unit tests contained in the entire outline.
         Tests are run in an external process, so tests *cannot* change the outline.'''
-        c = self.c
-        leoTest.runTestsExternally(c,all=True,marked=False)
+        self.c.testManager.runTestsExternally(all=True,marked=False)
         
     def runMarkedUnitTestsExternally(self,event=None):
         '''Run all marked unit tests in the outline.
         Tests are run in an external process, so tests *cannot* change the outline.'''
-        c = self.c
-        leoTest.runTestsExternally(c,all=True,marked=True)
+        self.c.testManager.runTestsExternally(all=True,marked=True)
 
     def runSelectedUnitTestsExternally(self,event=None):
         '''Run all unit tests contained in the presently selected outline
         Tests are run in an external process, so tests *cannot* change the outline.'''
-        c = self.c
-        leoTest.runTestsExternally(c,all=False,marked=False)
+        self.c.testManager.runTestsExternally(all=False,marked=False)
     #@-others
 #@+node:ekr.20050920084036.53: ** editCommandsClass
 class editCommandsClass (baseEditCommandsClass):

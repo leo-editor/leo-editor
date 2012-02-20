@@ -152,7 +152,7 @@ W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
 
 recentCoreList = (
         # ('runLeo',            ''),
-        ('leoApp',            ''),
+        # ('leoApp',            ''),
         # ('leoAtFile',         ''),
         # ('leoCache',          ''),
         # ('leoChapters',       ''),
@@ -180,7 +180,7 @@ recentCoreList = (
         # ('leoRst',            ''),
         # ('leoShadow',         ''),
         # ('leoTangle',         ''),
-        # ('leoTest',           ''),
+        ('leoTest',           ''),
         # ('leoUndo',           'W0511'),
             # WO511: TODO 
 )
