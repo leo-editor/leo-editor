@@ -26,10 +26,6 @@ new_config = False
     # c.config.getX become much simpler.
 if new_config: print('***** new_config')
 
-new_load = False
-    # True: use the load manager for most load-related matters.
-if new_load: print('***** new_load')
-    
 new_modes = False # True: use ModeController and ModeInfo classes.
 if new_modes: print('***** new_modes')
 
@@ -67,7 +63,7 @@ if 0:
         print('** leoGlobals.py: caching disabled')
 #@-<< global switches >>
 #@+<< imports >>
-#@+node:ekr.20050208101229: ** << imports >>
+#@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
 if 0:
     # This is now done in run.
     import leoGlobals as g # So code can use g below.

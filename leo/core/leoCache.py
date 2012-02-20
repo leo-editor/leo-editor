@@ -3,7 +3,7 @@
 '''A module encapsulating Leo's file caching'''
 
 #@+<< imports >>
-#@+node:ekr.20100208223942.10436: ** << imports >>
+#@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
 import sys
 isPython3 = sys.version_info >= (3,0,0)
 

@@ -10864,14 +10864,6 @@ def initWrapperLeoFile (c,fileName):
         # Mark the outline clean.
         # This makes it easy to open non-Leo files for quick study.
     return c
-#@+node:ekr.20041124083125: *7* completeFileName
-def completeFileName (fileName):
-
-    fileName = g.toUnicode(fileName)
-    fileName = g.os_path_finalize(fileName)
-
-    # 2011/10/12: don't add .leo to *any* file.
-    return fileName
 #@+node:ekr.20111011165246.15707: *4* Searches from Leo's web pages now work
 Updating Sphinx and using new .js files did the trick.
 #@+node:ekr.20110919113533.6818: *4* Added @button split-defs
@@ -15200,8 +15192,6 @@ def fail (self,msg=None):
 #@+node:ekr.20051104075904.9: *7* tearDown
 def tearDown (self):
 
-    pass
-
     # Restore the outline.
     self.c.outerUpdate()
 #@+node:ekr.20051104075904.8: *7* setUp
@@ -15265,7 +15255,7 @@ def makeTestSuite (c,p):
     # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
-        print("no script in %s" % h)
+        print("no script in %s" % p.h)
         return None
     try:
         if 0: #debugging
@@ -15998,8 +15988,6 @@ def fail (self,msg=None):
 #@+node:ekr.20051104075904.9: *7* tearDown
 def tearDown (self):
 
-    pass
-
     # Restore the outline.
     self.c.outerUpdate()
 #@+node:ekr.20051104075904.8: *7* setUp
@@ -16063,7 +16051,7 @@ def makeTestSuite (c,p):
     # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
-        print("no script in %s" % h)
+        print("no script in %s" % p.h)
         return None
     try:
         if 0: #debugging
@@ -16146,7 +16134,7 @@ def makeTestSuite (c,p):
     # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
-        print("no script in %s" % h)
+        print("no script in %s" % p.h)
         return None
     try:
         if 0: #debugging
@@ -16360,8 +16348,6 @@ def fail (self,msg=None):
 #@+node:ekr.20051104075904.9: *7* tearDown
 def tearDown (self):
 
-    pass
-
     # Restore the outline.
     self.c.outerUpdate()
 #@+node:ekr.20051104075904.8: *7* setUp
@@ -16425,7 +16411,7 @@ def makeTestSuite (c,p):
     # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
-        print("no script in %s" % h)
+        print("no script in %s" % p.h)
         return None
     try:
         if 0: #debugging
@@ -24803,7 +24789,6 @@ def make_shortcuts_dicts (self,c,d,localFlag):
             if trace: g.trace(message(d3,'result: %s' % (fn)))
             test_result = (d1,d2,d3,'myLeoSettings.leo')
     else:
-        # No change for new_load, but this method is called at a later time.
         if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
         d1 = g.app.config.immutable_leo_settings_shortcuts_dict
         d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
@@ -25490,31 +25475,6 @@ def bindKeyToDict (self,pane,stroke,si):
     k.masterBindingsDict [pane] = d
     
     if trace: g.trace(pane,stroke,commandName)
-#@+node:ekr.20050922104731: *6* finishCreateEditCommanders (leoEditCommands module)
-def finishCreateEditCommanders (c):
-
-    '''Finish creating edit classes in the commander.
-
-    Return the commands dictionary for all the classes.'''
-    
-    # g.trace(c,g.callers())
-
-    global classesList
-
-    d = {}
-
-    for name, theClass in classesList:
-        theInstance = getattr(c,name)
-        theInstance.finishCreate()
-        theInstance.init()
-        d2 = theInstance.getPublicCommands()
-        if d2:
-            d.update(d2)
-            if 0:
-                g.pr('----- %s' % name)
-                for key in sorted(d2): g.pr(key)
-
-    return d
 #@+node:ekr.20061031131434.176: *6* k.computeInverseBindingDict
 def computeInverseBindingDict (self):
 

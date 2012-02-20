@@ -9,12 +9,16 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
+#@+<< imports >>
+#@+node:ekr.20120219194520.10465: ** << imports >> (baseNativeTree.py)
+
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoNodes as leoNodes
 
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+#@-<< imports >>
 
 class baseNativeTreeWidget (leoFrame.leoTree):
 

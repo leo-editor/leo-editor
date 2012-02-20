@@ -7,22 +7,18 @@ Run the unit tests in test.leo using the Execute Script command.'''
 #@@language python
 #@@tabwidth -4
 
-#@+<< leoTest imports >>
-#@+node:ekr.20051104075904.1: ** << leoTest imports >>
+#@+<< imports >>
+#@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
 
-import leo.core.leoColor as leoColor
-import leo.core.leoCommands as leoCommands
-import leo.core.leoFrame as leoFrame
-import leo.core.leoGui as leoGui
-import leo.core.leoNodes as leoNodes
+import leo.core.leoGui as leoGui # For nullGui and unitTestGui.
 
 import doctest
 import gc
 import glob
 import os
 import cProfile as profile
-# import pstats
+import pstats
 import re
 import sys
 import timeit
@@ -33,7 +29,7 @@ try:
     import tabnanny # Does not exist in jython.
 except ImportError:
     tabnanny = None
-#@-<< leoTest imports >>
+#@-<< imports >>
 
 if g.app: # Make sure we can import this module stand-alone.
     newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
@@ -165,8 +161,6 @@ class generalTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.9: *5* tearDown
     def tearDown (self):
 
-        pass
-
         # Restore the outline.
         self.c.outerUpdate()
     #@+node:ekr.20051104075904.8: *5* setUp
@@ -231,7 +225,7 @@ def makeTestSuite (c,p):
     # g.trace('c.write_script_file',c.write_script_file)
     script = g.getScript(c,p).strip()
     if not script:
-        print("no script in %s" % h)
+        print("no script in %s" % p.h)
         return None
     try:
         if 0: #debugging
@@ -687,7 +681,6 @@ def findAllUnitTestNodes(c,p,limit,all,marked,lookForMark,lookForNodes):
         isTestNode(p) or isSuiteNode(p)
     ):
         seen.add(p.v)
-        if trace: g.trace(message)
         result.append(p.copy())
         p.moveToNodeAfterTree()
         
@@ -1200,7 +1193,6 @@ def createUnitTestsFromDoctests (modules,verbose=True):
                     g.pr("found %2d doctests for %s" % (n,module.__name__))
         except ValueError:
             g.pr('no doctests in %s' % module.__name__)
-            pass # No tests found.
 
     return g.choose(created,suite,None)
 #@+node:ekr.20051104075904.68: *3* Edit Body test code (leoTest.py)
@@ -1516,7 +1508,7 @@ def getAllPluginFilenames ():
 #@+node:ekr.20051104075904.92: *4* testPlugin (no longer used)
 def oldTestPlugin (fileName,verbose=False):
 
-    path = g.os.path_finalize_join(g.app.loadDir,"..","plugins")
+    path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
 
     module = g.importFromPath(fileName,path)
     assert module, "Can not import %s" % path
@@ -1557,12 +1549,12 @@ def checkFileTabs (fileName,s):
         readline = g.readLinesClass(s).next
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
-    except tokenize.TokenError(msg):
+    except tokenize.TokenError as msg:
         g.es_print("Token error in",fileName,color="blue")
         g.es_print('',msg)
         assert 0, "test failed"
 
-    except tabnanny.NannyNag(nag):
+    except tabnanny.NannyNag as nag:
         badline = nag.get_lineno()
         line    = nag.get_line()
         message = nag.get_msg()

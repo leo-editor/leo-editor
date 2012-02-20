@@ -8,13 +8,12 @@ These classes should be overridden to create frames for a particular gui."""
 #@@tabwidth -4
 #@@pagewidth 70
 
+#@+<< imports >>
+#@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import leo.core.leoGlobals as g
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
-
-# import leo.core.leoColor as leoColor
-# import leo.core.leoUndo as leoUndo
-
+#@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
 #@+at Leo must handle events or commands that change the text in the outline

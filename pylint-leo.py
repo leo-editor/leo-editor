@@ -37,8 +37,10 @@ def getCoreList():
             # W0108: Lambda may not be necessary (it is).
         ('leoNodes',        ''),
         ('leoPlugins',      ''),
+        ('leoRst',          ''),
         ('leoShadow',       ''),
         ('leoTangle',       ''),
+        ('leoTest',         ''),
         ('leoUndo',         'W0511'),
             # WO511: TODO 
     )
@@ -148,34 +150,38 @@ R0201,R0903,\
 W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,\
 W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
 
-no_suppressions = ''
-
 recentCoreList = (
-        ('runLeo',      no_suppressions),
-        #('leoApp',       no_suppressions),
-        # ('leoAtFile',    no_suppressions),
-        # ('leoCache',     no_suppressions),
-        # ('leoChapters',  no_suppressions),
-        ('leoCommands',  no_suppressions),
-        # ('leoEditCommands', no_suppressions),
-        # ('leoFind',      no_suppressions),
-        # ('leoFrame','R0923'),
+        # ('runLeo',            ''),
+        ('leoApp',            ''),
+        # ('leoAtFile',         ''),
+        # ('leoCache',          ''),
+        # ('leoChapters',       ''),
+        # ('leoCommands',       ''),
+        # ('leoEditCommands',   ''),
+        # ('leoFind',           ''),
+        # ('leoFrame',          'R0923'),
             # R0923: Interface not implemented.
-        ('leoGlobals','E0611,E1103'),
+
+        # ('leoGlobals',          'E0611,E1103'),
             # E0611: no name 'parse' in urllib.
-            # E1103: Instance of 'ParseResult' has no 'xxx' member (but some types could not be inferred)
-        # ('leoGui',       no_suppressions),
-        # ('leoImport',    no_suppressions),
-        # ('leoNodes',     no_suppressions),
-        # ('leoPlugins',   no_suppressions),
-        # ('leoFileCommands','E1120,E1101'),
+            # E1103: Instance of 'ParseResult' has no 'xxx' member
+            # (but some types could not be inferred)
+
+        # ('leoGui',            ''),
+        # ('leoImport',         ''),
+        # ('leoNodes',          ''),
+        # ('leoPlugins',        ''),
+        # ('leoFileCommands',   'E1120,E1101'),
             # E1120: no value passed for param.
             # E1101: (dangerous) Class 'str' has no 'maketrans' member
-        # ('leoMenu', 'W0108'),
+
+        # ('leoMenu',           'W0108'),
             # W0108: Lambda may not be necessary (it is).
-        # ('leoShadow',       no_suppressions),
-        # ('leoTangle',    no_suppressions),
-        # ('leoUndo', 'W0511'),
+        # ('leoRst',            ''),
+        # ('leoShadow',         ''),
+        # ('leoTangle',         ''),
+        # ('leoTest',           ''),
+        # ('leoUndo',           'W0511'),
             # WO511: TODO 
 )
 

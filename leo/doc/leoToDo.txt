@@ -2081,7 +2081,7 @@ def split_parts (self,lines,showDocsAsParagraphs):
                 part_lines.append(s) # still in code mode.
         elif g.match_word(s,0,'@c') and kind != 'code':
             if kind == '@doc' and not showDocsAsParagraphs:
-                    part_lines.append(s) # Show the @c as code.
+                part_lines.append(s) # Show the @c as code.
             parts.append((kind,part_lines[:]),)
             kind,part_lines = 'code',[]
         else:
@@ -3013,7 +3013,7 @@ def getOption (self,name):
     # g.trace(name,self.optionsDict.get(self.munge(name)))
     return self.optionsDict.get(self.munge(name))
 
-def setOption (self,name,val,tag):
+def setOption (self,name,val,tag=None):
 
     self.optionsDict [self.munge(name)] = val
 .. @+node:ekr.20090502071837.45: *7* initCodeBlockString

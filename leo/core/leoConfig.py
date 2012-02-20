@@ -5,7 +5,7 @@
 #@@pagewidth 70
 
 #@+<< imports >>
-#@+node:ekr.20041227063801: ** << imports >>
+#@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
@@ -1051,17 +1051,8 @@ class ParserBaseClass:
     #@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
     def traverse (self):
 
+        trace = False and not g.unitTesting
         c,k = self.c,self.c.k
-        
-        #### This must be called after the outline has been inited.
-        p = g.app.config.settingsRoot(c)
-        if not p:
-            # c.rootPosition() doesn't exist yet.
-            if not g.unitTesting:
-                print('****************'
-                    'ParserBaseClass.traverse: no settings tree for %s' % (
-                        c.shortFileName()))
-            return {},{}
 
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
@@ -1070,6 +1061,18 @@ class ParserBaseClass:
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
             keyType=type('s'), valType=g.ShortcutInfo)
+            
+        #### This must be called after the outline has been inited.
+        p = g.app.config.settingsRoot(c)
+        if not p:
+            # c.rootPosition() doesn't exist yet.
+            # This is not an error.
+            if trace:
+                print('****************'
+                    'ParserBaseClass.traverse: no settings tree for %s' % (
+                        c.shortFileName()))
+            #### return {},{}
+            return self.shortcutsDict,self.settingsDict
             
         after = p.nodeAfterTree()
         while p and p != after:
@@ -1426,7 +1429,6 @@ class configClass:
                 if trace: g.trace(message(d3,'result: %s' % (fn)))
                 test_result = (d1,d2,d3,'myLeoSettings.leo')
         else:
-            # No change for new_load, but this method is called at a later time.
             if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
             d1 = g.app.config.immutable_leo_settings_shortcuts_dict
             d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict

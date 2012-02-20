@@ -11,7 +11,7 @@
 #@@pagewidth 60
 
 #@+<< imports >>
-#@+node:ekr.20041005105605.2: ** << imports >>
+#@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
 
 # if g.app and g.app.use_psyco:

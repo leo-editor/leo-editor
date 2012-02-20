@@ -32,7 +32,7 @@ Settings:
 '''
 #@-<< docstring >>
 #@+<< imports >>
-#@+node:ekr.20080708094444.52: ** << imports >>
+#@+node:ekr.20080708094444.52: ** << imports >> (leoShadow)
 import leo.core.leoGlobals as g
 
 import difflib

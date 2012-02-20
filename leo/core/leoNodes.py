@@ -7,7 +7,7 @@
 use_zodb = False
 
 #@+<< imports >>
-#@+node:ekr.20060904165452.1: ** << imports >>
+#@+node:ekr.20060904165452.1: ** << imports >> (leoNodes)
 if use_zodb:
     # It may be important to import ZODB first.
     try:

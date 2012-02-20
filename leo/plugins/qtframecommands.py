@@ -16,7 +16,7 @@ __version__ = '0.0'
 #@-<< version history >>
 
 #@+<< imports >>
-#@+node:ekr.20110605121601.17999: ** << imports >>
+#@+node:ekr.20110605121601.17999: ** << imports >> (qtframecommands.py)
 import leo.core.leoGlobals as g
 
 # Whatever other imports your plugins uses.

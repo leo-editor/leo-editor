@@ -96,7 +96,7 @@
 # follow.  It's this process/strategy that is important.
 #@-<< how to write a new importer >>
 #@+<< imports >>
-#@+node:ekr.20091224155043.6539: ** << imports >>
+#@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
 # Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest

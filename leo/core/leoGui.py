@@ -14,9 +14,12 @@ Plugins may define their own gui classes by setting g.app.gui."""
 #@@tabwidth -4
 #@@pagewidth 70
 
+#@+<< imports >>
+#@+node:ekr.20120219194520.10466: ** << imports >> (qtGui.py)
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind # for nullFindTab.
 import leo.core.leoFrame as leoFrame # for nullGui.
+#@-<< imports >>
 
 #@+others
 #@+node:ekr.20070228160107: ** class leoKeyEvent (leoGui)

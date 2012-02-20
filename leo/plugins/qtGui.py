@@ -16,8 +16,8 @@ __qh = None # For quick headlines.
 # A switch telling whether to use qt_main.ui and qt_main.py.
 useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 
-#@+<< qt imports >>
-#@+node:ekr.20110605121601.18003: **  << qt imports >>
+#@+<< imports >>
+#@+node:ekr.20110605121601.18003: **  << imports >> (qtGui.py)
 import leo.core.leoGlobals as g
 
 # import leo.core.leoChapters as leoChapters
@@ -64,7 +64,7 @@ try:
 except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtGui.QSplitter
-#@-<< qt imports >>
+#@-<< imports >>
 #@+<< define text widget classes >>
 #@+node:ekr.20110605121601.18004: **  << define text widget classes >>
 # Order matters when defining base classes.

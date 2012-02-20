@@ -7,15 +7,20 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
+#@+<< imports >>
+#@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
+
 import leo.core.leoGlobals as g
+
 import leo.core.leoCache as leoCache
-# import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGui as leoGui
 import leo.core.leoVersion as leoVersion
 
 import os
 import optparse
 import sys
 import traceback
+#@-<< imports >>
 
 #@+others
 #@+node:ekr.20120209051836.10241: ** class leoApp
@@ -884,16 +889,11 @@ class LoadManager:
     '''A class to manage loading .leo files, including configuration files.'''
     
     #@+others
-    #@+node:ekr.20120209051836.10285: *3*  lm.Birth
-    #@+node:ekr.20120214060149.15851: *4* lm.ctor
-    def __init__ (self,fileName=None,pymacs=None):
+    #@+node:ekr.20120214060149.15851: *3*  LM.ctor
+    def __init__ (self):
         
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('LoadManager.__init__')
-     
-        # Copy the args.
-        self.fileName = fileName # An extra file name that can be passed to runLeo.py.run.
-        self.pymacs = pymacs
         
         # Global settings & shortcuts dicts.
         # The are the defaults for computing settings and shortcuts for all loaded files.
@@ -905,16 +905,21 @@ class LoadManager:
             # leoSettings.leo and settings in myLeoSettings.leo.
 
         # LoadManager ivars corresponding to user options....
-        self.files = []             # List of files to be loaded.
-        self.script = None          # The fileName of a script, or None.
-        self.script_name = None
-        self.script_path = None
-        self.script_path_w = None
-        self.screenshot_fn = None
-        self.selectHeadline = None
-        self.versionFlag = False
-        self.windowFlag = False
-        self.windowSize = None
+        self.files = []
+            # List of files to be loaded.
+        self.options = {}
+            # Dictionary of user options. Keys are option names.
+        
+        if 0: # use lm.options.get instead.
+            self.script = None          # The fileName of a script, or None.
+            self.script_name = None
+            self.script_path = None
+            self.script_path_w = None
+            self.screenshot_fn = None
+            self.selectHeadline = None
+            self.versionFlag = False
+            self.windowFlag = False
+            self.windowSize = None
         
         # Ivars of *other* classes corresponding to command-line arguments...
             # g.app.batchMode           Set in createNullGuiWithScript
@@ -928,24 +933,16 @@ class LoadManager:
             # g.app.useIpython
             # g.app.use_splash_screen
             # g.enableDB                --no-cache
-    #@+node:ekr.20120214060149.15852: *4* lm.init()
-    def init (self,files):
-        
-        '''Complete the early phase of initialization.'''
-        
-        lm = self
-        
-        lm.files = files
-    #@+node:ekr.20120211121736.10812: *3* lm.Directory & file utils
-    #@+node:ekr.20120211121736.10771: *4* lm.completeFileName
-    def completeFileName (self,fn):
-        
-        '''Convert fn to unicode and convert to an absolute path.'''
-        
-        # Don't add .leo to *any* file.
+    #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
+    #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
+    def completeFileName (self,fileName):
 
-        return g.os_path_finalize(g.toUnicode(fn))
-    #@+node:ekr.20120209051836.10252: *4* lm.computeStandardDirectories & helpers
+        fileName = g.toUnicode(fileName)
+        fileName = g.os_path_finalize(fileName)
+
+        # 2011/10/12: don't add .leo to *any* file.
+        return fileName
+    #@+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
     def computeStandardDirectories(self):
 
         '''Compute the locations of standard directories and
@@ -1112,7 +1109,7 @@ class LoadManager:
         # g.trace(name)
 
         return name
-    #@+node:ekr.20120211121736.10772: *4* lm.computeWorkbookFileName
+    #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName (self):
         
         lm = self
@@ -1133,18 +1130,32 @@ class LoadManager:
         else:
             # It's too risky to open a default file if it is relative.
             return None
-    #@+node:ekr.20120209051836.10338: *4* lm.reportDirectories
-    def reportDirectories(self):
+    #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
+    def reportDirectories(self,verbose):
         
-        lm = self
+        if not verbose: return
         
-        aList = (
-            'homeDir','homeLeoDir','leoDir','loadDir','extensionsDir','globalConfigDir')
+        if 1: # old
 
-        for ivar in aList:
-            val = getattr(g.app,ivar)
-            g.trace('%20s' % (ivar),val)
-    #@+node:ekr.20120215062153.10740: *3* lm.Settings
+            if verbose:
+                for kind,theDir in (
+                    ("load",g.app.loadDir),
+                    ("global config",g.app.globalConfigDir),
+                    ("home",g.app.homeDir),
+                ):
+                    g.es("%s dir:" % (kind),theDir,color="blue")
+                    
+        else:
+            aList = (
+                'homeDir','homeLeoDir',
+                'leoDir','loadDir',
+                'extensionsDir','globalConfigDir')
+
+            for ivar in aList:
+                val = getattr(g.app,ivar)
+                g.trace('%20s' % (ivar),val)
+        
+    #@+node:ekr.20120215062153.10740: *3* LM.Settings (new_config)
     #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles & helpers (new_config only)
     def readGlobalSettingsFiles (self):
         
@@ -1163,11 +1174,16 @@ class LoadManager:
         
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
-        path = lm.computeLeoSettingsPath()
-        c1 = lm.openSettingsFile(path) if path else None
-            
+        nullGui = leoGui.nullGui()
+        c1,c2,path = None,None,lm.computeLeoSettingsPath()
+        if path:
+            c1 = g.openWithFileName(path,
+                enableLog=False,gui=nullGui,readAtFileNodesFlag=False)
+        
         path = lm.computeMyLeoSettingsPath()
-        c2 = lm.openSettingsFile(path) if path else None
+        if path:
+            c2 = g.openWithFileName(path,
+                enableLog=False,gui=nullGui,readAtFileNodesFlag=False)
                 
         # Create lm.globalSettingsDict & lm.globalShortcutsDict.
         settings_d = g.app.config.defaultsDict
@@ -1357,28 +1373,7 @@ class LoadManager:
         if trace: g.trace('returns %4s %s %s' % (
             len(list(result.keys())),id(d),result.name()))
         return result
-    #@+node:ekr.20120214132927.10713: *5* lm.openSettingsFile (new_config only)
-    def openSettingsFile (self,path):
-        
-        '''Open a standard settings file in a null gui.'''
-        
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('***** lm.openSettingsFile: setting g.app.gui to nullGui')
-        
-        lm = self
-        assert g.new_config
-        
-         # Always use a nullGui here,
-         # even if we are going to show the file later.
-        import leo.core.leoGui as leoGui
-
-        c = g.openWithFileName(path,
-            enableLog=False,
-            gui=leoGui.nullGui(),
-            readAtFileNodesFlag=False)
-
-        return c
-    #@+node:ekr.20120215062153.10738: *4* lm.initLocalSettings (new_config only)
+    #@+node:ekr.20120215062153.10738: *4* lm.initLocalSettings (new_config)
     def initLocalSettings (self,c):
         
         '''Init c.config.settingsDict & c.config.shortcutsDict.'''
@@ -1387,9 +1382,11 @@ class LoadManager:
         verbose = False
         tag = 'lm.initLocalSettings'
         lm = self
-        assert g.new_config
+
         assert c
         assert c.config
+        
+        assert g.new_config
         
         fn = c.shortFileName()
         if trace and g.trace_startup:
@@ -1442,7 +1439,7 @@ class LoadManager:
         c.config.settingsDict = settings_d
         c.config.shortcutsDict = shortcuts_d
         return True
-    #@+node:ekr.20120215085903.10842: *4* lm.findSettingsRoot
+    #@+node:ekr.20120215085903.10842: *4* lm.findSettingsRoot (not used)
     def findSettingsRoot(self,c):
 
         '''Return the position of the @settings tree.'''
@@ -1454,8 +1451,8 @@ class LoadManager:
                 return p.copy()
         else:
             return c.nullPosition()
-    #@+node:ekr.20120215062153.10741: *4* lm.Common settings helpers
-    #@+node:ekr.20120214165710.10726: *5* lm.createSettingsDicts (new_config only)
+    #@+node:ekr.20120215062153.10741: *4* lm.Common settings helpers (new_config)
+    #@+node:ekr.20120214165710.10726: *5* lm.createSettingsDicts (new_config)
     def createSettingsDicts(self,c,localFlag):
         
         #### Should the SettingsTreeParser class be defined in leoApp?
@@ -1493,272 +1490,206 @@ class LoadManager:
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120211121736.10756: *3* lm.start & helpers (Not used yet)
-    def start(self):
+    #@+node:ekr.20120219154958.10452: *3* LM.load
+    def load (self,fileName=None,pymacs=None):
         
-        '''Start Leo, except for invoking the gui's main loop:
-        read command-line args, load settings files, start plugins and load .leo files.
-        
-        Return True if all went well enough for the gui's main loop to start.
-        '''
-        
-        trace = True
         lm = self
         
-        # Phase 1.  Load all files, create commanders, and read settings.
-        ok = lm.doPrePluginsInit()
-        if not ok: return False
-        
+        # Phase 1: before loading plugins.
+        # Scan options, set directories and read settings.
+        if not lm.isValidPython(): return
+
+        lm.doPrePluginsInit(fileName,pymacs)
+            # sets lm.options and lm.files
+
+        if lm.options.get('version'):
+            print(g.app.signon)
+            return
+        if not g.app.gui:
+            return
+
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
-        if g.app.killed: return False
-        
+        if g.app.killed: return
+
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
-        return ok
-    #@+node:ekr.20120211121736.10767: *4* lm.doPrePluginsInit & helpers
-    def doPrePluginsInit(self):
+            
+        if ok:
+            g.es('') # Clears horizontal scrolling in the log pane.
+            g.app.gui.runMainLoop()
+            # For scripts, the gui is a nullGui.
+            # and the gui.setScript has already been called.
+    #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
+    def doPrePluginsInit(self,fileName,pymacs):
 
         ''' Scan options, set directories and read settings.'''
 
         trace = False
         lm = self
+        g.computeStandardDirectories()
+        lm.adjustSysPath()
+
+        # Scan the options as early as possible.
+        lm.options = options = lm.scanOptions(fileName,pymacs)
+            # also sets lm.files.
         
-        if not lm.isValidPython():
-            return False
-        
-        # Compute the standard directories.
-        lm.computeStandardDirectories()
-        if trace:  lm.reportDirectories()
-        
-        # Scan the options.
-        lm.options = lm.scanOptions()
-            
-        # Create the gui immediately after reading the options.
-        # Important: initApp (setLeoID) may have created the gui.
-        if not g.app.gui:
-            lm.createGui()
-            
-        # We can't print the signon until we know the gui.
-        if lm.versionFlag:
+        if options.get('version'):
             g.app.computeSignon()
-            print(g.app.signon)
-            return False
+            return
             
+        script = options.get('script')
+        verbose = script is None
+
         # Init the app.
-        g.app.init()
+        lm.initApp(verbose)
+        lm.reportDirectories(verbose)
+
+        # Read settings *after* setting g.app.config and *before* opening plugins.
+        # This means if-gui has effect only in per-file settings.
         
-        lm.readGlobalSettingsFiles()
+        if g.new_config:
+            lm.readGlobalSettingsFiles()
+                # reads only standard settings files, using a null gui.
+                # uses lm.files[0] to compute the local directory
+                # that might contain myLeoSettings.leo.
+        else:
+            g.app.config.readSettingsFiles(None,verbose)
+            for fn in lm.files:
+                g.app.config.readSettingsFiles(fn,verbose)
+
+        if not lm.files and not script:
+            # This must be done *after* the standard settings have been read.
+            fn = lm.getDefaultFile()
+            if fn:
+                lm.files = [fn]
+                g.app.config.readSettingsFiles(fn,verbose=True)
+
+        g.app.setGlobalDb()
         
-        # Load all files and create commanders.
-        for fn in lm.files:
-            lm.loadFile(fn)
-            
-        return True ####
+        # Create the gui after reading options and settings.
+        lm.createGui(pymacs)
+
+        # We can't print the signon until we know the gui.
+        g.app.computeSignon() # Set app.signon/signon2 for commanders.
+    #@+node:ekr.20120219154958.10478: *5* LM.createGui
+    def createGui(self,pymacs):
         
-        ##################### old code #####################
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('\n==================== LM.createGui')
         
-
-        # files = lm.getFiles(fileName2)
-
-        # # Read settings *after* setting g.app.config and *before* opening plugins.
-        # # This means if-gui has effect only in per-file settings.
-        # g.app.config.readSettingsFiles(None,verbose)
-        # for fn in files:
-            # g.app.config.readSettingsFiles(fn,verbose)
-
-        # if not files and not script:
-            # # This must be done *after* the standard settings have been read.
-            # fn = getWorkbookFile()
-            # if fn:
-                # files = [fn]
-                # g.app.config.readSettingsFiles(fn,verbose=True)
-
-        #### g.app.setGlobalDb()
-        
-        #### # Create the gui after reading options and settings.
-        #### lm.createGui(pymacs,options)
-
-        # # We can't print the signon until we know the gui.
-        # g.app.computeSignon() # Set app.signon/signon2 for commanders.
-        # versionFlag = options.get('versionFlag')
-        # if versionFlag:
-            # print(g.app.signon)
-        # if versionFlag or not g.app.gui:
-            # options['exit'] = True
-
-        # return files,options
-    #@+node:ekr.20120211121736.10768: *5* lm.createGui & helper
-    def createGui(self):
-
         lm = self
-        script = lm.script
+
+        gui_option = lm.options.get('gui')
+        windowFlag = lm.options.get('windowFlag')
+        script     = lm.options.get('script')
+
+        if g.app.gui:
+            if g.new_config:
+                import leo.core.leoGui as leoGui
+                assert isinstance(g.app.gui,leoGui.nullGui)
+                g.app.gui = None # Enable g.app.createDefaultGui 
+                g.app.createDefaultGui(__file__)
+            else:
+                pass # setLeoID created the gui.
+                
+        elif gui_option is None:
+            if script and not windowFlag:
+                # Always use null gui for scripts.
+                g.app.createNullGuiWithScript(script)
+            else:
+                g.app.createDefaultGui(__file__)
+        else:
+            lm.createSpecialGui(gui_option,pymacs,script,windowFlag)
+    #@+node:ekr.20120219154958.10479: *5* LM.createSpecialGui
+    def createSpecialGui(self,gui,pymacs,script,windowFlag):
         
-        if lm.pymacs:
+        lm = self
+
+        if pymacs:
             g.app.createNullGuiWithScript(script=None)
         elif script:
-            if lm.windowFlag:
+            if windowFlag:
                 g.app.createDefaultGui()
                 g.app.gui.setScript(script=script)
                 sys.args = []
             else:
                 g.app.createNullGuiWithScript(script=script)
         else:
+            # assert g.app.guiArgName
             g.app.createDefaultGui() 
-    #@+node:ekr.20120211121736.10801: *5* lm.isValidPython
-    def isValidPython(self):
+    #@+node:ekr.20120219154958.10480: *5* LM.adjustSysPath
+    def adjustSysPath (self):
 
-        if sys.platform == 'cli':
-            return True
+        '''Adjust sys.path to enable imports as usual with Leo.
 
-        minimum_python_version = '2.6'
+        This method is no longer needed:
 
-        message = """\
-    Leo requires Python %s or higher.
-    You may download Python from
-    http://python.org/download/
-    """ % minimum_python_version
+        1. g.importModule will import from the
+           'external' or 'extensions' folders as needed
+           without altering sys.path.
 
-        try:
-            version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-            ok = g.CheckVersion(version,minimum_python_version)
-            if not ok:
-                print(message)
-                try:
-                    # g.app.gui does not exist yet.
-                    import Tkinter as Tk
-                    #@+<< define emergency dialog class >>
-                    #@+node:ekr.20120211121736.10802: *6* << define emergency dialog class >>
-                    class emergencyDialog:
+        2  Plugins now do fully qualified imports.
+        '''
 
-                        """A class that creates an Tkinter dialog with a single OK button."""
-
-                        #@+others
-                        #@+node:ekr.20120211121736.10803: *7* __init__ (emergencyDialog)
-                        def __init__(self,title,message):
-
-                            """Constructor for the leoTkinterDialog class."""
-
-                            self.answer = None # Value returned from run()
-                            self.title = title
-                            self.message=message
-
-                            self.buttonsFrame = None # Frame to hold typical dialog buttons.
-                            self.defaultButtonCommand = None
-                                # Command to call when user closes the window
-                                # by clicking the close box.
-                            self.frame = None # The outermost frame.
-                            self.root = None # Created in createTopFrame.
-                            self.top = None # The toplevel Tk widget.
-
-                            self.createTopFrame()
-                            buttons = {"text":"OK","command":self.okButton,"default":True},
-                                # Singleton tuple.
-                            self.createButtons(buttons)
-                            self.top.bind("<Key>", self.onKey)
-                        #@+node:ekr.20120211121736.10804: *7* createButtons
-                        def createButtons (self,buttons):
-
-                            """Create a row of buttons.
-
-                            buttons is a list of dictionaries containing
-                            the properties of each button."""
-
-                            assert(self.frame)
-                            self.buttonsFrame = f = Tk.Frame(self.top)
-                            f.pack(side="top",padx=30)
-
-                            # Buttons is a list of dictionaries, with an empty dictionary
-                            # at the end if there is only one entry.
-                            buttonList = []
-                            for d in buttons:
-                                text = d.get("text","<missing button name>")
-                                isDefault = d.get("default",False)
-                                underline = d.get("underline",0)
-                                command = d.get("command",None)
-                                bd = g.choose(isDefault,4,2)
-
-                                b = Tk.Button(f,width=6,text=text,bd=bd,
-                                    underline=underline,command=command)
-                                b.pack(side="left",padx=5,pady=10)
-                                buttonList.append(b)
-
-                                if isDefault and command:
-                                    self.defaultButtonCommand = command
-
-                            return buttonList
-                        #@+node:ekr.20120211121736.10805: *7* createTopFrame
-                        def createTopFrame(self):
-
-                            """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-
-                            self.root = Tk.Tk()
-                            self.top = Tk.Toplevel(self.root)
-                            self.top.title(self.title)
-                            self.root.withdraw()
-
-                            self.frame = Tk.Frame(self.top)
-                            self.frame.pack(side="top",expand=1,fill="both")
-
-                            label = Tk.Label(self.frame,text=message,bg='white')
-                            label.pack(pady=10)
-                        #@+node:ekr.20120211121736.10806: *7* okButton
-                        def okButton(self):
-
-                            """Do default click action in ok button."""
-
-                            self.top.destroy()
-                            self.top = None
-
-                        #@+node:ekr.20120211121736.10807: *7* onKey
-                        def onKey(self,event):
-
-                            """Handle Key events in askOk dialogs."""
-
-                            self.okButton()
-
-                            return # (for Tk) "break"
-                        #@+node:ekr.20120211121736.10808: *7* run
-                        def run (self):
-
-                            """Run the modal emergency dialog."""
-
-                            self.top.geometry("%dx%d%+d%+d" % (300,200,50,50))
-                            self.top.lift()
-
-                            self.top.grab_set() # Make the dialog a modal dialog.
-                            self.root.wait_window(self.top)
-                        #@-others
-                    #@-<< define emergency dialog class >>
-                    d = emergencyDialog(
-                        title='Python Version Error',
-                        message=message)
-                    d.run()
-                except Exception:
-                    pass
-            return ok
-        except Exception:
-            print("isValidPython: unexpected exception")
-            traceback.print_exc()
-            return 0
-    #@+node:ekr.20120211121736.10813: *5* lm.loadGlobalSettingsFiles
-    def loadGlobalSettingsFiles(self):
-        
         pass
-    #@+node:ekr.20120211204052.10830: *5* lm.loadFile
-    def loadFile (self,fn):
-        
-        print('lm.loadFile',fn)
-    #@+node:ekr.20120211121736.10776: *5* lm.scanOptions & lm.printOptions
-    def scanOptions(self):
+    #@+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
+    def getDefaultFile (self):
 
-        '''Handle all options and remove them from sys.argv.'''
-        trace = True
+        # Get the name of the workbook.
+        fn = g.app.config.getString(c=None,setting='default_leo_file')
+        fn = g.os_path_finalize(fn)
+        if not fn: return
+
+        # g.trace(g.os_path_exists(fn),fn)
+
+        if g.os_path_exists(fn):
+            return fn
+        elif g.os_path_isabs(fn):
+            # Create the file.
+            g.es_print('Using default leo file name:\n%s' % (fn),color='red')
+            return fn
+        else:
+            # It's too risky to open a default file if it is relative.
+            return None
+    #@+node:ekr.20120219154958.10484: *5* LM.initApp
+    def initApp (self,verbose):
+        
+        assert g.app.loadManager
+        
+        import leo.core.leoConfig as leoConfig
+        import leo.core.leoNodes as leoNodes
+        import leo.core.leoPlugins as leoPlugins
+        
+        # Make sure we call the new leoPlugins.init top-level function.
+        # This prevents a crash when run is called repeatedly from
+        # IPython's lleo extension.
+        leoPlugins.init()
+        
+        # Force the user to set g.app.leoID.
+        g.app.setLeoID(verbose=verbose)
+        
+        # Create early classes *after* doing plugins.init()
+        g.app.config = leoConfig.configClass()
+        g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+
+        # Complete the plugins class last.
+        g.app.pluginsController.finishCreate()
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helper
+    def scanOptions(self,fileName,pymacs):
+
+        '''Handle all options, remove them from sys.argv and set lm.options.'''
+
+        trace = False
         lm = self
+        
+        # print('scanOptions',sys.argv)
 
         # Note: this automatically implements the --help option.
         parser = optparse.OptionParser()
         add = parser.add_option
+        
+        #### To be removed.
         # add('-c', '--config', dest="one_config_path",
             # help = 'use a single configuration file')
         # add('--debug',        action="store_true",dest="debug",
@@ -1797,16 +1728,37 @@ class LoadManager:
         # Parse the options, and remove them from sys.argv.
         options, args = parser.parse_args()
         sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-        # if trace: print('scanOptions:',sys.argv)
+        if trace: print('scanOptions:',sys.argv)
 
         # Handle the args...
 
+        # -c or --config
+        
+        ####
+        # path = options.one_config_path
+        # if path:
+            # path = g.os_path_finalize_join(os.getcwd(),path)
+            # if g.os_path_exists(path):
+                # g.app.oneConfigFilename = path
+            # else:
+                # g.es_print('Invalid -c option: file not found:',path,color='red')
+
         # --debug
+        ####
         # if options.debug:
-            # g.debug = True ; print('*** debug mode on')
+            # g.debug = True
+            # print('scanOptions: *** debug mode on')
+
+        # -f or --file
+        ####
+        # fileName = options.fileName
+        # if fileName:
+            # fileName = fileName.strip('"')
+            # if trace: print('scanOptions:',fileName)
 
         # --gui
         gui = options.gui
+
         if gui:
             gui = gui.lower()
             if gui == 'qttabs':
@@ -1825,7 +1777,7 @@ class LoadManager:
             g.app.qt_use_tabs = True
 
         assert gui
-        g.app.guiArgName = gui
+        g.app.guiArgName = gui # 2011/06/15
 
         # --minimized
         # --maximized
@@ -1839,109 +1791,152 @@ class LoadManager:
 
         # --no-cache
         if options.no_cache:
+            if trace: print('scanOptions: disabling caching')
             g.enableDB = False
             
         # --no-splash
+        # g.trace('--no-splash',options.no_splash_screen)
         g.app.use_splash_screen = not options.no_splash_screen
 
         # --screen-shot=fn
-        lm.screenshot_fn = options.screenshot_fn
-        if lm.screenshot_fn:
-            lm.screenshot_fn = lm.screenshot_fn.strip('"')
+        screenshot_fn = options.screenshot_fn
+        if screenshot_fn:
+            screenshot_fn = screenshot_fn.strip('"')
+            if trace: print('scanOptions: screenshot_fn',screenshot_fn)
 
         # --script
-        lm.script_path = options.script
-        lm.script_path_w = options.script_window
-        if lm.script_path and lm.script_path_w:
+        script_path = options.script
+        script_path_w = options.script_window
+        if script_path and script_path_w:
             parser.error("--script and script-window are mutually exclusive")
 
-        lm.script_name = lm.script_path or lm.script_path_w
-        if lm.script_name:
-            lm.script_name = g.os_path_finalize_join(g.app.loadDir,lm.script_name)
-            lm.script,e = g.readFileIntoString(lm.script_name,kind='script:')
+        script_name = script_path or script_path_w
+        if script_name:
+            script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+            script,e = g.readFileIntoString(script_name,kind='script:')
+            # print('script_name',repr(script_name))
         else:
-            lm.script = None
+            script = None
+            # if trace: print('scanOptions: no script')
 
         # --select
-        lm.selectHeadline = options.select
-        if lm.selectHeadline:
-            lm.selectHeadline = lm.selectHeadline.strip('"')
+        select = options.select
+        if select:
+            select = select.strip('"')
+            if trace: print('scanOptions: select',repr(select))
 
         # --silent
         g.app.silentMode = options.silent
+        # print('scanOptions: silentMode',g.app.silentMode)
 
         # --version: print the version and exit.
-        lm.versionFlag = options.version
+        versionFlag = options.version
 
         # --window-size
-        lm.windowSize = options.window_size
-        if lm.windowSize:
+        windowSize = options.window_size
+        if windowSize:
+            if trace: print('windowSize',repr(windowSize))
             try:
-                h,w = lm.windowSize.split('x')
+                h,w = windowSize.split('x')
             except ValueError:
-                lm.windowSize = None
-                g.trace('bad --window-size:',lm.windowSize)
+                windowSize = None
+                g.trace('bad --window-size:',windowSize)
                 
-        # Post process the options.
-        if lm.pymacs:
-            lm.script,lm.windowFlag = None,None
-
-        lm.windowFlag = lm.script and lm.script_path_w
-
-        aList = [lm.completeFileName(z) for z in sys.argv[1:]
-            if not z.startswith('-')]
-        if lm.fileName:
-            aList.append(lm.completeFileName(lm.fileName))
-        lm.files = list(set(aList))
+        # Compute lm.files
+        lm.files = lm.computeFilesList(fileName)
         
-        if trace: lm.printOptions()
-    #@+node:ekr.20120211204052.10831: *6* printOptions
-    def printOptions(self):
-        
+        # Post-process the options.
+        if pymacs:
+            script = None
+            windowFlag = None
+
+        # Compute the return values.
+        windowFlag = script and script_path_w
+        d = {
+            'gui':gui,
+            'screenshot_fn':screenshot_fn,
+            'script':script,
+            'select':select,
+            'version':versionFlag,
+            'windowFlag':windowFlag,
+            'windowSize':windowSize,
+        }
+
+        return d
+    #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
+    def computeFilesList(self,fileName):
+
         lm = self
-        app_table = (
-            'batchMode','gui','guiArgName','qt_use_tabs',            
-            'silentMode','start_fullscreen','start_maximized','start_minimized',
-            'useIpython','use_splash_screen',
-        )
-        g_table = (
-            'enableDB',
-        )
-        lm_table = ( 
-            'script', 'script_name','script_path','script_path_w',
-            'screenshot_fn','selectHeadline','versionFlag','windowFlag','windowSize',
-            'files',
-        )
-        for ivar in app_table:
-            print('%25s %s' % (('g.app.%s' % (ivar)),getattr(g.app,ivar)))
-            
-        for ivar in g_table:
-            print('%25s %s' % (('g.%s' % (ivar)),getattr(g,ivar)))
-            
-        for ivar in lm_table:
-            print('%25s %s' % (('lm.%s' % (ivar)),getattr(lm,ivar)))
-        
-    #@+node:ekr.20120211121736.10785: *4* lm.doPostPluginsInit & helpers
+        files = []
+        if fileName:
+            files.append(fileName)
+
+        for arg in sys.argv[1:]:
+            if not arg.startswith('-'):
+                files.append(arg)
+
+        return [lm.completeFileName(z) for z in files]
+    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
 
-        '''Return True if the frame was created properly.'''
-        
+        '''Create a Leo window for each file in the lm.files list.'''
+
+        # Clear g.app.initing _before_ creating commanders.
         lm = self
+        g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+
+        # Create the main frame.  Show it and all queued messages.
         
-        print('doPostPluginsInit not ready yet')
-        
-    #@+node:ekr.20120211121736.10791: *5* lm.initFocusAndDraw
-    def initFocusAndDraw(self,c):
+        if lm.files:
+            c1 = None
+            for fn in lm.files:
+                c = g.openWithFileName(fn,old_c=None,force=True)
+                    # Will give a "not found" message.
+                assert c
+                if not c1: c1 = c
+        else:
+            # Create an empty frame.
+            c1 = g.openWithFileName(None,old_c=None,force=True)
+                
+        # Put the focus in the first-opened file.
+        fileName = lm.files[0] if lm.files else None
+        c = c1
+                
+        # For qttabs gui, select the first-loaded tab.
+        if hasattr(g.app.gui,'frameFactory'):
+            factory = g.app.gui.frameFactory
+            if factory and hasattr(factory,'setTabForCommander'):
+                factory.setTabForCommander(c)
+
+        # Do the final inits.
+        g.app.logInited = True
+        g.app.initComplete = True
+        c.setLog()
+        g.doHook("start2",c=c,p=c.p,v=c.p,fileName=fileName)
+        g.enableIdleTimeHook(idleTimeDelay=500)
+        lm.initFocusAndDraw(c,fileName)
+
+        screenshot_fn = lm.options.get('screenshot_fn')
+        if screenshot_fn:
+            lm.make_screen_shot(screenshot_fn)
+            return False # Force an immediate exit.
+
+        return True
+    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
+    def initFocusAndDraw(self,c,fileName):
+
+        w = g.app.gui.get_focus(c)
+
+        if not fileName:
+            c.redraw()
 
         # Respect c's focus wishes if posssible.
-        w = g.app.gui.get_focus(c)
         if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
             c.bodyWantsFocus()
             c.k.showStateAndMode(w)
-            
-        # There is no more fileName arg, so we *always* redraw.
-        c.redraw_now()
-    #@+node:ekr.20120211121736.10792: *5* lm.make_screen_shot
+
+        c.outerUpdate()
+    #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self,fn):
 
         '''Create a screenshot of the present Leo outline and save it to path.'''
@@ -1951,6 +1946,142 @@ class LoadManager:
         if g.app.gui.guiName() == 'qt':
             m = g.loadOnePlugin('screenshots')
             m.make_screen_shot(fn)
+    #@+node:ekr.20120219154958.10491: *4* LM.isValidPython & emergency (Tk) dialog class
+    def isValidPython(self):
+
+        if sys.platform == 'cli':
+            return True
+
+        minimum_python_version = '2.6'
+
+        message = """\
+    Leo requires Python %s or higher.
+    You may download Python from
+    http://python.org/download/
+    """ % minimum_python_version
+
+        try:
+            version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
+            ok = g.CheckVersion(version,minimum_python_version)
+            if not ok:
+                print(message)
+                try:
+                    # g.app.gui does not exist yet.
+                    import Tkinter as Tk
+                    #@+<< define emergency dialog class >>
+                    #@+node:ekr.20120219154958.10492: *5* << define emergency dialog class >>
+                    class emergencyDialog:
+
+                        """A class that creates an Tkinter dialog with a single OK button."""
+
+                        #@+others
+                        #@+node:ekr.20120219154958.10493: *6* __init__ (emergencyDialog)
+                        def __init__(self,title,message):
+
+                            """Constructor for the leoTkinterDialog class."""
+
+                            self.answer = None # Value returned from run()
+                            self.title = title
+                            self.message=message
+
+                            self.buttonsFrame = None # Frame to hold typical dialog buttons.
+                            self.defaultButtonCommand = None
+                                # Command to call when user closes the window
+                                # by clicking the close box.
+                            self.frame = None # The outermost frame.
+                            self.root = None # Created in createTopFrame.
+                            self.top = None # The toplevel Tk widget.
+
+                            self.createTopFrame()
+                            buttons = {"text":"OK","command":self.okButton,"default":True},
+                                # Singleton tuple.
+                            self.createButtons(buttons)
+                            self.top.bind("<Key>", self.onKey)
+                        #@+node:ekr.20120219154958.10494: *6* createButtons
+                        def createButtons (self,buttons):
+
+                            """Create a row of buttons.
+
+                            buttons is a list of dictionaries containing
+                            the properties of each button."""
+
+                            assert(self.frame)
+                            self.buttonsFrame = f = Tk.Frame(self.top)
+                            f.pack(side="top",padx=30)
+
+                            # Buttons is a list of dictionaries, with an empty dictionary
+                            # at the end if there is only one entry.
+                            buttonList = []
+                            for d in buttons:
+                                text = d.get("text","<missing button name>")
+                                isDefault = d.get("default",False)
+                                underline = d.get("underline",0)
+                                command = d.get("command",None)
+                                bd = g.choose(isDefault,4,2)
+
+                                b = Tk.Button(f,width=6,text=text,bd=bd,
+                                    underline=underline,command=command)
+                                b.pack(side="left",padx=5,pady=10)
+                                buttonList.append(b)
+
+                                if isDefault and command:
+                                    self.defaultButtonCommand = command
+
+                            return buttonList
+                        #@+node:ekr.20120219154958.10495: *6* createTopFrame
+                        def createTopFrame(self):
+
+                            """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+
+                            self.root = Tk.Tk()
+                            self.top = Tk.Toplevel(self.root)
+                            self.top.title(self.title)
+                            self.root.withdraw()
+
+                            self.frame = Tk.Frame(self.top)
+                            self.frame.pack(side="top",expand=1,fill="both")
+
+                            label = Tk.Label(self.frame,text=message,bg='white')
+                            label.pack(pady=10)
+                        #@+node:ekr.20120219154958.10496: *6* okButton
+                        def okButton(self):
+
+                            """Do default click action in ok button."""
+
+                            self.top.destroy()
+                            self.top = None
+
+                        #@+node:ekr.20120219154958.10497: *6* onKey
+                        def onKey(self,event):
+
+                            """Handle Key events in askOk dialogs."""
+
+                            self.okButton()
+
+                            return # (for Tk) "break"
+                        #@+node:ekr.20120219154958.10498: *6* run
+                        def run (self):
+
+                            """Run the modal emergency dialog."""
+
+                            self.top.geometry("%dx%d%+d%+d" % (300,200,50,50))
+                            self.top.lift()
+
+                            self.top.grab_set() # Make the dialog a modal dialog.
+                            self.root.wait_window(self.top)
+                        #@-others
+                    #@-<< define emergency dialog class >>
+                    d = emergencyDialog(
+                        title='Python Version Error',
+                        message=message)
+                    d.run()
+                except Exception:
+                    pass
+            return ok
+        except Exception:
+            print("isValidPython: unexpected exception: g.CheckVersion")
+            traceback.print_exc()
+            return 0
     #@-others
     
 #@+node:ekr.20120211121736.10831: ** class LogManager

@@ -19614,8 +19614,8 @@ try:
     p.h = '@@' + h
     parser = leoConfig.SettingsTreeParser(c,localFlag=True)
     d1,d2 = parser.traverse()
-    assert d1=={},d1
-    assert d2=={},d2
+    assert isinstance(d1,g.TypedDictOfLists),d1
+    assert isinstance(d2,g.TypedDict),d2
 finally:
     p.h = h
     c.redraw()

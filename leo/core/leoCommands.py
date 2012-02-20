@@ -9,7 +9,7 @@
 #@@pagewidth 70
 
 #@+<< imports >>
-#@+node:ekr.20040712045933: ** << imports  >> (leoCommands)
+#@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import leo.core.leoGlobals as g
 
 # if g.app and g.app.use_psyco:
@@ -19,9 +19,12 @@ import leo.core.leoGlobals as g
     
 # The leoCommands ctor now does these imports.
 # This breaks circular dependencies.
+
     # import leo.core.leoAtFile as leoAtFile
     # import leo.core.leoCache as leoCache
+    # import leo.core.leoChapters as leoChapters
     # import leo.core.leoEditCommands as leoEditCommands
+    # import leo.core.leoKeys as leoKeys
     # import leo.core.leoFileCommands as leoFileCommands
     # import leo.core.leoImport as leoImport
     # import leo.core.leoRst as leoRst
@@ -30,6 +33,7 @@ import leo.core.leoGlobals as g
     # import leo.core.leoUndo as leoUndo
 
 import leo.core.leoNodes as leoNodes
+
 # import leo.external.pickleshare as pickleshare
 
 # import hashlib
@@ -1761,7 +1765,7 @@ class Commands (object):
             p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
             c.treeWantsFocus()
-    #@+node:ekr.20031218072017.2837: *6* revert
+    #@+node:ekr.20031218072017.2837: *6* c.revert
     def revert (self,event=None):
 
         '''Revert the contents of a Leo outline to last saved contents.'''
@@ -1779,7 +1783,7 @@ class Commands (object):
         if reply=="no":
             return
 
-        # Kludge: rename this frame so openWithFileName won't think it is open.
+        # Rename this frame so openWithFileName won't think it is open.
         fileName = c.mFileName ; c.mFileName = ""
 
         # Create a new frame before deleting this frame.
@@ -1790,7 +1794,7 @@ class Commands (object):
             g.app.destroyWindow(c.frame)
         else:
             c.mFileName = fileName
-    #@+node:ekr.20070413045221: *6* saveAsUnzipped & saveAsZipped
+    #@+node:ekr.20070413045221: *6* c.saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
 
         '''Save a Leo outline to a file with a new filename,

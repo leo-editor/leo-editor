@@ -4,7 +4,7 @@
 #@@tabwidth -4
 
 #@+<< imports >>
-#@+node:ekr.20110605121601.17955: ** << imports >>
+#@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
 import sys
 
 from inspect import isclass

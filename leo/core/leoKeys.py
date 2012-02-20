@@ -7,7 +7,7 @@
 #@@pagewidth 70
 
 #@+<< imports >>
-#@+node:ekr.20061031131434.1: ** << imports >>
+#@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame # to access stringTextWidget class.
 import leo.external.codewise as codewise

@@ -20,7 +20,7 @@
 #@@c
 
 #@+<< imports >>
-#@+node:ekr.20111116103733.10440: **  << imports >>
+#@+node:ekr.20111116103733.10440: **  << imports >> (leoInspect)
 import leo.core.leoGlobals as g
 
 # Used by ast-oriented code.
