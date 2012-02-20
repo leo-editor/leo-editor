@@ -11,8 +11,6 @@ Modelled after Emacs and Vim commands.'''
 #@+node:ekr.20050710151017: ** << imports >> (leoEditCommands)
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind
-import leo.core.leoKeys as leoKeys
-# import leo.core.leoTest as leoTest
 
 try:
     import enchant
@@ -6565,10 +6563,10 @@ class editFileCommandsClass (baseEditCommandsClass):
     def createHiddenCommander(self,fileName):
 
         # Read the file into a hidden commander (Similar to g.openWithFileName).
-        import leo.core.leoGui as leoGui
+        # import leo.core.leoGui as leoGui
         import leo.core.leoCommands as leoCommands
 
-        c2 = leoCommands.Commands(fileName,gui=leoGui.nullGui())
+        c2 = leoCommands.Commands(fileName,gui=g.app.nullGui)
         theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
         if theFile:
             c2.fileCommands.openLeoFile(theFile,fileName,readAtFileNodesFlag=True,silent=True)
@@ -7572,22 +7570,19 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
         self.k = None
-        self.killBuffer = []
         self.kbiterator = self.iterateKillBuffer()
         self.last_clipboard = None  # For interacting with system clipboard.
         self.lastYankP = None
             # Position of the last item returned by iterateKillBuffer.
         self.reset = None
-            # The index of the next item to be returned in killBuffer by iterateKillBuffer.
+            # The index of the next item to be returned in
+            # g.app.globalKillBuffer by iterateKillBuffer.
 
     def finishCreate (self):
 
         baseEditCommandsClass.finishCreate(self)
             # Call the base finishCreate.
             # This sets self.k
-
-        if self.k:
-            self.killBuffer = leoKeys.keyHandlerClass.global_killbuffer
     #@+node:ekr.20050920084036.176: *3*  getPublicCommands
     def getPublicCommands (self):
 
@@ -7612,8 +7607,9 @@ class killBufferCommandsClass (baseEditCommandsClass):
         the text contains something other than whitespace.'''
 
         if self.addWsToKillRing or text.strip():
-            self.killBuffer = [z for z in self.killBuffer if z != text]
-            self.killBuffer.insert(0,text)
+            g.app.globalKillBuffer = [
+                z for z in g.app.globalKillBuffer if z != text]
+            g.app.globalKillBuffer.insert(0,text)
     #@+node:ekr.20050920084036.181: *3* backwardKillSentence
     def backwardKillSentence (self,event):
 
@@ -7663,7 +7659,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         '''Clear the kill ring.'''
 
-        self.killBuffer = []
+        g.app.globalKillbuffer = []
     #@+node:ekr.20050920084036.185: *3* getClipboard
     def getClipboard (self):
 
@@ -7671,9 +7667,9 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         try:
             ctxt = g.app.gui.getTextFromClipboard()
-            if not self.killBuffer or ctxt != self.last_clipboard:
+            if not g.app.globalKillBuffer or ctxt != self.last_clipboard:
                 self.last_clipboard = ctxt
-                if not self.killBuffer or self.killBuffer [0] != ctxt:
+                if not g.app.globalKillBuffer or g.app.globalKillBuffer [0] != ctxt:
                     return ctxt
         except Exception:
             g.es_exception()
@@ -7699,7 +7695,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         def next(self):
 
             commands = self.c.killBufferCommands
-            aList = commands.killBuffer
+            aList = g.app.globalKillBuffer # commands.killBuffer
 
             # g.trace(g.listToString([repr(z) for z in aList]))
 
@@ -7846,7 +7842,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         text = w.getAllText()
         i, j = w.getSelectionRange()
         clip_text = self.getClipboard()
-        if not self.killBuffer and not clip_text: return
+        if not g.app.globalKillBuffer and not clip_text: return
 
         undoType = g.choose(pop,'yank-pop','yank')
         self.beginCommand(undoType=undoType)
@@ -8655,7 +8651,7 @@ class registerCommandsClass (baseEditCommandsClass):
         # Init these here to keep pylint happy.
         self.method = None 
         self.registerMode = 0 # Must be an int.
-        self.registers = leoKeys.keyHandlerClass.global_registers
+        self.registers = g.app.globalRegisters
 
     def finishCreate (self):
 

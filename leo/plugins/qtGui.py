@@ -20,12 +20,10 @@ useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 #@+node:ekr.20110605121601.18003: **  << imports >> (qtGui.py)
 import leo.core.leoGlobals as g
 
-# import leo.core.leoChapters as leoChapters
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
 import leo.core.leoFind as leoFind
 import leo.core.leoGui as leoGui
-import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins
     # Uses leoPlugins.TryNext.
@@ -7549,11 +7547,6 @@ class leoQtGui(leoGui.leoGui):
             self.frameFactory = TabbedFrameFactory()
         else:
             self.frameFactory = SDIFrameFactory()
-    #@+node:ekr.20110605121601.18478: *5* createKeyHandlerClass (qtGui)
-    def createKeyHandlerClass (self,c):
-
-        # Use the base class
-        return leoKeys.keyHandlerClass(c)
     #@+node:ekr.20110605121601.18482: *5* IPython embedding & mainloop
     def embed_ipython(self):
         

@@ -2,10 +2,14 @@
 #@+node:ekr.20080730161153.2: * @file leoBridgeTest.py
 '''A program to run unit tests with the leoBridge module.'''
 
+#@+<< imports >>
+#@+node:ekr.20120220125945.10418: ** << imports >> (leoBridgeTest.py)
+
 import leo.core.leoBridge as leoBridge
 import leo.core.leoTest as leoTest
 
 import optparse
+#@-<< imports >>
 
 # Do not define g here.  Use the g returned by the bridge.
 

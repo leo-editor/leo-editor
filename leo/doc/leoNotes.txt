@@ -6838,5 +6838,86 @@ def oldTestPlugin (fileName,verbose=False):
             g.trace("Executing unitTest in plugins/%s..." % fileName)
 
         module.unitTest(verbose=verbose)
+#@+node:ekr.20031218072017.3123: *3* << test code >> (g.redirectClass)
+import leo.core.leoGlobals as g ; import sys
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+# stderr
+import leo.core.leoGlobals as g ; import sys
+g.redirectStderr()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+import leo.core.leoGlobals as g ; import sys
+g.restoreStderr()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+# stdout
+import leo.core.leoGlobals as g ; import sys
+g.restoreStdout()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+import leo.core.leoGlobals as g ; import sys
+g.redirectStdout()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+#@+node:ekr.20110605121601.18478: *3* createKeyHandlerClass (qtGui)
+if 0:
+
+    def createKeyHandlerClass (self,c):
+    
+        # Use the base class
+        return leoKeys.keyHandlerClass(c)
+#@+node:ekr.20061031173016: *3* app.gui.createKeyHandlerClass
+if 0:
+    def createKeyHandlerClass (self,c):
+
+        self.oops()
+#@+node:ekr.20070123092623: *3* nullGui.createKeyHandlerClass
+if 0:
+    def createKeyHandlerClass (self,c):
+
+        import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
+    
+        return leoKeys.keyHandlerClass(c)
+#@+node:ekr.20090202191501.5: *3* app.createNullGui
+def createNullGui (self):
+    
+    # Don't import this at the top level:
+    # it might interfere with Leo's startup logic.
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: print('********** leoApp.createNullGui')
+    
+    g.app.gui = g.app.nullGui
+
+    app = self
+
+    try:
+        import leo.core.leoGui as leoGui
+    except ImportError:
+        g.trace('can not import leo.core.leoGui')
+        leoGui = None
+
+    if leoGui:
+        app.gui = g.app.nullGui
+#@+node:ekr.20061031131434.109: *3* callKeystrokeFunction (not used)
+def callKeystrokeFunction (self,event):
+
+    '''Handle a quick keystroke function.
+    Return the function or None.'''
+
+    k = self
+    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+    if func:
+        func(event)
+        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+        k.endCommand(commandName)
+
+    return func
 #@-all
 #@-leo

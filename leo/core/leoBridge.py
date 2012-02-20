@@ -180,10 +180,8 @@ class bridgeController:
         g = self.g
 
         if self.guiName == 'nullGui':
-            import leo.core.leoGui as leoGui
-            import leo.core.leoFrame as leoFrame
-            g.app.gui = leoGui.nullGui()
-            g.app.log = g.app.gui.log = log = leoFrame.nullLog()
+            g.app.gui = g.app.nullGui
+            g.app.log = g.app.gui.log = log = g.app.nullLog()
             log.isNull = False
             log.enabled = True # Allow prints from nullLog.
         elif self.guiName == 'qt':

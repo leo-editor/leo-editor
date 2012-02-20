@@ -6,6 +6,8 @@ trace = True
 trace_args = False
 trace_time = True
 
+#@+<< imports >>
+#@+node:ekr.20120220125945.10419: ** << imports >> (leoDynamicTest.py)
 import optparse
 import os
 import sys
@@ -20,7 +22,7 @@ if trace and trace_args:
 
 import time
 import leo.core.leoBridge as leoBridge
-
+#@-<< imports >>
 # Do not define g here. Use the g returned by the bridge.
 
 #@+others

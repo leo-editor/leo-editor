@@ -850,7 +850,7 @@ class shadowController:
 
             # For teardown...
             self.ok = True
-        #@+node:ekr.20080709062932.7: *4*  fail
+        #@+node:ekr.20080709062932.7: *4*  fail (atShadowTestCase)
         def fail (self,msg=None):
 
             """Mark a unit test as having failed."""

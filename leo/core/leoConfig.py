@@ -7,8 +7,6 @@
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui
-import leo.core.leoKeys as leoKeys
 
 # import copy
 import sys
@@ -2178,7 +2176,7 @@ class configClass:
         
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
-        g.app.gui = leoGui.nullGui()
+        g.app.gui = g.app.nullGui
         if trace and g.trace_startup:
             print('g.app.config.openSettingsFile: g.app.gui: %s' % (g.app.gui.guiName()))
         

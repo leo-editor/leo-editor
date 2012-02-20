@@ -1309,10 +1309,10 @@ def createCompareClones (self,d,kind,parent):
 def createHiddenCommander(self,fileName):
 
     # Read the file into a hidden commander (Similar to g.openWithFileName).
-    import leo.core.leoGui as leoGui
+    # import leo.core.leoGui as leoGui
     import leo.core.leoCommands as leoCommands
 
-    c2 = leoCommands.Commands(fileName,gui=leoGui.nullGui())
+    c2 = leoCommands.Commands(fileName,gui=g.app.nullGui)
     theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
     if theFile:
         c2.fileCommands.openLeoFile(theFile,fileName,readAtFileNodesFlag=True,silent=True)
@@ -4203,7 +4203,7 @@ mustBeDefinedInSubclasses = (
     #'createComparePanel',          # optional
     #'createFindPanel',             # optional
     'createFindTab',
-    'createKeyHandlerClass',
+    # 'createKeyHandlerClass',
     'createLeoFrame',
     'createRootWindow',
     'create_labeled_frame',
@@ -7077,13 +7077,13 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
     if special: # Don't pass these on.
         return # (for Tk) 'break' 
 
-    if k.regx.iter:
-        try:
-            k.regXKey = char
-            k.regx.iter.next() # EKR: next() may throw StopIteration.
-        except StopIteration:
-            pass
-        return # (for Tk) 'break'
+    # if k.regx.iter:
+        # try:
+            # k.regXKey = char
+            # k.regx.iter.next() # EKR: next() may throw StopIteration.
+        # except StopIteration:
+            # pass
+        # return # (for Tk) 'break'
 
     if k.abbrevOn:
         expanded = c.abbrevCommands.expandAbbrev(event,stroke)
@@ -7127,23 +7127,9 @@ specialKeysyms = (
     'Num_Lock',
     'Shift_L','Shift_R',
 )
-.. @+node:ekr.20061031131434.109: *7* callKeystrokeFunction (not used)
-def callKeystrokeFunction (self,event):
-
-    '''Handle a quick keystroke function.
-    Return the function or None.'''
-
-    k = self
-    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
-
-    if func:
-        func(event)
-        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
-        k.endCommand(commandName)
-
-    return func
 .. @+node:ekr.20061031131434.110: *7* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
+
     k = self ; c = k.c
     w = event and event.widget
     name = c.widget_name(w)
@@ -7180,6 +7166,7 @@ def handleDefaultChar(self,event,stroke):
     elif name.startswith('log'):
         # Bug fix: 2011/11/21: Because of universal bindings
         # we may not be able to insert anything into w.
+        import leo.core.leoFrame as leoFrame
         if issubclass(w.__class__,leoFrame.HighLevelInterface):
             i = w.logCtrl.getInsertPoint()
             if not stroke:
@@ -7413,7 +7400,6 @@ def getPaneBinding (self,stroke,w):
                     table = ('previous-line','next-line',)
                     if key == 'text' and name == 'head' and si.commandName in table:
                         if trace: g.trace('***** special case',si.commandName)
-                        pass
                     else:
                         if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                             key,name,repr(si.stroke),si.commandName))

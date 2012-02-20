@@ -33,6 +33,7 @@ def getCoreList():
             # (but some types could not be inferred)
         ('leoGui',          ''),
         ('leoImport',       ''),
+        ('leoKeys',         ''),
         ('leoMenu',         'W0108'),
             # W0108: Lambda may not be necessary (it is).
         ('leoNodes',        ''),
@@ -169,6 +170,7 @@ recentCoreList = (
 
         # ('leoGui',            ''),
         # ('leoImport',         ''),
+        ('leoKeys',           ''),
         # ('leoNodes',          ''),
         # ('leoPlugins',        ''),
         # ('leoFileCommands',   'E1120,E1101'),
@@ -180,7 +182,7 @@ recentCoreList = (
         # ('leoRst',            ''),
         # ('leoShadow',         ''),
         # ('leoTangle',         ''),
-        ('leoTest',           ''),
+        # ('leoTest',           ''),
         # ('leoUndo',           'W0511'),
             # WO511: TODO 
 )

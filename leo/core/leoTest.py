@@ -11,7 +11,7 @@ Run the unit tests in test.leo using the Execute Script command.'''
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
 
-import leo.core.leoGui as leoGui # For nullGui and unitTestGui.
+import leo.core.leoGui as leoGui # For unitTestGui.
 
 import doctest
 import gc
@@ -245,7 +245,7 @@ class editBodyTestCase(unittest.TestCase):
         # g.trace('parent',parent.h)
         # g.trace('before',before.h)
         # g.trace('after',after.h)
-    #@+node:ekr.20051104075904.72: *3*  fail
+    #@+node:ekr.20051104075904.72: *3*  fail (editBodyTestCase)
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
@@ -361,7 +361,7 @@ class generalTestCase(unittest.TestCase):
 
         self.c = c
         self.p = p.copy()
-    #@+node:ekr.20051104075904.7: *3*  fail
+    #@+node:ekr.20051104075904.7: *3*  fail (generalTestCase)
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
@@ -447,7 +447,7 @@ class importExportTestCase(unittest.TestCase):
         self.doImport = doImport
 
         self.old_p = c.p
-    #@+node:ekr.20051104075904.81: *3*  fail
+    #@+node:ekr.20051104075904.81: *3*  fail (importExportTestCase)
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
@@ -576,7 +576,7 @@ class runTestExternallyHelperClass:
 
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
-        c2 = c.new(gui=leoGui.nullGui())
+        c2 = c.new(gui=g.app.nullGui)
         g.app.silentMode = old_silent_mode
         found = self.createOutline(c2)
         if found:

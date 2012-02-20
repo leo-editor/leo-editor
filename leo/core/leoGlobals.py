@@ -43,6 +43,7 @@ trace_masterCommand = False
 trace_masterKeyHandler = False
 trace_masterKeyHandlerGC = False
 trace_minibuffer = False
+trace_modes = False
 
 # Traces of scrolling problems.
 trace_scroll = False
@@ -1389,36 +1390,6 @@ def rawPrint(s):
     redirectStdOutObj.rawPrint(s)
 #@-others
 #@-<< define convenience methods for redirecting streams >>
-
-if 0: # Test code: may be executed in the child node.
-    #@+<< test code >>
-    #@+node:ekr.20031218072017.3123: *4* << test code >>
-    import leo.core.leoGlobals as g ; import sys
-    print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
-    print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
-
-    # stderr
-    import leo.core.leoGlobals as g ; import sys
-    g.redirectStderr()
-    print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
-    print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
-
-    import leo.core.leoGlobals as g ; import sys
-    g.restoreStderr()
-    print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
-    print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
-
-    # stdout
-    import leo.core.leoGlobals as g ; import sys
-    g.restoreStdout()
-    print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
-    print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
-
-    import leo.core.leoGlobals as g ; import sys
-    g.redirectStdout()
-    print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
-    print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
-    #@-<< test code >>
 #@+node:ekr.20080729142651.1: *3* g.getIvarsDict and checkUnchangedIvars
 def getIvarsDict(obj):
 
@@ -4930,7 +4901,6 @@ virtual_event_name = angleBrackets
 def CheckVersion (s1,s2,condition=">=",stringCompare=None,delimiter='.',trace=False):
 
     # CheckVersion is called early in the startup process.
-    # import leo.core.leoGlobals as g
 
     vals1 = [g.CheckVersionToInt(s) for s in s1.split(delimiter)] ; n1 = len(vals1)
     vals2 = [g.CheckVersionToInt(s) for s in s2.split(delimiter)] ; n2 = len(vals2)
