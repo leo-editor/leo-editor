@@ -6919,5 +6919,33 @@ def callKeystrokeFunction (self,event):
         k.endCommand(commandName)
 
     return func
+#@+node:ekr.20070627135336.8: *3* searchOutline (runTestExternallyHelperClass) (not used)
+def searchOutline (self,p):
+
+    c = self.c ; p = c.p
+    iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
+
+    # First, look down the tree.
+    for p in iter():
+        for s in self.tags:
+            if p.h.startswith(s):
+                self.root = c.p
+                return True
+
+    # Next, look up the tree.
+    if not self.all:   
+        for p in c.p.parents():
+            for s in self.tags:
+                if p.h.startswith(s):
+                    c.selectPosition(p)
+                    self.root = p.copy()
+                    return True
+
+    # Finally, look for all @mark-for-unit-test nodes.
+    for p in c.all_unique_positions():
+        if p.h.startswith('@mark-for-unit-test'):
+            return True
+
+    return False
 #@-all
 #@-leo

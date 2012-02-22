@@ -181,7 +181,7 @@ class bridgeController:
 
         if self.guiName == 'nullGui':
             g.app.gui = g.app.nullGui
-            g.app.log = g.app.gui.log = log = g.app.nullLog()
+            g.app.log = g.app.gui.log = log = g.app.nullLog
             log.isNull = False
             log.enabled = True # Allow prints from nullLog.
         elif self.guiName == 'qt':

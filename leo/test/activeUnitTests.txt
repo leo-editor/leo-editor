@@ -18711,14 +18711,13 @@ def found(p,result):
         if p == p2: return True
     else: return False
 
-table = (('all',None,True,False),('marked',None,False,True))
+table = (('all',True,False),('marked',False,True))
 
 try:
     p.setMarked()
-    for kind,limit,all,marked in table:
-        result = c.testManager.findAllUnitTestNodes(
-            p,limit,all,marked,lookForMark=False,lookForNodes=True)
-        assert found(p,result)
+    for kind,all,marked in table:
+        result = c.testManager.findAllUnitTestNodes(all,marked)
+        assert found(p,result),kind
     assert p == p1
 finally:
     p1.clearMarked()

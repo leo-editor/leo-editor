@@ -620,46 +620,16 @@ class runTestExternallyHelperClass:
         self.copyRoot = c2.rootPosition()
         self.copyRoot.initHeadString('All unit tests')
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-        self.seen = []
-        #@+<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-        #@+node:ekr.20070705065154: *5* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-        if self.all:
-            # A single pass looks for all tags everywhere.
-            p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
-            p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-        else:
-            # The first pass looks everywhere for only for @mark-for-unit-tests,
-            p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
-            # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
-            # There is no second pass if the present node is an @mark-for-unit-test node.
-            p = c.p
-            if p.h.startswith(markTag):
-                p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-            else:
-                p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
-        #@-<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-
-        if trace: g.trace('all',self.all)
         self.copyRoot.expand()
-        found = False
-        for n,p,limit,lookForMark,lookForNodes in (
-            (1,p1,limit1,lookForMark1,lookForNodes1),
-            (2,p2,limit2,lookForMark2,lookForNodes2),
-        ):
-            if n == 2 and self.all: return
-            if trace and verbose: g.trace(
-                'pass %s: mark %s nodes %s root %s limit %s' % (
-                    n,lookForMark,lookForNodes,
-                    p and p.h or '<none>',
-                    limit and limit.h or '<none>'))
-                    
-            aList = c.testManager.findAllUnitTestNodes(
-                p,limit,self.all,self.marked,lookForMark,lookForNodes)
-            if aList: found = True
-            for p2 in aList:
-                self.addNode(p2)
-        return found
-            
+
+        self.seen = [] # The list of nodes to be added.
+        aList  = c.testManager.findMarkForUnitTestNodes()
+        aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
+        
+        if aList2:
+            for p in aList:  self.addNode(p)
+            for p in aList2: self.addNode(p)
+        return bool(aList2)
     #@+node:ekr.20070705080413: *5* addMarkTree
     def addMarkTree (self,p):
 
@@ -725,34 +695,6 @@ class runTestExternallyHelperClass:
 
         if trace: g.trace('*** spawning test process',path)
         os.spawnve(os.P_NOWAIT,sys.executable,args,env)
-    #@+node:ekr.20070627135336.8: *4* searchOutline (runTestExternallyHelperClass) (not used)
-    def searchOutline (self,p):
-
-        c = self.c ; p = c.p
-        iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
-
-        # First, look down the tree.
-        for p in iter():
-            for s in self.tags:
-                if p.h.startswith(s):
-                    self.root = c.p
-                    return True
-
-        # Next, look up the tree.
-        if not self.all:   
-            for p in c.p.parents():
-                for s in self.tags:
-                    if p.h.startswith(s):
-                        c.selectPosition(p)
-                        self.root = p.copy()
-                        return True
-
-        # Finally, look for all @mark-for-unit-test nodes.
-        for p in c.all_unique_positions():
-            if p.h.startswith('@mark-for-unit-test'):
-                return True
-
-        return False
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
 class TestManager:
@@ -770,7 +712,7 @@ class TestManager:
         return generalTestCase(self.c,p)
     #@+node:ekr.20120220070422.10419: *3* TM.Top-level
     #@+node:ekr.20051104075904.4: *4* TM.doTests & helpers (local tests)
-    def doTests(self,all=None,marked=None,p=None,verbosity=1):
+    def doTests(self,all=None,marked=None,verbosity=1):
         
         '''Run any kind of local unit test.
         
@@ -780,33 +722,25 @@ class TestManager:
 
         trace = False ; verbose = False
         c,tm = self.c,self
-        if all:
-            p = c.rootPosition()
-        elif not p:
-            p = c.p
+
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
         
         # This seems a bit risky when run in unitTest.leo.
         # c.save() # Eliminate the need for ctrl-s.
         
-        if trace: g.trace('marked',marked,'c',c,g.callers())
+        if trace: g.trace('marked',marked,'c',c)
 
         try:
             g.unitTesting = g.app.unitTesting = True
             g.app.unitTestDict["fail"] = False
             g.app.unitTestDict['c'] = c
             g.app.unitTestDict['g'] = g
-            g.app.unitTestDict['p'] = p and p.copy()
+            g.app.unitTestDict['p'] = c.p.copy()
 
             # c.undoer.clearUndoState() # New in 4.3.1.
             changed = c.isChanged()
             suite = unittest.makeSuite(unittest.TestCase)
-
-            # New in Leo 4.4.8: ignore everything in @ignore trees.
-            last = None if all else p.nodeAfterTree()
-            
-            aList = tm.findAllUnitTestNodes(p,last,all,marked,
-                lookForMark=False,lookForNodes=True)
+            aList = tm.findAllUnitTestNodes(all,marked)
            
             found = False
             for p in aList:
@@ -1462,91 +1396,100 @@ class TestManager:
 
         return paths
     #@+node:ekr.20111104132424.9907: *4* TM.findAllUnitTestNodes
-    def findAllUnitTestNodes(self,p,limit,all,marked,lookForMark,lookForNodes):
-
-        trace = False and not g.unitTesting ; verbose = False
+    def findAllUnitTestNodes(self,all,marked):
+       
+        trace = False and not g.unitTesting
+        verbose = False
         c,tm = self.c,self
-        p = p.copy() # Don't change p in the caller.
         
-        if trace and verbose:
-            g.trace(
-                'all',all,'marked',marked,
-                'lookForMark',lookForMark,'lookForNodes',lookForNodes,
-                'root',p.h)
-
-        assert all in (True,False,None) # Caution: all is also builtin function.
-        markTag = '@mark-for-unit-tests'
-        seen = set() # A set of vnodes.
-        result = [] # A list of (copies of) positions.
+        if trace: g.trace('all: %s marked: %s %s' % (all,marked,p.h))
+       
+        p = c.rootPosition() if all else c.p
+        limit = None if all else p.nodeAfterTree()
+        seen,result = [],[]
         
         # An important special case: add the *selected* @test or @suite node,
         # regard regardless of all other considerations.
-        if (p and p != limit and p == c.p and lookForNodes and
+        if (p and p != limit and p == c.p and
             tm.isTestNode(p) or tm.isSuiteNode(p)
         ):
-            seen.add(p.v)
+            seen.append(p.v)
             result.append(p.copy())
             p.moveToNodeAfterTree()
             
         while p and p != limit:
-            # Run tests only once.
             if p.v in seen:
-                if trace and verbose: g.trace('ignoring seen tree',p.h)
+                if trace and verbose: g.trace('already seen',p.h)
                 p.moveToNodeAfterTree()
                 continue
-            seen.add(p.v)
+            seen.append(p.v)
+            add = (marked and p.isMarked()) or not marked
             if g.match_word(p.h,0,'@ignore'):
-                if trace and verbose: g.trace('ignoring @ignore tree',p.h)
+                if trace and verbose: g.trace(p.h)
                 p.moveToNodeAfterTree()
-            elif lookForMark and p.h.startswith(markTag):
-                # 2012/02/18: Always add these trees, regardless of marked status.
-                if trace: g.trace('add mark tree',p.h)
+            elif add and tm.isTestNode(p): # @test
+                if trace: g.trace('adding',p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
-            elif marked and not p.isMarked():
-                if trace and verbose: g.trace('ignoring unmarked node',p.h)
+            elif add and tm.isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                result.append(p.copy())
+                p.moveToNodeAfterTree()
+            elif not marked or not p.isMarked() or not p.hasChildren():
+                if trace and verbose: g.trace('skipping:',p.h)
                 p.moveToThreadNext()
-            elif lookForNodes and tm.isTestNode(p): # @test
-                if trace: g.trace('adding',p.h)
-                result.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif lookForNodes and tm.isSuiteNode(p): # @suite
-                if trace: g.trace('adding',p.h)
-                result.append(p.copy())
-                p.moveToNodeAfterTree()
-            elif lookForNodes and marked and p.hasChildren():
-                # Not any kind of test node: add all test nodes in subtree.
-                if trace: g.trace('adding subtree of marked non-test node',p.h)
+            else:
+                assert marked and p.isMarked() and p.hasChildren()
+                assert not tm.isTestNode(p)
+                assert not tm.isWuiteNode(p)
+                # Add all @test or @suite nodes in p's subtree,
+                # *regardless* of whether they are marked or not.
+                if trace: g.trace('adding subtree of marked',p.h)
                 after2 = p.nodeAfterTree()
                 p.moveToFirstChild()
                 while p and p != after2:
                     if p.v in seen:
-                        if trace: g.trace('ignoring unmarked tree',p.h)
+                        if trace: g.trace('already seen',p.h)
                         p.moveToNodeAfterTree()
-                    elif g.match_word(p.h,0,'@ignore'):
-                        # 2012/01/26: support @ignore here.
+                        continue
+                    seen.add(p.v)
+                    if g.match_word(p.h,0,'@ignore'):
+                        # Support @ignore here.
                         if trace and verbose:
-                            g.trace('ignoring @ignore tree in marked tree',p.h)
+                            g.trace(p.h)
+                        p.moveToNodeAfterTree()
+                    elif tm.isTestNode(p) or tm.isSuiteNode(p): # @test or @suite.
+                        if trace: g.trace(p.h)
+                        result.append(p.copy())
                         p.moveToNodeAfterTree()
                     else:
-                        seen.add(p.v)
-                        message = 'adding in marked tree: %s' % (p.h)
-                        if tm.isTestNode(p) or tm.isSuiteNode(p): # @test or @suite.
-                            if trace: g.trace(message)
-                            result.append(p.copy())
-                            p.moveToNodeAfterTree()
+                        p.moveToThreadNext()
+        return result
+    #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
+    def findMarkForUnitTestNodes(self):
+        
+        '''return the position of *all* non-ignored @mark-for-unit-test nodes.'''
 
-                        else:
-                            p.moveToThreadNext()
+        trace = False and not g.unitTesting
+        c = self.c
+        p,result,seen = c.rootPosition(),[],[]
+        while p:
+            if p.v in seen:
+                if trace: g.trace('seen',p.v)
+                p.moveToNodeAfterTree()
             else:
-                if trace and verbose: g.trace('skipping:',p.h)
-                p.moveToThreadNext()
+                seen.append(p.v)
+                if g.match_word(p.h,0,'@ignore'):
+                    if trace: g.trace(p.h)
+                    p.moveToNodeAfterTree()
+                elif p.h.startswith('@mark-for-unit-tests'):
+                    if trace: g.trace(p.h)
+                    result.append(p.copy())
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
                 
-        # Return the result only if it contains actual @test or @suite nodes.
-        for p in result:
-            if tm.isTestNode(p) or tm.isSuiteNode(p):
-                return result
-        return []
+        return result
     #@+node:ekr.20051104075904.27: *4* TM.findChildrenOf
     def findChildrenOf (self,root):
 

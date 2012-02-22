@@ -15089,7 +15089,7 @@ def runSelectedUnitTestsExternally(self,event=None):
     Tests are run in an external process, so tests *cannot* change the outline.'''
     self.c.testManager.runTestsExternally(all=False,marked=False)
 #@+node:ekr.20051104075904.4: *5* TM.doTests & helpers (local tests)
-def doTests(self,all=None,marked=None,p=None,verbosity=1):
+def doTests(self,all=None,marked=None,verbosity=1):
     
     '''Run any kind of local unit test.
     
@@ -15099,33 +15099,25 @@ def doTests(self,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
     c,tm = self.c,self
-    if all:
-        p = c.rootPosition()
-    elif not p:
-        p = c.p
+
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
     
     # This seems a bit risky when run in unitTest.leo.
     # c.save() # Eliminate the need for ctrl-s.
     
-    if trace: g.trace('marked',marked,'c',c,g.callers())
+    if trace: g.trace('marked',marked,'c',c)
 
     try:
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
         g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = p and p.copy()
+        g.app.unitTestDict['p'] = c.p.copy()
 
         # c.undoer.clearUndoState() # New in 4.3.1.
         changed = c.isChanged()
         suite = unittest.makeSuite(unittest.TestCase)
-
-        # New in Leo 4.4.8: ignore everything in @ignore trees.
-        last = None if all else p.nodeAfterTree()
-        
-        aList = tm.findAllUnitTestNodes(p,last,all,marked,
-            lookForMark=False,lookForNodes=True)
+        aList = tm.findAllUnitTestNodes(all,marked)
        
         found = False
         for p in aList:
@@ -15295,45 +15287,16 @@ def createOutline (self,c2):
     self.copyRoot = c2.rootPosition()
     self.copyRoot.initHeadString('All unit tests')
     c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-    self.seen = []
-    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-
-    if trace: g.trace('all',self.all)
     self.copyRoot.expand()
-    found = False
-    for n,p,limit,lookForMark,lookForNodes in (
-        (1,p1,limit1,lookForMark1,lookForNodes1),
-        (2,p2,limit2,lookForMark2,lookForNodes2),
-    ):
-        if n == 2 and self.all: return
-        if trace and verbose: g.trace(
-            'pass %s: mark %s nodes %s root %s limit %s' % (
-                n,lookForMark,lookForNodes,
-                p and p.h or '<none>',
-                limit and limit.h or '<none>'))
-                
-        aList = c.testManager.findAllUnitTestNodes(
-            p,limit,self.all,self.marked,lookForMark,lookForNodes)
-        if aList: found = True
-        for p2 in aList:
-            self.addNode(p2)
-    return found
-        
-#@+node:ekr.20070705065154: *8* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-if self.all:
-    # A single pass looks for all tags everywhere.
-    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
-    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-else:
-    # The first pass looks everywhere for only for @mark-for-unit-tests,
-    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
-    # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
-    # There is no second pass if the present node is an @mark-for-unit-test node.
-    p = c.p
-    if p.h.startswith(markTag):
-        p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-    else:
-        p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+
+    self.seen = [] # The list of nodes to be added.
+    aList  = c.testManager.findMarkForUnitTestNodes()
+    aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
+    
+    if aList2:
+        for p in aList:  self.addNode(p)
+        for p in aList2: self.addNode(p)
+    return bool(aList2)
 #@+node:ekr.20070705080413: *8* addMarkTree
 def addMarkTree (self,p):
 
@@ -15399,34 +15362,6 @@ def runUnitTestLeoFile (self,gui='qt',path='unitTest.leo',readSettings=True,sile
 
     if trace: g.trace('*** spawning test process',path)
     os.spawnve(os.P_NOWAIT,sys.executable,args,env)
-#@+node:ekr.20070627135336.8: *7* searchOutline (runTestExternallyHelperClass) (not used)
-def searchOutline (self,p):
-
-    c = self.c ; p = c.p
-    iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
-
-    # First, look down the tree.
-    for p in iter():
-        for s in self.tags:
-            if p.h.startswith(s):
-                self.root = c.p
-                return True
-
-    # Next, look up the tree.
-    if not self.all:   
-        for p in c.p.parents():
-            for s in self.tags:
-                if p.h.startswith(s):
-                    c.selectPosition(p)
-                    self.root = p.copy()
-                    return True
-
-    # Finally, look for all @mark-for-unit-test nodes.
-    for p in c.all_unique_positions():
-        if p.h.startswith('@mark-for-unit-test'):
-            return True
-
-    return False
 #@+node:ekr.20111102052204.10012: *4* Support hidden unit tests externally
 @nocolor-node
 
@@ -15518,45 +15453,16 @@ def createOutline (self,c2):
     self.copyRoot = c2.rootPosition()
     self.copyRoot.initHeadString('All unit tests')
     c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-    self.seen = []
-    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-
-    if trace: g.trace('all',self.all)
     self.copyRoot.expand()
-    found = False
-    for n,p,limit,lookForMark,lookForNodes in (
-        (1,p1,limit1,lookForMark1,lookForNodes1),
-        (2,p2,limit2,lookForMark2,lookForNodes2),
-    ):
-        if n == 2 and self.all: return
-        if trace and verbose: g.trace(
-            'pass %s: mark %s nodes %s root %s limit %s' % (
-                n,lookForMark,lookForNodes,
-                p and p.h or '<none>',
-                limit and limit.h or '<none>'))
-                
-        aList = c.testManager.findAllUnitTestNodes(
-            p,limit,self.all,self.marked,lookForMark,lookForNodes)
-        if aList: found = True
-        for p2 in aList:
-            self.addNode(p2)
-    return found
-        
-#@+node:ekr.20070705065154: *7* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-if self.all:
-    # A single pass looks for all tags everywhere.
-    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
-    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-else:
-    # The first pass looks everywhere for only for @mark-for-unit-tests,
-    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
-    # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
-    # There is no second pass if the present node is an @mark-for-unit-test node.
-    p = c.p
-    if p.h.startswith(markTag):
-        p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-    else:
-        p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+
+    self.seen = [] # The list of nodes to be added.
+    aList  = c.testManager.findMarkForUnitTestNodes()
+    aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
+    
+    if aList2:
+        for p in aList:  self.addNode(p)
+        for p in aList2: self.addNode(p)
+    return bool(aList2)
 #@+node:ekr.20070705080413: *7* addMarkTree
 def addMarkTree (self,p):
 
@@ -15622,34 +15528,6 @@ def runUnitTestLeoFile (self,gui='qt',path='unitTest.leo',readSettings=True,sile
 
     if trace: g.trace('*** spawning test process',path)
     os.spawnve(os.P_NOWAIT,sys.executable,args,env)
-#@+node:ekr.20070627135336.8: *6* searchOutline (runTestExternallyHelperClass) (not used)
-def searchOutline (self,p):
-
-    c = self.c ; p = c.p
-    iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
-
-    # First, look down the tree.
-    for p in iter():
-        for s in self.tags:
-            if p.h.startswith(s):
-                self.root = c.p
-                return True
-
-    # Next, look up the tree.
-    if not self.all:   
-        for p in c.p.parents():
-            for s in self.tags:
-                if p.h.startswith(s):
-                    c.selectPosition(p)
-                    self.root = p.copy()
-                    return True
-
-    # Finally, look for all @mark-for-unit-test nodes.
-    for p in c.all_unique_positions():
-        if p.h.startswith('@mark-for-unit-test'):
-            return True
-
-    return False
 #@+node:ekr.20031218072017.2619: *5* app.writeWaitingLog
 def writeWaitingLog (self,c):
 
@@ -15878,7 +15756,7 @@ def writeScriptFile (self,script):
 
     return path
 #@+node:ekr.20051104075904.4: *5* TM.doTests & helpers (local tests)
-def doTests(self,all=None,marked=None,p=None,verbosity=1):
+def doTests(self,all=None,marked=None,verbosity=1):
     
     '''Run any kind of local unit test.
     
@@ -15888,33 +15766,25 @@ def doTests(self,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
     c,tm = self.c,self
-    if all:
-        p = c.rootPosition()
-    elif not p:
-        p = c.p
+
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
     
     # This seems a bit risky when run in unitTest.leo.
     # c.save() # Eliminate the need for ctrl-s.
     
-    if trace: g.trace('marked',marked,'c',c,g.callers())
+    if trace: g.trace('marked',marked,'c',c)
 
     try:
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
         g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = p and p.copy()
+        g.app.unitTestDict['p'] = c.p.copy()
 
         # c.undoer.clearUndoState() # New in 4.3.1.
         changed = c.isChanged()
         suite = unittest.makeSuite(unittest.TestCase)
-
-        # New in Leo 4.4.8: ignore everything in @ignore trees.
-        last = None if all else p.nodeAfterTree()
-        
-        aList = tm.findAllUnitTestNodes(p,last,all,marked,
-            lookForMark=False,lookForNodes=True)
+        aList = tm.findAllUnitTestNodes(all,marked)
        
         found = False
         for p in aList:
@@ -16096,45 +15966,16 @@ def createOutline (self,c2):
     self.copyRoot = c2.rootPosition()
     self.copyRoot.initHeadString('All unit tests')
     c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
-    self.seen = []
-    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-
-    if trace: g.trace('all',self.all)
     self.copyRoot.expand()
-    found = False
-    for n,p,limit,lookForMark,lookForNodes in (
-        (1,p1,limit1,lookForMark1,lookForNodes1),
-        (2,p2,limit2,lookForMark2,lookForNodes2),
-    ):
-        if n == 2 and self.all: return
-        if trace and verbose: g.trace(
-            'pass %s: mark %s nodes %s root %s limit %s' % (
-                n,lookForMark,lookForNodes,
-                p and p.h or '<none>',
-                limit and limit.h or '<none>'))
-                
-        aList = c.testManager.findAllUnitTestNodes(
-            p,limit,self.all,self.marked,lookForMark,lookForNodes)
-        if aList: found = True
-        for p2 in aList:
-            self.addNode(p2)
-    return found
-        
-#@+node:ekr.20070705065154: *6* << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
-if self.all:
-    # A single pass looks for all tags everywhere.
-    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
-    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-else:
-    # The first pass looks everywhere for only for @mark-for-unit-tests,
-    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
-    # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
-    # There is no second pass if the present node is an @mark-for-unit-test node.
-    p = c.p
-    if p.h.startswith(markTag):
-        p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
-    else:
-        p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+
+    self.seen = [] # The list of nodes to be added.
+    aList  = c.testManager.findMarkForUnitTestNodes()
+    aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
+    
+    if aList2:
+        for p in aList:  self.addNode(p)
+        for p in aList2: self.addNode(p)
+    return bool(aList2)
 #@+node:ekr.20070705080413: *6* addMarkTree
 def addMarkTree (self,p):
 
@@ -16163,7 +16004,7 @@ def isUnitTestNode (self,p):
     else:
         return False
 #@+node:ekr.20051104075904.4: *5* TM.doTests & helpers (local tests)
-def doTests(self,all=None,marked=None,p=None,verbosity=1):
+def doTests(self,all=None,marked=None,verbosity=1):
     
     '''Run any kind of local unit test.
     
@@ -16173,33 +16014,25 @@ def doTests(self,all=None,marked=None,p=None,verbosity=1):
 
     trace = False ; verbose = False
     c,tm = self.c,self
-    if all:
-        p = c.rootPosition()
-    elif not p:
-        p = c.p
+
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
     
     # This seems a bit risky when run in unitTest.leo.
     # c.save() # Eliminate the need for ctrl-s.
     
-    if trace: g.trace('marked',marked,'c',c,g.callers())
+    if trace: g.trace('marked',marked,'c',c)
 
     try:
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
         g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = p and p.copy()
+        g.app.unitTestDict['p'] = c.p.copy()
 
         # c.undoer.clearUndoState() # New in 4.3.1.
         changed = c.isChanged()
         suite = unittest.makeSuite(unittest.TestCase)
-
-        # New in Leo 4.4.8: ignore everything in @ignore trees.
-        last = None if all else p.nodeAfterTree()
-        
-        aList = tm.findAllUnitTestNodes(p,last,all,marked,
-            lookForMark=False,lookForNodes=True)
+        aList = tm.findAllUnitTestNodes(all,marked)
        
         found = False
         for p in aList:
@@ -25612,6 +25445,11 @@ def bindOpenWith (self,shortcut,name,data):
     # Use k.registerCommand to set the shortcuts in the various binding dicts.
     commandName = 'open-with-%s' % name.lower()
     k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
+#@+node:ekr.20120218130028.10478: *4* Fixed Bug: @mark-for-unit-tests nodes
+@nocolor-node
+
+The new TM.findMarkForUnitTestNodes allows both
+TM.FindAllUnitTestsNodes and createOutline to be much simpler.
 #@+node:ekr.20120214165710.10725: ** Notes (Do not delete)
 #@+node:ekr.20120214060149.15849: *3* We *will* read leoSettings/myLeoSettings twice
 @nocolor-node
