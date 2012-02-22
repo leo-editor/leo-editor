@@ -19423,19 +19423,22 @@ finally:
         setup(p)
 #@+node:ekr.20120201101804.3907: *3* @test config.updateSetting with no @settings node
 import leo.core.leoConfig as leoConfig
-
+    
 p = g.app.config.settingsRoot(c)
 assert c
-h = p.h
-try:
+if p:
+    # p will not exist when run externally.
+    h = p.h
     p.h = '@@' + h
+try:
     parser = leoConfig.SettingsTreeParser(c,localFlag=True)
     d1,d2 = parser.traverse()
     assert isinstance(d1,g.TypedDictOfLists),d1
     assert isinstance(d2,g.TypedDict),d2
 finally:
-    p.h = h
-    c.redraw()
+    if p:
+        p.h = h
+        c.redraw()
 #@+node:ekr.20120201125738.3958: *3* @test config.getShortcuts works when no local shortcuts
 sd = g.app.config.localShortcutsDict
 d = sd.get(c.hash(),{})
