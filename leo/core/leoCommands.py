@@ -80,7 +80,7 @@ class Commands (object):
         self._currentPosition = self.nullPosition()
         self._topPosition     = self.nullPosition()
         self.frame = None
-        self.gui = gui or g.app.gui ###
+        self.gui = gui or g.app.gui
         self.ipythonController = None
             # Set only by the ipython plugin.
         
@@ -98,7 +98,7 @@ class Commands (object):
         g.app.config.setIvarsFromSettings(c)
 
         # Initialize all subsidiary objects, including subcommanders.
-        c.initObjects(gui or g.app.gui)
+        c.initObjects(self.gui)
         
         assert c.frame
         assert c.frame.c
@@ -288,7 +288,6 @@ class Commands (object):
             g.doHook("before-create-leo-frame",c=c)
 
         self.frame = gui.createLeoFrame(c,title)
-
         assert self.frame
         assert self.frame.c == c
         
@@ -345,7 +344,7 @@ class Commands (object):
         
         c = self ; k = c.k ; p = c.p
         
-        assert self.gui
+        assert c.gui
         assert k
 
         c.frame.finishCreate()
@@ -364,7 +363,7 @@ class Commands (object):
 
         k.finishCreate()
         
-        if not g.app.gui.isNullGui:
+        if not c.gui.isNullGui:
             g.registerHandler('idle',c.idle_focus_helper)
             
         c.frame.menu.finishCreate()
@@ -7997,17 +7996,10 @@ class Commands (object):
             for v in c.all_unique_nodes():
                 if v.isDirty():
                     v.clearDirty()
-
-        # if (g.app.gui and g.app.gui.guiName().startswith('qt') and
-            # g.app.qt_use_tabs and hasattr(c.frame,'top')
-        # ):
-            # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
-            # if master:
-                # master.setChanged(c,changedFlag)
                 
         # Do nothing for null frames.
-        assert g.app.gui
-        if g.app.gui.guiName() == 'nullGui':
+        assert c.gui
+        if c.gui.guiName() == 'nullGui':
             return
             
         if not c.frame.top:

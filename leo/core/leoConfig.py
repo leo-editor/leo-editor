@@ -496,7 +496,7 @@ class ParserBaseClass:
         '''Parse an @mode node and create the enter-<name>-mode command.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; k = c.k ; 
+        c,k = self.c,self.c.k
         
         if g.new_modes:
             aList = []
@@ -548,15 +548,15 @@ class ParserBaseClass:
                                 #### self.set(p,"shortcut",name,aList)
                             # Set the entry directly.
                             d2 = self.shortcutsDict
-                            gs = d2.get(key)
+                            gs = d2.get(key2)
                             if gs:
-                                assert isGeneralSetting(gs)
+                                assert g.isGeneralSetting(gs)
                                 path = gs.path
                                 if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                                     g.es("over-riding setting:",name,"from",path)
             
                             # Important: we can't use c here: it may be destroyed!
-                            d2 [key] = g.GeneralSetting(
+                            d2 [key2] = g.GeneralSetting(
                                 kind,path=c.mFileName,val=val,tag='setting')
         
                 # Restore the global shortcutsDict.
@@ -1736,7 +1736,7 @@ class configClass:
         theDir = self.getString(c,setting)
 
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
-             return theDir
+            return theDir
         else:
             return None
     #@+node:ekr.20070224075914.1: *4* getEnabledPlugins
@@ -2386,7 +2386,7 @@ class configClass:
         # Use a single g.es statement.
         result.append('\n'+legend)
         if g.unitTesting:
-           pass # print(''.join(result))
+            pass # print(''.join(result))
         else:
             g.es('',''.join(result),tabName='Settings')
     #@-others

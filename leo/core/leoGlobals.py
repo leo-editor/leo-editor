@@ -1591,6 +1591,25 @@ def startTracer():
     sys.settrace(t.tracer)
     return t
 #@+node:ekr.20031218072017.3116: ** Files & Directories...
+#@+node:ekr.20120222084734.10287: *3*  Redirection to LoadManager methods
+# For compatibility with old code.
+def computeGlobalConfigDir():
+    return g.app.loadManager.computeGlobalConfigDir()
+    
+def computeHomeDir():
+    return g.app.loadManager.computeHomeDir()
+    
+def computeLeoDir():
+    return g.app.loadManager.computeLeoDir()
+    
+def computeLoadDir():
+    return g.app.loadManager.computeLoadDir()
+    
+def computeMachineName():
+    return g.app.loadManager.computeMachineName()
+    
+def computeStandardDirectories():
+    return g.app.loadManager.computeStandardDirectories()
 #@+node:ekr.20080606074139.2: *3* g.chdir
 def chdir (path):
 
@@ -1776,48 +1795,6 @@ def handleUrlInUrlNode(url, c=None, p=None):
         g.es("exception opening",url)
         g.es_exception()
     #@-<< pass the url to the web browser >>
-#@+node:tbrown.20110219154422.37469: *3* recursiveUNLSearch
-def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
-    """try and move to unl in the commander c
-    
-    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
-          how fast we will recurse.  So it should default to 0 (zero).
-    """
-
-    def moveToP(c, p):
-        c.expandAllAncestors(p) # 2009/11/07
-        c.selectPosition(p)
-        c.redraw()
-        c.frame.bringToFront()
-
-    if depth == 0:
-        nds = c.rootPosition().self_and_siblings()
-        unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
-        # drop empty parts so "-->node name" works
-    else:
-        nds = p.children()
-
-    for i in nds:
-
-        if unlList[depth] == i.h:
-
-            if depth+1 == len(unlList):  # found it
-                moveToP(c, i)
-                return True, maxdepth, maxp
-            else:
-                if maxdepth < depth+1:
-                    maxdepth = depth+1
-                    maxp = i.copy()
-                found, maxdepth, maxp = g.recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp)
-                if found:
-                    return found, maxdepth, maxp
-                # else keep looking through nds
-
-    if depth == 0 and maxp:  # inexact match
-        moveToP(c, maxp)
-        g.es('Partial UNL match')
-
-    return False, maxdepth, maxp
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file
 def is_binary_file (f):
 
@@ -1988,13 +1965,13 @@ def openWithFileName(fileName,old_c=None,
         g.doHook('open0')
         theFile,isZipped = g.openLeoOrZipFile(fileName)
         if theFile or force:
-            c = app.newCommander(fileName)
+            c = app.newCommander(fileName,gui=gui)
             c.isZipped = isZipped
     else:
         theFile = None
         # Never open a non-existent file during unit testing.
         if (force and not g.unitTesting) or g.os_path_exists(fn):
-            c = g.app.newCommander(fileName=None)
+            c = g.app.newCommander(fileName=None,gui=gui)
             assert c
             g.initWrapperLeoFile(c,fn)
             # Note: c.rootPosition() may not exist yet.
@@ -2146,22 +2123,6 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@+node:ekr.20090520055433.5946: *4* g.openFileCommanderAndFrame (no longer used)
-if 0:
-    def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
-    
-        # Open the file in binary mode to allow 0x1a in bodies & headlines.
-        theFile,isZipped = g.openLeoOrZipFile(fileName)
-        
-        if not theFile:
-            return None,None
-    
-        # This call will take 3/4 sec. to open a file from the leoBridge.
-        # This is due to imports in c.__init__
-        c = app.newCommander(fileName,relativeFileName)
-    
-        c.isZipped = isZipped
-        return c,theFile
 #@+node:ekr.20070412082527: *4* g.openLeoOrZipFile
 def openLeoOrZipFile (fileName):
 
@@ -2287,6 +2248,48 @@ def readlineForceUnixNewline(f,fileName=None):
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0:-2] + "\n"
     return s
+#@+node:tbrown.20110219154422.37469: *3* g.recursiveUNLSearch
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+    """try and move to unl in the commander c
+    
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how fast we will recurse.  So it should default to 0 (zero).
+    """
+
+    def moveToP(c, p):
+        c.expandAllAncestors(p) # 2009/11/07
+        c.selectPosition(p)
+        c.redraw()
+        c.frame.bringToFront()
+
+    if depth == 0:
+        nds = c.rootPosition().self_and_siblings()
+        unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
+        # drop empty parts so "-->node name" works
+    else:
+        nds = p.children()
+
+    for i in nds:
+
+        if unlList[depth] == i.h:
+
+            if depth+1 == len(unlList):  # found it
+                moveToP(c, i)
+                return True, maxdepth, maxp
+            else:
+                if maxdepth < depth+1:
+                    maxdepth = depth+1
+                    maxp = i.copy()
+                found, maxdepth, maxp = g.recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp)
+                if found:
+                    return found, maxdepth, maxp
+                # else keep looking through nds
+
+    if depth == 0 and maxp:  # inexact match
+        moveToP(c, maxp)
+        g.es('Partial UNL match')
+
+    return False, maxdepth, maxp
 #@+node:ekr.20031218072017.3124: *3* g.sanitize_filename
 def sanitize_filename(s):
 

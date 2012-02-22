@@ -7101,5 +7101,21 @@ def computeMachineName():
     # g.trace(name)
 
     return name
+#@+node:ekr.20090520055433.5946: *3* g.openFileCommanderAndFrame (no longer used)
+if 0:
+    def openFileCommanderAndFrame(old_c,gui,fileName,relativeFileName):
+    
+        # Open the file in binary mode to allow 0x1a in bodies & headlines.
+        theFile,isZipped = g.openLeoOrZipFile(fileName)
+        
+        if not theFile:
+            return None,None
+    
+        # This call will take 3/4 sec. to open a file from the leoBridge.
+        # This is due to imports in c.__init__
+        c = app.newCommander(fileName,relativeFileName)
+    
+        c.isZipped = isZipped
+        return c,theFile
 #@-all
 #@-leo

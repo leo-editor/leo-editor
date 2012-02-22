@@ -21,6 +21,7 @@ def getCoreList():
         ('leoCache',        ''),
         ('leoChapters',     ''),
         ('leoCommands',     ''),
+        ('leoConfig',       ''),
         ('leoEditCommands', ''),
         ('leoFileCommands', 'E1120,E1101'),
             # E1120: no value passed for param.
@@ -156,10 +157,11 @@ recentCoreList = (
         # ('runLeo',            ''),
         # ('leoApp',            ''),
         # ('leoAtFile',         ''),
-        ('leoBridge',       ''),
+        # ('leoBridge',       ''),
         # ('leoCache',          ''),
         # ('leoChapters',       ''),
         # ('leoCommands',       ''),
+        ('leoConfig',           ''),
         # ('leoEditCommands',   ''),
         # ('leoFind',           ''),
         # ('leoFrame',          'R0923'),
@@ -184,7 +186,7 @@ recentCoreList = (
         # ('leoRst',            ''),
         # ('leoShadow',         ''),
         # ('leoTangle',         ''),
-        ('leoTest',           ''),
+        # ('leoTest',           ''),
         # ('leoUndo',           'W0511'),
             # WO511: TODO 
 )

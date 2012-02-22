@@ -13973,7 +13973,7 @@ def __init__(self,fileName,relativeFileName=None,gui=None):
     self._currentPosition = self.nullPosition()
     self._topPosition     = self.nullPosition()
     self.frame = None
-    self.gui = gui or g.app.gui ###
+    self.gui = gui or g.app.gui
     self.ipythonController = None
         # Set only by the ipython plugin.
     
@@ -13991,7 +13991,7 @@ def __init__(self,fileName,relativeFileName=None,gui=None):
     g.app.config.setIvarsFromSettings(c)
 
     # Initialize all subsidiary objects, including subcommanders.
-    c.initObjects(gui or g.app.gui)
+    c.initObjects(self.gui)
     
     assert c.frame
     assert c.frame.c
@@ -14181,7 +14181,6 @@ def initObjects(self,gui):
         g.doHook("before-create-leo-frame",c=c)
 
     self.frame = gui.createLeoFrame(c,title)
-
     assert self.frame
     assert self.frame.c == c
     
@@ -14238,7 +14237,7 @@ def finishCreate (self):
     
     c = self ; k = c.k ; p = c.p
     
-    assert self.gui
+    assert c.gui
     assert k
 
     c.frame.finishCreate()
@@ -14257,7 +14256,7 @@ def finishCreate (self):
 
     k.finishCreate()
     
-    if not g.app.gui.isNullGui:
+    if not c.gui.isNullGui:
         g.registerHandler('idle',c.idle_focus_helper)
         
     c.frame.menu.finishCreate()
