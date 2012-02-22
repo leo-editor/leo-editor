@@ -12043,7 +12043,7 @@ finally:
 table = (
     ( 50,'c.'),
     (  3,'p.ins'),
-    ( 12,'g.com'),
+    ( 20,'g.print'),
 )
 
 ac = c.k.autoCompleter

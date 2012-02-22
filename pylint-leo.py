@@ -17,6 +17,7 @@ def getCoreList():
         ('runLeo',          ''),
         ('leoApp',          ''),
         ('leoAtFile',       ''),
+        ('leoBridge',       ''),
         ('leoCache',        ''),
         ('leoChapters',     ''),
         ('leoCommands',     ''),
@@ -155,6 +156,7 @@ recentCoreList = (
         # ('runLeo',            ''),
         # ('leoApp',            ''),
         # ('leoAtFile',         ''),
+        ('leoBridge',       ''),
         # ('leoCache',          ''),
         # ('leoChapters',       ''),
         # ('leoCommands',       ''),
@@ -170,7 +172,7 @@ recentCoreList = (
 
         # ('leoGui',            ''),
         # ('leoImport',         ''),
-        ('leoKeys',           ''),
+        # ('leoKeys',           ''),
         # ('leoNodes',          ''),
         # ('leoPlugins',        ''),
         # ('leoFileCommands',   'E1120,E1101'),
@@ -182,7 +184,7 @@ recentCoreList = (
         # ('leoRst',            ''),
         # ('leoShadow',         ''),
         # ('leoTangle',         ''),
-        # ('leoTest',           ''),
+        ('leoTest',           ''),
         # ('leoUndo',           'W0511'),
             # WO511: TODO 
 )

@@ -1048,14 +1048,14 @@ class LoadManager:
         except:
             print("Exception getting load directory")
             raise
-    #@+node:ekr.20120213164030.10697: *5* lm.computeMachineName (not used)
+    #@+node:ekr.20120213164030.10697: *5* lm.computeMachineName
     def computeMachineName(self):
         
         '''Return the name of the current machine, i.e, HOSTNAME.'''
         
         # This is prepended to leoSettings.leo or myLeoSettings.leo
         # to give the machine-specific setting name.
-        # ??? How can this be worth doing???
+        # How can this be worth doing??
         
         try:
             import os
@@ -1488,7 +1488,7 @@ class LoadManager:
 
         trace = False
         lm = self
-        g.computeStandardDirectories()
+        lm.computeStandardDirectories()
         lm.adjustSysPath()
 
         # Scan the options as early as possible.

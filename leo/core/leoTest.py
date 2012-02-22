@@ -1401,12 +1401,11 @@ class TestManager:
         trace = False and not g.unitTesting
         verbose = False
         c,tm = self.c,self
-        
-        if trace: g.trace('all: %s marked: %s %s' % (all,marked,p.h))
-       
         p = c.rootPosition() if all else c.p
         limit = None if all else p.nodeAfterTree()
         seen,result = [],[]
+        
+        if trace: g.trace('all: %s marked: %s %s' % (all,marked,p.h))
         
         # An important special case: add the *selected* @test or @suite node,
         # regard regardless of all other considerations.
@@ -1441,7 +1440,7 @@ class TestManager:
             else:
                 assert marked and p.isMarked() and p.hasChildren()
                 assert not tm.isTestNode(p)
-                assert not tm.isWuiteNode(p)
+                assert not tm.isSuiteNode(p)
                 # Add all @test or @suite nodes in p's subtree,
                 # *regardless* of whether they are marked or not.
                 if trace: g.trace('adding subtree of marked',p.h)
@@ -1452,7 +1451,7 @@ class TestManager:
                         if trace: g.trace('already seen',p.h)
                         p.moveToNodeAfterTree()
                         continue
-                    seen.add(p.v)
+                    seen.append(p.v)
                     if g.match_word(p.h,0,'@ignore'):
                         # Support @ignore here.
                         if trace and verbose:

@@ -93,8 +93,8 @@ class bridgeController:
 
         trace = False
         if not self.isValidPython(): return
-        #@+<< import leoGlobals and leoApp >>
-        #@+node:ekr.20070227093629.1: *4* << import leoGlobals and leoApp >>
+        #@+<< initLeo imports >>
+        #@+node:ekr.20070227093629.1: *4* << initLeo imports >>
         # Import leoGlobals, but do NOT set g.
         try:
             import leo.core.leoGlobals as leoGlobals
@@ -113,9 +113,6 @@ class bridgeController:
         assert(g.app)
         g.app.leoID = None
 
-        # Set leoGlobals.g here, rather than in leoGlobals.
-        leoGlobals.g = leoGlobals
-        #@-<< import leoGlobals and leoApp >>
         g.app.silentMode = self.silent # 2011/11/02.
         if trace:
             import sys
@@ -124,10 +121,7 @@ class bridgeController:
         # 2010/09/09: create the g.app.pluginsController here.
         import leo.core.leoPlugins as leoPlugins
         leoPlugins.init() # Necessary. Sets g.app.pluginsController.
-        g.computeStandardDirectories()
-        if not self.getLeoID(): return
-        #@+<< import leoNodes and leoConfig >>
-        #@+node:ekr.20070227093629.2: *4* << import leoNodes and leoConfig >>
+
         try:
             import leo.core.leoNodes as leoNodes
         except ImportError:
@@ -139,7 +133,13 @@ class bridgeController:
         except ImportError:
             print("Error importing leoConfig.py")
             import traceback ; traceback.print_exc()
-        #@-<< import leoNodes and leoConfig >>
+
+        # Set leoGlobals.g here, rather than in leoGlobals.
+        leoGlobals.g = leoGlobals
+        #@-<< initLeo imports >>
+        g.app.loadManager = leoApp.LoadManager()
+        g.app.loadManager.computeStandardDirectories()
+        if not self.getLeoID(): return
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
         g.app.config = leoConfig.configClass()
@@ -235,7 +235,7 @@ class bridgeController:
         import sys
 
         g = self.g ; tag = ".leoID.txt"
-        homeDir = g.app.homeLeoDir # Was homeDir.
+        homeDir = g.app.homeLeoDir
         globalConfigDir = g.app.globalConfigDir
         loadDir = g.app.loadDir
 
@@ -351,7 +351,7 @@ class bridgeController:
         '''Create a commander and frame for the given file.
         Create a new frame if the fileName is empty or non-exisent.'''
 
-        trace = True
+        trace = False
         g = self.g
         
         if 0:

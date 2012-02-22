@@ -334,7 +334,8 @@ class ParserBaseClass:
             h = os.environ('HOSTNAME')
             h == 'bob' and h != 'harry' and h == 'joe'"""
 
-        h = g.computeMachineName()
+        lm = g.app.loadManager
+        h = lm.computeMachineName()
         names = name.split(',')
 
         for n in names:
@@ -1360,9 +1361,10 @@ class configClass:
         self.myHomeConfigFile, and self.machineConfigFile."""
 
         trace = False and not g.unitTesting
+        lm = g.app.loadManager
         settingsFile = 'leoSettings.leo'
         mySettingsFile = 'myLeoSettings.leo'
-        machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
+        machineConfigFile = lm.computeMachineName() + 'LeoSettings.leo'
 
         # New in Leo 4.5 b4: change homeDir to homeLeoDir
         for ivar,theDir,fileName in (
