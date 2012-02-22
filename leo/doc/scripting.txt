@@ -444,8 +444,8 @@ Here are the most useful setters of the Commands and position classes.
 The following setters of the position class regardless of whether
 p is the presently selected position::
 
-    c.setBodyString(p,s)  # Sets the body text of p.
-    c.setHeadString(p,s)  # Sets the headline text of p.
+    p.b = s  # Sets the body text of p.
+    p.h = s  # Sets the headline text of p.
 
 Moving nodes::
 
@@ -687,12 +687,9 @@ The following code will find a position p2 having the same vnode as p::
 .. @+node:ekr.20101124083644.5050: *4* g.openWithFileName
 **g.openWithFileName** opens a .leo file. For example::
 
-    ok, frame = g.openWithFileName(fileName,c)
-    new_c = frame.c
+    new_c = g.openWithFileName(fileName,c)
 
-The returned frame value represents the frame of the visual
-outline.  frame.c is the frame's commander, so new_c is
-the commander of the newly-created outline.
+new_c is the commander of the newly-created outline.
 .. @+node:ekr.20101124083644.5051: *4* g.getScript
 **g.getScript(c,p)** returns the expansion of p's body text. (If p is the
 presently selected node and there is a text selection, g.getScript returns the
@@ -973,13 +970,14 @@ and Edit Headline commands. Those commands require interaction with the user.
 For example, the following batch script reads a Leo file and prints all the
 headlines in that file::
 
-    path = r"c:\prog\leoCVS\leo\test\test.leo"
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test','test.leo')
+    assert g.os_path_exists(path),path
 
     g.app.log.disable() # disable reading messages while opening the file
-    flag,newFrame = g.openWithFileName(path,None)
+    c2 = g.openWithFileName(path)
     g.app.log.enable() # re-enable the log.
 
-    for p in newFrame.c.all_positions():
+    for p in c2.all_positions():
         g.es(g.toEncodedString(p.h,"utf-8"))
 .. @+node:ekr.20080922124033.1: *4* Getting interactive input from scripts
 The following code can be run from a script to get input from the user using the minibuffer::
@@ -1114,10 +1112,15 @@ using registerHandler() avoids the problem.
 .. @+node:ekr.20110531155858.20563: *4* Creating minimal outlines
 The following script will create a minimal Leo outline::
 
-    import leo.core.leoGui as leoGui
-    nullGui = leoGui.nullGui("nullGui")
-    c2,frame = g.app.newLeoCommanderAndFrame(fileName=None,gui=nullGui)
+    if 1:
+        # Create a visible frame.
+        c2 = g.app.newCommander(fileName=None)
+    else:
+        # Create an invisible frame.
+        c2 = g.app.newCommander(fileName=None,gui=g.app.nullGui)
+
     c2.frame.createFirstTreeNode()
+    c2.redraw()
     
     # Test that the script works.
     for p in c2.all_positions():
