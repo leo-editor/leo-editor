@@ -1123,7 +1123,7 @@ try:
     import docutils
 except ImportError:
     docutils = False
-    print('docutils not present')
+    # print('docutils not present')
     
 if docutils:
     rst = c.rstCommands
