@@ -1631,7 +1631,7 @@ class leoImportCommands (scanUtility):
 
         # Return the language even if there is no colorizer mode for it.
         return language
-    #@+node:ekr.20070713075450: *3* Unit tests
+    #@+node:ekr.20070713075450: *3* Unit tests (leoImport)
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
 
     def cUnitTest(self,p,fileName=None,s=None,showTree=False):
@@ -1665,7 +1665,14 @@ class leoImportCommands (scanUtility):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.py')
 
     def rstUnitTest(self,p,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.rst')
+        try:
+            import docutils
+            # print(docutils)
+            return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.rst')
+        except ImportError:
+            docutils = False
+            print('docutils not present')
+            return None
 
     def textUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.txt')

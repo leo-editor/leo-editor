@@ -1679,7 +1679,7 @@ def guessExternalEditor(c=None):
         os.environ.get("LEO_EDITOR") or
         os.environ.get("EDITOR") or
         g.app.db and g.app.db.get("LEO_EDITOR") or
-        g.app.config.getString(c,'external_editor'))
+        c and c.config.getString('external_editor'))
 
     if editor: return editor
 

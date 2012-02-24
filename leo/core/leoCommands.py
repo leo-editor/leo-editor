@@ -8009,7 +8009,7 @@ class Commands (object):
         if not c.frame.top:
             return
 
-        if not c.frame.top.leo_master:
+        if trace and not c.frame.top.leo_master:
             g.trace(c.frame.top.leo_master)
                 
         master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master

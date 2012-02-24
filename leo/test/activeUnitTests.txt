@@ -1107,22 +1107,27 @@ if not g.isPython3: # Does not work with Python 3.x
 #@+node:ekr.20100421102506.6282: *3* @test rst.write with unicode character
 @first # -*- coding: utf-8 -*-
 
-rst = c.rstCommands
-
-name = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','rst_write_test.txt')
-
-s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-
-if g.isPython3:
-    f = open(name,'w',encoding='utf-8')
-else:
-    f = open(name,'w')
-    s = rst.encode(s)
-
-f.write(s)
-f.close()
-
-assert g.os_path_exists(name)
+try:
+    import docutils
+except ImportError:
+    docutils = False
+    print('docutils not present')
+    
+if docutils:
+    rst = c.rstCommands
+    name = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','rst_write_test.txt')
+    s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    
+    if g.isPython3:
+        f = open(name,'w',encoding='utf-8')
+    else:
+        f = open(name,'w')
+        s = rst.encode(s)
+    
+    f.write(s)
+    f.close()
+    
+    assert g.os_path_exists(name)
 #@+node:ekr.20071113194858: ** Organized by file
 # All the following files have problems when run with Alt-5.
 #@+node:ekr.20100223123103.5382: *3* @test expand/contract-pane
@@ -18762,16 +18767,15 @@ if not g.app.isExternalUnitTest:
 No file is written.
 '''
 
-# g.cls()
+try:
+    import docutils
+    import reportlab.platypus
+except ImportError:
+    # print('skipping test')
+    docutils = None
 
-if g.isPython3:
-    
-    print('\n"%s": not tested' % (p.h))
-
-else:
-
+if docutils:
     path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
-    
     module = g.importFromPath(name = 'leo_pdf.py',
         path=path,
         pluginName = 'leo_pdf',
@@ -18782,7 +18786,6 @@ else:
     result = c.rstCommands.writeToDocutils(s,'.pdf')
     # print(result)
     assert result,result
-    
 #@+node:ekr.20111121171738.3932: *3* Import tests
 #@+node:ekr.20111105221757.3831: *4* @test createImportParent
 files = ('x.h','x.cpp')
@@ -18980,7 +18983,8 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
-#@+node:ekr.20111103213154.3825: *4* @test imports needed for unit tests
+#@+node:ekr.20111103213154.3825: *4* @@@test imports needed for unit tests
+# It's better simply to disable unit tests if docutils is not present.
 import docutils
 #@+node:ekr.20111105065243.3837: *4* @test removeBlankLinesTokens (rst)
 # Important: at present only the rstScanner sets ignoreBlankLines == True
@@ -19448,7 +19452,7 @@ sd = g.app.config.localShortcutsDict
 d = sd.get(c.hash(),{})
 try:
     sd[c.hash()] = {}
-    key,aList = g.app.config.getShortcut(c,'new')
+    key,aList = c.config.getShortcut('new')
     # print(key,aList)
     assert aList,'key: %s' % (key)
 finally:
