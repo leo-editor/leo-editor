@@ -1671,7 +1671,7 @@ class leoImportCommands (scanUtility):
             return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.rst')
         except ImportError:
             docutils = False
-            print('docutils not present')
+            # print('docutils not present')
             return None
 
     def textUnitTest(self,p,fileName=None,s=None,showTree=False):

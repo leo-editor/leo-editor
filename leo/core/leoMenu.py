@@ -1400,7 +1400,7 @@ class leoMenu:
 
         c = self.c
         recentFilesMenu = self.getMenu("Recent Files...")
-        if not recentFilesMenu:
+        if not recentFilesMenu and not g.unitTesting:
             g.trace('Recent Files Menu does not exist',g.callers())
             return
 

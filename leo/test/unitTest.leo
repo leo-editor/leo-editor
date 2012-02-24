@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.41" body_secondary_ratio="0.53">
+<globals body_outline_ratio="0.56" body_secondary_ratio="0.53">
 	<global_window_position top="58" left="221" height="987" width="1134"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -144,7 +144,8 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016" a="M"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735805000000302e382e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285508302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735505302e382e3671057d71065808000000616e6e6f7461746571077d7108735508302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"
+expanded="ekr.20050120095423,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20120217052728.3921"><vh>Failing unit tests</vh>
 <v t="ekr.20111210175541.3957"><vh>@test refresh @shadow links clones</vh>
@@ -568,7 +569,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8,0,8,3"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>

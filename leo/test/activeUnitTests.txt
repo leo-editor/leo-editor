@@ -18104,7 +18104,7 @@ def removeLeadingWs (code):
 #@+node:ekr.20100131171342.5497: *3* @test detect_urls.py
 import leo.plugins.detect_urls as detect_urls
 
-print(c.frame.body.bodyCtrl)
+# print(c.frame.body.bodyCtrl)
 w = c.frame.body.bodyCtrl
 s = w.getAllText()
 

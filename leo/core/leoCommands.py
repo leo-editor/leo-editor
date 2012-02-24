@@ -1514,10 +1514,11 @@ class Commands (object):
         fn = c.openWithTempFilePath(p,ext)
 
         try:
-            if g.os_path_exists(fn):
-                g.es('recreating:  ',g.shortFileName(fn),color='red')
-            else:
-                g.es('creating:  ',g.shortFileName(fn),color='blue')
+            if not g.unitTesting:
+                if g.os_path_exists(fn):
+                    g.es('recreating:  ',g.shortFileName(fn),color='red')
+                else:
+                    g.es('creating:  ',g.shortFileName(fn),color='blue')
             f = open(fn,'w')
             # Convert s to whatever encoding is in effect.
             d = c.scanAllDirectives(p)
@@ -1533,7 +1534,8 @@ class Commands (object):
             f.close()
             try:
                 time = g.os_path_getmtime(fn)
-                if time: g.es('time: ',time)
+                if time and not g.unitTesting:
+                    g.es('time: ',time)
             except:
                 time = None
 
