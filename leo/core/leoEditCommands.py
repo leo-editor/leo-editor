@@ -6560,16 +6560,24 @@ class editFileCommandsClass (baseEditCommandsClass):
                 clone = p.clone()
                 clone.moveToLastChildOf(parent)
     #@+node:ekr.20070921070101: *4* createHiddenCommander (editFileCommandsClass)
-    def createHiddenCommander(self,fileName):
+    def createHiddenCommander(self,fn):
 
-        # Read the file into a hidden commander (Similar to g.openWithFileName).
-        # import leo.core.leoGui as leoGui
+        '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
+        
         import leo.core.leoCommands as leoCommands
+        lm = g.app.loadManager
 
-        c2 = leoCommands.Commands(fileName,gui=g.app.nullGui)
-        theFile,c2.isZipped = g.openLeoOrZipFile(fileName)
+        c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
+        zipped = lm.isZippedFile(fn)
+
+        if lm.isLeoFile(fn) and g.os_path_exists(fn):
+            if zipped: theFile = lm.openZipFile(fn)
+            else:      theFile = lm.openLeoFile(fn)
+        else:          theFile = None
+
         if theFile:
-            c2.fileCommands.openLeoFile(theFile,fileName,readAtFileNodesFlag=True,silent=True)
+            c2.fileCommands.openLeoFile(theFile,fn,
+                readAtFileNodesFlag=True,silent=True)
             return c2
         else:
             return None

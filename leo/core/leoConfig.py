@@ -456,14 +456,6 @@ class ParserBaseClass:
         while p and p != after:
             self.debug_count += 1
             h = p.h
-            # if trace:
-                # if p.h==after.h:
-                    # val = p != after
-                    # g.trace('*' * 10, 'terminating via headString',p,after)
-                    # return
-                # g.trace(self.debug_count,h)
-                # if self.debug_count >= 1000:
-                    # g.trace('*'*10,'terminating!') ; return
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -483,7 +475,6 @@ class ParserBaseClass:
                             p.moveToThreadNext()
                             break
             else:
-                # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
     #@+node:ekr.20070926142312: *5* dumpMenuList
     def dumpMenuList (self,aList,level=0):
@@ -1495,7 +1486,7 @@ class configClass:
                 return p.copy()
 
         return c.nullPosition()
-    #@+node:ekr.20051011105014: *4* exists (g.app.config) (rewritten)
+    #@+node:ekr.20051011105014: *4* exists (g.app.config)
     def exists (self,c,setting,kind):
 
         '''Return true if a setting of the given kind exists, even if it is None.'''
@@ -1511,22 +1502,6 @@ class configClass:
             else:
                 return False
 
-        # if c:
-            # d = self.localOptionsDict.get(c.hash(),{})
-            # if d:
-                # junk,found = self.getValFromDict(d,setting,kind)
-                # if found: return True
-
-        # for d in self.localOptionsList:
-            # junk,found = self.getValFromDict(d,setting,kind)
-            # if found: return True
-
-        # for d in self.dictList:
-            # junk,found = self.getValFromDict(d,setting,kind)
-            # if found: return True
-
-        # # g.trace('does not exist',setting,kind)
-        # return False
     #@+node:ekr.20041117083141: *4* get & allies (g.app.config)
     def get (self,c,setting,kind):
 

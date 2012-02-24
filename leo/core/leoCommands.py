@@ -1177,6 +1177,8 @@ class Commands (object):
     def new (self,event=None,gui=None):
 
         '''Create a new Leo window.'''
+        
+        lm = g.app.loadManager
 
         # Send all log messages to the new frame.
         g.app.setLog(None)
@@ -1192,8 +1194,8 @@ class Commands (object):
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
             # Resize the _new_ frame.
         c.frame.createFirstTreeNode()
-        g.createMenu(c)
-        g.finishOpen(c)
+        lm.createMenu(c)
+        lm.finishOpen(c)
         g.app.writeWaitingLog(c)
         c.setLog()
         c.redraw()

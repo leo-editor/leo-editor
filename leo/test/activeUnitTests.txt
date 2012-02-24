@@ -9772,7 +9772,9 @@ assert s[i:j] == 'xy_z5','got %s' % s[i:j]
 val = g.guessExternalEditor(c)
 assert val,'no val' # This can be different on different platforms.
 #@+node:ekr.20101021205258.6010: *4* @test g.makeAllNonExistentDirectories
-#@+node:ekr.20100131180007.5417: *4* @test g.openLeoOrZipFile
+#@+node:ekr.20100131180007.5417: *4* @@@test g.openLeoOrZipFile
+# This method no longer exists.
+
 import zipfile
 
 # Create a zip file for testing.

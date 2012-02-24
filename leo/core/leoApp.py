@@ -2146,11 +2146,11 @@ class LoadManager:
         # Phase 3: Complete the initialization.
         g.app.writeWaitingLog(c)
         c.setLog()
-        g.createMenu(c,fn)
-        g.finishOpen(c)
+        lm.createMenu(c,fn)
+        lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10405: *6* LM.createMenu
-    def createMenu(self,c,fn):
+    def createMenu(self,c,fn=None):
 
         # Create the menu as late as possible so it can use user commands.
         lm = self
