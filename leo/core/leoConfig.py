@@ -8,9 +8,7 @@
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
 
-# import copy
 import sys
-import zipfile
 #@-<< imports >>
 
 #@+<< class ParserBaseClass >>
@@ -430,20 +428,23 @@ class ParserBaseClass:
                 p.moveToThreadNext()
 
         # g.trace('localFlag',self.localFlag,c)
-        if g.new_config:
-            self.set(p,kind='menus',name='menus',val=aList)
-            if not g.app.config.menusList:
-                g.app.config.menusList = aList
-                g.app.config.menusFileName = c.shortFileName() if c else '<no settings file>'
-        else:
-            if self.localFlag:
-                self.set(p,kind='menus',name='menus',val=aList)
-            else:
-                if False and not g.app.unitTesting and not g.app.silentMode:
-                    s = 'using menus from: %s' % c.shortFileName()
-                    g.es_print(s,color='blue')
-                g.app.config.menusList = aList
-                g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
+        #if g.new_config:
+            
+        self.set(p,kind='menus',name='menus',val=aList)
+        if not g.app.config.menusList:
+            g.app.config.menusList = aList
+            name = c.shortFileName() if c else '<no settings file>'
+            g.app.config.menusFileName = name
+                
+        # else:
+            # if self.localFlag:
+                # self.set(p,kind='menus',name='menus',val=aList)
+            # else:
+                # if False and not g.app.unitTesting and not g.app.silentMode:
+                    # s = 'using menus from: %s' % c.shortFileName()
+                    # g.es_print(s,color='blue')
+                # g.app.config.menusList = aList
+                # g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
     #@+node:ekr.20070926141716: *5* doItems
     def doItems (self,p,aList):
 
@@ -1087,13 +1088,16 @@ class ParserBaseClass:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+                
+        # Return the raw dict, unmerged.
+        return self.shortcutsDict,self.settingsDict
 
-        if g.new_config:
-            # Return the raw dict, unmerged.
-            return self.shortcutsDict,self.settingsDict
-        else:
-            shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
-            return shortcutsDict,self.settingsDict
+        # if g.new_config:
+            # # Return the raw dict, unmerged.
+            # return self.shortcutsDict,self.settingsDict
+        # else:
+            # shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
+            # return shortcutsDict,self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError
     def valueError (self,p,kind,name,val):
 
@@ -1111,8 +1115,7 @@ class ParserBaseClass:
 #@+node:ekr.20041119203941: ** class configClass (g.app.config)
 class configClass:
     """A class to manage configuration settings."""
-    
-    #### This can all go away when new_config is true.
+
     #@+<< configClass class data >>
     #@+node:ekr.20041122094813: *3* << configClass class data >> (g.app.config)
     #@+others
@@ -1230,31 +1233,6 @@ class configClass:
         ("write_strips_blank_lines","bool",False),
     )
     #@-others
-
-    if False: #### g.new_config:
-        pass #### Called during starup.
-    else:
-        dictList = [ivarsDict,encodingIvarsDict,defaultsDict]
-        # List of dictionaries to search for hard-coded values.
-        # Order not too important.
-
-        # All these horrors are going away.
-        immutable_leo_settings_shortcuts_dict = {}
-            # The initial shortcut settings in leoSettings.leo.
-            # New in Leo 4.10.
-        immutable_my_leo_settings_shortcuts_dict = {}
-            # The initial shortcut settings in myLeoSettings.leo.
-            # New in Leo 4.10.
-        localOptionsDict = {}
-            # Keys are commanders.  Values are optionsDicts.
-        localShortcutsDict = {}
-            # Keys are commanders.  Values are settings dicts created by make_shortcuts_dicts.
-            # New in Leo 4.10.
-        localOptionsList = []
-
-        # warningsDict = {}
-            # Keys are setting names, values are type names.
-            # Used by get() or allies.
     #@-<< configClass class data >>
 
     #@+others
@@ -1281,8 +1259,8 @@ class configClass:
         self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
         self.enabledPluginsString = '' 
-        self.globalConfigFile = None # Set in initSettingsFiles
-        self.homeFile = None # Set in initSettingsFiles
+        #### self.globalConfigFile = None # Set in initSettingsFiles
+        #### self.homeFile = None # Set in initSettingsFiles
         self.inited = False
         self.menusList = []
         self.menusFileName = ''
@@ -1292,9 +1270,9 @@ class configClass:
             self.modeCommandsDict = g.TypedDict(
                 name = 'modeCommandsDict',
                 keyType = type('commandName'),valType = g.TypedDictOfLists)
-        self.myGlobalConfigFile = None
-        self.myHomeConfigFile = None
-        self.machineConfigFile = None
+        #### self.myGlobalConfigFile = None
+        #### self.myHomeConfigFile = None
+        #### self.machineConfigFile = None
         self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
         self.write_recent_files_as_needed = False # Will be set later.
         self.silent = g.app.silentMode
@@ -1306,7 +1284,10 @@ class configClass:
 
         self.initDicts()
         self.initIvarsFromSettings()
-        self.initSettingsFiles()
+        # if g.new_config:
+            # pass
+        # else:
+            # self.initSettingsFiles()
         self.initRecentFiles()
     #@+node:ekr.20041227063801.2: *4* initDicts
     def initDicts (self):
@@ -1370,44 +1351,6 @@ class configClass:
     def initRecentFiles (self):
 
         self.recentFiles = []
-    #@+node:ekr.20041117083857: *4* initSettingsFiles
-    def initSettingsFiles (self):
-
-        """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
-        self.myHomeConfigFile, and self.machineConfigFile."""
-
-        trace = False and not g.unitTesting
-        lm = g.app.loadManager
-        settingsFile = 'leoSettings.leo'
-        mySettingsFile = 'myLeoSettings.leo'
-        machineConfigFile = lm.computeMachineName() + 'LeoSettings.leo'
-
-        # New in Leo 4.5 b4: change homeDir to homeLeoDir
-        for ivar,theDir,fileName in (
-            ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
-            ('homeFile',            g.app.homeLeoDir,       settingsFile),
-            ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
-            #non-prefixed names take priority over prefixed names
-            #### ('myHomeConfigFile',    g.app.homeLeoDir,   g.app.homeSettingsPrefix + mySettingsFile),
-            ('myHomeConfigFile',    g.app.homeLeoDir,   mySettingsFile),
-            #### ('machineConfigFile',   g.app.homeLeoDir,   g.app.homeSettingsPrefix + machineConfigFile),
-            ('machineConfigFile',   g.app.homeLeoDir,   machineConfigFile),
-        ):
-            # The same file may be assigned to multiple ivars:
-            # readSettingsFiles checks for such duplications.
-            path = g.os_path_join(theDir,fileName)
-            if g.os_path_exists(path):
-                setattr(self,ivar,path)
-            #else:
-                #if the path does not exist, only set to None if the ivar isn't already set.
-                #dan: IMO, it's better to set the defaults to None in configClass.__init__().
-                #     This avoids the creation of ivars in odd (non __init__) places.
-                #setattr(self,ivar, getattr(self,ivar,None))
-        if trace:
-            g.trace('global file:  ',self.globalConfigFile)
-            g.trace('home file:    ',self.homeFile)
-            g.trace('myGlobal file:',self.myGlobalConfigFile)
-            g.trace('myHome file:  ',self.myHomeConfigFile)
     #@+node:ekr.20120122070219.10162: *4* make_shortcuts_dicts (g.app.config) & helpers
     def make_shortcuts_dicts (self,c,d,localFlag):
         
@@ -1569,27 +1512,38 @@ class configClass:
                 return p.copy()
 
         return c.nullPosition()
-    #@+node:ekr.20051011105014: *4* exists (g.app.config)
+    #@+node:ekr.20051011105014: *4* exists (g.app.config) (rewritten)
     def exists (self,c,setting,kind):
 
         '''Return true if a setting of the given kind exists, even if it is None.'''
-
+        
         if c:
-            d = self.localOptionsDict.get(c.hash(),{})
+            return c.config.exists(setting,kind)
+        else:
+            lm = g.app.loadManager
+            d = lm.globalSettingsDict
             if d:
                 junk,found = self.getValFromDict(d,setting,kind)
-                if found: return True
+                return found
+            else:
+                return False
 
-        for d in self.localOptionsList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
+        # if c:
+            # d = self.localOptionsDict.get(c.hash(),{})
+            # if d:
+                # junk,found = self.getValFromDict(d,setting,kind)
+                # if found: return True
 
-        for d in self.dictList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
+        # for d in self.localOptionsList:
+            # junk,found = self.getValFromDict(d,setting,kind)
+            # if found: return True
 
-        # g.trace('does not exist',setting,kind)
-        return False
+        # for d in self.dictList:
+            # junk,found = self.getValFromDict(d,setting,kind)
+            # if found: return True
+
+        # # g.trace('does not exist',setting,kind)
+        # return False
     #@+node:ekr.20041117083141: *4* get & allies (g.app.config)
     def get (self,c,setting,kind):
 
@@ -1598,73 +1552,74 @@ class configClass:
         trace = False and not g.unitTesting
         verbose = False
         
-        if g.new_config:
-            lm = g.app.loadManager
-            # It *is* valid to call this method: it returns the global settings.
-            if c:
-                print('g.app.config.get ***** call c.config.getX when c is available')
-                print('g.app.config.get',setting,kind,g.callers())
-        
-            d = lm.globalSettingsDict
-            if d:
-                assert g.isTypedDict(d),d
-                val,junk = self.getValFromDict(d,setting,kind)
-                if trace:
-                    print('g.app.config.get %30s %s' % (setting,val))
-                return val
-            else:
-                if trace:
-                    print('g.app.config.get %30s **no d, returning None' % (setting))
-                return None
+        # if g.new_config:
             
+        lm = g.app.loadManager
+        # It *is* valid to call this method: it returns the global settings.
+        if c:
+            print('g.app.config.get ***** call c.config.getX when c is available')
+            print('g.app.config.get',setting,kind,g.callers())
+
+        d = lm.globalSettingsDict
+        if d:
+            assert g.isTypedDict(d),d
+            val,junk = self.getValFromDict(d,setting,kind)
+            if trace:
+                print('g.app.config.get %30s %s' % (setting,val))
+            return val
         else:
-            isLeoSettings = c and c.shortFileName().lower().endswith('leosettings.leo')
-        
-            # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-            if c and not isLeoSettings:
-                if g.new_config:
-                    pass
-                else:
-                    # For the local .leo file.
-                    d = self.localOptionsDict.get(c.hash(),{})
-                    if d:
-                        val,junk = self.getValFromDict(d,setting,kind)
-                        if val is not None:
-                            if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
-                            return val
-        
-            for d in self.localOptionsList:
-                # For myLeoSettings.leo and leoSettings.leo.
-                val,junk = self.getValFromDict(d,setting,kind)
-                if val is not None:
-                    if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
-                    return val
-        
-            for d in self.dictList:
-                # For hard-coded options...
-                val,junk = self.getValFromDict(d,setting,kind)
-                if val is not None:
-                    if trace:
-                        g.trace('%-7s %45s %s' % ('default',setting,val))
-                    return val
-        
-            # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-            if c and isLeoSettings:
-                if g.new_config:
-                    pass
-                else:
-                    # For when leoSettings.leo is the local file.
-                    d = self.localOptionsDict.get(c.hash(),{})
-                    if d:
-                        val,junk = self.getValFromDict(d,setting,kind)
-                        if val is not None:
-                            if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
-                            return val
-        
-            if trace and verbose:
-                fn = c and c.shortFileName() or '<no file>'
-                g.trace(setting,None,fn)
+            if trace:
+                print('g.app.config.get %30s **no d, returning None' % (setting))
             return None
+            
+        # else:
+            # isLeoSettings = c and c.shortFileName().lower().endswith('leosettings.leo')
+        
+            # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+            # if c and not isLeoSettings:
+                # if g.new_config:
+                    # pass
+                # else:
+                    # # For the local .leo file.
+                    # d = self.localOptionsDict.get(c.hash(),{})
+                    # if d:
+                        # val,junk = self.getValFromDict(d,setting,kind)
+                        # if val is not None:
+                            # if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
+                            # return val
+        
+            # for d in self.localOptionsList:
+                # # For myLeoSettings.leo and leoSettings.leo.
+                # val,junk = self.getValFromDict(d,setting,kind)
+                # if val is not None:
+                    # if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
+                    # return val
+        
+            # for d in self.dictList:
+                # # For hard-coded options...
+                # val,junk = self.getValFromDict(d,setting,kind)
+                # if val is not None:
+                    # if trace:
+                        # g.trace('%-7s %45s %s' % ('default',setting,val))
+                    # return val
+        
+            # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+            # if c and isLeoSettings:
+                # if g.new_config:
+                    # pass
+                # else:
+                    # # For when leoSettings.leo is the local file.
+                    # d = self.localOptionsDict.get(c.hash(),{})
+                    # if d:
+                        # val,junk = self.getValFromDict(d,setting,kind)
+                        # if val is not None:
+                            # if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
+                            # return val
+        
+            # if trace and verbose:
+                # fn = c and c.shortFileName() or '<no file>'
+                # g.trace(setting,None,fn)
+            # return None
     #@+node:ekr.20041121143823: *5* getValFromDict
     def getValFromDict (self,d,setting,requestedType,warn=True):
 
@@ -1798,7 +1753,7 @@ class configClass:
             return val
         except TypeError:
             return None
-    #@+node:ekr.20041117062717.13: *4* getFontFromParams (config)
+    #@+node:ekr.20041117062717.13: *4* getFontFromParams (g.app.config)
     def getFontFromParams(self,c,family,size,slant,weight,defaultSize=12):
 
         """Compute a font from font parameters.
@@ -1844,7 +1799,7 @@ class configClass:
         # g.trace(setting,language)
 
         return language
-    #@+node:ekr.20070926070412: *4* getMenusList (c.config)
+    #@+node:ekr.20070926070412: *4* getMenusList (g.app.config)
     def getMenusList (self,c):
 
         '''Return the list of entries for the @menus tree.'''
@@ -1883,61 +1838,6 @@ class configClass:
         '''Return the list of recently opened files.'''
 
         return self.recentFiles
-    #@+node:ekr.20080917061525.3: *4* getSettingSource (g.app.config)
-    def getSettingSource (self,c,setting):
-
-        '''return the name of the file responsible for setting.'''
-
-        aList = [self.localOptionsDict.get(c.hash(),{})]
-        aList.extend(self.localOptionsList)
-        aList.extend(self.dictList)
-
-        for d in aList:
-            if d:
-                bunch = d.get(setting)
-                if bunch is not None:
-                    return bunch.path,bunch.val
-        else:
-            return 'unknown setting',None
-    #@+node:ekr.20041117062717.14: *4* getShortcut (g.app.config)
-    def getShortcut (self,c,commandName):
-
-        '''Return rawKey,accel for shortcutName'''
-        
-        trace = False and not g.unitTesting # commandName in ('new','print-bindings')
-        
-        if not c.frame.menu:
-            # Called from doPlugins.
-            g.trace('no menu: %32s' % (commandName))
-                #,'\n',g.callers(8))
-            return None,[]
-
-        key = c.frame.menu.canonicalizeMenuName(commandName)
-        key = key.replace('&','') # Allow '&' in names.
-
-        # New code: use the dicts created by merge_settings_dict.
-        table = (
-            ('local',            c and self.localShortcutsDict.get(c.hash(),{})),
-            ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
-            ('leoSettings.leo',  g.app.config.immutable_leo_settings_shortcuts_dict),
-        )
-        aList = []
-        for tag,d in table:
-            if d:
-                if trace: g.trace(tag,len(list(d.keys())))
-                aList = d.get(commandName,[])
-                if aList:
-                    for si in aList:
-                        assert isinstance(si,g.ShortcutInfo),si
-                    break
-                    
-        # It's very important to filter empty strokes here.
-        aList = [si for si in aList
-            if si.stroke and si.stroke.lower() != 'none']
-
-        if trace: g.trace('getShortcut',tag,aList)
-
-        return key,aList
     #@+node:ekr.20041117081009.4: *4* getString
     def getString (self,c,setting):
 
@@ -1956,124 +1856,33 @@ class configClass:
                 return p.copy()
         else:
             return c.nullPosition()
-    #@+node:ekr.20100616083554.5922: *3* Iterators... (g.app.config)
-    #@+node:ekr.20110210081557.15388: *4* config_iter & helper (g.app.config)
-    if g.new_config:
-        #@+<< define config_iter (new config) >>
-        #@+node:ekr.20120222103014.10314: *5* << define config_iter (new config) >>
-        def config_iter(self,c):
+    #@+node:ekr.20100616083554.5922: *3* Iterator... (g.app.config)
+    #@+node:ekr.20120222103014.10314: *4* config_iter
+    def config_iter(self,c):
 
-            '''Letters:
-              leoSettings.leo
-            D default settings
-            F loaded .leo File
-            M myLeoSettings.leo
-            '''
+        '''Letters:
+          leoSettings.leo
+        D default settings
+        F loaded .leo File
+        M myLeoSettings.leo
+        '''
 
-            lm = g.app.loadManager
-            suppressKind = ('shortcut','shortcuts','openwithtable')
-            suppressKeys = (None,'shortcut')
-            
-            d = c.config.settingsDict if c else lm.globalSettingsDict
-            for key in sorted(list(d.keys())):
-                if key not in suppressKeys:
-                    gs = d.get(key)
-                    assert g.isGeneralSetting(gs),gs
-                    if gs and gs.kind not in suppressKind:
-                        letter = lm.computeBindingLetter(gs.path)
-                        # g.trace('%3s %40s %s' % (letter,key,gs.val))
-                        yield key,gs.val,c,letter
+        lm = g.app.loadManager
+        suppressKind = ('shortcut','shortcuts','openwithtable')
+        suppressKeys = (None,'shortcut')
+        
+        d = c.config.settingsDict if c else lm.globalSettingsDict
+        for key in sorted(list(d.keys())):
+            if key not in suppressKeys:
+                gs = d.get(key)
+                assert g.isGeneralSetting(gs),gs
+                if gs and gs.kind not in suppressKind:
+                    letter = lm.computeBindingLetter(gs.path)
+                    # g.trace('%3s %40s %s' % (letter,key,gs.val))
+                    yield key,gs.val,c,letter
 
-            raise StopIteration
-            
-            
-        #@-<< define config_iter (new config) >>
-    else:
-        #@+others
-        #@+node:ekr.20120222103014.10313: *5* config_iter & helper
-        def config_iter(self,c):
-
-            '''Letters:
-              leoSettings.leo
-            D default settings
-            F loaded .leo File
-            M myLeoSettings.leo
-            '''
-
-            names = [] # Already-handled settings names.
-            result = []
-
-            if c:
-                d = self.localOptionsDict.get(c.hash(),{})
-                for name,val,letter in self.config_iter_helper(d,names,'localOptionsDict.get(c.hash)'):
-                    result.append((name,val,c,'F'),)
-
-            for d in self.localOptionsList:
-                for name,val,letter in self.config_iter_helper(d,names,'localOptionsList'):
-                    result.append((name,val,None,letter),)
-
-            for d in self.dictList:
-                for name,val,letter in self.config_iter_helper(d,names,'dictList'):
-                    result.append((name,val,None,letter),)
-
-            result.sort()
-            for z in result:
-                yield z
-
-            raise StopIteration
-        #@+node:ekr.20100616083554.5923: *6* config_iter_helper
-        def config_iter_helper (self,d,names,tag):
-
-            if not d: return []
-            
-            assert isinstance(d,g.TypedDict),d
-
-            result = []
-            suppressKind = ('shortcut','shortcuts','openwithtable')
-            
-            suppressKeys = (None,'shortcut')
-            name = d.name().lower()
-            # g.trace(tag,name)
-
-            if name.endswith('myleosettings.leo'):
-                letter = 'M'
-            elif name.endswith('leosettings.leo'):
-                letter = ' '
-            else:
-                letter = 'D' # Default setting.
-
-            for key in d.keys():
-                if key not in suppressKeys and key not in names:
-                    bunch = d.get(key)
-                    if bunch and bunch.kind not in suppressKind:
-                        names.append(key)
-                        result.append((key,bunch.val,letter),)
-
-            return result
-        #@-others
+        raise StopIteration
     #@+node:ekr.20041118084146: *3* Setters (g.app.config)
-    #@+node:ekr.20041118084146.1: *4* set (g.app.config)
-    def set (self,c,setting,kind,val):
-
-        '''Set the setting.  Not called during initialization.'''
-
-        key = self.munge(setting)
-
-        # g.trace('(g.app.config)',setting,kind,val,c)
-
-        # 2011/11/07: Multiple bug fixes.
-        if c:
-            d = self.localOptionsDict.get(c.hash(),{})
-            d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
-            self.localOptionsDict[c.hash()] = d
-        else:
-            d = self.dictList [0]
-            d[key] = g.GeneralSetting(kind,setting=key,val=val,tag='setting')
-            self.dictList[0] = d
-    #@+node:ekr.20041118084241: *4* setString
-    def setString (self,c,setting,val):
-
-        self.set(c,setting,"string",val)
     #@+node:ekr.20041228042224: *4* setIvarsFromSettings (g.app.config)
     def setIvarsFromSettings (self,c):
 
@@ -2131,161 +1940,6 @@ class configClass:
                     self.recentFiles.remove(name2)
 
             self.recentFiles.append(name)
-    #@+node:ekr.20041117093246: *3* Scanning @settings (g.app.config)
-    #@+node:ekr.20041120064303: *4* readSettingsFiles & helpers (g.app.config) (old_config)
-    def readSettingsFiles (self,fileName,verbose=True):
-
-        '''Read settings from one file of the standard settings files.'''
-        
-        trace = (False or g.trace_startup) and not g.unitTesting
-        verbose = False
-        
-        if trace: print('===== g.app.config.readSettingsFiles')
-        
-        giveMessage = (verbose and not g.app.unitTesting and
-            not self.silent and not g.app.batchMode)
-        def message(s):
-            # This occurs early in startup, so use the following.
-            if giveMessage and not g.isPython3:
-                s = g.toEncodedString(s,'ascii')
-            g.es_print(s,color='blue')
-
-        self.write_recent_files_as_needed = False # Will be set later.
-        
-        localConfigFile = self.getLocalConfigFile(fileName)
-
-        if trace and verbose:
-            message('readSettingsFiles: fileName %s localConfigFile %s' % (
-                fileName,localConfigFile))
-        
-        table = self.defineSettingsTable(fileName,localConfigFile)
-        for path,localFlag in table:
-
-            assert path and g.os_path_exists(path)
-            isZipped = path and zipfile.is_zipfile(path)
-            isLeo = isZipped or path.endswith('.leo')
-            if isLeo:
-                c = self.openSettingsFile(path)
-                if c:
-                    message('reading settings in %s' % path)
-                    self.updateSettings(c,localFlag)
-                    self.write_recent_files_as_needed = c.config.getBool(
-                        'write_recent_files_as_needed')
-                    g.app.destroyWindow(c.frame)
-                else:
-                    message('error reading settings in %s' % path)
-
-        self.readRecentFiles(localConfigFile)
-        self.inited = True
-        self.setIvarsFromSettings(None)
-    #@+node:ekr.20101021041958.6008: *5* getLocalConfigFile (g.app.config)
-    # This can't be done in initSettingsFiles because
-    # the local directory does not yet exist.
-
-    def getLocalConfigFile (self,fileName):
-
-        if not fileName:
-            return None
-
-        theDir = g.os_path_dirname(fileName)
-        path = g.os_path_join(theDir,'leoSettings.leo')
-
-        if g.os_path_exists(path):
-            return path
-        else:
-            return None
-    #@+node:ekr.20101021041958.6004: *5* defineSettingsTable (g.app.config)
-    def defineSettingsTable (self,fileName,localConfigFile):
-
-        trace = False and not g.unitTesting
-        verbose = False
-
-        global_table = (
-            (self.globalConfigFile,False),
-            (self.homeFile,False),
-            # (localConfigFile,False),
-            (self.myGlobalConfigFile,False),
-            (self.myHomeConfigFile,False),
-            (self.machineConfigFile,False),
-            # (myLocalConfigFile,False),
-            # New in Leo 4.6: the -c file is in *addition* to other config files.
-            #### (g.app.oneConfigFilename,False),
-        )
-
-        if fileName:
-            if fileName.lower().endswith('leosettings.leo'):
-                # 2011/02/28: don't read leoSettings.leo or myLeoSetings.leo twice.
-                # This allows myLeoSettings.leo to take precedence.
-                table1 = []
-            else:
-                path = g.os_path_finalize(fileName)
-                theDir = g.os_path_dirname(fileName)
-                myLocalConfigFile = g.os_path_join(theDir,'myLeoSettings.leo')
-                local_table = (
-                    (localConfigFile,False),
-                    (myLocalConfigFile,False),
-                )
-                if trace and verbose:
-                    g.trace('localConfigFile:  ',localConfigFile)
-                    g.trace('myLocalConfigFile:',myLocalConfigFile)
-        
-                table1 = [z for z in local_table if z not in global_table]
-                table1.append((path,True),)
-        else:
-            table1 = global_table
-
-        seen = [] ; table = []
-        for path,localFlag in table1:
-            if trace and verbose: g.trace('exists',g.os_path_exists(path),path)
-            if path and g.os_path_exists(path):
-                # Make sure we mark files seen no matter how they are specified.
-                path = g.os_path_realpath(g.os_path_finalize(path))
-                if path.lower() not in seen:
-                    seen.append(path.lower())
-                    table.append((path,localFlag),)
-        if trace: g.trace(repr(fileName),'table:',g.listToString(table))
-        return table
-    #@+node:ekr.20041117085625: *5* openSettingsFile  (g.app.config)
-    def openSettingsFile (self,path):
-        
-        trace = (False or g.trace_startup) and not g.unitTesting
-
-        theFile,isZipped = g.openLeoOrZipFile(path)
-        if not theFile: return None
-
-        # Similar to g.openWithFileName except it uses a null gui.
-        
-        # Changing g.app.gui here is a major hack.  It is necessary.
-        oldGui = g.app.gui
-        g.app.gui = g.app.nullGui
-        if trace and g.trace_startup:
-            print('g.app.config.openSettingsFile: g.app.gui: %s' % (g.app.gui.guiName()))
-        
-        c = g.app.newCommander(path)
-        frame = c.frame
-        frame.log.enable(False)
-        g.app.lockLog()
-        ok = c.fileCommands.openLeoFile(theFile,path,
-            readAtFileNodesFlag=False,silent=True) # closes theFile.
-        g.app.unlockLog()
-        c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
-        g.app.gui = oldGui
-        return ok and c or None
-    #@+node:ekr.20051013161232: *5* updateSettings (g.app.config)
-    def updateSettings (self,c,localFlag):
-
-        parser = SettingsTreeParser(c,localFlag)
-        shortcutsDict,settingsDict = parser.traverse()
-        
-        d = settingsDict
-        if d:
-            if localFlag:
-                self.localOptionsDict[c.hash()] = d
-            else:
-                self.localOptionsList.insert(0,d)
-                
-        if shortcutsDict and localFlag:
-            self.localShortcutsDict[c.hash()] = shortcutsDict
     #@+node:ekr.20050424114937.1: *3* Reading and writing .leoRecentFiles.txt (g.app.config)
     #@+node:ekr.20070224115832: *4* readRecentFiles & helpers
     def readRecentFiles (self,localConfigFile):

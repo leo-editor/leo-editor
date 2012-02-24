@@ -2717,37 +2717,6 @@ d.replace('a',[8,9,10])
 
 for s in sorted(d.keys()):
     print(s,d.get(s,[]))
-#@+node:ekr.20120209051836.10244: *3* @test lm.settings
-'''Construction framework for new_config code.'''
-
-# Import
-
-fn = r'c:\Users\edreamleo\ekr.leo'
-assert g.os_path_exists(fn)
-
-if g.app.isExternalUnitTest:
-    # Apparently external unit tests don't set g.app.loadManager.
-    import leo.core.leoApp as leoApp
-    lm = leoApp.LoadManager()
-else:
-    # Works when run locally.
-    # print('g.app',repr(g.app),'g.app.loadManager',repr(g.app.loadManager))
-    lm = g.app.loadManager # will be g.app.loadManager.
-    
-lm.files=[fn]
-
-if 0:
-    print(lm.computeLeoSettingsPath())
-    print(lm.computeMyLeoSettingsPath())
-
-try:
-    import leo.core.leoGlobals as g
-    g.new_config = True
-    lm.readGlobalSettingsFiles()
-        # Necessary in test to set lm.globalSettingsDict properly.
-    lm.readLocalSettings(c)
-finally:
-    g.new_config = False
 #@+node:ekr.20120215062153.14233: *3* @mark-for-unit-tests
 #@+node:ekr.20080412053100.5: *4* @settings
 #@+node:ekr.20080412053100.4: *5* @bool fixedWindow = False
@@ -14299,7 +14268,7 @@ def initConfigSettings (self):
     trace = (False or g.trace_startup) and not g.unitTesting
     c = self
 
-    if trace and g.new_config:
+    if trace:
         print('c.initConfigSettings: c.configInited: %s %s' % (
             c.configInited,c.shortFileName()))
 
@@ -16349,7 +16318,7 @@ def initConfigSettings (self):
     trace = (False or g.trace_startup) and not g.unitTesting
     c = self
 
-    if trace and g.new_config:
+    if trace:
         print('c.initConfigSettings: c.configInited: %s %s' % (
             c.configInited,c.shortFileName()))
 
@@ -17365,73 +17334,74 @@ def get (self,c,setting,kind):
     trace = False and not g.unitTesting
     verbose = False
     
-    if g.new_config:
-        lm = g.app.loadManager
-        # It *is* valid to call this method: it returns the global settings.
-        if c:
-            print('g.app.config.get ***** call c.config.getX when c is available')
-            print('g.app.config.get',setting,kind,g.callers())
-    
-        d = lm.globalSettingsDict
-        if d:
-            assert g.isTypedDict(d),d
-            val,junk = self.getValFromDict(d,setting,kind)
-            if trace:
-                print('g.app.config.get %30s %s' % (setting,val))
-            return val
-        else:
-            if trace:
-                print('g.app.config.get %30s **no d, returning None' % (setting))
-            return None
+    # if g.new_config:
         
+    lm = g.app.loadManager
+    # It *is* valid to call this method: it returns the global settings.
+    if c:
+        print('g.app.config.get ***** call c.config.getX when c is available')
+        print('g.app.config.get',setting,kind,g.callers())
+
+    d = lm.globalSettingsDict
+    if d:
+        assert g.isTypedDict(d),d
+        val,junk = self.getValFromDict(d,setting,kind)
+        if trace:
+            print('g.app.config.get %30s %s' % (setting,val))
+        return val
     else:
-        isLeoSettings = c and c.shortFileName().lower().endswith('leosettings.leo')
-    
-        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-        if c and not isLeoSettings:
-            if g.new_config:
-                pass
-            else:
-                # For the local .leo file.
-                d = self.localOptionsDict.get(c.hash(),{})
-                if d:
-                    val,junk = self.getValFromDict(d,setting,kind)
-                    if val is not None:
-                        if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
-                        return val
-    
-        for d in self.localOptionsList:
-            # For myLeoSettings.leo and leoSettings.leo.
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
-                return val
-    
-        for d in self.dictList:
-            # For hard-coded options...
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace:
-                    g.trace('%-7s %45s %s' % ('default',setting,val))
-                return val
-    
-        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-        if c and isLeoSettings:
-            if g.new_config:
-                pass
-            else:
-                # For when leoSettings.leo is the local file.
-                d = self.localOptionsDict.get(c.hash(),{})
-                if d:
-                    val,junk = self.getValFromDict(d,setting,kind)
-                    if val is not None:
-                        if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
-                        return val
-    
-        if trace and verbose:
-            fn = c and c.shortFileName() or '<no file>'
-            g.trace(setting,None,fn)
+        if trace:
+            print('g.app.config.get %30s **no d, returning None' % (setting))
         return None
+        
+    # else:
+        # isLeoSettings = c and c.shortFileName().lower().endswith('leosettings.leo')
+    
+        # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        # if c and not isLeoSettings:
+            # if g.new_config:
+                # pass
+            # else:
+                # # For the local .leo file.
+                # d = self.localOptionsDict.get(c.hash(),{})
+                # if d:
+                    # val,junk = self.getValFromDict(d,setting,kind)
+                    # if val is not None:
+                        # if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
+                        # return val
+    
+        # for d in self.localOptionsList:
+            # # For myLeoSettings.leo and leoSettings.leo.
+            # val,junk = self.getValFromDict(d,setting,kind)
+            # if val is not None:
+                # if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
+                # return val
+    
+        # for d in self.dictList:
+            # # For hard-coded options...
+            # val,junk = self.getValFromDict(d,setting,kind)
+            # if val is not None:
+                # if trace:
+                    # g.trace('%-7s %45s %s' % ('default',setting,val))
+                # return val
+    
+        # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        # if c and isLeoSettings:
+            # if g.new_config:
+                # pass
+            # else:
+                # # For when leoSettings.leo is the local file.
+                # d = self.localOptionsDict.get(c.hash(),{})
+                # if d:
+                    # val,junk = self.getValFromDict(d,setting,kind)
+                    # if val is not None:
+                        # if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
+                        # return val
+    
+        # if trace and verbose:
+            # fn = c and c.shortFileName() or '<no file>'
+            # g.trace(setting,None,fn)
+        # return None
 #@+node:ekr.20041121143823: *6* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
 
@@ -24824,11 +24794,12 @@ def kill_one_shortcut (self,stroke):
     
     # g.trace(stroke)
     
-    if g.new_config:
-        d = c.config.shortcutsDict
-    else:
-        d = g.app.config.localShortcutsDict.get(c.hash())
-
+    # if g.new_config:
+        # d = c.config.shortcutsDict
+    # else:
+        # d = g.app.config.localShortcutsDict.get(c.hash())
+        
+    d = c.config.shortcutsDict
     if d is None:
         d = g.TypedDictOfLists(
             name='empty shortcuts dict',
@@ -24839,10 +24810,11 @@ def kill_one_shortcut (self,stroke):
     aList = inv_d.get(stroke,[])
     inv_d[stroke] = []
     
-    if g.new_config:
-        c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-    else:
-        g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
+    c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+    # if g.new_config:
+        # c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+    # else:
+        # g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
 #@+node:ekr.20061031131434.92: *7* k.remove_conflicting_definitions
 def remove_conflicting_definitions (self,aList,pane,shortcut):
     
@@ -25354,11 +25326,12 @@ def kill_one_shortcut (self,stroke):
     
     # g.trace(stroke)
     
-    if g.new_config:
-        d = c.config.shortcutsDict
-    else:
-        d = g.app.config.localShortcutsDict.get(c.hash())
-
+    # if g.new_config:
+        # d = c.config.shortcutsDict
+    # else:
+        # d = g.app.config.localShortcutsDict.get(c.hash())
+        
+    d = c.config.shortcutsDict
     if d is None:
         d = g.TypedDictOfLists(
             name='empty shortcuts dict',
@@ -25369,10 +25342,11 @@ def kill_one_shortcut (self,stroke):
     aList = inv_d.get(stroke,[])
     inv_d[stroke] = []
     
-    if g.new_config:
-        c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-    else:
-        g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
+    c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+    # if g.new_config:
+        # c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+    # else:
+        # g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
 #@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
 def remove_conflicting_definitions (self,aList,pane,shortcut):
     

@@ -1709,11 +1709,12 @@ class keyHandlerClass:
         
         # g.trace(stroke)
         
-        if g.new_config:
-            d = c.config.shortcutsDict
-        else:
-            d = g.app.config.localShortcutsDict.get(c.hash())
-
+        # if g.new_config:
+            # d = c.config.shortcutsDict
+        # else:
+            # d = g.app.config.localShortcutsDict.get(c.hash())
+            
+        d = c.config.shortcutsDict
         if d is None:
             d = g.TypedDictOfLists(
                 name='empty shortcuts dict',
@@ -1724,10 +1725,11 @@ class keyHandlerClass:
         aList = inv_d.get(stroke,[])
         inv_d[stroke] = []
         
-        if g.new_config:
-            c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-        else:
-            g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
+        c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+        # if g.new_config:
+            # c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+        # else:
+            # g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions (self,aList,pane,shortcut):
         
@@ -1789,7 +1791,8 @@ class keyHandlerClass:
             abbrev = k.abbreviationsDict.get(name)
             key = c.frame.menu.canonicalizeMenuName(abbrev or name)
             key = key.replace('&','')
-            if not g.app.config.exists(c,key,'shortcut'):
+            #### if not g.app.config.exists(c,key,'shortcut'):
+            if not c.config.exists(key,'shortcut'):
                 if abbrev:
                     g.trace('No shortcut for abbrev %s -> %s = %s' % (
                         name,abbrev,key))

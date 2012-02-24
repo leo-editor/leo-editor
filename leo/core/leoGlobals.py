@@ -20,11 +20,11 @@ trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
 
-new_config = True
-    # True: Create finalized settings & shortcuts dicts for each commander.
-    # g.app.config only parses settings: rename it g.app.configParser??
-    # c.config.getX become much simpler.
-if new_config: print('***** new_config')
+# new_config = True
+    # # True: Create finalized settings & shortcuts dicts for each commander.
+    # # g.app.config only parses settings: rename it g.app.configParser??
+    # # c.config.getX become much simpler.
+# if new_config: print('***** new_config')
 
 new_modes = False # True: use ModeController and ModeInfo classes.
 if new_modes: print('***** new_modes')
@@ -1936,82 +1936,84 @@ def openWithFileName(fileName,old_c=None,
     where frame.c is the commander of the newly-opened outline.
     """
     
-    if g.new_config:
-        return g.app.loadManager.loadLocalFile(fileName,gui)
-            # g.openWithFileName is *not* part of Leo's startup logic!
-            # Therefore, fewer args are needed.
-    else:
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace:
-            print('g.openWithFileName: Phase 1: open: %s' % (
-                repr(g.shortFileName(fileName))))
+    # if g.new_config:
         
-        lm = g.app.loadManager
-        if not fileName and not force: return None
-        isLeo,fn,relFn = g.mungeFileName(fileName)
+    return g.app.loadManager.loadLocalFile(fileName,gui)
+        # g.openWithFileName is *not* part of Leo's startup logic!
+        # Therefore, fewer args are needed.
+            
+    # else:
+        # trace = (False or g.trace_startup) and not g.unitTesting
+        # if trace:
+            # print('g.openWithFileName: Phase 1: open: %s' % (
+                # repr(g.shortFileName(fileName))))
         
-        # Return if the file is already open.
-        c = g.findOpenFile(fn)
-        if c: return c
+        # lm = g.app.loadManager
+        # if not fileName and not force: return None
+        # isLeo,fn,relFn = g.mungeFileName(fileName)
+        
+        # # Return if the file is already open.
+        # c = g.findOpenFile(fn)
+        # if c: return c
     
-        # Disable the log.
-        app.setLog(None)
-        app.lockLog()
+        # # Disable the log.
+        # app.setLog(None)
+        # app.lockLog()
         
-        # Phase 1: Create the commander and all objects.
-        # A: Open the file **if** the file is a .leo file.
-        # B: Call g.app.newCommander.
-        if isLeo:
-            # (old_config only): Read the file the first time to get the settings.
-            if old_c:
-                g.preRead(fileName,gui)
-                    # Call g.app.config.openSettingsFile
-                    # Call g.app.config.updateSettings
-            g.doHook('open0')
-            theFile,isZipped = g.openLeoOrZipFile(fileName)
-            if theFile or force:
-                c = app.newCommander(fileName,gui=gui)
-                c.isZipped = isZipped
-        else:
-            theFile = None
-            # Never open a non-existent file during unit testing.
-            if (force and not g.unitTesting) or g.os_path_exists(fn):
-                c = g.app.newCommander(fileName=None,gui=gui)
-                assert c
-                g.initWrapperLeoFile(c,fn)
-                # Note: c.rootPosition() may not exist yet.
+        # # Phase 1: Create the commander and all objects.
+        # # A: Open the file **if** the file is a .leo file.
+        # # B: Call g.app.newCommander.
+        # if isLeo:
+            # # (old_config only): Read the file the first time to get the settings.
+            # if old_c:
+                # g.preRead(fileName,gui)
+                    # # Call g.app.config.openSettingsFile
+                    # # Call g.app.config.updateSettings
+            # g.doHook('open0')
+            # theFile,isZipped = g.openLeoOrZipFile(fileName)
+            # if theFile or force:
+                # c = app.newCommander(fileName,gui=gui)
+                # c.isZipped = isZipped
+        # else:
+            # theFile = None
+            # # Never open a non-existent file during unit testing.
+            # if (force and not g.unitTesting) or g.os_path_exists(fn):
+                # c = g.app.newCommander(fileName=None,gui=gui)
+                # assert c
+                # g.initWrapperLeoFile(c,fn)
+                # # Note: c.rootPosition() may not exist yet.
         
-        # Enable the log.
-        app.unlockLog()
-        if not c: return None
-        assert c.frame and c.frame.c == c
-        c.frame.log.enable(enableLog)
+        # # Enable the log.
+        # app.unlockLog()
+        # if not c: return None
+        # assert c.frame and c.frame.c == c
+        # c.frame.log.enable(enableLog)
         
-        # Phase 2: Create the outline from the .leo file.
-        if trace: print('g.openWithFileName: Phase 2: create outline')
+        # # Phase 2: Create the outline from the .leo file.
+        # if trace: print('g.openWithFileName: Phase 2: create outline')
         
-        if theFile:
-            g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
-            ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
-                # Call c.fileCommands.openLeoFile to read the .leo file.
-                # Call c.config.setRecentFiles for all items in g.app.windowList.
-                # Set c.openDirectory.
-            if not ok: return None
-            g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        # if theFile:
+            # g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName)
+            # ok = g.readOpenedLeoFile(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
+                # # Call c.fileCommands.openLeoFile to read the .leo file.
+                # # Call c.config.setRecentFiles for all items in g.app.windowList.
+                # # Set c.openDirectory.
+            # if not ok: return None
+            # g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     
-        # Phase 3: Complete the initialization.
-        if trace: print('g.openWithFileName: Phase 3: final inits')
-        g.app.writeWaitingLog(c)
-        c.setLog()
-        g.createMenu(c,fn)
-        g.finishOpen(c)
-            # c.frame.tree.initAfterLoad()
-            # c.redraw()
-            # chapterController.finishCreate()
-                # Must be done after first redraw.
-            # sets focus & calls k.showStateAndMode.
-            # c.frame.initCompleteHint()
-        return c
+        # # Phase 3: Complete the initialization.
+        # if trace: print('g.openWithFileName: Phase 3: final inits')
+        # g.app.writeWaitingLog(c)
+        # c.setLog()
+        # g.createMenu(c,fn)
+        # g.finishOpen(c)
+            # # c.frame.tree.initAfterLoad()
+            # # c.redraw()
+            # # chapterController.finishCreate()
+                # # Must be done after first redraw.
+            # # sets focus & calls k.showStateAndMode.
+            # # c.frame.initCompleteHint()
+        # return c
 #@+node:ekr.20090520055433.5951: *4* g.createMenu
 def createMenu(c,fileName=None):
 

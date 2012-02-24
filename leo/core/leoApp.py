@@ -1202,7 +1202,7 @@ class LoadManager:
                 val = getattr(g.app,ivar)
                 g.trace('%20s' % (ivar),val)
         
-    #@+node:ekr.20120215062153.10740: *3* LM.Settings (new_config)
+    #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* lm.computeBindingLetter
     def computeBindingLetter(self,kind):
         
@@ -1222,7 +1222,7 @@ class LoadManager:
                 return letter
         else:
             return 'D' if kind.find('mode') == -1 else '@'
-    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings (new_config)
+    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
     def computeLocalSettings (self,c,settings_d,shortcuts_d):
         
         '''Merge the settings dicts from c's outline into *new copies of*
@@ -1244,25 +1244,18 @@ class LoadManager:
             shortcuts_d = lm.mergeShortcutsDicts(shortcuts_d,shortcuts_d2)
 
         return settings_d,shortcuts_d
-    #@+node:ekr.20120214165710.10726: *4* lm.createSettingsDicts (new_config)
+    #@+node:ekr.20120214165710.10726: *4* lm.createSettingsDicts
     def createSettingsDicts(self,c,localFlag):
         
         import leo.core.leoConfig as leoConfig
 
-        assert g.new_config
-        
-        # Important note 1: c's .leo file must already have been
-        # read for the call to parser.traverse() to work.
-
-        # Important note 2: when new_config is True,
-        # the parser returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-        
         parser = leoConfig.SettingsTreeParser(c,localFlag)
+            # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
+
         shortcutsDict,settingsDict = parser.traverse()
-        # g.trace(settingsDict)
-        # g.trace(shortcutsDict)
+
         return shortcutsDict,settingsDict
-    #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSetings (new_config)
+    #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSetings
     def getPreviousSettings (self,fn):
         
         '''Return the settings in effect for fn.  Typically,
@@ -1292,14 +1285,12 @@ class LoadManager:
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
 
         return PreviousSettings(d1,d2)
-    #@+node:ekr.20120214132927.10723: *4* lm.mergeShortcutsDicts & helpers (new_config)
+    #@+node:ekr.20120214132927.10723: *4* lm.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts (self,old_d,new_d):
         
         '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
         
         Both old_d and new_d remain unchanged.'''
-        
-        assert g.new_config
         
         trace = False and not g.unitTesting
         lm = self
@@ -1374,7 +1365,7 @@ class LoadManager:
         if trace: g.trace('returns %4s %s %s' % (
             len(list(result.keys())),id(d),result.name()))
         return result
-    #@+node:ekr.20120222103014.10312: *4* lm.openSettingsFile (new_config)
+    #@+node:ekr.20120222103014.10312: *4* lm.openSettingsFile
     def openSettingsFile (self,fn):
         
         '''Open a settings file with a null gui.  Return the commander.
@@ -1412,7 +1403,7 @@ class LoadManager:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return ok and c or None
-    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles (new_config)
+    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
     def readGlobalSettingsFiles (self):
         
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
@@ -1420,13 +1411,10 @@ class LoadManager:
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
         tag = 'lm.readGlobalSettingsFiles'
+        lm = self
 
         if trace and g.trace_startup:
             print('\n<<<<< %s' % tag)
-        
-        lm = self
-        
-        assert g.new_config
         
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
@@ -1542,22 +1530,30 @@ class LoadManager:
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
         
-        if g.new_config:
-            lm.readGlobalSettingsFiles()
-                # reads only standard settings files, using a null gui.
-                # uses lm.files[0] to compute the local directory
-                # that might contain myLeoSettings.leo.
-        else:
-            g.app.config.readSettingsFiles(None,verbose)
-            for fn in lm.files:
-                g.app.config.readSettingsFiles(fn,verbose)
-
-        if not lm.files and not script:
-            # This must be done *after* the standard settings have been read.
-            fn = lm.getDefaultFile()
-            if fn:
-                lm.files = [fn]
-                g.app.config.readSettingsFiles(fn,verbose=True)
+        lm.readGlobalSettingsFiles()
+            # reads only standard settings files, using a null gui.
+            # uses lm.files[0] to compute the local directory
+            # that might contain myLeoSettings.leo.
+        
+        # if g.new_config:
+            # lm.readGlobalSettingsFiles()
+                # # reads only standard settings files, using a null gui.
+                # # uses lm.files[0] to compute the local directory
+                # # that might contain myLeoSettings.leo.
+        # else:
+            # g.app.config.readSettingsFiles(None,verbose)
+            # for fn in lm.files:
+                # g.app.config.readSettingsFiles(fn,verbose)
+                
+        # if g.new_config:
+            # pass #### New!
+        # else:
+            # if not lm.files and not script:
+                # # This must be done *after* the standard settings have been read.
+                # fn = lm.getDefaultFile()
+                # if fn:
+                    # lm.files = [fn]
+                    # g.app.config.readSettingsFiles(fn,verbose=True)
 
         g.app.setGlobalDb()
         
@@ -1579,14 +1575,14 @@ class LoadManager:
         script     = lm.options.get('script')
 
         if g.app.gui:
-            if g.new_config:
-                # import leo.core.leoGui as leoGui
-                # assert isinstance(g.app.gui,g.app.nullGui)
-                assert g.app.gui == g.app.nullGui
-                g.app.gui = None # Enable g.app.createDefaultGui 
-                g.app.createDefaultGui(__file__)
-            else:
-                pass # setLeoID created the gui.
+            #if g.new_config:
+                
+            assert g.app.gui == g.app.nullGui
+            g.app.gui = None # Enable g.app.createDefaultGui 
+            g.app.createDefaultGui(__file__)
+                
+            # else:
+                # pass # setLeoID created the gui.
                 
         elif gui_option is None:
             if script and not windowFlag:
