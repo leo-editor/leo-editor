@@ -137,14 +137,20 @@ class bridgeController:
         # Set leoGlobals.g here, rather than in leoGlobals.
         leoGlobals.g = leoGlobals
         #@-<< initLeo imports >>
-        g.app.loadManager = leoApp.LoadManager()
+        g.app.loadManager = lm = leoApp.LoadManager()
         g.app.loadManager.computeStandardDirectories()
         if not self.getLeoID(): return
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
         g.app.config = leoConfig.configClass()
         if self.readSettings:
-            g.app.config.readSettingsFiles(None,verbose=self.verbose)
+            if g.new_config:
+                lm.readGlobalSettingsFiles()
+                    # reads only standard settings files, using a null gui.
+                    # uses lm.files[0] to compute the local directory
+                    # that might contain myLeoSettings.leo.
+            else:
+                g.app.config.readSettingsFiles(None,verbose=self.verbose)
         self.createGui() # Create the gui *before* loading plugins.
         if self.verbose: self.reportDirectories()
         self.adjustSysPath()

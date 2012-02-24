@@ -272,10 +272,17 @@ def report (self,expected,got):
 #@+node:ekr.20100827183358.5957: *5* run
 def run(self):
     import sys
-    if not sys.platform.startswith('win') and \
-        g.isPython3: return
+
+    if not sys.platform.startswith('win') and g.isPython3: return
+        
+    try:
+        import docutils
+    except ImportError:
+        return
+        
     def clean(s):
         return s.replace('\r','')
+
     c,p = self.c,self.p
     rc = c.rstCommands
     expected,got,source = self.setup()
@@ -934,15 +941,18 @@ at.printError('test of at.printError:',s)
 
 # g.openWithFileName *always* opens the file.
 
-old_c = c
-filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-try:
-    c2 = g.openWithFileName(filename,old_c)
-finally:
-    if c2:
-        g.app.destroyWindow(c2.frame)
-    c.setLog()
-    c.bodyWantsFocus()
+if not g.app.isExternalUnitTest:
+
+    old_c = c
+    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    try:
+        c2 = None
+        c2 = g.openWithFileName(filename,old_c)
+    finally:
+        if c2:
+            g.app.destroyWindow(c2.frame)
+        c.setLog()
+        c.bodyWantsFocus()
 #@+node:ekr.20050208111037: *3* @test failure to convert unicode characters to ascii
 @first # -*- coding: utf-8 -*-
 
@@ -1057,22 +1067,24 @@ if not g.isPython3: # Does not work with Python 3.x
 
 # g.openWithFileName *always* opens the file.
 
-if g.isPython3:
-    # Do not call g.ue: it will crash.
-    theFile = 'Ỗ'
-else:
-    theFile = g.ue('Ỗ','utf-8')
+if not g.app.isExternalUnitTest:
 
-path = g.os_path_join('Ỗ','Ỗ')
-# print(g.toEncodedString(theFile,'utf-8'))
-
-try:
-    c2 = g.openWithFileName(path,c)
-finally:
-    if c2:
-        g.app.destroyWindow(c2.frame)
-    c.setLog()
-    c.bodyWantsFocus()
+    if g.isPython3:
+        # Do not call g.ue: it will crash.
+        theFile = 'Ỗ'
+    else:
+        theFile = g.ue('Ỗ','utf-8')
+    
+    path = g.os_path_join('Ỗ','Ỗ')
+    # print(g.toEncodedString(theFile,'utf-8'))
+    
+    try:
+        c2 = g.openWithFileName(path,c)
+    finally:
+        if c2:
+            g.app.destroyWindow(c2.frame)
+        c.setLog()
+        c.bodyWantsFocus()
 #@+node:ekr.20071113145804.24: *3* @test round trip toUnicode toEncodedString
 @first # -*- coding: utf-8 -*-
 

@@ -35,7 +35,7 @@ def main ():
     if trace: t1 = time.time()
 
     # Setting verbose=True prints messages that would be sent to the log pane.
-    path,gui,readSettigns,silent = scanOptions()
+    path,gui,readSettings,silent = scanOptions()
     
     # print('(leoDynamicTest.py:main)','readSettings',readSettings)
     # print('(leoDynamicTest.py:main)','silent',silent)

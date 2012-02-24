@@ -2101,7 +2101,10 @@ class configClass:
                 assert isinstance(gs,g.GeneralSetting)
                 ivar = gs.ivar # The actual name of the ivar.
                 kind = gs.kind
-                val = self.get(c,key,kind) # Don't use bunch.val!
+                if c:
+                    val = c.config.get(key,kind)
+                else:
+                    val = self.get(None,key,kind) # Don't use bunch.val!
                 if c:
                     if trace and verbose: g.trace("%20s %s = %s" % (
                         g.shortFileName(c.mFileName),ivar,val))
