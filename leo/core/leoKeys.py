@@ -1706,13 +1706,6 @@ class keyHandlerClass:
             return
             
         assert g.isStroke(stroke),stroke
-        
-        # g.trace(stroke)
-        
-        # if g.new_config:
-            # d = c.config.shortcutsDict
-        # else:
-            # d = g.app.config.localShortcutsDict.get(c.hash())
             
         d = c.config.shortcutsDict
         if d is None:
@@ -1726,10 +1719,6 @@ class keyHandlerClass:
         inv_d[stroke] = []
         
         c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-        # if g.new_config:
-            # c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-        # else:
-            # g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions (self,aList,pane,shortcut):
         

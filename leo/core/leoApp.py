@@ -1534,26 +1534,6 @@ class LoadManager:
             # reads only standard settings files, using a null gui.
             # uses lm.files[0] to compute the local directory
             # that might contain myLeoSettings.leo.
-        
-        # if g.new_config:
-            # lm.readGlobalSettingsFiles()
-                # # reads only standard settings files, using a null gui.
-                # # uses lm.files[0] to compute the local directory
-                # # that might contain myLeoSettings.leo.
-        # else:
-            # g.app.config.readSettingsFiles(None,verbose)
-            # for fn in lm.files:
-                # g.app.config.readSettingsFiles(fn,verbose)
-                
-        # if g.new_config:
-            # pass #### New!
-        # else:
-            # if not lm.files and not script:
-                # # This must be done *after* the standard settings have been read.
-                # fn = lm.getDefaultFile()
-                # if fn:
-                    # lm.files = [fn]
-                    # g.app.config.readSettingsFiles(fn,verbose=True)
 
         g.app.setGlobalDb()
         
@@ -1575,14 +1555,10 @@ class LoadManager:
         script     = lm.options.get('script')
 
         if g.app.gui:
-            #if g.new_config:
                 
             assert g.app.gui == g.app.nullGui
             g.app.gui = None # Enable g.app.createDefaultGui 
             g.app.createDefaultGui(__file__)
-                
-            # else:
-                # pass # setLeoID created the gui.
                 
         elif gui_option is None:
             if script and not windowFlag:

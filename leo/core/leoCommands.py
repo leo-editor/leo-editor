@@ -8436,12 +8436,8 @@ class configSettings:
         
         encoding = self.get(encodingName,kind='string')
         
-        # if g.new_config:
-            # encoding = self.get(encodingName,kind='string')
-        # else:
-            # encoding = g.app.config.get(c,encodingName,kind='string')
 
-        # New in 4.4b3: use the global setting as a last resort.
+        # Use the global setting as a last resort.
         if encoding:
             # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
             setattr(self,encodingName,encoding)
@@ -8462,12 +8458,6 @@ class configSettings:
         gs = g.app.config.ivarsDict.get(key)
         ivarName = gs.ivar
         val = self.get(ivarName,kind=None)
-        
-        # if g.new_config:
-            # val = self.get(ivarName,kind=None)
-        # else:
-            # val = g.app.config.get(c,ivarName,kind=None)
-                # # kind is ignored anyway.
 
         if val or not hasattr(self,ivarName):
             if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)

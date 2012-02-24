@@ -428,7 +428,6 @@ class ParserBaseClass:
                 p.moveToThreadNext()
 
         # g.trace('localFlag',self.localFlag,c)
-        #if g.new_config:
             
         self.set(p,kind='menus',name='menus',val=aList)
         if not g.app.config.menusList:
@@ -436,7 +435,7 @@ class ParserBaseClass:
             name = c.shortFileName() if c else '<no settings file>'
             g.app.config.menusFileName = name
                 
-        # else:
+        #### Old code
             # if self.localFlag:
                 # self.set(p,kind='menus',name='menus',val=aList)
             # else:
@@ -1068,7 +1067,7 @@ class ParserBaseClass:
             name='shortcutsDict for %s' % (c.shortFileName()),
             keyType=type('s'), valType=g.ShortcutInfo)
             
-        #### This must be called after the outline has been inited.
+        # This must be called after the outline has been inited.
         p = g.app.config.settingsRoot(c)
         if not p:
             # c.rootPosition() doesn't exist yet.
@@ -1077,7 +1076,6 @@ class ParserBaseClass:
                 print('****************'
                     'ParserBaseClass.traverse: no settings tree for %s' % (
                         c.shortFileName()))
-            #### return {},{}
             return self.shortcutsDict,self.settingsDict
             
         after = p.nodeAfterTree()
@@ -1091,13 +1089,6 @@ class ParserBaseClass:
                 
         # Return the raw dict, unmerged.
         return self.shortcutsDict,self.settingsDict
-
-        # if g.new_config:
-            # # Return the raw dict, unmerged.
-            # return self.shortcutsDict,self.settingsDict
-        # else:
-            # shortcutsDict = c.config.make_shortcuts_dicts(self.shortcutsDict,self.localFlag)
-            # return shortcutsDict,self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError
     def valueError (self,p,kind,name,val):
 
@@ -1259,8 +1250,6 @@ class configClass:
         self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
         self.enabledPluginsString = '' 
-        #### self.globalConfigFile = None # Set in initSettingsFiles
-        #### self.homeFile = None # Set in initSettingsFiles
         self.inited = False
         self.menusList = []
         self.menusFileName = ''
@@ -1270,9 +1259,7 @@ class configClass:
             self.modeCommandsDict = g.TypedDict(
                 name = 'modeCommandsDict',
                 keyType = type('commandName'),valType = g.TypedDictOfLists)
-        #### self.myGlobalConfigFile = None
-        #### self.myHomeConfigFile = None
-        #### self.machineConfigFile = None
+                
         self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
         self.write_recent_files_as_needed = False # Will be set later.
         self.silent = g.app.silentMode
@@ -1284,10 +1271,6 @@ class configClass:
 
         self.initDicts()
         self.initIvarsFromSettings()
-        # if g.new_config:
-            # pass
-        # else:
-            # self.initSettingsFiles()
         self.initRecentFiles()
     #@+node:ekr.20041227063801.2: *4* initDicts
     def initDicts (self):
@@ -1552,9 +1535,8 @@ class configClass:
         trace = False and not g.unitTesting
         verbose = False
         
-        # if g.new_config:
-            
         lm = g.app.loadManager
+
         # It *is* valid to call this method: it returns the global settings.
         if c:
             print('g.app.config.get ***** call c.config.getX when c is available')
@@ -1571,55 +1553,6 @@ class configClass:
             if trace:
                 print('g.app.config.get %30s **no d, returning None' % (setting))
             return None
-            
-        # else:
-            # isLeoSettings = c and c.shortFileName().lower().endswith('leosettings.leo')
-        
-            # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-            # if c and not isLeoSettings:
-                # if g.new_config:
-                    # pass
-                # else:
-                    # # For the local .leo file.
-                    # d = self.localOptionsDict.get(c.hash(),{})
-                    # if d:
-                        # val,junk = self.getValFromDict(d,setting,kind)
-                        # if val is not None:
-                            # if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
-                            # return val
-        
-            # for d in self.localOptionsList:
-                # # For myLeoSettings.leo and leoSettings.leo.
-                # val,junk = self.getValFromDict(d,setting,kind)
-                # if val is not None:
-                    # if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
-                    # return val
-        
-            # for d in self.dictList:
-                # # For hard-coded options...
-                # val,junk = self.getValFromDict(d,setting,kind)
-                # if val is not None:
-                    # if trace:
-                        # g.trace('%-7s %45s %s' % ('default',setting,val))
-                    # return val
-        
-            # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-            # if c and isLeoSettings:
-                # if g.new_config:
-                    # pass
-                # else:
-                    # # For when leoSettings.leo is the local file.
-                    # d = self.localOptionsDict.get(c.hash(),{})
-                    # if d:
-                        # val,junk = self.getValFromDict(d,setting,kind)
-                        # if val is not None:
-                            # if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
-                            # return val
-        
-            # if trace and verbose:
-                # fn = c and c.shortFileName() or '<no file>'
-                # g.trace(setting,None,fn)
-            # return None
     #@+node:ekr.20041121143823: *5* getValFromDict
     def getValFromDict (self,d,setting,requestedType,warn=True):
 

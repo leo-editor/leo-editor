@@ -17334,9 +17334,8 @@ def get (self,c,setting,kind):
     trace = False and not g.unitTesting
     verbose = False
     
-    # if g.new_config:
-        
     lm = g.app.loadManager
+
     # It *is* valid to call this method: it returns the global settings.
     if c:
         print('g.app.config.get ***** call c.config.getX when c is available')
@@ -17353,55 +17352,6 @@ def get (self,c,setting,kind):
         if trace:
             print('g.app.config.get %30s **no d, returning None' % (setting))
         return None
-        
-    # else:
-        # isLeoSettings = c and c.shortFileName().lower().endswith('leosettings.leo')
-    
-        # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-        # if c and not isLeoSettings:
-            # if g.new_config:
-                # pass
-            # else:
-                # # For the local .leo file.
-                # d = self.localOptionsDict.get(c.hash(),{})
-                # if d:
-                    # val,junk = self.getValFromDict(d,setting,kind)
-                    # if val is not None:
-                        # if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
-                        # return val
-    
-        # for d in self.localOptionsList:
-            # # For myLeoSettings.leo and leoSettings.leo.
-            # val,junk = self.getValFromDict(d,setting,kind)
-            # if val is not None:
-                # if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
-                # return val
-    
-        # for d in self.dictList:
-            # # For hard-coded options...
-            # val,junk = self.getValFromDict(d,setting,kind)
-            # if val is not None:
-                # if trace:
-                    # g.trace('%-7s %45s %s' % ('default',setting,val))
-                # return val
-    
-        # # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-        # if c and isLeoSettings:
-            # if g.new_config:
-                # pass
-            # else:
-                # # For when leoSettings.leo is the local file.
-                # d = self.localOptionsDict.get(c.hash(),{})
-                # if d:
-                    # val,junk = self.getValFromDict(d,setting,kind)
-                    # if val is not None:
-                        # if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
-                        # return val
-    
-        # if trace and verbose:
-            # fn = c and c.shortFileName() or '<no file>'
-            # g.trace(setting,None,fn)
-        # return None
 #@+node:ekr.20041121143823: *6* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
 
@@ -24791,13 +24741,6 @@ def kill_one_shortcut (self,stroke):
         return
         
     assert g.isStroke(stroke),stroke
-    
-    # g.trace(stroke)
-    
-    # if g.new_config:
-        # d = c.config.shortcutsDict
-    # else:
-        # d = g.app.config.localShortcutsDict.get(c.hash())
         
     d = c.config.shortcutsDict
     if d is None:
@@ -24811,10 +24754,6 @@ def kill_one_shortcut (self,stroke):
     inv_d[stroke] = []
     
     c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-    # if g.new_config:
-        # c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-    # else:
-        # g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
 #@+node:ekr.20061031131434.92: *7* k.remove_conflicting_definitions
 def remove_conflicting_definitions (self,aList,pane,shortcut):
     
@@ -25323,13 +25262,6 @@ def kill_one_shortcut (self,stroke):
         return
         
     assert g.isStroke(stroke),stroke
-    
-    # g.trace(stroke)
-    
-    # if g.new_config:
-        # d = c.config.shortcutsDict
-    # else:
-        # d = g.app.config.localShortcutsDict.get(c.hash())
         
     d = c.config.shortcutsDict
     if d is None:
@@ -25343,10 +25275,6 @@ def kill_one_shortcut (self,stroke):
     inv_d[stroke] = []
     
     c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-    # if g.new_config:
-        # c.config.shortcutsDict = g.app.config.uninvert(inv_d)
-    # else:
-        # g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
 #@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
 def remove_conflicting_definitions (self,aList,pane,shortcut):
     
