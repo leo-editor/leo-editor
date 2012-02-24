@@ -1073,12 +1073,20 @@ class LeoActions:
     #@+node:tbrown.20111005093154.17683: *3* get_favicon
     def get_favicon(self):
         
-        path = g.os_path_join(
-            g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
+        path = g.os_path_join(g.computeLeoDir(),'Icons','LeoApp16.ico')
+            
+        # g.trace(g.os_path_exists(path),path)
+        
+        try:
+            f = StringIO()
+            # f.write(open(path).read())
+            f2 = open(path)
+            s = f.read()
+            f.write(s)
+            return f
+        except Exception:
+            return None
 
-        f = StringIO()
-        f.write(open(path).read())
-        return f
     #@+node:tbrown.20110930220448.18076: *3* get_response
     def get_response(self):
         """Return the file like 'f' that leo_interface.send_head makes"""

@@ -585,7 +585,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
     toGuiIndex = toPythonIndex
     #@+node:ekr.20110605121601.18049: *6* indexWarning
-    warningsDict = {}
+    # warningsDict = {}
 
     def indexWarning (self,s):
 

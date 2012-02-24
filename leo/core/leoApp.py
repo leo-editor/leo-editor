@@ -15,6 +15,14 @@ import os
 import optparse
 import sys
 import traceback
+import zipfile
+
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import cStringIO
+    StringIO = cStringIO.StringIO
 #@-<< imports >>
 
 #@+others
@@ -608,7 +616,7 @@ class LeoApp:
 
         self.finishQuit()
     #@+node:ekr.20031218072017.2188: *3* app.newCommander & helper
-    def newCommander(self,fileName,relativeFileName=None,gui=None):
+    def newCommander(self,fileName,relativeFileName=None,gui=None,previousSettings=None):
 
         """Create a commander and its view frame for the Leo main window."""
         
@@ -619,7 +627,7 @@ class LeoApp:
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
 
-        return leoCommands.Commands(fileName,relativeFileName,gui)
+        return leoCommands.Commands(fileName,relativeFileName,gui,previousSettings)
     #@+node:ekr.20031218072017.2617: *3* app.onQuit
     def onQuit (self,event=None):
 
@@ -860,10 +868,10 @@ class LoadManager:
         # Global settings & shortcuts dicts.
         # The are the defaults for computing settings and shortcuts for all loaded files.
         self.globalSettingsDict = None
-            # The g.TypedDict representing the merger of default settings,
+            # A g.TypedDict containing the merger of default settings,
             # settings in leoSettings.leo and settings in myLeoSettings.leo
         self.globalShortcutsDict = None
-            # The g.TypedDictOfLists representing the merger shortcuts in
+            # A g.TypedDictOfLists containg the merger of shortcuts in
             # leoSettings.leo and settings in myLeoSettings.leo.
 
         # LoadManager ivars corresponding to user options....
@@ -904,6 +912,83 @@ class LoadManager:
 
         # 2011/10/12: don't add .leo to *any* file.
         return fileName
+    #@+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
+    def computeLeoSettingsPath (self):
+        
+        '''Return the full path to leoSettings.leo.'''
+        
+        trace = False
+        lm = self
+        join = g.os_path_finalize_join
+        settings_fn = 'leoSettings.leo'
+        
+        # machine_fn = lm.computeMachineName() + settings_fn
+        
+        table = (
+            # First, leoSettings.leo in the home directories.
+            join(g.app.homeDir,     settings_fn),
+            join(g.app.homeLeoDir,  settings_fn),
+
+            # Next, <machine-name>leoSettings.leo in the home directories.
+            # join(g.app.homeDir,     machine_fn),
+            # join(g.app.homeLeoDir,  machine_fn),
+
+            # Last, leoSettings.leo in leo/config directory.
+            join(g.app.globalConfigDir, settings_fn)
+        )
+
+        for path in table:
+            if trace: print('computeLeoSettingsPath',g.os_path_exists(path),repr(path))
+            if g.os_path_exists(path):
+                break
+        else:
+            path = None
+
+        return path
+    #@+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
+    def computeMyLeoSettingsPath (self):
+        
+        '''Return the full path to myLeoSettings.leo.
+        
+        The "footnote": Get the local directory from lm.files[0]'''
+        
+        trace = False
+        lm = self
+        join = g.os_path_finalize_join
+        settings_fn = 'myLeoSettings.leo'
+        
+        # This seems pointless: we need a machine *directory*.
+        # For now, however, we'll keep the existing code as is.
+        machine_fn = lm.computeMachineName() + settings_fn
+        
+        # First, compute the directory of the first loaded file.
+        # All entries in lm.files are full, absolute paths.
+        localDir = g.os_path_dirname(lm.files[0]) if lm.files else None
+        
+        table = (
+            # First, myLeoSettings.leo in the local directory
+            join(localDir,          settings_fn),
+
+            # Next, myLeoSettings.leo in the home directories.
+            join(g.app.homeDir,     settings_fn),
+            join(g.app.homeLeoDir,  settings_fn),
+        
+            # Next, <machine-name>myLeoSettings.leo in the home directories.
+            join(g.app.homeDir,     machine_fn),
+            join(g.app.homeLeoDir,  machine_fn),
+
+            # Last, leoSettings.leo in leo/config directory.
+            join(g.app.globalConfigDir, settings_fn),
+        )
+
+        for path in table:
+            if trace: print('computeMyLeoSettingsPath',g.os_path_exists(path),repr(path))
+            if g.os_path_exists(path):
+                break
+        else:
+            path = None
+
+        return path
     #@+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
     def computeStandardDirectories(self):
 
@@ -1118,142 +1203,96 @@ class LoadManager:
                 g.trace('%20s' % (ivar),val)
         
     #@+node:ekr.20120215062153.10740: *3* LM.Settings (new_config)
-    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles & helpers (new_config only)
-    def readGlobalSettingsFiles (self):
+    #@+node:ekr.20120130101219.10182: *4* lm.computeBindingLetter
+    def computeBindingLetter(self,kind):
         
-        '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
+        lm = self
+        
+        if not kind:
+            return 'D'
+        
+        table = (
+            ('M','myLeoSettings.leo'),
+            (' ','leoSettings.leo'),
+            ('F','.leo'),
+        )
+        
+        for letter,kind2 in table:
+            if kind.lower().endswith(kind2.lower()):
+                return letter
+        else:
+            return 'D' if kind.find('mode') == -1 else '@'
+    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings (new_config)
+    def computeLocalSettings (self,c,settings_d,shortcuts_d):
+        
+        '''Merge the settings dicts from c's outline into *new copies of*
+        settings_d and shortcuts_d.'''
         
         trace = (False or g.trace_startup) and not g.unitTesting
-        verbose = False
-        tag = 'lm.readGlobalSettingsFiles'
-
-        if trace and g.trace_startup:
-            print('\n<<<<< %s' % tag)
+        if trace: g.trace('lm.computeLocalSettings: %s\n%s\n%s' % (
+            c.shortFileName(),settings_d,shortcuts_d))
         
         lm = self
         
+        shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag=False)
+        
+        if settings_d2:
+            settings_d = settings_d.copy()
+            settings_d.update(settings_d2)
+            
+        if shortcuts_d2:
+            shortcuts_d = lm.mergeShortcutsDicts(shortcuts_d,shortcuts_d2)
+
+        return settings_d,shortcuts_d
+    #@+node:ekr.20120214165710.10726: *4* lm.createSettingsDicts (new_config)
+    def createSettingsDicts(self,c,localFlag):
+        
+        import leo.core.leoConfig as leoConfig
+
         assert g.new_config
         
-        # Open the standard settings files with a nullGui.
-        # Important: their commanders do not exist outside this method!
-        nullGui = g.app.nullGui
-        c1,c2,path = None,None,lm.computeLeoSettingsPath()
-        if path:
-            c1 = g.openWithFileName(path,
-                enableLog=False,gui=nullGui,readAtFileNodesFlag=False)
-        
-        path = lm.computeMyLeoSettingsPath()
-        if path:
-            c2 = g.openWithFileName(path,
-                enableLog=False,gui=nullGui,readAtFileNodesFlag=False)
-                
-        # Create lm.globalSettingsDict & lm.globalShortcutsDict.
-        settings_d = g.app.config.defaultsDict
-        assert isinstance(settings_d,g.TypedDict),settings_d
-        settings_d.setName('lm.globalSettingsDict')
+        # Important note 1: c's .leo file must already have been
+        # read for the call to parser.traverse() to work.
 
-        shortcuts_d = g.TypedDictOfLists(
-            name='lm.globalShortcutsDict',
-            keyType=type('s'), valType=g.ShortcutInfo)
-
-        for c in (c1,c2):
-            if c:
-                shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag=False)
-                if settings_d2:
-                    settings_d.update(settings_d2)
-                if shortcuts_d2:
-                    shortcuts_d = lm.mergeShortcutsDicts(shortcuts_d,shortcuts_d2)
-                    
-        # Adjust the name.
-        shortcuts_d.setName('lm.globalShortcuts')
-        if trace:
-            print('\n>>>>>%s...' % tag)
-            if verbose:
-                print('c1 (leoSettings)   %s' % c1)
-                print('c2 (myLeoSettings) %s' % c2)
-            lm.traceSettingsDict(settings_d,verbose)
-            lm.traceShortcutsDict(shortcuts_d,verbose)
-                
-        lm.globalSettingsDict = settings_d
-        lm.globalShortcutsDict = shortcuts_d
-    #@+node:ekr.20120209051836.10372: *5* lm.computeLeoSettingsPath
-    def computeLeoSettingsPath (self):
+        # Important note 2: when new_config is True,
+        # the parser returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
         
-        '''Return the full path to leoSettings.leo.'''
+        parser = leoConfig.SettingsTreeParser(c,localFlag)
+        shortcutsDict,settingsDict = parser.traverse()
+        # g.trace(settingsDict)
+        # g.trace(shortcutsDict)
+        return shortcutsDict,settingsDict
+    #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSetings (new_config)
+    def getPreviousSettings (self,fn):
         
-        trace = False
+        '''Return the settings in effect for fn.  Typically,
+        this involves pre-reading fn.'''
+        
         lm = self
-        join = g.os_path_finalize_join
-        settings_fn = 'leoSettings.leo'
+        settingsName  = 'settings dict for %s' % g.shortFileName(fn)
+        shortcutsName = 'shortcuts dict for %s' % g.shortFileName(fn)
         
-        # machine_fn = lm.computeMachineName() + settings_fn
-        
-        table = (
-            # First, leoSettings.leo in the home directories.
-            join(g.app.homeDir,     settings_fn),
-            join(g.app.homeLeoDir,  settings_fn),
+        # A special case: settings in leoSettings.leo do *not* override
+        # the global settings, that is, settings in myLeoSettings.leo.
+        isLeoSettings = g.shortFileName(fn).lower()=='leosettings.leo'
 
-            # Next, <machine-name>leoSettings.leo in the home directories.
-            # join(g.app.homeDir,     machine_fn),
-            # join(g.app.homeLeoDir,  machine_fn),
+        if lm.isLeoFile(fn) and not isLeoSettings and g.os_path_exists(fn):
+            # Open the file usinging a null gui.
+            c = lm.openSettingsFile(fn)
 
-            # Last, leoSettings.leo in leo/config directory.
-            join(g.app.globalConfigDir, settings_fn)
-        )
-
-        for path in table:
-            if trace: print('computeLeoSettingsPath',g.os_path_exists(path),repr(path))
-            if g.os_path_exists(path):
-                break
+            # Merge the settings from c into *copies* of the global dicts.
+            d1,d2 = lm.computeLocalSettings(c,
+                lm.globalSettingsDict,lm.globalShortcutsDict)
+                    # d1 and d2 are copies.
+            d1.setName(settingsName)
+            d2.setName(shortcutsName)
         else:
-            path = None
+            # Get the settings from the globals settings dicts.
+            d1 = lm.globalSettingsDict.copy(settingsName)
+            d2 = lm.globalShortcutsDict.copy(shortcutsName)
 
-        return path
-    #@+node:ekr.20120209051836.10373: *5* lm.computeMyLeoSettingsPath
-    def computeMyLeoSettingsPath (self):
-        
-        '''Return the full path to myLeoSettings.leo.
-        
-        The "footnote": Get the local directory from lm.files[0]'''
-        
-        trace = False
-        lm = self
-        join = g.os_path_finalize_join
-        settings_fn = 'myLeoSettings.leo'
-        
-        # This seems pointless: we need a machine *directory*.
-        # For now, however, we'll keep the existing code as is.
-        machine_fn = lm.computeMachineName() + settings_fn
-        
-        # First, compute the directory of the first loaded file.
-        # All entries in lm.files are full, absolute paths.
-        localDir = g.os_path_dirname(lm.files[0]) if lm.files else None
-        
-        table = (
-            # First, myLeoSettings.leo in the local directory
-            join(localDir,          settings_fn),
-
-            # Next, myLeoSettings.leo in the home directories.
-            join(g.app.homeDir,     settings_fn),
-            join(g.app.homeLeoDir,  settings_fn),
-        
-            # Next, <machine-name>myLeoSettings.leo in the home directories.
-            join(g.app.homeDir,     machine_fn),
-            join(g.app.homeLeoDir,  machine_fn),
-
-            # Last, leoSettings.leo in leo/config directory.
-            join(g.app.globalConfigDir, settings_fn),
-        )
-
-        for path in table:
-            if trace: print('computeMyLeoSettingsPath',g.os_path_exists(path),repr(path))
-            if g.os_path_exists(path):
-                break
-        else:
-            path = None
-
-        return path
-    #@+node:ekr.20120214132927.10723: *5* lm.mergeShortcutsDicts & helpers (new_config only)
+        return PreviousSettings(d1,d2)
+    #@+node:ekr.20120214132927.10723: *4* lm.mergeShortcutsDicts & helpers (new_config)
     def mergeShortcutsDicts (self,old_d,new_d):
         
         '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
@@ -1279,7 +1318,7 @@ class LoadManager:
         result = lm.uninvert(inverted_old_d)
 
         return result
-    #@+node:ekr.20120214132927.10724: *6* lm.invert
+    #@+node:ekr.20120214132927.10724: *5* lm.invert
     def invert (self,d):
         
         '''Invert a shortcut dict whose keys are command names,
@@ -1308,7 +1347,7 @@ class LoadManager:
         if trace: g.trace('returns  %4s %s %s' % (
             len(list(result.keys())),id(d),result.name()))
         return result
-    #@+node:ekr.20120214132927.10725: *6* lm.uninvert
+    #@+node:ekr.20120214132927.10725: *5* lm.uninvert
     def uninvert (self,d):
         
         '''Uninvert an inverted shortcut dict whose keys are strokes,
@@ -1335,100 +1374,84 @@ class LoadManager:
         if trace: g.trace('returns %4s %s %s' % (
             len(list(result.keys())),id(d),result.name()))
         return result
-    #@+node:ekr.20120215062153.10738: *4* lm.initLocalSettings (new_config)
-    def initLocalSettings (self,c):
+    #@+node:ekr.20120222103014.10312: *4* lm.openSettingsFile (new_config)
+    def openSettingsFile (self,path):
         
-        '''Init c.config.settingsDict & c.config.shortcutsDict.'''
+        '''Open a settings file with a null gui.  Return the commander.
+        
+        The caller must init the c.config object.'''
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('lm.openSettingsFile: g.app.gui: %s' % (
+            g.shortFileName(path)))
+
+        theFile,isZipped = g.openLeoOrZipFile(path)
+        if not theFile: return None
+        
+        # Changing g.app.gui here is a major hack.  It is necessary.
+        oldGui = g.app.gui
+        g.app.gui = g.app.nullGui
+        c = g.app.newCommander(path)
+        frame = c.frame
+        frame.log.enable(False)
+        g.app.lockLog()
+        ok = c.fileCommands.openLeoFile(theFile,path,
+            readAtFileNodesFlag=False,silent=True)
+                # closes theFile.
+        g.app.unlockLog()
+        c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+        g.app.gui = oldGui
+        return ok and c or None
+    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles (new_config)
+    def readGlobalSettingsFiles (self):
+        
+        '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
-        tag = 'lm.initLocalSettings'
-        lm = self
+        tag = 'lm.readGlobalSettingsFiles'
 
-        assert c
-        assert c.config
+        if trace and g.trace_startup:
+            print('\n<<<<< %s' % tag)
+        
+        lm = self
         
         assert g.new_config
         
-        fn = c.shortFileName()
-        if trace and g.trace_startup:
-            if lm.globalSettingsDict:
-                print('\n==========%s %s' % (tag,fn))
-            else:
-                print('\n==========%s %s (ignoring global settings file)' % (tag,fn))
-            # print(g.callers())
-
-        if not lm.globalSettingsDict:
-            # This is not an error: we are initing a global setting.
-            return False
-
-        # Create c.config.settingsDict & c.config.shortcutsDict.
-        settings_d = lm.globalSettingsDict
+        # Open the standard settings files with a nullGui.
+        # Important: their commanders do not exist outside this method!
+        commanders = [
+            lm.openSettingsFile(path) for path in (
+                lm.computeLeoSettingsPath(),
+                lm.computeMyLeoSettingsPath())]
+        
+        # Create lm.globalSettingsDict & lm.globalShortcutsDict.
+        settings_d = g.app.config.defaultsDict
         assert isinstance(settings_d,g.TypedDict),settings_d
+        settings_d.setName('lm.globalSettingsDict')
 
-        shortcuts_d = lm.globalShortcutsDict
-        assert isinstance(shortcuts_d,g.TypedDictOfLists)
-        
-        shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag=True)
-        assert settings_d2  != settings_d
-        assert shortcuts_d2 != shortcuts_d
-        
-        # Adjust the names.
-        settings_d.setName('settingsDict for %s' % fn)
-        shortcuts_d.setName('shortcutsDict for %s' % fn)
-        
-        # Trace the raw values
-        if trace:
-            print('%s (before)...' % tag)
-            lm.traceSettingsDict(settings_d2,verbose)
-            lm.traceShortcutsDict(shortcuts_d2,verbose)
+        shortcuts_d = g.TypedDictOfLists(
+            name='lm.globalShortcutsDict',
+            keyType=type('s'), valType=g.ShortcutInfo)
 
-        if settings_d2:
-            settings_d.update(settings_d2)
-        if shortcuts_d2:
-            shortcuts_d = lm.mergeShortcutsDicts(shortcuts_d,shortcuts_d2)
+        for c in commanders:
+            if c:
+                settings_d,shortcuts_d = lm.computeLocalSettings(
+                    c,settings_d,shortcuts_d)
                     
-        # Adjust the names.
-        fn = c.shortFileName()
-       
-        # Trace the merged dicts.
+        # Adjust the name.
+        shortcuts_d.setName('lm.globalShortcuts')
         if trace:
-            print('%s (after)...' % tag)
+            if verbose:
+                for c in commanders:
+                    print(c)
             lm.traceSettingsDict(settings_d,verbose)
             lm.traceShortcutsDict(shortcuts_d,verbose)
-
-        # Set the c.conf ivars
-        c.config.settingsDict = settings_d
-        c.config.shortcutsDict = shortcuts_d
-        return True
-    #@+node:ekr.20120215085903.10842: *4* lm.findSettingsRoot (not used)
-    def findSettingsRoot(self,c):
-
-        '''Return the position of the @settings tree.'''
-
-        g.trace(c,c.rootPosition())
-
-        for p in c.all_unique_positions():
-            if p.h.rstrip() == "@settings":
-                return p.copy()
-        else:
-            return c.nullPosition()
-    #@+node:ekr.20120215062153.10741: *4* lm.Common settings helpers (new_config)
-    #@+node:ekr.20120214165710.10726: *5* lm.createSettingsDicts (new_config)
-    def createSettingsDicts(self,c,localFlag):
-        
-        import leo.core.leoConfig as leoConfig
-
-        assert g.new_config
-
-        # Important: when new_config is True,
-        # the parser returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-
-        parser = leoConfig.SettingsTreeParser(c,localFlag)
-        shortcutsDict,settingsDict = parser.traverse()
-        return shortcutsDict,settingsDict
-        
-    #@+node:ekr.20120214165710.10838: *5* lm.traceSettingsDict
+            print('\n>>>>>%s...' % tag)
+                
+        lm.globalSettingsDict = settings_d
+        lm.globalShortcutsDict = shortcuts_d
+    #@+node:ekr.20120214165710.10838: *4* lm.traceSettingsDict
     def traceSettingsDict (self,d,verbose=False):
 
         if verbose:
@@ -1439,7 +1462,7 @@ class LoadManager:
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120214165710.10822: *5* lm.traceShortcutsDict
+    #@+node:ekr.20120214165710.10822: *4* lm.traceShortcutsDict
     def traceShortcutsDict (self,d,verbose=False):
 
         if verbose:
@@ -1861,7 +1884,7 @@ class LoadManager:
                 if not c1: c1 = c
         else:
             # Create an empty frame.
-            c1 = g.openWithFileName(None,old_c=None,force=True)
+            c = c1 = g.openWithFileName(None,old_c=None,force=True)
                 
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
@@ -2047,6 +2070,278 @@ class LoadManager:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return 0
+    #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helper
+    def loadLocalFile (self,fn,gui):
+            
+        '''Completely read a file, creating the corresonding outline.
+        
+        1. If fn is a an existing .leo file (possibly zipped), read it twice:
+        - the first time with a nullGui to discover settings,
+        - the second time with the requested gui to create the outline.
+        2. If fn is an external file:
+        - Get settings from the leoSettings.leo and myLeoSetting.leo
+        - Create a "wrapper" outline continain an @file node for the external file.
+        3. If fn is empty:
+        - Get settings from the leoSettings.leo and myLeoSetting.leo or default settings.
+        - Open an empty outline.
+        '''
+        
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('lm.loadLocalFile: %s' % (g.shortFileName(fn)))
+        
+        lm = self
+
+        # Step 0: Return if the file is already open.
+        fn = g.os_path_finalize(fn)
+        if fn:
+            c = lm.findOpenFile(fn)
+            if c: return c
+
+        # Step 1: get the previous settings.
+        # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
+        # Otherwise, get settings from leoSettings.leo, myLeoSettings.leo, or default settings.
+        previousSettings = lm.getPreviousSettings(fn)
+
+        # Step 2: open the outline in the requested gui.
+        # For .leo files (and zipped .leo file) this opens the file a second time.
+        c = lm.openFileByName(fn,gui,previousSettings)
+        return c
+    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
+    def openFileByName (self,fn,gui,previousSettings):
+            
+        '''Read the local file whose full path is fn using the given gui.
+        fn may be a Leo file (including .leo or zipped file) or an external file.
+        
+        This is not a pre-read: the previousSettings always exist and
+        the commander created here persists until the user closes the outline.
+        
+        Reads the entire outline if fn exists and is a .leo file or zipped file.
+        Creates an empty outline if fn is a non-existent Leo file.
+        Creates an wrapper outline if fn is an external file, existing or not.
+        '''
+
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: print('lm.openFileByName: %s' % (g.shortFileName(fn)))   
+        lm = self
+
+        # Disable the log.
+        g.app.setLog(None)
+        g.app.lockLog()
+        
+        # Create the a commander for the .leo file.
+        # Important.  The settings don't matter for pre-reads!
+        # For second read, the settings for the file are *exactly* previousSettings.
+        c = g.app.newCommander(fileName=fn,gui=gui,
+            previousSettings=previousSettings)
+        assert c
+        
+        # Open the file, if possible.
+        g.doHook('open0')
+        zipped = lm.isZippedFile(fn)
+        if lm.isLeoFile(fn) and g.os_path_exists(fn):
+            if zipped: theFile = lm.openZipFile(fn)
+            else:      theFile = lm.openLeoFile(fn)
+        else:          theFile = None
+            
+        # Enable the log.
+        g.app.unlockLog()
+        c.frame.log.enable(True)
+        
+        # Phase 2: Create the outline.
+        g.doHook("open1",old_c=None,c=c,new_c=c,fileName=fn)
+        if theFile:
+            readAtFileNodesFlag = bool(previousSettings)
+            ok = lm.readOpenedLeoFile(c,gui,fn,readAtFileNodesFlag,theFile)
+                # Call c.fileCommands.openLeoFile to read the .leo file.
+            if not ok: return None
+        else:
+            # Create a wrapper .leo file if:
+            # a) fn is a .leo file that does not exist or
+            # b) fn is an external file, existing or not.
+            lm.initWrapperLeoFile(c,fn)
+        g.doHook("open2",old_c=None,c=c,new_c=c,fileName=fn)
+
+        # Phase 3: Complete the initialization.
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        g.createMenu(c,fn)
+        g.finishOpen(c)
+        return c
+    #@+node:ekr.20120223062418.10405: *6* LM.createMenu
+    def createMenu(self,c,fn):
+
+        # Create the menu as late as possible so it can use user commands.
+        lm = self
+
+        if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+
+            c.frame.menu.createMenuBar(c.frame)
+            c.updateRecentFiles(fn)
+            g.doHook("menu2",c=c,p=c.p,v=c.p)
+            g.doHook("after-create-leo-frame",c=c)
+            g.doHook("after-create-leo-frame2",c=c)
+    #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
+    def findOpenFile(self,fn):
+        
+        lm = self
+
+        def munge(name):
+            return g.os_path_normpath(name or '').lower()
+
+        for frame in g.app.windowList:
+            c = frame.c
+            if g.os_path_realpath(munge(fn)) == g.os_path_realpath(munge(c.mFileName)):
+                frame.bringToFront()
+                c.setLog()
+                # 2011/11/21: selecting the new tab ensures focus is set.
+                master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+                if master: # frame.top.leo_master is a TabbedTopLevel.
+                    master.select(frame.c)
+                c.outerUpdate()
+                return c
+
+        return None
+    #@+node:ekr.20120223062418.10407: *6* LM.finishOpen
+    def finishOpen(self,c):
+
+        lm = self
+        k = c.k
+        assert k
+        
+        # New in Leo 4.6: provide an official way for very late initialization.
+        c.frame.tree.initAfterLoad()
+        c.initAfterLoad()
+        c.redraw()
+
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController: c.chapterController.finishCreate()
+        if k: k.setDefaultInputState()
+        c.initialFocusHelper()
+        if k: k.showStateAndMode()
+        c.frame.initCompleteHint()
+      
+    #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
+    def initWrapperLeoFile (self,c,fn):
+
+        '''Create an empty file if the external fn is empty.
+        
+        Otherwise, create an @edit or @file node for the external file.
+        '''
+        
+        lm = self
+        
+        # 2011/10/12: support quick edit-save mode.
+        # We will create an @edit node below for non-existent files.
+
+        # Use the config params to set the size and location of the window.
+        frame = c.frame
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+            # Resize the _new_ frame.
+
+        if not g.os_path_exists(fn):
+            # 2011/10/12: Create an empty @edit node.
+            p = c.rootPosition()
+            p.setHeadString('@edit %s' % fn)
+            c.selectPosition(p)
+        elif c.looksLikeDerivedFile(fn):
+            # 2011/10/10: Create an @file node.
+            p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
+                paths=[fn],command=None) # Not undoable.
+            if not p: return None
+        else:
+            # Create an @edit node.
+            s,e = g.readFileIntoString(fn)
+            if s is None: return None
+            p = c.rootPosition()
+            g.trace(p)
+            if p:
+                p.setHeadString('@edit %s' % fn)
+                p.setBodyString(s)
+                c.selectPosition(p)
+
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+
+        frame.c.setChanged(False)
+            # Mark the outline clean.
+            # This makes it easy to open non-Leo files for quick study.
+        return c
+    #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
+    def isLeoFile(self,fn):
+
+        return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo'))
+        
+    def isZippedFile(self,fn):
+        
+        return fn and zipfile.is_zipfile(fn)
+    #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
+    def openLeoFile (self,fn):
+        
+        lm = self
+
+        try:
+            theFile = open(fn,'rb')
+            return theFile
+
+        except IOError:
+            # Do not use string + here: it will fail for non-ascii strings!
+            if not g.unitTesting:
+                g.es_print("can not open:",fn,color="blue")
+            return None
+    #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
+    def openZipFile (self,fn):
+        
+        lm = self
+
+        try:
+            theFile = zipfile.ZipFile(fn,'r')
+            if not theFile: return None
+
+            # Read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None
+            s = theFile.read(name)
+            if g.isPython3: s = g.ue(s,'utf-8')
+            return StringIO(s)
+
+        except IOError:
+            # Do not use string + here: it will fail for non-ascii strings!
+            if not g.unitTesting:
+                g.es_print("can not open:",fn,color="blue")
+            return None
+    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
+    def readOpenedLeoFile(self,c,gui,fn,readAtFileNodesFlag,theFile):
+        
+        # New in Leo 4.10: The open1 event does not allow an override of the init logic.
+        assert theFile
+        
+        lm = self
+
+        ok = c.fileCommands.openLeoFile(theFile,fn,
+            readAtFileNodesFlag=readAtFileNodesFlag)
+                # closes file.
+
+        if ok:
+            for z in g.app.windowList:
+                # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+                
+            # Bug fix in 4.4.
+            if not c.openDirectory:
+                theDir = c.os_path_finalize(g.os_path_dirname(fn))
+                c.openDirectory = c.frame.openDirectory = theDir 
+        else:
+            g.app.closeLeoWindow(c.frame)
+        
+        return ok
     #@-others
     
 #@+node:ekr.20120211121736.10831: ** class LogManager
@@ -2140,5 +2435,26 @@ class LogManager:
         # Essential when opening multiple files...
         lm.setLog(None) 
     #@-others
+#@+node:ekr.20120223062418.10420: ** class PreviousSettings
+class PreviousSettings:
+    
+    '''A class holding the settings and shortcuts dictionaries
+    that are computed in the first pass when loading local
+    files and passed to the second pass.'''
+    
+    def __init__ (self,settingsDict,shortcutsDict):
+        
+        assert g.isTypedDict(settingsDict)
+        assert g.isTypedDictOfLists(shortcutsDict)
+        
+        self.settingsDict = settingsDict
+        self.shortcutsDict = shortcutsDict
+        
+    def __repr__ (self):
+        
+        return '<PreviousSettings\n%s\n%s\n>' % (
+            self.settingsDict,self.shortcutsDict)
+            
+    __str__ = __repr__
 #@-others
 #@-leo

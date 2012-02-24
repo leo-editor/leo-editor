@@ -1083,6 +1083,7 @@ class TestManager:
 
         try:
             ok = False
+            c2 = None
             old_gui = g.app.gui
             c2 = g.openWithFileName(path,old_c=c,enableLog=False)
             assert(c2)
@@ -1091,7 +1092,7 @@ class TestManager:
             ok = True
         finally:
             g.app.gui = old_gui
-            if c2 != c:
+            if c2 and c2 != c:
                 c2.setChanged(False)
                 g.app.closeLeoWindow(c2.frame)
             c.frame.update() # Restored in Leo 4.4.8.

@@ -2487,54 +2487,7 @@ for pane in sorted(list(d.keys())):
             assert b.pane == pane
             assert b.stroke == stroke
     print()
-#@+node:ekr.20120119051917.10263: *5* @test printConfigDicts
-# These dicts will only exist when unit tests run locally.
-
-d = g.app.config.localOptionsDict.get(c.hash())
-if d:
-    fn = d.name()
-    keys = list(d.keys())
-    print('***** localOptionsDict...')
-    for key in keys:
-        si = d.get(key)
-        assert si.tag == 'setting'
-        if si.kind == 'shortcut':
-            print() ; print(key) ; print(si)
-                    
-aList = g.app.config.localOptionsList
-if aList:
-    print() ; print('***** localOptionsList...')
-    for d in aList:
-        fn = d.name()
-        print()
-        print('local shortcuts for %s...' % fn)
-        keys = sorted(list(d.keys()))
-        for key in keys:
-            if key.startswith('run'):
-                si = d.get(key)
-                if si.kind == 'shortcut':
-                    print() ; print(key) ; print(si)
 #@+node:ekr.20120126080450.10187: *4* @ignore passed
-#@+node:ekr.20120120095156.10263: *5* @test findDictForFile
-def findDictForFile(fn):
-    
-    '''Find the configuration dict correspoinding to fn.'''
-    
-    short_fn = g.shortFileName(fn).lower()
-
-    for d in g.app.config.localOptionsList:
-        h = g.shortFileName(d.name()).lower()
-        if short_fn == h:
-            return d
-    else:
-        g.trace('no options dict for: %s' % (fn))
-        return {}
-        
-table = (c.fileName(),'myLeoSettings.leo','leoSettings.leo')
-
-for fn in table:
-    d = findDictForFile(fn)
-    print('%20s %s' % (g.shortFileName(fn),d and len(list(d.keys())) or 0))
 #@+node:ekr.20120126080450.10189: *5* @test mode-related info
 @
 
@@ -2643,7 +2596,7 @@ def test_dict_of_objects(d,keyType,valueType,tag):
 # import types
 # types.ListType does not exist in Python 3.x.
 # assert isinstance(aList,list().__class__)
-#@+node:ekr.20120127084215.10238: *5* @test make_settings_dicts
+#@+node:ekr.20120127084215.10238: *5* @test merge_settings_dicts
 @others
 
 # import os ; os.system('cls')
@@ -2662,7 +2615,7 @@ if False:
         print(dump_dict(d3,pattern,tag='d3'))
 
 test(d1,d2,d3)
-#@+node:ekr.20120127145909.10227: *6* dump & dump_dict (@test make_settings_dicts)
+#@+node:ekr.20120127145909.10227: *6* dump & dump_dict (@test merge_settings_dicts)
 def dump(aList,pattern=None,tag=None):
     
     return '\n'.join([repr(z) for z in aList])
@@ -2680,7 +2633,7 @@ def dump_dict(d,pattern=None,tag=None):
                 result.append('    %s' % (z))
                 
     return '\n'.join(result)
-#@+node:ekr.20120127084215.10239: *6* test (@test make_settings_dicts)
+#@+node:ekr.20120127084215.10239: *6* test (@test merge_settings_dicts)
 def test(old_d,new_d,result_d):
     
     '''Test that result_d is the result of upating old_d with new_d.
@@ -13958,7 +13911,7 @@ def setEditorColors (self,bg,fg):
 Done: Made this optional, and configurable.
 #@+node:ekr.20031218072017.2811: *5*  c.Birth & death
 #@+node:ekr.20031218072017.2812: *6* c.__init__ & helpers
-def __init__(self,fileName,relativeFileName=None,gui=None):
+def __init__(self,fileName,relativeFileName=None,gui=None,previousSettings=None):
 
     trace = (False or g.trace_startup) and not g.unitTesting
     tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
@@ -13985,9 +13938,9 @@ def __init__(self,fileName,relativeFileName=None,gui=None):
     c.initFileIvars(fileName,relativeFileName)
     c.initOptionsIvars()
     c.initObjectIvars()
-
-    # Init the settings before initing the objects.
-    self.config = configSettings(c)
+    
+    # Init the settings *before* initing the objects.
+    self.config = configSettings(c,previousSettings)
     g.app.config.setIvarsFromSettings(c)
 
     # Initialize all subsidiary objects, including subcommanders.
@@ -14169,7 +14122,12 @@ def initObjectIvars (self):
 #@+node:ekr.20120217070122.10470: *7* c.initObjects
 def initObjects(self,gui):
     
+    trace = (False or g.trace_startup) and not g.unitTesting
     c = self
+    
+    if trace:
+        print('g.initObjects %s %s' % (
+            c.shortFileName(),g.app.gui))
 
     self.hiddenRootNode = leoNodes.vnode(context=c)
     self.hiddenRootNode.setHeadString('<hidden root vnode>')
@@ -14185,7 +14143,9 @@ def initObjects(self,gui):
     assert self.frame.c == c
     
     self.nodeHistory = nodeHistory(c)
+    
     self.initConfigSettings()
+
     c.setWindowPosition() # Do this after initing settings.
 
     # Break circular import dependencies by importing here.
@@ -14279,8 +14239,8 @@ def printCommandsDict (self):
             key,g.choose(command,command.__name__,'<None>')))
     print('')
 #@+node:ekr.20041130173135: *6* c.hash
+# This is a bad idea.
 def hash (self):
-
     c = self
     if c.mFileName:
         return c.os_path_finalize(c.mFileName).lower()
@@ -14337,14 +14297,11 @@ def initConfigSettings (self):
     '''Init all cached commander config settings.'''
     
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: print('c.initConfigSettings')
-        
     c = self
-        
-    if g.new_config:
-        if not c.configInited:
-            g.trace('********** c.configInited is False')
-            return
+
+    if trace and g.new_config:
+        print('c.initConfigSettings: c.configInited: %s %s' % (
+            c.configInited,c.shortFileName()))
 
     c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
     c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
@@ -16390,14 +16347,11 @@ def initConfigSettings (self):
     '''Init all cached commander config settings.'''
     
     trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: print('c.initConfigSettings')
-        
     c = self
-        
-    if g.new_config:
-        if not c.configInited:
-            g.trace('********** c.configInited is False')
-            return
+
+    if trace and g.new_config:
+        print('c.initConfigSettings: c.configInited: %s %s' % (
+            c.configInited,c.shortFileName()))
 
     c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
     c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
@@ -16732,8 +16686,8 @@ def printBindings (self,event=None):
     c.frame.log.clearTab(tabName)
     legend = '''\
 legend:
-[S] leoSettings.leo
-[ ] default binding
+[ ] leoSettings.leo
+[D] default binding
 [F] loaded .leo File
 [M] myLeoSettings.leo
 [@] mode
@@ -16785,13 +16739,16 @@ legend:
     return result # for unit test.
 #@+node:ekr.20061031131434.120: *6* printBindingsHelper
 def printBindingsHelper (self,result,data,prefix):
+    
+    lm = g.app.loadManager
  
     data.sort(key=lambda x: x[1])
 
     data2,n = [],0
     for pane,key,commandName,kind in data:
         key = key.replace('+Key','')
-        letter = self.computeBindingLetter(kind)
+        # g.trace(key,kind)
+        letter = lm.computeBindingLetter(kind)
         pane = '%s: ' % (pane) if pane else ''
         left = pane+key # pane and shortcut fields
         n = max(n,len(left))
@@ -16803,20 +16760,6 @@ def printBindingsHelper (self,result,data,prefix):
 
     if data:
         result.append('\n')
-#@+node:ekr.20120130101219.10182: *6* k.computeBindingLetter
-def computeBindingLetter(self,kind):
-    
-    table = (
-        ('M','myLeoSettings.leo'),
-        ('S','leoSettings.leo'),
-        ('F','.leo'),
-    )
-    
-    for letter,kind2 in table:
-        if kind.lower() == kind2.lower():
-            return letter
-    else:
-        return ' ' if kind2.find('mode') == -1 else '@'
 #@+node:ekr.20061031131434.121: *5* k.printCommands
 def printCommands (self,event=None):
 
@@ -17301,8 +17244,8 @@ def printBindings (self,event=None):
     c.frame.log.clearTab(tabName)
     legend = '''\
 legend:
-[S] leoSettings.leo
-[ ] default binding
+[ ] leoSettings.leo
+[D] default binding
 [F] loaded .leo File
 [M] myLeoSettings.leo
 [@] mode
@@ -17354,13 +17297,16 @@ legend:
     return result # for unit test.
 #@+node:ekr.20061031131434.120: *6* printBindingsHelper
 def printBindingsHelper (self,result,data,prefix):
+    
+    lm = g.app.loadManager
  
     data.sort(key=lambda x: x[1])
 
     data2,n = [],0
     for pane,key,commandName,kind in data:
         key = key.replace('+Key','')
-        letter = self.computeBindingLetter(kind)
+        # g.trace(key,kind)
+        letter = lm.computeBindingLetter(kind)
         pane = '%s: ' % (pane) if pane else ''
         left = pane+key # pane and shortcut fields
         n = max(n,len(left))
@@ -17372,20 +17318,6 @@ def printBindingsHelper (self,result,data,prefix):
 
     if data:
         result.append('\n')
-#@+node:ekr.20120130101219.10182: *6* k.computeBindingLetter
-def computeBindingLetter(self,kind):
-    
-    table = (
-        ('M','myLeoSettings.leo'),
-        ('S','leoSettings.leo'),
-        ('F','.leo'),
-    )
-    
-    for letter,kind2 in table:
-        if kind.lower() == kind2.lower():
-            return letter
-    else:
-        return ' ' if kind2.find('mode') == -1 else '@'
 #@+node:ekr.20041117062717.14: *5* getShortcut (g.app.config)
 def getShortcut (self,c,commandName):
 
@@ -17402,7 +17334,7 @@ def getShortcut (self,c,commandName):
     key = c.frame.menu.canonicalizeMenuName(commandName)
     key = key.replace('&','') # Allow '&' in names.
 
-    # New code: use the dicts created by make_settings_dict.
+    # New code: use the dicts created by merge_settings_dict.
     table = (
         ('local',            c and self.localShortcutsDict.get(c.hash(),{})),
         ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
@@ -17432,48 +17364,74 @@ def get (self,c,setting,kind):
     
     trace = False and not g.unitTesting
     verbose = False
-
-    isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and not isLeoSettings:
-        # For the local .leo file.
-        d = self.localOptionsDict.get(c.hash(),{})
+    
+    if g.new_config:
+        lm = g.app.loadManager
+        # It *is* valid to call this method: it returns the global settings.
+        if c:
+            print('g.app.config.get ***** call c.config.getX when c is available')
+            print('g.app.config.get',setting,kind,g.callers())
+    
+        d = lm.globalSettingsDict
         if d:
+            assert g.isTypedDict(d),d
             val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
-                return val
-
-    for d in self.localOptionsList:
-        # For myLeoSettings.leo and leoSettings.leo.
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
-            if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
-            return val
-
-    for d in self.dictList:
-        # For hard-coded options...
-        val,junk = self.getValFromDict(d,setting,kind)
-        if val is not None:
             if trace:
-                g.trace('%-7s %45s %s' % ('default',setting,val))
+                print('g.app.config.get %30s %s' % (setting,val))
             return val
-
-    # New in Leo 4.6. Use settings in leoSettings.leo *last*.
-    if c and isLeoSettings:
-        # For when leoSettings.leo is the local file.
-        d = self.localOptionsDict.get(c.hash(),{})
-        if d:
+        else:
+            if trace:
+                print('g.app.config.get %30s **no d, returning None' % (setting))
+            return None
+        
+    else:
+        isLeoSettings = c and c.shortFileName().lower().endswith('leosettings.leo')
+    
+        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        if c and not isLeoSettings:
+            if g.new_config:
+                pass
+            else:
+                # For the local .leo file.
+                d = self.localOptionsDict.get(c.hash(),{})
+                if d:
+                    val,junk = self.getValFromDict(d,setting,kind)
+                    if val is not None:
+                        if trace: g.trace('**%-7s %45s %s' % ('local',setting,val))
+                        return val
+    
+        for d in self.localOptionsList:
+            # For myLeoSettings.leo and leoSettings.leo.
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
-                if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
+                if trace: g.trace('%-7s %45s %s' % ('global',setting,val))
                 return val
-
-    if trace and verbose:
-        fn = c and c.shortFileName() or '<no file>'
-        g.trace(setting,None,fn)
-    return None
+    
+        for d in self.dictList:
+            # For hard-coded options...
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                if trace:
+                    g.trace('%-7s %45s %s' % ('default',setting,val))
+                return val
+    
+        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        if c and isLeoSettings:
+            if g.new_config:
+                pass
+            else:
+                # For when leoSettings.leo is the local file.
+                d = self.localOptionsDict.get(c.hash(),{})
+                if d:
+                    val,junk = self.getValFromDict(d,setting,kind)
+                    if val is not None:
+                        if trace: g.trace('%-7s %45s %s' % ('last',setting,val))
+                        return val
+    
+        if trace and verbose:
+            fn = c and c.shortFileName() or '<no file>'
+            g.trace(setting,None,fn)
+        return None
 #@+node:ekr.20041121143823: *6* getValFromDict
 def getValFromDict (self,d,setting,requestedType,warn=True):
 
@@ -24175,7 +24133,7 @@ What I did:
 - Removed dynamic_menus "compile-time" constant.
 - onAboutToShow now recomputes the contents of menus whenever menus are invoked.
 - leo_update_shortcut now shows all shortcuts for a command.
-- Wrote and tested make_settings_dict
+- Wrote and tested merge_settings_dict.
 #@+node:ekr.20120128103510.13674: *5*  Report
 @nocolor-node
 
@@ -24738,7 +24696,7 @@ def getShortcut (self,c,commandName):
     key = c.frame.menu.canonicalizeMenuName(commandName)
     key = key.replace('&','') # Allow '&' in names.
 
-    # New code: use the dicts created by make_settings_dict.
+    # New code: use the dicts created by merge_settings_dict.
     table = (
         ('local',            c and self.localShortcutsDict.get(c.hash(),{})),
         ('myLeoSettings.leo',g.app.config.immutable_my_leo_settings_shortcuts_dict),
@@ -24865,8 +24823,12 @@ def kill_one_shortcut (self,stroke):
     assert g.isStroke(stroke),stroke
     
     # g.trace(stroke)
+    
+    if g.new_config:
+        d = c.config.shortcutsDict
+    else:
+        d = g.app.config.localShortcutsDict.get(c.hash())
 
-    d = g.app.config.localShortcutsDict.get(c.hash())
     if d is None:
         d = g.TypedDictOfLists(
             name='empty shortcuts dict',
@@ -24876,7 +24838,11 @@ def kill_one_shortcut (self,stroke):
     inv_d = g.app.config.invert(d)
     aList = inv_d.get(stroke,[])
     inv_d[stroke] = []
-    g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
+    
+    if g.new_config:
+        c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+    else:
+        g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
 #@+node:ekr.20061031131434.92: *7* k.remove_conflicting_definitions
 def remove_conflicting_definitions (self,aList,pane,shortcut):
     
@@ -25246,6 +25212,7 @@ def registerCommand (self,commandName,shortcut,func,
         g.trace('leoCommands %24s = %s' % (fname,commandName))
 
     if shortcut:
+        if trace: g.trace('shortcut',shortcut,g.callers())
         stroke = k.strokeFromSetting(shortcut)
     elif commandName.lower() == 'shortcut': # Causes problems.
         stroke = None
@@ -25257,6 +25224,7 @@ def registerCommand (self,commandName,shortcut,func,
             assert g.isShortcutInfo(si),si
             assert g.isStrokeOrNone(si.stroke)
             if si.stroke and not si.pane.endswith('-mode'):
+                if trace: g.trace('*** found',si)
                 stroke = si.stroke
                 break
 
@@ -25287,8 +25255,8 @@ def registerCommand (self,commandName,shortcut,func,
                     break
 #@+node:ekr.20120129174505.10243: *5* The missing settings bug (c.hash)
 #@+node:ekr.20041130173135: *6* c.hash
+# This is a bad idea.
 def hash (self):
-
     c = self
     if c.mFileName:
         return c.os_path_finalize(c.mFileName).lower()
@@ -25385,8 +25353,12 @@ def kill_one_shortcut (self,stroke):
     assert g.isStroke(stroke),stroke
     
     # g.trace(stroke)
+    
+    if g.new_config:
+        d = c.config.shortcutsDict
+    else:
+        d = g.app.config.localShortcutsDict.get(c.hash())
 
-    d = g.app.config.localShortcutsDict.get(c.hash())
     if d is None:
         d = g.TypedDictOfLists(
             name='empty shortcuts dict',
@@ -25396,7 +25368,11 @@ def kill_one_shortcut (self,stroke):
     inv_d = g.app.config.invert(d)
     aList = inv_d.get(stroke,[])
     inv_d[stroke] = []
-    g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
+    
+    if g.new_config:
+        c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+    else:
+        g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
 #@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
 def remove_conflicting_definitions (self,aList,pane,shortcut):
     
@@ -25481,31 +25457,6 @@ appropriate dictionary.
 
 Note that this scheme will produce the proper results for standard settings
 files themselves if they appear on the command line.
-#@+node:ekr.20120214165710.16786: *3* Notes about old code (Important)
-OLD code: all setting files read during startup.
-
-doPrePluginsInit
-    readSettingsFiles
-        openSettingsFile
-        updateSettings
-            parser.traverse
-                make_shortcuts_dicts
-                
-NEW code: only global settings files read during startup.
-
-1. Startup:
-    doPrePluginsInit
-        readSettingsFiles
-            openSettingsFile
-            updateSettings
-                parser.traverse
-                    make_shortcuts_dicts
-                    
-2. When loading local files:
-    
-    g.openWithFileName
-        (the file is opened normally)
-        updateSettings
 #@+node:ekr.20120212220616.10368: *3* Notes about startup logic (do not delete)
 @nocolor-node
 

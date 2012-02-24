@@ -65,7 +65,7 @@ class Commands (object):
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
-    def __init__(self,fileName,relativeFileName=None,gui=None):
+    def __init__(self,fileName,relativeFileName=None,gui=None,previousSettings=None):
 
         trace = (False or g.trace_startup) and not g.unitTesting
         tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
@@ -92,9 +92,9 @@ class Commands (object):
         c.initFileIvars(fileName,relativeFileName)
         c.initOptionsIvars()
         c.initObjectIvars()
-
-        # Init the settings before initing the objects.
-        self.config = configSettings(c)
+        
+        # Init the settings *before* initing the objects.
+        self.config = configSettings(c,previousSettings)
         g.app.config.setIvarsFromSettings(c)
 
         # Initialize all subsidiary objects, including subcommanders.
@@ -276,7 +276,12 @@ class Commands (object):
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self,gui):
         
+        trace = (False or g.trace_startup) and not g.unitTesting
         c = self
+        
+        if trace:
+            print('g.initObjects %s %s' % (
+                c.shortFileName(),g.app.gui))
 
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
@@ -292,7 +297,9 @@ class Commands (object):
         assert self.frame.c == c
         
         self.nodeHistory = nodeHistory(c)
+        
         self.initConfigSettings()
+
         c.setWindowPosition() # Do this after initing settings.
 
         # Break circular import dependencies by importing here.
@@ -386,8 +393,8 @@ class Commands (object):
                 key,g.choose(command,command.__name__,'<None>')))
         print('')
     #@+node:ekr.20041130173135: *4* c.hash
+    # This is a bad idea.
     def hash (self):
-
         c = self
         if c.mFileName:
             return c.os_path_finalize(c.mFileName).lower()
@@ -444,14 +451,11 @@ class Commands (object):
         '''Init all cached commander config settings.'''
         
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('c.initConfigSettings')
-            
         c = self
-            
-        if g.new_config:
-            if not c.configInited:
-                g.trace('********** c.configInited is False')
-                return
+
+        if trace and g.new_config:
+            print('c.initConfigSettings: c.configInited: %s %s' % (
+                c.configInited,c.shortFileName()))
 
         c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
@@ -8383,21 +8387,32 @@ class configSettings:
     #@+others
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
     #@+node:ekr.20041118104831.2: *4* c.config.ctor
-    def __init__ (self,c):
+    def __init__ (self,c,previousSettings=None):
      
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('c.config.__init__ %s' % (c and c.shortFileName()))
         self.c = c
         
-        # The shortcuts and settings dicts, set by lm.initLocalSettings set
-        self.settingsDict = None    # Set to a g.TypedDict.
-        self.shortcutsDict = None   # Set to a g.TypedDictOfLists.
+        # The shortcuts and settings dicts, set in c.__init__
+        # for local files.
+        if previousSettings:
+            self.settingsDict = previousSettings.settingsDict
+            self.shortcutsDict = previousSettings.shortcutsDict
+            assert g.isTypedDict(self.settingsDict)
+            assert g.isTypedDictOfLists(self.shortcutsDict)
+        else:
+            lm = g.app.loadManager
+            self.settingsDict  = d1 = lm.globalSettingsDict
+            self.shortcutsDict = d2 = lm.globalShortcutsDict
+            assert d1 is None or g.isTypedDict(d1),d1
+            assert d2 is None or g.isTypedDictOfLists(d2),d2
 
-        # Init these here to keep pylint happy.
-        self.default_derived_file_encoding = None
-        self.new_leo_file_encoding = None
-        self.redirect_execute_script_output_to_log_pane = None
-
+        # Define these explicitly to eliminate a pylint warning.
+        self.default_derived_file_encoding =\
+            g.app.config.default_derived_file_encoding
+        self.redirect_execute_script_output_to_log_pane =\
+            g.app.config.redirect_execute_script_output_to_log_pane
+        
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize  = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
@@ -8416,7 +8431,11 @@ class configSettings:
         # Important: the key is munged.
         gs = g.app.config.encodingIvarsDict.get(key)
         encodingName = gs.ivar
-        encoding = g.app.config.get(c,encodingName,kind='string')
+        
+        if g.new_config:
+            encoding = self.get(encodingName,kind='string')
+        else:
+            encoding = g.app.config.get(c,encodingName,kind='string')
 
         # New in 4.4b3: use the global setting as a last resort.
         if encoding:
@@ -8438,7 +8457,12 @@ class configSettings:
         # Important: the key is munged.
         gs = g.app.config.ivarsDict.get(key)
         ivarName = gs.ivar
-        val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+        
+        if g.new_config:
+            val = self.get(ivarName,kind=None)
+        else:
+            val = g.app.config.get(c,ivarName,kind=None)
+                # kind is ignored anyway.
 
         if val or not hasattr(self,ivarName):
             if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
@@ -8499,7 +8523,7 @@ class configSettings:
             assert lm
 
             if d:
-                assert isinstance(d,g.TypedDict),d
+                assert g.isTypedDict(d),d
                 val,junk = self.getValFromDict(d,setting,kind)
                 if trace and verbose and val is not None:
                     # g.trace('%35s %20s %s' % (setting,val,g.callers(3)))
@@ -8522,7 +8546,7 @@ class configSettings:
             gs = d.get(g.app.config.munge(setting))
             if not gs: return None,False
 
-            assert isinstance(gs,g.GeneralSetting)
+            assert g.isGeneralSetting(gs),gs
             
             # g.trace(setting,requestedType,gs.toString())
             val = gs.val
@@ -8718,7 +8742,7 @@ class configSettings:
             assert lm
             
             if d:
-                assert isinstance(d,g.TypedDict),d
+                assert g.isTypedDict(d),d
                 si = d.get(setting)
                 if si is None:
                     return 'unknown setting',None
@@ -8747,12 +8771,12 @@ class configSettings:
                 return None,[]
 
             if d:
-                assert isinstance(d,g.TypedDictOfLists),d
+                assert g.isTypedDictOfLists(d),d
                 key = c.frame.menu.canonicalizeMenuName(commandName)
                 key = key.replace('&','') # Allow '&' in names.
                 aList = d.get(commandName,[])
                 if aList:
-                    for si in aList: assert isinstance(si,g.ShortcutInfo),si 
+                    for si in aList: assert g.isShortcutInfo(si),si 
                     # It's very important to filter empty strokes here.
                     aList = [si for si in aList
                         if si.stroke and si.stroke.lower() != 'none']
@@ -8881,11 +8905,11 @@ class configSettings:
 
             # if kind and kind.startswith('setting'): g.trace("c.config %10s %15s %s" %(kind,val,name))
             d = self.settingsDict
-            assert isinstance(d,g.TypedDict),d
+            assert g.isTypedDict(d),d
 
             gs = d.get(key)
             if gs:
-                assert isinstance(gs,g.GeneralSetting),gs
+                assert g.isGeneralSetting(gs),gs
                 path = gs.path
                 if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                     g.es("over-riding setting:",name,"from",path)

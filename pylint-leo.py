@@ -155,19 +155,19 @@ W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
 
 recentCoreList = (
         # ('runLeo',            ''),
-        # ('leoApp',            ''),
+        ('leoApp',            ''),
         # ('leoAtFile',         ''),
         # ('leoBridge',       ''),
         # ('leoCache',          ''),
         # ('leoChapters',       ''),
-        # ('leoCommands',       ''),
+        ('leoCommands',       ''),
         ('leoConfig',           ''),
         # ('leoEditCommands',   ''),
         # ('leoFind',           ''),
         # ('leoFrame',          'R0923'),
             # R0923: Interface not implemented.
 
-        # ('leoGlobals',          'E0611,E1103'),
+        ('leoGlobals',          'E0611,E1103'),
             # E0611: no name 'parse' in urllib.
             # E1103: Instance of 'ParseResult' has no 'xxx' member
             # (but some types could not be inferred)

@@ -303,7 +303,7 @@ class LeoPluginsController:
         Nothing bad will happen if this is never called.'''
 
         self.warn_on_failure = g.app.config.getBool(c=None,
-            setting='warn_when_plugins_fail_to_load')
+            setting='warn_when_plugins_fail_to_load',default=True)
     #@+node:ekr.20100909065501.5952: *3* Event handlers
     #@+node:ekr.20100908125007.6016: *4* callTagHandler
     def callTagHandler (self,bunch,tag,keywords):

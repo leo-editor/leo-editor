@@ -1708,8 +1708,12 @@ class keyHandlerClass:
         assert g.isStroke(stroke),stroke
         
         # g.trace(stroke)
+        
+        if g.new_config:
+            d = c.config.shortcutsDict
+        else:
+            d = g.app.config.localShortcutsDict.get(c.hash())
 
-        d = g.app.config.localShortcutsDict.get(c.hash())
         if d is None:
             d = g.TypedDictOfLists(
                 name='empty shortcuts dict',
@@ -1719,7 +1723,11 @@ class keyHandlerClass:
         inv_d = g.app.config.invert(d)
         aList = inv_d.get(stroke,[])
         inv_d[stroke] = []
-        g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
+        
+        if g.new_config:
+            c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+        else:
+            g.app.config.localShortcutsDict[c.hash()] = g.app.config.uninvert(inv_d)
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions (self,aList,pane,shortcut):
         
@@ -2216,8 +2224,8 @@ class keyHandlerClass:
         c.frame.log.clearTab(tabName)
         legend = '''\
     legend:
-    [S] leoSettings.leo
-    [ ] default binding
+    [ ] leoSettings.leo
+    [D] default binding
     [F] loaded .leo File
     [M] myLeoSettings.leo
     [@] mode
@@ -2269,13 +2277,16 @@ class keyHandlerClass:
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
     def printBindingsHelper (self,result,data,prefix):
+        
+        lm = g.app.loadManager
      
         data.sort(key=lambda x: x[1])
 
         data2,n = [],0
         for pane,key,commandName,kind in data:
             key = key.replace('+Key','')
-            letter = self.computeBindingLetter(kind)
+            # g.trace(key,kind)
+            letter = lm.computeBindingLetter(kind)
             pane = '%s: ' % (pane) if pane else ''
             left = pane+key # pane and shortcut fields
             n = max(n,len(left))
@@ -2287,20 +2298,6 @@ class keyHandlerClass:
 
         if data:
             result.append('\n')
-    #@+node:ekr.20120130101219.10182: *5* k.computeBindingLetter
-    def computeBindingLetter(self,kind):
-        
-        table = (
-            ('M','myLeoSettings.leo'),
-            ('S','leoSettings.leo'),
-            ('F','.leo'),
-        )
-        
-        for letter,kind2 in table:
-            if kind.lower() == kind2.lower():
-                return letter
-        else:
-            return ' ' if kind2.find('mode') == -1 else '@'
     #@+node:ekr.20061031131434.121: *4* k.printCommands
     def printCommands (self,event=None):
 
@@ -2603,6 +2600,7 @@ class keyHandlerClass:
             g.trace('leoCommands %24s = %s' % (fname,commandName))
 
         if shortcut:
+            if trace: g.trace('shortcut',shortcut,g.callers())
             stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
@@ -2614,6 +2612,7 @@ class keyHandlerClass:
                 assert g.isShortcutInfo(si),si
                 assert g.isStrokeOrNone(si.stroke)
                 if si.stroke and not si.pane.endswith('-mode'):
+                    if trace: g.trace('*** found',si)
                     stroke = si.stroke
                     break
 

@@ -932,11 +932,12 @@ at.printError('test of at.printError:',s)
 #@+node:ekr.20050208051418.1: *3* @test can't open message in g.openWithFileName
 @first # -*- coding: utf-8 -*-
 
+# g.openWithFileName *always* opens the file.
+
 old_c = c
 filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 try:
     c2 = g.openWithFileName(filename,old_c)
-    assert not c2
 finally:
     if c2:
         g.app.destroyWindow(c2.frame)
@@ -1054,6 +1055,8 @@ if not g.isPython3: # Does not work with Python 3.x
 #@+node:ekr.20050206090416: *3* @test open non-existent non-ascii directory
 @first # -*- coding: utf-8 -*-
 
+# g.openWithFileName *always* opens the file.
+
 if g.isPython3:
     # Do not call g.ue: it will crash.
     theFile = 'Ỗ'
@@ -1065,7 +1068,6 @@ path = g.os_path_join('Ỗ','Ỗ')
 
 try:
     c2 = g.openWithFileName(path,c)
-    assert not c2
 finally:
     if c2:
         g.app.destroyWindow(c2.frame)
@@ -19439,7 +19441,9 @@ finally:
     if p:
         p.h = h
         c.redraw()
-#@+node:ekr.20120201125738.3958: *3* @test config.getShortcuts works when no local shortcuts
+#@+node:ekr.20120201125738.3958: *3* @@@test config.getShortcuts works when no local shortcuts
+# This tests is valid only if not g.new_config.
+
 sd = g.app.config.localShortcutsDict
 d = sd.get(c.hash(),{})
 try:

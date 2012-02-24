@@ -2910,40 +2910,6 @@ when the user executes a script with Pdb it:
 2. Executes pdb based off of that tmp file.
 
 that way you get all the goodness that pdb can offer.
-#@+node:ekr.20041214135556: *4* How to use Tile
-@nocolor
-https://sourceforge.net/forum/message.php?msg_id=2882718
-By: nobody
-
-if anyone is interested here is some code that Tilefied my Leo instance, its
-does some patching in the LeoGui program.
-
-@color
-
-def createRootWindow(self):
-
-    """Create a hidden Tk root window."""
-    #import Tix
-    self.root = root = Tk.Tk()
-    root.tk.call( 'package', 'require', 'tile' )
-    #root.tk.call( 'namespace', 'import', '-force', 'ttk::*' )
-    root.tk.call( 'namespace', 'import', '-force', 'ttk::scrollbar' )
-    root.tk.call( 'namespace', 'import', '-force', 'ttk::label' )
-    root.tk.call( 'namespace', 'import', '-force', 'ttk::entry' )
-    root.tk.call( 'namespace', 'import', '-force', 'ttk::menu' )
-    root.tk.call( 'namespace', 'import', '-force', 'ttk::button' )
-    root.tk.call( 'namespace', 'import', '-force', 'ttk::frame' )
-    root.tk.call( 'namespace', 'import', '-force', 'ttk::menubutton' )
-    root.tk.call( 'tile::setTheme', 'clam' )
-    #self.root = root = Tix.Tk()
-    root.title("Leo Main Window")
-    root.withdraw()
-
-    self.setDefaultIcon()
-    self.getDefaultConfigFont(g.app.config)
-    self.createGlobalWindows()
-
-    return root
 #@+node:ekr.20070215183046: *3* IronPython notes
 @nocolor
 
@@ -7117,5 +7083,88 @@ if 0:
     
         c.isZipped = isZipped
         return c,theFile
+#@+node:ekr.20120215085903.10842: *3* lm.findSettingsRoot (not used)
+def findSettingsRoot(self,c):
+
+    '''Return the position of the @settings tree.'''
+
+    g.trace(c,c.rootPosition())
+
+    for p in c.all_unique_positions():
+        if p.h.rstrip() == "@settings":
+            return p.copy()
+    else:
+        return c.nullPosition()
+#@+node:ekr.20120215062153.10738: *3* lm.initLocalSettings (new_config) NOT USED
+# Pre-read files never have their settings set.
+# Local files use the PreviousSettings objedt to init their settings.
+
+def initLocalSettings (self,c):
+    
+    '''Init c.config.settingsDict & c.config.shortcutsDict.'''
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    verbose = False
+    tag = 'lm.initLocalSettings'
+    lm = self
+
+    assert c
+    assert c.config
+    assert g.new_config
+    
+    fn = c.shortFileName()
+    if trace:
+        if lm.globalSettingsDict:
+            print('\n==========%s %s' % (tag,fn))
+        else:
+            print('\n==========%s %s (ignoring global settings file)' % (tag,fn))
+        # print(g.callers())
+
+    if not lm.globalSettingsDict:
+        # This is not an error: we are initing a global setting.
+        return False
+
+    # Create c.config.settingsDict & c.config.shortcutsDict.
+    settings_d = lm.globalSettingsDict
+    assert isinstance(settings_d,g.TypedDict),settings_d
+
+    shortcuts_d = lm.globalShortcutsDict
+    assert isinstance(shortcuts_d,g.TypedDictOfLists)
+    
+    shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag=True)
+    assert settings_d2  != settings_d
+    assert shortcuts_d2 != shortcuts_d
+    
+    # Adjust the names.
+    settings_d.setName('settingsDict for %s' % fn)
+    shortcuts_d.setName('shortcutsDict for %s' % fn)
+    
+    # Trace the raw values
+    if trace:
+        print('%s (before)...' % tag)
+        lm.traceSettingsDict(settings_d2,verbose)
+        lm.traceShortcutsDict(shortcuts_d2,verbose)
+
+    if settings_d2:
+        settings_d.update(settings_d2)
+    if shortcuts_d2:
+        shortcuts_d = lm.mergeShortcutsDicts(shortcuts_d,shortcuts_d2)
+                
+    # Adjust the names.
+    fn = c.shortFileName()
+   
+    # Trace the merged dicts.
+    if trace:
+        print('%s (after)...' % tag)
+        lm.traceSettingsDict(settings_d,verbose)
+        lm.traceShortcutsDict(shortcuts_d,verbose)
+
+    # Set the c.conf ivars
+    c.config.settingsDict = settings_d
+    c.config.shortcutsDict = shortcuts_d
+    
+    # Tell c.config.get that configuration settings are valid.
+    c.configInited = True
+    return True
 #@-all
 #@-leo

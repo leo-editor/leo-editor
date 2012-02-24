@@ -65,10 +65,11 @@ def git_dump_f(event):
 
     assert os.path.isdir(flatroot)
 
-    comment = g.app.gui.runAskOkCancelStringDialog(c, "Checkin comment","Comment")
+    comment = g.app.gui.runAskOkCancelStringDialog(c,"Checkin comment","Comment")
     if not comment:
         comment = "Leo dump"
-    wb = g.app.config.getString(c=None,setting='default_leo_file')
+    # wb = g.app.config.getString(c=None,setting='default_leo_file')
+    wb = c.config.getString(setting='default_leo_file')
     wb = g.os_path_finalize(wb)
     shutil.copy2(wb, flatroot)
     
