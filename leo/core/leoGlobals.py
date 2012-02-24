@@ -20,7 +20,7 @@ trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
 
-new_config = False
+new_config = True
     # True: Create finalized settings & shortcuts dicts for each commander.
     # g.app.config only parses settings: rename it g.app.configParser??
     # c.config.getX become much simpler.
