@@ -2826,7 +2826,6 @@ def pr(*args,**keys):
 
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
-    #### if app.logInited:
     if newline:
         s = s + '\n'
 

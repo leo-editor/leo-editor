@@ -1780,7 +1780,6 @@ class keyHandlerClass:
             abbrev = k.abbreviationsDict.get(name)
             key = c.frame.menu.canonicalizeMenuName(abbrev or name)
             key = key.replace('&','')
-            #### if not g.app.config.exists(c,key,'shortcut'):
             if not c.config.exists(key,'shortcut'):
                 if abbrev:
                     g.trace('No shortcut for abbrev %s -> %s = %s' % (
@@ -4762,7 +4761,6 @@ class ModeInfo:
                     if trace: g.trace('inheriting',[si.val for si in aList3])
                     aList.extend(aList3)
                 aList.append(si)
-                #### d.replace(name,aList)
                 d[name] = aList
     #@+node:ekr.20120208064440.10158: *3* initMode (ModeInfo)
     def initMode (self):

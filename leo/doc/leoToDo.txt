@@ -1844,7 +1844,6 @@ def init (self,name,dataList):
                 if trace: g.trace('inheriting',[si.val for si in aList3])
                 aList.extend(aList3)
             aList.append(si)
-            #### d.replace(name,aList)
             d[name] = aList
 .. @+node:ekr.20120208064440.10158: *5* initMode (ModeInfo)
 def initMode (self):

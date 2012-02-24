@@ -2629,10 +2629,7 @@ class nullLog (leoLog):
     def createTextWidget (self,parentFrame):
 
         self.logNumber += 1
-
         c = self.c
-
-        #### gui = c and c.frame and c.frame.gui or g.app.gui
 
         log = stringTextWidget(
             c = self.c,
@@ -2685,9 +2682,6 @@ class nullStatusLineClass:
         self.enabled = False
         self.parentFrame = parentFrame
 
-        # gui = c and c.frame and c.frame.gui or g.app.gui
-
-        #### self.textWidget = w = gui.plainTextWidget(c,name='status-line')
         self.textWidget = w = stringTextWidget(c,name='status-line')
 
         # Set the official ivars.
