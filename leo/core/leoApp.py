@@ -1276,7 +1276,7 @@ class LoadManager:
         # the global settings, that is, settings in myLeoSettings.leo.
         isLeoSettings = g.shortFileName(fn).lower()=='leosettings.leo'
 
-        if lm.isLeoFile(fn) and not isLeoSettings and g.os_path_exists(fn):
+        if fn and lm.isLeoFile(fn) and not isLeoSettings and g.os_path_exists(fn):
             # Open the file usinging a null gui.
             c = lm.openSettingsFile(fn)
 
@@ -1375,7 +1375,7 @@ class LoadManager:
             len(list(result.keys())),id(d),result.name()))
         return result
     #@+node:ekr.20120222103014.10312: *4* lm.openSettingsFile (new_config)
-    def openSettingsFile (self,path):
+    def openSettingsFile (self,fn):
         
         '''Open a settings file with a null gui.  Return the commander.
         
@@ -1383,23 +1383,33 @@ class LoadManager:
         
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('lm.openSettingsFile: g.app.gui: %s' % (
-            g.shortFileName(path)))
+            g.shortFileName(fn)))
+            
+        lm = self
+        if not fn: return None
 
-        theFile,isZipped = g.openLeoOrZipFile(path)
-        if not theFile: return None
+        ### theFile,isZipped = g.openLeoOrZipFile(path)
+        ### if not theFile: return None
+
+        zipped = lm.isZippedFile(fn)
+        if lm.isLeoFile(fn) and g.os_path_exists(fn):
+            if zipped: theFile = lm.openZipFile(fn)
+            else:      theFile = lm.openLeoFile(fn)
+        else:
+            return None
         
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
-        c = g.app.newCommander(path)
+        c = g.app.newCommander(fn)
         frame = c.frame
         frame.log.enable(False)
         g.app.lockLog()
-        ok = c.fileCommands.openLeoFile(theFile,path,
+        ok = c.fileCommands.openLeoFile(theFile,fn,
             readAtFileNodesFlag=False,silent=True)
                 # closes theFile.
         g.app.unlockLog()
-        c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+        c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return ok and c or None
     #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles (new_config)
