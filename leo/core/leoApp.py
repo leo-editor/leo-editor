@@ -1223,7 +1223,7 @@ class LoadManager:
         else:
             return 'D' if kind.find('mode') == -1 else '@'
     #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
-    def computeLocalSettings (self,c,settings_d,shortcuts_d):
+    def computeLocalSettings (self,c,settings_d,shortcuts_d,localFlag):
         
         '''Merge the settings dicts from c's outline into *new copies of*
         settings_d and shortcuts_d.'''
@@ -1234,7 +1234,7 @@ class LoadManager:
         
         lm = self
         
-        shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag=False)
+        shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag)
         
         if settings_d2:
             settings_d = settings_d.copy()
@@ -1275,7 +1275,7 @@ class LoadManager:
 
             # Merge the settings from c into *copies* of the global dicts.
             d1,d2 = lm.computeLocalSettings(c,
-                lm.globalSettingsDict,lm.globalShortcutsDict)
+                lm.globalSettingsDict,lm.globalShortcutsDict,localFlag=True)
                     # d1 and d2 are copies.
             d1.setName(settingsName)
             d2.setName(shortcutsName)
@@ -1427,7 +1427,7 @@ class LoadManager:
         for c in commanders:
             if c:
                 settings_d,shortcuts_d = lm.computeLocalSettings(
-                    c,settings_d,shortcuts_d)
+                    c,settings_d,shortcuts_d,localFlag=False)
                     
         # Adjust the name.
         shortcuts_d.setName('lm.globalShortcuts')

@@ -426,24 +426,23 @@ class ParserBaseClass:
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-
-        # g.trace('localFlag',self.localFlag,c)
             
-        self.set(p,kind='menus',name='menus',val=aList)
-        if not g.app.config.menusList:
-            g.app.config.menusList = aList
-            name = c.shortFileName() if c else '<no settings file>'
-            g.app.config.menusFileName = name
-                
-        #### Old code
-            # if self.localFlag:
-                # self.set(p,kind='menus',name='menus',val=aList)
-            # else:
-                # if False and not g.app.unitTesting and not g.app.silentMode:
-                    # s = 'using menus from: %s' % c.shortFileName()
-                    # g.es_print(s,color='blue')
-                # g.app.config.menusList = aList
-                # g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
+        if 1: # Prefer the legacy code now that the localFlag is set correctly.
+            if self.localFlag:
+                self.set(p,kind='menus',name='menus',val=aList)
+            else:
+                if False and not g.app.unitTesting and not g.app.silentMode:
+                    s = 'using menus from: %s' % c.shortFileName()
+                    g.es_print(s,color='blue')
+                g.app.config.menusList = aList
+                name = c.shortFileName() if c else '<no settings file>'
+                g.app.config.menusFileName = name
+        else:
+            self.set(p,kind='menus',name='menus',val=aList)
+            if not g.app.config.menusList:
+                g.app.config.menusList = aList
+                name = c.shortFileName() if c else '<no settings file>'
+                g.app.config.menusFileName = name
     #@+node:ekr.20070926141716: *5* doItems
     def doItems (self,p,aList):
 
