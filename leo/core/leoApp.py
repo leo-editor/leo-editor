@@ -1378,16 +1378,8 @@ class LoadManager:
             
         lm = self
         if not fn: return None
-
-        ### theFile,isZipped = g.openLeoOrZipFile(path)
-        ### if not theFile: return None
-
-        zipped = lm.isZippedFile(fn)
-        if lm.isLeoFile(fn) and g.os_path_exists(fn):
-            if zipped: theFile = lm.openZipFile(fn)
-            else:      theFile = lm.openLeoFile(fn)
-        else:
-            return None
+            
+        theFile = lm.openLeoOrZipFile(fn)
         
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
@@ -1860,13 +1852,13 @@ class LoadManager:
         if lm.files:
             c1 = None
             for fn in lm.files:
-                c = g.openWithFileName(fn,old_c=None,force=True)
+                c = g.openWithFileName(fn,old_c=None)
                     # Will give a "not found" message.
                 assert c
                 if not c1: c1 = c
         else:
             # Create an empty frame.
-            c = c1 = g.openWithFileName(None,old_c=None,force=True)
+            c = c1 = g.openWithFileName(None,old_c=None)
                 
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
@@ -2053,7 +2045,7 @@ class LoadManager:
             traceback.print_exc()
             return 0
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helper
-    def loadLocalFile (self,fn,gui):
+    def loadLocalFile (self,fn,gui,old_c):
             
         '''Completely read a file, creating the corresonding outline.
         
@@ -2086,10 +2078,10 @@ class LoadManager:
 
         # Step 2: open the outline in the requested gui.
         # For .leo files (and zipped .leo file) this opens the file a second time.
-        c = lm.openFileByName(fn,gui,previousSettings)
+        c = lm.openFileByName(fn,gui,old_c,previousSettings)
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
-    def openFileByName (self,fn,gui,previousSettings):
+    def openFileByName (self,fn,gui,old_c,previousSettings):
             
         '''Read the local file whose full path is fn using the given gui.
         fn may be a Leo file (including .leo or zipped file) or an external file.
@@ -2119,11 +2111,7 @@ class LoadManager:
         
         # Open the file, if possible.
         g.doHook('open0')
-        zipped = lm.isZippedFile(fn)
-        if lm.isLeoFile(fn) and g.os_path_exists(fn):
-            if zipped: theFile = lm.openZipFile(fn)
-            else:      theFile = lm.openLeoFile(fn)
-        else:          theFile = None
+        theFile = lm.openLeoOrZipFile(fn)
             
         # Enable the log.
         g.app.unlockLog()
@@ -2262,6 +2250,22 @@ class LoadManager:
     def isZippedFile(self,fn):
         
         return fn and zipfile.is_zipfile(fn)
+    #@+node:ekr.20120224161905.10030: *6* LM.openLeoOrZipFile
+    def openLeoOrZipFile (self,fn):
+
+        lm = self
+
+        zipped = lm.isZippedFile(fn)
+        
+        if lm.isLeoFile(fn) and g.os_path_exists(fn):
+            if zipped:
+                theFile = lm.openZipFile(fn)
+            else:
+                theFile = lm.openLeoFile(fn)
+        else:
+            theFile = None
+        
+        return theFile
     #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
     def openLeoFile (self,fn):
         

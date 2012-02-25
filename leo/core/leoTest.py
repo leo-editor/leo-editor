@@ -1085,7 +1085,7 @@ class TestManager:
             ok = False
             c2 = None
             old_gui = g.app.gui
-            c2 = g.openWithFileName(path,old_c=c,enableLog=False)
+            c2 = g.openWithFileName(path,old_c=c)
             assert(c2)
             errors = c2.checkOutline(verbose=verbose,unittest=True,full=full)
             assert(errors == 0)

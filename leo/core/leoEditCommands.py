@@ -6568,12 +6568,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         lm = g.app.loadManager
 
         c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
-        zipped = lm.isZippedFile(fn)
-
-        if lm.isLeoFile(fn) and g.os_path_exists(fn):
-            if zipped: theFile = lm.openZipFile(fn)
-            else:      theFile = lm.openLeoFile(fn)
-        else:          theFile = None
+        theFile = lm.openLeoOrZipFile(fn)
 
         if theFile:
             c2.fileCommands.openLeoFile(theFile,fn,

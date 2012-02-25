@@ -6498,7 +6498,7 @@ def revert (self,event=None):
     if reply=="no":
         return
 
-    # Rename this frame so openWithFileName won't think it is open.
+    # Rename this frame so the open logic won't think it is open.
     fileName = c.mFileName ; c.mFileName = ""
 
     # Create a new frame before deleting this frame.
@@ -7359,7 +7359,7 @@ def load_session(c, UNLs):
    """
    for UNL in UNLs:
        fname, unl = UNL.split("#")
-       c2 = g.openWithFileName(fname,c)
+       c2 = g.openWithFileName(fname,old_c=c)
        if c2:
            for p in c2.all_positions():
                if p.get_UNL() == unl:
@@ -7820,12 +7820,7 @@ def createHiddenCommander(self,fn):
     lm = g.app.loadManager
 
     c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
-    zipped = lm.isZippedFile(fn)
-
-    if lm.isLeoFile(fn) and g.os_path_exists(fn):
-        if zipped: theFile = lm.openZipFile(fn)
-        else:      theFile = lm.openLeoFile(fn)
-    else:          theFile = None
+    theFile = lm.openLeoOrZipFile(fn)
 
     if theFile:
         c2.fileCommands.openLeoFile(theFile,fn,

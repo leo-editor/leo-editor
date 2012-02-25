@@ -1914,21 +1914,15 @@ def makePathRelativeTo (fullPath,basePath):
         return s
     else:
         return fullPath
-#@+node:ekr.20090520055433.5945: *3* g.openWithFileName & helpers
-def openWithFileName(fileName,old_c=None,
-    enableLog=True,force=False,gui=None,readAtFileNodesFlag=True
-):
+#@+node:ekr.20090520055433.5945: *3* g.openWithFileName
+def openWithFileName(fileName,gui=None,old_c=None):
 
     """Create a Leo Frame for the indicated fileName if the file exists.
 
-    returns ok,frame
-
-    where frame.c is the commander of the newly-opened outline.
+    returns the commander of the newly-opened outline.
     """
     
-    return g.app.loadManager.loadLocalFile(fileName,gui)
-        # g.openWithFileName is *not* part of Leo's startup logic!
-        # Therefore, fewer args are needed.
+    return g.app.loadManager.loadLocalFile(fileName,gui,old_c)
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString (Leo 4.7)
 def readFileIntoString (fn,
     encoding='utf-8',

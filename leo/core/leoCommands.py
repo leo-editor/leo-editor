@@ -1794,7 +1794,7 @@ class Commands (object):
         if reply=="no":
             return
 
-        # Rename this frame so openWithFileName won't think it is open.
+        # Rename this frame so the open logic won't think it is open.
         fileName = c.mFileName ; c.mFileName = ""
 
         # Create a new frame before deleting this frame.

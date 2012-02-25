@@ -613,8 +613,7 @@ class baseFileCommands:
         c.loading = True # disable c.changed
         try:
             try:
-                # self.getAllLeoElements(fileName='check-leo-file',silent=False)
-                theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
+                theFile = g.openLeoOrZipFile(c.mFileName)
                 self.readSaxFile(
                     theFile,fileName='check-leo-file',
                     silent=False,inClipboard=False,reassignIndices=False)
@@ -1305,7 +1304,7 @@ class baseFileCommands:
         try:
             if g.isPython3:
                 if theFile:
-                    # Use the open binary file, opened by g.openLeoOrZipFile.
+                    # Use the open binary file, opened by the caller.
                     s = theFile.read() # type(s) is bytes.
                     s = self.cleanSaxInputString(s)
                     theFile = BytesIO(s)

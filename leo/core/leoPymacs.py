@@ -121,8 +121,7 @@ def open (fileName=None):
         return None
 
     # openWithFileName checks to see if the file is already open.
-    c = g.openWithFileName(fileName,
-        enableLog=False,readAtFileNodesFlag=True)
+    c = g.openWithFileName(fileName)
 
     if c:
         g.es_print('','leoPymacs.open:',c)
