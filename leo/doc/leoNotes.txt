@@ -6284,185 +6284,130 @@ def callKeystrokeFunction (self,event):
         k.endCommand(commandName)
 
     return func
-#@+node:ekr.20120224154534.10516: *3* Helpers of g.openWithFileName
-#@+node:ekr.20090520055433.5951: *4* g.createMenu
-def createMenu(c,fileName=None):
-
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-
-    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
-        c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(fileName)
-        g.doHook("menu2",c=c,p=c.p,v=c.p)
-        g.doHook("after-create-leo-frame",c=c)
-        g.doHook("after-create-leo-frame2",c=c)
-#@+node:ekr.20090520055433.5948: *4* g.findOpenFile
-def findOpenFile(fileName):
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    for frame in g.app.windowList:
-        c = frame.c
-        if g.os_path_realpath(munge(fileName)) == g.os_path_realpath(munge(c.mFileName)):
-            frame.bringToFront()
-            c.setLog()
-            # 2011/11/21: selecting the new tab ensures focus is set.
-            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
-            if master: # frame.top.leo_master is a TabbedTopLevel.
-                master.select(frame.c)
-            c.outerUpdate()
-            return c
-    return None
-#@+node:ekr.20090520055433.5952: *4* g.finishOpen
-def finishOpen(c):
-
-    k = c.k
-    # New in Leo 4.6: provide an official way for very late initialization.
-
-    # Selecting the new tab ensures focus is set.
-    # master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
-    # if master: # frame.top.leo_master is a TabbedTopLevel.
-        # master.select(c)
-
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    if k:
-        k.setDefaultInputState()
-    c.initialFocusHelper()
-    if k:
-        k.showStateAndMode()
-
-    c.frame.initCompleteHint()
-    return True
-#@+node:ekr.20080921154026.1: *4* g.initWrapperLeoFile
-def initWrapperLeoFile (c,fileName):
-
-    '''Open a wrapper .leo file for the given file,
-    and import the file into .leo file.'''
+#@+node:ekr.20120122070219.10162: *3* make_shortcuts_dicts (g.app.config) & helpers
+def make_shortcuts_dicts (self,c,d,localFlag):
     
-    # 2011/10/12: support quick edit-save mode.
-    # We will create an @edit node below for non-existent files.
+    '''Make all settings dicts related to c and d.
+    
+    return the newly-made local dict or None.'''
+    
+    trace = False and not g.unitTesting
+    fn = c.shortFileName().lower()
+    result = {} # The newly-made local dict, or {} for non-local files.
+    test_result = [] # For unit tests.
+    
+    def message(d,name):
+        return '%4s keys %s' % (len(list(d.keys())),name)
 
-    # Use the config params to set the size and location of the window.
-    frame = c.frame
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    # g.trace('self',self)
+    # g.trace('c',c)
+    # g.trace('c.config',c.config)
+    # g.trace('make_shortcuts_dict',len(list(d.keys())),g.callers())
 
-    fileName = g.os_path_finalize(fileName)
-
-    if not g.os_path_exists(fileName):
-        # 2011/10/12: Create an empty @edit node.
-        p = c.rootPosition()
-        p.setHeadString('@edit %s' % fileName)
-        c.selectPosition(p)
-    elif c.looksLikeDerivedFile(fileName):
-        # 2011/10/10: Create an @file node.
-        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
-            paths=[fileName],command=None) # Not undoable.
-        if not p: return None
+    if fn == 'leosettings.leo':
+        if not g.app.config.immutable_leo_settings_shortcuts_dict:
+            if trace: g.trace(message(d,'immutable_leo_settings_shortcuts_dict'))
+            g.app.config.immutable_leo_settings_shortcuts_dict = d
+    elif fn == 'myleosettings.leo':
+        if not g.app.config.immutable_my_leo_settings_shortcuts_dict:
+            if trace: g.trace(message(d,'immutable_my_leo_settings_shortcuts_dict'))
+            g.app.config.immutable_my_leo_settings_shortcuts_dict = d
+        if localFlag:
+            if trace: message(d,'settingsDict: %s' % (fn))
+            d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+            d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+            d3 = self.settingsDict = self.merge_shortcuts_dicts(d1,d2)
+            result = d3
+            if trace: g.trace(message(d3,'result: %s' % (fn)))
+            test_result = (d1,d2,d3,'myLeoSettings.leo')
     else:
-        # Create an @edit node.
-        s,e = g.readFileIntoString(fileName)
-        if s is None: return None
-        p = c.rootPosition()
-        g.trace(p)
-        if p:
-            p.setHeadString('@edit %s' % fileName)
-            p.setBodyString(s)
-            c.selectPosition(p)
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-
-    frame.c.setChanged(False)
-        # Mark the outline clean.
-        # This makes it easy to open non-Leo files for quick study.
-    return c
-#@+node:ekr.20090520055433.5954: *4* g.mungeFileName
-def mungeFileName(fileName):
-
-    '''Create a full, normalized, Unicode path name, preserving case.'''
-
-    relFn = g.os_path_normpath(fileName)
-    fn = g.os_path_finalize(fileName)
-
-    isZipped = fn and zipfile.is_zipfile(fn)
-    isLeo = isZipped or fn.endswith('.leo')
-
-    return isLeo,fn,relFn
-#@+node:ekr.20070412082527: *4* g.openLeoOrZipFile
-def openLeoOrZipFile (fileName):
-
-    try:
-        isZipped = zipfile.is_zipfile(fileName)
-        if isZipped:
-            theFile = zipfile.ZipFile(fileName,'r')
-            if not theFile: return None,False
-            # Read the file into an StringIO file.
-            aList = theFile.namelist()
-            name = aList and len(aList) == 1 and aList[0]
-            if not name: return None,False
-            s = theFile.read(name)
-            if g.isPython3:
-                theStringFile = StringIO(g.ue(s,'utf-8'))
-            else:
-                theStringFile =  StringIO(s)
-            return theStringFile,True
-        else:
-            mode = 'rb'
-            theFile = open(fileName,mode)
-        return theFile,isZipped
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,False
-#@+node:ekr.20090520055433.5949: *4* g.preRead (Should be called lm.readLocalSettingsFile)
-def preRead(fileName,gui):
-
-    '''Read the file for the first time,
-    setting the setting for a later call to finishCreate.
-    '''
+        if trace: g.trace(message(d,'settingsDict: %s' % (fn)))
+        d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+        d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+        d3 = self.merge_shortcuts_dicts(d1,d2)
+        d4 = self.settingsDict = self.merge_shortcuts_dicts(d3,d)
+        result = d4
+        test_result = ((d1,d2,d3,'local 1'),(d3,d,d4,'local 2'),)
+        
+    g.app.unitTestDict['make_shortcuts_dicts'] = test_result
+    return result
+#@+node:ekr.20120125045244.10186: *4* invert (g.app.config)
+def invert (self,d):
     
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: print('g.preRead %s %s' % (fileName,gui))
-
-    c = g.app.config.openSettingsFile(fileName)
-    if c:
-        g.app.config.updateSettings(c,localFlag=True)
-#@+node:ekr.20090520055433.5950: *4* g.readOpenedLeoFile
-def readOpenedLeoFile(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+    '''Invert a shortcut dict whose keys are command names,
+    returning a dict whose keys are strokes.'''
     
-    # New in Leo 4.10.  The open1 event does not allow an override of the init logic.
-    assert theFile
-
-    ok = c.fileCommands.openLeoFile(
-        theFile,fileName,
-        readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-
-    if ok:
-        for z in g.app.windowList:
-            # Bug fix: 2007/12/07: don't change frame var.
-            # The recent files list has been updated by c.updateRecentFiles.
-            z.c.config.setRecentFiles(g.app.config.recentFiles)
-            
-        # Bug fix in 4.4.
-        if not c.openDirectory:
-            c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    else:
-        g.app.closeLeoWindow(c.frame)
+    trace = False and not g.unitTesting ; verbose = True
+    if trace: g.trace('*'*40,d.name())
     
-    return ok
+    result = g.TypedDictOfLists(
+        name='inverted %s' % d.name(),
+        keyType = g.KeyStroke,
+        valType = g.ShortcutInfo)
+
+    for commandName in d.keys():
+        for si in d.get(commandName,[]):
+            # This assert can fail if there is an exception in the ShortcutInfo ctor.
+            assert isinstance(si,g.ShortcutInfo),si
+
+            stroke = si.stroke # This is canonicalized.
+            si.commandName = commandName # Add info.
+            assert stroke
+            if trace and verbose:
+                g.trace('%40s %s' % (commandName,stroke))
+            result.add(stroke,si)
+
+    if trace: g.trace('returns  %4s %s %s' % (
+        len(list(result.keys())),id(d),result.name()))
+    return result
+#@+node:ekr.20120122070219.10163: *4* merge_shortcuts_dicts (g.app.config)
+def merge_shortcuts_dicts (self,old_d,new_d):
+    
+    '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
+    
+    Both old_d and new_d remain unchanged.'''
+    
+    trace = False and not g.unitTesting
+    
+    if not old_d: return new_d
+    if not new_d: return old_d
+    
+    if trace:
+        new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
+        g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
+        g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
+
+    inverted_old_d = self.invert(old_d)
+    inverted_new_d = self.invert(new_d)
+    inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
+    result = self.uninvert(inverted_old_d)
+    return result
+#@+node:ekr.20120125045244.10187: *4* uninvert (g.app.config)
+def uninvert (self,d):
+    
+    '''Uninvert an inverted shortcut dict whose keys are strokes,
+    returning a dict whose keys are command names.'''
+    
+    trace = False and not g.unitTesting ; verbose = True
+    if trace and verbose: g.trace('*'*40)
+
+    assert d.keyType == g.KeyStroke,d.keyType
+    result = g.TypedDictOfLists(
+        name='uninverted %s' % d.name(),
+        keyType = type('commandName'),
+        valType = g.ShortcutInfo)
+    
+    for stroke in d.keys():
+        for si in d.get(stroke,[]):
+            assert isinstance(si,g.ShortcutInfo),si
+            commandName = si.commandName
+            if trace and verbose:
+                g.trace('uninvert %20s %s' % (stroke,commandName))
+            assert commandName
+            result.add(commandName,si)
+
+    if trace: g.trace('returns %4s %s %s' % (
+        len(list(result.keys())),id(d),result.name()))
+    return result
 #@-all
 #@-leo

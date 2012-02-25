@@ -1699,6 +1699,7 @@ class keyHandlerClass:
         for all names *presently* bound to the stroke.'''
         
         k = self ; c = k.c
+        lm = g.app.loadManager
         
         # A crucial shortcut: inverting and uninverting dictionaries is slow.
         # Important: the comparison is valid regardless of the type of stroke.
@@ -1714,11 +1715,11 @@ class keyHandlerClass:
                 keyType=type('commandName'),
                 valType=g.ShortcutInfo)
 
-        inv_d = g.app.config.invert(d)
+        inv_d = lm.invert(d)
         aList = inv_d.get(stroke,[])
         inv_d[stroke] = []
         
-        c.config.shortcutsDict = g.app.config.uninvert(inv_d)
+        c.config.shortcutsDict = lm.uninvert(inv_d)
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions (self,aList,pane,shortcut):
         
