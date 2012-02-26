@@ -1482,11 +1482,10 @@ class undoer:
     def redoClearRecentFiles (self):
 
         u = self ; c = u.c
-
-        g.app.recentFiles = u.newRecentFiles[:]
-        c.recentFiles = u.newRecentFiles[:]
-
-        c.frame.menu.createRecentFilesMenuItems()
+        rf = g.app.recentFilesManager
+        
+        rf.setRecentFiles(u.newRecentFiles[:])
+        rf.createRecentFilesMenuItems(c)
     #@+node:ekr.20111005152227.15558: *4* redoCloneMarkedNodes
     def redoCloneMarkedNodes (self):
 
@@ -1845,11 +1844,10 @@ class undoer:
     def undoClearRecentFiles (self):
 
         u = self ; c = u.c
+        rf = g.app.recentFilesManager
 
-        g.app.recentFiles = u.oldRecentFiles[:]
-        c.recentFiles = u.oldRecentFiles[:]
-
-        c.frame.menu.createRecentFilesMenuItems()
+        rf.setRecentFiles(u.oldRecentFiles[:])
+        rf.createRecentFilesMenuItems(c)
     #@+node:ekr.20111005152227.15560: *4* undoCloneMarkedNodes
     def undoCloneMarkedNodes (self):
 

@@ -73,7 +73,8 @@
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20051110111150"
+expanded="ekr.20051104082026,ekr.20110301092139.14873,ekr.20051104082151,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20111004214045.2482"><vh>@path C:\Users\edreamleo\Latex</vh>

@@ -6361,8 +6361,6 @@ leoQtBaseTextWidget:
 leoEditCommands:
     updateAutoIndent
         ***** calls w.seeInsertPoint
-        
-    
 #@+node:ekr.20111001155050.15480: *6* First attempt
 @nocolor-node
 
@@ -6747,6 +6745,7 @@ def __init__ (self,context):
 
 def restoreCursorAndScroll (self,w):
 
+    trace = g.trace_scroll and not g.unitTesting
     v = self
     spot = v and v.insertSpot or 0
     w.setInsertPoint(spot)
@@ -6754,7 +6753,7 @@ def restoreCursorAndScroll (self,w):
     # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
     if v and v.scrollBarSpot != None:
         pos = v.scrollBarSpot
-        if g.trace_scroll: g.trace('(vnode)',pos)
+        if trace: print('v.restoreCursorAndScroll %s' % pos)
         w.setYScrollPosition(pos)
         
     # Never call w.see here.
@@ -6778,6 +6777,7 @@ def saveCursorAndScroll(self,w):
 
 def restoreCursorAndScroll (self,w):
 
+    trace = g.trace_scroll and not g.unitTesting
     v = self
     spot = v and v.insertSpot or 0
     w.setInsertPoint(spot)
@@ -6785,7 +6785,7 @@ def restoreCursorAndScroll (self,w):
     # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
     if v and v.scrollBarSpot != None:
         pos = v.scrollBarSpot
-        if g.trace_scroll: g.trace('(vnode)',pos)
+        if trace: print('v.restoreCursorAndScroll %s' % pos)
         w.setYScrollPosition(pos)
         
     # Never call w.see here.
@@ -6805,12 +6805,13 @@ def getYScrollPosition(self):
 #@+node:ekr.20110605121601.18098: *7* setYScrollPosition (leoQTextEditWidget)
 def setYScrollPosition(self,pos):
     
-    # g.trace(pos)
-    
-    if 0: # 2011/12/21
+    trace = g.trace_scroll and not g.unitTesting   
+    if trace: print(
+        'leoQTextEditWidget.setYScrollPosition %s' % (pos))
+
+    if 1: # disabled 2011/12/21, enabled 2012/02/25
         w = self.widget
         sb = w.verticalScrollBar()
-        if g.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
         sb.setSliderPosition(pos)
 #@+node:ekr.20061017083312.1: *7* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
 spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
@@ -7271,44 +7272,56 @@ def initReadIvars (self):
 @nocolor-node
 
 The fix was to at.putBody.
-#@+node:ekr.20111121084517.10189: *4* Remove all calls to w.see, w.seeInsertPoint, w.setYScrollPosition
+#@+node:ekr.20111121084517.10189: *4* Removed all calls to w.see, w.seeInsertPoint, w.setYScrollPosition
 # See "Scrolling bug" notes.
 #@+node:ekr.20110605121601.18090: *5* see & seeInsertPoint (leoQTextEditWidget)
 def see(self,i):
+    
+    if g.trace_see and not g.unitTesting:
+        print('leoQTextEditWidget.see (ensureCursorVisible)')
 
-    if 0: # 2011/12/21
+    if 1: # Disabled 2011/12/21, enabled 2012/02/26
         self.widget.ensureCursorVisible()
 
 def seeInsertPoint (self):
+    
+    if g.trace_see and not g.unitTesting:
+        print('leoQTextEditWidget.seeInsertPoint')
 
-    if 0: # 2011/12/21
+    if 1: # Disabled 2011/12/21, enabled 2012/02/26
         self.widget.ensureCursorVisible()
 #@+node:ekr.20111002125540.7021: *5* get/setYScrollPosition (LeoQTextBrowser)
 def getYScrollPosition(self):
-
+    
+    trace = g.trace_scroll and not g.unitTesting
     w = self
     sb = w.verticalScrollBar()
     i = sb.sliderPosition()
-    if g.trace_scroll: g.trace('(LeoQTextBrowser)',i)
+    
+    if trace:
+        print('leoQTextBrowser.getYScrollPosition %s' % i)
     return i
 
 def setYScrollPosition(self,pos):
+    
+    trace = g.trace_scroll and not g.unitTesting
+    print('leoQTextBrowser.setYScrollPosition %s' % pos)
 
-    if 0: # 2011/12/21
+    if 1: # disabled 2011/12/21, restored 2012/02/25
         w = self
         sb = w.verticalScrollBar()
         if pos is None: pos = 0
-        if g.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
         sb.setSliderPosition(pos)
 #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
 def setYScrollPosition(self,pos):
     
-    # g.trace(pos)
-    
-    if 0: # 2011/12/21
+    trace = g.trace_scroll and not g.unitTesting   
+    if trace: print(
+        'leoQTextEditWidget.setYScrollPosition %s' % (pos))
+
+    if 1: # disabled 2011/12/21, enabled 2012/02/25
         w = self.widget
         sb = w.verticalScrollBar()
-        if g.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
         sb.setSliderPosition(pos)
 #@+node:ekr.20120109111947.9962: *4* Fixed erroneous "file changed" message
 @nocolor-node
@@ -8912,7 +8925,7 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             # 2011/10/28: Use only the command name to dispatch the command.
             # 2012/01/07: Bug fix: set w here.
             w = setWidget()
-            if trace: g.trace(commandName,w)
+            if trace: g.trace(commandName,w,c)
             event = g.app.gui.create_key_event(c,None,None,w)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
@@ -9028,7 +9041,7 @@ def getShortcut (self,c,commandName):
     if trace: g.trace('getShortcut',tag,aList)
 
     return key,aList
-#@+node:ekr.20041227063801.2: *6* initDicts
+#@+node:ekr.20041227063801.2: *6* gcm.initDicts
 def initDicts (self):
 
     # Only the settings parser needs to search all dicts.
@@ -9718,6 +9731,654 @@ def bindOpenWith (self,shortcut,name,data):
 
 The new TM.findMarkForUnitTestNodes allows both
 TM.FindAllUnitTestsNodes and createOutline to be much simpler.
+#@+node:ekr.20120225202614.10234: *4* The clean,clear& sort recent files commands now work
+#@+node:ekr.20120225072226.10290: *5* Reference
+#@+node:ekr.20120219154958.10484: *6* LM.initApp
+def initApp (self,verbose):
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: print('LM.initApp')
+    
+    assert g.app.loadManager
+    
+    import leo.core.leoConfig as leoConfig
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoPlugins as leoPlugins
+    
+    # Make sure we call the new leoPlugins.init top-level function.
+    # This prevents a crash when run is called repeatedly from
+    # IPython's lleo extension.
+    leoPlugins.init()
+    
+    # Force the user to set g.app.leoID.
+    g.app.setLeoID(verbose=verbose)
+    
+    # Create early classes *after* doing plugins.init()
+    g.app.recentFilesManager = RecentFilesManager()
+    g.app.config = leoConfig.GlobalConfigManager()
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+
+    # Complete the plugins class last.
+    g.app.pluginsController.finishCreate()
+#@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
+def readOpenedLeoFile(self,c,gui,fn,readAtFileNodesFlag,theFile):
+    
+    # New in Leo 4.10: The open1 event does not allow an override of the init logic.
+    assert theFile
+    
+    lm = self
+    rf = g.app.recentFilesManager
+
+    ok = c.fileCommands.openLeoFile(theFile,fn,
+        readAtFileNodesFlag=readAtFileNodesFlag)
+            # closes file.
+
+    if ok:
+        if not c.openDirectory:
+            theDir = c.os_path_finalize(g.os_path_dirname(fn))
+            c.openDirectory = c.frame.openDirectory = theDir 
+    else:
+        g.app.closeLeoWindow(c.frame)
+    
+    return ok
+#@+node:ekr.20031218072017.2079: *6* Recent Files submenu & allies
+#@+node:ekr.20031218072017.2080: *7* c.clearRecentFiles
+def clearRecentFiles (self,event=None):
+
+    """Clear the recent files list, then add the present file."""
+    
+    c = self
+    g.app.recentFilesManager.clearRecentFiles(c)
+#@+node:ekr.20031218072017.2081: *7* c.openRecentFile
+def openRecentFile(self,fn=None):
+    
+    c = self
+
+    # Automatically close the previous window if...
+    closeFlag = (
+        c.frame.startupWindow and
+            # The window was open on startup
+        not c.changed and not c.frame.saved and
+            # The window has never been changed
+        g.app.numberOfUntitledWindows == 1)
+            # Only one untitled window has ever been opened.
+
+    if g.doHook("recentfiles1",c=c,p=c.p,v=c.p,fileName=fn,closeFlag=closeFlag):
+        return
+    
+    c2 = g.openWithFileName(fn,old_c=c)
+
+    if closeFlag and c2 and c2 != c:
+        g.app.destroyWindow(c.frame)
+        c2.setLog()
+        g.doHook("recentfiles2",
+            c=c2,p=c2.p,v=c2.p,fileName=fn,closeFlag=closeFlag)
+#@+node:tbrown.20080509212202.6: *7* c.cleanRecentFiles
+def cleanRecentFiles(self,event=None):
+    
+    '''Remove items from the recent files list that are no longer valid.'''
+    
+    c = self
+    g.app.recentFilesManager.cleanRecentFiles(c)
+#@+node:tbrown.20080509212202.8: *7* c.sortRecentFiles
+def sortRecentFiles(self,event=None):
+    
+    '''Sort the recent files list.'''
+
+    c = self
+    g.app.recentFilesManager.sortRecentFiles(c)
+#@+node:tbrown.20080509212202.7: *6* deleteRecentFilesMenuItems (leoMenu)
+def deleteRecentFilesMenuItems(self,menu):
+    
+    """Delete recent file menu entries"""
+
+    rf = g.app.recentFilesManager
+
+    # Why not just delete all the entries?
+    recentFiles = rf.getRecentFiles()
+    toDrop = len(recentFiles) + len(rf.getRecentFilesTable())
+    self.delete_range(menu,0,toDrop)
+
+    for i in rf.groupedMenus:
+        menu = self.getMenu(i)
+        if menu:
+            self.destroy(menu)
+            self.destroyMenu(i)
+#@+node:ekr.20031218072017.1723: *6* createMenuEntries (leoMenu) & helpers
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; k = c.k
+    if g.app.unitTesting: return
+    if not menu: return
+    
+    self.traceMenuTable(table)
+
+    for data in table:
+        label,command,done = self.getMenuEntryInfo(data,menu)
+        if done: continue
+        commandName = self.getMenuEntryBindings(command,dynamicMenu,label)
+        if not commandName: continue
+            
+        masterMenuCallback = self.createMasterMenuCallback(
+            dynamicMenu,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+
+        # c.add_command ensures that c.outerUpdate is called.
+        c.add_command(menu,label=realLabel,
+            accelerator='', # The accelerator is now computed dynamically.
+            command=masterMenuCallback,
+            commandName=commandName,
+            underline=amp_index)
+#@+node:ekr.20111102072143.10016: *7* createMasterMenuCallback
+def createMasterMenuCallback(self,dynamicMenu,command,commandName):
+    
+    trace = False and not g.unitTesting
+    c = self.c
+    
+    def setWidget():
+        w = c.frame.getFocus()
+        if w and sys.platform.startswith('darwin'):
+             # 2012/01/11: redirect (MacOS only).
+            wname = c.widget_name(w) or ''
+            if wname.startswith('head'):
+                w = c.frame.tree.edit_widget(c.p)
+        return w
+
+    if dynamicMenu:
+        if command:
+            def masterDynamicMenuCallback (c=c,command=command):
+                # 2012/01/07: set w here.
+                w = setWidget()
+                if trace: g.trace(command.__name__,w) 
+                event = g.app.gui.create_key_event(c,None,None,w)
+                return c.k.masterCommand(func=command,event=event)
+            return masterDynamicMenuCallback
+        else:
+            g.internalError('no callback for dynamic menu item.')
+            def dummyMasterMenuCallback():
+                pass
+            return dummyMasterMenuCallback
+    else:
+        def masterStaticMenuCallback (c=c,commandName=commandName):
+            # 2011/10/28: Use only the command name to dispatch the command.
+            # 2012/01/07: Bug fix: set w here.
+            w = setWidget()
+            if trace: g.trace(commandName,w,c)
+            event = g.app.gui.create_key_event(c,None,None,w)
+            return c.k.masterCommand(commandName=commandName,event=event)
+        return masterStaticMenuCallback
+#@+node:ekr.20111028060955.16568: *7* getMenuEntryBindings
+def getMenuEntryBindings(self,command,dynamicMenu,label):
+    
+    '''Compute commandName from command.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if type(command) == type(''):
+        # Command is really a command name.
+        commandName = command 
+    else:
+        # First, get the old-style name.
+        commandName = self.computeOldStyleShortcutKey(label)
+        
+    command = c.commandsDict.get(commandName)
+        
+    if trace and not command and not dynamicMenu:
+        # This may come from a plugin that normally isn't enabled.
+        g.trace('No inverse for %s' % commandName)
+        
+    return commandName
+#@+node:ekr.20111028060955.16565: *7* getMenuEntryInfo
+def getMenuEntryInfo (self,data,menu):
+    
+    done = False
+
+    if g.isString(data):
+        # A single string is both the label and the command.
+        s = data
+        removeHyphens = s and s[0]=='*'
+        if removeHyphens: s = s[1:]
+        label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+        command = s.replace('&','').lower()
+        if label == '-':
+            self.add_separator(menu)
+            done = True # That's all.
+    else:
+        ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+        if ok:
+            if len(data) == 2:
+                # Command can be a minibuffer-command name.
+                label,command = data
+            else:
+                # Ignore shortcuts bound in menu tables.
+                label,junk,command = data
+    
+            if label in (None,'-'):
+                self.add_separator(menu)
+                done = True # That's all.
+        else:
+            g.trace('bad data in menu table: %s' % repr(data))
+            done = True # Ignore bad data
+            
+    return label,command,done
+#@+node:ekr.20111028060955.16563: *7* traceMenuTable
+def traceMenuTable (self,table):
+    
+    trace = False and not g.unitTesting
+    
+    if not trace: return
+    format = '%40s %s'
+    g.trace('*'*40,g.callers())
+    for data in table:
+        if type(data) in (type(()), type([])):
+            n = len(data)
+            if n == 2:
+                print(format % (data[0],data[1]))
+            elif n == 3:
+                name,junk,func = data
+                print(format % (name,func and func.__name__ or '<NO FUNC>'))
+        else:
+            print(format % (data,''))
+#@+node:ekr.20120225072226.10283: *5* class RecentFilesManager
+class RecentFilesManager:
+    
+    '''A class to manipulate leoRecentFiles.txt.'''
+    
+    def __init__ (self):
+
+        self.groupedMenus = []
+            # Set in rf.createRecentFilesMenuItems.
+        self.recentFiles = []
+            # List of g.Bunches describing .leoRecentFiles.txt files.
+        self.recentFileMessageWritten = False
+            # To suppress all but the first message.
+        self.write_recent_files_as_needed = False
+            # Will be set later.
+
+    @others
+#@+node:ekr.20041201080436: *6* rf.appendToRecentFiles
+def appendToRecentFiles (self,files):
+    
+    rf = self
+
+    files = [theFile.strip() for theFile in files]
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for name in files:
+        # Remove all variants of name.
+        for name2 in rf.recentFiles[:]:
+            if munge(name) == munge(name2):
+                rf.recentFiles.remove(name2)
+
+        rf.recentFiles.append(name)
+#@+node:ekr.20120225072226.10289: *6* rf.cleanRecentFiles
+def cleanRecentFiles(self,c):
+    
+    '''Removed items from the recent files list that are no longer valid.'''
+    
+    rf = self
+
+    dat = c.config.getData('path-demangle')
+    if not dat:
+        g.es('No @data path-demangle setting')
+        return
+
+    changes = []
+    replace = None
+    for line in dat:
+        text = line.strip()
+        if text.startswith('REPLACE: '):
+            replace = text.split(None, 1)[1].strip()
+        if text.startswith('WITH:') and replace is not None:
+            with_ = text[5:].strip()
+            changes.append((replace, with_))
+            g.es('%s -> %s' % changes[-1])
+
+    orig = [z for z in rf.recentFiles if z.startswith("/")]
+    
+    rf.recentFiles = []
+
+    for i in orig:
+        t = i
+        for change in changes:
+            t = t.replace(*change)
+        rf.updateRecentFiles(t)
+
+    rf.writeRecentFilesFile(c,force=True)
+        # Force the write message.
+#@+node:ekr.20120225072226.10297: *6* rf.clearRecentFiles
+def clearRecentFiles (self,c):
+
+    """Clear the recent files list, then add the present file."""
+
+    rf = self ; u = c.undoer ; menu = c.frame.menu
+    
+    bunch = u.beforeClearRecentFiles()
+
+    recentFilesMenu = menu.getMenu("Recent Files...")
+    menu.deleteRecentFilesMenuItems(recentFilesMenu)
+
+    rf.recentFiles = [c.fileName()]
+    for frame in g.app.windowList:
+        rf.createRecentFilesMenuItems(frame.c)
+
+    u.afterClearRecentFiles(bunch)
+
+    # Write the file immediately.
+    rf.writeRecentFilesFile(c,force=True)
+        # Force the write message.
+#@+node:ekr.20120225072226.10301: *6* rf.createRecentFilesMenuItems
+def createRecentFilesMenuItems (self,c):
+    
+    rf = self
+    menu = c.frame.menu
+
+    recentFilesMenu = menu.getMenu("Recent Files...")
+
+    if not recentFilesMenu and not g.unitTesting:
+        g.trace('Recent Files Menu does not exist',g.callers())
+        return
+        
+    # Delete all previous entries.
+    menu.deleteRecentFilesMenuItems(recentFilesMenu)
+
+    # Create the permanent (static) menu entries.
+    table = rf.getRecentFilesTable()
+    menu.createMenuEntries(recentFilesMenu,table)
+
+    # Create all the other entries (a maximum of 36).
+    accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
+    i = 0
+    n = len(accel_ch)
+
+    # see if we're grouping when files occur in more than one place
+    rf_group = c.config.getBool("recent_files_group")
+    rf_always = c.config.getBool("recent_files_group_always")
+    groupedEntries = rf_group or rf_always
+
+    if groupedEntries:  # if so, make dict of groups
+        dirCount = {}
+        for fileName in rf.getRecentFiles()[:n]:
+            dirName, baseName = g.os_path_split(fileName)
+            if baseName not in dirCount:
+                dirCount[baseName] = {'dirs':[], 'entry': None}
+            dirCount[baseName]['dirs'].append(dirName)
+
+    for name in rf.getRecentFiles()[:n]:
+        if name.strip() == "":
+            continue  # happens with empty list/new file
+
+        def recentFilesCallback (event=None,c=c,name=name):
+            c.openRecentFile(name)
+
+        if groupedEntries:
+            dirName, baseName = g.os_path_split(name)
+
+            entry = dirCount[baseName]
+
+            if len(entry['dirs']) > 1 or rf_always:  # sub menus
+                if entry['entry'] is None:
+                    entry['entry'] = menu.createNewMenu(baseName, "Recent Files...")
+                    # acts as a flag for the need to create the menu
+                c.add_command(menu.getMenu(baseName), label=dirName,
+                    command=recentFilesCallback, underline=0)
+            else:  # single occurence, no submenu
+                c.add_command(recentFilesMenu,label=baseName,
+                    command=recentFilesCallback,underline=0)
+
+        else:  # original behavior
+            label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
+            c.add_command(recentFilesMenu,label=label,
+                command=recentFilesCallback,underline=0)
+        i += 1
+
+    if groupedEntries:  # store so we can delete them later
+        rf.groupedMenus = [i for i in dirCount
+            if dirCount[i]['entry'] is not None]
+#@+node:ekr.20120225072226.10286: *6* rf.getRecentFiles
+def getRecentFiles (self):
+    
+    return self.recentFiles
+#@+node:ekr.20120225072226.10304: *6* rf.getRecentFilesTable
+def getRecentFilesTable (self):
+    
+    return (
+        "*clear-recent-files",
+        "*clean-recent-files",
+        "*sort-recent-files",
+        # ("-",None,None),
+    )
+#@+node:ekr.20070224115832: *6* rf.readRecentFiles & helpers
+def readRecentFiles (self,localConfigFile):
+
+    '''Read all .leoRecentFiles.txt files.'''
+
+    # The order of files in this list affects the order of the recent files list.
+    rf = self
+    seen = [] 
+    localConfigPath = g.os_path_dirname(localConfigFile)
+
+    for path in (
+        g.app.homeLeoDir,
+        g.app.globalConfigDir,
+        localConfigPath,
+    ):
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+        if path and path not in seen:
+            ok = rf.readRecentFilesFile(path)
+            if ok: seen.append(path)
+
+    if not seen and rf.write_recent_files_as_needed:
+        rf.createRecentFiles()
+#@+node:ekr.20061010121944: *7* rf.createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeLeoDir,g.app.globalConfigDir):
+        if theDir:
+            try:
+                fn = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = open(fn,'w')
+                f.close()
+                g.es_print('created',fn,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fn,color='red')
+                g.es_exception()
+#@+node:ekr.20050424115658: *7* rf.readRecentFilesFile
+def readRecentFilesFile (self,path):
+
+    trace = False and not g.unitTesting
+    rf = self
+    fileName = g.os_path_join(path,'.leoRecentFiles.txt')
+    ok = g.os_path_exists(fileName)
+    if ok:
+        try:
+            if g.isPython3:
+                f = open(fileName,encoding='utf-8',mode='r')
+            else:
+                f = open(fileName,'r')
+        except IOError:
+            g.trace('can not open',fileName)
+            return False
+
+        if trace: g.trace(('reading %s' % fileName))
+        lines = f.readlines()
+        if lines and rf.sanitize(lines[0])=='readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
+            rf.appendToRecentFiles(lines)
+
+    return ok
+#@+node:ekr.20120225072226.10285: *6* rf.sanitize
+def sanitize (self,name):
+    
+    '''Return a sanitized file name.'''
+
+    if name is None:
+        return None
+
+    name = name.lower()
+    for ch in ('-','_',' ','\n'):
+        name = name.replace(ch,'')
+
+    return name or None
+#@+node:ekr.20120215072959.12478: *6* rf.setRecentFiles
+def setRecentFiles (self,files):
+    
+    '''Update the recent files list.'''
+    
+    rf = self
+    rf.appendToRecentFiles(files)
+#@+node:ekr.20120225072226.10293: *6* rf.sortRecentFiles
+def sortRecentFiles(self,c):
+    
+    '''Sort the recent files list.'''
+
+    rf = self
+
+    aList = rf.recentFiles
+    aList.sort(key=lambda s: g.os_path_basename(s).lower()) 
+    aList.reverse()
+
+    rf.recentFiles = []
+    for z in aList:
+        rf.updateRecentFiles(z)
+
+    rf.writeRecentFilesFile(c,force=True)
+        # Force the write message.
+#@+node:ekr.20031218072017.2083: *6* rf.updateRecentFiles
+def updateRecentFiles (self,fileName):
+
+    """Create the RecentFiles menu.  May be called with Null fileName."""
+
+    rf = self
+
+    if g.app.unitTesting: return
+
+    def munge(name):
+        return g.os_path_finalize(name or '').lower()
+    def munge2(name):
+        return g.os_path_finalize_join(g.app.loadDir,name or '')
+
+    # Update the recent files list in all windows.
+    if fileName:
+        compareFileName = munge(fileName)
+        for frame in g.app.windowList:
+            # Remove all versions of the file name.
+            for name in rf.recentFiles:
+                if (munge(fileName) == munge(name) or
+                    munge2(fileName) == munge2(name)
+                ):
+                    rf.recentFiles.remove(name)
+            rf.recentFiles.insert(0,fileName)
+            # Recreate the Recent Files menu.
+            rf.createRecentFilesMenuItems(frame.c)
+    else:
+        for frame in g.app.windowList:
+            rf.createRecentFilesMenuItems(frame.c)
+#@+node:ekr.20050424114937.2: *6* rf.writeRecentFilesFile & helper
+def writeRecentFilesFile (self,c,force=False):
+
+    '''Write the appropriate .leoRecentFiles.txt file.
+    
+    Write a message if force is True, or if it hasn't been written yet.'''
+
+    tag = '.leoRecentFiles.txt'
+    rf = self
+    if g.app.unitTesting:
+        return
+
+    localFileName = c.fileName()
+    if localFileName:
+        localPath,junk = g.os_path_split(localFileName)
+    else:
+        localPath = None
+
+    written = False
+    seen = []
+    for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir):
+        if path:
+            fileName = g.os_path_join(path,tag)
+            if g.os_path_exists(fileName) and not fileName.lower() in seen:
+                seen.append(fileName.lower())
+                ok = rf.writeRecentFilesFileHelper(fileName)
+                if force or not rf.recentFileMessageWritten:
+                    if ok:
+                        g.pr('wrote recent file: %s' % fileName)
+                        written = True
+                    else:
+                        g.pr('failed to recent file: %s' % (fileName),color='red')
+                # Bug fix: Leo 4.4.6: write *all* recent files.
+
+    if written:
+        rf.recentFileMessageWritten = True
+    else:
+        pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+#@+node:ekr.20050424131051: *7* rf.writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+
+    # g.trace(g.toUnicode(fileName))
+
+    # Don't update the file if it begins with read-only.
+    rf = self
+    theFile = None
+    try:
+        theFile = open(fileName)
+        lines = theFile.readlines()
+        if lines and rf.sanitize(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return False
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        if g.isPython3:
+            theFile = open(fileName,encoding='utf-8',mode='w')
+        else:
+            theFile = open(fileName,mode='w')
+        if rf.recentFiles:
+            s = '\n'.join(rf.recentFiles)
+        else:
+            s = '\n'
+        if not g.isPython3:
+            s = g.toEncodedString(s,reportErrors=True)
+        theFile.write(s)
+
+    except IOError:
+        if 1: # The user may have erased a file.  Not an error.
+            g.es_print('error writing',fileName,color='red')
+            g.es_exception()
+            return False
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+        if g.unitTesting: raise
+        return False
+
+    if theFile:
+        theFile.close()
+        return True
+    else:
+        return False
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -2407,6 +2407,7 @@ class vnode (baseVnode):
 
     def restoreCursorAndScroll (self,w):
 
+        trace = g.trace_scroll and not g.unitTesting
         v = self
         spot = v and v.insertSpot or 0
         w.setInsertPoint(spot)
@@ -2414,7 +2415,7 @@ class vnode (baseVnode):
         # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
         if v and v.scrollBarSpot != None:
             pos = v.scrollBarSpot
-            if g.trace_scroll: g.trace('(vnode)',pos)
+            if trace: print('v.restoreCursorAndScroll %s' % pos)
             w.setYScrollPosition(pos)
             
         # Never call w.see here.

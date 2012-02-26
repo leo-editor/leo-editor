@@ -13429,7 +13429,7 @@ addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
 pc  = lproto.LProtoClient(addr)
 pc.send("""
 c = g.app.commanders()[0]
-g.openWithFileName(%s, c)
+g.openWithFileName(%s,old_c=c)
 """ % repr(os.path.join(os.getcwd(), sys.argv[1])) )
 #@+node:ekr.20110301092139.14880: *4* sn
 #!/usr/bin/python
@@ -16206,16 +16206,15 @@ try:
 except IOError:
     print "can not open",path
 #@+node:EKR.20040517074600.10: *3* Show font
-config = g.app.config
 body = c.frame.body.bodyCtrl
 
-font = config.getFontFromParams(
+font = c.config.getFontFromParams(
         "body_text_font_family", "body_text_font_size",
         "body_text_font_slant",  "body_text_font_weight",
         tag = "body")
 
-print font
-print body
+print(font)
+print(body)
 
 # body.configure(font=font)
 #@+node:EKR.20040517074600.11: *3* Show settings

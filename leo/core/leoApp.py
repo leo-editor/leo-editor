@@ -13,6 +13,7 @@ import leo.core.leoGlobals as g
 
 import os
 import optparse
+import string
 import sys
 import traceback
 import zipfile
@@ -382,7 +383,7 @@ class LeoApp:
             # There is already a dialog open asking what to do.
             return False
 
-        g.app.config.writeRecentFilesFile(c)
+        g.app.recentFilesManager.writeRecentFilesFile(c)
             # Make sure .leoRecentFiles.txt is written.
 
         if c.changed:
@@ -1378,8 +1379,18 @@ class LoadManager:
             
         lm = self
         if not fn: return None
+        
+        giveMessage = not g.app.unitTesting and not g.app.silentMode and not g.app.batchMode
+        def message(s):
+            # This occurs early in startup, so use the following.
+            if giveMessage and not g.isPython3:
+                s = g.toEncodedString(s,'ascii')
+            g.es_print(s,color='blue')
             
         theFile = lm.openLeoOrZipFile(fn)
+        
+        if theFile:
+            message('reading settings in %s' % (fn))
         
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
@@ -1521,11 +1532,14 @@ class LoadManager:
 
         # Read settings *after* setting g.app.config and *before* opening plugins.
         # This means if-gui has effect only in per-file settings.
-        
         lm.readGlobalSettingsFiles()
             # reads only standard settings files, using a null gui.
             # uses lm.files[0] to compute the local directory
             # that might contain myLeoSettings.leo.
+            
+        # Read the recent files file.
+        localConfigFile = lm.files[0] if lm.files else None
+        g.app.recentFilesManager.readRecentFiles(localConfigFile)
 
         g.app.setGlobalDb()
         
@@ -1632,7 +1646,8 @@ class LoadManager:
         g.app.setLeoID(verbose=verbose)
         
         # Create early classes *after* doing plugins.init()
-        g.app.config = leoConfig.configClass()
+        g.app.recentFilesManager = RecentFilesManager()
+        g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
 
         # Complete the plugins class last.
@@ -2146,7 +2161,7 @@ class LoadManager:
         if not g.doHook("menu1",c=c,p=c.p,v=c.p):
 
             c.frame.menu.createMenuBar(c.frame)
-            c.updateRecentFiles(fn)
+            g.app.recentFilesManager.updateRecentFiles(fn)
             g.doHook("menu2",c=c,p=c.p,v=c.p)
             g.doHook("after-create-leo-frame",c=c)
             g.doHook("after-create-leo-frame2",c=c)
@@ -2309,18 +2324,13 @@ class LoadManager:
         assert theFile
         
         lm = self
+        rf = g.app.recentFilesManager
 
         ok = c.fileCommands.openLeoFile(theFile,fn,
             readAtFileNodesFlag=readAtFileNodesFlag)
                 # closes file.
 
         if ok:
-            for z in g.app.windowList:
-                # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-                
-            # Bug fix in 4.4.
             if not c.openDirectory:
                 theDir = c.os_path_finalize(g.os_path_dirname(fn))
                 c.openDirectory = c.frame.openDirectory = theDir 
@@ -2442,5 +2452,398 @@ class PreviousSettings:
             self.settingsDict,self.shortcutsDict)
             
     __str__ = __repr__
+#@+node:ekr.20120225072226.10283: ** class RecentFilesManager
+class RecentFilesManager:
+    
+    '''A class to manipulate leoRecentFiles.txt.'''
+    
+    def __init__ (self):
+
+        self.groupedMenus = []
+            # Set in rf.createRecentFilesMenuItems.
+        self.recentFiles = []
+            # List of g.Bunches describing .leoRecentFiles.txt files.
+        self.recentFileMessageWritten = False
+            # To suppress all but the first message.
+        self.write_recent_files_as_needed = False
+            # Will be set later.
+
+    #@+others
+    #@+node:ekr.20041201080436: *3* rf.appendToRecentFiles
+    def appendToRecentFiles (self,files):
+        
+        rf = self
+
+        files = [theFile.strip() for theFile in files]
+
+        def munge(name):
+            return g.os_path_normpath(name or '').lower()
+
+        for name in files:
+            # Remove all variants of name.
+            for name2 in rf.recentFiles[:]:
+                if munge(name) == munge(name2):
+                    rf.recentFiles.remove(name2)
+
+            rf.recentFiles.append(name)
+    #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles
+    def cleanRecentFiles(self,c):
+        
+        '''Removed items from the recent files list that are no longer valid.'''
+        
+        rf = self
+
+        dat = c.config.getData('path-demangle')
+        if not dat:
+            g.es('No @data path-demangle setting')
+            return
+
+        changes = []
+        replace = None
+        for line in dat:
+            text = line.strip()
+            if text.startswith('REPLACE: '):
+                replace = text.split(None, 1)[1].strip()
+            if text.startswith('WITH:') and replace is not None:
+                with_ = text[5:].strip()
+                changes.append((replace, with_))
+                g.es('%s -> %s' % changes[-1])
+
+        orig = [z for z in rf.recentFiles if z.startswith("/")]
+        
+        rf.recentFiles = []
+
+        for i in orig:
+            t = i
+            for change in changes:
+                t = t.replace(*change)
+            rf.updateRecentFiles(t)
+
+        rf.writeRecentFilesFile(c,force=True)
+            # Force the write message.
+    #@+node:ekr.20120225072226.10297: *3* rf.clearRecentFiles
+    def clearRecentFiles (self,c):
+
+        """Clear the recent files list, then add the present file."""
+
+        rf = self ; u = c.undoer ; menu = c.frame.menu
+        
+        bunch = u.beforeClearRecentFiles()
+
+        recentFilesMenu = menu.getMenu("Recent Files...")
+        menu.deleteRecentFilesMenuItems(recentFilesMenu)
+
+        rf.recentFiles = [c.fileName()]
+        for frame in g.app.windowList:
+            rf.createRecentFilesMenuItems(frame.c)
+
+        u.afterClearRecentFiles(bunch)
+
+        # Write the file immediately.
+        rf.writeRecentFilesFile(c,force=True)
+            # Force the write message.
+    #@+node:ekr.20120225072226.10301: *3* rf.createRecentFilesMenuItems
+    def createRecentFilesMenuItems (self,c):
+        
+        rf = self
+        menu = c.frame.menu
+
+        recentFilesMenu = menu.getMenu("Recent Files...")
+
+        if not recentFilesMenu and not g.unitTesting:
+            g.trace('Recent Files Menu does not exist',g.callers())
+            return
+            
+        # Delete all previous entries.
+        menu.deleteRecentFilesMenuItems(recentFilesMenu)
+
+        # Create the permanent (static) menu entries.
+        table = rf.getRecentFilesTable()
+        menu.createMenuEntries(recentFilesMenu,table)
+
+        # Create all the other entries (a maximum of 36).
+        accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
+        i = 0
+        n = len(accel_ch)
+
+        # see if we're grouping when files occur in more than one place
+        rf_group = c.config.getBool("recent_files_group")
+        rf_always = c.config.getBool("recent_files_group_always")
+        groupedEntries = rf_group or rf_always
+
+        if groupedEntries:  # if so, make dict of groups
+            dirCount = {}
+            for fileName in rf.getRecentFiles()[:n]:
+                dirName, baseName = g.os_path_split(fileName)
+                if baseName not in dirCount:
+                    dirCount[baseName] = {'dirs':[], 'entry': None}
+                dirCount[baseName]['dirs'].append(dirName)
+
+        for name in rf.getRecentFiles()[:n]:
+            if name.strip() == "":
+                continue  # happens with empty list/new file
+
+            def recentFilesCallback (event=None,c=c,name=name):
+                c.openRecentFile(name)
+
+            if groupedEntries:
+                dirName, baseName = g.os_path_split(name)
+
+                entry = dirCount[baseName]
+
+                if len(entry['dirs']) > 1 or rf_always:  # sub menus
+                    if entry['entry'] is None:
+                        entry['entry'] = menu.createNewMenu(baseName, "Recent Files...")
+                        # acts as a flag for the need to create the menu
+                    c.add_command(menu.getMenu(baseName), label=dirName,
+                        command=recentFilesCallback, underline=0)
+                else:  # single occurence, no submenu
+                    c.add_command(recentFilesMenu,label=baseName,
+                        command=recentFilesCallback,underline=0)
+
+            else:  # original behavior
+                label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
+                c.add_command(recentFilesMenu,label=label,
+                    command=recentFilesCallback,underline=0)
+            i += 1
+
+        if groupedEntries:  # store so we can delete them later
+            rf.groupedMenus = [i for i in dirCount
+                if dirCount[i]['entry'] is not None]
+    #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
+    def getRecentFiles (self):
+        
+        return self.recentFiles
+    #@+node:ekr.20120225072226.10304: *3* rf.getRecentFilesTable
+    def getRecentFilesTable (self):
+        
+        return (
+            "*clear-recent-files",
+            "*clean-recent-files",
+            "*sort-recent-files",
+            # ("-",None,None),
+        )
+    #@+node:ekr.20070224115832: *3* rf.readRecentFiles & helpers
+    def readRecentFiles (self,localConfigFile):
+
+        '''Read all .leoRecentFiles.txt files.'''
+
+        # The order of files in this list affects the order of the recent files list.
+        rf = self
+        seen = [] 
+        localConfigPath = g.os_path_dirname(localConfigFile)
+
+        for path in (
+            g.app.homeLeoDir,
+            g.app.globalConfigDir,
+            localConfigPath,
+        ):
+            if path:
+                path = g.os_path_realpath(g.os_path_finalize(path))
+            if path and path not in seen:
+                ok = rf.readRecentFilesFile(path)
+                if ok: seen.append(path)
+
+        if not seen and rf.write_recent_files_as_needed:
+            rf.createRecentFiles()
+    #@+node:ekr.20061010121944: *4* rf.createRecentFiles
+    def createRecentFiles (self):
+
+        '''Trye to reate .leoRecentFiles.txt in
+        - the users home directory first,
+        - Leo's config directory second.'''
+
+        for theDir in (g.app.homeLeoDir,g.app.globalConfigDir):
+            if theDir:
+                try:
+                    fn = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                    f = open(fn,'w')
+                    f.close()
+                    g.es_print('created',fn,color='red')
+                    return
+                except Exception:
+                    g.es_print('can not create',fn,color='red')
+                    g.es_exception()
+    #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
+    def readRecentFilesFile (self,path):
+
+        trace = False and not g.unitTesting
+        rf = self
+        fileName = g.os_path_join(path,'.leoRecentFiles.txt')
+        ok = g.os_path_exists(fileName)
+        if ok:
+            try:
+                if g.isPython3:
+                    f = open(fileName,encoding='utf-8',mode='r')
+                else:
+                    f = open(fileName,'r')
+            except IOError:
+                g.trace('can not open',fileName)
+                return False
+
+            if trace: g.trace(('reading %s' % fileName))
+            lines = f.readlines()
+            if lines and rf.sanitize(lines[0])=='readonly':
+                lines = lines[1:]
+            if lines:
+                lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
+                rf.appendToRecentFiles(lines)
+
+        return ok
+    #@+node:ekr.20120225072226.10285: *3* rf.sanitize
+    def sanitize (self,name):
+        
+        '''Return a sanitized file name.'''
+
+        if name is None:
+            return None
+
+        name = name.lower()
+        for ch in ('-','_',' ','\n'):
+            name = name.replace(ch,'')
+
+        return name or None
+    #@+node:ekr.20120215072959.12478: *3* rf.setRecentFiles
+    def setRecentFiles (self,files):
+        
+        '''Update the recent files list.'''
+        
+        rf = self
+        rf.appendToRecentFiles(files)
+    #@+node:ekr.20120225072226.10293: *3* rf.sortRecentFiles
+    def sortRecentFiles(self,c):
+        
+        '''Sort the recent files list.'''
+
+        rf = self
+
+        aList = rf.recentFiles
+        aList.sort(key=lambda s: g.os_path_basename(s).lower()) 
+        aList.reverse()
+
+        rf.recentFiles = []
+        for z in aList:
+            rf.updateRecentFiles(z)
+
+        rf.writeRecentFilesFile(c,force=True)
+            # Force the write message.
+    #@+node:ekr.20031218072017.2083: *3* rf.updateRecentFiles
+    def updateRecentFiles (self,fileName):
+
+        """Create the RecentFiles menu.  May be called with Null fileName."""
+
+        rf = self
+
+        if g.app.unitTesting: return
+
+        def munge(name):
+            return g.os_path_finalize(name or '').lower()
+        def munge2(name):
+            return g.os_path_finalize_join(g.app.loadDir,name or '')
+
+        # Update the recent files list in all windows.
+        if fileName:
+            compareFileName = munge(fileName)
+            for frame in g.app.windowList:
+                # Remove all versions of the file name.
+                for name in rf.recentFiles:
+                    if (munge(fileName) == munge(name) or
+                        munge2(fileName) == munge2(name)
+                    ):
+                        rf.recentFiles.remove(name)
+                rf.recentFiles.insert(0,fileName)
+                # Recreate the Recent Files menu.
+                rf.createRecentFilesMenuItems(frame.c)
+        else:
+            for frame in g.app.windowList:
+                rf.createRecentFilesMenuItems(frame.c)
+    #@+node:ekr.20050424114937.2: *3* rf.writeRecentFilesFile & helper
+    def writeRecentFilesFile (self,c,force=False):
+
+        '''Write the appropriate .leoRecentFiles.txt file.
+        
+        Write a message if force is True, or if it hasn't been written yet.'''
+
+        tag = '.leoRecentFiles.txt'
+        rf = self
+        if g.app.unitTesting:
+            return
+
+        localFileName = c.fileName()
+        if localFileName:
+            localPath,junk = g.os_path_split(localFileName)
+        else:
+            localPath = None
+
+        written = False
+        seen = []
+        for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir):
+            if path:
+                fileName = g.os_path_join(path,tag)
+                if g.os_path_exists(fileName) and not fileName.lower() in seen:
+                    seen.append(fileName.lower())
+                    ok = rf.writeRecentFilesFileHelper(fileName)
+                    if force or not rf.recentFileMessageWritten:
+                        if ok:
+                            g.pr('wrote recent file: %s' % fileName)
+                            written = True
+                        else:
+                            g.pr('failed to recent file: %s' % (fileName),color='red')
+                    # Bug fix: Leo 4.4.6: write *all* recent files.
+
+        if written:
+            rf.recentFileMessageWritten = True
+        else:
+            pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+    #@+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
+    def writeRecentFilesFileHelper (self,fileName):
+
+        # g.trace(g.toUnicode(fileName))
+
+        # Don't update the file if it begins with read-only.
+        rf = self
+        theFile = None
+        try:
+            theFile = open(fileName)
+            lines = theFile.readlines()
+            if lines and rf.sanitize(lines[0])=='readonly':
+                # g.trace('read-only: %s' %fileName)
+                return False
+        except IOError:
+            # The user may have erased a file.  Not an error.
+            if theFile: theFile.close()
+
+        theFile = None
+        try:
+            if g.isPython3:
+                theFile = open(fileName,encoding='utf-8',mode='w')
+            else:
+                theFile = open(fileName,mode='w')
+            if rf.recentFiles:
+                s = '\n'.join(rf.recentFiles)
+            else:
+                s = '\n'
+            if not g.isPython3:
+                s = g.toEncodedString(s,reportErrors=True)
+            theFile.write(s)
+
+        except IOError:
+            if 1: # The user may have erased a file.  Not an error.
+                g.es_print('error writing',fileName,color='red')
+                g.es_exception()
+                return False
+
+        except Exception:
+            g.es('unexpected exception writing',fileName,color='red')
+            g.es_exception()
+            if g.unitTesting: raise
+            return False
+
+        if theFile:
+            theFile.close()
+            return True
+        else:
+            return False
+    #@-others
 #@-others
 #@-leo

@@ -1978,7 +1978,7 @@ class baseFileCommands:
         if self.checkOutlineBeforeSave and not self.checkOutline():
             return False
         if not outlineOnlyFlag or toOPML:
-            g.app.config.writeRecentFilesFile(c)
+            g.app.recentFilesManager.writeRecentFilesFile(c)
             self.writeAllAtFileNodesHelper() # Ignore any errors.
         if self.isReadOnly(fileName):
             return False

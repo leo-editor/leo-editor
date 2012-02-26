@@ -8,6 +8,13 @@ import os
 import sys
 from pylint import lint
 
+all_suppressions = 'C0111,C0301,C0321,C0322,C0323,C0324,\
+F0401,\
+R0201,R0903,\
+W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,\
+W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
+
+
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
@@ -81,16 +88,60 @@ def getPassList():
 def getPluginsTable ():
 
     return (
-        ('mod_scripting','E0611'),
+        ('mod_htt', ''),
+
+        ('mod_scripting',''), # 'E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
-        ('toolbar','E1101,W0221,W0511'),
+
+        # ('toolbar','E1101,W0221,W0511'),
             # Dangerous: many erroneous E1101 errors
             # Harmless: W0221: Arguments number differs from overridden method
             # Harmless: W0511: Fixme and to-do.
-        ('UNL','E0611'),
+            
+        # UNL.py no longer exists.
+        # ('UNL','E0611'),
             # Dangerous: one E0611 error: 94: No name 'parse' in module 'urllib'
     )
+#@+node:ekr.20120225032124.17089: ** getRecentCoreList
+def getRecentCoreList():
+    
+    return (
+        # ('runLeo',            ''),
+        ('leoApp',            ''),
+        # ('leoAtFile',         ''),
+        # ('leoBridge',       ''),
+        # ('leoCache',          ''),
+        # ('leoChapters',       ''),
+        ('leoCommands',       ''),
+        # ('leoConfig',           ''),
+        # ('leoEditCommands',   ''),
+        # ('leoFind',           ''),
+        # ('leoFrame',          'R0923'),
+            # R0923: Interface not implemented.
+
+        # ('leoGlobals',          'E0611,E1103'),
+            # E0611: no name 'parse' in urllib.
+            # E1103: Instance of 'ParseResult' has no 'xxx' member
+            # (but some types could not be inferred)
+
+        # ('leoGui',            ''),
+        # ('leoImport',         ''),
+        # ('leoKeys',           ''),
+        ('leoMenu',           'W0108'),
+            # W0108: Lambda may not be necessary (it is).
+        # ('leoNodes',          ''),
+        # ('leoPlugins',        ''),
+        # ('leoFileCommands',   'E1120,E1101'),
+            # E1120: no value passed for param.
+            # E1101: (dangerous) Class 'str' has no 'maketrans' member
+        # ('leoRst',            ''),
+        # ('leoShadow',         ''),
+        # ('leoTangle',         ''),
+        # ('leoTest',           ''),
+        # ('leoUndo',           'W0511'),
+            # WO511: TODO 
+)
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
     
@@ -138,58 +189,13 @@ def run(theDir,fn,suppress,rpython=False):
     else:
         print('file not found:',fn)
 #@-others
-#@+<< defines >>
-#@+node:ekr.20100221142603.5645: ** << defines >>
+
 coreList = getCoreList()
 externalList = ('ipy_leo','lproto',)
 passList = getPassList()
 pluginsTable = getPluginsTable()
+recentCoreList = getRecentCoreList()
 tkPass = getTkPass()
-#@-<< defines >>
-
-all_suppressions = 'C0111,C0301,C0321,C0322,C0323,C0324,\
-F0401,\
-R0201,R0903,\
-W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,\
-W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
-
-recentCoreList = (
-        # ('runLeo',            ''),
-        ('leoApp',            ''),
-        # ('leoAtFile',         ''),
-        # ('leoBridge',       ''),
-        # ('leoCache',          ''),
-        # ('leoChapters',       ''),
-        ('leoCommands',       ''),
-        ('leoConfig',           ''),
-        # ('leoEditCommands',   ''),
-        # ('leoFind',           ''),
-        # ('leoFrame',          'R0923'),
-            # R0923: Interface not implemented.
-
-        ('leoGlobals',          'E0611,E1103'),
-            # E0611: no name 'parse' in urllib.
-            # E1103: Instance of 'ParseResult' has no 'xxx' member
-            # (but some types could not be inferred)
-
-        # ('leoGui',            ''),
-        # ('leoImport',         ''),
-        # ('leoKeys',           ''),
-        # ('leoNodes',          ''),
-        # ('leoPlugins',        ''),
-        # ('leoFileCommands',   'E1120,E1101'),
-            # E1120: no value passed for param.
-            # E1101: (dangerous) Class 'str' has no 'maketrans' member
-
-        # ('leoMenu',           'W0108'),
-            # W0108: Lambda may not be necessary (it is).
-        # ('leoRst',            ''),
-        # ('leoShadow',         ''),
-        # ('leoTangle',         ''),
-        # ('leoTest',           ''),
-        # ('leoUndo',           'W0511'),
-            # WO511: TODO 
-)
 
 guiPluginsTable = (
     ('qtGui','E0611,E1101,R0923,W0221,W0233'),
@@ -212,14 +218,16 @@ recentPluginsList = (
 # )
 
 tables_table = (
-    # (rpythonList,'core'),
-    # (recentCoreList,'core'),
-    # (recentPluginsList,'plugins'),
     (coreList,'core'),
     (guiPluginsTable,'plugins'),
-    # (passList,'plugins'),
-    # (externalList,'external'),
-    # (pluginsTable,'plugins'),
+    # (recentCoreList,'core'),
+    # (recentPluginsList,'plugins'),
+    
+    # Not often used...
+        # (externalList,'external'),
+        # (passList,'plugins'),
+        # (pluginsTable,'plugins'),
+        # (rpythonList,'core'),
 )
 
 for table,theDir in tables_table:

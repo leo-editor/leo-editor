@@ -20,11 +20,20 @@ trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
 
-new_modes = False # True: use ModeController and ModeInfo classes.
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
 if new_modes: print('***** new_modes')
 
-new_keys = False # True: Qt input methods produce a **user setting**, not a stroke.
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
+
+# Traces of scrolling problems.
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
 
 # Switches to trace the garbage collector.
 trace_gc = False           
@@ -38,9 +47,6 @@ trace_masterKeyHandler = False
 trace_masterKeyHandlerGC = False
 trace_minibuffer = False
 trace_modes = False
-
-# Traces of scrolling problems.
-trace_scroll = False
 
 enableDB = True
     # Don't even think about eliminating this constant:

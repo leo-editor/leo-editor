@@ -568,7 +568,8 @@ ivars = (
     '_currentPosition','_topPosition',
     # '_rootPosition'
     # Data structures...
-    'hoistStack','recentFiles',
+    'hoistStack',
+        # 'recentFiles',
     # Args...
     'output_doc_flag','page_width','tab_width',
     # 'tangle_directory',
@@ -624,8 +625,10 @@ assert hasattr(g.app,'homeDir') # May well be None.
 #@+node:ekr.20100131171342.5482: *4* @test official g.app ivars
 
 ivars = (
+    # Global managers.
+    'config','loadManager','pluginsController','recentFilesManager',
     # These are non-official and might be removed...
-    'batchMode','config',
+    'batchMode',
     # 'debug',
     'debugSwitch','disableSave',
     'gui','hasOpenWithMenu','hookError',
@@ -1217,6 +1220,23 @@ theFile = lm.openLeoOrZipFile(path)
 assert theFile
 s2 = theFile.read()
 assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
+#@+node:ekr.20100211110729.5389: *4* @test rfm.writeRecentFilesFileHelper
+@first # -*- coding: utf-8 -*-
+
+# On Windows, this works with or without the following line in sitecustomize.py
+# sys.setdefaultencoding('utf-8')
+
+import os
+
+if g.isPython3:
+    fn ='ффф.leo'
+else:
+    fn = g.toUnicode('ффф.leo')
+
+g.app.recentFilesManager.writeRecentFilesFileHelper(fn)
+assert g.os_path_exists(fn),'fail 1'
+os.remove(fn)
+assert not g.os_path_exists(fn),'fail 1'
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 #@+node:ekr.20111113091935.4786: *4* Not valid when run externally
 @nocolor-node
@@ -4736,23 +4756,6 @@ if guiname == 'tkinter':
 if guiname == 'wxWindows':
     assert(not tkinter)
     assert(wx)
-#@+node:ekr.20100211110729.5389: *4* @test g.app.config.writeRecentFilesFileHelper
-@first # -*- coding: utf-8 -*-
-
-# On Windows, this works with or without the following line in sitecustomize.py
-# sys.setdefaultencoding('utf-8')
-
-import os
-
-if g.isPython3:
-    fn ='ффф.leo'
-else:
-    fn = g.toUnicode('ффф.leo')
-
-g.app.config.writeRecentFilesFileHelper(fn)
-assert g.os_path_exists(fn),'fail 1'
-os.remove(fn)
-assert not g.os_path_exists(fn),'fail 1'
 #@+node:ekr.20050203084930.1: *4* @test global settings
 w = g.app.config.get(None,'global_setting_for_unit_tests','int')
 

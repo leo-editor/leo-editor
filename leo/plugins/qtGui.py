@@ -391,20 +391,25 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             openURL(event)
     #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser)
     def getYScrollPosition(self):
-
+        
+        trace = g.trace_scroll and not g.unitTesting
         w = self
         sb = w.verticalScrollBar()
         i = sb.sliderPosition()
-        if g.trace_scroll: g.trace('(LeoQTextBrowser)',i)
+        
+        if trace:
+            print('leoQTextBrowser.getYScrollPosition %s' % i)
         return i
 
     def setYScrollPosition(self,pos):
+        
+        trace = g.trace_scroll and not g.unitTesting
+        print('leoQTextBrowser.setYScrollPosition %s' % pos)
 
-        if 0: # 2011/12/21
+        if 1: # disabled 2011/12/21, restored 2012/02/25
             w = self
             sb = w.verticalScrollBar()
             if pos is None: pos = 0
-            if g.trace_scroll: g.trace('(LeoQTextBrowser)',pos)
             sb.setSliderPosition(pos)
     #@-others
 #@-<< define LeoQTextBrowser >>
@@ -1255,13 +1260,19 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             self.changingText = False
     #@+node:ekr.20110605121601.18090: *5* see & seeInsertPoint (leoQTextEditWidget)
     def see(self,i):
+        
+        if g.trace_see and not g.unitTesting:
+            print('leoQTextEditWidget.see (ensureCursorVisible)')
 
-        if 0: # 2011/12/21
+        if 1: # Disabled 2011/12/21, enabled 2012/02/26
             self.widget.ensureCursorVisible()
 
     def seeInsertPoint (self):
+        
+        if g.trace_see and not g.unitTesting:
+            print('leoQTextEditWidget.seeInsertPoint')
 
-        if 0: # 2011/12/21
+        if 1: # Disabled 2011/12/21, enabled 2012/02/26
             self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *5* setAllText (leoQTextEditWidget) & helper
     def setAllText(self,s,insert=None,new_p=None):
@@ -1458,6 +1469,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
     def setInsertPoint(self,i):
         
+        trace = g.trace_scroll and not g.unitTesting
+        if trace: print('leoQTextEditWidget.setInsertPoint %s' % i)
+        
         w = self.widget
         s = w.toPlainText()
         i = self.toPythonIndex(i)
@@ -1468,7 +1482,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert=None):
 
-        trace = False and not g.unitTesting
+        trace = g.trace_scroll and not g.unitTesting
         w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
@@ -1482,7 +1496,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             ins = self.toPythonIndex(insert)
             ins = max(0,min(ins,n))
 
-        if trace:g.trace('i',i,'j',j,'insert',insert)
+        if trace: print(
+            'leoQTextEditWidget.setSelectionRangeHelper %s %s %s' % (
+                i,j,insert),g.callers())
 
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
@@ -1513,12 +1529,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
     def setYScrollPosition(self,pos):
         
-        # g.trace(pos)
-        
-        if 0: # 2011/12/21
+        trace = g.trace_scroll and not g.unitTesting   
+        if trace: print(
+            'leoQTextEditWidget.setYScrollPosition %s' % (pos))
+
+        if 1: # disabled 2011/12/21, enabled 2012/02/25
             w = self.widget
             sb = w.verticalScrollBar()
-            if g.trace_scroll: g.trace('(LeoQTextEditWidget)',pos)
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex (leoQTextEditWidget) (Fast)

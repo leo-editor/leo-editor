@@ -172,7 +172,8 @@ class HighLevelInterface(object):
     def hasSelection(self):
         # Take special care with this, for the benefit of LeoQuickSearchWidget.
         # This problem only happens with the qttabs gui.
-        return self.widget and hasattr(self.widget,'hasSelection') and self.widget.hasSelection() or False
+        w = self.widget
+        return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
     def insert(self,i,s):
         if self.widget: self.widget.insert(i,s)    
     def replace (self,i,j,s):
@@ -1035,13 +1036,16 @@ class leoBody (HighLevelInterface):
 
         # g.trace(i,j,'sel',repr(s[i:j]),'after',repr(after))
         return before,sel,after # 3 strings.
-    #@+node:ekr.20031218072017.4037: *5* setSelectionAreas
+    #@+node:ekr.20031218072017.4037: *5* setSelectionAreas (leoBody)
     def setSelectionAreas (self,before,sel,after):
 
         """Replace the body text by before + sel + after and
         set the selection so that the sel text is selected."""
 
         body = self ; w = body.bodyCtrl
+        
+        # 2012/02/05: save/restore Yscroll position.
+        pos = w.getYScrollPosition()
         s = w.getAllText()
         before = before or ''
         sel = sel or ''
@@ -1052,17 +1056,16 @@ class leoBody (HighLevelInterface):
         j = max(i,len(before)+len(sel)-1)
         # g.trace(i,j,repr(sel))
         w.setSelectionRange(i,j,insert=j)
+        w.setYScrollPosition(pos)
         return i,j
     #@+node:ekr.20031218072017.4038: *5* get/setYScrollPosition (leoBody)
     def getYScrollPosition (self):
 
         i = self.bodyCtrl.getYScrollPosition()
-        if g.trace_scroll: g.trace('(leoBody)',i)
         return i
 
     def setYScrollPosition (self,i):
-        
-        if g.trace_scroll: g.trace('(leoBody) setYPos',i)
+
         self.bodyCtrl.setYScrollPosition(i)
     #@+node:ekr.20081005065934.6: *3* leoBody: may be defined in subclasses
     # These are optional.

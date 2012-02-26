@@ -94,7 +94,8 @@ class Commands (object):
         c.initObjectIvars()
         
         # Init the settings *before* initing the objects.
-        self.config = configSettings(c,previousSettings)
+        import leo.core.leoConfig as leoConfig
+        self.config = leoConfig.LocalConfigManager(c,previousSettings)
         g.app.config.setIvarsFromSettings(c)
 
         # Initialize all subsidiary objects, including subcommanders.
@@ -159,7 +160,6 @@ class Commands (object):
         self.hoistStack = []
             # Stack of nodes to be root of drawn tree.
             # Affects drawing routines and find commands.
-        self.recentFiles = [] # List of recent files
         
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
@@ -1649,7 +1649,7 @@ class Commands (object):
                 if g.app.qt_use_tabs and hasattr(c.frame,'top'):
                     c.frame.top.leo_master.setTabName(c,c.mFileName)
                 c.fileCommands.save(c.mFileName)
-                c.updateRecentFiles(c.mFileName)
+                g.app.recentFilesManager.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
 
         # Done in fileCommands.save.
@@ -1716,7 +1716,7 @@ class Commands (object):
             if g.app.qt_use_tabs and hasattr(c.frame,'top'):
                 c.frame.top.leo_master.setTabName(c,c.mFileName)
             c.fileCommands.saveAs(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
+            g.app.recentFilesManager.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
         # Done in fileCommands.saveAs.
@@ -1762,7 +1762,7 @@ class Commands (object):
         if fileName:
             fileName = g.ensure_extension(fileName, ".leo")
             c.fileCommands.saveTo(fileName)
-            c.updateRecentFiles(fileName)
+            g.app.recentFilesManager.updateRecentFiles(fileName)
             g.chdir(fileName)
 
         # Does not change icons status.
@@ -1828,151 +1828,51 @@ class Commands (object):
         finally:
             c.isZipped = oldZipped
     #@+node:ekr.20031218072017.2079: *5* Recent Files submenu & allies
-    #@+node:ekr.20031218072017.2080: *6* clearRecentFiles
+    #@+node:ekr.20031218072017.2080: *6* c.clearRecentFiles
     def clearRecentFiles (self,event=None):
 
         """Clear the recent files list, then add the present file."""
-
-        c = self ; f = c.frame ; u = c.undoer
-
-        bunch = u.beforeClearRecentFiles()
-
-        recentFilesMenu = f.menu.getMenu("Recent Files...")
-        f.menu.deleteRecentFilesMenuItems(recentFilesMenu)
-
-        c.recentFiles = []
-        g.app.config.recentFiles = [] # New in Leo 4.3.
-        f.menu.createRecentFilesMenuItems()
-        c.updateRecentFiles(c.fileName())
-
-        g.app.config.appendToRecentFiles(c.recentFiles)
-
-        # g.trace(c.recentFiles)
-
-        u.afterClearRecentFiles(bunch)
-
-        # New in Leo 4.4.5: write the file immediately.
-        g.app.config.recentFileMessageWritten = False # Force the write message.
-        g.app.config.writeRecentFilesFile(c)
+        
+        c = self
+        g.app.recentFilesManager.clearRecentFiles(c)
     #@+node:ekr.20031218072017.2081: *6* c.openRecentFile
-    def openRecentFile(self,name=None):
-
-        if not name: return
-
-        c = self ; v = c.currentPosition()
-        #@+<< Set closeFlag if the only open window is empty >>
-        #@+node:ekr.20031218072017.2082: *7* << Set closeFlag if the only open window is empty >>
-        #@+at
-        # If this is the only open window was opened when the app started, and the window
-        # has never been written to or saved, then we will automatically close that window
-        # if this open command completes successfully.
-        #@@c
-
-        closeFlag = (
-            c.frame.startupWindow and # The window was open on startup
-            not c.changed and not c.frame.saved and # The window has never been changed
-            g.app.numberOfUntitledWindows == 1) # Only one untitled window has ever been opened
-        #@-<< Set closeFlag if the only open window is empty >>
-
-        fileName = name
-        if not g.doHook("recentfiles1",c=c,p=c.p,v=c.p,fileName=fileName,closeFlag=closeFlag):
-            c2 = g.openWithFileName(fileName,old_c=c)
-            if c2 and closeFlag and c2 != c:
-                g.app.destroyWindow(c.frame) # 12/12/03
-                c2.setLog() # Sets the log stream for g.es
-                g.doHook("recentfiles2",
-                    c=c2,p=c2.p,v=c2.p,fileName=fileName,closeFlag=closeFlag)
-    #@+node:ekr.20031218072017.2083: *6* c.updateRecentFiles
-    def updateRecentFiles (self,fileName):
-
-        """Create the RecentFiles menu.  May be called with Null fileName."""
-
+    def openRecentFile(self,fn=None):
+        
         c = self
 
-        if g.app.unitTesting: return
+        # Automatically close the previous window if...
+        closeFlag = (
+            c.frame.startupWindow and
+                # The window was open on startup
+            not c.changed and not c.frame.saved and
+                # The window has never been changed
+            g.app.numberOfUntitledWindows == 1)
+                # Only one untitled window has ever been opened.
 
-        def munge(name):
-            return c.os_path_finalize(name or '').lower()
-        def munge2(name):
-            return c.os_path_finalize_join(g.app.loadDir,name or '')
+        if g.doHook("recentfiles1",c=c,p=c.p,v=c.p,fileName=fn,closeFlag=closeFlag):
+            return
+        
+        c2 = g.openWithFileName(fn,old_c=c)
 
-        # Update the recent files list in all windows.
-        if fileName:
-            compareFileName = munge(fileName)
-            # g.trace(fileName)
-            for frame in g.app.windowList:
-                c = frame.c
-                # Remove all versions of the file name.
-                for name in c.recentFiles:
-                    if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
-                        c.recentFiles.remove(name)
-                c.recentFiles.insert(0,fileName)
-                # g.trace('adding',fileName)
-                # Recreate the Recent Files menu.
-                frame.menu.createRecentFilesMenuItems()
-        else:
-            for frame in g.app.windowList:
-                frame.menu.createRecentFilesMenuItems()
-    #@+node:tbrown.20080509212202.6: *6* cleanRecentFiles
+        if closeFlag and c2 and c2 != c:
+            g.app.destroyWindow(c.frame)
+            c2.setLog()
+            g.doHook("recentfiles2",
+                c=c2,p=c2.p,v=c2.p,fileName=fn,closeFlag=closeFlag)
+    #@+node:tbrown.20080509212202.6: *6* c.cleanRecentFiles
     def cleanRecentFiles(self,event=None):
         
-        '''Removed items from the recent files list that are no longer valid.'''
-
+        '''Remove items from the recent files list that are no longer valid.'''
+        
         c = self
-
-        dat = c.config.getData('path-demangle')
-        if not dat:
-            g.es('No @data path-demangle setting')
-            return
-
-        changes = []
-        replace = None
-        for line in dat:
-            text = line.strip()
-            if text.startswith('REPLACE: '):
-                replace = text.split(None, 1)[1].strip()
-            if text.startswith('WITH:') and replace is not None:
-                with_ = text[5:].strip()
-                changes.append((replace, with_))
-                g.es('%s -> %s' % changes[-1])
-
-        orig = [i for i in c.recentFiles if i.startswith("/")]
-        c.clearRecentFiles()
-
-        for i in orig:
-            t = i
-            for change in changes:
-                t = t.replace(*change)
-
-            c.updateRecentFiles(t)
-
-        # code below copied from clearRecentFiles
-        g.app.config.recentFiles = [] # New in Leo 4.3.
-        g.app.config.appendToRecentFiles(c.recentFiles)
-        g.app.config.recentFileMessageWritten = False # Force the write message.
-        g.app.config.writeRecentFilesFile(c)
-    #@+node:tbrown.20080509212202.8: *6* sortRecentFiles
+        g.app.recentFilesManager.cleanRecentFiles(c)
+    #@+node:tbrown.20080509212202.8: *6* c.sortRecentFiles
     def sortRecentFiles(self,event=None):
         
         '''Sort the recent files list.'''
 
         c = self
-
-        orig = c.recentFiles[:]
-        c.clearRecentFiles()
-
-        def key(s):
-            return g.os_path_basename(s).lower()
-        orig.sort(key=key) # 2010/01/12
-        orig.reverse() # 2010/01/12
-        for i in orig:
-            c.updateRecentFiles(i)
-
-        # code below copied from clearRecentFiles
-        g.app.config.recentFiles = [] # New in Leo 4.3.
-        g.app.config.appendToRecentFiles(c.recentFiles)
-        g.app.config.recentFileMessageWritten = False # Force the write message.
-        g.app.config.writeRecentFilesFile(c)
+        g.app.recentFilesManager.sortRecentFiles(c)
     #@+node:ekr.20031218072017.2838: *5* Read/Write submenu (leoCommands)
     #@+node:ekr.20031218072017.2839: *6* readOutlineOnly
     def readOutlineOnly (self,event=None):
@@ -3817,7 +3717,6 @@ class Commands (object):
         w.setSelectionRange(ins,ins,insert=ins)
         
         # 2011/10/26: Calling see does more harm than good.
-            # if g.trace_scroll: g.trace('see',ins)
             # w.see(ins)
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
@@ -8382,447 +8281,6 @@ class Commands (object):
 
         # g.trace('%20s' % (timeStamp),fn)
 
-    #@-others
-#@+node:ekr.20041118104831.1: ** class configSettings (leoCommands)
-class configSettings:
-
-    """A class to hold config settings for commanders."""
-
-    #@+others
-    #@+node:ekr.20120215072959.12472: *3* c.config.Birth
-    #@+node:ekr.20041118104831.2: *4* c.config.ctor
-    def __init__ (self,c,previousSettings=None):
-     
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('c.config.__init__ %s' % (c and c.shortFileName()))
-        self.c = c
-        
-        # The shortcuts and settings dicts, set in c.__init__
-        # for local files.
-        if previousSettings:
-            self.settingsDict = previousSettings.settingsDict
-            self.shortcutsDict = previousSettings.shortcutsDict
-            assert g.isTypedDict(self.settingsDict)
-            assert g.isTypedDictOfLists(self.shortcutsDict)
-        else:
-            lm = g.app.loadManager
-            self.settingsDict  = d1 = lm.globalSettingsDict
-            self.shortcutsDict = d2 = lm.globalShortcutsDict
-            assert d1 is None or g.isTypedDict(d1),d1
-            assert d2 is None or g.isTypedDictOfLists(d2),d2
-
-        # Define these explicitly to eliminate a pylint warning.
-        self.default_derived_file_encoding =\
-            g.app.config.default_derived_file_encoding
-        self.redirect_execute_script_output_to_log_pane =\
-            g.app.config.redirect_execute_script_output_to_log_pane
-        
-        self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
-        self.defaultLogFontSize  = g.app.config.defaultLogFontSize
-        self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
-        self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
-
-        for key in g.app.config.encodingIvarsDict.keys():
-            self.initEncoding(key)
-
-        for key in g.app.config.ivarsDict.keys():
-            self.initIvar(key)
-    #@+node:ekr.20041118104414: *4* c.config.initEncoding
-    def initEncoding (self,key):
-
-        c = self.c
-
-        # Important: the key is munged.
-        gs = g.app.config.encodingIvarsDict.get(key)
-        encodingName = gs.ivar
-        
-        encoding = self.get(encodingName,kind='string')
-        
-
-        # Use the global setting as a last resort.
-        if encoding:
-            # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
-            setattr(self,encodingName,encoding)
-        else:
-            encoding = getattr(g.app.config,encodingName)
-            # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
-            setattr(self,encodingName,encoding)
-
-        if encoding and not g.isValidEncoding(encoding):
-            g.es("bad", "%s: %s" % (encodingName,encoding))
-    #@+node:ekr.20041118104240: *4* c.config.initIvar
-    def initIvar(self,key):
-
-        trace = False and not g.unitTesting
-        c = self.c
-
-        # Important: the key is munged.
-        gs = g.app.config.ivarsDict.get(key)
-        ivarName = gs.ivar
-        val = self.get(ivarName,kind=None)
-
-        if val or not hasattr(self,ivarName):
-            if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
-            setattr(self,ivarName,val)
-    #@+node:ekr.20120215072959.12471: *3* c.config.Getters
-    #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
-    def getButtons (self):
-        '''Return a list of tuples (x,y) for common @button nodes.'''
-        return g.app.config.atCommonButtonsList # unusual.
-
-    def getCommands (self):
-        '''Return the list of tuples (headline,script) for common @command nodes.'''
-        return g.app.config.atCommonCommandsList # unusual.
-        
-    def getEnabledPlugins (self):
-        '''Return the body text of the @enabled-plugins node.'''
-        return g.app.config.enabledPluginsString # unusual.
-        
-    def getRecentFiles (self):
-        '''Return the list of recently opened files.'''
-        return g.app.config.getRecentFiles() # unusual
-    #@+node:ekr.20120215072959.12515: *4* c.config.Getters
-    #@@nocolor-node
-
-    #@+at Only the following need to be defined.
-    # 
-    #     get (self,setting,theType)
-    #     getAbbrevDict (self)
-    #     getBool (self,setting,default=None)
-    #     getButtons (self)
-    #     getColor (self,setting)
-    #     getData (self,setting)
-    #     getDirectory (self,setting)
-    #     getFloat (self,setting)
-    #     getFontFromParams (self,family,size,slant,weight,defaultSize=12)
-    #     getInt (self,setting)
-    #     getLanguage (self,setting)
-    #     getMenusList (self)
-    #     getOpenWith (self):
-    #     getRatio (self,setting)
-    #     getShortcut (self,commandName)
-    #     getString (self,setting)
-    #@+node:ekr.20120215072959.12519: *5* c.config.get & allies
-    def get (self,setting,kind):
-
-        """Get the setting and make sure its type matches the expected type."""
-
-        # trace = (False or g.trace_startup) and not g.unitTesting
-        trace = False and not g.unitTesting
-        verbose = True
-        c = self.c
-        d = self.settingsDict
-        lm = g.app.loadManager
-
-        if d:
-            assert g.isTypedDict(d),d
-            val,junk = self.getValFromDict(d,setting,kind)
-            if trace and verbose and val is not None:
-                # g.trace('%35s %20s %s' % (setting,val,g.callers(3)))
-                g.trace('%40s %s' % (setting,val))
-                
-            return val
-        else:
-            if trace and lm.globalSettingsDict:
-                g.trace('ignore: %40s %s' % (
-                    setting,g.callers(2)))
-            return None
-    #@+node:ekr.20120215072959.12520: *6* getValFromDict
-    def getValFromDict (self,d,setting,requestedType,warn=True):
-
-        '''Look up the setting in d. If warn is True, warn if the requested type
-        does not (loosely) match the actual type.
-        returns (val,exists)'''
-
-        c = self.c
-        gs = d.get(g.app.config.munge(setting))
-        if not gs: return None,False
-
-        assert g.isGeneralSetting(gs),gs
-        
-        # g.trace(setting,requestedType,gs.toString())
-        val = gs.val
-
-        # 2011/10/24: test for an explicit None.
-        if g.isPython3:
-            isNone = val in ('None','none','') # ,None)
-        else:
-            isNone = val in (
-                unicode('None'),unicode('none'),unicode(''),
-                'None','none','') #,None)
-
-        if not self.typesMatch(gs.kind,requestedType):
-            # New in 4.4: make sure the types match.
-            # A serious warning: one setting may have destroyed another!
-            # Important: this is not a complete test of conflicting settings:
-            # The warning is given only if the code tries to access the setting.
-            if warn:
-                g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
-                g.es_print('there may be conflicting settings!',color='red')
-            return None, False
-        # elif val in (u'None',u'none','None','none','',None):
-        elif isNone:
-            return '', True
-                # 2011/10/24: Exists, a *user-defined* empty value.
-        else:
-            # g.trace(setting,val)
-            return val, True
-    #@+node:ekr.20120215072959.12521: *6* typesMatch
-    def typesMatch (self,type1,type2):
-
-        '''
-        Return True if type1, the actual type, matches type2, the requeseted type.
-
-        The following equivalences are allowed:
-
-        - None matches anything.
-        - An actual type of string or strings matches anything *except* shortcuts.
-        - Shortcut matches shortcuts.
-        '''
-
-        # The shortcuts logic no longer uses the get/set code.
-        shortcuts = ('shortcut','shortcuts',)
-        if type1 in shortcuts or type2 in shortcuts:
-            g.trace('oops: type in shortcuts')
-
-        return (
-            type1 == None or type2 == None or
-            type1.startswith('string') and type2 not in shortcuts or
-            type1 == 'int' and type2 == 'size' or
-            (type1 in shortcuts and type2 in shortcuts) or
-            type1 == type2
-        )
-    #@+node:ekr.20120215072959.12522: *5* c.config.getAbbrevDict
-    def getAbbrevDict (self):
-
-        """Search all dictionaries for the setting & check it's type"""
-
-        d = self.get('abbrev','abbrev')
-        return d or {}
-    #@+node:ekr.20120215072959.12523: *5* c.config.getBool
-    def getBool (self,setting,default=None):
-
-        '''Return the value of @bool setting, or the default if the setting is not found.'''
-
-        val = self.get(setting,"bool")
-
-        if val in (True,False):
-            return val
-        else:
-            return default
-    #@+node:ekr.20120215072959.12525: *5* c.config.getColor
-    def getColor (self,setting):
-
-        '''Return the value of @color setting.'''
-
-        return self.get(setting,"color")
-    #@+node:ekr.20120215072959.12527: *5* c.config.getData
-    def getData (self,setting):
-
-        '''Return a list of non-comment strings in the body text of @data setting.'''
-
-        return self.get(setting,"data")
-    #@+node:ekr.20120215072959.12528: *5* c.config.getDirectory
-    def getDirectory (self,setting):
-
-        '''Return the value of @directory setting, or None if the directory does not exist.'''
-
-        theDir = self.getString(setting)
-
-        if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
-            return theDir
-        else:
-            return None
-    #@+node:ekr.20120215072959.12530: *5* c.config.getFloat
-    def getFloat (self,setting):
-
-        '''Return the value of @float setting.'''
-
-        val = self.get(setting,"float")
-        try:
-            val = float(val)
-            return val
-        except TypeError:
-            return None
-    #@+node:ekr.20120215072959.12531: *5* c.config.getFontFromParams
-    def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-
-        """Compute a font from font parameters.
-
-        Arguments are the names of settings to be use.
-        Default to size=12, slant="roman", weight="normal".
-
-        Return None if there is no family setting so we can use system default fonts."""
-
-        family = self.get(family,"family")
-        if family in (None,""): family = g.app.config.defaultFontFamily
-
-        size = self.get(size,"size")
-        if size in (None,0): size = defaultSize
-
-        slant = self.get(slant,"slant")
-        if slant in (None,""): slant = "roman"
-
-        weight = self.get(weight,"weight")
-        if weight in (None,""): weight = "normal"
-
-        # g.trace(family,size,slant,weight,g.shortFileName(self.c.mFileName))
-        return g.app.gui.getFontFromParams(family,size,slant,weight)
-    #@+node:ekr.20120215072959.12532: *5* c.config.getInt
-    def getInt (self,setting):
-
-        '''Return the value of @int setting.'''
-
-        val = self.get(setting,"int")
-        try:
-            val = int(val)
-            return val
-        except TypeError:
-            return None
-    #@+node:ekr.20120215072959.12533: *5* c.config.getLanguage
-    def getLanguage (self,setting):
-
-        '''Return the setting whose value should be a language known to Leo.'''
-
-        language = self.getString(setting)
-        # g.trace(setting,language)
-
-        return language
-    #@+node:ekr.20120215072959.12534: *5* c.config.getMenusList
-    def getMenusList (self):
-
-        '''Return the list of entries for the @menus tree.'''
-
-        aList = self.get('menus','menus')
-        # g.trace(aList and len(aList) or 0)
-
-        return aList or g.app.config.menusList
-    #@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
-    def getOpenWith (self):
-
-        '''Return a list of dictionaries corresponding to @openwith nodes.'''
-
-        val = self.get('openwithtable','openwithtable')
-
-        return val
-    #@+node:ekr.20120215072959.12536: *5* c.config.getRatio
-    def getRatio (self,setting):
-
-        '''Return the value of @float setting.
-
-        Warn if the value is less than 0.0 or greater than 1.0.'''
-
-        val = self.get(setting,"ratio")
-        try:
-            val = float(val)
-            if 0.0 <= val <= 1.0:
-                return val
-            else:
-                return None
-        except TypeError:
-            return None
-    #@+node:ekr.20120215072959.12538: *5* c.config.getSettingSource
-    def getSettingSource (self,setting):
-
-        '''return the name of the file responsible for setting.'''
-        
-        trace = False and not g.unitTesting
-        c = self.c
-        d = self.settingsDict
-        lm = g.app.loadManager
-        
-        if d:
-            assert g.isTypedDict(d),d
-            si = d.get(setting)
-            if si is None:
-                return 'unknown setting',None
-            else:
-                assert g.isShortcutInfo(si)
-                return si.path,si.val
-        else:
-            # lm.readGlobalSettingsFiles is opening a settings file.
-            # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
-            assert d is None
-            return None
-    #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    def getShortcut (self,commandName):
-
-        '''Return rawKey,accel for shortcutName'''
-        
-        trace = False and not g.unitTesting
-        c = self.c
-        d = self.shortcutsDict
-        lm = g.app.loadManager
-        
-        if not c.frame.menu:
-            g.trace('no menu: %s' % (commandName))
-            return None,[]
-
-        if d:
-            assert g.isTypedDictOfLists(d),d
-            key = c.frame.menu.canonicalizeMenuName(commandName)
-            key = key.replace('&','') # Allow '&' in names.
-            aList = d.get(commandName,[])
-            if aList:
-                for si in aList: assert g.isShortcutInfo(si),si 
-                # It's very important to filter empty strokes here.
-                aList = [si for si in aList
-                    if si.stroke and si.stroke.lower() != 'none']
-            if trace: g.trace(d,'\n',aList)
-            return key,aList
-        else:
-            # lm.readGlobalSettingsFiles is opening a settings file.
-            # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
-            return None,[]
-    #@+node:ekr.20120215072959.12540: *5* c.config.getString
-    def getString (self,setting):
-
-        '''Return the value of @string setting.'''
-
-        return self.get(setting,"string")
-    #@+node:ekr.20120224140548.10528: *4* c.exists (new)
-    def exists (self,c,setting,kind):
-
-        '''Return true if a setting of the given kind exists, even if it is None.'''
-        
-        d = self.settingsDict
-        if d:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
-        return False
-    #@+node:ekr.20041118195812: *3* c.config.Setters
-    #@+node:ekr.20120215072959.12475: *4* c.config.set
-    def set (self,p,kind,name,val):
-
-        """Init the setting for name to val."""
-
-        trace = False and not g.unitTesting
-        if trace: g.trace(kind,name,val)
-        
-        c = self.c
-
-        # Note: when kind is 'shortcut', name is a command name.
-        key = g.app.config.munge(name)
-
-        # if kind and kind.startswith('setting'): g.trace("c.config %10s %15s %s" %(kind,val,name))
-        d = self.settingsDict
-        assert g.isTypedDict(d),d
-
-        gs = d.get(key)
-        if gs:
-            assert g.isGeneralSetting(gs),gs
-            path = gs.path
-            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-                g.es("over-riding setting:",name,"from",path)
-
-        gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
-        d.replace(key,gs)
-    #@+node:ekr.20120215072959.12478: *4* c.config.setRecentFiles
-    def setRecentFiles (self,files):
-        
-        '''Update the recent files list.'''
-        
-        g.app.config.appendToRecentFiles(files)
     #@-others
 #@+node:ekr.20070615131604: ** class nodeHistory
 class nodeHistory:

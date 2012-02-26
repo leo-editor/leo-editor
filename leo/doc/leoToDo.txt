@@ -13,13 +13,148 @@ Top 10:
 * Rendering to tex,pdf, etc.
 * Use c.db for marks and expansion bits.
 * Restart vim project
-.. @+node:ekr.20120212095313.10377: *3* First
+.. @+node:ekr.20120212095313.10377: *3* To do first
+.. @+node:ekr.20120225032124.18056: *4* Clear out the pre-writing folder
+@pagewidth 60
+.. @+node:ekr.20120225072226.10199: *5* Add to scripting chapter
+@language rest
+
+I want to learn about PyQt and leo's qtGui. As a first step,
+I'm trying to execute a script from within a leo body::
+
+    from PyQt4 import QtGui
+    w = QtGui.QWidget()
+    w.resize(250, 150)
+    w.move(300, 300)
+    w.setWindowTitle('Simple test')
+    w.show()
+
+Q. When I try the above, I see a window appear and then
+immediately disappear. How can I keep the window visible?
+
+A. When the script exits the sole reference to the window,
+w, ceases to exist, so the window is destroyed (garbage
+collected). To keep the window open, add the following code
+as the last line to keep the reference alive::
+
+    g.app.scriptsDict['my-script_w'] = w
+
+Note that this reference will persist until the next time
+the execute-script command is run.  If you want something even
+more permanent, you can do something like::
+
+    g.app.my_script_w = w
+.. @+node:ekr.20120225072226.10200: *5* Code for displaying a function call hierarchy in Leo
+@language rest
+
+@pagewidth 80
+
+From Brian Theado
+
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
+
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+.. @+node:ekr.20120225072226.10203: *6* call tree
+import trace
+
+@language python
+@others
+
+# see http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
+
+# Trace a minibuffer command.
+
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
+
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
+
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+.. @+node:ekr.20120225072226.10204: *7* displayCalltree
+def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
+
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) > 0:
+       while len(levels[-1]) > 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+.. @+node:ekr.20120225072226.10205: *7* trace session
+.. @+node:ekr.20120225072226.10282: *5* The leoInspect module
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
+leoInspect: a hobby with a future?
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
+leoInspect: remarkable collapse in complexity and attempted assessment
+
+.. @+node:ekr.20120225032124.18054: *4* Clone-find-all-flattened command
 .. @+node:ekr.20120203053243.10111: *4* Fix OpenWith menu
 @nocolor-node
 
 This affects bindings.
-.. @+node:ekr.20041118104831.1: *5* class configSettings (leoCommands)
-class configSettings:
+.. @+node:ekr.20041118104831.1: *5* class LocalConfigManager
+class LocalConfigManager:
 
     """A class to hold config settings for commanders."""
 
@@ -76,7 +211,7 @@ def initEncoding (self,key):
 
     # Use the global setting as a last resort.
     if encoding:
-        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
+        # g.trace('c.config',c.shortFileName(),encodingName,encoding)
         setattr(self,encodingName,encoding)
     else:
         encoding = getattr(g.app.config,encodingName)
@@ -97,7 +232,7 @@ def initIvar(self,key):
     val = self.get(ivarName,kind=None)
 
     if val or not hasattr(self,ivarName):
-        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        if trace: g.trace('c.config',c.shortFileName(),ivarName,val)
         setattr(self,ivarName,val)
 .. @+node:ekr.20120215072959.12471: *6* c.config.Getters
 .. @+node:ekr.20120215072959.12543: *7* c.config.Getters: redirect to g.app.config
@@ -425,8 +560,7 @@ def exists (self,c,setting,kind):
         junk,found = self.getValFromDict(d,setting,kind)
         if found: return True
     return False
-.. @+node:ekr.20041118195812: *6* c.config.Setters
-.. @+node:ekr.20120215072959.12475: *7* c.config.set
+.. @+node:ekr.20120215072959.12475: *6* c.config.set
 def set (self,p,kind,name,val):
 
     """Init the setting for name to val."""
@@ -452,12 +586,6 @@ def set (self,p,kind,name,val):
 
     gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
     d.replace(key,gs)
-.. @+node:ekr.20120215072959.12478: *7* c.config.setRecentFiles
-def setRecentFiles (self,files):
-    
-    '''Update the recent files list.'''
-    
-    g.app.config.appendToRecentFiles(files)
 .. @+node:ekr.20031218072017.3750: *5* class leoMenu
 class leoMenu:
 
@@ -472,18 +600,9 @@ def __init__ (self,frame):
     self.frame = frame
     self.menus = {}             # Menu dictionary.
     self.menuShortcuts = {}
-    self.recentFilesStatic = () # Set in finishCreate.
         
 def finishCreate (self):
 
-    c = self.c
-    # static part of recent files menu
-    self.recentFilesStatic = (
-        ("Clear Recent Files",None,c.clearRecentFiles),
-        ("Clean Recent Files",None,c.cleanRecentFiles),
-        ("Sort Recent Files",None,c.sortRecentFiles),
-        # ("-",None,None),
-    )
     self.define_enable_dict()
 .. @+node:ekr.20120124042346.12937: *7* define_enable_table
 def define_enable_dict (self):
@@ -631,10 +750,9 @@ def createFileMenuFromTable (self):
     self.createMenuEntries(fileMenu,self.fileMenuTop3MenuTable)
 .. @+node:ekr.20031218072017.3791: *9* << create the recent files submenu >>
 self.createNewMenu("Recent &Files...","File")
-c.recentFiles = c.config.getRecentFiles()
 
 if 0: # Not needed, and causes problems in wxWindows...
-    self.createRecentFilesMenuItems()
+    g.app.recentFilesManager.createRecentFilesMenuItems(c)
 .. @+node:ekr.20031218072017.3792: *9* << create the read/write submenu >>
 readWriteMenu = self.createNewMenu("&Read/Write...","File")
 
@@ -837,9 +955,9 @@ def handleSpecialMenus (self,name,parentName,table=None):
         g.doHook("create-optional-menus",c=c)
         return True
     elif name2.startswith('recentfiles'):
-        # Just create the menu.  createRecentFilesMenuItems will be called later.
+        # Just create the menu.
+        # createRecentFilesMenuItems will create the contents later.
         self.createNewMenu(name,parentName)
-        c.recentFiles = c.config.getRecentFiles()
         return True
     elif name2 == 'help' and sys.platform == 'darwin':
         helpMenu = self.getMacHelpMenu(table)
@@ -1625,7 +1743,7 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             # 2011/10/28: Use only the command name to dispatch the command.
             # 2012/01/07: Bug fix: set w here.
             w = setWidget()
-            if trace: g.trace(commandName,w)
+            if trace: g.trace(commandName,w,c)
             event = g.app.gui.create_key_event(c,None,None,w)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
@@ -1827,83 +1945,23 @@ def createOpenWithMenuItemsFromTable (self,menu,table):
             callback = self.defineOpenWithMenuCallback(command) #### openWithData)
             c.add_command(menu,label=realLabel,accel=accel,
                 command=callback,underline=underline)
-.. @+node:ekr.20031218072017.2078: *7* createRecentFilesMenuItems (leoMenu)
-def createRecentFilesMenuItems (self):
-
-    c = self.c
-    recentFilesMenu = self.getMenu("Recent Files...")
-    if not recentFilesMenu and not g.unitTesting:
-        g.trace('Recent Files Menu does not exist',g.callers())
-        return
-
-    # Delete all previous entries.
-    self.deleteRecentFilesMenuItems(recentFilesMenu)
-
-    # Create the static entries.
-    table = self.recentFilesStatic
-
-    self.createMenuEntries(recentFilesMenu,table)
-
-    # Create all the other entries (a maximum of 36).
-    accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
-    i = 0
-    n = len(accel_ch)
-
-    # see if we're grouping when files occur in more than one place
-    rf_group = c.config.getBool("recent_files_group")
-    rf_always = c.config.getBool("recent_files_group_always")
-    groupedEntries = rf_group or rf_always
-
-    if groupedEntries:  # if so, make dict of groups
-        dirCount = {}
-        for fileName in c.recentFiles[:n]:
-            dirName, baseName = g.os_path_split(fileName)
-            if baseName not in dirCount:
-                dirCount[baseName] = {'dirs':[], 'entry': None}
-            dirCount[baseName]['dirs'].append(dirName)
-
-    for name in c.recentFiles[:n]:
-        if name.strip() == "": continue  # happens with empty list/new file
-        def recentFilesCallback (event=None,c=c,name=name):
-            c.openRecentFile(name)
-
-        if groupedEntries:
-            dirName, baseName = g.os_path_split(name)
-
-            entry = dirCount[baseName]
-
-            if len(entry['dirs']) > 1 or rf_always:  # sub menus
-                if entry['entry'] is None:
-                    entry['entry'] = self.createNewMenu(baseName, "Recent Files...")
-                    # acts as a flag for the need to create the menu
-                c.add_command(self.getMenu(baseName), label=dirName,
-                    command=recentFilesCallback, underline=0)
-            else:  # single occurence, no submenu
-                c.add_command(recentFilesMenu,label=baseName,command=recentFilesCallback,underline=0)
-        else:  # original behavior
-            label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
-            c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
-        i += 1
-
-    if groupedEntries:  # store so we can delete them later
-        self.groupedMenus = [i for i in dirCount
-                             if dirCount[i]['entry'] is not None]
-.. @+node:tbrown.20080509212202.7: *7* deleteRecentFilesMenuItems
+.. @+node:tbrown.20080509212202.7: *7* deleteRecentFilesMenuItems (leoMenu)
 def deleteRecentFilesMenuItems(self,menu):
+    
     """Delete recent file menu entries"""
 
-    toDrop = len(self.c.recentFiles)
-    if hasattr(self, 'recentFilesStatic'):
-        toDrop += len(self.recentFilesStatic)
+    rf = g.app.recentFilesManager
 
+    # Why not just delete all the entries?
+    recentFiles = rf.getRecentFiles()
+    toDrop = len(recentFiles) + len(rf.getRecentFilesTable())
     self.delete_range(menu,0,toDrop)
 
-    if hasattr(self, 'groupedMenus'):
-        for i in self.groupedMenus:
-            menu = self.getMenu(i)
-            if menu:
-                self.destroy(menu)
-                self.destroyMenu(i)
+    for i in rf.groupedMenus:
+        menu = self.getMenu(i)
+        if menu:
+            self.destroy(menu)
+            self.destroyMenu(i)
 .. @+node:ekr.20031218072017.4117: *7* defineMenuCallback
 def defineMenuCallback(self,command,name,minibufferCommand):
     
@@ -2437,9 +2495,9 @@ def handleSpecialMenus (self,name,parentName,table=None):
         g.doHook("create-optional-menus",c=c)
         return True
     elif name2.startswith('recentfiles'):
-        # Just create the menu.  createRecentFilesMenuItems will be called later.
+        # Just create the menu.
+        # createRecentFilesMenuItems will create the contents later.
         self.createNewMenu(name,parentName)
-        c.recentFiles = c.config.getRecentFiles()
         return True
     elif name2 == 'help' and sys.platform == 'darwin':
         helpMenu = self.getMacHelpMenu(table)
@@ -3293,9 +3351,9 @@ def handleSpecialMenus (self,name,parentName,table=None):
         g.doHook("create-optional-menus",c=c)
         return True
     elif name2.startswith('recentfiles'):
-        # Just create the menu.  createRecentFilesMenuItems will be called later.
+        # Just create the menu.
+        # createRecentFilesMenuItems will create the contents later.
         self.createNewMenu(name,parentName)
-        c.recentFiles = c.config.getRecentFiles()
         return True
     elif name2 == 'help' and sys.platform == 'darwin':
         helpMenu = self.getMacHelpMenu(table)
@@ -3436,12 +3494,56 @@ def parseOpenWithLine (self,line,d):
 
     if not g.match(s,0,'#'):
         d['command'] = s
+.. @+node:ekr.20120225032124.16123: *4* Remove c argument from g.app.config getters
 .. @+node:ekr.20120208062900.10146: *4* new_modes
 @nocolor-node
 
 This will eliminate the hacks for *entry-commands* and *command-prompt keys.
 
 ModeController: a wrapper for g.app.config.modeCommandsDict
+.. @+node:ekr.20120212060348.10374: *5*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Traces of scrolling problems.
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+    
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
 .. @+node:ekr.20120208061308.10131: *5* Weird stroke code
 @nocolor-node
 
@@ -4629,670 +4731,993 @@ def NEWgeneralModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
-.. @+node:ekr.20120205022040.15412: *4* Refactor the key code
+.. @+node:ekr.20120225032124.18055: *4* Move recent files stuff to RecentFiles class
+.. @+node:ekr.20120225062633.10162: *4* The wretched scrolling bug
 @nocolor-node
 
-To do:
+What I did:
     
-* Define k factory methods:
+1. Enabled see, seeInsertPoint, get/setYScrollPosition.
+
+2. (The fix): save/restore YScroll position in body.setSelectionAreas.
+
+3. Added g.trace_see: g.trace_scroll already existed.
+
+Failure case 1:
+    - Search for something.
+    - Manually scroll the pane.
+    - Click scrolls the pane again.
     
-    k.makeKeyStroke(user_setting_string)
-    k.makeKeyStrokeFromData(data)
-    k.makeShortcutInfo(...)
-
-* Refactor the Qt input code so it calls k.makeKeyStrokeFromData(data).
-  This will require untangling the input code from event handling code.
-.. @+node:ekr.20110605121601.18847: *5* create_key_event (leoGui)
-def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
-    
-    # Do not call strokeFromSetting here!
-    # For example, this would wrongly convert Ctrl-C to Ctrl-c,
-    # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-
-    return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
-.. @+node:ekr.20110605121601.18537: *5* class leoQtEventFilter
-class leoQtEventFilter(QtCore.QObject):
-
-    << about internal bindings >>
-
-    @others
-.. @+node:ekr.20110605121601.18538: *6* << about internal bindings >>
+Failure case 2:
+    - reformat-paragraph.
+.. @+node:ekr.20120225062633.10161: *5* Found: .see
+.. @+node:ekr.20111123030145.10211: *6* Notes
 @nocolor-node
-@
 
-Here are the rules for translating key bindings (in leoSettings.leo) into keys
-for k.bindingsDict:
+Methods relating to this problem:
 
-1.  The case of plain letters is significant:  a is not A.
+g.trace_scroll
+w.see
+w.seeInsertPoint
+w.get/setYScrollPosition
+p.restoreCursorAndScroll
+v.restoreCursorAndScroll
 
-2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
-warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+leoKeyHandler:
+    k.keykBoardQuit
+    k.showStateAndMode
+    k.setLabel
+        ***** calls w.widget.ensureCursorVisible
 
-3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-significant. Thus, the Shift- prefix is required if you want an upper-case
-letter (with the exception of 'bare' uppercase letters.)
+leoQtBody:
+    onFocusColorHelper
+        ***** calls w.widget.ensureCursorVisible
+        
+leoQtBaseTextWidget:
+    mouseReleaseEvent
+        Added code that didn't work: now commented out.
+        
+leoEditCommands:
+    updateAutoIndent
+        ***** calls w.seeInsertPoint
+.. @+node:ekr.20111001155050.15480: *7* First attempt
+@nocolor-node
 
-The following table illustrates these rules. In each row, the first entry is the
-key (for k.bindingsDict) and the other entries are equivalents that the user may
-specify in leoSettings.leo:
+http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f
 
-a, Key-a, Key-A
-A, Shift-A
-Alt-a, Alt-A
-Alt-A, Alt-Shift-a, Alt-Shift-A
-Ctrl-a, Ctrl-A
-Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-!, Key-!,Key-exclam,exclam
-
-This table is consistent with how Leo already works (because it is consistent
-with Tk's key-event specifiers). It is also, I think, the least confusing set of
-rules.
-.. @+node:ekr.20110605121601.18539: *6*  ctor (leoQtEventFilter)
-def __init__(self,c,w,tag=''):
-
-    # g.trace('leoQtEventFilter',tag,w)
-
-    # Init the base class.
-    QtCore.QObject.__init__(self)
-
-    self.c = c
-    self.w = w      # A leoQtX object, *not* a Qt object.
-    self.tag = tag
-
-    # Debugging.
-    self.keyIsActive = False
-
-    # Pretend there is a binding for these characters.
-    close_flashers = c.config.getString('close_flash_brackets') or ''
-    open_flashers  = c.config.getString('open_flash_brackets') or ''
-    self.flashers = open_flashers + close_flashers
+As explained in detail in the thread, "dangerous" code is no longer executed immediately,
+but instead executed at idle time using g.app.gui.runAtIdle.
+.. @+node:ekr.20111121084517.10189: *6* Removed all calls to w.see, w.seeInsertPoint, w.setYScrollPosition
+# See "Scrolling bug" notes.
+.. @+node:ekr.20110605121601.18090: *7* see & seeInsertPoint (leoQTextEditWidget)
+def see(self,i):
     
-    # Support for ctagscompleter.py plugin.
-    self.ctagscompleter_active = False
-    self.ctagscompleter_onKey = None
-.. @+node:ekr.20110605121601.18540: *6* eventFilter
-def eventFilter(self, obj, event):
+    if g.trace_see and not g.unitTesting:
+        print('leoQTextEditWidget.see (ensureCursorVisible)')
 
-    trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
-    verbose = True
-    traceEvent = False # True: call self.traceEvent.
-    traceKey = (True or g.trace_masterKeyHandler)
-    c = self.c ; k = c.k
-    eventType = event.type()
-    ev = QtCore.QEvent
-    gui = g.app.gui
-    aList = []
+    if 1: # Disabled 2011/12/21, enabled 2012/02/26
+        self.widget.ensureCursorVisible()
 
-    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+def seeInsertPoint (self):
+    
+    if g.trace_see and not g.unitTesting:
+        print('leoQTextEditWidget.seeInsertPoint')
 
-    # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
-    lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
+    if 1: # Disabled 2011/12/21, enabled 2012/02/26
+        self.widget.ensureCursorVisible()
+.. @+node:ekr.20111002125540.7021: *7* get/setYScrollPosition (LeoQTextBrowser)
+def getYScrollPosition(self):
+    
+    trace = g.trace_scroll and not g.unitTesting
+    w = self
+    sb = w.verticalScrollBar()
+    i = sb.sliderPosition()
+    
+    if trace:
+        print('leoQTextBrowser.getYScrollPosition %s' % i)
+    return i
 
-    # Important:
-    # QLineEdit: ignore all key events except keyRelease events.
-    # QTextEdit: ignore all key events except keyPress events.
-    if eventType in lineEditKeyKinds:
-        p = c.currentPosition()
-        isEditWidget = obj == c.frame.tree.edit_widget(p)
-        self.keyIsActive = g.choose(
-            isEditWidget,
-            eventType == ev.KeyRelease,
-            eventType == ev.KeyPress)
+def setYScrollPosition(self,pos):
+    
+    trace = g.trace_scroll and not g.unitTesting
+    print('leoQTextBrowser.setYScrollPosition %s' % pos)
+
+    if 1: # disabled 2011/12/21, restored 2012/02/25
+        w = self
+        sb = w.verticalScrollBar()
+        if pos is None: pos = 0
+        sb.setSliderPosition(pos)
+.. @+node:ekr.20110605121601.18098: *7* setYScrollPosition (leoQTextEditWidget)
+def setYScrollPosition(self,pos):
+    
+    trace = g.trace_scroll and not g.unitTesting   
+    if trace: print(
+        'leoQTextEditWidget.setYScrollPosition %s' % (pos))
+
+    if 1: # disabled 2011/12/21, enabled 2012/02/25
+        w = self.widget
+        sb = w.verticalScrollBar()
+        sb.setSliderPosition(pos)
+.. @+node:ekr.20111114102224.9937: *6* immutable redirection methods (HighLevelInterface)
+def appendText(self,s):
+    if self.widget: self.widget.appendText(s)
+def delete(self,i,j=None):
+    if self.widget: self.widget.delete(i,j)
+def deleteTextSelection (self):
+    if self.widget: self.widget.deleteTextSelection()
+def get(self,i,j):
+    return self.widget and self.widget.get(i,j) or ''
+def getAllText(self):
+    return self.widget and self.widget.getAllText() or ''
+def getInsertPoint(self):
+    return self.widget and self.widget.getInsertPoint() or 0
+def getSelectedText(self):
+    return self.widget and self.widget.getSelectedText() or ''
+def getSelectionRange (self):
+    return self.widget and self.widget.getSelectionRange() or (0,0)
+def getYScrollPosition (self):
+    return self.widget and self.widget.getYScrollPosition() or 0
+def hasSelection(self):
+    # Take special care with this, for the benefit of LeoQuickSearchWidget.
+    # This problem only happens with the qttabs gui.
+    w = self.widget
+    return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
+def insert(self,i,s):
+    if self.widget: self.widget.insert(i,s)    
+def replace (self,i,j,s):
+    if self.widget: self.widget.replace(i,j,s)
+def see(self,i):
+    if self.widget: self.widget.see(i)
+def seeInsertPoint (self):
+    if self.widget: self.widget.seeInsertPoint()
+def selectAllText (self,insert=None):
+    if self.widget: self.widget.selectAllText(insert)
+def setAllText (self,s):
+    if self.widget: self.widget.setAllText(s)
+def setBackgroundColor(self,color):
+    if self.widget: self.widget.setBackgroundColor(color)
+def setFocus(self):
+    if self.widget: self.widget.setFocus()
+def setForegroundColor(self,color):
+    if self.widget: self.widget.setForegroundColor(color)
+def setInsertPoint(self,pos):
+    if self.widget: self.widget.setInsertPoint(pos)
+def setSelectionRange (self,i,j,insert=None):
+    if self.widget: self.widget.setSelectionRange(i,j,insert=insert)
+def setYScrollPosition (self,i):
+    if self.widget: self.widget.setYScrollPosition(i)
+def tag_configure (self,colorName,**keys):
+    if self.widget: self.widget.tag_configure(colorName,**keys)
+.. @+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test
+def findMatchingBracket (self,event=None):
+
+    '''Select the text between matching brackets.'''
+
+    c = self ; w = c.frame.body.bodyCtrl
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Match Brackets")
+        return
+
+    brackets = "()[]{}<>"
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    ch1 = 0 <= ins-1 < len(s) and s[ins-1] or ''
+    ch2 = 0 <= ins   < len(s) and s[ins] or ''
+    # g.trace(repr(ch1),repr(ch2),ins)
+
+    # Prefer to match the character to the left of the cursor.
+    if ch1 and ch1 in brackets:
+        ch = ch1 ; index = max(0,ins-1)
+    elif ch2 and ch2 in brackets:
+        ch = ch2 ; index = ins
     else:
-        self.keyIsActive = False
+        return
 
-    if eventType == ev.WindowActivate:
-        gui.onActivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType == ev.WindowDeactivate:
-        gui.onDeactivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType in kinds:
-        tkKey,ch,ignore = self.toTkKey(event)
-        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
-        if ignore:
-            override = False
-        # This is extremely bad.
-        # At present, it is needed to handle tab properly.
-        elif self.isSpecialOverride(tkKey,ch):
-            override = True
-        elif k.inState():
-            override = not ignore # allow all keystrokes.
+    index2 = self.findMatchingBracketHelper(s,ch,index)
+    # g.trace('index,index2',index,index2)
+    if index2 is not None:
+        if index2 < index:
+            w.setSelectionRange(index2,index+1,insert=index2) # was insert=index2+1
+            # g.trace('case 1',s[index2:index+1])
         else:
-            override = len(aList) > 0
+            w.setSelectionRange(index,index2+1,insert=min(len(s),index2+1))
+            # g.trace('case2',s[index:index2+1])
+        w.see(index2)
     else:
-        override = False ; tkKey = '<no key>'
-        if self.tag == 'body':
-            if eventType == ev.FocusIn:
-                g.app.gui.add_border(c,obj)
-                c.frame.body.onFocusIn(obj)
-            elif eventType == ev.FocusOut:
-                g.app.gui.remove_border(c,obj)
-                c.frame.body.onFocusOut(obj)
-        if self.tag in ('tree','log'):
-            if eventType == ev.FocusIn:
-                g.app.gui.add_border(c,obj)
-            elif eventType == ev.FocusOut:
-                g.app.gui.remove_border(c,obj)
+        g.es("unmatched",repr(ch))
+.. @+node:ekr.20061113221414: *7* findMatchingBracketHelper
+# To do: replace comments with blanks before scanning.
+# Test  unmatched())
+def findMatchingBracketHelper(self,s,ch,index):
 
-    if self.keyIsActive:
-        shortcut = self.toStroke(tkKey,ch) # ch is unused.
-
-        if override:
-            # Essentially *all* keys get passed to masterKeyHandler.
-            if trace and traceKey:
-                g.trace('ignore',ignore,'bound',repr(shortcut),repr(aList))
-            w = self.w # Pass the wrapper class, not the wrapped widget.
-            event = self.create_key_event(event,c,w,ch,tkKey,shortcut)
-            ret = k.masterKeyHandler(event)
-            c.outerUpdate()
-        else:
-            if trace and traceKey and verbose:
-                g.trace(self.tag,'unbound',tkKey,shortcut)
-        
-        if trace and traceEvent:
-            # Trace key events.
-            self.traceEvent(obj,event,tkKey,override)
-
-    elif trace and traceEvent:
-        # Trace non-key events.
-        self.traceEvent(obj,event,tkKey,override)
-
-    return override
-.. @+node:ekr.20110605195119.16937: *6* create_key_event (leoQtEventFilter)
-def create_key_event (self,event,c,w,ch,tkKey,shortcut):
-
-    trace = True and not g.unitTesting ; verbose = False
-    
-    if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
-        repr(ch),repr(tkKey),repr(shortcut)))
-        
-    # Last-minute adjustments...
-    if shortcut == 'Return':
-        ch = '\n' # Somehow Qt wants to return '\r'.
-    elif shortcut == 'Escape':
-        ch = 'Escape'
-
-    # Switch the Shift modifier to handle the cap-lock key.
-    if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
-        if ch != shortcut:
-            if trace and verbose: g.trace('caps-lock')
-            shortcut = ch
-
-    # Patch provided by resi147.
-    # See the thread: special characters in MacOSX, like '@'.
-    if sys.platform.startswith('darwin'):
-        darwinmap = {
-            'Alt-Key-5': '[',
-            'Alt-Key-6': ']',
-            'Alt-Key-7': '|',
-            'Alt-slash': '\\',
-            'Alt-Key-8': '{',
-            'Alt-Key-9': '}',
-            'Alt-e': '€',
-            'Alt-l': '@',
-        }
-        if tkKey in darwinmap:
-            shortcut = darwinmap[tkKey]
-            
-    char = ch
-    # Auxiliary info.
-    x      = hasattr(event,'x') and event.x or 0
-    y      = hasattr(event,'y') and event.y or 0
-    # Support for fastGotoNode plugin
-    x_root = hasattr(event,'x_root') and event.x_root or 0
-    y_root = hasattr(event,'y_root') and event.y_root or 0
-    
-    if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
-        repr(ch),repr(shortcut),ch in string.printable))
-                
-    return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
-.. @+node:ekr.20120204061120.10088: *6* Key construction...
-.. @+node:ekr.20110605121601.18543: *7* toTkKey & helpers (must not change!)
-def toTkKey (self,event):
-    
-    '''Return tkKey,ch,ignore:
-        
-    tkKey: the Tk spelling of the event used to look up
-           bindings in k.masterGuiBindingsDict.
-           **This must not ever change!**
-           
-    ch:    the insertable key, or ''.
-    
-    ignore: True if the key should be ignored.
-            This is **not** the same as 'not ch'.
-    '''
-
-    mods = self.qtMods(event)
-
-    keynum,text,toString,ch = self.qtKey(event)
-
-    tkKey,ch,ignore = self.tkKey(
-        event,mods,keynum,text,toString,ch)
-
-    return tkKey,ch,ignore
-.. @+node:ekr.20110605121601.18546: *8* tkKey & helper
-def tkKey (self,event,mods,keynum,text,toString,ch):
-
-    '''Carefully convert the Qt key to a 
-    Tk-style binding compatible with Leo's core
-    binding dictionaries.'''
-
-    trace = False and not g.unitTesting
-    ch1 = ch # For tracing.
-    use_shift = (
-        'Home','End','Tab',
-        'Up','Down','Left','Right',
-        'Next','Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
-        # 2011/05/17: Fix bug 681797.
-        # There is nothing 'dubious' about these provided that they are bound.
-        # If they are not bound, then weird characters will be inserted.
-        'Delete','Ins','Backspace',
-        'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-    )
-
-    # Convert '&' to 'ampersand', etc.
-    # *Do* allow shift-bracketleft, etc.
-    ch2 = self.char2tkName(ch or toString)
-    if ch2: ch = ch2 
-    if not ch: ch = ''
-
-    if 'Shift' in mods:
-        if trace: g.trace(repr(ch))
-        if len(ch) == 1 and ch.isalpha():
-            mods.remove('Shift')
-            ch = ch.upper()
-        elif len(ch) > 1 and ch not in use_shift:
-            # Experimental!
-            mods.remove('Shift')
-        # 2009/12/19: Speculative.
-        # if ch in ('parenright','parenleft','braceright','braceleft'):
-            # mods.remove('Shift')
-    elif len(ch) == 1:
-        ch = ch.lower()
-
-    if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
-        mods.append('Key')
-
-    # *Do* allow bare mod keys, so they won't be passed on.
-    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-
-    if trace: g.trace(
-        'text: %s toString: %s ch1: %s ch: %s' % (
-        repr(text),repr(toString),repr(ch1),repr(ch)))
-
-    ignore = not ch # Essential
-    ch = text or toString
-    return tkKey,ch,ignore
-.. @+node:ekr.20110605121601.18547: *9* char2tkName
-char2tkNameDict = {
-    # Part 1: same as g.app.guiBindNamesDict
-    "&" : "ampersand",
-    "^" : "asciicircum",
-    "~" : "asciitilde",
-    "*" : "asterisk",
-    "@" : "at",
-    "\\": "backslash",
-    "|" : "bar",
-    "{" : "braceleft",
-    "}" : "braceright",
-    "[" : "bracketleft",
-    "]" : "bracketright",
-    ":" : "colon",  
-    "," : "comma",
-    "$" : "dollar",
-    "=" : "equal",
-    "!" : "exclam",
-    ">" : "greater",
-    "<" : "less",
-    "-" : "minus",
-    "#" : "numbersign",
-    '"' : "quotedbl",
-    "'" : "quoteright",
-    "(" : "parenleft",
-    ")" : "parenright", 
-    "%" : "percent",
-    "." : "period",     
-    "+" : "plus",
-    "?" : "question",
-    "`" : "quoteleft",
-    ";" : "semicolon",
-    "/" : "slash",
-    " " : "space",      
-    "_" : "underscore",
-    # Part 2: special Qt translations.
-    'Backspace':'BackSpace',
-    'Backtab':  'Tab', # The shift mod will convert to 'Shift+Tab',
-    'Esc':      'Escape',
-    'Del':      'Delete',
-    'Ins':      'Insert', # was 'Return',
-    # Comment these out to pass the key to the QTextWidget.
-    # Use these to enable Leo's page-up/down commands.
-    'PgDown':    'Next',
-    'PgUp':      'Prior',
-    # New entries.  These simplify code.
-    'Down':'Down','Left':'Left','Right':'Right','Up':'Up',
-    'End':'End',
-    'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5',
-    'F6':'F6','F7':'F7','F8':'F8','F9':'F9',
-    'F10':'F10','F11':'F11','F12':'F12',
-    'Home':'Home',
-    # 'Insert':'Insert',
-    'Return':'Return',
-    'Tab':'Tab',
-    # 'Tab':'\t', # A hack for QLineEdit.
-    # Unused: Break, Caps_Lock,Linefeed,Num_lock
-}
-
-# Called only by tkKey.
-
-def char2tkName (self,ch):
-    val = self.char2tkNameDict.get(ch)
-    # g.trace(repr(ch),repr(val))
-    return val
-.. @+node:ekr.20120204061120.10087: *7* Common key construction helpers
-.. @+node:ekr.20110605121601.18541: *8* isSpecialOverride
-def isSpecialOverride (self,tkKey,ch):
-
-    '''Return True if tkKey is a special Tk key name.
-    '''
-
-    return tkKey or ch in self.flashers
-.. @+node:ekr.20110605121601.18542: *8* toStroke (leoQtEventFilter)
-def toStroke (self,tkKey,ch):  # ch is unused
-    
-    '''Convert the official tkKey name to a stroke.'''
-
-    trace = False and not g.unitTesting
-    k = self.c.k ; s = tkKey
-
-    table = (
-        ('Alt-','Alt+'),
-        ('Ctrl-','Ctrl+'),
-        ('Control-','Ctrl+'),
-        # Use Alt+Key-1, etc.  Sheesh.
-        # ('Key-','Key+'),
-        ('Shift-','Shift+')
-    )
-    for a,b in table:
-        s = s.replace(a,b)
-
-    if trace: g.trace('tkKey',tkKey,'-->',s)
-    return s
-.. @+node:ekr.20110605121601.18544: *8* qtKey
-def qtKey (self,event):
-
-    '''Return the components of a Qt key event.
-
-    Modifiers are handled separately.
-    
-    Return keynum,text,toString,ch
-    
-    keynum: event.key()
-    ch:     g.u(chr(keynum)) or '' if there is an exception.
-    toString:
-        For special keys: made-up spelling that become part of the setting.
-        For all others:   QtGui.QKeySequence(keynum).toString()
-    text:   event.text()
-    '''
-
-    trace = False and not g.unitTesting
-    keynum = event.key()
-    text   = event.text() # This is the unicode text.
-
-    qt = QtCore.Qt
-    d = {
-        qt.Key_Shift:   'Key_Shift',
-        qt.Key_Control: 'Key_Control',  # MacOS: Command key
-        qt.Key_Meta:	'Key_Meta',     # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
-        qt.Key_Alt:	    'Key_Alt',	 
-        qt.Key_AltGr:	'Key_AltGr',
-            # On Windows, when the KeyDown event for this key is sent,
-            # the Ctrl+Alt modifiers are also set.
-    }
-
-    if d.get(keynum):
-        toString = d.get(keynum)
+    c = self
+    open_brackets  = "([{<" ; close_brackets = ")]}>"
+    brackets = open_brackets + close_brackets
+    matching_brackets = close_brackets + open_brackets
+    forward = ch in open_brackets
+    # Find the character matching the initial bracket.
+    # g.trace('index',index,'ch',repr(ch),'brackets',brackets)
+    for n in range(len(brackets)):
+        if ch == brackets[n]:
+            match_ch = matching_brackets[n]
+            break
     else:
-        toString = QtGui.QKeySequence(keynum).toString()
+        return None
+    # g.trace('index',index,'ch',repr(ch),'match_ch',repr(match_ch))
+    level = 0
+    while 1:
+        if forward and index >= len(s):
+            # g.trace("not found")
+            return None
+        ch2 = 0 <= index < len(s) and s[index] or ''
+        # g.trace('forward',forward,'ch2',repr(ch2),'index',index)
+        if ch2 == ch:
+            level += 1
+        if ch2 == match_ch:
+            level -= 1
+            if level <= 0:
+                return index
+        if not forward and index <= 0:
+            # g.trace("not found")
+            return None
+        index += g.choose(forward,1,-1)
+    return 0 # unreachable: keeps pychecker happy.
+# Test  (
+# ([(x){y}]))
+# Test  ((x)(unmatched
+.. @+node:ekr.20101118113953.5842: *6* rp_reformat
+def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
 
+    '''Reformat the body and update the selection.'''
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    s = w.getAllText()
+
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head,result,tail)
+
+    changed = original != head + result + tail
+    if changed:
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+    else:
+        # Advance to the next paragraph.
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace():
+                ins = j+1
+            else:
+                ins = i ; break
+
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+
+    w.setSelectionRange(ins,ins,insert=ins)
+    
+    # 2011/10/26: Calling see does more harm than good.
+        # w.see(ins)
+.. @+node:ekr.20110916215321.6708: *6* selectToMatchingBracket (leoEditCommands)
+def selectToMatchingBracket (self,event):
+    
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+    
+    i = w.getInsertPoint()
+    s = w.getAllText()
+    
+    allBrackets = self.openBracketsList + self.closeBracketsList
+    
+    if i < len(s) and s[i] in allBrackets:
+        ch = s[i]
+    elif i > 0 and s[i-1] in allBrackets:
+        i -= 1
+        ch = s[i]
+    else:
+        g.es('no bracket selected')
+        return
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+    
+    # This should be generalized...
+    language = g.findLanguageDirectives(c,c.p)
+    if language in ('c','cpp','csharp'):
+        j = g.skip_matching_c_delims(s,i,ch,delim2,reverse=reverse)
+    else:
+        j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    # g.trace(i,j,ch,delim2,reverse,language)
+    if j not in (-1,i):
+        if reverse:
+            i += 1; j += 1
+        w.setSelectionRange(i,j,insert=j)
+            # 2011/11/21: Bug fix: was ins=j.
+        w.see(j)
+.. @+node:ekr.20051025071455.40: *6* find & helpers
+def find (self,event=None):
+    """Find the next unknown word."""
+
+    c = self.c ; body = c.frame.body ; w = body.bodyCtrl
+
+    # Reload the work pane from the present node.
+    s = w.getAllText().rstrip()
+    self.workCtrl.delete(0,"end")
+    self.workCtrl.insert("end",s)
+
+    # Reset the insertion point of the work widget.
+    ins = w.getInsertPoint()
+    self.workCtrl.setInsertPoint(ins)
+
+    alts, word = self.findNextMisspelledWord()
+    self.currentWord = word # Need to remember this for 'add' and 'ignore'
+
+    if alts:
+        # Save the selection range.
+        ins = w.getInsertPoint()
+        i,j = w.getSelectionRange()
+        self.tab.fillbox(alts,word)
+        c.invalidateFocus()
+        c.bodyWantsFocus()
+        # Restore the selection range.
+        w.setSelectionRange(i,j,insert=ins)
+        w.see(ins)
+    else:
+        g.es("no more misspellings")
+        self.tab.fillbox([])
+        c.invalidateFocus()
+        c.bodyWantsFocus()
+.. @+node:ekr.20051025071455.45: *7* findNextMisspelledWord
+def findNextMisspelledWord(self):
+    """Find the next unknown word."""
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+    w = c.frame.body.bodyCtrl
+    sc = self.spellController
+    alts = None ; word = None
     try:
-        ch1 = chr(keynum)
-    except ValueError:
-        ch1 = ''
+        while 1:
+            i,j,p,word = self.findNextWord(p)
+            # g.trace(i,j,p and p.h or '<no p>')
+            if not p or not word:
+                alts = None
+                break
+            alts = sc.processWord(word)
+            if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.h or 'None')
+            if alts:
+                redraw = not p.isVisible(c)
+                # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                if c.sparse_spell and not c.p.isAncestorOf(p):
+                    for p2 in c.p.self_and_parents():
+                        p2.contract()
+                        redraw = True
+                for p2 in p.parents():
+                    if not p2.isExpanded():
+                        p2.expand()
+                        redraw = True
+                if redraw:
+                    c.redraw(p)
+                else:
+                    c.selectPosition(p)
+                w.setSelectionRange(i,j,insert=j)
+                break
+    except Exception:
+        g.es_exception()
+    return alts, word
+.. @+node:ekr.20051025071455.47: *7* findNextWord (spellTab)
+def findNextWord(self,p):
+    """Scan for the next word, leaving the result in the work widget"""
 
-    try:
-        ch = g.u(ch1)
-    except UnicodeError:
-        ch = ch1
-
-    text     = g.u(text)
-    toString = g.u(toString)
-
-    if trace and self.keyIsActive:
-        mods = '+'.join(self.qtMods(event))
-        g.trace(
-            'keynum %7x ch %3s toString %s %s' % (
-            keynum,repr(ch),mods,repr(toString)))
-
-    return keynum,text,toString,ch
-.. @+node:ekr.20120204061120.10084: *8* qtMods
-def qtMods (self,event):
-
-    '''Return the text version of the modifiers of the key event.'''
-
-    modifiers = event.modifiers()
-
-    # The order of this table must match the order created by k.strokeFromSetting.
-    # When g.new_keys is True, k.strokeFromSetting will canonicalize the setting.
-
-    qt = QtCore.Qt
-    
-    if sys.platform.startswith('darwin'):
-        # Yet another MacOS hack:
-        table = (
-            (qt.AltModifier,     'Alt'), # For Apple keyboard.
-            (qt.MetaModifier,    'Alt'), # For Microsoft keyboard.
-            (qt.ControlModifier, 'Control'),
-            # No way to generate Meta.
-            (qt.ShiftModifier,   'Shift'),
-        )
-        
-    else:
-        table = (
-            (qt.AltModifier,     'Alt'),
-            (qt.ControlModifier, 'Control'),
-            (qt.MetaModifier,    'Meta'),
-            (qt.ShiftModifier,   'Shift'),
-        )
-
-    mods = [b for a,b in table if (modifiers & a)]
-    return mods
-.. @+node:ekr.20110605121601.18548: *6* traceEvent
-def traceEvent (self,obj,event,tkKey,override):
-
-    if g.unitTesting: return
-    
-    traceFocus = False
-    traceKey   = True
-    traceLayout = False
-    traceMouse = False
-    
-    c,e = self.c,QtCore.QEvent
-    eventType = event.type()
-    
-    show = []
-    
-    ignore = [
-        e.MetaCall, # 43
-        e.Timer, # 1
-        e.ToolTip, # 110
-    ]
-    
-    focus_events = (
-        (e.Enter,'enter'),
-        (e.Leave,'leave'),
-        (e.FocusIn,'focus-in'),
-        (e.FocusOut,'focus-out'),
-        (e.Hide,'hide'), # 18
-        (e.HideToParent, 'hide-to-parent'), # 27
-        (e.HoverEnter, 'hover-enter'), # 127
-        (e.HoverLeave,'hover-leave'), # 128
-        (e.HoverMove,'hover-move'), # 129
-        (e.Show,'show'), # 17
-        (e.ShowToParent,'show-to-parent'), # 26
-        (e.WindowActivate,'window-activate'), # 24
-        (e.WindowBlocked,'window-blocked'), # 103
-        (e.WindowUnblocked,'window-unblocked'), # 104
-        (e.WindowDeactivate,'window-deactivate'), # 25
-    )
-    key_events = (
-        (e.KeyPress,'key-press'),
-        (e.KeyRelease,'key-release'),
-        (e.ShortcutOverride,'shortcut-override'),
-    )
-    layout_events = (
-        (e.ChildPolished,'child-polished'), # 69
-        #(e.CloseSoftwareInputPanel,'close-sip'), # 200
-            # Event does not exist on MacOS.
-        (e.ChildAdded,'child-added'), # 68
-        (e.DynamicPropertyChange,'dynamic-property-change'), # 170
-        (e.FontChange,'font-change'),# 97
-        (e.LayoutRequest,'layout-request'),
-        (e.Move,'move'), # 13 widget's position changed.
-        (e.PaletteChange,'palette-change'),# 39
-        (e.ParentChange,'parent-change'), # 21
-        (e.Paint,'paint'), # 12
-        (e.Polish,'polish'), # 75
-        (e.PolishRequest,'polish-request'), # 74
-        # (e.RequestSoftwareInputPanel,'sip'), # 199
-            # Event does not exist on MacOS.
-        (e.Resize,'resize'), # 14
-        (e.StyleChange,'style-change'), # 100
-        (e.ZOrderChange,'z-order-change'), # 126
-    )
-    mouse_events = (
-        (e.MouseMove,'mouse-move'), # 155
-        (e.MouseButtonPress,'mouse-press'), # 2
-        (e.MouseButtonRelease,'mouse-release'), # 3
-        (e.Wheel,'mouse-wheel'), # 31
-    )
-    
-    option_table = (
-        (traceFocus,focus_events),
-        (traceKey,key_events),
-        (traceLayout,layout_events),
-        (traceMouse,mouse_events),
-    )
-    
-    for option,table in option_table:
-        if option:
-            show.extend(table)
-        else:
-            for n,tag in table:
-                ignore.append(n)
-
-    for val,kind in show:
-        if eventType == val:
-            g.trace(
-                '%5s %18s in-state: %5s key: %s override: %s: obj: %s' % (
-                self.tag,kind,repr(c.k and c.k.inState()),tkKey,override,obj))
-            return
-
-    if eventType not in ignore:
-        g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
-.. @+node:ekr.20110605195119.16937: *5* create_key_event (leoQtEventFilter)
-def create_key_event (self,event,c,w,ch,tkKey,shortcut):
-
-    trace = True and not g.unitTesting ; verbose = False
-    
-    if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
-        repr(ch),repr(tkKey),repr(shortcut)))
-        
-    # Last-minute adjustments...
-    if shortcut == 'Return':
-        ch = '\n' # Somehow Qt wants to return '\r'.
-    elif shortcut == 'Escape':
-        ch = 'Escape'
-
-    # Switch the Shift modifier to handle the cap-lock key.
-    if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
-        if ch != shortcut:
-            if trace and verbose: g.trace('caps-lock')
-            shortcut = ch
-
-    # Patch provided by resi147.
-    # See the thread: special characters in MacOSX, like '@'.
-    if sys.platform.startswith('darwin'):
-        darwinmap = {
-            'Alt-Key-5': '[',
-            'Alt-Key-6': ']',
-            'Alt-Key-7': '|',
-            'Alt-slash': '\\',
-            'Alt-Key-8': '{',
-            'Alt-Key-9': '}',
-            'Alt-e': '€',
-            'Alt-l': '@',
-        }
-        if tkKey in darwinmap:
-            shortcut = darwinmap[tkKey]
-            
-    char = ch
-    # Auxiliary info.
-    x      = hasattr(event,'x') and event.x or 0
-    y      = hasattr(event,'y') and event.y or 0
-    # Support for fastGotoNode plugin
-    x_root = hasattr(event,'x_root') and event.x_root or 0
-    y_root = hasattr(event,'y_root') and event.y_root or 0
-    
-    if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
-        repr(ch),repr(shortcut),ch in string.printable))
-                
-    return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
-.. @+node:ekr.20070228160107: *5* class leoKeyEvent (leoGui.py)
-class leoKeyEvent:
-
-    '''A gui-independent wrapper for gui events.'''
-    
-    @others
-
-    def __repr__ (self):
-
-        return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
-            repr(self.stroke),repr(self.char),repr(self.w))
-            
-    def type(self):
-        return 'leoKeyEvent'
-.. @+node:ekr.20110605121601.18846: *6* ctor (leoKeyEvent)
-def __init__ (self,c,char,shortcut,w,x,y,x_root,y_root):
-    
     trace = False and not g.unitTesting
-    k = c.k
-    
-    if g.isStroke(shortcut):
-        g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
-        stroke = shortcut
+    c = self.c ; p = p.copy()
+    while 1:
+        s = self.workCtrl.getAllText()
+        i = self.workCtrl.getInsertPoint()
+        while i < len(s) and not g.isWordChar1(s[i]):
+            i += 1
+        # g.trace('p',p and p.h,'i',i,'len(s)',len(s))
+        if i < len(s):
+            # A non-empty word has been found.
+            j = i
+            while j < len(s) and g.isWordChar(s[j]):
+                j += 1
+            word = s[i:j]
+            # This trace verifies that all words have been checked.
+            # g.trace(repr(word))
+            for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(i,j,insert=j)
+            if trace: g.trace(i,j,word,p.h)
+            return i,j,p,word
+        else:
+            # End of the body text.
+            p.moveToThreadNext()
+            if not p: break
+            self.workCtrl.delete(0,'end')
+            self.workCtrl.insert(0,p.b)
+            for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(0,0,insert=0)
+            if trace: g.trace(0,0,'-->',p.h)
+
+    return None,None,None,None
+.. @+node:ekr.20060528110922: *6* << create text widget w >> leoBody.addEditor
+w = self.createTextWidget(f,name=name,p=p)
+w.delete(0,'end')
+w.insert('end',p.b)
+w.see(0)
+
+self.setFontFromConfig(w=w)
+self.setColorFromConfig(w=w)
+self.createBindings(w=w)
+c.k.completeAllBindingsForWidget(w)
+
+self.recolorWidget(p,w)
+.. @+node:ekr.20070130115927.7: *6* leoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+
+    '''Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+
+    trace = False and not g.unitTesting
+    f = self ; c = f.c
+    w = event and event.widget
+    wname = (w and c.widget_name(w)) or '<no widget>'
+    if trace: g.trace(g.app.gui.isTextWidget(w),w)
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
     else:
-        stroke = g.KeyStroke(shortcut) if shortcut else None
+        s = s1 = g.app.gui.getTextFromClipboard()
 
-    assert g.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
-        repr(stroke),g.callers())
+    s = g.toUnicode(s)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+
+    if 1: # Was a try.
+        # Update the widget.
+        if i != j:
+            w.delete(i,j)
+        w.insert(i,s)
+        w.see(i+len(s) + 2) # 2011/06/01
+
+        if wname.startswith('body'):
+            c.frame.body.forceFullRecolor()
+            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s [ -1] in ('\n','\r'):
+                s = s [: -1]
+            # 2011/11/14: headline width methods do nothing at present.
+            # if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                # width = f.tree.headWidth(p=None,s=s)
+                # w.setWidth(width)
+        else: pass
+
+    return
+
+OnPasteFromMenu = pasteText
+.. @+node:ekr.20110605121601.18050: *6* HighLevelInterface (leoQtBaseTextWidget)
+# Do not delete.
+# The redirection methods of HighLevelInterface redirect calls
+# from leoBody & leoLog to *this* class.
+
+# Essential methods...
+def getName (self):
+    return self.name
+
+# Optional methods...
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    pass
+
+def getYScrollPosition(self):           return None # A flag
+def seeInsertPoint (self):              self.see(self.getInsertPoint())
+def setBackgroundColor(self,color):     pass
+def setEditorColors (self,bg,fg):       pass
+def setForegroundColor(self,color):     pass
+def setYScrollPosition(self,pos):       pass
+
+# Must be defined in subclasses.
+def getAllText(self):                           self.oops()
+def getInsertPoint(self):                       self.oops()
+def getSelectionRange(self,sort=True):          self.oops()
+def hasSelection(self):                         self.oops()
+def see(self,i):                                self.oops()
+def setAllText(self,s,insert=None,new_p=None):  self.oops()
+def setInsertPoint(self,i):                     self.oops()
+.. @+node:ekr.20110605121601.18056: *7* tag_configure (leoQtBaseTextWidget)
+def tag_configure (self,*args,**keys):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(args,keys)
+
+    if len(args) == 1:
+        key = args[0]
+        self.tags[key] = keys
+        val = keys.get('foreground')
+        underline = keys.get('underline')
+        if val:
+            # if trace: g.trace(key,val)
+            self.configDict [key] = val
+        if underline:
+            self.configUnderlineDict [key] = True
+    else:
+        g.trace('oops',args,keys)
+
+tag_config = tag_configure
+.. @+node:ekr.20110605121601.18191: *6* High-level interface (qtBody)
+# The required high-level interface.
+def appendText (self,s):                return self.widget.appendText(s)
+def clipboard_append(self,s):           return self.widget.clipboard_append(s)
+def clipboard_clear(self):              return self.widget.clipboard_append()
+def delete(self,i,j=None):              self.widget.delete(i,j)
+def deleteTextSelection (self):         return self.widget.deleteTextSelection()
+def flashCharacter(self,i,
+    bg='white',fg='red',
+    flashes=3,delay=75):                return self.widget(i,bg,fg,flashes,delay)
+def get(self,i,j=None):                 return self.widget.get(i,j)
+def getAllText (self):                  return self.widget.getAllText()
+def getFocus (self):                    return self.widget.getFocus()
+def getInsertPoint(self):               return self.widget.getInsertPoint()
+def getSelectedText (self):             return self.widget.getSelectedText()
+def getSelectionRange(self):            return self.widget.getSelectionRange()
+def getYScrollPosition (self):          return self.widget.getYScrollPosition()
+def hasSelection (self):                return self.widget.hasSelection()
+def insert(self,i,s):                   return self.widget.insert(i,s)
+def replace (self,i,j,s):               self.widget.replace (i,j,s)
+def rowColToGuiIndex (self,s,row,col):  return self.widget.rowColToGuiIndex(s,row,col)
+def see(self,index):                    return self.widget.see(index)
+def seeInsertPoint(self):               return self.widget.seeInsertPoint()
+def selectAllText (self,insert=None):   self.widget.selectAllText(insert)
+def setAllText (self,s,new_p=None):     return self.widget.setAllText(s,new_p=new_p)
+def setBackgroundColor (self,color):    return self.widget.setBackgroundColor(color)
+def setFocus (self):                    return self.widget.setFocus()
+def setForegroundColor (self,color):    return self.widget.setForegroundColor(color)
+def setInsertPoint (self,pos):          return self.widget.setInsertPoint(pos)
+def setSelectionRange (self,i,j,insert=None):
+    self.widget.setSelectionRange(i,j,insert=insert)
+def setYScrollPosition (self,i):        return self.widget.setYScrollPosition(i)
+def tag_configure(self,colorName,**keys):pass
+def toPythonIndex(self,index):          return self.widget.toPythonIndex(index)
+def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
+
+set_focus = setFocus
+toGuiIndex = toPythonIndex
+.. @+node:ekr.20110605121601.18196: *6* createEditor (qtBody)
+def createEditor (self,name):
+
+    c = self.c ; p = c.p
+    f = c.frame.top.leo_ui.leo_body_inner_frame
+        # Valid regardless of qtGui.useUI
+    n = self.numberOfEditors
+
+    # Step 1: create the editor.
+    # w = QtGui.QTextBrowser(f)
+    w = LeoQTextBrowser(f,c,self)
+    w.setObjectName('richTextEdit') # Will be changed later.
+    wrapper = leoQTextEditWidget(w,name='body',c=c)
+    self.packLabel(w)
+
+    # Step 2: inject ivars, set bindings, etc.
+    self.injectIvars(f,name,p,wrapper)
+    self.updateInjectedIvars(w,p)
+    wrapper.setAllText(p.b)
+    wrapper.see(0)
+    self.createBindings(w=wrapper)
+    c.k.completeAllBindingsForWidget(wrapper)
+    self.recolorWidget(p,wrapper)
+
+    return f,wrapper
+.. @+node:ekr.20120225062633.10163: *5* trace_scroll
+.. @+node:ekr.20120212060348.10374: *6*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Traces of scrolling problems.
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+    
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+.. @+node:ekr.20111002125540.7021: *6* get/setYScrollPosition (LeoQTextBrowser)
+def getYScrollPosition(self):
+    
+    trace = g.trace_scroll and not g.unitTesting
+    w = self
+    sb = w.verticalScrollBar()
+    i = sb.sliderPosition()
+    
+    if trace:
+        print('leoQTextBrowser.getYScrollPosition %s' % i)
+    return i
+
+def setYScrollPosition(self,pos):
+    
+    trace = g.trace_scroll and not g.unitTesting
+    print('leoQTextBrowser.setYScrollPosition %s' % pos)
+
+    if 1: # disabled 2011/12/21, restored 2012/02/25
+        w = self
+        sb = w.verticalScrollBar()
+        if pos is None: pos = 0
+        sb.setSliderPosition(pos)
+.. @+node:ekr.20110605121601.18090: *6* see & seeInsertPoint (leoQTextEditWidget)
+def see(self,i):
+    
+    if g.trace_see and not g.unitTesting:
+        print('leoQTextEditWidget.see (ensureCursorVisible)')
+
+    if 1: # Disabled 2011/12/21, enabled 2012/02/26
+        self.widget.ensureCursorVisible()
+
+def seeInsertPoint (self):
+    
+    if g.trace_see and not g.unitTesting:
+        print('leoQTextEditWidget.seeInsertPoint')
+
+    if 1: # Disabled 2011/12/21, enabled 2012/02/26
+        self.widget.ensureCursorVisible()
+.. @+node:ekr.20110605121601.18095: *6* setInsertPoint (leoQTextEditWidget)
+def setInsertPoint(self,i):
+    
+    trace = g.trace_scroll and not g.unitTesting
+    if trace: print('leoQTextEditWidget.setInsertPoint %s' % i)
+    
+    w = self.widget
+    s = w.toPlainText()
+    i = self.toPythonIndex(i)
+    i = max(0,min(i,len(s)))
+    cursor = w.textCursor()
+    cursor.setPosition(i)
+    w.setTextCursor(cursor)
+.. @+node:ekr.20110605121601.18096: *6* setSelectionRangeHelper & helper (leoQTextEditWidget)
+def setSelectionRangeHelper(self,i,j,insert=None):
+
+    trace = g.trace_scroll and not g.unitTesting
+    w = self.widget
+    i = self.toPythonIndex(i)
+    j = self.toPythonIndex(j)
+
+    n = self.lengthHelper()
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    if insert is None:
+        ins = max(i,j)
+    else:
+        ins = self.toPythonIndex(insert)
+        ins = max(0,min(ins,n))
+
+    if trace: print(
+        'leoQTextEditWidget.setSelectionRangeHelper %s %s %s' % (
+            i,j,insert),g.callers())
+
+    # 2010/02/02: Use only tc.setPosition here.
+    # Using tc.movePosition doesn't work.
+    tc = w.textCursor()
+    if i == j:
+        tc.setPosition(i)
+    elif ins == j:
+        # Put the insert point at j
+        tc.setPosition(i)
+        tc.setPosition(j,tc.KeepAnchor)
+    else:
+        # Put the insert point a i
+        tc.setPosition(j)
+        tc.setPosition(i,tc.KeepAnchor)
+
+    w.setTextCursor(tc)
+.. @+node:ekr.20110605121601.18097: *7* lengthHelper
+def lengthHelper(self):
+
+    '''Return the length of the text.'''
+
+    w = self.widget
+    tc = w.textCursor()
+    tc.movePosition(QtGui.QTextCursor.End)
+    n = tc.position()
+    return n
+
+.. @+node:ekr.20110605121601.18098: *6* setYScrollPosition (leoQTextEditWidget)
+def setYScrollPosition(self,pos):
+    
+    trace = g.trace_scroll and not g.unitTesting   
+    if trace: print(
+        'leoQTextEditWidget.setYScrollPosition %s' % (pos))
+
+    if 1: # disabled 2011/12/21, enabled 2012/02/25
+        w = self.widget
+        sb = w.verticalScrollBar()
+        sb.setSliderPosition(pos)
+.. @+node:ekr.20100303074003.5636: *6* v.restoreCursorAndScroll
+# Called only by setBodyTextAfterSelect.
+
+def restoreCursorAndScroll (self,w):
+
+    trace = g.trace_scroll and not g.unitTesting
+    v = self
+    spot = v and v.insertSpot or 0
+    w.setInsertPoint(spot)
         
-    if trace: g.trace('(leoKeyEvent) stroke',stroke)
-    
-    self.c = c
-    self.char = char or ''
-    self.stroke = stroke
-    self.w = self.widget = w
-    
-    # Optional ivars
-    self.x = x
-    self.y = y
+    # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
+    if v and v.scrollBarSpot != None:
+        pos = v.scrollBarSpot
+        if trace: print('v.restoreCursorAndScroll %s' % pos)
+        w.setYScrollPosition(pos)
+        
+    # Never call w.see here.
 
-    # Support for fastGotoNode plugin
-    self.x_root = x_root
-    self.y_root = y_root
+.. @+node:ekr.20101118113953.5839: *5* c.reformatParagraph & helpers
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+
+    """Reformat a text paragraph
+
+    Wraps the concatenated text to present page width setting. Leading tabs are
+    sized to present tab width setting. First and second line of original text is
+    used to determine leading whitespace in reformatted text. Hanging indentation
+    is honored.
+
+    Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+    selected by position of current insertion cursor.
+
+"""
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
+
+    if body.hasSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+
+    oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
+    head,lines,tail = c.findBoundParagraph()
+    if lines:
+        indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
+        result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
+        c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
+.. @+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
+def findBoundParagraph (self,event=None):
+
+    c = self
+    head,ins,tail = c.frame.body.getInsertLines()
+
+    if not ins or ins.isspace() or ins[0] == '@':
+        return None,None,None
+
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+
+    if 0:
+        << trace head_lines, ins, tail_lines >>
+
+    # Scan backwards.
+    i = len(head_lines)
+    while i > 0:
+        i -= 1
+        line = head_lines[i]
+        if len(line) == 0 or line.isspace() or line[0] == '@':
+            i += 1 ; break
+
+    pre_para_lines = head_lines[:i]
+    para_head_lines = head_lines[i:]
+
+    # Scan forwards.
+    i = 0
+    for line in tail_lines:
+        if not line or line.isspace() or line.startswith('@'):
+            break
+        i += 1
+
+    para_tail_lines = tail_lines[:i]
+    post_para_lines = tail_lines[i:]
+
+    head = g.joinLines(pre_para_lines)
+    result = para_head_lines 
+    result.extend([ins])
+    result.extend(para_tail_lines)
+    tail = g.joinLines(post_para_lines)
+
+    return head,result,tail # string, list, string
+.. @+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
+if 0:
+    g.pr("\nhead_lines")
+    for line in head_lines:
+        g.pr(line)
+    g.pr("\nins", ins)
+    g.pr("\ntail_lines")
+    for line in tail_lines:
+        g.pr(line)
+else:
+    g.es_print("head_lines: ",head_lines)
+    g.es_print("ins: ",ins)
+    g.es_print("tail_lines: ",tail_lines)
+.. @+node:ekr.20101118113953.5840: *6* rp_get_args
+def rp_get_args (self):
+
+    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+
+    c = self ; body = c.frame.body ;  w = body.bodyCtrl
+
+    d = c.scanAllDirectives()
+    
+    # g.trace(c.editCommands.fillColumn)
+
+    if c.editCommands.fillColumn > 0:
+        pageWidth = c.editCommands.fillColumn
+    else:
+        pageWidth = d.get("pagewidth")
+        
+    tabWidth  = d.get("tabwidth")
+    original = w.getAllText()
+    oldSel =  w.getSelectionRange()
+    oldYview = body.getYScrollPosition()
+
+    return oldSel,oldYview,original,pageWidth,tabWidth
+.. @+node:ekr.20101118113953.5841: *6* rp_get_leading_ws
+def rp_get_leading_ws (self,lines,tabWidth):
+
+    '''Compute and return indents and leading_ws.'''
+
+    c = self
+
+    indents = [0,0]
+    leading_ws = ["",""]
+
+    for i in (0,1):
+        if i < len(lines):
+            # Use the original, non-optimized leading whitespace.
+            leading_ws[i] = ws = g.get_leading_ws(lines[i])
+            indents[i] = g.computeWidth(ws,tabWidth)
+
+    indents[1] = max(indents)
+
+    if len(lines) == 1:
+        leading_ws[1] = leading_ws[0]
+
+    return indents,leading_ws
+.. @+node:ekr.20101118113953.5842: *6* rp_reformat
+def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
+
+    '''Reformat the body and update the selection.'''
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    s = w.getAllText()
+
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head,result,tail)
+
+    changed = original != head + result + tail
+    if changed:
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+    else:
+        # Advance to the next paragraph.
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace():
+                ins = j+1
+            else:
+                ins = i ; break
+
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+
+    w.setSelectionRange(ins,ins,insert=ins)
+    
+    # 2011/10/26: Calling see does more harm than good.
+        # w.see(ins)
+.. @+node:ekr.20101118113953.5843: *6* rp_wrap_all_lines
+def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+    '''compute the result of wrapping all lines.'''
+
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth-indents[1],
+        pageWidth-indents[0])
+
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+
+    return result
+.. @+node:ekr.20031218072017.4037: *5* setSelectionAreas (leoBody)
+def setSelectionAreas (self,before,sel,after):
+
+    """Replace the body text by before + sel + after and
+    set the selection so that the sel text is selected."""
+
+    body = self ; w = body.bodyCtrl
+    
+    # 2012/02/05: save/restore Yscroll position.
+    pos = w.getYScrollPosition()
+    s = w.getAllText()
+    before = before or ''
+    sel = sel or ''
+    after = after or ''
+    w.delete(0,len(s))
+    w.insert(0,before+sel+after)
+    i = len(before)
+    j = max(i,len(before)+len(sel)-1)
+    # g.trace(i,j,repr(sel))
+    w.setSelectionRange(i,j,insert=j)
+    w.setYScrollPosition(pos)
+    return i,j
 .. @+node:ekr.20111026091322.16502: *3* Next
 .. @+node:ekr.20111019080436.15850: *4*  Fix all significant bugs
 .. @+node:ekr.20111125072438.10204: *5* Wishlist bug 882243: Clones sometimes not saved: change how @others works
@@ -9491,7 +9916,8 @@ def getYScrollPosition (self):
 def hasSelection(self):
     # Take special care with this, for the benefit of LeoQuickSearchWidget.
     # This problem only happens with the qttabs gui.
-    return self.widget and hasattr(self.widget,'hasSelection') and self.widget.hasSelection() or False
+    w = self.widget
+    return bool(w and hasattr(w,'hasSelection') and w.hasSelection())
 def insert(self,i,s):
     if self.widget: self.widget.insert(i,s)    
 def replace (self,i,j,s):
@@ -14151,6 +14577,668 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
+.. @+node:ekr.20120205022040.15412: *4* Refactor the key code (not urgent)
+@nocolor-node
+    
+* Define k factory methods:
+    
+    k.makeKeyStroke(user_setting_string)
+    k.makeKeyStrokeFromData(data)
+    k.makeShortcutInfo(...)
+
+* Refactor the Qt input code so it calls k.makeKeyStrokeFromData(data).
+  This will require untangling the input code from event handling code.
+.. @+node:ekr.20110605121601.18847: *5* create_key_event (leoGui)
+def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
+    
+    # Do not call strokeFromSetting here!
+    # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+    # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+
+    return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
+.. @+node:ekr.20110605121601.18537: *5* class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    @others
+.. @+node:ekr.20110605121601.18538: *6* << about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys
+for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+.. @+node:ekr.20110605121601.18539: *6*  ctor (leoQtEventFilter)
+def __init__(self,c,w,tag=''):
+
+    # g.trace('leoQtEventFilter',tag,w)
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+
+    # Debugging.
+    self.keyIsActive = False
+
+    # Pretend there is a binding for these characters.
+    close_flashers = c.config.getString('close_flash_brackets') or ''
+    open_flashers  = c.config.getString('open_flash_brackets') or ''
+    self.flashers = open_flashers + close_flashers
+    
+    # Support for ctagscompleter.py plugin.
+    self.ctagscompleter_active = False
+    self.ctagscompleter_onKey = None
+.. @+node:ekr.20110605121601.18540: *6* eventFilter
+def eventFilter(self, obj, event):
+
+    trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
+    verbose = True
+    traceEvent = False # True: call self.traceEvent.
+    traceKey = (True or g.trace_masterKeyHandler)
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    aList = []
+
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+    lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
+
+    # Important:
+    # QLineEdit: ignore all key events except keyRelease events.
+    # QTextEdit: ignore all key events except keyPress events.
+    if eventType in lineEditKeyKinds:
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
+        if ignore:
+            override = False
+        # This is extremely bad.
+        # At present, it is needed to handle tab properly.
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+                c.frame.body.onFocusIn(obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+                c.frame.body.onFocusOut(obj)
+        if self.tag in ('tree','log'):
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+
+    if self.keyIsActive:
+        shortcut = self.toStroke(tkKey,ch) # ch is unused.
+
+        if override:
+            # Essentially *all* keys get passed to masterKeyHandler.
+            if trace and traceKey:
+                g.trace('ignore',ignore,'bound',repr(shortcut),repr(aList))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            event = self.create_key_event(event,c,w,ch,tkKey,shortcut)
+            ret = k.masterKeyHandler(event)
+            c.outerUpdate()
+        else:
+            if trace and traceKey and verbose:
+                g.trace(self.tag,'unbound',tkKey,shortcut)
+        
+        if trace and traceEvent:
+            # Trace key events.
+            self.traceEvent(obj,event,tkKey,override)
+
+    elif trace and traceEvent:
+        # Trace non-key events.
+        self.traceEvent(obj,event,tkKey,override)
+
+    return override
+.. @+node:ekr.20110605195119.16937: *6* create_key_event (leoQtEventFilter)
+def create_key_event (self,event,c,w,ch,tkKey,shortcut):
+
+    trace = True and not g.unitTesting ; verbose = False
+    
+    if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
+        repr(ch),repr(tkKey),repr(shortcut)))
+        
+    # Last-minute adjustments...
+    if shortcut == 'Return':
+        ch = '\n' # Somehow Qt wants to return '\r'.
+    elif shortcut == 'Escape':
+        ch = 'Escape'
+
+    # Switch the Shift modifier to handle the cap-lock key.
+    if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
+        if ch != shortcut:
+            if trace and verbose: g.trace('caps-lock')
+            shortcut = ch
+
+    # Patch provided by resi147.
+    # See the thread: special characters in MacOSX, like '@'.
+    if sys.platform.startswith('darwin'):
+        darwinmap = {
+            'Alt-Key-5': '[',
+            'Alt-Key-6': ']',
+            'Alt-Key-7': '|',
+            'Alt-slash': '\\',
+            'Alt-Key-8': '{',
+            'Alt-Key-9': '}',
+            'Alt-e': '€',
+            'Alt-l': '@',
+        }
+        if tkKey in darwinmap:
+            shortcut = darwinmap[tkKey]
+            
+    char = ch
+    # Auxiliary info.
+    x      = hasattr(event,'x') and event.x or 0
+    y      = hasattr(event,'y') and event.y or 0
+    # Support for fastGotoNode plugin
+    x_root = hasattr(event,'x_root') and event.x_root or 0
+    y_root = hasattr(event,'y_root') and event.y_root or 0
+    
+    if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
+        repr(ch),repr(shortcut),ch in string.printable))
+                
+    return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
+.. @+node:ekr.20120204061120.10088: *6* Key construction...
+.. @+node:ekr.20110605121601.18543: *7* toTkKey & helpers (must not change!)
+def toTkKey (self,event):
+    
+    '''Return tkKey,ch,ignore:
+        
+    tkKey: the Tk spelling of the event used to look up
+           bindings in k.masterGuiBindingsDict.
+           **This must not ever change!**
+           
+    ch:    the insertable key, or ''.
+    
+    ignore: True if the key should be ignored.
+            This is **not** the same as 'not ch'.
+    '''
+
+    mods = self.qtMods(event)
+
+    keynum,text,toString,ch = self.qtKey(event)
+
+    tkKey,ch,ignore = self.tkKey(
+        event,mods,keynum,text,toString,ch)
+
+    return tkKey,ch,ignore
+.. @+node:ekr.20110605121601.18546: *8* tkKey & helper
+def tkKey (self,event,mods,keynum,text,toString,ch):
+
+    '''Carefully convert the Qt key to a 
+    Tk-style binding compatible with Leo's core
+    binding dictionaries.'''
+
+    trace = False and not g.unitTesting
+    ch1 = ch # For tracing.
+    use_shift = (
+        'Home','End','Tab',
+        'Up','Down','Left','Right',
+        'Next','Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
+        # 2011/05/17: Fix bug 681797.
+        # There is nothing 'dubious' about these provided that they are bound.
+        # If they are not bound, then weird characters will be inserted.
+        'Delete','Ins','Backspace',
+        'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+    )
+
+    # Convert '&' to 'ampersand', etc.
+    # *Do* allow shift-bracketleft, etc.
+    ch2 = self.char2tkName(ch or toString)
+    if ch2: ch = ch2 
+    if not ch: ch = ''
+
+    if 'Shift' in mods:
+        if trace: g.trace(repr(ch))
+        if len(ch) == 1 and ch.isalpha():
+            mods.remove('Shift')
+            ch = ch.upper()
+        elif len(ch) > 1 and ch not in use_shift:
+            # Experimental!
+            mods.remove('Shift')
+        # 2009/12/19: Speculative.
+        # if ch in ('parenright','parenleft','braceright','braceleft'):
+            # mods.remove('Shift')
+    elif len(ch) == 1:
+        ch = ch.lower()
+
+    if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
+        mods.append('Key')
+
+    # *Do* allow bare mod keys, so they won't be passed on.
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+
+    if trace: g.trace(
+        'text: %s toString: %s ch1: %s ch: %s' % (
+        repr(text),repr(toString),repr(ch1),repr(ch)))
+
+    ignore = not ch # Essential
+    ch = text or toString
+    return tkKey,ch,ignore
+.. @+node:ekr.20110605121601.18547: *9* char2tkName
+char2tkNameDict = {
+    # Part 1: same as g.app.guiBindNamesDict
+    "&" : "ampersand",
+    "^" : "asciicircum",
+    "~" : "asciitilde",
+    "*" : "asterisk",
+    "@" : "at",
+    "\\": "backslash",
+    "|" : "bar",
+    "{" : "braceleft",
+    "}" : "braceright",
+    "[" : "bracketleft",
+    "]" : "bracketright",
+    ":" : "colon",  
+    "," : "comma",
+    "$" : "dollar",
+    "=" : "equal",
+    "!" : "exclam",
+    ">" : "greater",
+    "<" : "less",
+    "-" : "minus",
+    "#" : "numbersign",
+    '"' : "quotedbl",
+    "'" : "quoteright",
+    "(" : "parenleft",
+    ")" : "parenright", 
+    "%" : "percent",
+    "." : "period",     
+    "+" : "plus",
+    "?" : "question",
+    "`" : "quoteleft",
+    ";" : "semicolon",
+    "/" : "slash",
+    " " : "space",      
+    "_" : "underscore",
+    # Part 2: special Qt translations.
+    'Backspace':'BackSpace',
+    'Backtab':  'Tab', # The shift mod will convert to 'Shift+Tab',
+    'Esc':      'Escape',
+    'Del':      'Delete',
+    'Ins':      'Insert', # was 'Return',
+    # Comment these out to pass the key to the QTextWidget.
+    # Use these to enable Leo's page-up/down commands.
+    'PgDown':    'Next',
+    'PgUp':      'Prior',
+    # New entries.  These simplify code.
+    'Down':'Down','Left':'Left','Right':'Right','Up':'Up',
+    'End':'End',
+    'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5',
+    'F6':'F6','F7':'F7','F8':'F8','F9':'F9',
+    'F10':'F10','F11':'F11','F12':'F12',
+    'Home':'Home',
+    # 'Insert':'Insert',
+    'Return':'Return',
+    'Tab':'Tab',
+    # 'Tab':'\t', # A hack for QLineEdit.
+    # Unused: Break, Caps_Lock,Linefeed,Num_lock
+}
+
+# Called only by tkKey.
+
+def char2tkName (self,ch):
+    val = self.char2tkNameDict.get(ch)
+    # g.trace(repr(ch),repr(val))
+    return val
+.. @+node:ekr.20120204061120.10087: *7* Common key construction helpers
+.. @+node:ekr.20110605121601.18541: *8* isSpecialOverride
+def isSpecialOverride (self,tkKey,ch):
+
+    '''Return True if tkKey is a special Tk key name.
+    '''
+
+    return tkKey or ch in self.flashers
+.. @+node:ekr.20110605121601.18542: *8* toStroke (leoQtEventFilter)
+def toStroke (self,tkKey,ch):  # ch is unused
+    
+    '''Convert the official tkKey name to a stroke.'''
+
+    trace = False and not g.unitTesting
+    k = self.c.k ; s = tkKey
+
+    table = (
+        ('Alt-','Alt+'),
+        ('Ctrl-','Ctrl+'),
+        ('Control-','Ctrl+'),
+        # Use Alt+Key-1, etc.  Sheesh.
+        # ('Key-','Key+'),
+        ('Shift-','Shift+')
+    )
+    for a,b in table:
+        s = s.replace(a,b)
+
+    if trace: g.trace('tkKey',tkKey,'-->',s)
+    return s
+.. @+node:ekr.20110605121601.18544: *8* qtKey
+def qtKey (self,event):
+
+    '''Return the components of a Qt key event.
+
+    Modifiers are handled separately.
+    
+    Return keynum,text,toString,ch
+    
+    keynum: event.key()
+    ch:     g.u(chr(keynum)) or '' if there is an exception.
+    toString:
+        For special keys: made-up spelling that become part of the setting.
+        For all others:   QtGui.QKeySequence(keynum).toString()
+    text:   event.text()
+    '''
+
+    trace = False and not g.unitTesting
+    keynum = event.key()
+    text   = event.text() # This is the unicode text.
+
+    qt = QtCore.Qt
+    d = {
+        qt.Key_Shift:   'Key_Shift',
+        qt.Key_Control: 'Key_Control',  # MacOS: Command key
+        qt.Key_Meta:	'Key_Meta',     # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
+        qt.Key_Alt:	    'Key_Alt',	 
+        qt.Key_AltGr:	'Key_AltGr',
+            # On Windows, when the KeyDown event for this key is sent,
+            # the Ctrl+Alt modifiers are also set.
+    }
+
+    if d.get(keynum):
+        toString = d.get(keynum)
+    else:
+        toString = QtGui.QKeySequence(keynum).toString()
+
+    try:
+        ch1 = chr(keynum)
+    except ValueError:
+        ch1 = ''
+
+    try:
+        ch = g.u(ch1)
+    except UnicodeError:
+        ch = ch1
+
+    text     = g.u(text)
+    toString = g.u(toString)
+
+    if trace and self.keyIsActive:
+        mods = '+'.join(self.qtMods(event))
+        g.trace(
+            'keynum %7x ch %3s toString %s %s' % (
+            keynum,repr(ch),mods,repr(toString)))
+
+    return keynum,text,toString,ch
+.. @+node:ekr.20120204061120.10084: *8* qtMods
+def qtMods (self,event):
+
+    '''Return the text version of the modifiers of the key event.'''
+
+    modifiers = event.modifiers()
+
+    # The order of this table must match the order created by k.strokeFromSetting.
+    # When g.new_keys is True, k.strokeFromSetting will canonicalize the setting.
+
+    qt = QtCore.Qt
+    
+    if sys.platform.startswith('darwin'):
+        # Yet another MacOS hack:
+        table = (
+            (qt.AltModifier,     'Alt'), # For Apple keyboard.
+            (qt.MetaModifier,    'Alt'), # For Microsoft keyboard.
+            (qt.ControlModifier, 'Control'),
+            # No way to generate Meta.
+            (qt.ShiftModifier,   'Shift'),
+        )
+        
+    else:
+        table = (
+            (qt.AltModifier,     'Alt'),
+            (qt.ControlModifier, 'Control'),
+            (qt.MetaModifier,    'Meta'),
+            (qt.ShiftModifier,   'Shift'),
+        )
+
+    mods = [b for a,b in table if (modifiers & a)]
+    return mods
+.. @+node:ekr.20110605121601.18548: *6* traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    if g.unitTesting: return
+    
+    traceFocus = False
+    traceKey   = True
+    traceLayout = False
+    traceMouse = False
+    
+    c,e = self.c,QtCore.QEvent
+    eventType = event.type()
+    
+    show = []
+    
+    ignore = [
+        e.MetaCall, # 43
+        e.Timer, # 1
+        e.ToolTip, # 110
+    ]
+    
+    focus_events = (
+        (e.Enter,'enter'),
+        (e.Leave,'leave'),
+        (e.FocusIn,'focus-in'),
+        (e.FocusOut,'focus-out'),
+        (e.Hide,'hide'), # 18
+        (e.HideToParent, 'hide-to-parent'), # 27
+        (e.HoverEnter, 'hover-enter'), # 127
+        (e.HoverLeave,'hover-leave'), # 128
+        (e.HoverMove,'hover-move'), # 129
+        (e.Show,'show'), # 17
+        (e.ShowToParent,'show-to-parent'), # 26
+        (e.WindowActivate,'window-activate'), # 24
+        (e.WindowBlocked,'window-blocked'), # 103
+        (e.WindowUnblocked,'window-unblocked'), # 104
+        (e.WindowDeactivate,'window-deactivate'), # 25
+    )
+    key_events = (
+        (e.KeyPress,'key-press'),
+        (e.KeyRelease,'key-release'),
+        (e.ShortcutOverride,'shortcut-override'),
+    )
+    layout_events = (
+        (e.ChildPolished,'child-polished'), # 69
+        #(e.CloseSoftwareInputPanel,'close-sip'), # 200
+            # Event does not exist on MacOS.
+        (e.ChildAdded,'child-added'), # 68
+        (e.DynamicPropertyChange,'dynamic-property-change'), # 170
+        (e.FontChange,'font-change'),# 97
+        (e.LayoutRequest,'layout-request'),
+        (e.Move,'move'), # 13 widget's position changed.
+        (e.PaletteChange,'palette-change'),# 39
+        (e.ParentChange,'parent-change'), # 21
+        (e.Paint,'paint'), # 12
+        (e.Polish,'polish'), # 75
+        (e.PolishRequest,'polish-request'), # 74
+        # (e.RequestSoftwareInputPanel,'sip'), # 199
+            # Event does not exist on MacOS.
+        (e.Resize,'resize'), # 14
+        (e.StyleChange,'style-change'), # 100
+        (e.ZOrderChange,'z-order-change'), # 126
+    )
+    mouse_events = (
+        (e.MouseMove,'mouse-move'), # 155
+        (e.MouseButtonPress,'mouse-press'), # 2
+        (e.MouseButtonRelease,'mouse-release'), # 3
+        (e.Wheel,'mouse-wheel'), # 31
+    )
+    
+    option_table = (
+        (traceFocus,focus_events),
+        (traceKey,key_events),
+        (traceLayout,layout_events),
+        (traceMouse,mouse_events),
+    )
+    
+    for option,table in option_table:
+        if option:
+            show.extend(table)
+        else:
+            for n,tag in table:
+                ignore.append(n)
+
+    for val,kind in show:
+        if eventType == val:
+            g.trace(
+                '%5s %18s in-state: %5s key: %s override: %s: obj: %s' % (
+                self.tag,kind,repr(c.k and c.k.inState()),tkKey,override,obj))
+            return
+
+    if eventType not in ignore:
+        g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
+.. @+node:ekr.20110605195119.16937: *5* create_key_event (leoQtEventFilter)
+def create_key_event (self,event,c,w,ch,tkKey,shortcut):
+
+    trace = True and not g.unitTesting ; verbose = False
+    
+    if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
+        repr(ch),repr(tkKey),repr(shortcut)))
+        
+    # Last-minute adjustments...
+    if shortcut == 'Return':
+        ch = '\n' # Somehow Qt wants to return '\r'.
+    elif shortcut == 'Escape':
+        ch = 'Escape'
+
+    # Switch the Shift modifier to handle the cap-lock key.
+    if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
+        if ch != shortcut:
+            if trace and verbose: g.trace('caps-lock')
+            shortcut = ch
+
+    # Patch provided by resi147.
+    # See the thread: special characters in MacOSX, like '@'.
+    if sys.platform.startswith('darwin'):
+        darwinmap = {
+            'Alt-Key-5': '[',
+            'Alt-Key-6': ']',
+            'Alt-Key-7': '|',
+            'Alt-slash': '\\',
+            'Alt-Key-8': '{',
+            'Alt-Key-9': '}',
+            'Alt-e': '€',
+            'Alt-l': '@',
+        }
+        if tkKey in darwinmap:
+            shortcut = darwinmap[tkKey]
+            
+    char = ch
+    # Auxiliary info.
+    x      = hasattr(event,'x') and event.x or 0
+    y      = hasattr(event,'y') and event.y or 0
+    # Support for fastGotoNode plugin
+    x_root = hasattr(event,'x_root') and event.x_root or 0
+    y_root = hasattr(event,'y_root') and event.y_root or 0
+    
+    if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
+        repr(ch),repr(shortcut),ch in string.printable))
+                
+    return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
+.. @+node:ekr.20070228160107: *5* class leoKeyEvent (leoGui.py)
+class leoKeyEvent:
+
+    '''A gui-independent wrapper for gui events.'''
+    
+    @others
+
+    def __repr__ (self):
+
+        return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
+            repr(self.stroke),repr(self.char),repr(self.w))
+            
+    def type(self):
+        return 'leoKeyEvent'
+.. @+node:ekr.20110605121601.18846: *6* ctor (leoKeyEvent)
+def __init__ (self,c,char,shortcut,w,x,y,x_root,y_root):
+    
+    trace = False and not g.unitTesting
+    k = c.k
+    
+    if g.isStroke(shortcut):
+        g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
+        stroke = shortcut
+    else:
+        stroke = g.KeyStroke(shortcut) if shortcut else None
+
+    assert g.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
+        repr(stroke),g.callers())
+        
+    if trace: g.trace('(leoKeyEvent) stroke',stroke)
+    
+    self.c = c
+    self.char = char or ''
+    self.stroke = stroke
+    self.w = self.widget = w
+    
+    # Optional ivars
+    self.x = x
+    self.y = y
+
+    # Support for fastGotoNode plugin
+    self.x_root = x_root
+    self.y_root = y_root
 .. @+node:ekr.20111018220642.15862: *3* Plugins
 .. @+node:ekr.20111017132257.15882: *4* Study import_xml plugin
 @language rest
