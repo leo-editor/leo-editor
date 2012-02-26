@@ -173,13 +173,17 @@ def run(theDir,fn,suppress,rpython=False):
     fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
     assert os.path.exists(rc_fn)
+    
     args = ['--rcfile=%s' % (rc_fn)]
-    if suppress: args.append('--disable=%s' % (suppress))
+    if suppress and allow_suppressions:
+        args.append('--disable=%s' % (suppress))
     # if rpython: args.append('--rpython-mode') # Probably does not exist.
+
     fn = os.path.abspath(fn)
     # print('run: theDir',theDir,'fn',fn)
     if not fn.endswith('.py'): fn = fn+'.py'
     args.append(fn)
+
     if os.path.exists(fn):
         if suppress:
             print('pylint-leo.py: %s suppress: %s' % (fn,suppress))
@@ -192,12 +196,17 @@ def run(theDir,fn,suppress,rpython=False):
 
 coreList = getCoreList()
 externalList = ('ipy_leo','lproto',)
+# onlySupressionsTable = getOnlySupressionsTable()
 passList = getPassList()
 pluginsTable = getPluginsTable()
 recentCoreList = getRecentCoreList()
 tkPass = getTkPass()
 
-guiPluginsTable = (
+allow_suppressions = True
+
+onlySupressionsList = (z for z in coreList if z[1])
+
+guiPluginsList = (
     ('qtGui','E0611,E1101,R0923,W0221,W0233'),
         # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
         # E0611: No name 'xxx' in module 'urllib'
@@ -219,7 +228,9 @@ recentPluginsList = (
 
 tables_table = (
     (coreList,'core'),
-    (guiPluginsTable,'plugins'),
+    (guiPluginsList,'plugins'),
+    
+    # (onlySupressionsList,'core'),
     # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
     
@@ -234,7 +245,7 @@ for table,theDir in tables_table:
     #if table in (rpythonList,):
         # for fn in table:
             # run(theDir,fn,suppress='',rpython=True) 
-    if table in (coreList,pluginsTable,guiPluginsTable,recentCoreList):
+    if table in (coreList,pluginsTable,guiPluginsList,onlySupressionsList,recentCoreList):
         # These tables have suppressions.
         for fn,suppress in table:
             run(theDir,fn,suppress) 

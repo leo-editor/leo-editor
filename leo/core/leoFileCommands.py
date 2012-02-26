@@ -613,7 +613,7 @@ class baseFileCommands:
         c.loading = True # disable c.changed
         try:
             try:
-                theFile = g.openLeoOrZipFile(c.mFileName)
+                theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
                 self.readSaxFile(
                     theFile,fileName='check-leo-file',
                     silent=False,inClipboard=False,reassignIndices=False)

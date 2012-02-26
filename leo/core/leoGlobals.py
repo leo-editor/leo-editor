@@ -1921,7 +1921,7 @@ def makePathRelativeTo (fullPath,basePath):
     else:
         return fullPath
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName
-def openWithFileName(fileName,gui=None,old_c=None):
+def openWithFileName(fileName,old_c=None,gui=None):
 
     """Create a Leo Frame for the indicated fileName if the file exists.
 
