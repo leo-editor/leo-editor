@@ -148,7 +148,6 @@ leoInspect: a hobby with a future?
 http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
 leoInspect: remarkable collapse in complexity and attempted assessment
 
-.. @+node:ekr.20120225032124.18054: *4* Clone-find-all-flattened command
 .. @+node:ekr.20120203053243.10111: *4* Fix OpenWith menu
 @nocolor-node
 
