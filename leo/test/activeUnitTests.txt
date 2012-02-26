@@ -4757,7 +4757,7 @@ if guiname == 'wxWindows':
     assert(not tkinter)
     assert(wx)
 #@+node:ekr.20050203084930.1: *4* @test global settings
-w = g.app.config.get(None,'global_setting_for_unit_tests','int')
+w = g.app.config.get('global_setting_for_unit_tests','int')
 
 assert w in (None,132) # Will be None when tests run dynamically.
 #@+node:ekr.20060325071703.1: *4* @test ifplatform
@@ -19446,7 +19446,7 @@ finally:
 #@+node:ekr.20120201101804.3907: *3* @test config.updateSetting with no @settings node
 import leo.core.leoConfig as leoConfig
     
-p = g.app.config.settingsRoot(c)
+p = c.config.settingsRoot()
 assert c
 if p:
     # p will not exist when run externally.
@@ -19474,9 +19474,7 @@ try:
 finally:
     sd[c.hash()] = d
 #@+node:ekr.20111115071700.3870: *3* @test printSettings
-# c.k.simulateCommand('print-settings')
-
-g.app.config.printSettings(c)
+c.config.printSettings()
 
 #@+node:ekr.20120207151139.3911: *3* newHeadline
 #@+node:ekr.20090306091634.1: ** @test print redraw count

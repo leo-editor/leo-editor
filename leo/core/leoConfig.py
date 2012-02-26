@@ -1055,7 +1055,7 @@ class ParserBaseClass:
             keyType=type('s'), valType=g.ShortcutInfo)
             
         # This must be called after the outline has been inited.
-        p = g.app.config.settingsRoot(c)
+        p = c.config.settingsRoot()
         if not p:
             # c.rootPosition() doesn't exist yet.
             # This is not an error.
@@ -1347,7 +1347,7 @@ class GlobalConfigManager:
                 if c:
                     val = c.config.get(key,kind)
                 else:
-                    val = self.get(None,key,kind) # Don't use bunch.val!
+                    val = self.get(key,kind) # Don't use bunch.val!
                 if c:
                     if trace and verbose: g.trace("%20s %s = %s" % (
                         g.shortFileName(c.mFileName),ivar,val))
@@ -1370,46 +1370,20 @@ class GlobalConfigManager:
         return g.choose(name,name,None)
 
     munge = canonicalizeSettingName
-    #@+node:ekr.20041123092357: *4* gcm.findSettingsPosition
-    # This was not used prior to Leo 4.5.
-
-    def findSettingsPosition (self,c,setting):
-
-        """Return the position for the setting in the @settings tree for c."""
-
-        munge = self.munge
-
-        root = self.settingsRoot(c)
-        if not root:
-            return c.nullPosition()
-
-        setting = munge(setting)
-
-        for p in root.subtree():
-            #BJ munge will return None if a headstring is empty
-            h = munge(p.h) or ''
-            if h.startswith(setting):
-                return p.copy()
-
-        return c.nullPosition()
     #@+node:ekr.20051011105014: *4* gcm.exists
-    def exists (self,c,setting,kind):
+    def exists (self,setting,kind):
 
         '''Return true if a setting of the given kind exists, even if it is None.'''
         
-        if c:
-            return c.config.exists(setting,kind)
+        lm = g.app.loadManager
+        d = lm.globalSettingsDict
+        if d:
+            junk,found = self.getValFromDict(d,setting,kind)
+            return found
         else:
-            lm = g.app.loadManager
-            d = lm.globalSettingsDict
-            if d:
-                junk,found = self.getValFromDict(d,setting,kind)
-                return found
-            else:
-                return False
-
+            return False
     #@+node:ekr.20041117083141: *4* gcm.get & allies
-    def get (self,c,setting,kind):
+    def get (self,setting,kind):
 
         """Get the setting and make sure its type matches the expected type."""
         
@@ -1419,9 +1393,9 @@ class GlobalConfigManager:
         lm = g.app.loadManager
 
         # It *is* valid to call this method: it returns the global settings.
-        if c:
-            print('g.app.config.get ***** call c.config.getX when c is available')
-            print('g.app.config.get',setting,kind,g.callers())
+        # if c:
+            # print('g.app.config.get ***** call c.config.getX when c is available')
+            # print('g.app.config.get',setting,kind,g.callers())
 
         d = lm.globalSettingsDict
         if d:
@@ -1498,18 +1472,18 @@ class GlobalConfigManager:
             type1 == type2
         )
     #@+node:ekr.20060608224112: *4* gcm.getAbbrevDict
-    def getAbbrevDict (self,c):
+    def getAbbrevDict (self):
 
         """Search all dictionaries for the setting & check it's type"""
 
-        d = self.get(c,'abbrev','abbrev')
+        d = self.get('abbrev','abbrev')
         return d or {}
     #@+node:ekr.20041117081009.3: *4* gcm.getBool
-    def getBool (self,c,setting,default=None):
+    def getBool (self,setting,default=None):
 
         '''Return the value of @bool setting, or the default if the setting is not found.'''
 
-        val = self.get(c,setting,"bool")
+        val = self.get(setting,"bool")
 
         if val in (True,False):
             return val
@@ -1522,11 +1496,11 @@ class GlobalConfigManager:
 
         return g.app.config.atCommonButtonsList
     #@+node:ekr.20041122070339: *4* gcm.getColor
-    def getColor (self,c,setting):
+    def getColor (self,setting):
 
         '''Return the value of @color setting.'''
 
-        return self.get(c,setting,"color")
+        return self.get(setting,"color")
     #@+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
     def getCommonAtCommands (self):
 
@@ -1534,17 +1508,17 @@ class GlobalConfigManager:
 
         return g.app.config.atCommonCommandsList
     #@+node:ekr.20071214140900.1: *4* gcm.getData
-    def getData (self,c,setting):
+    def getData (self,setting):
 
         '''Return a list of non-comment strings in the body text of @data setting.'''
 
-        return self.get(c,setting,"data")
+        return self.get(setting,"data")
     #@+node:ekr.20041117093009.1: *4* gcm.getDirectory
-    def getDirectory (self,c,setting):
+    def getDirectory (self,setting):
 
         '''Return the value of @directory setting, or None if the directory does not exist.'''
 
-        theDir = self.getString(c,setting)
+        theDir = self.getString(setting)
 
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
@@ -1557,18 +1531,18 @@ class GlobalConfigManager:
 
         return g.app.config.enabledPluginsString
     #@+node:ekr.20041117082135: *4* gcm.getFloat
-    def getFloat (self,c,setting):
+    def getFloat (self,setting):
 
         '''Return the value of @float setting.'''
 
-        val = self.get(c,setting,"float")
+        val = self.get(setting,"float")
         try:
             val = float(val)
             return val
         except TypeError:
             return None
     #@+node:ekr.20041117062717.13: *4* gcm.getFontFromParams
-    def getFontFromParams(self,c,family,size,slant,weight,defaultSize=12):
+    def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
 
         """Compute a font from font parameters.
 
@@ -1577,67 +1551,65 @@ class GlobalConfigManager:
 
         Return None if there is no family setting so we can use system default fonts."""
 
-        family = self.get(c,family,"family")
+        family = self.get(family,"family")
         if family in (None,""):
             family = self.defaultFontFamily
 
-        size = self.get(c,size,"size")
+        size = self.get(size,"size")
         if size in (None,0): size = defaultSize
 
-        slant = self.get(c,slant,"slant")
+        slant = self.get(slant,"slant")
         if slant in (None,""): slant = "roman"
 
-        weight = self.get(c,weight,"weight")
+        weight = self.get(weight,"weight")
         if weight in (None,""): weight = "normal"
 
-        # g.trace(g.callers(3),family,size,slant,weight,g.shortFileName(c.mFileName))
+        # g.trace(g.callers(3),family,size,slant,weight)
 
         return g.app.gui.getFontFromParams(family,size,slant,weight)
     #@+node:ekr.20041117081513: *4* gcm.getInt
-    def getInt (self,c,setting):
+    def getInt (self,setting):
 
         '''Return the value of @int setting.'''
 
-        val = self.get(c,setting,"int")
+        val = self.get(setting,"int")
         try:
             val = int(val)
             return val
         except TypeError:
             return None
     #@+node:ekr.20041117093009.2: *4* gcm.getLanguage
-    def getLanguage (self,c,setting):
+    def getLanguage (self,setting):
 
         '''Return the setting whose value should be a language known to Leo.'''
 
-        language = self.getString(c,setting)
-        # g.trace(setting,language)
-
+        language = self.getString(setting)
         return language
     #@+node:ekr.20070926070412: *4* gcm.getMenusList
-    def getMenusList (self,c):
+    def getMenusList (self):
 
         '''Return the list of entries for the @menus tree.'''
 
-        aList = self.get(c,'menus','menus')
+        aList = self.get('menus','menus')
         # g.trace(aList and len(aList) or 0)
 
         return aList or g.app.config.menusList
     #@+node:ekr.20070411101643: *4* gcm.getOpenWith
-    def getOpenWith (self,c):
+    def getOpenWith (self):
 
         '''Return a list of dictionaries corresponding to @openwith nodes.'''
 
-        val = self.get(c,'openwithtable','openwithtable')
+        val = self.get('openwithtable','openwithtable')
 
         return val
     #@+node:ekr.20041122070752: *4* gcm.getRatio
-    def getRatio (self,c,setting):
+    def getRatio (self,setting):
 
         '''Return the value of @float setting.
 
         Warn if the value is less than 0.0 or greater than 1.0.'''
 
-        val = self.get(c,setting,"ratio")
+        val = self.get(setting,"ratio")
         try:
             val = float(val)
             if 0.0 <= val <= 1.0:
@@ -1653,23 +1625,11 @@ class GlobalConfigManager:
 
         return self.recentFiles
     #@+node:ekr.20041117081009.4: *4* gcm.getString
-    def getString (self,c,setting):
+    def getString (self,setting):
 
         '''Return the value of @string setting.'''
 
-        return self.get(c,setting,"string")
-    #@+node:ekr.20041120074536: *4* gcm.settingsRoot
-    def settingsRoot (self,c):
-
-        '''Return the position of the @settings tree.'''
-
-        # g.trace(c,c.rootPosition())
-
-        for p in c.all_unique_positions():
-            if p.h.rstrip() == "@settings":
-                return p.copy()
-        else:
-            return c.nullPosition()
+        return self.get(setting,"string")
     #@+node:ekr.20120222103014.10314: *3* gcm.config_iter
     def config_iter(self,c):
 
@@ -1695,38 +1655,6 @@ class GlobalConfigManager:
                     yield key,gs.val,c,letter
 
         raise StopIteration
-    #@+node:ekr.20070418073400: *3* gcm.printSettings
-    def printSettings (self,c):
-
-        '''Prints the value of every setting, except key bindings and commands and open-with tables.
-        The following shows where the active setting came from:
-
-        -     leoSettings.leo,
-        - [D] default settings.
-        - [F] indicates the file being loaded,
-        - [M] myLeoSettings.leo,
-
-        '''
-
-        legend = '''\
-    legend:
-        leoSettings.leo
-    [D] default settings
-    [F] loaded .leo File
-    [M] myLeoSettings.leo
-    '''
-        legend = g.adjustTripleString(legend,c.tab_width)
-        result = []
-        for name,val,c,letter in self.config_iter(c):
-            kind = g.choose(letter==' ','   ','[%s]' % (letter))
-            result.append('%s %s = %s\n' % (kind,name,val))
-
-        # Use a single g.es statement.
-        result.append('\n'+legend)
-        if g.unitTesting:
-            pass # print(''.join(result))
-        else:
-            g.es('',''.join(result),tabName='Settings')
     #@-others
 #@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
 class SettingsTreeParser (ParserBaseClass):
@@ -2191,6 +2119,76 @@ class LocalConfigManager:
             junk,found = self.getValFromDict(d,setting,kind)
             if found: return True
         return False
+    #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
+    # This was not used prior to Leo 4.5.
+
+    def findSettingsPosition (self,setting):
+
+        """Return the position for the setting in the @settings tree for c."""
+
+        munge = g.app.config.munge
+        c = self.c
+
+        root = self.settingsRoot()
+        if not root:
+            return c.nullPosition()
+
+        setting = munge(setting)
+
+        for p in root.subtree():
+            #BJ munge will return None if a headstring is empty
+            h = munge(p.h) or ''
+            if h.startswith(setting):
+                return p.copy()
+
+        return c.nullPosition()
+    #@+node:ekr.20041120074536: *5* c.config.settingsRoot
+    def settingsRoot (self):
+
+        '''Return the position of the @settings tree.'''
+
+        # g.trace(c,c.rootPosition())
+        
+        c = self.c
+
+        for p in c.all_unique_positions():
+            if p.h.rstrip() == "@settings":
+                return p.copy()
+        else:
+            return c.nullPosition()
+    #@+node:ekr.20070418073400: *3* c.config.printSettings
+    def printSettings (self):
+
+        '''Prints the value of every setting, except key bindings and commands and open-with tables.
+        The following shows where the active setting came from:
+
+        -     leoSettings.leo,
+        - [D] default settings.
+        - [F] indicates the file being loaded,
+        - [M] myLeoSettings.leo,
+
+        '''
+
+        legend = '''\
+    legend:
+        leoSettings.leo
+    [D] default settings
+    [F] loaded .leo File
+    [M] myLeoSettings.leo
+    '''
+        c = self.c
+        legend = g.adjustTripleString(legend,c.tab_width)
+        result = []
+        for name,val,c,letter in g.app.config.config_iter(c):
+            kind = g.choose(letter==' ','   ','[%s]' % (letter))
+            result.append('%s %s = %s\n' % (kind,name,val))
+
+        # Use a single g.es statement.
+        result.append('\n'+legend)
+        if g.unitTesting:
+            pass # print(''.join(result))
+        else:
+            g.es('',''.join(result),tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set (self,p,kind,name,val):
 

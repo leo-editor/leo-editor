@@ -1539,6 +1539,11 @@ appropriate dictionary.
 
 Note that this scheme will produce the proper results for standard settings
 files themselves if they appear on the command line.
+#@+node:ekr.20120225032124.16123: *4* Removed c argument from g.app.config getters
+@nocolor-node
+
+- Moved findSettingsPosition to LocalConfigManager.
+- Moved printSettings to LocalConfigManager.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution

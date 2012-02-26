@@ -84,11 +84,11 @@ def getPassList():
         'trace_gc_plugin','trace_keys','trace_tags',
         'vim','xemacs',
     )
-#@+node:ekr.20100221142603.5642: ** getPluginsTable
-def getPluginsTable ():
+#@+node:ekr.20100221142603.5642: ** getPluginsList
+def getPluginsList():
 
     return (
-        ('mod_htt', ''),
+        ('mod_http', ''),
 
         ('mod_scripting',''), # 'E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
@@ -198,7 +198,7 @@ coreList = getCoreList()
 externalList = ('ipy_leo','lproto',)
 # onlySupressionsTable = getOnlySupressionsTable()
 passList = getPassList()
-pluginsTable = getPluginsTable()
+pluginsList = getPluginsList()
 recentCoreList = getRecentCoreList()
 tkPass = getTkPass()
 
@@ -229,6 +229,7 @@ recentPluginsList = (
 tables_table = (
     (coreList,'core'),
     (guiPluginsList,'plugins'),
+    #(pluginsList,'plugins'),
     
     # (onlySupressionsList,'core'),
     # (recentCoreList,'core'),
@@ -237,7 +238,7 @@ tables_table = (
     # Not often used...
         # (externalList,'external'),
         # (passList,'plugins'),
-        # (pluginsTable,'plugins'),
+        
         # (rpythonList,'core'),
 )
 
@@ -245,7 +246,7 @@ for table,theDir in tables_table:
     #if table in (rpythonList,):
         # for fn in table:
             # run(theDir,fn,suppress='',rpython=True) 
-    if table in (coreList,pluginsTable,guiPluginsList,onlySupressionsList,recentCoreList):
+    if table in (coreList,pluginsList,guiPluginsList,onlySupressionsList,recentCoreList):
         # These tables have suppressions.
         for fn,suppress in table:
             run(theDir,fn,suppress) 

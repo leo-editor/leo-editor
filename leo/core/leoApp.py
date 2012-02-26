@@ -1163,7 +1163,7 @@ class LoadManager:
         lm = self
 
         # Get the name of the workbook.
-        fn = g.app.config.getString(c=None,setting='default_leo_file')
+        fn = g.app.config.getString(setting='default_leo_file')
         fn = g.os_path_finalize(fn)
         if not fn: return
 
@@ -1610,7 +1610,7 @@ class LoadManager:
     def getDefaultFile (self):
 
         # Get the name of the workbook.
-        fn = g.app.config.getString(c=None,setting='default_leo_file')
+        fn = g.app.config.getString('default_leo_file')
         fn = g.os_path_finalize(fn)
         if not fn: return
 

@@ -2402,7 +2402,7 @@ class baseFileCommands:
     def updateFixedStatus (self):
 
         c = self.c
-        p = g.app.config.findSettingsPosition(c,'@bool fixedWindow')
+        p = c.config.findSettingsPosition('@bool fixedWindow')
         if p:
             import leo.core.leoConfig as leoConfig
             parser = leoConfig.SettingsTreeParser(c)

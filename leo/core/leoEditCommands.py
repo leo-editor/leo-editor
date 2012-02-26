@@ -7498,7 +7498,7 @@ class helpCommandsClass (baseEditCommandsClass):
 
         '''
 
-        g.app.config.printSettings(self.c)
+        self.c.config.printSettings()
     #@-others
 #@+node:ekr.20050920084036.171: ** keyHandlerCommandsClass (add docstrings)
 class keyHandlerCommandsClass (baseEditCommandsClass):

@@ -14,7 +14,7 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20120212095313.10377: *3* To do first
-.. @+node:ekr.20120225032124.16123: *4* Remove c argument from g.app.config getters
+.. @+node:ekr.20120226131923.10224: *4* Disable reading settings message in external unit tests 
 .. @+node:ekr.20120225032124.18056: *4* Clear out the pre-writing folder
 @pagewidth 60
 .. @+node:ekr.20120225072226.10199: *5* Add to scripting chapter
@@ -619,6 +619,76 @@ def exists (self,c,setting,kind):
         junk,found = self.getValFromDict(d,setting,kind)
         if found: return True
     return False
+.. @+node:ekr.20041123092357: *7* c.config.findSettingsPosition & helper
+# This was not used prior to Leo 4.5.
+
+def findSettingsPosition (self,setting):
+
+    """Return the position for the setting in the @settings tree for c."""
+
+    munge = g.app.config.munge
+    c = self.c
+
+    root = self.settingsRoot()
+    if not root:
+        return c.nullPosition()
+
+    setting = munge(setting)
+
+    for p in root.subtree():
+        #BJ munge will return None if a headstring is empty
+        h = munge(p.h) or ''
+        if h.startswith(setting):
+            return p.copy()
+
+    return c.nullPosition()
+.. @+node:ekr.20041120074536: *8* c.config.settingsRoot
+def settingsRoot (self):
+
+    '''Return the position of the @settings tree.'''
+
+    # g.trace(c,c.rootPosition())
+    
+    c = self.c
+
+    for p in c.all_unique_positions():
+        if p.h.rstrip() == "@settings":
+            return p.copy()
+    else:
+        return c.nullPosition()
+.. @+node:ekr.20070418073400: *6* c.config.printSettings
+def printSettings (self):
+
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following shows where the active setting came from:
+
+    -     leoSettings.leo,
+    - [D] default settings.
+    - [F] indicates the file being loaded,
+    - [M] myLeoSettings.leo,
+
+    '''
+
+    legend = '''\
+legend:
+    leoSettings.leo
+[D] default settings
+[F] loaded .leo File
+[M] myLeoSettings.leo
+'''
+    c = self.c
+    legend = g.adjustTripleString(legend,c.tab_width)
+    result = []
+    for name,val,c,letter in g.app.config.config_iter(c):
+        kind = g.choose(letter==' ','   ','[%s]' % (letter))
+        result.append('%s %s = %s\n' % (kind,name,val))
+
+    # Use a single g.es statement.
+    result.append('\n'+legend)
+    if g.unitTesting:
+        pass # print(''.join(result))
+    else:
+        g.es('',''.join(result),tabName='Settings')
 .. @+node:ekr.20120215072959.12475: *6* c.config.set
 def set (self,p,kind,name,val):
 

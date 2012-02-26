@@ -79,11 +79,6 @@ import asyncore
 import cgi
 
 if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
-    
-if g.isPython3:
     import http.server
     SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 else:
@@ -105,15 +100,12 @@ if g.isPython3:
 else:
     import urlparse
 
-# import exceptions
+
 import os
-import posixpath
 import select
 import shutil
 import socket
-import sys
 import time
-import urllib
 from xml.sax.saxutils import quoteattr
 #@-<< imports >>
 #@+<< version history >>
@@ -443,7 +435,7 @@ class leo_interface(object):
                 f.write("<p>\n")
             f.write(escape(bodyString))
             if (bodyString):
-               f.write("\n</p>\n")
+                f.write("\n</p>\n")
         # f.write("</span>\n")
         f.write("\n</body>\n</html>\n")
         return f
@@ -513,9 +505,7 @@ class leo_interface(object):
         return w, node
     #@+node:EKR.20040517080250.27: *3* get_leo_windowlist
     def get_leo_windowlist(self):
-        """
 
-        """
         f = StringIO()
         f.write("<title>ROOT for LEO HTTP plugin</title>\n")
         f.write("<h2>Windowlist</h2>\n")
@@ -571,9 +561,9 @@ class leo_interface(object):
             if path[0] == '_':
                 f = self.leo_actions.get_response()
             elif len(path) == 1 and path[0] == 'favicon.ico':
-                 f = self.leo_actions.get_favicon()
+                f = self.leo_actions.get_favicon()
             elif path == '/':
-                 f = self.get_leo_windowlist()
+                f = self.get_leo_windowlist()
             else:
                 try:
                     window, node = self.get_leo_node(path)
@@ -1125,10 +1115,11 @@ def poll(timeout=0.0):
         try:
             r, w, e = select.select(r, w, e, timeout)
         except select.error as err:
-            if err[0] != EINTR:
-                raise
-            else:
-                return False # EKR: added return value.
+            # if err[0] != EINTR:
+                # raise
+            # else:
+                # return False
+            return False # EKR: EINTR is undefined.
         #@-<< try r, w, e = select.select >>
     for fd in r:
         #@+<< asyncore.read(map.get(fd)) >>
@@ -1140,8 +1131,8 @@ def poll(timeout=0.0):
     for fd in w:
         #@+<< asyncore.write(map.get(fd)) >>
         #@+node:EKR.20040517080250.43: *3* << asyncore.write(map.get(fd)) >>
-         obj = map.get(fd)
-         if obj is not None:
+        obj = map.get(fd)
+        if obj is not None:
             asyncore.write(obj)
         #@-<< asyncore.write(map.get(fd)) >>
     return len(r) > 0 or len(w) > 0
@@ -1202,23 +1193,22 @@ def getGlobalConfiguration():
     """read config."""
 
     # timeout.
-    newtimeout = g.app.config.getInt(None, "http_timeout")
+    newtimeout = g.app.config.getInt("http_timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout  / 1000.0
     
     # port.
-    newport = g.app.config.getInt(None, "http_port") 
+    newport = g.app.config.getInt("http_port") 
     if newport:
         config.http_port = newport
 
     # active.
-    newactive = g.app.config.getBool(None, "http_active")
+    newactive = g.app.config.getBool("http_active")
     if newactive is not None:
         config.http_active = newactive
 
     # attribute name.
-    new_rst2_http_attributename = g.app.config.getString(
-        None, "rst2_http_attributename")
+    new_rst2_http_attributename = g.app.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@-others
