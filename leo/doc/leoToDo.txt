@@ -14,6 +14,20 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20120212095313.10377: *3* To do first
+.. @+node:ekr.20120226063218.10211: *4* Before 4.10 b1
+@nocolor-node
+
+Release 4.10 b1 after completing the following items:
+
+- Get the Open With menu working again.
+
+- Complete the new_modes work.
+
+- Fix bug 844953: copy-clone-pasted node appears in other tab.
+
+- Fix bug 869429: Undo and Redo delete from context menu does not redo properly.
+
+- Factor the many leo-editor posts that I have marked as pre-writing into Leo's docs.
 .. @+node:ekr.20120225032124.18056: *4* Clear out the pre-writing folder
 @pagewidth 60
 .. @+node:ekr.20120225072226.10199: *5* Add to scripting chapter
@@ -148,6 +162,61 @@ leoInspect: a hobby with a future?
 http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
 leoInspect: remarkable collapse in complexity and attempted assessment
 
+.. @+node:ekr.20120226095657.10213: *5* Issue: @path @auto - strange behaviour
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
+
+> In short, I am now willing, on an experimental basis, to have Leo put
+> up a dialog when inserting an @ignore, and also when writing an
+> @<file> node containing @ignore.
+
+> In the past, I have always found read/write dialogs to be a) intrusive
+> and b) panic-inducing, but this may be a tolerable exception.  We
+> shall see.
+.. @+node:ekr.20120226095657.10214: *5* How to upgrade properly
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/61019e45d75a6f18/71ee770ee4421222
+
+
+Once you have the 4.9 "official release" working, then further updates are simply:
+
+(ongoing practice - keep your folder containing your leo
+code - separate from your .mySettings.leo and any data
+files, .leo and otherwise.)
+
+1. archive and remove that app folder
+2. download the nightly snapshot zip file
+3. unzip it into the same place
+4. enjoy your up-to-date Leo code. . .
+.. @+node:ekr.20120226095657.10215: *5* version.py now uses bzr_version.py
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
+
+As of rev 4847, Leo now reports bzr version numbers and dates more
+accurately.
+
+A new script, called v.bat, runs bzr version-info to create leo/core/
+bzr_version.py.
+leo/core/version.py uses the data in bzr_version.py to create Leo's
+signon message. A copy of v.bat is in the latest copy of LeoPyRef.leo.
+
+Thus, I can update the signon simply by running the script.  This
+gives complete control over when the signon message will change.
+
+I plan to run the "v" script at least once a day. This will ensure
+that the daily snapshots will be distinguishable.
+
+Edward
+
+P.S.  v.bat must run 2to3 on bzr_version.py to ensure that it will
+work on Python 3k, as well as with Python 2.x. 
+
+It might be possible to run v from a bzr push hook, but I haven't done
+that.  For now, we'll just have to accept that the info might be
+slightly out of date. 
 .. @+node:ekr.20120203053243.10111: *4* Fix OpenWith menu
 @nocolor-node
 
