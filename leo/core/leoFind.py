@@ -199,6 +199,7 @@ class leoFind:
         # Ivars containing internal state...
         self.c = None # The commander for this search.
         self.clone_find_all = False
+        self.clone_find_all_flattened = False
         self.p = None # The position being searched.  Never saved between searches!
         self.in_headline = False # True: searching headline text.
         self.s_ctrl = searchWidget() # The search text for this search.
@@ -380,7 +381,7 @@ class leoFind:
 
         self.update_ivars()
     #@+node:ekr.20031218072017.3067: *3* Find/change utils
-    #@+node:ekr.20031218072017.2293: *4* batchChange (sets start of change-all group)
+    #@+node:ekr.20031218072017.2293: *4* batchChange (leoFind) (sets start of change-all group)
     #@+at This routine performs a single batch change operation, updating the
     # head or body string of p and leaving the result in s_ctrl. We update
     # the body if we are changing the body text of c.currentVnode().
@@ -441,7 +442,7 @@ class leoFind:
 
                 u.afterChangeNodeContents(p,'Change Body',undoData)
             #@-<< change body >>
-    #@+node:ekr.20031218072017.3068: *4* change
+    #@+node:ekr.20031218072017.3068: *4* change (leoFind)
     def change(self,event=None):
 
         if self.checkArgs():
@@ -475,7 +476,7 @@ class leoFind:
         g.es("changed:",count,"instances")
         c.redraw(p)
         self.restore(saveData)
-    #@+node:ekr.20031218072017.3070: *4* changeSelection
+    #@+node:ekr.20031218072017.3070: *4* changeSelection (leoFind)
     # Replace selection with self.change_text.
     # If no selection, insert self.change_text at the cursor.
 
@@ -554,7 +555,7 @@ class leoFind:
                     result.append('\\%s' % ch) # Append raw '\i'
         result.append(s[i:])
         return ''.join(result)
-    #@+node:ekr.20031218072017.3071: *4* changeThenFind
+    #@+node:ekr.20031218072017.3071: *4* changeThenFind (leoFind)
     def changeThenFind(self):
 
         if not self.checkArgs():
@@ -563,7 +564,7 @@ class leoFind:
         self.initInHeadline()
         if self.changeSelection():
             self.findNext(False) # don't reinitialize
-    #@+node:ekr.20031218072017.2417: *4* doChange...Script
+    #@+node:ekr.20031218072017.2417: *4* doChange...Scrip (leoFind)t
     def doChangeScript (self):
 
         g.app.searchDict["type"] = "change"
@@ -590,7 +591,7 @@ class leoFind:
             g.es("exception executing change script")
             g.es_exception(full=False)
             g.app.searchDict["continue"] = False # 2/1/04
-    #@+node:ekr.20031218072017.3072: *4* doFind...Script
+    #@+node:ekr.20031218072017.3072: *4* doFind...Script (leoFind)
     def doFindScript (self):
 
         g.app.searchDict["type"] = "find"
@@ -616,11 +617,12 @@ class leoFind:
             g.es("exception executing find script")
             g.es_exception(full=False)
             g.app.searchDict["continue"] = False # 2/1/04
-    #@+node:ekr.20031218072017.3073: *4* findAll & helper
+    #@+node:ekr.20031218072017.3073: *4* findAll & helper (leoFind)
     def findAll(self):
 
+        trace = False and not g.unitTesting
         c = self.c ; w = self.s_ctrl ; u = c.undoer
-        undoType = 'Clone Find All'
+        undoType = 'Clone Find All Flattened' if self.clone_find_all_flattened else 'Clone Find All'
         if not self.checkArgs():
             return
         self.initInHeadline()
@@ -631,6 +633,7 @@ class leoFind:
         skip = {} # Nodes that should be skipped.
             # Keys are vnodes, values not important.
         count,found = 0,None
+        if trace: g.trace(self.clone_find_all_flattened,self.p)
         while 1:
             pos, newpos = self.findNextMatch() # sets self.p.
             if pos is None: break
@@ -644,9 +647,12 @@ class leoFind:
                 if not skip:
                     undoData = u.beforeInsertNode(c.p)
                     found = self.createCloneFindAllNode()
-                # Don't look at the node or it's descendants.
-                for p2 in self.p.self_and_subtree():
-                    skip[p2.v] = True
+                if self.clone_find_all_flattened:
+                    skip[self.p.v] = True
+                else:
+                    # Don't look at the node or it's descendants.
+                    for p2 in self.p.self_and_subtree():
+                        skip[p2.v] = True
                 # Create a clone of self.p under the find node.
                 p2 = self.p.clone()
                 p2.moveToLastChildOf(found)
@@ -670,7 +676,7 @@ class leoFind:
         found.moveToRoot(oldRoot)
         c.setHeadString(found,'Found: ' + self.find_text)
         return found
-    #@+node:ekr.20031218072017.3074: *4* findNext
+    #@+node:ekr.20031218072017.3074: *4* findNext (leoFind)
     def findNext(self,initFlag=True):
 
         c = self.c
@@ -694,7 +700,7 @@ class leoFind:
             self.restore(data)
         else:
             self.showSuccess(pos,newpos)
-    #@+node:ekr.20031218072017.3075: *4* findNextMatch
+    #@+node:ekr.20031218072017.3075: *4* findNextMatch (leoFind)
     # Resumes the search where it left off.
     # The caller must call set_first_incremental_search or set_first_batch_search.
 
@@ -766,12 +772,12 @@ class leoFind:
 
         if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
         return None, None
-    #@+node:ekr.20031218072017.3076: *4* resetWrap
+    #@+node:ekr.20031218072017.3076: *4* resetWrap (leoFind)
     def resetWrap (self,event=None):
 
         self.wrapPosition = None
         self.onlyPosition = None
-    #@+node:ekr.20031218072017.3077: *4* search & helpers
+    #@+node:ekr.20031218072017.3077: *4* search & helpers (leoFind)
     def search (self):
 
         """Search s_ctrl for self.find_text under the control of the
@@ -1006,7 +1012,7 @@ class leoFind:
 
         if self.trace: g.trace(repr(s))
         return s
-    #@+node:ekr.20031218072017.3081: *4* selectNextPosition
+    #@+node:ekr.20031218072017.3081: *4* selectNextPosition (leoFind)
     # Selects the next node to be searched.
 
     def selectNextPosition(self):
@@ -1078,7 +1084,7 @@ class leoFind:
             self.in_headline = self.search_headline
             self.initNextText()
         return p
-    #@+node:ekr.20061212095134.1: *3* General utils
+    #@+node:ekr.20061212095134.1: *3* General utils (leoFind)
     #@+node:ekr.20051020120306.26: *4* bringToFront (leoFind)
     def bringToFront (self):
 
@@ -1106,7 +1112,7 @@ class leoFind:
             w.selectAllText()
 
         return # (for Tk) "break"
-    #@+node:ekr.20031218072017.3082: *3* Initing & finalizing
+    #@+node:ekr.20031218072017.3082: *3* Initing & finalizing (leoFind)
     #@+node:ekr.20031218072017.3083: *4* checkArgs
     def checkArgs (self):
 
@@ -1442,13 +1448,22 @@ class findTab (leoFind):
 
         self.setup_command()
         self.changeAll()
-    #@+node:ekr.20060128075225: *4* cloneFindAllCommand
+    #@+node:ekr.20060128075225: *4* cloneFindAllCommand & cloneFindAllFlattenedCommand
     def cloneFindAllCommand (self,event=None):
 
         self.setup_command()
         self.clone_find_all = True
         self.findAll()
         self.clone_find_all = False
+        
+    def cloneFindAllFlattenedCommand (self,event=None):
+
+        self.setup_command()
+        self.clone_find_all = True
+        self.clone_find_all_flattened = True
+        self.findAll()
+        self.clone_find_all = False
+        self.clone_find_all_flattened = False
     #@+node:ekr.20060204120158.1: *4* findAgainCommand
     def findAgainCommand (self):
 
@@ -1501,7 +1516,7 @@ class findTab (leoFind):
 
     # self.oops is defined in the leoFind class.
     #@-others
-#@+node:ekr.20070302090616: ** class nullFindTab class (findTab)
+#@+node:ekr.20070302090616: ** class nullFindTab class (subclass of findTab)
 class nullFindTab (findTab):
 
     #@+others

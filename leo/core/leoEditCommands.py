@@ -9185,7 +9185,7 @@ class minibufferFind (baseEditCommandsClass):
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg,changeAll=True)
-    #@+node:ekr.20060128080201: *4* cloneFindAll
+    #@+node:ekr.20060128080201: *4* cloneFindAll (minibufferFind)
     def cloneFindAll (self,event):
 
         c = self.c ; k = self.k ; tag = 'clone-find-all'
@@ -9195,7 +9195,7 @@ class minibufferFind (baseEditCommandsClass):
             w = self.editWidget(event) # sets self.w
             if not w: return
             self.setupArgs(forward=None,regexp=None,word=None)
-            # 2011/05/29: Init the pattern from the search pattern.
+            # Init the pattern from the search pattern.
             self.stateZeroHelper(
                 event,tag,'Clone Find All: ',self.cloneFindAll)
         else:
@@ -9204,7 +9204,27 @@ class minibufferFind (baseEditCommandsClass):
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,cloneFindAll=True)
             c.treeWantsFocus()
-    #@+node:ekr.20060204120158: *4* findAgain
+            
+    #@+node:ekr.20120226131923.10220: *4* cloneFindAllFlattened (minibufferFind)
+    def cloneFindAllFlattened (self,event):
+
+        c = self.c ; k = self.k ; tag = 'clone-find-all-flattened'
+        state = k.getState(tag)
+
+        if state == 0:
+            w = self.editWidget(event) # sets self.w
+            if not w: return
+            self.setupArgs(forward=None,regexp=None,word=None)
+            # Init the pattern from the search pattern.
+            self.stateZeroHelper(
+                event,tag,'Clone Find All Flattened: ',self.cloneFindAllFlattened)
+        else:
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+            self.generalSearchHelper(k.arg,cloneFindAllFlattened=True)
+            c.treeWantsFocus()
+    #@+node:ekr.20060204120158: *4* findAgain (minibufferFind)
     def findAgain (self,event):
 
         f = self.finder
@@ -9214,7 +9234,7 @@ class minibufferFind (baseEditCommandsClass):
 
         # This handles the reverse option.
         return f.findAgainCommand()
-    #@+node:ekr.20060209064140: *4* findAll
+    #@+node:ekr.20060209064140: *4* findAll (minibufferFind)
     def findAll (self,event):
 
         k = self.k ; state = k.getState('find-all')
@@ -9252,8 +9272,8 @@ class minibufferFind (baseEditCommandsClass):
         else:
             # This handles the reverse option.
             self.finder.findNextCommand()
-    #@+node:ekr.20060124181213.4: *4* generalSearchHelper
-    def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
+    #@+node:ekr.20060124181213.4: *4* generalSearchHelper (minibufferFind)
+    def generalSearchHelper (self,pattern,cloneFindAll=False,cloneFindAllFlattened=False,findAll=False):
 
         c = self.c
 
@@ -9268,6 +9288,8 @@ class minibufferFind (baseEditCommandsClass):
             self.finder.findAllCommand()
         elif cloneFindAll:
             self.finder.cloneFindAllCommand()
+        elif cloneFindAllFlattened:
+            self.finder.cloneFindAllFlattenedCommand()
         else:
             # This handles the reverse option.
             self.finder.findNextCommand()
@@ -9495,6 +9517,7 @@ class searchCommandsClass (baseEditCommandsClass):
 
         return {
             'clone-find-all':                       self.cloneFindAll,
+            'clone-find-all-flattened':             self.cloneFindAllFlattened,
             
             'change':                               self.findTabChange,
             'change-all':                           self.changeAll,
@@ -9502,6 +9525,7 @@ class searchCommandsClass (baseEditCommandsClass):
             
             'find-all':                             self.findAll,
             'find-clone-all':                       self.cloneFindAll, # Synonym.
+            'find-clone-all-flattened':             self.cloneFindAllFlattened, # Synonym.
             'find-next':                            self.findTabFindNext,
             'find-prev':                            self.findTabFindPrev,
 
@@ -9688,6 +9712,9 @@ class searchCommandsClass (baseEditCommandsClass):
         regardless of how many clones the node has, or of how many matches are found
         in each node.'''
         self.getHandler().cloneFindAll(event)
+        
+    def cloneFindAllFlattened (self,event):
+        self.getHandler().cloneFindAllFlattened(event)
 
     def findAll            (self,event):
         '''Do search-with-present-options and print all matches in the log pane.'''

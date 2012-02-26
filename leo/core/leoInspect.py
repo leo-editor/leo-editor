@@ -1628,7 +1628,7 @@ class AstFormatter (AstTraverser):
         
         for z in tree.body:
             self.append(self.visit(z,'module body'))
-            # sefl.append('\n')
+            # self.append('\n')
     #@+node:ekr.20111117031039.10198: *3* f.Operands
     #@+node:ekr.20111117031039.10683: *4* f.arguments
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
