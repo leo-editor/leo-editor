@@ -1872,13 +1872,14 @@ class LoadManager:
         if lm.files:
             c1 = None
             for fn in lm.files:
-                c = g.openWithFileName(fn,old_c=None)
+                c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
                     # Will give a "not found" message.
                 assert c
                 if not c1: c1 = c
         else:
             # Create an empty frame.
-            c = c1 = g.openWithFileName(None,old_c=None)
+            fn = lm.computeWorkbookFileName()
+            c = c1 = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
                 
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None

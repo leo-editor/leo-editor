@@ -556,6 +556,74 @@ def removeFile(path):
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
 #@+node:ekr.20100131171342.5472: *3* Check base classes & ivars
+#@+node:ekr.20111118125141.3879: *4* @test bodyCtrl property
+# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
+body = c.frame.body
+old_w = body.widget
+assert old_w is not None
+try:
+    body.bodyCtrl = None
+    assert body.widget is None
+finally:
+    body.widget = old_w
+    
+assert hasattr(c.frame.body,'bodyCtrl')
+assert hasattr(c.frame.log,'logCtrl')
+#@+node:ekr.20120227152633.3934: *4* @test c.config.initIvar sets *commander* ivars
+# for key in sorted(list(g.app.config.ivarsDict.keys())):
+    
+for ivar,setting_type,default in g.app.config.ivarsData:
+    
+    assert hasattr(c,ivar),ivar
+    assert hasattr(c.config,ivar),ivar
+    val = getattr(c.config,ivar)
+    val2 = c.config.get(ivar,setting_type)
+    assert val == val2,"%s %s" % (val,val2)
+    # print(ivar,val)
+#@+node:ekr.20120227143454.3932: *4* @test k.settings ivars match settings
+k = c.k
+getBool  = c.config.getBool
+getColor = c.config.getColor
+
+bg = getColor('body_text_background_color') or 'white'
+fg = getColor('body_text_foreground_color') or 'black'
+
+table = (
+    ('command_mode_bg_color',           getColor('command_mode_bg_color') or bg),
+    ('command_mode_fg_color',           getColor('command_mode_fg_color') or fg),
+    ('enable_alt_ctrl_bindings',        getBool('enable_alt_ctrl_bindings')),
+    ('enable_autocompleter',            getBool('enable_autocompleter_initially')),
+    ('enable_calltips',                 getBool('enable_calltips_initially')),
+    ('ignore_caps_lock',                getBool('ignore_caps_lock')),
+    ('ignore_unbound_non_ascii_keys',   getBool('ignore_unbound_non_ascii_keys')),
+    ('insert_mode_bg_color',            getColor('insert_mode_bg_color') or bg),
+    ('insert_mode_fg_color',            getColor('insert_mode_fg_color') or fg),
+    ('minibuffer_background_color',     getColor('minibuffer_background_color') or 'lightblue'),
+    ('minibuffer_error_color',          getColor('minibuffer_error_color') or 'red'),
+    ('minibuffer_warning_color',        getColor('minibuffer_warning_color') or 'lightgrey'),
+    ('overwrite_mode_bg_color',         getColor('overwrite_mode_bg_color') or bg),
+    ('overwrite_mode_fg_color',         getColor('overwrite_mode_fg_color') or fg),
+    ('swap_mac_keys',                   getBool('swap_mac_keys')),
+    ('unselected_body_bg_color',        getColor('unselected_body_bg_color') or bg),
+    ('unselected_body_fg_color',        getColor('unselected_body_fg_color') or bg),
+    ('warn_about_redefined_shortcuts',  getBool('warn_about_redefined_shortcuts')),
+)
+
+for ivar,setting in table:
+    assert hasattr(k,ivar),ivar
+    val = getattr(k,ivar)
+    assert val == setting,'%s k.%s setting: %s' % (
+        ivar,ivar,valO)
+#@+node:ekr.20111118183928.3881: *4* @test logCtrl property
+# Test that changing c.frame.log.logCtrl also changes c.frame.log.widget.
+log = c.frame.log
+old_w = log.widget
+assert old_w is not None
+try:
+    log.logCtrl = None
+    assert log.widget is None
+finally:
+    log.widget = old_w
 #@+node:ekr.20100131171342.5479: *4* @test official commander ivars
 f = c.frame
 assert(f.c==c)
@@ -660,29 +728,6 @@ for ivar in (
     # 'root',
 ):
     assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
-#@+node:ekr.20111118125141.3879: *4* @test bodyCtrl property
-# Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
-body = c.frame.body
-old_w = body.widget
-assert old_w is not None
-try:
-    body.bodyCtrl = None
-    assert body.widget is None
-finally:
-    body.widget = old_w
-    
-assert hasattr(c.frame.body,'bodyCtrl')
-assert hasattr(c.frame.log,'logCtrl')
-#@+node:ekr.20111118183928.3881: *4* @test logCtrl property
-# Test that changing c.frame.log.logCtrl also changes c.frame.log.widget.
-log = c.frame.log
-old_w = log.widget
-assert old_w is not None
-try:
-    log.logCtrl = None
-    assert log.widget is None
-finally:
-    log.widget = old_w
 #@+node:ekr.20100205223124.5377: ** Syntax checking
 #@+node:ekr.20040712101813: *3* @@test c.checkAllPythonCode
 result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
@@ -4393,11 +4438,11 @@ filename = '' # g.os.path.basename(arg)
 vtuple = [arg0,fn]
 
 table = (
-    ('os.system',       'os.system(%s)' % (arg+fn)),
-    ('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    ('exec',            'exec(%s)' % (arg+fn)),
-    ('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    ('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
+    #('os.system',       'os.system(%s)' % (arg+fn)),
+    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
+    #('exec',            'exec(%s)' % (arg+fn)),
+    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
+    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
     ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
     ('huh?',            'bad command:'+'huh?'),
 )

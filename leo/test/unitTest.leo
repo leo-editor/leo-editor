@@ -144,18 +144,13 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016" a="M"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285508302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735505302e382e3671057d71065808000000616e6e6f7461746571077d7108735508302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735805000000302e382e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20120217052728.3921"><vh>Failing unit tests</vh>
 <v t="ekr.20111210175541.3957"><vh>@test refresh @shadow links clones</vh>
 <v t="ekr.20111213122041.3931"><vh>shadow node 1</vh></v>
 </v>
 </v>
-<v t="ekr.20120218165008.3925"><vh>print hi (not a test)</vh></v>
-<v t="ekr.20120218173952.3932"><vh>@test print hi</vh></v>
-<v t="ekr.20100203103015.5356"><vh>@@@test c.openTempFileInExternalEditor</vh></v>
-<v t="ekr.20120227143454.3932"><vh>@test k.settings ivars match settings</vh></v>
-<v t="ekr.20120227152633.3934"><vh>@test c.config.initIvar sets *commander* ivars</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -571,7 +566,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="14"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -838,32 +833,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100203103015.5356">arg = ''
-arg0 = 'one'
-fn = '&lt;fn&gt;'
-filename = '' # g.os.path.basename(arg)
-vtuple = [arg0,fn]
-
-table = (
-    ('os.system',       'os.system(%s)' % (arg+fn)),
-    ('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    ('exec',            'exec(%s)' % (arg+fn)),
-    ('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    ('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
-    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
-    ('huh?',            'bad command:'+'huh?'),
-)
-
-for openType,result in table:
-    if openType in ('os.spawnv','subprocess.Popen'):
-        arg2 = ['one']
-    else:
-        arg2 = None
-    result2 = c.openTempFileInExternalEditor(
-        arg2,fn,openType,testing=True)
-    assert result==result2,'expected %s, got %s' % (
-        repr(result),repr(result2))
-</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -1106,51 +1075,5 @@ finally:
 <t tx="ekr.20111213122041.3931"># node 1 text A.
 </t>
 <t tx="ekr.20120217052728.3921"></t>
-<t tx="ekr.20120218165008.3925">print('hi')</t>
-<t tx="ekr.20120218173952.3932">print('hi')</t>
-<t tx="ekr.20120227143454.3932">k = c.k
-getBool  = c.config.getBool
-getColor = c.config.getColor
-
-bg = getColor('body_text_background_color') or 'white'
-fg = getColor('body_text_foreground_color') or 'black'
-
-table = (
-    ('command_mode_bg_color',           getColor('command_mode_bg_color') or bg),
-    ('command_mode_fg_color',           getColor('command_mode_fg_color') or fg),
-    ('enable_alt_ctrl_bindings',        getBool('enable_alt_ctrl_bindings')),
-    ('enable_autocompleter',            getBool('enable_autocompleter_initially')),
-    ('enable_calltips',                 getBool('enable_calltips_initially')),
-    ('ignore_caps_lock',                getBool('ignore_caps_lock')),
-    ('ignore_unbound_non_ascii_keys',   getBool('ignore_unbound_non_ascii_keys')),
-    ('insert_mode_bg_color',            getColor('insert_mode_bg_color') or bg),
-    ('insert_mode_fg_color',            getColor('insert_mode_fg_color') or fg),
-    ('minibuffer_background_color',     getColor('minibuffer_background_color') or 'lightblue'),
-    ('minibuffer_error_color',          getColor('minibuffer_error_color') or 'red'),
-    ('minibuffer_warning_color',        getColor('minibuffer_warning_color') or 'lightgrey'),
-    ('overwrite_mode_bg_color',         getColor('overwrite_mode_bg_color') or bg),
-    ('overwrite_mode_fg_color',         getColor('overwrite_mode_fg_color') or fg),
-    ('swap_mac_keys',                   getBool('swap_mac_keys')),
-    ('unselected_body_bg_color',        getColor('unselected_body_bg_color') or bg),
-    ('unselected_body_fg_color',        getColor('unselected_body_fg_color') or bg),
-    ('warn_about_redefined_shortcuts',  getBool('warn_about_redefined_shortcuts')),
-)
-
-for ivar,setting in table:
-    assert hasattr(k,ivar),ivar
-    val = getattr(k,ivar)
-    assert val == setting,'%s k.%s setting: %s' % (
-        ivar,ivar,valO)</t>
-<t tx="ekr.20120227152633.3934"># for key in sorted(list(g.app.config.ivarsDict.keys())):
-    
-for ivar,setting_type,default in g.app.config.ivarsData:
-    
-    assert hasattr(c,ivar),ivar
-    assert hasattr(c.config,ivar),ivar
-    val = getattr(c.config,ivar)
-    val2 = c.config.get(ivar,setting_type)
-    assert val == val2,"%s %s" % (val,val2)
-    # print(ivar,val)
-</t>
 </tnodes>
 </leo_file>
