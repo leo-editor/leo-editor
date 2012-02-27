@@ -2809,12 +2809,13 @@ def pr(*args,**keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
+    
+    print_immediately = False # True: good for debugging.
 
     # Compute the effective args.
     d = {'commas':False,'newline':True,'spaces':True}
     d = g.doKeywordArgs(keys,d)
     newline = d.get('newline')
-    nl = g.choose(newline,'\n','')
 
     if sys.platform.lower().startswith('win'):
         encoding = 'ascii' # 2011/11/9.
@@ -2825,9 +2826,11 @@ def pr(*args,**keys):
         encoding = 'utf-8'
 
     s = g.translateArgs(args,d) # Translates everything to unicode.
-
-    if newline:
-        s = s + '\n'
+    
+    # Add a newline unless we are going to queue the message.
+    if app.logInited and not print_immediately:
+        if newline:
+            s = s + '\n'
 
     if g.isPython3:
         if encoding.lower() in ('utf-8','utf-16'):
@@ -2838,15 +2841,16 @@ def pr(*args,**keys):
             s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
     else:
         s2 = g.toEncodedString(s,encoding,reportErrors=False)
-        
-    # New in Leo 4.10: always print the result immediately.
-    sys.stdout.write(s2)
-        
-    # if app.logInited:
-        # # Print s2 *without* an additional trailing newline.
-        # sys.stdout.write(s2)
-    # else:
-        # app.printWaiting.append(s2)
+      
+    if print_immediately:
+        # Good for debugging: prints messages immediately.
+        sys.stdout.write(s2)
+    else:
+        # Good for production: queues 'reading settings' until after signon.
+        if app.logInited:
+            sys.stdout.write(s2)
+        else:
+            app.printWaiting.append(s2)
 #@+node:ekr.20031218072017.2317: *3* g.trace
 def trace (*args,**keys):
 

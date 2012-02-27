@@ -337,7 +337,7 @@ def pdb (message=''):
 
 pr_warning_given = False
 
-def pr(*args,**keys):
+def pr(*args,**keys): # (codewise!)
 
     '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
@@ -348,7 +348,6 @@ def pr(*args,**keys):
     d = {'commas':False,'newline':True,'spaces':True}
     d = g.doKeywordArgs(keys,d)
     newline = d.get('newline')
-    nl = g.choose(newline,'\n','')
     if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
         # sys.stdout is a TextIOWrapper with a particular encoding.
         encoding = sys.stdout.encoding
@@ -359,7 +358,8 @@ def pr(*args,**keys):
     # However, the following must appear in Python\Lib\sitecustomize.py:
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
-    s = s + '\n'
+    if newline:
+        s = s + '\n'
 
     if g.isPython3:
         if encoding.lower() in ('utf-8','utf-16'):
@@ -370,15 +370,15 @@ def pr(*args,**keys):
             s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
     else:
         s2 = g.toEncodedString(s,encoding,reportErrors=False)
-        
-    print(s2)
 
-    # try: # We can't use any print keyword args in Python 2.x!
-        # sys.stdout.write(s2)
-    # except Exception:
-        # # This can fail when running pythonw.ese.
-        # # print('unexpected exception in g.pr')
-        # print(s2)
+    if 1: # Good for production: queues 'reading settings' until after signon.
+        if app.logInited:
+            sys.stdout.write(s2)
+        else:
+            app.printWaiting.append(s2)
+    else:
+        # Good for debugging: prints messages immediately.
+        print(s2)
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
