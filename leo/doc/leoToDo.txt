@@ -14,7 +14,6 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20120212095313.10377: *3* To do first
-.. @+node:ekr.20120226131923.10224: *4* Disable reading settings message in external unit tests 
 .. @+node:ekr.20120225032124.18056: *4* Clear out the pre-writing folder
 @pagewidth 60
 .. @+node:ekr.20120225072226.10199: *5* Add to scripting chapter

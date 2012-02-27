@@ -1380,10 +1380,15 @@ class LoadManager:
         lm = self
         if not fn: return None
         
-        giveMessage = not g.app.unitTesting and not g.app.silentMode and not g.app.batchMode
+        giveMessage = (
+            not g.app.unitTesting and
+            not g.app.silentMode and
+            not g.app.batchMode)
+            # and not g.app.inBridge
         def message(s):
             # This occurs early in startup, so use the following.
-            if giveMessage and not g.isPython3:
+            if not giveMessage: return
+            if not g.isPython3:
                 s = g.toEncodedString(s,'ascii')
             g.es_print(s,color='blue')
             
