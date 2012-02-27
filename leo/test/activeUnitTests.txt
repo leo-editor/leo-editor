@@ -4385,7 +4385,7 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise
-#@+node:ekr.20100203103015.5356: *4* @test c.openTempFileInExternalEditor
+#@+node:ekr.20100203103015.5356: *4* @@@test c.openTempFileInExternalEditor
 arg = ''
 arg0 = 'one'
 fn = '<fn>'

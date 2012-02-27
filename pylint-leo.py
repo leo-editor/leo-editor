@@ -108,7 +108,7 @@ def getRecentCoreList():
     
     return (
         # ('runLeo',            ''),
-        ('leoApp',            ''),
+        # ('leoApp',            ''),
         # ('leoAtFile',         ''),
         # ('leoBridge',       ''),
         # ('leoCache',          ''),
@@ -229,7 +229,7 @@ recentPluginsList = (
 tables_table = (
     (coreList,'core'),
     (guiPluginsList,'plugins'),
-    #(pluginsList,'plugins'),
+    # (pluginsList,'plugins'),
     
     # (onlySupressionsList,'core'),
     # (recentCoreList,'core'),

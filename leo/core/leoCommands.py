@@ -1300,8 +1300,10 @@ class Commands (object):
 
         openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
         '''
+        
+        trace = False and not g.unitTesting
+        if trace: g.trace('data',data)
 
-        # g.trace('data',data)
         c = self ; p = c.p
         n = data and len(data) or 0
         if n != 3:
@@ -1325,6 +1327,11 @@ class Commands (object):
     def getOpenWithExt (self,p,ext):
 
         trace = False and not g.app.unitTesting
+        if trace: g.trace(ext)
+        
+        for ch in ("'",'"'):
+            if ext.startswith(ch): ext = ext.strip(ch)
+
         c = self
 
         if not ext:
@@ -1348,6 +1355,8 @@ class Commands (object):
 
         if ext[0] != '.':
             ext = '.'+ext
+            
+        if trace: g.trace(ext)
 
         return ext
     #@+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
@@ -1357,23 +1366,55 @@ class Commands (object):
         The arg and openType args come from the data arg to c.openWith.
         '''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting ; verbose = False
         testing = testing or g.unitTesting
         if arg is None: arg = ''
+        
+        # 2012/02/27: Carefully enclose arg and fn in double quotes.
+        # This is tricky because these values come from the user.
+        for ch in ("'",'"'):
+            if openType.startswith(ch):
+                openType = openType.strip(ch)
+            if fn.startswith(ch):
+                fn = fn.strip(ch)
+            if type(arg) in (type((),),type([])):
+                arg = [z.strip(ch) if z.startswith(ch) else z for z in arg]
+            else:
+                arg = arg.strip(ch) if arg.startswith(ch) else arg
+        
+        # Must be done *after* the loop.
+        if type(arg) in (type((),),type([])):
+            arg_tuple = ['"%s"' % (z) for z in arg]
+                # Important: retain the tuple so that we can append the file name.
+            arg = ' '.join(arg_tuple)
+            if trace:
+                print()
+                g.trace()
+                print('%s(' % openType)
+                for z in arg_tuple:
+                    print('  %s,' % z)
+                print(')')
+        else:
+            arg = '"%s"' % (arg) if arg else ''
+            if trace:
+                print()
+                g.trace()
+                print('%s(' % openType)
+                print('  %s' % arg)
+                print(')')
+            
+        fn  = '"%s"' % (fn) if fn else ''
 
         try:
-            if trace: g.trace(repr(openType),repr(arg),repr(fn))
             command = '<no command>'
             if openType == 'os.system':
-                if 1:
-                    # This works, *provided* that arg does not contain blanks.  Sheesh.
-                    command = 'os.system(%s)' % (arg+fn)
-                    if trace: g.trace(command)
-                    if not testing: os.system(arg+fn)
-                else:
-                    # XP does not like this format!
-                    command = 'os.system("%s %s")' % (arg,fn)
-                    if not testing: os.system('"%s" "%s"' % (arg,fn))
+                command = '%s %s' % (arg,fn)
+                if trace:
+                    g.trace()
+                    print('  %s' % (arg))
+                    print('  %s' % (fn))
+                if not testing:
+                    os.system(command)
             elif openType == 'os.startfile':
                 command = 'os.startfile(%s)' % (arg+fn)
                 if trace: g.trace(command)
@@ -1399,22 +1440,13 @@ class Commands (object):
                 if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
             elif openType == 'subprocess.Popen':
                 use_shell = True
-                if g.isString(arg):
-                    if arg:
-                        vtuple = arg + ' ' + fn
-                    else:
-                        vtuple = fn
-                elif isinstance(arg,(list, tuple)):
-                    vtuple = arg[:]
-                    vtuple.append(fn)
-                    use_shell = False
-                command = 'subprocess.Popen(%s)' % repr(vtuple)
-                if trace: g.trace(command)
+                c_arg = '%s %s' % (arg,fn) if arg else fn
+                command = 'subprocess.Popen(%s)' % c_arg
                 if not testing:
                     try:
-                        subprocess.Popen(vtuple,shell=use_shell)
+                        subprocess.Popen(c_arg,shell=use_shell)
                     except OSError:
-                        g.es_print('vtuple',repr(vtuple))
+                        g.es_print('c_arg',repr(c_arg))
                         g.es_exception()
             elif g.isCallable(openType):
                 # Invoke openWith like this:
@@ -1581,8 +1613,8 @@ class Commands (object):
 
         '''Return the path to the temp file corresponding to p and ext.
 
-         This is overridden in mod_tempfname plugin
-         '''
+        This is overridden in mod_tempfname plugin
+        '''
 
         fn = '%s_LeoTemp_%s%s' % (
             g.sanitize_filename(p.h),

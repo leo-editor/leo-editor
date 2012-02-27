@@ -672,6 +672,7 @@ class ParserBaseClass:
         d = self.parseOpenWith(p)
         d['name']=name
         d['shortcut']=val
+        # g.trace('command',d.get('command'))
         name = kind = 'openwithtable'
         self.openWithList.append(d)
         self.set(p,kind,name,self.openWithList)
@@ -903,12 +904,9 @@ class ParserBaseClass:
     #@+node:ekr.20070411101643.2: *4* parseOpenWith & helper
     def parseOpenWith (self,p):
 
-        d = {'command': None,}
+        d = {'command': None}
 
-        s = p.b
-        lines = g.splitLines(s)
-
-        for line in lines:
+        for line in g.splitLines(p.b):
             self.parseOpenWithLine(line,d)
 
         return d

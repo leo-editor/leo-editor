@@ -332,7 +332,6 @@ class leoMenu:
         '''Create menus from aList instead of 'hard coded' menus.
         The 'top' menu has already been created.'''
 
-        trace = False and not g.unitTesting
         c = self.c
         tag = '@menu'
         for z in aList:
@@ -345,13 +344,9 @@ class leoMenu:
             else:
                 self.error('%s %s not valid outside @menu tree' % (kind,val))
 
-        table = c.config.getOpenWith() 
+        table = c.config.getOpenWith()
         if table:
-            if trace:
-                for z in table:
-                    g.trace(z)
             self.createOpenWithMenuFromTable(table)
-        
     #@+node:ekr.20070927082205: *6* createMenuFromConfigList
     def createMenuFromConfigList (self,parentName,aList,level=0):
 
@@ -1302,26 +1297,31 @@ class leoMenu:
             g.es("exception creating",menuName,"menu")
             g.es_exception()
             return None
-    #@+node:ekr.20031218072017.4116: *4* createOpenWithMenuFromTable & helper (leoMenu)
+    #@+node:ekr.20031218072017.4116: *4* createOpenWithMenuFromTable & helpers (leoMenu)
     def createOpenWithMenuFromTable (self,table):
 
-        '''Entries in the table passed to createOpenWithMenuFromTable are
-    tuples of the form (commandName,shortcut,data).
-
-    - command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
-    - shortcut is a string describing a shortcut, just as for createMenuItemsFromTable.
-    - data is a tuple of the form (command,arg,ext).
-
-    Leo executes command(arg+path) where path is the full path to the temp file.
-    If ext is not None, the temp file has the given extension.
-    Otherwise, Leo computes an extension based on the @language directive in effect.'''
+        '''table is a lists of dicts:
+        
+        - d.get('command'):  one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+        - d.get('shortcut'): the stroke (??)
+        - d.get('name'):     the menu label.
+        
+        Leo executes command(arg+path) where path is the full path to the temp file.
+        If ext is not None, the temp file has the given extension.
+        Otherwise, Leo computes an extension based on the @language directive in effect.
+    '''
 
         trace = False and not g.unitTesting
-        c = self.c
+        c,k = self.c,self.c.k
+        if not table: return
+        
+        #### ?????
         g.app.openWithTable = table # Override any previous table.
+        
+        
         # Delete the previous entry.
         parent = self.getMenu("File")
-        if trace: g.trace('parent',parent)
+        # if trace: g.trace('parent',parent)
         if not parent:
             if not g.app.batchMode:
                 g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
@@ -1338,45 +1338,52 @@ class leoMenu:
                 index = parent.index("Open With...")
                 parent.delete(index)
             except:
-                if trace:
-                    g.trace('unexpected exception')
-                    g.es_exception()
+                g.trace('unexpected exception')
+                g.es_exception()
                 return
+        
         # Create the Open With menu.
         openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
         if not openWithMenu:
-            if trace: g.trace('openWithMenu returns None')
+            g.trace('openWithMenu returns None')
             return
+        
         self.setMenu("Open With...",openWithMenu)
+        
         # Create the menu items in of the Open With menu.
-        
-        #### Each item is a dict.
-        # for entry in table:
-            # if len(entry) != 3: # 6/22/03
-                # g.es('','createOpenWithMenuFromTable:','invalid data',color="red")
-                # return
-
         self.createOpenWithMenuItemsFromTable(openWithMenu,table)
-        
-        for entry in table:
-            name,shortcut,data = entry
-            c.k.bindOpenWith (shortcut,name,data)
-    #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable (leoMenu)
+
+        for d in table:
+            # k.bindOpenWith (shortcut,name,data)
+            k.bindOpenWith(
+                d.get('shortcut'),
+                d.get('name'),
+                self.getCommandList(d.get('command')))
+    #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable & callback (leoMenu)
     def createOpenWithMenuItemsFromTable (self,menu,table):
 
         '''Create an entry in the Open with Menu from the table.
 
         Each entry should be a sequence with 2 or 3 elements.'''
 
-        c = self.c ; k = c.k
+        trace = False and not g.unitTesting
+        if trace: g.trace(g.callers())
 
+        c = self.c ; k = c.k
         if g.app.unitTesting: return
 
         for d in table:
             label = d.get('name')
-            command = d.get('command')
-            if command: command = command.split(',')
-            # g.trace('command',type(command),command)
+            command = self.getCommandList(d.get('command'))
+            if trace:
+                print()
+                g.trace('d...len(command)',len(command))
+                for key in sorted(list(d.keys())):
+                    print('%15s %s' % (key,d.get(key)))
+                if len(command) != 3:
+                    print('*** oops: parts of commands...')
+                    for z in command: print(repr(z))
+
             accel = d.get('shortcut') or ''
             if label and command:
                 realLabel = self.getRealMenuName(label)
@@ -1385,6 +1392,26 @@ class leoMenu:
                 callback = self.defineOpenWithMenuCallback(command) #### openWithData)
                 c.add_command(menu,label=realLabel,accel=accel,
                     command=callback,underline=underline)
+    #@+node:ekr.20031218072017.4118: *6* defineOpenWithMenuCallback (leoMenu)
+    def defineOpenWithMenuCallback(self,data):
+
+        # The first parameter must be event, and it must default to None.
+        def openWithMenuCallback(event=None,self=self,data=data):
+            return self.c.openWith(data=data)
+
+        return openWithMenuCallback
+    #@+node:ekr.20120227073551.10920: *5* getCommandList (leoMenu)
+    def getCommandList (self,s):
+        
+        '''s is a command line from parseOpenWithLine.'''
+        
+        if s:
+            o = eval(s)
+            return o
+            # return s.split(',') #### Oh, so wrong.
+        else:
+            return ''
+        
     #@+node:tbrown.20080509212202.7: *4* deleteRecentFilesMenuItems (leoMenu)
     def deleteRecentFilesMenuItems(self,menu):
         
@@ -1427,14 +1454,6 @@ class leoMenu:
                 return c.doCommand(command,label)
 
             return legacyMenuCallback
-    #@+node:ekr.20031218072017.4118: *4* defineOpenWithMenuCallback (leoMenu)
-    def defineOpenWithMenuCallback(self,data):
-
-        # The first parameter must be event, and it must default to None.
-        def openWithMenuCallback(event=None,self=self,data=data):
-            return self.c.openWith(data=data)
-
-        return openWithMenuCallback
     #@+node:ekr.20031218072017.3805: *4* deleteMenu
     def deleteMenu (self,menuName):
 
