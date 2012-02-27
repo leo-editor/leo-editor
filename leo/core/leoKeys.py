@@ -3364,7 +3364,28 @@ class keyHandlerClass:
 
         # g.trace(i,j)
         return i,j
-    #@+node:ekr.20120208064440.10190: *3* k.Mode (OLD & NEW MODES)
+    #@+node:ekr.20120208064440.10190: *3* k.Modes (no change)
+    #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
+    def addModeCommands (self):
+
+        '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
+        
+        trace = False and not g.unitTesting
+        
+        if trace: g.trace('(k)')
+
+        k = self ; c = k.c
+        d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+
+        # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+        for key in d.keys():
+
+            def enterModeCallback (event=None,name=key):
+                k.enterNamedMode(event,name)
+
+            c.commandsDict[key] = f = enterModeCallback
+            k.inverseCommandsDict [f.__name__] = key
+            if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
     #@+node:ekr.20061031131434.157: *4* k.badMode
     def badMode(self,modeName):
 
@@ -3434,6 +3455,13 @@ class keyHandlerClass:
 
         if w:
             c.widgetWantsFocusNow(w)
+    #@+node:ekr.20061031131434.160: *4* k.enterNamedMode
+    def enterNamedMode (self,event,commandName):
+
+        k = self ; c = k.c
+        modeName = commandName[6:]
+        c.inCommand = False # Allow inner commands in the mode.
+        k.generalModeHandler(event,modeName=modeName)
     #@+node:ekr.20061031131434.161: *4* k.exitNamedMode
     def exitNamedMode (self,event=None):
         
@@ -3445,7 +3473,7 @@ class keyHandlerClass:
             k.endMode()
 
         k.showStateAndMode()
-    #@+node:ekr.20061031131434.165: *4* k.modeHelp & helper
+    #@+node:ekr.20061031131434.165: *4* k.modeHelp & helper (revise helper)
     def modeHelp (self,event):
 
         '''The mode-help command.
@@ -3458,11 +3486,7 @@ class keyHandlerClass:
         c.endEditing()
 
         # g.trace(k.inputModeName)
-        
-        # if g.new_modes:
-            # if k.inputMode:
-                # k.inputMode.modeHelp()
-        # else:
+
         if k.inputModeName:
             d = g.app.config.modeCommandsDict.get('enter-'+k.inputModeName)
             k.modeHelpHelper(d)
@@ -3470,7 +3494,7 @@ class keyHandlerClass:
         if not k.silentMode:
             c.minibufferWantsFocus()
 
-        return # (for Tk) 'break'
+        return
     #@+node:ekr.20061031131434.166: *5* modeHelpHelper
     def modeHelpHelper (self,d):
 
@@ -3517,216 +3541,176 @@ class keyHandlerClass:
             # Do not set the status line here.
             k.setLabelBlue(modeName+': ',protect=True)
 
-    #@+node:ekr.20061031131434.156: *3* k.Modes (OLD MODES ONLY)
-    if not g.new_modes:
-        
-        #@+others
-        #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback) (OLD MODES)
-        def addModeCommands (self):
+    #@+node:ekr.20120208064440.10199: *4* k.generalModeHandler (OLD)
+    def generalModeHandler (self,event,
+        commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
-            '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
-            
-            trace = False and not g.unitTesting
-            
-            if trace: g.trace('(k)')
+        '''Handle a mode defined by an @mode node in leoSettings.leo.'''
 
-            k = self ; c = k.c
-            d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+        k = self ; c = k.c
+        state = k.getState(modeName)
+        trace = (False or g.trace_modes) and not g.unitTesting
 
-            # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-            for key in d.keys():
+        if trace: g.trace(modeName,'state',state)
 
-                def enterModeCallback (event=None,name=key):
-                    k.enterNamedMode(event,name)
-
-                c.commandsDict[key] = f = enterModeCallback
-                k.inverseCommandsDict [f.__name__] = key
-                if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-        #@+node:ekr.20061031131434.160: *4* k.enterNamedMode
-        def enterNamedMode (self,event,commandName):
-
-            k = self ; c = k.c
-            modeName = commandName[6:]
-            c.inCommand = False # Allow inner commands in the mode.
-            k.generalModeHandler(event,modeName=modeName)
-        #@+node:ekr.20120208064440.10199: *4* k.generalModeHandler (OLD MODES)
-        def generalModeHandler (self,event,
-            commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
-
-            '''Handle a mode defined by an @mode node in leoSettings.leo.'''
-
-            k = self ; c = k.c
-            state = k.getState(modeName)
-            trace = (False or g.trace_modes) and not g.unitTesting
-
-            if trace: g.trace(modeName,'state',state)
-
-            if state == 0:
-                k.inputModeName = modeName
-                k.modePrompt = prompt or modeName
-                k.modeWidget = event and event.widget
-                k.setState(modeName,1,handler=k.generalModeHandler)
-                self.initMode(event,modeName)
-                # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
-                if not k.silentMode:
-                    if c.config.getBool('showHelpWhenEnteringModes'):
-                        k.modeHelp(event)
-                    else:
-                        c.frame.log.hideTab('Mode')
-            elif not func:
-                g.trace('No func: improper key binding')
-                return # (for Tk) 'break'
-            else:
-                if commandName == 'mode-help':
-                    func(event)
+        if state == 0:
+            k.inputModeName = modeName
+            k.modePrompt = prompt or modeName
+            k.modeWidget = event and event.widget
+            k.setState(modeName,1,handler=k.generalModeHandler)
+            self.initMode(event,modeName)
+            # Careful: k.initMode can execute commands that will destroy a commander.
+            if g.app.quitting or not c.exists: return # (for Tk) 'break'
+            if not k.silentMode:
+                if c.config.getBool('showHelpWhenEnteringModes'):
+                    k.modeHelp(event)
                 else:
-                    savedModeName = k.inputModeName # Remember this: it may be cleared.
-                    self.endMode()
-                    if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
-                    # New in 4.4.1 b1: pass an event describing the original widget.
-                    if event:
-                        event.w = event.widget = k.modeWidget
-                    else:
-                        event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
-                    if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
-                    func(event)
-                    if g.app.quitting or not c.exists:
-                        return # (for Tk) 'break'
-                    if nextMode in (None,'none'):
-                        # Do *not* clear k.inputModeName or the focus here.
-                        # func may have put us in *another* mode.
-                        pass
-                    elif nextMode == 'same':
-                        silent = k.silentMode
-                        k.setState(modeName,1,handler=k.generalModeHandler)
-                        self.reinitMode(modeName) # Re-enter this mode.
-                        k.silentMode = silent
-                    else:
-                        k.silentMode = False # All silent modes must do --> set-silent-mode.
-                        self.initMode(event,nextMode) # Enter another mode.
-                        # Careful: k.initMode can execute commands that will destroy a commander.
-                        if g.app.quitting or not c.exists: return # (for Tk) 'break'
+                    c.frame.log.hideTab('Mode')
+        elif not func:
+            g.trace('No func: improper key binding')
+        else:
+            if commandName == 'mode-help':
+                func(event)
+            else:
+                savedModeName = k.inputModeName # Remember this: it may be cleared.
+                self.endMode()
+                if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
+                # New in 4.4.1 b1: pass an event describing the original widget.
+                if event:
+                    event.w = event.widget = k.modeWidget
+                else:
+                    event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
+                if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
+                func(event)
+                if g.app.quitting or not c.exists:
+                    return # (for Tk) 'break'
+                if nextMode in (None,'none'):
+                    # Do *not* clear k.inputModeName or the focus here.
+                    # func may have put us in *another* mode.
+                    pass
+                elif nextMode == 'same':
+                    silent = k.silentMode
+                    k.setState(modeName,1,handler=k.generalModeHandler)
+                    self.reinitMode(modeName) # Re-enter this mode.
+                    k.silentMode = silent
+                else:
+                    k.silentMode = False # All silent modes must do --> set-silent-mode.
+                    self.initMode(event,nextMode) # Enter another mode.
+                    # Careful: k.initMode can execute commands that will destroy a commander.
+                    if g.app.quitting or not c.exists: return # (for Tk) 'break'
+    #@+node:ekr.20061031131434.156: *3* k.Modes (changed)
+    #@+node:ekr.20061031131434.163: *4* k.initMode (OLD MODES)
+    def initMode (self,event,modeName):
 
-            return # (for Tk) 'break'
-        #@+node:ekr.20061031131434.163: *4* k.initMode (OLD MODES)
-        def initMode (self,event,modeName):
+        k = self ; c = k.c
+        trace = (False or g.trace_modes) and not g.unitTesting
 
-            k = self ; c = k.c
-            trace = (False or g.trace_modes) and not g.unitTesting
+        if not modeName:
+            g.trace('oops: no modeName')
+            return
+            
+        if g.new_modes:
+            mode = k.modeController.getMode(modeName)
+            if mode:
+                mode.initMode()
+            else:
+                g.trace('***** oops: no mode',modeName)
+        else:
 
-            if not modeName:
-                g.trace('oops: no modeName')
+            d = g.app.config.modeCommandsDict.get('enter-'+modeName)
+            if not d:
+                self.badMode(modeName)
                 return
-                
-            if g.new_modes:
-                mode = k.modeController.getMode(modeName)
-                if mode:
-                    mode.initMode()
-                else:
-                    g.trace('***** oops: no mode',modeName)
             else:
-
-                d = g.app.config.modeCommandsDict.get('enter-'+modeName)
-                if not d:
-                    self.badMode(modeName)
-                    return
+                k.modeBindingsDict = d
+                si = d.get('*command-prompt*')
+                if si:
+                    prompt = si.kind # A kludge.
                 else:
-                    k.modeBindingsDict = d
-                    si = d.get('*command-prompt*')
-                    if si:
-                        prompt = si.kind # A kludge.
-                    else:
-                        prompt = modeName
-                    if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
-            
-                k.inputModeName = modeName
-                k.silentMode = False
-            
-                aList = d.get('*entry-commands*',[])
-                if aList:
-                    for si in aList:
-                        assert g.isShortcutInfo(si),si
-                        commandName = si.commandName
-                        if trace: g.trace('entry command:',commandName)
-                        k.simulateCommand(commandName)
-                        # Careful, the command can kill the commander.
-                        if g.app.quitting or not c.exists: return
-                        # New in Leo 4.5: a startup command can immediately transfer to another mode.
-                        if commandName.startswith('enter-'):
-                            if trace: g.trace('redirect to mode',commandName)
-                            return
-            
-                # Create bindings after we know whether we are in silent mode.
-                w = g.choose(k.silentMode,k.modeWidget,k.w)
-                k.createModeBindings(modeName,d,w)
-                k.showStateAndMode(prompt=prompt)
-        #@-others
-    #@+node:ekr.20120208064440.10187: *3* k.Modes (NEW MODES ONLY)
-    if g.new_modes:
+                    prompt = modeName
+                if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
         
-        #@+others
-        #@+node:ekr.20120208064440.10201: *4* k.NEWgeneralModeHandler (NEW MODES)
-        def NEWgeneralModeHandler (self,event,
-            commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
+            k.inputModeName = modeName
+            k.silentMode = False
+        
+            aList = d.get('*entry-commands*',[])
+            if aList:
+                for si in aList:
+                    assert g.isShortcutInfo(si),si
+                    commandName = si.commandName
+                    if trace: g.trace('entry command:',commandName)
+                    k.simulateCommand(commandName)
+                    # Careful, the command can kill the commander.
+                    if g.app.quitting or not c.exists: return
+                    # New in Leo 4.5: a startup command can immediately transfer to another mode.
+                    if commandName.startswith('enter-'):
+                        if trace: g.trace('redirect to mode',commandName)
+                        return
+        
+            # Create bindings after we know whether we are in silent mode.
+            w = g.choose(k.silentMode,k.modeWidget,k.w)
+            k.createModeBindings(modeName,d,w)
+            k.showStateAndMode(prompt=prompt)
+    #@+node:ekr.20120208064440.10201: *4* k.NEWgeneralModeHandler (NEW MODES)
+    def NEWgeneralModeHandler (self,event,
+        commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
-            '''Handle a mode defined by an @mode node in leoSettings.leo.'''
+        '''Handle a mode defined by an @mode node in leoSettings.leo.'''
 
-            k = self ; c = k.c
-            state = k.getState(modeName)
-            trace = (False or g.trace_modes) and not g.unitTesting
+        k = self ; c = k.c
+        state = k.getState(modeName)
+        trace = (False or g.trace_modes) and not g.unitTesting
 
-            if trace: g.trace(modeName,'state',state)
+        if trace: g.trace(modeName,'state',state)
 
-            if state == 0:
-                k.inputModeName = modeName
-                k.modePrompt = prompt or modeName
-                k.modeWidget = event and event.widget
-                k.setState(modeName,1,handler=k.generalModeHandler)
-                self.initMode(event,modeName)
-                # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
-                if not k.silentMode:
-                    if c.config.getBool('showHelpWhenEnteringModes'):
-                        k.modeHelp(event)
-                    else:
-                        c.frame.log.hideTab('Mode')
-            elif not func:
-                g.trace('No func: improper key binding')
-                return # (for Tk) 'break'
-            else:
-                if commandName == 'mode-help':
-                    func(event)
+        if state == 0:
+            k.inputModeName = modeName
+            k.modePrompt = prompt or modeName
+            k.modeWidget = event and event.widget
+            k.setState(modeName,1,handler=k.generalModeHandler)
+            self.initMode(event,modeName)
+            # Careful: k.initMode can execute commands that will destroy a commander.
+            if g.app.quitting or not c.exists: return # (for Tk) 'break'
+            if not k.silentMode:
+                if c.config.getBool('showHelpWhenEnteringModes'):
+                    k.modeHelp(event)
                 else:
-                    savedModeName = k.inputModeName # Remember this: it may be cleared.
-                    self.endMode()
-                    if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
-                    # New in 4.4.1 b1: pass an event describing the original widget.
-                    if event:
-                        event.w = event.widget = k.modeWidget
-                    else:
-                        event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
-                    if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
-                    func(event)
-                    if g.app.quitting or not c.exists:
-                        return # (for Tk) 'break'
-                    if nextMode in (None,'none'):
-                        # Do *not* clear k.inputModeName or the focus here.
-                        # func may have put us in *another* mode.
-                        pass
-                    elif nextMode == 'same':
-                        silent = k.silentMode
-                        k.setState(modeName,1,handler=k.generalModeHandler)
-                        self.reinitMode(modeName) # Re-enter this mode.
-                        k.silentMode = silent
-                    else:
-                        k.silentMode = False # All silent modes must do --> set-silent-mode.
-                        self.initMode(event,nextMode) # Enter another mode.
-                        # Careful: k.initMode can execute commands that will destroy a commander.
-                        if g.app.quitting or not c.exists: return # (for Tk) 'break'
-
+                    c.frame.log.hideTab('Mode')
+        elif not func:
+            g.trace('No func: improper key binding')
             return # (for Tk) 'break'
-        #@-others
+        else:
+            if commandName == 'mode-help':
+                func(event)
+            else:
+                savedModeName = k.inputModeName # Remember this: it may be cleared.
+                self.endMode()
+                if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
+                # New in 4.4.1 b1: pass an event describing the original widget.
+                if event:
+                    event.w = event.widget = k.modeWidget
+                else:
+                    event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
+                if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
+                func(event)
+                if g.app.quitting or not c.exists:
+                    return # (for Tk) 'break'
+                if nextMode in (None,'none'):
+                    # Do *not* clear k.inputModeName or the focus here.
+                    # func may have put us in *another* mode.
+                    pass
+                elif nextMode == 'same':
+                    silent = k.silentMode
+                    k.setState(modeName,1,handler=k.generalModeHandler)
+                    self.reinitMode(modeName) # Re-enter this mode.
+                    k.silentMode = silent
+                else:
+                    k.silentMode = False # All silent modes must do --> set-silent-mode.
+                    self.initMode(event,nextMode) # Enter another mode.
+                    # Careful: k.initMode can execute commands that will destroy a commander.
+                    if g.app.quitting or not c.exists: return # (for Tk) 'break'
+
+        return # (for Tk) 'break'
     #@+node:ekr.20061031131434.167: *3* k.Shared helpers
     #@+node:ekr.20061031131434.175: *4* k.computeCompletionList
     # Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.

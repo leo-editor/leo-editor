@@ -1656,62 +1656,6 @@ class GlobalConfigManager:
 
         raise StopIteration
     #@-others
-#@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
-class SettingsTreeParser (ParserBaseClass):
-
-    '''A class that inits settings found in an @settings tree.
-
-    Used by read settings logic.'''
-
-    #@+others
-    #@+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
-    def __init__ (self,c,localFlag=True):
-
-        # Init the base class.
-        ParserBaseClass.__init__(self,c,localFlag)
-    #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
-    def visitNode (self,p):
-
-        """Init any settings found in node p."""
-
-        # g.trace(p.h)
-        
-        p = p.copy()
-            # Bug fix 2011/11/24
-            # Ensure inner traversals don't change callers's p.
-
-        munge = g.app.config.munge
-
-        kind,name,val = self.parseHeadline(p.h)
-        kind = munge(kind)
-
-        if g.isPython3:
-            isNone = val in ('None','none','',None)
-        else:
-            isNone = val in (
-                unicode('None'),unicode('none'),unicode(''),
-                'None','none','',None)
-
-        if kind is None: # Not an @x node. (New in Leo 4.4.4)
-            pass
-        if kind == "settings":
-            pass
-        # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
-        elif kind in self.basic_types and isNone:
-            # None is valid for all basic types.
-            self.set(p,kind,name,None)
-        elif kind in self.control_types or kind in self.basic_types:
-            f = self.dispatchDict.get(kind)
-            if f:
-                try:
-                    return f(p,kind,name,val)
-                except Exception:
-                    g.es_exception()
-            else:
-                g.pr("*** no handler",kind)
-
-        return None
-    #@-others
 #@+node:ekr.20041118104831.1: ** class LocalConfigManager
 class LocalConfigManager:
 
@@ -2215,6 +2159,62 @@ class LocalConfigManager:
 
         gs = g.GeneralSetting(kind,path=c.mFileName,val=val,tag='setting')
         d.replace(key,gs)
+    #@-others
+#@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
+class SettingsTreeParser (ParserBaseClass):
+
+    '''A class that inits settings found in an @settings tree.
+
+    Used by read settings logic.'''
+
+    #@+others
+    #@+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
+    def __init__ (self,c,localFlag=True):
+
+        # Init the base class.
+        ParserBaseClass.__init__(self,c,localFlag)
+    #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
+    def visitNode (self,p):
+
+        """Init any settings found in node p."""
+
+        # g.trace(p.h)
+        
+        p = p.copy()
+            # Bug fix 2011/11/24
+            # Ensure inner traversals don't change callers's p.
+
+        munge = g.app.config.munge
+
+        kind,name,val = self.parseHeadline(p.h)
+        kind = munge(kind)
+
+        if g.isPython3:
+            isNone = val in ('None','none','',None)
+        else:
+            isNone = val in (
+                unicode('None'),unicode('none'),unicode(''),
+                'None','none','',None)
+
+        if kind is None: # Not an @x node. (New in Leo 4.4.4)
+            pass
+        if kind == "settings":
+            pass
+        # elif kind in self.basic_types and val in (u'None',u'none','None','none','',None):
+        elif kind in self.basic_types and isNone:
+            # None is valid for all basic types.
+            self.set(p,kind,name,None)
+        elif kind in self.control_types or kind in self.basic_types:
+            f = self.dispatchDict.get(kind)
+            if f:
+                try:
+                    return f(p,kind,name,val)
+                except Exception:
+                    g.es_exception()
+            else:
+                g.pr("*** no handler",kind)
+
+        return None
     #@-others
 #@-others
 #@-leo

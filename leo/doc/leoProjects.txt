@@ -1490,55 +1490,79 @@ Added eventFilter in createFrame in SDI/TabbedFrameFactory classes
 @nocolor-node
 
 Queuing the output of g.pr makes no sense, and limited the usefulness of g.trace.
-#@+node:ekr.20120224193527.15209: *4* Created the LoadManager class
+#@+node:ekr.20120226180525.10192: *4* Removed many module-level imports
 @nocolor-node
+
+This is something that I've wanted to do for a long time.  
+
+Now, most modules import only leo.core.leoGlobals. However,
+Leo's core still imports leo.core.leoNodes in order to create
+positions, vnodes, etc. It would be straightforward to
+eliminate these by creating g.app factory methods, but there
+is no urgent reason to do so.
+#@+node:ekr.20120226180525.10193: *4* Created the TestManager class
+@nocolor-node
+
+All top-level code in leoTest.py now resides in the
+TestManager class.
+
+The c.testManager object eliminates the need for imports of
+leo.core.leoTest within unitTest.leo, an excellent
+simplification.
+
+Furthermore, there is no need to access the testUtils class:
+everything is in c.testManager.
+
+The TestManager class substantially clarifies *all* the code
+in leoTest.leo. This is surprisingly important because the
+testing code is hardly straightforward.
+#@+node:ekr.20120224193527.15209: *4* Created the LoadManager class (docs)
+@language rest
 
 This is a major restructuring of Leo's code:
     
 Initing settings files and local files is now as simple as possible.
 
-The c.hash() hack is no longer used: settings discovered in the pre-read are passed
-directly to the c.config object of the loaded files by PreviousSettings objects.
-
 g.openWithFileName now simply calls lm.loadLocalFile.
 
 Commands.__init__ now calls c.finshCreate.
 
-g.app.newCommander now simply calls Commands.__init__, a *huge* collapse in complexity.
+g.app.newCommander now simply calls Commands.__init__,
+a *huge* collapse in complexity.
+
+===== Details
 
 The g.app.config class is now substantially simpler:
 complex methods have moved to the LoadManager.
-#@+node:ekr.20120214060149.15849: *5* We *will* read leoSettings/myLeoSettings twice
-@nocolor-node
 
-The simplest thing that could possibly work is to *reread* leoSettings.leo or
-myLeoSettings.leo if they appear on the command line, that is, if Leo is going
-to create a window for these files. Leo will load files in two phases:
+The new LoadManager class handles all aspects of Leo's
+complex startup process, including most importantly the very
+complex process by which Leo reads user settings.
 
-Phase 1: Load the standard settings files (using a nullGui).
+As a side effect, c.config.get is now *much* simpler than
+before: it search one, and *only* one dictionary to discover
+settings.
 
-The LoadManager will remember the created commander and the resulting settings
-dictionaries.
+Reading local files must be done *twice*. The first read
+discovers settings, the second read uses those settings to
+open the file. The first read always uses a null gui; the
+second read uses g.app.gui, whatever that happens to be.
 
-Phase 2: Load all files on the command line (using the Qt Gui).
+LM.openLocalFile embodies all aspects of the complex
+strategy necessary for opening a local file twice. The first
+read creates a PreviousSetting object, which is then passed
+to LM.openFileByName, which in turn passes the
+PreviousSetting object to the ctor for the Commander.
+Finally, the PreviousSetting object inits c.config.
 
-For each file on the command line (*including* standard settings files if they
-appear there) the LoadManager will merge the global settings computed in Phase 1
-with the local settings.
+Because of the previousSettings object, the call to
+LM.openFileByName does *not* need to "synthesize" a link to
+c1 using c.hash. This stamps out bug 568452 at its source.
 
-To make this work, we need only ensure that calls to config.getX happen after
-local settings have been computed. To do this, we'll enforce the rule that all
-calls to config.getX happen in the finishCreate method or at some later time,
-not in any ctor.
+The crucial point is the previous settings get passed along
+to the Commander ctor, *before* LM.openFileByName calls
+c.fileCommands.openLeoFile to create the outline.
 
-This scheme opens the way for a major simplification of c.config.getX. Rather
-than the baroque code in g.app.config.getX, each c.config class will contain two
-"finalized" settings dicts, one for shortcuts and one for all other settings. To
-get a setting, the c.config.getX methods will simply look up the setting in the
-appropriate dictionary.
-
-Note that this scheme will produce the proper results for standard settings
-files themselves if they appear on the command line.
 #@+node:ekr.20120225032124.16123: *4* Removed c argument from g.app.config getters
 @nocolor-node
 
@@ -3058,6 +3082,14 @@ def pageUpDown (self, op, moveMode):
             sb.triggerAction(QtGui.QAbstractSlider.SliderPageStepAdd)
     control.setTextCursor(cursor)
 #@+node:ekr.20120225032124.18054: *4* Added clone-find-all-flattened command
+@nocolor-node
+
+The clone-find-all command includes nodes only once: if a
+node's ancestor appears in the list, the node is not include
+again in the top-level list.
+
+The new clone-find-all-flattened command includes every found node
+in the top-level list of nodes. I find this less confusing.
 #@+node:ekr.20060128080201: *5* cloneFindAll (minibufferFind)
 def cloneFindAll (self,event):
 
@@ -11624,4 +11656,6 @@ def setSelectionAreas (self,before,sel,after):
 # Put this @language after the @all as a kind of permanent unit test.
 
 #@@language python # Override the default .txt coloring.
+
+#@@pagewidth 60
 #@-leo
