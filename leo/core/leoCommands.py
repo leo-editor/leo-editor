@@ -230,6 +230,8 @@ class Commands (object):
         self.openDirectory = None
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self):
+        
+        # print('c.initOptionsIvars')
 
         self.fixed = False
         self.fixedWindowPosition = False
@@ -456,33 +458,39 @@ class Commands (object):
         if trace:
             print('c.initConfigSettings: c.configInited: %s %s' % (
                 c.configInited,c.shortFileName()))
+                
+        getBool = c.config.getBool
+        getColor = c.config.getColor
+        getData  = c.config.getData
+        getInt = c.config.getInt
 
-        c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
-        c.collapse_nodes_after_move = c.config.getBool('collapse_nodes_after_move')
+        c.autoindent_in_nocolor     = getBool('autoindent_in_nocolor_mode')
+        c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
             # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
-        c.collapse_on_lt_arrow  = c.config.getBool('collapse_on_lt_arrow',default=True)
+        c.collapse_on_lt_arrow      = getBool('collapse_on_lt_arrow',default=True)
             # 2011/11/09: An excellent, subliminal, improvement.
-        c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
-        c.fixed                 = c.config.getBool('fixedWindow',default=False)
-        c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
-        c.focus_border_color    = c.config.getColor('focus_border_color') or 'red'
-        c.focus_border_width    = c.config.getInt('focus_border_width') or 1 # pixels
-        c.outlineHasInitialFocus= c.config.getBool('outline_pane_has_initial_focus')
-        c.showMinibuffer        = c.config.getBool('useMinibuffer')
+        c.contractVisitedNodes      = getBool('contractVisitedNodes')
+        c.fixed                     = getBool('fixedWindow',default=False)
+        c.fixedWindowPosition       = getData('fixedWindowPosition')
+        c.focus_border_color        = getColor('focus_border_color') or 'red'
+        c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
+        c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
+        c.showMinibuffer            = getBool('useMinibuffer')
             # This option is a bad idea.
-        c.putBitsFlag           = c.config.getBool('put_expansion_bits_in_leo_files',default=True)
-        # g.trace('putBitsFlag',c.putBitsFlag,c.fileName())
-        c.sparse_move           = c.config.getBool('sparse_move_outline_left')
-        c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
-        c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')
-        c.stayInTreeAfterSelect = c.config.getBool('stayInTreeAfterSelect')
-        c.stayInTreeAfterEdit   = c.config.getBool('stayInTreeAfterEditHeadline')
-        c.smart_tab             = c.config.getBool('smart_tab')
+        c.page_width                = getInt('page_width') or 132
+            # 2012/02/27: this appears to be a fix of an *ancient* bug.
+        c.putBitsFlag               = getBool('put_expansion_bits_in_leo_files',default=True)
+        c.sparse_move               = getBool('sparse_move_outline_left')
+        c.sparse_find               = getBool('collapse_nodes_during_finds')
+        c.sparce_spell              = getBool('collapse_nodes_while_spelling')
+        c.stayInTreeAfterSelect     = getBool('stayInTreeAfterSelect')
+        c.stayInTreeAfterEdit       = getBool('stayInTreeAfterEditHeadline')
+        c.smart_tab                 = getBool('smart_tab')
             # Note: there is also a smart_auto_indent setting.
-        c.tab_width             = c.config.getInt('tab_width') or -4
-        c.use_body_focus_border = c.config.getBool('use_body_focus_border',default=True)
-        c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
-        c.write_script_file     = c.config.getBool('write_script_file')
+        c.tab_width                 = getInt('tab_width') or -4
+        c.use_body_focus_border     = getBool('use_body_focus_border',default=True)
+        c.use_focus_border          = getBool('use_focus_border',default=True)
+        c.write_script_file         = getBool('write_script_file')
 
         # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
         # g.trace(c.sparse_move)
@@ -3568,6 +3576,8 @@ class Commands (object):
     """
 
         c = self ; body = c.frame.body ; w = body.bodyCtrl
+        
+        # g.trace(c.page_width)
 
         if g.app.batchMode:
             c.notValidInBatchMode("xxx")

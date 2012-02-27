@@ -1238,9 +1238,6 @@ def NEWgeneralModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
-.. @+node:ekr.20120226183512.10192: *4* @int pagewidth = 60 does not seem to work!
-It is set in myLeoSettings.leo.
-
 .. @+node:ekr.20120203053243.10111: *4* Fix OpenWith menu
 @nocolor-node
 

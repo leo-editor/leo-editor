@@ -4775,9 +4775,7 @@ elif sys.platform== 'darwin':
     assert(darwin)
 
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
-# print(c.page_width)
-
-assert c.page_width in (80,132) # 132 when test run dynamically.
+assert c.page_width == c.config.getInt('page_width'),c.page_width
 #@+node:ekr.20071113201854: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
