@@ -2,6 +2,8 @@
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
 '''A module holding version-related info.'''
 
+# Important: this code eliminates the need for the v.bat hack.
+
 # Leo 4.5.1 final: September 14, 2008
 # Leo 4.6.1 final: July 30, 2009.
 # Leo 4.7.1 final: February 26, 2010.
