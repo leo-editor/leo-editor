@@ -1106,12 +1106,30 @@ class keyHandlerClass:
         # Access to data types defined in leoKeys.py
         self.KeyStroke = g.KeyStroke
         
+        # Define all ivars...
+        self.defineExternallyVisibleIvars()
+        self.defineInternalIvars()
         self.defineSettingsIvars()
         
-        #@+<< define externally visible ivars >>
-        #@+node:ekr.20061031131434.78: *5* << define externally visible ivars >>
-        self.abbrevOn = False # True: abbreviations are on.
-        self.arg = '' # The value returned by k.getArg.
+        if g.new_modes:
+            self.modeController = ModeController(c)
+
+        self.defineTkNames()
+        self.defineSpecialKeys()
+        self.defineSingleLineCommands()
+        self.defineMultiLineCommands()
+        self.autoCompleter = AutoCompleterClass(self)
+        self.qcompleter = None # Set by AutoCompleter.start.
+
+        self.setDefaultUnboundKeyAction()
+        self.setDefaultEditingAction() # 2011/02/09
+    #@+node:ekr.20061031131434.78: *4* k.defineExternallyVisibleIvars
+    def defineExternallyVisibleIvars(self):
+
+        self.abbrevOn = False
+            # True: abbreviations are on.
+        self.arg = ''
+            # The value returned by k.getArg.
         self.argSelectedText = '' # The selected text in state 0.
         self.commandName = None # The name of the command being executed.
         self.funcReturn = None # For k.simulateCommand
@@ -1127,12 +1145,13 @@ class keyHandlerClass:
         # self.regx = g.bunch(iter=None,key=None)
         self.repeatCount = None
         self.state = g.bunch(kind=None,n=None,handler=None)
-        #@-<< define externally visible ivars >>
-        #@+<< define internal ivars >>
-        #@+node:ekr.20061031131434.79: *5* << define internal ivars >>
-        self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
+    #@+node:ekr.20061031131434.79: *4* k.defineInternalIvars
+    def defineInternalIvars(self):
 
-        # Previously defined bindings.
+        self.abbreviationsDict = {}
+            # Abbreviations created by @alias nodes.
+        
+        # Previously defined bindings...
         self.bindingsDict = {}
             # Keys are Tk key names, values are lists of ShortcutInfo's.
         # Previously defined binding tags.
@@ -1143,20 +1162,20 @@ class keyHandlerClass:
             # Values are dicts: keys are strokes, values are ShortcutInfo's.
         self.masterGuiBindingsDict = {}
             # Keys are strokes; value is True;
-
-        # Special bindings for k.fullCommand.
+        
+        # Special bindings for k.fullCommand...
         self.mb_copyKey = None
         self.mb_pasteKey = None
         self.mb_cutKey = None
         self.mb_help = False
-
-        # Keys whose bindings are computed by initSpecialIvars.
+        
+        # Keys whose bindings are computed by initSpecialIvars...
         self.abortAllModesKey = None
         self.autoCompleteForceKey = None
         self.fullCommandKey = None
         self.universalArgKey = None
-
-        # Keepting track of the characters in the mini-buffer.
+        
+        # Keepting track of the characters in the mini-buffer...
         self.arg_completion = True
         self.mb_event = None
         self.mb_history = []
@@ -1165,42 +1184,21 @@ class keyHandlerClass:
         self.mb_tabList = []
         self.mb_tabListIndex = -1
         self.mb_prompt = ''
-
+        
         self.func = None
         self.previous = []
         self.stroke = None
-
-        # For onIdleTime
+        
+        # For onIdleTime...
         self.idleCount = 0
-
-        # For modes
+        
+        # For modes...
         self.afterGetArgState = None
         self.argTabList = []
         self.getArgEscapes = []
         self.modeBindingsDict = {}
         self.modeWidget = None
         self.silentMode = False
-
-        # The actual values are set later in k.finishCreate.
-        self.command_mode_bg_color = 'white'
-        self.command_mode_fg_color = 'black'
-        self.insert_mode_bg_color = 'white'
-        self.insert_mode_fg_color = 'black'
-        self.overwrite_mode_bg_color = 'white'
-        self.overwrite_mode_fg_color = 'black'
-        #@-<< define internal ivars >>
-        
-        if g.new_modes:
-            self.modeController = ModeController(c)
-
-        self.defineTkNames()
-        self.defineSpecialKeys()
-        self.defineSingleLineCommands()
-        self.defineMultiLineCommands()
-        self.autoCompleter = AutoCompleterClass(self)
-        self.qcompleter = None # Set by AutoCompleter.start.
-        self.setDefaultUnboundKeyAction()
-        self.setDefaultEditingAction() # 2011/02/09
     #@+node:ekr.20080509064108.7: *4* k.defineMultiLineCommands
     def defineMultiLineCommands (self):
 
@@ -1331,6 +1329,8 @@ class keyHandlerClass:
         self.overwrite_mode_fg_color  = getColor('overwrite_mode_fg_color') or fg
         self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
         self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
+        
+        # g.trace(self.c.shortFileName())
     #@+node:ekr.20080509064108.6: *4* k.defineSingleLineCommands
     def defineSingleLineCommands (self):
 
