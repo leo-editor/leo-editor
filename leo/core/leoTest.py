@@ -1356,7 +1356,7 @@ class TestManager:
         else:
             g.pr('compareOutlines failed',newline=False)
             if tag: g.pr('tag:',tag)
-            # else: g.pr('')
+            else: g.pr('')
             if p1: g.pr('p1',p1.h)
             if p2: g.pr('p2',p2.h)
             if not p1 or not p2:

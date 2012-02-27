@@ -3263,7 +3263,9 @@ class Commands (object):
         ref_h = c.extractRef(h).strip()
         def_h = c.extractDef(h).strip()
         if ref_h:
-            h,b,middle = ref_h,lines[1:],lines[0]
+            # h,b,middle = ref_h,lines[1:],lines[0]
+            # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
+            h,b,middle = ref_h, lines[1:], ' '*ws +lines[0]
         elif def_h:
             h,b,middle = def_h,lines,''
         else:
