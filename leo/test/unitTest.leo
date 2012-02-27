@@ -154,7 +154,8 @@
 <v t="ekr.20120218165008.3925"><vh>print hi (not a test)</vh></v>
 <v t="ekr.20120218173952.3932"><vh>@test print hi</vh></v>
 <v t="ekr.20100203103015.5356"><vh>@@@test c.openTempFileInExternalEditor</vh></v>
-<v t="ekr.20120227143454.3932"><vh>Ensure k.settings ivars match settings</vh></v>
+<v t="ekr.20120227143454.3932"><vh>@test k.settings ivars match settings</vh></v>
+<v t="ekr.20120227152633.3934"><vh>@test c.config.initIvar sets *commander* ivars</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -570,7 +571,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="13"></t>
+<t tx="ekr.20070417092935" str_leo_pos="14"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1140,5 +1141,16 @@ for ivar,setting in table:
     val = getattr(k,ivar)
     assert val == setting,'%s k.%s setting: %s' % (
         ivar,ivar,valO)</t>
+<t tx="ekr.20120227152633.3934"># for key in sorted(list(g.app.config.ivarsDict.keys())):
+    
+for ivar,setting_type,default in g.app.config.ivarsData:
+    
+    assert hasattr(c,ivar),ivar
+    assert hasattr(c.config,ivar),ivar
+    val = getattr(c.config,ivar)
+    val2 = c.config.get(ivar,setting_type)
+    assert val == val2,"%s %s" % (val,val2)
+    # print(ivar,val)
+</t>
 </tnodes>
 </leo_file>

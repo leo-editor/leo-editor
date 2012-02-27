@@ -1220,11 +1220,12 @@ class GlobalConfigManager:
         if trace: print('g.app.config.__init__')
         
         # Set later.  To keep pylint happy.
-        self.at_root_bodies_start_in_doc_mode = True
-        self.default_derived_file_encoding = 'utf-8'
-        self.output_newline = 'nl'
-        self.redirect_execute_script_output_to_log_pane = True
-        self.relative_path_base_directory = '!'
+        if 0: # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
+            self.at_root_bodies_start_in_doc_mode = True
+            self.default_derived_file_encoding = 'utf-8'
+            self.output_newline = 'nl'
+            self.redirect_execute_script_output_to_log_pane = True
+            self.relative_path_base_directory = '!'
 
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
@@ -1273,10 +1274,10 @@ class GlobalConfigManager:
     #@+node:ekr.20041117065611.2: *4* gcm.initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
-        for ivar in self.encodingIvarsDict.keys():
+        for ivar in sorted(list(self.encodingIvarsDict.keys())):
             self.initEncoding(ivar)
 
-        for ivar in self.ivarsDict.keys():
+        for ivar in sorted(list(self.ivarsDict.keys())):
             self.initIvar(ivar)
     #@+node:ekr.20041117065611.1: *5* initEncoding
     def initEncoding (self,key):
@@ -1350,7 +1351,7 @@ class GlobalConfigManager:
                     if trace and verbose: g.trace("%20s %s = %s" % (
                         g.shortFileName(c.mFileName),ivar,val))
                     setattr(c,ivar,val)
-                else:
+                if True: # Always set the global ivars.
                     if trace and verbose: g.trace("%20s %s = %s" % (
                         'g.app.config',ivar,val))
                     setattr(self,ivar,val)
@@ -1683,20 +1684,23 @@ class LocalConfigManager:
             assert d2 is None or g.isTypedDictOfLists(d2),d2
 
         # Define these explicitly to eliminate a pylint warning.
-        self.default_derived_file_encoding =\
-            g.app.config.default_derived_file_encoding
-        self.redirect_execute_script_output_to_log_pane =\
-            g.app.config.redirect_execute_script_output_to_log_pane
+        if 0:
+            # No longer needed now that c.config.initIvar always sets
+            # both c and c.config ivars.
+            self.default_derived_file_encoding =\
+                g.app.config.default_derived_file_encoding
+            self.redirect_execute_script_output_to_log_pane =\
+                g.app.config.redirect_execute_script_output_to_log_pane
         
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize  = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
         self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
 
-        for key in g.app.config.encodingIvarsDict.keys():
+        for key in sorted(list(g.app.config.encodingIvarsDict.keys())):
             self.initEncoding(key)
 
-        for key in g.app.config.ivarsDict.keys():
+        for key in sorted(list(g.app.config.ivarsDict.keys())):
             self.initIvar(key)
     #@+node:ekr.20041118104414: *4* c.config.initEncoding
     def initEncoding (self,key):
@@ -1734,7 +1738,9 @@ class LocalConfigManager:
 
         if val or not hasattr(self,ivarName):
             if trace: g.trace('c.config',c.shortFileName(),ivarName,val)
+            # Set *both* the commander ivar and the c.config ivar.
             setattr(self,ivarName,val)
+            setattr(c,ivarName,val)
     #@+node:ekr.20120215072959.12471: *3* c.config.Getters
     #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
     def getButtons (self):
