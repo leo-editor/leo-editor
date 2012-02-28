@@ -123,6 +123,7 @@ class ParserBaseClass:
 
         # New in 4.4.1 b2: silently allow redefinitions of modes.
         d [modeName] = modeDict
+        
     #@+node:ekr.20041120103012: *3* error (ParserBaseClass)
     def error (self,s):
 
@@ -962,7 +963,7 @@ class ParserBaseClass:
         command-name --> same = binding
         '''
 
-        trace = False and not g.unitTesting # and kind == '*mode-setting*'
+        trace = False and not g.unitTesting and kind == '*mode-setting*'
         c,k = self.c,self.c.k
         assert c
         name = val = nextMode = None ; nextMode = 'none'

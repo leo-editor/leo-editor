@@ -9666,7 +9666,7 @@ def parseShortcutLine (self,kind,s):
     command-name --> same = binding
     '''
 
-    trace = False and not g.unitTesting # and kind == '*mode-setting*'
+    trace = False and not g.unitTesting and kind == '*mode-setting*'
     c,k = self.c,self.c.k
     assert c
     name = val = nextMode = None ; nextMode = 'none'

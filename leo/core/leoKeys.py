@@ -3402,7 +3402,7 @@ class keyHandlerClass:
 
         '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self ; c = k.c
         assert d.name().endswith('-mode')
         for commandName in d.keys():
@@ -3602,7 +3602,7 @@ class keyHandlerClass:
                     # Careful: k.initMode can execute commands that will destroy a commander.
                     if g.app.quitting or not c.exists: return # (for Tk) 'break'
     #@+node:ekr.20061031131434.156: *3* k.Modes (changed)
-    #@+node:ekr.20061031131434.163: *4* k.initMode (OLD MODES)
+    #@+node:ekr.20061031131434.163: *4* k.initMode (changed)
     def initMode (self,event,modeName):
 
         k = self ; c = k.c
@@ -4093,7 +4093,7 @@ class keyHandlerClass:
 
         k = self
 
-        trace = True and not g.unitTesting # and setting.lower().find('ctrl-x') > -1
+        trace = False and not g.unitTesting # and setting.lower().find('ctrl-x') > -1
         verbose = False
         if not setting:
             return None
@@ -4609,6 +4609,8 @@ class ModeInfo:
     #@+node:ekr.20120208064440.10193: *3*  ctor (ModeInfo)
     def __init__ (self,c,name,aList):
         
+        g.trace(name,aList)
+        
         self.c = c
         self.d = {} # The bindings in effect for this mode.
             # Keys are names of (valid) command names, values are ShortcutInfo objects.
@@ -4657,7 +4659,7 @@ class ModeInfo:
 
         '''Create mode bindings for w, a text widget.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,d,k,modeName = self.c,self.d,self.k,self.name
         for commandName in d.keys():
             func = c.commandsDict.get(commandName)
@@ -4724,7 +4726,7 @@ class ModeInfo:
         
         '''aList is a list of tuples (commandName,si).'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,d,k,modeName = self.c,self.d,self.c.k,self.name
         for name,si in dataList:
         

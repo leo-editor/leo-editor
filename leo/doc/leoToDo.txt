@@ -18,7 +18,12 @@ Top 10:
 .. @+node:ekr.20120203053243.10111: *4* Fix OpenWith menu
 @nocolor-node
 
-This affects bindings.
+To do:
+    
+- Update or abandon the unit test.
+- update the docs.
+    - open-with hook has changed: it now uses a "d" arg.
+- test other open-handlers besides subprocess.Popen.
 .. @+node:ekr.20120227073551.11666: *5* @test c.openTempFileInExternalEditor
 arg = ''
 arg0 = 'one'
@@ -1416,7 +1421,7 @@ def strokeFromSetting (self,setting,addKey=True):
 
     k = self
 
-    trace = True and not g.unitTesting # and setting.lower().find('ctrl-x') > -1
+    trace = False and not g.unitTesting # and setting.lower().find('ctrl-x') > -1
     verbose = False
     if not setting:
         return None
@@ -1670,7 +1675,7 @@ def parseShortcutLine (self,kind,s):
     command-name --> same = binding
     '''
 
-    trace = False and not g.unitTesting # and kind == '*mode-setting*'
+    trace = False and not g.unitTesting and kind == '*mode-setting*'
     c,k = self.c,self.c.k
     assert c
     name = val = nextMode = None ; nextMode = 'none'
@@ -1741,6 +1746,7 @@ def createModeCommand (self,modeName,name,modeDict):
 
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
+    
 .. @+node:ekr.20120208064440.10148: *5* class ModeController
 class ModeController:
     
@@ -1794,6 +1800,8 @@ class ModeInfo:
 .. @+node:ekr.20120208064440.10193: *6*  ctor (ModeInfo)
 def __init__ (self,c,name,aList):
     
+    g.trace(name,aList)
+    
     self.c = c
     self.d = {} # The bindings in effect for this mode.
         # Keys are names of (valid) command names, values are ShortcutInfo objects.
@@ -1842,7 +1850,7 @@ def createModeBindings (self,w):
 
     '''Create mode bindings for w, a text widget.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     c,d,k,modeName = self.c,self.d,self.k,self.name
     for commandName in d.keys():
         func = c.commandsDict.get(commandName)
@@ -1909,7 +1917,7 @@ def init (self,name,dataList):
     
     '''aList is a list of tuples (commandName,si).'''
     
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     c,d,k,modeName = self.c,self.d,self.c.k,self.name
     for name,si in dataList:
     
@@ -2053,7 +2061,7 @@ def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     k = self ; c = k.c
     assert d.name().endswith('-mode')
     for commandName in d.keys():
@@ -2253,7 +2261,7 @@ def generalModeHandler (self,event,
                 # Careful: k.initMode can execute commands that will destroy a commander.
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 .. @+node:ekr.20061031131434.156: *6* k.Modes (changed)
-.. @+node:ekr.20061031131434.163: *7* k.initMode (OLD MODES)
+.. @+node:ekr.20061031131434.163: *7* k.initMode (changed)
 def initMode (self,event,modeName):
 
     k = self ; c = k.c
@@ -2365,6 +2373,167 @@ def NEWgeneralModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
+.. @+node:ekr.20120228164039.10047: *5* Initing...
+.. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
+def doMode(self,p,kind,name,val):
+
+    '''Parse an @mode node and create the enter-<name>-mode command.'''
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+    
+    if g.new_modes:
+        aList = []
+        for line in g.splitLines(p.b):
+            line = line.strip()
+            if line and not g.match(line,0,'#'):
+                name2,si = self.parseShortcutLine('*mode-setting*',line)
+                aList.append((name2,si),)
+        k.modeController.makeMode(name,aList)
+    else:
+        name1 = name
+
+        # g.trace('%20s' % (name),c.fileName())
+        modeName = self.computeModeName(name)
+    
+        d = g.TypedDictOfLists(
+            name='modeDict for %s' % (modeName),
+            keyType=type('commandName'),valType=g.ShortcutInfo)
+    
+        s = p.b
+        lines = g.splitLines(s)
+        for line in lines:
+            line = line.strip()
+            if line and not g.match(line,0,'#'):
+                name,si = self.parseShortcutLine('*mode-setting*',line)
+                assert g.isShortcutInfo(si),si
+                if not name:
+                    # An entry command: put it in the special *entry-commands* key.
+                    d.add('*entry-commands*',si)
+                elif si is not None:
+                    # A regular shortcut.
+                    si.pane = modeName
+                    aList = d.get(name,[])
+                    for z in aList:
+                        assert g.isShortcutInfo(z),z
+                    # Important: use previous bindings if possible.
+                    key2,aList2 = c.config.getShortcut(name)
+                    for z in aList2:
+                        assert g.isShortcutInfo(z),z
+                    aList3 = [z for z in aList2 if z.pane != modeName]
+                    if aList3:
+                        # g.trace('inheriting',[b.val for b in aList3])
+                        aList.extend(aList3)
+                    aList.append(si)
+                    d.replace(name,aList)
+                    
+                    if 0: #### Why would we want to do this????
+                        #### Old code: we have to save/restore self.shortcutsDict.
+                            #### self.set(p,"shortcut",name,aList)
+                        # Set the entry directly.
+                        d2 = self.shortcutsDict
+                        gs = d2.get(key2)
+                        if gs:
+                            assert g.isGeneralSetting(gs)
+                            path = gs.path
+                            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+                                g.es("over-riding setting:",name,"from",path)
+        
+                        # Important: we can't use c here: it may be destroyed!
+                        d2 [key2] = g.GeneralSetting(
+                            kind,path=c.mFileName,val=val,tag='setting')
+    
+            # Restore the global shortcutsDict.
+            ##### self.shortcutsDict = old_d
+            
+            if trace: g.trace(d.dump())
+        
+            # Create the command, but not any bindings to it.
+            self.createModeCommand(modeName,name1,d)
+.. @+node:ekr.20041120112043: *6* parseShortcutLine (ParserBaseClass)
+def parseShortcutLine (self,kind,s):
+
+    '''Parse a shortcut line.  Valid forms:
+
+    --> entry-command
+    settingName = shortcut
+    settingName ! paneName = shortcut
+    command-name --> mode-name = binding
+    command-name --> same = binding
+    '''
+
+    trace = False and not g.unitTesting and kind == '*mode-setting*'
+    c,k = self.c,self.c.k
+    assert c
+    name = val = nextMode = None ; nextMode = 'none'
+    i = g.skip_ws(s,0)
+
+    if g.match(s,i,'-->'): # New in 4.4.1 b1: allow mode-entry commands.
+        j = g.skip_ws(s,i+3)
+        i = g.skip_id(s,j,'-')
+        entryCommandName = s[j:i]
+        if trace: g.trace('-->',entryCommandName)
+        return None,g.ShortcutInfo('*entry-command*',commandName=entryCommandName)
+
+    j = i
+    i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
+    name = s[j:i]
+    if not name:
+        if trace: g.trace('no name',repr(s))
+        return None,None
+
+    # New in Leo 4.4b2.
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'->'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+2)
+        i = g.skip_id(s,j)
+        nextMode = s[j:i]
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'!'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+1)
+        i = g.skip_id(s,j)
+        pane = s[j:i]
+        if not pane.strip(): pane = 'all'
+    else: pane = 'all'
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'='):
+        i = g.skip_ws(s,i+1)
+        val = s[i:]
+
+    # New in 4.4: Allow comments after the shortcut.
+    # Comments must be preceded by whitespace.
+    comment = ''
+    if val:
+        i = val.find('#')
+        if i > 0 and val[i-1] in (' ','\t'):
+            # comment = val[i:].strip()
+            val = val[:i].strip()
+
+    stroke = k.strokeFromSetting(val)
+    assert g.isStrokeOrNone(stroke),stroke
+    # g.trace('stroke',stroke)
+    si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
+    if trace: g.trace('%25s %s' % (name,si))
+    return name,si
+.. @+node:ekr.20060102103625: *6* createModeCommand (ParserBaseClass)
+def createModeCommand (self,modeName,name,modeDict):
+
+    modeName = 'enter-' + modeName.replace(' ','-')
+
+    i = name.find('::')
+    if i > -1:
+        # The prompt is everything after the '::'
+        prompt = name[i+2:].strip()
+        modeDict ['*command-prompt*'] = g.ShortcutInfo(kind=prompt)
+
+    # Save the info for k.finishCreate and k.makeAllBindings.
+    d = g.app.config.modeCommandsDict
+
+    # New in 4.4.1 b2: silently allow redefinitions of modes.
+    d [modeName] = modeDict
+    
 .. @+node:ekr.20120226131923.10221: *4* Allow abbreviations in minibuffer 
 @nocolor-node
 
@@ -8170,7 +8339,7 @@ make its exit.
 4. I'll be making several other simplifications to the config code in
 the next several days.  It is important to do it now while all the
 complexities are fresh in my mind. 
-.. @+node:ekr.20120228111337.10047: *4* Fix bug: End only goes to physical line 
+.. @+node:ekr.20120228111337.10047: *4* Fix bug: End only goes to physical line
 @language rest
 
 End going to only physical line and not to the logical (wrapped) one)... 
