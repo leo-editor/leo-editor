@@ -1367,7 +1367,7 @@ class leoMenu:
         Each entry should be a sequence with 2 or 3 elements.'''
 
         trace = False and not g.unitTesting
-        if trace: g.trace(g.callers())
+        # if trace: g.trace(g.callers())
 
         c = self.c ; k = c.k
         if g.app.unitTesting: return
@@ -1389,9 +1389,12 @@ class leoMenu:
                 realLabel = self.getRealMenuName(label)
                 underline=realLabel.find("&")
                 realLabel = realLabel.replace("&","")
-                callback = self.defineOpenWithMenuCallback(command) #### openWithData)
-                c.add_command(menu,label=realLabel,accel=accel,
-                    command=callback,underline=underline)
+                callback = self.defineOpenWithMenuCallback(command)
+                c.add_command(menu,
+                    label=realLabel,
+                    accelerator=accel,
+                    command=callback,
+                    underline=underline)
     #@+node:ekr.20031218072017.4118: *6* defineOpenWithMenuCallback (leoMenu)
     def defineOpenWithMenuCallback(self,data):
 

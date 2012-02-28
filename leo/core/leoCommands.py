@@ -1366,9 +1366,15 @@ class Commands (object):
         The arg and openType args come from the data arg to c.openWith.
         '''
 
-        trace = True and not g.unitTesting ; verbose = False
+        trace = False # and not g.unitTesting
+        verbose = False
         testing = testing or g.unitTesting
         if arg is None: arg = ''
+        
+        def quote(s):
+            return '"%s"' % s if s else ''
+        def join(s1,s2):
+            return '%s %s' % (s1,s2)
         
         # 2012/02/27: Carefully enclose arg and fn in double quotes.
         # This is tricky because these values come from the user.
@@ -1381,56 +1387,51 @@ class Commands (object):
                 arg = [z.strip(ch) if z.startswith(ch) else z for z in arg]
             else:
                 arg = arg.strip(ch) if arg.startswith(ch) else arg
-        
+
         # Must be done *after* the loop.
         if type(arg) in (type((),),type([])):
-            arg_tuple = ['"%s"' % (z) for z in arg]
-                # Important: retain the tuple so that we can append the file name.
-            arg = ' '.join(arg_tuple)
-            if trace:
-                print()
-                g.trace()
-                print('%s(' % openType)
-                for z in arg_tuple:
-                    print('  %s,' % z)
-                print(')')
+            arg_tuple = arg
+            arg = ' '.join(arg) # Do *not* quote the args.
         else:
-            arg = '"%s"' % (arg) if arg else ''
-            if trace:
-                print()
-                g.trace()
-                print('%s(' % openType)
-                print('  %s' % arg)
-                print(')')
+            arg_tupe = []
+            arg = quote(arg) # *Do* quote the arg.
+        
+        if trace:
+            print()
+            g.trace()
+            print('%s(' % openType)
+            print('  %s' % arg)
+            print(')')
             
-        fn  = '"%s"' % (fn) if fn else ''
+        # Do not quote the temp file name.
 
         try:
             command = '<no command>'
-            if openType == 'os.system':
-                command = '%s %s' % (arg,fn)
-                if trace:
-                    g.trace()
-                    print('  %s' % (arg))
-                    print('  %s' % (fn))
-                if not testing:
-                    os.system(command)
-            elif openType == 'os.startfile':
-                command = 'os.startfile(%s)' % (arg+fn)
+            # if openType == 'os.system':
+                # command = '%s %s' % (arg,fn)
+                # if trace:
+                    # g.trace()
+                    # print('  %s' % (arg))
+                    # print('  %s' % (fn))
+                # if not testing:
+                    # os.system(command)
+            # el
+            if openType == 'os.startfile':
+                command = 'os.startfile(%s)' % join(arg,fn)
                 if trace: g.trace(command)
-                if not testing: os.startfile(arg+fn)
+                if not testing: os.startfile(join(arg,fn))
             elif openType == 'exec':
-                command = 'exec(%s)' % (arg+fn)
+                command = 'exec(%s)' % join(arg,fn)
                 if trace: g.trace(command)
-                if not testing: exec(arg+fn,{},{})
+                if not testing: exec(join(arg,fn),{},{})
             elif openType == 'os.spawnl':
                 filename = g.os_path_basename(arg)
                 command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
                 if trace: g.trace(command)
                 if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
             elif openType == 'os.spawnv':
-                filename = os.path.basename(arg[0]) 
-                vtuple = arg[1:]
+                filename = os.path.basename(arg_tuple[0]) 
+                vtuple = arg_tuple[1:]
                 vtuple.insert(0, filename)
                     # add the name of the program as the first argument.
                     # Change suggested by Jim Sizelove.
@@ -1440,8 +1441,9 @@ class Commands (object):
                 if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
             elif openType == 'subprocess.Popen':
                 use_shell = True
-                c_arg = '%s %s' % (arg,fn) if arg else fn
+                c_arg = join(arg,fn)
                 command = 'subprocess.Popen(%s)' % c_arg
+                g.trace(command)
                 if not testing:
                     try:
                         subprocess.Popen(c_arg,shell=use_shell)
