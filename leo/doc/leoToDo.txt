@@ -14,6 +14,7 @@ Top 10:
 * Use c.db for marks and expansion bits.
 * Restart vim project
 .. @+node:ekr.20120212095313.10377: *3* To do first
+.. @+node:ekr.20120228111337.10054: *4* Fix failing clone unit test
 .. @+node:ekr.20120203053243.10111: *4* Fix OpenWith menu
 @nocolor-node
 
@@ -1952,180 +1953,6 @@ def NEWgeneralModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
-.. @+node:ekr.20120225032124.18056: *4* Clear out the pre-writing folder
-@pagewidth 60
-.. @+node:ekr.20120225072226.10199: *5* Add to scripting chapter
-@language rest
-
-I want to learn about PyQt and leo's qtGui. As a first step,
-I'm trying to execute a script from within a leo body::
-
-    from PyQt4 import QtGui
-    w = QtGui.QWidget()
-    w.resize(250, 150)
-    w.move(300, 300)
-    w.setWindowTitle('Simple test')
-    w.show()
-
-Q. When I try the above, I see a window appear and then
-immediately disappear. How can I keep the window visible?
-
-A. When the script exits the sole reference to the window,
-w, ceases to exist, so the window is destroyed (garbage
-collected). To keep the window open, add the following code
-as the last line to keep the reference alive::
-
-    g.app.scriptsDict['my-script_w'] = w
-
-Note that this reference will persist until the next time
-the execute-script command is run.  If you want something even
-more permanent, you can do something like::
-
-    g.app.my_script_w = w
-.. @+node:ekr.20120225072226.10200: *5* Code for displaying a function call hierarchy in Leo
-@language rest
-
-@pagewidth 80
-
-From Brian Theado
-
-The other day I stumbled across Ville's code in scripts.leo which displays the
-output of python's trace module in a leo outline. The output of the trace module
-is not very friendly and I didn't find the result very usable. I was inspired to
-write some code to translate the output so the tree of function calls is
-displayed via Leo headlines. Thanks to Ville for sharing that code. I never
-would have figure this out without that starting point.
-
-Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
-the "call tree" node. The execution tree of the 'scroll-outline-up-line'
-minibuffer command will be displayed to stdout and also as a tree of leo
-headlines.
-.. @+node:ekr.20120225072226.10203: *6* call tree
-import trace
-
-@language python
-@others
-
-# see http://docs.python.org/library/trace.html for documentation
-# on the trace module
-tracer = trace.Trace(countcallers=1)
-
-# Trace a minibuffer command.
-
-# Any function call will work. Leo's minibuffer commands are easily discoverable
-# via tab completion and the 'print-commands' command.
-
-#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
-tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
-
-top = p.insertAsLastChild().copy()
-top.h = 'trace session'
-displayCalltree(top, tracer.results().callers.keys())
-c.redraw()
-.. @+node:ekr.20120225072226.10204: *7* displayCalltree
-def displayCalltree(p, callinfo):
-   '''
-   Converts the function call hierarchy in 'callinfo' into a tree of function
-   calls.  The function call tree is displayed to stdout as indented text
-   and is inserted as a tree of leo nodes rooted at the given position 'p'
-   '''
-   callers = [k[0] for k in callinfo]
-   callees = [k[1] for k in callinfo]
-
-   # The first set of children will be those that don't have any callers
-   # listed in callinfo
-   toplevels = list(set(callers) - set(callees))
-   positions = {}
-   path = []
-
-   # Depth-first traversal of the call hierarchy represented by 'callinfo'
-   # 'levels' is a stack which grows during descend and shrinks
-   # during ascend.  Each element of 'levels' is a list of unprocessed
-   # siblings of each other
-   levels = [toplevels]
-   while len(levels) > 0:
-       while len(levels[-1]) > 0:
-           # Process the first element in the 'deepest' (i.e. last) list of siblings
-           cur = levels[-1][0]
-           levels[-1] = levels[-1][1:]
-           indent = " " * 4 * (len(levels)-1)
-           if cur not in path:
-               if cur in positions.keys():
-                   # Function already seen, so make a clone
-                   clone = positions[cur].clone()
-                   clone.moveToLastChildOf(p)
-                   print (indent + "%s %s ..." % cur[1:])
-               else:
-                   # Haven't seen this function, so insert a new headline
-                   p = p.insertAsLastChild().copy()
-                   p.h = "%s %s" % cur[1:]
-                   print (indent + p.h)
-
-                   # Remember the position so it can be cloned if seen again
-                   positions[cur] = p
-
-                   # Find all callees of this function and descend
-                   levels.append([c[1] for c in callinfo if c[0] == cur])
-                   path.append(cur)
-           else:
-               r = p.insertAsLastChild().copy()
-               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
-               print(indent + r.h + "...")
-
-       # Ascend back up one level
-       path = path[0:-1]
-       p = p.parent()
-       levels = levels[0:-1]
-.. @+node:ekr.20120225072226.10205: *7* trace session
-.. @+node:ekr.20120225072226.10282: *5* The leoInspect module
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
-leoInspect: a hobby with a future?
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
-leoInspect: remarkable collapse in complexity and attempted assessment
-
-.. @+node:ekr.20120226095657.10213: *5* Issue: @path @auto - strange behaviour
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
-
-> In short, I am now willing, on an experimental basis, to have Leo put
-> up a dialog when inserting an @ignore, and also when writing an
-> @<file> node containing @ignore.
-
-> In the past, I have always found read/write dialogs to be a) intrusive
-> and b) panic-inducing, but this may be a tolerable exception.  We
-> shall see.
-.. @+node:ekr.20120226095657.10214: *5* How to upgrade properly
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/61019e45d75a6f18/71ee770ee4421222
-
-
-Once you have the 4.9 "official release" working, then further updates are simply:
-
-(ongoing practice - keep your folder containing your leo
-code - separate from your .mySettings.leo and any data
-files, .leo and otherwise.)
-
-1. archive and remove that app folder
-2. download the nightly snapshot zip file
-3. unzip it into the same place
-4. enjoy your up-to-date Leo code. . .
-.. @+node:ekr.20120226095657.10215: *5* version.py now uses bzr_version.py
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
-
-Leo now reports bzr version numbers and dates more accurately.
-.. @+node:ekr.20120226183512.10193: *5* Changed calling signatures of g.openWithFileName and g.app.newCommander
-
-
-Note: in rev 4990, the g.app.newCommander method (formerly called
-g.app.newLeoCommanderAndFrame) also returns a single value (a
-Commander) rather than the tuple (c,c.frame). 
 .. @+node:ekr.20120226131923.10221: *4* Allow abbreviations in minibuffer 
 @nocolor-node
 
@@ -7214,6 +7041,1046 @@ it out... :-)
 @nocolor-node
 
 In downloads folder: leo-4.9_viewrendered-layout.png
+.. @+node:ekr.20120225072226.10199: *4* Add to scripting chapter
+@language rest
+
+I want to learn about PyQt and leo's qtGui. As a first step,
+I'm trying to execute a script from within a leo body::
+
+    from PyQt4 import QtGui
+    w = QtGui.QWidget()
+    w.resize(250, 150)
+    w.move(300, 300)
+    w.setWindowTitle('Simple test')
+    w.show()
+
+Q. When I try the above, I see a window appear and then
+immediately disappear. How can I keep the window visible?
+
+A. When the script exits the sole reference to the window,
+w, ceases to exist, so the window is destroyed (garbage
+collected). To keep the window open, add the following code
+as the last line to keep the reference alive::
+
+    g.app.scriptsDict['my-script_w'] = w
+
+Note that this reference will persist until the next time
+the execute-script command is run.  If you want something even
+more permanent, you can do something like::
+
+    g.app.my_script_w = w
+.. @+node:ekr.20120225072226.10200: *4* Code for displaying a function call hierarchy in Leo
+@language rest
+
+@pagewidth 80
+
+From Brian Theado
+
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
+
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+.. @+node:ekr.20120225072226.10203: *5* call tree
+import trace
+
+@language python
+@others
+
+# see http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
+
+# Trace a minibuffer command.
+
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
+
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
+
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+.. @+node:ekr.20120225072226.10204: *6* displayCalltree
+def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
+
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) > 0:
+       while len(levels[-1]) > 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+.. @+node:ekr.20120225072226.10205: *6* trace session
+.. @+node:ekr.20120225072226.10282: *4* The leoInspect module
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
+leoInspect: a hobby with a future?
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
+leoInspect: remarkable collapse in complexity and attempted assessment
+
+.. @+node:ekr.20120226095657.10213: *4* Issue: @path @auto - strange behaviour
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
+
+> In short, I am now willing, on an experimental basis, to have Leo put
+> up a dialog when inserting an @ignore, and also when writing an
+> @<file> node containing @ignore.
+
+> In the past, I have always found read/write dialogs to be a) intrusive
+> and b) panic-inducing, but this may be a tolerable exception.  We
+> shall see.
+.. @+node:ekr.20120226095657.10214: *4* How to upgrade properly
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/61019e45d75a6f18/71ee770ee4421222
+
+
+Once you have the 4.9 "official release" working, then further updates are simply:
+
+(ongoing practice - keep your folder containing your leo
+code - separate from your .mySettings.leo and any data
+files, .leo and otherwise.)
+
+1. archive and remove that app folder
+2. download the nightly snapshot zip file
+3. unzip it into the same place
+4. enjoy your up-to-date Leo code. . .
+.. @+node:ekr.20120226095657.10215: *4* version.py now uses bzr_version.py
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
+
+Leo now reports bzr version numbers and dates more accurately.
+.. @+node:ekr.20120226183512.10193: *4* Changed calling signatures of g.openWithFileName and g.app.newCommander
+
+
+Note: in rev 4990, the g.app.newCommander method (formerly called
+g.app.newLeoCommanderAndFrame) also returns a single value (a
+Commander) rather than the tuple (c,c.frame). 
+.. @+node:ekr.20120228111337.10040: *4* Open with problems and proposed solutions
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd5907529208ee98
+
+Revs 5037/8 contain fixes that allow the open-with command to start to
+work, at least in 'subprocess.Popen' mode.
+
+However, I think it is time for a complete rethink of how users
+specify open-with settings.
+
+===== The problems
+
+1. The format of settings in @openwith nodes is way too wonky.  At
+present, the body text of such nodes consists of a single line, which
+contains a 3-tuple of elements. Let us call this line the **open-with
+line**.
+
+The entire open-with line must be a valid Python tuple.  This causes
+problems for both user and implementation, as discussed more fully
+below.
+
+2. openTempFileInExternalEditor is the method that translates the
+settings in @openwith nodes into code that actually open the temp file
+with the desired editor.  At present, this method has to do an
+**eval** of the single @openwith line, which has lots bad
+consequences:
+
+- eval is a slight security problem, although there are a gazillion
+worse problems.
+
+- The user has to quote strings, and those quotes are removed by eval,
+so there is no easy way to specify quoted strings (the user has to
+*doubly* quote strings.)
+
+- There is no indication of what the parts of the open-with line mean.
+
+3. At present, openTempFileInExternalEditor does some ridiculously-
+complicated munging of the *eval'd* open-with line in order to get
+produce the correct call to subprocess.Popen.  It's possible that
+there is an easier way, but I haven't found it yet.
+
+===== A proposed solution
+
+1. We need a much more user-friendly format for @openwith nodes.  Let
+us suppose that the body of @openwith nodes contains one or more lines
+of the following form::
+
+   tag: value
+
+The possible tags will be::
+
+- kind: <a string>
+
+The value specifies the **opener logic**, that is, the method used to
+launch the external editor, one of
+('subprocess.Popen','os.system','os.startfile','os.spawnl','os.spawnv',
+'exec')
+
+- arg: <a string>
+
+There may be many such arg lines. Each line will be a string to be
+passed as an argument to the opener logic, in a format that is
+compatible with the specified opener logic.
+
+**Important**: quotes in <a string> will be *retained* (not eval'd),
+allowing the user to specify exactly the arguments to be passed to
+opener logic.
+
+- custom: <a string>
+
+Here, <a string> *will* be eval'd, yielding an object to be used as
+the opener logic.
+
+It's likely that either the "custom" tag or the "exec" opener value is
+redundant.
+
+===== Summary
+
+The present scheme is wonky, confusing, inflexible and extremely
+difficult to implement. It should be replaced immediately.
+.. @+node:ekr.20120228111337.10041: *4* Understanding Leo's load process
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/28e544d052aeac2b
+
+The original beautiful plan to read each local .leo file once has
+fallen prey to an ugly fact :-)  Indeed, it doesn't seem possible to
+call event handlers like open0, open1 and open2 without having inited
+settings.  As a result, the 5-Phase load process in g.openWithFileName
+is dead.  I won't morn it's loss.
+
+Today's work has been valuable.  I've refactored the code in ways that
+will survive the failure of the first plan.
+
+The second plan will simplify code using another strategy, as
+follows::
+
+1. Leo will, as at present, read local files twice.  The first load
+will discover the settings to be used in the second load.  This will
+ensure that proper settings are *available* during the second load.
+
+2. Instead of initing settings "late" in the finishCreate methods, all
+ctors will init settings "early", before calling the ctors for
+subsidiary objects.  This will ensure that proper settings are *in
+effect* for the subsidiary ctors.
+
+3. There is a clever way of using the fact that c.__init__ creates
+*all* subsidiary objects (directly or indirectly).  After creating all
+such objects, c.__init__ can simply call c.finishCreate!  It's
+beautiful, and it should work. "Internalizing" the call to
+c.finishCreate will help eliminate newLeoCommanderAndFrame, something
+that I very much want to do.
+
+At least one difficult puzzle remains, namely how to communicate the
+settings discovered in the first load to the c.config object created
+in the second load. Trust me, this is much harder than you might
+expect.  But such problems *can* be solved cleanly.  It just takes
+lots of work. 
+
+=====
+
+Hurray! The new plan is a *spectacular* success!
+
+===== The unification of Leo's startup code
+
+Creating Commands objects is now completely self-contained.  In
+particular, c.__init__ now creates the fully-inited gui frame.  This
+is a revolution in Leo's startup code!
+
+Indeed, the old code inited Leo windows in several places, and in
+several phases:
+
+Places: c.__init__, the end of g.app.newLeoCommanderAndFrame and the
+end of g.openWithFileName.
+
+Phases: g.app.newCommanderAndFrame, g.openWithFileName and
+c.finishCreate.
+
+The new code has c.__init__ do *all* the work, in one place, and in
+one phase.
+
+This will be supremely important for future maintainers.  The old code
+was difficult for me to understand yesterday, even after a full week
+of study.  The new code is a simple as could possibly be imagined.
+This is a gigantic step forward for Leo.
+
+This spectacular collapse in complexity will have all sorts of
+excellent consequences...
+
+===== More cleanups
+
+A number of possibilities for cleaner code now present themselves:
+
+- c.__init__ no longer needs a frame argument, a surprisingly
+important conceptual simplification.
+
+- All calls to g.app.openWithFileName will be replaced by a call to
+Commands(...), that is, c.__init__.  Because this code happens at
+startup, it may still be useful to wrap this in a method that imports
+the leo.core.leoCommands module, but this is a nit.  It will now be
+perfectly clear that c.__init__ does all the work.
+
+- I now see that having g.openWithFileName "fail" causes needless
+complications.  It should simply create a new Leo window if it is
+given no fileName argument, or if the file does not exist.  This will
+eliminate a lot of "if" statements ;-)
+
+Note: I have already removed the switches that enabled the new code.
+This makes the code much easier to read.
+
+I'll be upping these simplification later today.
+
+===== The final phases
+
+Once the code base has been cleaned, I'll turn my attention to the
+"new_load" and "new_config" schemes.
+
+new_load: simplifies the infamous readSettingsFiles methods into
+several cleaner methods.
+
+new_config: uses a much simpler per-commander c.config.get method
+instead of delegating to the horribly complex g.app.config.get method.
+
+There is significant coordination between these two schemes.  In fact,
+they are really two aspects of the same problem.  I'll probably merge
+these two switches into one.
+
+Developmental unit testing has already proven both schemes.  It should
+be relatively straightforward to fold the new code into the new code
+base, but that is not guaranteed--there are still hidden complexities
+to be dealt with.  Still, I expect the code to be fully tested in a
+day or three.
+
+Once all the new code is complete, it will be time to repackage all
+the recent work as methods of the LoadManager class.  This promises to
+eliminate significant code duplication in the leoBridge module.  We'll
+see about that...
+
+Finally, g.openWithFileName will do nothing but call a corresponding
+LoadManager method. The details of loading do not belong in
+leoGlobals.py! 
+.. @+node:ekr.20120228111337.10042: *4* Leo's new classes
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
+
+For almost 15 years Leo has been written using a limited set of
+classes.  These were "big" classes, implementing major modules of
+Leo.  There is nothing wrong with these classes, and they will remain
+unchanged, except insofar as they will be simplified by the classes I
+am about to discuss.
+
+Recently, I have become aware that Leo's code could be considerably
+simplified by adding "smallish" classes.  Indeed, I now think the
+distinction between big and small classes is unhelpful.  The most
+important part of the design of a class is simply whether a class
+implements an understandable concept.
+
+With this introduction, here is a short summary of Leo's new classes.
+Some have not been fully implemented.  Getting them all to work is a
+big part of the rewrite of Leo's config, loading and key-handling
+code.
+
+===== LoadManager
+
+This class handles all the messy details of loading .leo files at
+startup.  That's its *purpose*.
+
+At the code level, it encapsulates almost all the code in runLeo.py,
+as well as some methods in leoGlobals.py that really belong somewhere
+else.  Creating a class simplifies the code to a surprising degree: 5
+or 6 ivars of the class represent command-line options.  These ivars
+are always available: there is no need to pass them around as
+arguments.
+
+Defining a new class means that it might be possible to reuse this
+code in the leoBridge module, which would eliminate a lot of duplicate
+code.
+
+===== ModeController and ModeInfo
+
+The ModeController class represents a collection of modes.  The
+ModeInfo class represents a single mode.
+
+Without these classes, the code in leoKeys.py is extremely hard to
+understand.  In fact, the present code is a perfect example of the
+problems with procedural programming: client code is burdened with
+knowing way too many details about matters that it shouldn't have to
+know about.  Furthermore, that data itself is hard to understand:
+it's too "raw".  These classes provide "identity" for data.  The value
+of repr(aModeInfo) is surprisingly large.
+
+===== LogManager
+
+This class represents the global log.  It hides the details of the log
+from the g.app class and several other pieces of code.
+
+At present, the interface to this class is procedural.  That is, the
+present g.app methods that will be moved into this class have a
+procedural rather than descriptive nature.  I'm not sure how much this
+will change, but creating this class may create opportunities that
+were not apparently previously.
+
+===== KeyStroke and ShortcutInfo
+
+I've discussed these previously.  The KeyStroke class is a wrapper for
+plain strings.  It's most important attribute is its *identity*.  It
+announces that its contents is a canonicalized value, not a raw user
+settings string or any other kind of data associated with key
+handling.
+
+Similar remarks apply to ShortcutInfo objects.  Their identity
+clarifies the code.  The former code used g.bunches.  In complex code
+such as leoKeys.py, such anonymous objects really obfuscate matters.
+
+===== EditCommandsManager
+
+I wrote and tested this class last night.  It solves a problem that
+has been annoying me ever since I created leoEditCommands.py.  The
+problem is this:  without this class the classesList has to be defined
+at the end of the module, after all classes have been imported.
+Worse, several module-level methods were needed to manage the
+classesList.
+
+In the new scheme, each Commander creates an EditCommandsManager, and
+the code that previously had to call the module-level method
+leoEditCommands.x(c) now simply calls c.editCommandManager.x().  This
+is much cleaner and avoids several very ugly imports.  Which brings me
+to...
+
+===== Avoiding imports of Leo files
+
+I would like to avoid having Leo's modules import each other wherever
+possible.  This would simplify Leo's startup process considerably.
+
+At present, the ctor for the Commands class imports many modules.
+This is essential to break what would otherwise be circular
+dependencies among Python imports.  We can extend this pattern by
+creating more classes, as was done with the EditCommandsManager class.
+
+I'm not sure exactly how this will play out, but removing circular
+imports between Leo's module seems like a worthy goal.  The leoGlobals
+module is an important exception.  All of Leo's modules do::
+
+   import leo.core.leoGlobals as g
+
+To make this work, it is *essential* that leoGlobals.py import *no*
+other Leo modules.
+
+===== A new (limited!) use for section references
+
+I am going to create a new section in leoGlobals.py called << global
+switches >>  It will contain code such as:
+
+   new_load = False # True: .leo files are loaded at most once.
+   if new_load: print('***** new_load')
+
+   new_modes = False # True: use ModeController and ModeInfo classes.
+   if new_modes: print('***** new_modes')
+
+This section is useful because I can clone it.  I can then enable and
+disable switches in the clone, without having to keep "@file
+leoGlobals.py" visible.  Very handy.
+.. @+node:ekr.20120228111337.10043: *4* Eliminated the -c option
+.. @+node:ekr.20120228111337.10044: *4* New search order for leoSettings.leo & myLeoSettings.leo
+@language rest
+
+leoSettings.leo:
+
+table = (
+        # First, leoSettings.leo in the home directories.
+        join(g.app.homeDir,     settings_fn),
+        join(g.app.homeLeoDir,  settings_fn),
+
+        # Next, <machine-name>leoSettings.leo in the home directories.
+        # join(g.app.homeDir,     machine_fn),
+        # join(g.app.homeLeoDir,  machine_fn),
+
+        # Last, leoSettings.leo in leo/config directory.
+        join(g.app.globalConfigDir, settings_fn)
+    )
+
+myLeoSettings.leo:
+
+    table = (
+        # First, myLeoSettings.leo in the local directory
+        join(localDir,          settings_fn),
+
+        # Next, myLeoSettings.leo in the home directories.
+        join(g.app.homeDir,     settings_fn),
+        join(g.app.homeLeoDir,  settings_fn),
+    
+        # Next, <machine-name>myLeoSettings.leo in the home directories.
+        join(g.app.homeDir,     machine_fn),
+        join(g.app.homeLeoDir,  machine_fn),
+
+        # Last, leoSettings.leo in leo/config directory.
+        join(g.app.globalConfigDir, settings_fn),
+    )
+.. @+node:ekr.20120228111337.10045: *4* About key handling
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/86593fb9543afb66
+
+Rev 4972 demonstrates that the KeyStroke class can indeed distinguish
+between "raw" user settings and the "canonicalized" form used
+throughout Leo.  Indeed, the ability to explicitly distinguish between
+the two, using type checking, has already substantially clarified and
+simplified the code.
+
+BTW, this is in no way a violation of OO principles.  The code is not
+dispatching on the type of objects, it is merely enforcing vital
+consistency checks.  This code is complex: confusion about the types
+of objects is intolerable.  Happily, the resulting clarity allows the
+code to be substantially simpler than it would otherwise be, which in
+turn clarifies the code further, and so on...
+
+Part 1: This work is vital
+
+As described below, the forthcoming work will lead to a cascade of
+other simplification.  These simplifications are important for at
+least three, reasons:
+
+1. The code must be simplified so that future maintainers (including
+me) will have an easier time of it.
+
+2. The present code provides no real help in creating unit tests that
+test how Leo handles keystrokes.
+
+3. Simplifying the code will provide a more solid foundation for vim-
+related bindings.
+
+Part 2: Notes about the KeyStroke class
+
+Objects of the KeyStroke class can be used *exactly* as a strings may
+be used:
+
+A.  KeyStroke objects may be used as dictionary keys, because they
+have __hash__ methods and all the so-called rich comparison methods:
+__eq__, __ne__, __ge__, __gt__, __le__ and __lt__.  Note that
+KeyStroke objects may be compared with other KeyStroke objects,
+strings and None.
+
+B. At present, KeyStroke objects supports the find, lower and
+startswith methods.  This simplifies the code substantially: we can
+apply these methods to either strings or KeyStroke objects, so there
+is no need to create different versions of the code depending on the
+value of g.new_strokes.
+
+However, having the KeyStroke class support string methods is bad
+design.  Indeed, it is a symptom that the client code that uses
+KeyStroke objects knows too much about the internals of KeyStroke
+objects.  Instead, the KeyStroke class should have higher-level
+methods that use s.find, s.lower and s.startswith internally.
+
+You could say that the fact that code in leoKeys.py calls s.find,
+s.lower and s.startswith is a symptom of non OO programming.  The
+internal details of settings and strokes "pollutes" the code.  This
+must be fixed.  This will likely create opportunities for further
+simplifications.
+
+Part 3: Other design changes
+
+The present work, enabled and disabled with g.new_strokes, has been a
+resounding success.  The next steps will be as follows:
+
+Better packaging.
+
+g.new_strokes, g.isStroke and g.isStrokeOrNone should be defined in
+leoKeys.py, not leoGlobals.py.
+I knew from the start that such global names were only a temporary
+expedient.
+
+Now I know where they should go. leoKeys.py, not leoConfig.py, is the
+proper place to handle all the details about key bindings.  Indeed the
+code in leoConfig.py simply parses user key settings into *strings*.
+These raw strings must be converted to KeyStroke objects by
+leoKeys.py.
+
+As a result, the KeyStroke class (and the ShortcutInfo class?) should
+be defined in leoKeys.py, not leoConfig.py.  To make this work, we'll
+want to create several factory methods: k.makeKeyStroke and
+k.makeShortcutInfo.
+
+Better separation of concerns.
+
+The Qt key input code can be hugely simplified by calling a new
+k.makeKeyStrokeFromData factory method.  At present, the Qt key input
+code knows *all* the details of  the format of *canonicalized*
+settings. This is absolutely wretched design.
+
+Instead, the Qt input key code should simply pass the key modifiers
+and other key information to k.makeKeyStrokeFromData, in a some kind
+of "easy" format.  For example, the Qt input key code would represent
+the internal Qt modifiers as lists of strings like "alt", "ctrl",
+"meta", "shift".  k.makeKeyStrokeFromData would then create a *user*
+setting from the components, and then call k.strokeFromSetting to
+complete the transformation.
+
+As I said in another thread, the present Qt input key code is
+entangled with other code.  I'll have to disentangle the code before
+putting this scheme into effect.
+
+Other classes
+
+The easiest next step will be to integrate the presently unused
+ShortcutsDict class into the code. This will eliminate the wretched
+special cases for the _hash key.
+
+Part 4: Conclusions
+
+I have high hopes that we will see wave after wave of
+simplifications.  Much of the difficult work presently scattered in a
+non-OO fashion throughout leoKeys.py, leoConfig.py and leoQtGui.py
+will migrate to become KeyStroke methods (or methods of other
+classes).
+
+The KeyStroke class has already made possible vital type-related
+assertions.  Knowing *for sure* exactly what crucial data is and what
+it means is a huge step forward.   More steps are coming. 
+
+=====
+
+> > Why not just have .s attribute in KeyStroke, that contains the string
+> > version?
+
+> A good question.  Indeed, all Keystroke objects ks do have an s ivar.
+
+I forgot the most important reason in my reply.  The reasons I gave
+all were code-level responses, but the most important reason is that
+is truly impossible to understand the key code without knowing whether
+an object is a string representing a user setting or the canonicalized
+version used in Leo's core, that is, a KeyStroke object.  Using ks.s
+instead of ks destroys precisely the information needed to understand
+the code.
+
+Again, this is not a theoretical concern.  The key code now contains
+assertions of the form::
+
+    assert g.isStroke(stroke)
+or
+    assert g.isStrokeOrNone(stroke)
+
+Getting these assertions to pass in *all* situations required several
+important revisions of the code.  The code that makes the assertions
+pass is "innocuous", that is, almost invisible in the mass of code,
+but obviously, these small pieces of code are vital.
+
+The present code highlights these changes: look for g.new_strokes,
+especially lines marked with ####.  These markers will be cleaned away
+eventually, but the asserts will remain forever.
+
+Furthermore, the asserts suggested further simplifications.  It was a
+tricky process, and it will be ongoing as I simplify the code further. 
+
+=====
+
+> I am about to convert many of Leo's key-handling dictionaries to
+> g.TypedDict objects.  Using TypedDicts will make it impossible to make
+> invalid assignments to Leo's crucial key dictionaries.
+
+This has been a great success.  I also defined the g.TypedDictOfLists
+class, where the values are lists of a known type.  These classes are
+useful for more than type checking:  they have unique names and a dump
+method that dumps the dict in an easy-to-read format that includes the
+name, and valid types for keys and values.
+
+At present, these dicts are *not* subclasses of {}, which has its
+pluses and minuses.  These are quite simple classes, so at present
+only the "for key in d.keys()" idiom is supported, the "for key in d"
+idiom is not supported.
+
+Plain dicts do have their uses, but for "long-lived" dicts, and dicts
+passed around between methods, I am beginning to regard plain dicts as
+being as ill-advised as g.Bunches.
+
+Leo's key dictionaries will always be complex, but basing them on the
+TypedDict class is a major improvement. 
+.. @+node:ekr.20120228111337.10046: *4* rev 4952 fixes bug 87933 with major key reorg
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c933b28c27d3b9a7
+
+Ref 4952 of the trunk fixes bug 87933:
+"Redefining a key binding breaks menu items with same binding"
+
+This was a difficult bug to fix--I rewrote significant parts of Leo's
+code that deals with settings for key binding.
+
+All unit tests pass, and I have been using this code happily for a few
+days, but significant problems could be lurking.  Please use caution
+and please report any problems immediately, especially settings-
+related problems.
+
+Besides fixing the bug, Leo computes accelerators, in menu items
+dynamically when the user activates a menu.  The accelerator shows
+*all* keys bound to the command associated with the menu item.
+
+In the next few days I'll be simplifying the new code further, so if
+you want more stable code please stay away from the trunk and the
+nightly builds for the next several days.
+
+Here is the checkin log:
+
+A major reorganization of the configuration code that fixes bug 87933
+Redefining a key binding breaks menu items with same binding
+
+- Replaced g.bunches with ShortcutInfo objects, and bunchList name by
+aList followed by
+  assert isinstance(si,ShortcutInfo),si
+
+  Using ShortcutInfo objects rather than g.bunch was a big win.
+
+- Wrote and tested make_settings_dict and its helpers,
+merge_settings_dicts, invert and uninvert.
+
+- Leo computes menu texts dynamically in onAboutToShow.
+
+- leo_update_shortcut now shows all shortcuts for a command.
+
+- leoMenu.define_enable_dict encapsulates data used to enable/disable
+commands regardless
+  of where those commands appear in Leo's menu. The old code assumed
+that a fixed menu
+  location for all commands that could be enabled or disabled.
+
+- Removed dynamic_menus "compile-time" constant.
+
+- Created << define global key dicts >> in leoApp.py.
+
+  This is a duplicate of dicts in leoKeys.py: they will be merged
+later today
+  in a location to be determined.
+
+- Added unused ShortcutName and ShortcutsDict classes.
+
+  The ShortcutName class will go away: it's methods may become methods
+of the ShortcutInfo class.
+  Alternatively, the methods might stay where they are.
+
+  The ShortcutsDict class *will* become functional: it's the only way
+to eliminate the wretched
+  _hash hack used in the present raw key dictionaries. Furthermore,
+the ShortcutsDict class
+  will probably encapsulate inverted dicts. 
+  
+=====
+
+> Ref 4952 of the trunk fixes bug 87933:
+> "Redefining a key binding breaks menu items with same binding"
+
+> This was a difficult bug to fix--I rewrote significant parts of Leo's
+> code that deals with settings for key binding.
+
+I am now in the midst of some long-overdue simplification that has
+been made possible with the new code:
+
+1. Leo now (provably) no longer uses the very complex g.app.config.get/
+set code for shortcuts.
+
+2. The new k.kill_one_shortcut allows k.registerCommand to properly
+override settings.  For example, File:New is no longer bound to Ctrl-N
+when the following becomes active::
+
+    @button test @key=Ctrl-N
+
+k.kill_one_shortcut uses the invert/uninvert trick used in
+merge_settings_dict.  Only this kind of elegant code has a chance of
+working reliably.
+
+3. As mentioned in another thread, k.tkbindingFromStroke is about to
+make its exit.
+
+4. I'll be making several other simplifications to the config code in
+the next several days.  It is important to do it now while all the
+complexities are fresh in my mind. 
+.. @+node:ekr.20120228111337.10047: *4* Fix bug: End only goes to physical line 
+@language rest
+
+End going to only physical line and not to the logical (wrapped) one)... 
+.. @+node:ekr.20120228111337.10048: *4* BibTeX citations from Leo
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786
+
+Currently I am using Leo as an outliner for the elaboration of
+documents with LaTeX. For this, I work with @rst nodes and Sphinx. It
+works really wonderful.
+
+When using citations, Sphinx and RsT offer a certain syntax that, as
+far as I have understood, does allow only for the generation of
+"simple", Leo-self-contained citation references (inside of say a "Leo
+References Section" node).
+
+So I use a citation of the form   [CITBook001]_ inline in the text.
+Somewhere else in the same Leo outline I have the corresponding
+description as:
+
+.. [CITBook001] A citation as well-known
+
+When using LaTeX and BibTeX, I would like to use inside of Leo a kind
+of LaTeX-inline-markup, that after generation of the RsT file through
+Sphinx as well as after  running of "make latex", it generates a LaTeX
+file containing the citation call of the form \cite{CITBook001} as
+described in a file *.bib.  The only way I follow today is the later
+editing by hand of the LaTeX file. This is of course not the best way.
+How to convince Leo/Sphinx/RsT to generate the inline raw latex
+syntax? It could be very simple, but ... I haven not been able to see
+it.
+
+Any hints? 
+
+=====
+
+> How to convince Leo/Sphinx/RsT to generate the inline raw latex
+> syntax?
+
+http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data...
+
+?
+
+Cheers -Terry 
+
+=====
+
+I followed the recommendations of Terry. It was much easier
+as I thought! Here a summary of the use of custom roles in
+Leo to generate LaTeX "inline markup" from Leo:
+
++ @ rst-no head Defining the custom role, here applicable to html and
+latex syntax
+   .. role:: raw-role(raw)
+      :format: html latex
+
++ @A document section
+   This is my text including an example of inline markup for
+generating :raw-role:`\LaTeX\` from Leo. For more details see
+:raw-role:`\cite{rstDocumentation}`. Of course, my bib database below will
+describe this citation with plenty of details.
+
++ @rst-no-head Including the bib database
+   .. raw:: latex
+
+      \bibliographystyle{acm}
+      \bibliography{myBibliography}
+
+It worked really fine! 
+.. @+node:ekr.20120228111337.10049: *4* Replacing Qt stylesheets on the fly
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
+
+> Here's a one line @button node you can add to myLeoSettings.leo
+>
+> @button set-style
+>    c.frame.top.leo_ui.setStyleSheet(p.b)
+
+Cool.  I've added this to my "pre-writing" pile of things to be
+included in the next set of docs.
+
+Important:  setStyleSheet *replaces* the previous stylesheet with the
+new stylesheet, so you had best set all the attributes of Leo's
+default stylesheet.
+
+As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
+set the stylesheet for that widget only: the top-level stylesheet (the
+stylesheet for c.frame.top.leo_ui) remains unchanged.
+.. @+node:ekr.20120228111337.10050: *4* Eliminated v.bat
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6c0a05306fb9b18f
+
+I'd like to start a new thread here, rather than continue the
+discussion for bug "911521: Help about and --version should be
+accurate" so that more people might see it.
+
+Here is my present summary of the situation:
+
+The v.bat way is not acceptable: it effectively doubles the number of
+commits needed, which adds a lot of cruft to the bzr log.
+
+But how to fix matters?  There are three cases, two of which are
+almost identical:
+
+1. Running Leo from a bzr repository.  This is the easy case.
+leoVersion.py should get the version from the .bzr/branch/last-
+revision file.  I am going to add this code today.
+
+2. Running Leo from a nightly snapshot.
+
+3. Running Leo from an official release.
+
+Cases 2 and 3 are almost identical.  The only difference is that for
+case 3 we could consider running a distribution script to update
+leoVersion.py.  We could also run such a script for nightly snapshots,
+but that would not be automatic.
+
+In short, the essential question is how to update leoVersion.py for
+nightly snapshots.
+
+Terry, I don't recall whether you have ever published the script that
+builds the snapshots.  I think maybe you did, but I have no
+recollection of it.  Would it be possible for this script to update
+the source code of leoVersion.py?  If so, leoVersion.py would get the
+version from the last-revision file if it exists, and otherwise use
+the hard coded version inserted by your script.
+
+I suppose the essential point here is that updated leoVersion.py would
+*not* be committed to bzr: it would exist only for the nightly build.
+This should be safe enough.
+
+Any other comments or ideas? 
+
+=====
+
+In short, all that needs to be done is to have leoVersion.py look in
+Leo's core folder for bzr_version.py if last-revision does not exist.
+The core folder is as good a place as any, imo, so there should be no
+need to change your daily build script. 
+.. @+node:ekr.20120228111337.10051: *4* Leo will now raise a dialog on @ignore @<file> nodes
+.. @+node:ekr.20120228111337.10052: *4* All about clone conflicts
+@language rest
+
+groups.google.com/group/leo-editor/browse_thread/thread/5da0de4502154b2c/1b077a8bb8e65811
+
+Some people seem to think that it is difficult to understand how Leo
+handles "clone wars":  differing values for a cloned nodes that appear
+in several external files.  That's not true.  The rule is::
+
+    **The last clone that Leo reads wins.**
+
+That is, for any cloned node C, Leo takes the value of C.h and C.b to
+be the values specified by the last copy that Leo reads.
+
+There is only one complication::
+
+    **Leo reads the entire outline before reading any external
+files.**
+
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
+for C in x.py or y.py, depending on which @<file> node appears later
+in the outline.
+
+Notes:
+
+1. Whenever Leo detects multiple values for C when opening an outline,
+Leo creates a "Recovered nodes" tree.  This tree contains all the
+various values for C, nicely formatted so that it is easy to determine
+where the differences are.
+
+2. I've just refreshed my memory by looking at the code.  The relevant
+methods are:
+
+    fc.getLeoFile # Reads the outline, then calls at.readAll to read
+all external files.
+    at.indicateNodeChanged # Adds data to c.nodeConflictList
+    cacher.reportChangedClone # Adds data to c.nodeConflictList
+    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its
+children.
+
+3. The present code is the simplest code that could possibly work.
+There is no way Leo is going to do AI in order to implement complex
+rules for which clones are "more important" than others.  Thus, if you
+use cross-file clones, it is up to *you* to know these rules and
+handle any resulting conflicts.  Imo, the "Recovered Nodes" feature is
+a big step forward for Leo, and makes it impossible to lose data
+unless you willfully refuse to examine the data. 
+.. @+node:ekr.20120228111337.10053: *4* Detached windows
+@language rest
+
+groups.google.com/group/leo-editor/browse_thread/thread/3666397da2a0d05f/758071d6d9516ab9
+
+The right-click context menu on the tabs in the tabbed window mode (the
+default) has a 'Detach' option, if there's more than one outline / tab,
+and a Re-attach all option, if there's a detached outline window
+out there.
+
+Now there's also 'Horizontal tile', and 'Vertical tile', which detach
+the tab and then tile its window with the window from which it was
+detached.
+
+This is very helpful for moving nodes between outlines, I was
+rearranging the windows by hand and setting one to 'always on top' with
+the window manager before.  Note: there's a @setting to determine
+whether dragging nodes between outlines copies or moves them.
+
+Depending on your OS / window manager, tiling / placement may be
+somewhat off, and may work better with or without the window being
+maximized before tiling, you'll have to experiment.
+
+You'd think it would be straight forward for Qt to ask the
+window-manager where the window is now, and then tell it to put it
+somewhere specific, but apparently a lot of window-managers regard this
+as none of Qt's business.
+
+=====
+
+> Now there's also 'Horizontal tile', and 'Vertical tile', which detach
+> the tab and then tile its window with the window from which it was
+> detached.
+
+BEHAVIOR CHANGE: to make the above new feature more useful, I've
+changed what happens when you close an outline window created by
+detaching a tab.  Before the outline was closed (with prompt for save
+in necessary).  Now the outline's just re-attached as a tab.  This
+means it's now possible to reattach just one outline, rather than
+having to use the 'reattach all' option. 
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 3. Bridges
 
