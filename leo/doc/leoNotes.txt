@@ -6284,5 +6284,35 @@ def callKeystrokeFunction (self,event):
         k.endCommand(commandName)
 
     return func
+#@+node:ekr.20070807084545: *3* ic.readOneAtAutoNode (not used)
+# ic.readAtAutoNodes now uses
+ at.readOneAtAutoNode instead.
+def readOneAtAutoNode(self,p):
+
+    '''Read the @auto node at p'''
+
+    c = self.c ; at = c.atFileCommands
+    
+    fileName=p.atAutoNodeName()
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    self.createOutline(
+        fileName=fileName,
+        parent=p.copy(),
+        atAuto=True)
+
+    # 2010/01/15: Remember that we have read this file.
+    # http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
+    # Important: createOutline usually sets the bit in the wrong node.
+    
+    # Fix bug 889175: Remember the full fileName.
+    at.rememberReadPath(fileName,p)
+
+    # Force an update of the body pane.
+    self.setBodyString(p,p.b)
+    c.frame.body.onBodyChanged(undoType=None)
 #@-all
 #@-leo

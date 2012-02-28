@@ -1916,56 +1916,7 @@ class Commands (object):
 
         c = self
         g.app.recentFilesManager.sortRecentFiles(c)
-    #@+node:ekr.20031218072017.2838: *5* Read/Write submenu (leoCommands)
-    #@+node:ekr.20031218072017.2839: *6* readOutlineOnly
-    def readOutlineOnly (self,event=None):
-
-        '''Open a Leo outline from a .leo file, but do not read any derived files.'''
-
-        c = self
-        c.endEditing()
-
-        fileName = g.app.gui.runOpenFileDialog(
-            title="Read Outline Only",
-            filetypes=[("Leo files", "*.leo"), ("All files", "*")],
-            defaultextension=".leo")
-
-        if not fileName:
-            return
-
-        try:
-            theFile = open(fileName,'r')
-            g.chdir(fileName)
-            c = g.app.newCommander(fileName)
-            frame = c.frame
-            frame.deiconify()
-            frame.lift()
-            c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
-        except:
-            g.es("can not open:",fileName)
-    #@+node:ekr.20070915134101: *6* readFileIntoNode
-    def readFileIntoNode (self,event=None):
-
-        '''Read a file into a single node.'''
-
-        c = self ; undoType = 'Read File Into Node'
-        c.endEditing()
-
-        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
-        fileName = g.app.gui.runOpenFileDialog(
-            title="Read File Into Node",filetypes=filetypes,defaultextension=None)
-        if not fileName:return
-        s,e = g.readFileIntoString(fileName)
-        if s is None: return
-
-        g.chdir(fileName)
-        s = '@nocolor\n' + s
-        w = c.frame.body.bodyCtrl
-        p = c.insertHeadline(op_name=undoType)
-        p.setHeadString('@read-file-into-node ' + fileName)
-        p.setBodyString(s)
-        w.setAllText(s)
-        c.redraw(p)
+    #@+node:ekr.20031218072017.2838: *5* c.Read/Write submenu
     #@+node:ekr.20070806105721.1: *6* c.readAtAutoNodes
     def readAtAutoNodes (self,event=None):
 
@@ -1994,7 +1945,7 @@ class Commands (object):
         u.afterChangeTree(p,'Read @file Nodes',undoData)
         c.redraw()
         # c.raise_error_dialogs(kind='read') # Done in at.readAll.
-    #@+node:ekr.20080801071227.4: *6* readAtShadowNodes (commands)
+    #@+node:ekr.20080801071227.4: *6* c.readAtShadowNodes
     def readAtShadowNodes (self,event=None):
 
         '''Read all @shadow nodes in the presently selected outline.'''
@@ -2008,7 +1959,56 @@ class Commands (object):
         u.afterChangeTree(p,'Read @shadow Nodes',undoData)
         c.redraw()
         c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20070915142635: *6* writeFileFromNode (changed)
+    #@+node:ekr.20070915134101: *6* c.readFileIntoNode
+    def readFileIntoNode (self,event=None):
+
+        '''Read a file into a single node.'''
+
+        c = self ; undoType = 'Read File Into Node'
+        c.endEditing()
+
+        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+        fileName = g.app.gui.runOpenFileDialog(
+            title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+        if not fileName:return
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return
+
+        g.chdir(fileName)
+        s = '@nocolor\n' + s
+        w = c.frame.body.bodyCtrl
+        p = c.insertHeadline(op_name=undoType)
+        p.setHeadString('@read-file-into-node ' + fileName)
+        p.setBodyString(s)
+        w.setAllText(s)
+        c.redraw(p)
+    #@+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
+    def readOutlineOnly (self,event=None):
+
+        '''Open a Leo outline from a .leo file, but do not read any derived files.'''
+
+        c = self
+        c.endEditing()
+
+        fileName = g.app.gui.runOpenFileDialog(
+            title="Read Outline Only",
+            filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+            defaultextension=".leo")
+
+        if not fileName:
+            return
+
+        try:
+            theFile = open(fileName,'r')
+            g.chdir(fileName)
+            c = g.app.newCommander(fileName)
+            frame = c.frame
+            frame.deiconify()
+            frame.lift()
+            c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
+        except:
+            g.es("can not open:",fileName)
+    #@+node:ekr.20070915142635: *6* c.writeFileFromNode
     def writeFileFromNode (self,event=None):
 
         '''If node starts with @read-file-into-node, use the full path name in the headline.

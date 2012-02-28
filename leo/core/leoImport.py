@@ -833,7 +833,7 @@ class leoImportCommands (scanUtility):
 
         # g.trace(self.encoding)
     #@+node:ekr.20031218072017.3209: *3* Import (leoImport)
-    #@+node:ekr.20031218072017.3210: *4* createOutline (leoImport)
+    #@+node:ekr.20031218072017.3210: *4* ic.createOutline
     def createOutline (self,fileName,parent,
         atAuto=False,atShadow=False,s=None,ext=None):
 
@@ -901,7 +901,7 @@ class leoImportCommands (scanUtility):
         w.setInsertPoint(0)
         w.seeInsertPoint()
         return p
-    #@+node:ekr.20070806111212: *4* readAtAutoNodes (importCommands) & helper
+    #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes (self):
 
         c = self.c
@@ -914,7 +914,9 @@ class leoImportCommands (scanUtility):
                     g.es_print('ignoring',p.h,color='blue')
                     p.moveToThreadNext()
                 else:
-                    self.readOneAtAutoNode(p)
+                    # self.readOneAtAutoNode(p)
+                    fileName=p.atAutoNodeName()
+                    c.atFileCommands.readOneAtAutoNode(fileName,p)
                     found = True
                     p.moveToNodeAfterTree()
             else:
@@ -925,34 +927,6 @@ class leoImportCommands (scanUtility):
             g.es(message,color='blue')
         c.redraw()
 
-    #@+node:ekr.20070807084545: *5* readOneAtAutoNode (leoImport)
-    def readOneAtAutoNode(self,p):
-
-        '''Read the @auto node at p'''
-
-        c = self.c ; at = c.atFileCommands
-        
-        fileName=p.atAutoNodeName()
-
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-
-        self.createOutline(
-            fileName=fileName,
-            parent=p.copy(),
-            atAuto=True)
-
-        # 2010/01/15: Remember that we have read this file.
-        # http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
-        # Important: createOutline usually sets the bit in the wrong node.
-        
-        # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(fileName,p)
-
-        # Force an update of the body pane.
-        self.setBodyString(p,p.b)
-        c.frame.body.onBodyChanged(undoType=None)
     #@+node:ekr.20031218072017.1810: *4* importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None,command='Import'):
         # Not a command.  It must *not* have an event arg.

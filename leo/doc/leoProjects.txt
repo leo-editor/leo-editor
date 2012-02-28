@@ -1669,6 +1669,8 @@ def pr(*args,**keys):
             sys.stdout.write(s2)
         else:
             app.printWaiting.append(s2)
+#@+node:ekr.20120118085926.10251: *4* Use at.readOneAtAutoNode instead of ic.readOneAtAutoNode
+# It's important to use only one version of the code.
 #@+node:ekr.20110918184425.6915: *3* Features
 #@+node:ekr.20110929165422.15464: *4* Supported auto-hide in viewrendered plugin
 #@+node:ekr.20110918180029.15527: *4* set g.app.execute_script during script execution
@@ -7839,7 +7841,7 @@ def writeOneAtEditNode(self,p,toString,force=False):
     c.raise_error_dialogs(kind='write')
 
     return ok
-#@+node:ekr.20031218072017.3210: *6* createOutline (leoImport)
+#@+node:ekr.20031218072017.3210: *6* ic.createOutline
 def createOutline (self,fileName,parent,
     atAuto=False,atShadow=False,s=None,ext=None):
 
@@ -7907,34 +7909,6 @@ def createOutline (self,fileName,parent,
     w.setInsertPoint(0)
     w.seeInsertPoint()
     return p
-#@+node:ekr.20070807084545: *6* readOneAtAutoNode (leoImport)
-def readOneAtAutoNode(self,p):
-
-    '''Read the @auto node at p'''
-
-    c = self.c ; at = c.atFileCommands
-    
-    fileName=p.atAutoNodeName()
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    self.createOutline(
-        fileName=fileName,
-        parent=p.copy(),
-        atAuto=True)
-
-    # 2010/01/15: Remember that we have read this file.
-    # http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
-    # Important: createOutline usually sets the bit in the wrong node.
-    
-    # Fix bug 889175: Remember the full fileName.
-    at.rememberReadPath(fileName,p)
-
-    # Force an update of the body pane.
-    self.setBodyString(p,p.b)
-    c.frame.body.onBodyChanged(undoType=None)
 #@+node:ekr.20041005105605.21: *6* at.read & helpers
 def read(self,root,importFileName=None,
     fromString=None,atShadow=False,force=False

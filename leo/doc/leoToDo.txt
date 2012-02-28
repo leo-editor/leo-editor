@@ -1971,98 +1971,6 @@ Release 4.10 b1 after completing the following items:
 - Fix bug 869429: Undo and Redo delete from context menu does not redo properly.
 
 - Factor the many leo-editor posts that I have marked as pre-writing into Leo's docs.
-.. @+node:ekr.20120118085926.10251: *4* Why does ic.readOneAtAutoNode exist?
-.. @+node:ekr.20070909100252: *5* at.readOneAtAutoNode
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-
-    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    # 2010/7/28: Remember that we have seen the @auto node.
-    # Fix bug 889175: Remember the full fileName.
-    at.rememberReadPath(fileName,p)
-
-    s,ok,fileKey = c.cacher.readFile(fileName,p)
-    if ok:
-        g.doHook('after-auto',c=c,p=p)
-            # call after-auto callbacks
-            # 2011/09/30: added call to g.doHook here.
-        return
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        # Note: the file contains an @ignore,
-        # so no unintended write can happen.
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        c.cacher.writeFile(p,fileKey)
-        g.doHook('after-auto',c=c,p=p)
-            # call after-auto callbacks
-            # 2011/09/30: add 'c' keyword arg.
-.. @+node:ekr.20070806111212: *5* readAtAutoNodes (importCommands) & helper
-def readAtAutoNodes (self):
-
-    c = self.c
-    p = c.p ; after = p.nodeAfterTree()
-
-    found = False
-    while p and p != after:
-        if p.isAtAutoNode():
-            if p.isAtIgnoreNode():
-                g.es_print('ignoring',p.h,color='blue')
-                p.moveToThreadNext()
-            else:
-                self.readOneAtAutoNode(p)
-                found = True
-                p.moveToNodeAfterTree()
-        else:
-            p.moveToThreadNext()
-            
-    if not g.unitTesting:
-        message = g.choose(found,'finished','no @auto nodes in the selected tree')
-        g.es(message,color='blue')
-    c.redraw()
-
-.. @+node:ekr.20070807084545: *6* readOneAtAutoNode (leoImport)
-def readOneAtAutoNode(self,p):
-
-    '''Read the @auto node at p'''
-
-    c = self.c ; at = c.atFileCommands
-    
-    fileName=p.atAutoNodeName()
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    self.createOutline(
-        fileName=fileName,
-        parent=p.copy(),
-        atAuto=True)
-
-    # 2010/01/15: Remember that we have read this file.
-    # http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
-    # Important: createOutline usually sets the bit in the wrong node.
-    
-    # Fix bug 889175: Remember the full fileName.
-    at.rememberReadPath(fileName,p)
-
-    # Force an update of the body pane.
-    self.setBodyString(p,p.b)
-    c.frame.body.onBodyChanged(undoType=None)
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 .. @+node:ekr.20111026091322.16496: *4* Bug 844953: copy-clone-pasted node appears in other tab
 @nocolor-node
@@ -8399,7 +8307,7 @@ def looksLikeDerivedFile (self,fn):
     val = s.find('@+leo-ver=') > -1
     # g.trace(val,fn)
     return val
-.. @+node:ekr.20031218072017.2839: *7* readOutlineOnly
+.. @+node:ekr.20031218072017.2839: *7* c.readOutlineOnly
 def readOutlineOnly (self,event=None):
 
     '''Open a Leo outline from a .leo file, but do not read any derived files.'''
@@ -8425,7 +8333,7 @@ def readOutlineOnly (self,event=None):
         c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
     except:
         g.es("can not open:",fileName)
-.. @+node:ekr.20070915134101: *7* readFileIntoNode
+.. @+node:ekr.20070915134101: *7* c.readFileIntoNode
 def readFileIntoNode (self,event=None):
 
     '''Read a file into a single node.'''
@@ -9077,7 +8985,7 @@ def createImportParent (self,current,files):
         current.initHeadString(name)
 
     return current
-.. @+node:ekr.20031218072017.3210: *6* createOutline (leoImport)
+.. @+node:ekr.20031218072017.3210: *6* ic.createOutline
 def createOutline (self,fileName,parent,
     atAuto=False,atShadow=False,s=None,ext=None):
 
