@@ -18,7 +18,7 @@ import gc
 import glob
 import os
 import cProfile as profile
-import pstats
+# import pstats # A Python distro bug: can fail on Ubuntu.
 # import re
 import sys
 import timeit
@@ -852,6 +852,15 @@ class TestManager:
     # Called from @button profile in unitTest.leo.
 
     def runProfileOnNode (self,p,outputPath=None):
+        
+        # Work around a Python distro bug: can fail on Ubuntu.
+        try:
+            import pstats
+        except ImportError:
+            g.es_print('can not import pstats: this is a Python distro bug')
+            g.es_print('https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
+            g.es_print('try installing pstats yourself')
+            return
 
         s = p.b.rstrip() + '\n'
 
@@ -860,12 +869,11 @@ class TestManager:
                 g.app.loadDir,'..','test','profileStats')
 
         profile.run(s,outputPath)
-
-        if 1:
-            stats = pstats.Stats(outputPath)
-            stats.strip_dirs()
-            stats.sort_stats('cum','file','name')
-            stats.print_stats()
+        
+        stats = pstats.Stats(outputPath)
+        stats.strip_dirs()
+        stats.sort_stats('cum','file','name')
+        stats.print_stats()
     #@+node:ekr.20051104075904.15: *4* TM.runTimerOnNode
     # Called from @button timeit in unitTest.leo.
 

@@ -49,9 +49,17 @@ assert(g.app)
 def profile_leo ():
 
     """Gather and print statistics about Leo"""
+    
+    # Work around a Python distro bug: can fail on Ubuntu.
+    try:
+        import pstats
+    except ImportError:
+        g.es_print('can not import pstats: this is a Python distro bug')
+        g.es_print('https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
+        g.es_print('try installing pstats yourself')
+        return
 
     import cProfile as profile
-    import pstats
     import leo.core.leoGlobals as g
     import os
 
