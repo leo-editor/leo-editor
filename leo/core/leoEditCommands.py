@@ -5178,8 +5178,10 @@ class editCommandsClass (baseEditCommandsClass):
         if not w: return
 
         # g.trace(hasattr(w,'leoMoveCursorHelper'))
-
-        if hasattr(w,'leoMoveCursorHelper'):
+        
+        # Bug fix: 2012/02/28: don't use the Qt end-line logic:
+        # it apparently does not work for wrapped lines.
+        if hasattr(w,'leoMoveCursorHelper') and spot != 'end-line':
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
             if g.trace_scroll: g.trace('seeInsertPoint',spot)
