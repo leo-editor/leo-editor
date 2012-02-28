@@ -1329,10 +1329,11 @@ class Commands (object):
         trace = False and not g.app.unitTesting
         if trace: g.trace(ext)
         
-        for ch in ("'",'"'):
-            if ext.startswith(ch): ext = ext.strip(ch)
-
         c = self
+        
+        if ext:
+            for ch in ("'",'"'):
+                if ext.startswith(ch): ext = ext.strip(ch)
 
         if not ext:
             # if node is part of @<file> tree, get ext from file name
@@ -1443,7 +1444,7 @@ class Commands (object):
                 use_shell = True
                 c_arg = join(arg,fn)
                 command = 'subprocess.Popen(%s)' % c_arg
-                g.trace(command)
+                if trace: g.trace(command)
                 if not testing:
                     try:
                         subprocess.Popen(c_arg,shell=use_shell)
