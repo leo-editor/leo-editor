@@ -6314,5 +6314,18 @@ def readOneAtAutoNode(self,p):
     # Force an update of the body pane.
     self.setBodyString(p,p.b)
     c.frame.body.onBodyChanged(undoType=None)
+#@+node:ekr.20120227073551.10920: *3* getCommandList (leoMenu) No longer used
+def getCommandList (self,d):
+    
+    '''s is a command line from parseOpenWithLine.'''
+    
+    s = d.get('command')
+    if s:
+        o = eval(s)
+        return o
+        # return s.split(',') #### Oh, so wrong.
+    else:
+        return ''
+    
 #@-all
 #@-leo

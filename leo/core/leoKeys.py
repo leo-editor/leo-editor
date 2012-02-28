@@ -1752,17 +1752,20 @@ class keyHandlerClass:
         d[stroke] = si
         k.masterBindingsDict [pane] = d
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
-    def bindOpenWith (self,shortcut,name,data):
+    def bindOpenWith (self,d):
 
         '''Register an open-with command.'''
 
         k = self ; c = k.c
         
-        # g.trace(shortcut,name)
+        shortcut = d.get('shortcut')
+        name = d.get('name')
+        
+        # g.trace(d)
 
         # The first parameter must be event, and it must default to None.
-        def openWithCallback(event=None,c=c,data=data):
-            return c.openWith(data=data)
+        def openWithCallback(event=None,c=c,d=d):
+            return c.openWith(d=d)
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
         commandName = 'open-with-%s' % name.lower()

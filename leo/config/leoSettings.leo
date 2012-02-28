@@ -4396,10 +4396,23 @@ viewrendered.py
 False: Chapter commands do not exists.</t>
 <t tx="ekr.20070326094544"></t>
 <t tx="ekr.20070411101857"></t>
-<t tx="ekr.20070411101857.1">'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+<t tx="ekr.20070411101857.1"># 'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+
+ext:    .py
+kind:   subprocess.Popen
+arg:    pythonw
+arg:    "C:/Python24/Lib/idlelib/idle.pyw"
 </t>
-<t tx="ekr.20070411101857.2">'subprocess.Popen','C:/Program Files/Microsoft Office/Office/WINWORD.exe',None</t>
-<t tx="ekr.20070411101857.3">'subprocess.Popen','C:/Program Files/Windows NT/Accessories/wordpad.exe',None</t>
+<t tx="ekr.20070411101857.2"># 'subprocess.Popen','C:/Program Files/Microsoft Office/Office/WINWORD.exe',None
+
+ext:    
+kind:   subprocess.Popen
+arg:    "C:/Program Files/Microsoft Office/Office/WINWORD.exe"</t>
+<t tx="ekr.20070411101857.3"># 'subprocess.Popen','C:/Program Files/Windows NT/Accessories/wordpad.exe',None
+
+ext:    
+kind:   subprocess.Popen
+arg:    "C:/Program Files/Windows NT/Accessories/wordpad.exe"</t>
 <t tx="ekr.20070411172718">@openwith nodes in @settings trees create menu items. The openWith
 plugin must be active for these settings to have any effect.
 

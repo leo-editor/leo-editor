@@ -905,6 +905,8 @@ class ParserBaseClass:
     def parseOpenWith (self,p):
 
         d = {'command': None}
+            # Old: command is a tuple.
+            # New: d contains args, kind, etc tags.
 
         for line in g.splitLines(p.b):
             self.parseOpenWithLine(line,d)
@@ -912,16 +914,41 @@ class ParserBaseClass:
         return d
     #@+node:ekr.20070411101643.4: *5* parseOpenWithLine
     def parseOpenWithLine (self,line,d):
-
+        
         s = line.strip()
         if not s: return
 
-        try:
-            s = str(s)
-        except UnicodeError:
-            pass
-
-        if not g.match(s,0,'#'):
+        i = g.skip_ws(s,0)
+        if g.match(s,i,'#'):
+            return
+        
+        # try:
+            # s = str(s)
+        # except UnicodeError:
+            # pass
+            
+        if 1: # new code
+            j = g.skip_c_id(s,i)
+            tag = s[i:j].strip()
+            if not tag:
+                g.es_print('@openwith lines must start with a tag: %s' % (s))
+                return
+            i = g.skip_ws(s,j)
+            if not g.match(s,i,':'):
+                g.es_print('colon must follow @openwith tag: %s' % (s))
+                return
+            i += 1
+            val = s[i:].strip() or ''
+                # An empty val is valid.
+            if tag == 'arg':
+                aList = d.get('args',[])
+                aList.append(val)
+                d['args'] = aList
+            elif d.get(tag):
+                g.es_print('ignoring duplicate definition of %s %s' % (tag,s))
+            else:
+                d[tag] = val
+        else:
             d['command'] = s
     #@+node:ekr.20041120112043: *4* parseShortcutLine (ParserBaseClass)
     def parseShortcutLine (self,kind,s):

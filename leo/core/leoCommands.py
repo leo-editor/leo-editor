@@ -1288,7 +1288,7 @@ class Commands (object):
         c.redraw()
         c.recolor()
     #@+node:ekr.20031218072017.2823: *6* c.openWith and helpers
-    def openWith(self,event=None,data=None):
+    def openWith(self,event=None,d=None):
 
         '''This routine handles the items in the Open With... menu.
 
@@ -1301,28 +1301,19 @@ class Commands (object):
         openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
         '''
         
-        trace = False and not g.unitTesting
-        if trace: g.trace('data',data)
-
         c = self ; p = c.p
-        n = data and len(data) or 0
-        if n != 3:
-            g.trace('bad data, length must be 3, got %d' % n)
-            return
         try:
-            openType,arg,ext=data
-            if not g.doHook('openwith1',c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            ext = d.get('ext')
+            if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d): #### openType=openType,arg=arg,ext=ext):
                 ext = c.getOpenWithExt(p,ext)
                 fn = c.openWithHelper(p,ext)
                 if fn:
                     g.enableIdleTimeHook(idleTimeDelay=500)
-                    c.openTempFileInExternalEditor(arg,fn,openType)
-            g.doHook('openwith2',c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+                    c.openTempFileInExternalEditor(d,fn)
+            g.doHook('openwith2',c=c,p=p,v=p.v,d=d) ### openType=openType,arg=arg,ext=ext)
         except Exception:
             g.es('unexpected exception in c.openWith')
             g.es_exception()
-
-        return # (for Tk) 'break'
     #@+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
     def getOpenWithExt (self,p,ext):
 
@@ -1361,50 +1352,27 @@ class Commands (object):
 
         return ext
     #@+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
-    def openTempFileInExternalEditor(self,arg,fn,openType,testing=False):
+    def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
 
         '''Open the closed mkstemp file fn in an external editor.
         The arg and openType args come from the data arg to c.openWith.
         '''
 
-        trace = False # and not g.unitTesting
-        verbose = False
+        trace = False and not g.unitTesting
         testing = testing or g.unitTesting
-        if arg is None: arg = ''
         
-        def quote(s):
-            return '"%s"' % s if s else ''
         def join(s1,s2):
             return '%s %s' % (s1,s2)
         
-        # 2012/02/27: Carefully enclose arg and fn in double quotes.
-        # This is tricky because these values come from the user.
-        for ch in ("'",'"'):
-            if openType.startswith(ch):
-                openType = openType.strip(ch)
-            if fn.startswith(ch):
-                fn = fn.strip(ch)
-            if type(arg) in (type((),),type([])):
-                arg = [z.strip(ch) if z.startswith(ch) else z for z in arg]
-            else:
-                arg = arg.strip(ch) if arg.startswith(ch) else arg
-
-        # Must be done *after* the loop.
-        if type(arg) in (type((),),type([])):
-            arg_tuple = arg
-            arg = ' '.join(arg) # Do *not* quote the args.
-        else:
-            arg_tupe = []
-            arg = quote(arg) # *Do* quote the arg.
-        
         if trace:
             print()
-            g.trace()
-            print('%s(' % openType)
-            print('  %s' % arg)
-            print(')')
-            
-        # Do not quote the temp file name.
+            g.trace(fn)
+            for key in sorted(list(d.keys())):
+                print('%15s %s' % (key,d.get(key)))
+        
+        arg_tuple = d.get('args',[])
+        arg = ' '.join(arg_tuple)
+        openType = d.get('kind')
 
         try:
             command = '<no command>'

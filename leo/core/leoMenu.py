@@ -344,9 +344,10 @@ class leoMenu:
             else:
                 self.error('%s %s not valid outside @menu tree' % (kind,val))
 
-        table = c.config.getOpenWith()
-        if table:
-            self.createOpenWithMenuFromTable(table)
+        aList = c.config.getOpenWith()
+        if aList:
+            # a list of dicts.
+            self.createOpenWithMenuFromTable(aList)
     #@+node:ekr.20070927082205: *6* createMenuFromConfigList
     def createMenuFromConfigList (self,parentName,aList,level=0):
 
@@ -1314,10 +1315,9 @@ class leoMenu:
         trace = False and not g.unitTesting
         c,k = self.c,self.c.k
         if not table: return
-        
+
         #### ?????
         g.app.openWithTable = table # Override any previous table.
-        
         
         # Delete the previous entry.
         parent = self.getMenu("File")
@@ -1354,11 +1354,7 @@ class leoMenu:
         self.createOpenWithMenuItemsFromTable(openWithMenu,table)
 
         for d in table:
-            # k.bindOpenWith (shortcut,name,data)
-            k.bindOpenWith(
-                d.get('shortcut'),
-                d.get('name'),
-                self.getCommandList(d.get('command')))
+            k.bindOpenWith(d)
     #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable & callback (leoMenu)
     def createOpenWithMenuItemsFromTable (self,menu,table):
 
@@ -1374,47 +1370,31 @@ class leoMenu:
 
         for d in table:
             label = d.get('name')
-            command = self.getCommandList(d.get('command'))
+            args = d.get('args',[])
             if trace:
                 print()
-                g.trace('d...len(command)',len(command))
                 for key in sorted(list(d.keys())):
                     print('%15s %s' % (key,d.get(key)))
-                if len(command) != 3:
-                    print('*** oops: parts of commands...')
-                    for z in command: print(repr(z))
 
             accel = d.get('shortcut') or ''
-            if label and command:
+            if label and args:
                 realLabel = self.getRealMenuName(label)
                 underline=realLabel.find("&")
                 realLabel = realLabel.replace("&","")
-                callback = self.defineOpenWithMenuCallback(command)
+                callback = self.defineOpenWithMenuCallback(d)
                 c.add_command(menu,
                     label=realLabel,
                     accelerator=accel,
                     command=callback,
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* defineOpenWithMenuCallback (leoMenu)
-    def defineOpenWithMenuCallback(self,data):
+    def defineOpenWithMenuCallback(self,d):
 
         # The first parameter must be event, and it must default to None.
-        def openWithMenuCallback(event=None,self=self,data=data):
-            return self.c.openWith(data=data)
+        def openWithMenuCallback(event=None,self=self,d=d):
+            return self.c.openWith(d=d)
 
         return openWithMenuCallback
-    #@+node:ekr.20120227073551.10920: *5* getCommandList (leoMenu)
-    def getCommandList (self,s):
-        
-        '''s is a command line from parseOpenWithLine.'''
-        
-        if s:
-            o = eval(s)
-            return o
-            # return s.split(',') #### Oh, so wrong.
-        else:
-            return ''
-        
     #@+node:tbrown.20080509212202.7: *4* deleteRecentFilesMenuItems (leoMenu)
     def deleteRecentFilesMenuItems(self,menu):
         
