@@ -513,6 +513,44 @@ for name in commandNames:
             else:
                 assert False,'stroke %s not bound to %s in %s' % (
                     repr(stroke),repr(name),d2name)
+#@+node:ekr.20111221062755.3909: *3* @test all top-level read/write commands give proper read/write error dialogs
+child = p.firstChild()
+assert child
+assert child.h == 'child',child.h
+c.selectPosition(child)
+
+table = (
+    'import-file',
+    'open-outline',
+    'read-at-auto-nodes',
+    'read-at-file-nodes',
+    'read-at-shadow-nodes',
+   # 'read-file-into-node',
+   # 'read-outline-only',
+   'save-file',
+   'save-file-as',
+   'save-file-to',
+    'write-at-auto-nodes',
+    'write-at-file-nodes',
+    'write-at-shadow-nodes',
+    'write-dirty-at-auto-nodes',
+    'write-dirty-at-file-nodes',
+    'write-dirty-at-shadow-nodes',
+    #'write-file-from-node',
+    'write-missing-at-file-nodes',
+    #'write-outline-only',
+)
+
+tags = (('init_error_dialogs',2), ('raise_error_dialogs',1))
+
+d = g.app.unitTestDict
+for commandName in table:
+    for tag,n in tags:
+        d[tag] = 0
+    c.k.simulateCommand(commandName)
+    for tag,n in tags:
+        assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
+#@+node:ekr.20111221062755.3910: *4* child
 #@+node:ekr.20100131171342.5483: *3* @test batch mode
 import os
 import sys
@@ -1283,222 +1321,6 @@ assert g.os_path_exists(fn),'fail 1'
 os.remove(fn)
 assert not g.os_path_exists(fn),'fail 1'
 #@+node:ekr.20050112095306.1: *3* leoAtFile
-#@+node:ekr.20111113091935.4786: *4* Not valid when run externally
-@nocolor-node
-
-These all call g.findNodeAnywhere for an @<file> node.
-We don't want to copy such nodes to dynamicUnitTest.leo
-#@+node:ekr.20090704085350.5044: *5* @test @asis: shape of tree
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
-    h = '@asis ../test/unittest/at-asis-test.py'
-    p = g.findNodeAnywhere(c,h)
-    assert p
-    
-    table = (
-        (p.firstChild(),'spam'),
-        (p.firstChild().next(),'eggs')
-    )
-    
-    assert not p.isDirty(),p.h # Do not ignore this failure!
-    
-    for p2,h2 in table:
-        assert p2.h == h2
-        assert len(p2.b) > 10
-#@+node:ekr.20090704085350.5052: *5* @test @auto: shape of tree
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
-    h = '@auto ../test/unittest/at-auto-test.py'
-    p = g.findNodeAnywhere(c,h)
-    assert p
-    
-    table = (
-        (p.firstChild(),'spam'),
-        (p.firstChild().next(),'eggs')
-    )
-    
-    assert not p.isDirty(),p.h # Do not ignore this failure!
-    
-    for p2,h2 in table:
-        assert p2.h == h2
-        assert len(p2.b) > 10
-#@+node:ekr.20090704085350.5018: *5* @test @shadow: shape of tree
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
-    h = '@shadow ../test/unittest/at-shadow-test.py'
-    p = g.findNodeAnywhere(c,h)
-    assert p
-    
-    table = (
-        (p.firstChild(),'spam'),
-        (p.firstChild().next(),'eggs')
-    )
-    
-    assert not p.isDirty(),p.h # Do not ignore this failure!
-    
-    for p2,h2 in table:
-        assert len(p2.h) == len(h2)
-#@+node:ekr.20100731163237.5778: *5* @test @thin: html section references
-@language python
-
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-    
-    # html uses block comments.  This is an important test.
-    
-    h = '@thin ../test/unittest/at-thin-html-test.html'
-    p = g.findNodeAnywhere(c,h)
-    assert p
-    
-    s = (
-    '@language html\n\n<< ' +
-    'a section reference >>\n\n' +
-    'after.\n')
-    
-    # print(repr(p.b)) ; print(repr(s))
-    
-    assert p.b == s,'body failure'
-#@+node:ekr.20090704085350.5046: *5* @test @thin: shape of tree
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
-    h = '@thin ../test/unittest/at-thin-test.py'
-    p = g.findNodeAnywhere(c,h)
-    assert p
-    
-    table = (
-        (p.firstChild(),'spam'),
-        (p.firstChild().next(),'eggs')
-    )
-    
-    assert not p.isDirty(),p.h # Do not ignore this failure!
-    
-    for p2,h2 in table:
-        assert p2.h == h2
-        assert len(p2.b) > 10
-#@+node:ekr.20111021115306.3696: *5* @test @file: tex bug
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-    
-    p = g.findNodeAnywhere(c,"@file ../test/unittest/tex-error.tex")
-    assert(p)
-    
-    s1 = r"""\begin{document}
-    << Document """
-    
-    s2 = r""">>
-    % hidden comment
-    \end{document}
-    """
-    
-    s = s1 + s2
-    s = g.adjustTripleString(s,c.tab_width)
-    
-    # print(repr(s))
-    # print(repr(p.b))
-    assert p.b == s
-#@+node:ekr.20100802220019.5795: *5* @test at.deleteUnvistedNodes
-def clone (p,parent,n):
-    p2 = p.clone()
-    p2.moveToNthChildOf(parent,n)
-    return p2
-
-def make (parent,n,h):
-    child = parent.insertAsNthChild(n)
-    child.h = h
-    return child
-
-def delete_r():
-    '''Delete all 'Resurrected Nodes' nodes.'''
-    while True:
-        r = g.findNodeAnywhere(c,'Resurrected Nodes')
-        if r: r.doDelete(newNode=p)
-        else: break
-
-def delete_children():
-    # Delete all children of p.
-    while p.hasChildren():
-        p.firstChild().doDelete(newNode=p)
-
-def test(p,h,tag):
-    assert p,'p'
-    assert p.h == 'From root','p.h %s' % tag
-    assert p.numberOfChildren() == 1,'number of children %s' % tag
-    assert p.firstChild().h == h,'child.h %s' % tag
-
-delete_r()
-delete_children()
-
-# Create some children.
-root = make(p,0,'root')
-child1 = make(root,0,'child1')
-child2 = make(root,1,'child2')
-child3 = make(root,2,'child3')
-child11 = make(child1,0,'child11')
-child21 = make(child2,0,'child21')
-child31 = make(child3,0,'child31')
-# Create some clones.
-child4 = clone(child31,root,3)
-
-for z in root.self_and_subtree():
-    z.setVisited()
-for z in child2,child31: # These should be moved.
-    z.clearVisited()
-
-c.atFileCommands.deleteUnvisitedNodes(root)
-
-if 1:
-    r = g.findNodeAnywhere(c,'Resurrected Nodes')
-    assert r,'r'
-    r1 = r.firstChild()
-    r2 = r1.next()
-    r3 = r2.next()
-    test(r1,'child2','r1')
-    test(r2,'child31','r2')
-    assert root.numberOfChildren() == 3,'root.n'
-if 1:
-    delete_r()
-    delete_children()
-
-c.redraw_now()
-#@+node:ekr.20110615130436.3319: *5* @test writing a .leo file retains orphan bits
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-    
-    # Writing a .leo file must retain orphan bits of erroneous external files.
-    
-    h = '@file nonexistent-directory/orphan-bit-test.txt'
-    p2 = g.findNodeAnywhere(c,h)
-    assert p2,'not found: %s' % (h)
-    assert p2.isOrphan(),'not an orphan originally'
-    
-    # It's dangerous to do the write, but this does test the bug fix.
-    c.atFileCommands.clearAllOrphanBits(p2)
-    assert p2.isOrphan(),'not an orphan after calling at.clearAllOrphanBits'
-#@+node:ekr.20040707141957.12: *5* @test @thin: @last
-# Doesn't work when run externally because the copy operation changes the gnx.
-if not g.app.isExternalUnitTest:
-
-    c.testManager.runAtFileTest(p)
-#@+node:ekr.20040707141957.13: *6* #@thin
-Line 1
-
-@last last line 1: no newline
-#@+node:ekr.20040707141957.14: *6* Output
-#@verbatim
-#@+leo-ver=5-thin
-#@verbatim
-#@+node:ekr.20040707141957.13: * #@thin
-Line 1
-
-#@verbatim
-#@@last
-#@verbatim
-#@-leo
-last line 1: no newline
 #@+node:ekr.20041021065844: *4* @test @asis
 c.testManager.runAtFileTest(p)
 #@+node:ekr.20041021065903: *5* #@asis
@@ -1716,6 +1538,20 @@ finally:
     if g.os_path_exists(filename):
         x.unlink(filename)
         assert not g.os_path_exists(filename)
+#@+node:ekr.20071113145804.7: *4* @test at.parseLeoSentinel
+s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
+s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
+
+at=c.atFileCommands # Self is a dummy argument.
+
+for s in (s1,s2):
+    valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
+    # g.trace('start',start,'end',repr(end),'len(s)',len(s))
+    assert valid, 'not valid'
+    assert new_df, 'not new_df'
+    assert isThinDerivedFile, 'not thin'
+    assert end == '', 'invalid end: %s' % repr(end)
+    assert at.encoding == 'utf-8', 'bad encoding: %s' % repr(at.encoding)
 #@+node:ekr.20090529115704.4564: *4* @test at.readOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController
@@ -1740,6 +1576,35 @@ finally:
 @others
 # body of @shadow test node
 # The last line.
+#@+node:ekr.20111210175541.3957: *4* @test at.readOneAtShadowNode retains @shadow links clones
+# Important: the child of this node must be a clone of
+# the corresponding node in @shadow unittest/at-shadow-unlink-clones.py
+
+# The @shadow node will not exist for an external test.
+if not g.app.isExternalUnitTest:
+    try:
+        # print('start',p.h)
+        b = c.undoer.beforeChangeTree(p)
+        h = '@shadow unittest/at-shadow-unlink-clones.py'
+        root = g.findNodeAnywhere(c,h)
+        assert root
+        assert root.h == h,repr(root.h)
+        child = p.firstChild()
+        assert child
+        assert child.isCloned(),'fail 1: test not set up properly'
+        c.selectPosition(root)
+        fn = root.atShadowFileNodeName()
+        assert fn
+        c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
+        c.undoer.afterChangeTree(p,'fc.readOneAtShadowNode',b)
+        assert child.isCloned(),'fail 2: intended test fails'
+    finally:
+        if 1:
+            c.undoer.undo()
+            c.selectPosition(p)
+            c.redraw()
+#@+node:ekr.20120228174052.3929: *5* Node 1
+# node 1 text A.
 #@+node:ekr.20050105093136: *4* @test at.remove
 import os
 
@@ -1911,56 +1776,7 @@ f.close()
 # print('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)
-#@+node:ekr.20090529115704.4567: *4* @test at.writeOneAtShadowNode
-at = c.atFileCommands
-x = c.shadowController
-changed = c.changed
-child = p.firstChild()
-s = child.b
-
-try:
-    child.setHeadString('@shadow unittest/test_1.py')
-    fn = 'unittest/test_1.py'
-    shadow_fn = x.shadowPathName(fn)
-    shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir)
-    if g.os_path_exists(shadow_fn):
-        g.utils_remove(shadow_fn,verbose=True)
-    at.writeOneAtShadowNode(child,toString=True,force=True)
-    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
-        repr(at.startSentinelComment))
-    assert at.endSentinelComment == '','endSentinelComment: %s' % (
-        repr(at.endSentinelComment))
-    if 0:
-        print('public...\n',at.public_s)
-        print('private...\n',at.private_s)
-    at.writeOneAtShadowNode(child,toString=False,force=True)
-    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
-    # No need to remove this: it's in the unittest directory.
-    # g.utils_remove(shadow_fn,verbose=True)
-finally:
-
-    child.setHeadString('@@shadow unittest/test_1.py')
-    c.setChanged(changed)
-    # c.redraw_now()
-#@+node:ekr.20090529115704.4568: *5* @@shadow unittest/test_1.py
-# body of @shadow test node
-# The last line.
-#@+node:ekr.20071113145804.7: *4* @test parseLeoSentinel
-s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
-s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
-
-at=c.atFileCommands # Self is a dummy argument.
-
-for s in (s1,s2):
-    valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
-    # g.trace('start',start,'end',repr(end),'len(s)',len(s))
-    assert valid, 'not valid'
-    assert new_df, 'not new_df'
-    assert isThinDerivedFile, 'not thin'
-    assert end == '', 'invalid end: %s' % repr(end)
-    assert at.encoding == 'utf-8', 'bad encoding: %s' % repr(at.encoding)
-#@+node:ekr.20060602195313: *4* @test reads/write using @comment
+#@+node:ekr.20060602195313: *4* @test at.write using @comment
 at = c.atFileCommands
 child = p.firstChild()
 child2 = child.next()
@@ -2009,6 +1825,41 @@ assert s == result
 /*@+node:<< Start LRR >>*/
 /*@-<< Start LRR >>*/
 /*@-leo*/
+#@+node:ekr.20090529115704.4567: *4* @test at.writeOneAtShadowNode
+at = c.atFileCommands
+x = c.shadowController
+changed = c.changed
+child = p.firstChild()
+s = child.b
+
+try:
+    child.setHeadString('@shadow unittest/test_1.py')
+    fn = 'unittest/test_1.py'
+    shadow_fn = x.shadowPathName(fn)
+    shadow_dir = x.shadowDirName(fn)
+    x.makeShadowDirectory(shadow_dir)
+    if g.os_path_exists(shadow_fn):
+        g.utils_remove(shadow_fn,verbose=True)
+    at.writeOneAtShadowNode(child,toString=True,force=True)
+    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
+        repr(at.startSentinelComment))
+    assert at.endSentinelComment == '','endSentinelComment: %s' % (
+        repr(at.endSentinelComment))
+    if 0:
+        print('public...\n',at.public_s)
+        print('private...\n',at.private_s)
+    at.writeOneAtShadowNode(child,toString=False,force=True)
+    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
+    # No need to remove this: it's in the unittest directory.
+    # g.utils_remove(shadow_fn,verbose=True)
+finally:
+
+    child.setHeadString('@@shadow unittest/test_1.py')
+    c.setChanged(changed)
+    # c.redraw_now()
+#@+node:ekr.20090529115704.4568: *5* @@shadow unittest/test_1.py
+# body of @shadow test node
+# The last line.
 #@+node:ekr.20100131180007.5462: *4* @test verbatim sentinel
 # Here is something that should generate a verbtim sentinel::
 
@@ -2074,6 +1925,222 @@ assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
 assert d.get('pagewidth') == 120
+#@+node:ekr.20111113091935.4786: *4* Not valid when run externally
+@nocolor-node
+
+These all call g.findNodeAnywhere for an @<file> node.
+We don't want to copy such nodes to dynamicUnitTest.leo
+#@+node:ekr.20090704085350.5044: *5* @test @asis: shape of tree
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+
+    h = '@asis ../test/unittest/at-asis-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    
+    for p2,h2 in table:
+        assert p2.h == h2
+        assert len(p2.b) > 10
+#@+node:ekr.20090704085350.5052: *5* @test @auto: shape of tree
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+
+    h = '@auto ../test/unittest/at-auto-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    
+    for p2,h2 in table:
+        assert p2.h == h2
+        assert len(p2.b) > 10
+#@+node:ekr.20090704085350.5018: *5* @test @shadow: shape of tree
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+
+    h = '@shadow ../test/unittest/at-shadow-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    
+    for p2,h2 in table:
+        assert len(p2.h) == len(h2)
+#@+node:ekr.20100731163237.5778: *5* @test @thin: html section references
+@language python
+
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    
+    # html uses block comments.  This is an important test.
+    
+    h = '@thin ../test/unittest/at-thin-html-test.html'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    s = (
+    '@language html\n\n<< ' +
+    'a section reference >>\n\n' +
+    'after.\n')
+    
+    # print(repr(p.b)) ; print(repr(s))
+    
+    assert p.b == s,'body failure'
+#@+node:ekr.20090704085350.5046: *5* @test @thin: shape of tree
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+
+    h = '@thin ../test/unittest/at-thin-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    
+    for p2,h2 in table:
+        assert p2.h == h2
+        assert len(p2.b) > 10
+#@+node:ekr.20111021115306.3696: *5* @test @file: tex bug
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    
+    p = g.findNodeAnywhere(c,"@file ../test/unittest/tex-error.tex")
+    assert(p)
+    
+    s1 = r"""\begin{document}
+    << Document """
+    
+    s2 = r""">>
+    % hidden comment
+    \end{document}
+    """
+    
+    s = s1 + s2
+    s = g.adjustTripleString(s,c.tab_width)
+    
+    # print(repr(s))
+    # print(repr(p.b))
+    assert p.b == s
+#@+node:ekr.20100802220019.5795: *5* @test at.deleteUnvistedNodes
+def clone (p,parent,n):
+    p2 = p.clone()
+    p2.moveToNthChildOf(parent,n)
+    return p2
+
+def make (parent,n,h):
+    child = parent.insertAsNthChild(n)
+    child.h = h
+    return child
+
+def delete_r():
+    '''Delete all 'Resurrected Nodes' nodes.'''
+    while True:
+        r = g.findNodeAnywhere(c,'Resurrected Nodes')
+        if r: r.doDelete(newNode=p)
+        else: break
+
+def delete_children():
+    # Delete all children of p.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=p)
+
+def test(p,h,tag):
+    assert p,'p'
+    assert p.h == 'From root','p.h %s' % tag
+    assert p.numberOfChildren() == 1,'number of children %s' % tag
+    assert p.firstChild().h == h,'child.h %s' % tag
+
+delete_r()
+delete_children()
+
+# Create some children.
+root = make(p,0,'root')
+child1 = make(root,0,'child1')
+child2 = make(root,1,'child2')
+child3 = make(root,2,'child3')
+child11 = make(child1,0,'child11')
+child21 = make(child2,0,'child21')
+child31 = make(child3,0,'child31')
+# Create some clones.
+child4 = clone(child31,root,3)
+
+for z in root.self_and_subtree():
+    z.setVisited()
+for z in child2,child31: # These should be moved.
+    z.clearVisited()
+
+c.atFileCommands.deleteUnvisitedNodes(root)
+
+if 1:
+    r = g.findNodeAnywhere(c,'Resurrected Nodes')
+    assert r,'r'
+    r1 = r.firstChild()
+    r2 = r1.next()
+    r3 = r2.next()
+    test(r1,'child2','r1')
+    test(r2,'child31','r2')
+    assert root.numberOfChildren() == 3,'root.n'
+if 1:
+    delete_r()
+    delete_children()
+
+c.redraw_now()
+#@+node:ekr.20110615130436.3319: *5* @test writing a .leo file retains orphan bits
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    
+    # Writing a .leo file must retain orphan bits of erroneous external files.
+    
+    h = '@file nonexistent-directory/orphan-bit-test.txt'
+    p2 = g.findNodeAnywhere(c,h)
+    assert p2,'not found: %s' % (h)
+    assert p2.isOrphan(),'not an orphan originally'
+    
+    # It's dangerous to do the write, but this does test the bug fix.
+    c.atFileCommands.clearAllOrphanBits(p2)
+    assert p2.isOrphan(),'not an orphan after calling at.clearAllOrphanBits'
+#@+node:ekr.20040707141957.12: *5* @test @thin: @last
+# Doesn't work when run externally because the copy operation changes the gnx.
+if not g.app.isExternalUnitTest:
+
+    c.testManager.runAtFileTest(p)
+#@+node:ekr.20040707141957.13: *6* #@thin
+Line 1
+
+@last last line 1: no newline
+#@+node:ekr.20040707141957.14: *6* Output
+#@verbatim
+#@+leo-ver=5-thin
+#@verbatim
+#@+node:ekr.20040707141957.13: * #@thin
+Line 1
+
+#@verbatim
+#@@last
+#@verbatim
+#@-leo
+last line 1: no newline
 #@+node:ekr.20101021210253.6018: *4* Unused
 #@+node:ekr.20040712101754.103: *5* @@test @file no newline
 c.testManager.runAtFileTest(p)
@@ -4251,6 +4318,32 @@ g.app.unitTestDict['restoreSelectedNode']=False
 print('\nEnd of leoColor tests')
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
+#@+node:ekr.20100203103015.5356: *4* @@@test c.openTempFileInExternalEditor
+arg = ''
+arg0 = 'one'
+fn = '<fn>'
+filename = '' # g.os.path.basename(arg)
+vtuple = [arg0,fn]
+
+table = (
+    #('os.system',       'os.system(%s)' % (arg+fn)),
+    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
+    #('exec',            'exec(%s)' % (arg+fn)),
+    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
+    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
+    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
+    ('huh?',            'bad command:'+'huh?'),
+)
+
+for openType,result in table:
+    if openType in ('os.spawnv','subprocess.Popen'):
+        arg2 = ['one']
+    else:
+        arg2 = None
+    result2 = c.openTempFileInExternalEditor(
+        arg2,fn,openType,testing=True)
+    assert result==result2,'expected %s, got %s' % (
+        repr(result),repr(result2))
 #@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
 
@@ -4363,127 +4456,7 @@ def spam():
 # after
 #@+node:ekr.20110510054817.3475: *4* @test c.alert
 c.alert('test of c.alert')
-#@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
-c.contractAllHeadlines()
-p = c.rootPosition()
-while p.hasNext():
-    p.moveToNext()
-c.selectPosition(p)
-#@+node:ekr.20100209155559.5386: *4* @test c.createOpenWithTempFile
-c.createOpenWithTempFile(p,'.py')
-#@+node:ekr.20100203103015.5355: *4* @test c.getOpenWithExt
-@language python
-
-table = (
-    # (None,'.py'),
-    # ('','.py'),
-    ('txt','.txt'),
-    ('.txt','.txt'),
-)
-
-for ext,result in table:
-    result2 = c.getOpenWithExt(p,ext)
-    assert result==result2,'ext: %s, expected %s, got %s' % (
-        repr(ext),repr(result),repr(result2))
-#@+node:ekr.20100212072149.5341: *4* @test c.goToScriptLineNumber
-child = g.findNodeInChildren(c,p,'syntax-error')
-assert child,'no child'
-script = child.b
-try:
-    c.goToScriptLineNumber(child,script,1)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-#@+node:ekr.20100212072149.5342: *5* syntax-error
-@language python
-def spam:
-    pass
-#@+node:ekr.20061106112522: *4* @test c.insertBodyTime
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-
-try:
-    w.setInsertPoint(len(s))
-    c.insertBodyTime()
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # c.recolor()
-
-# end:
-#@+node:ekr.20050512083807.1: *4* @test c.markAllAtFileNodesDirty
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markAllAtFileNodesDirty()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20100203103015.5356: *4* @@@test c.openTempFileInExternalEditor
-arg = ''
-arg0 = 'one'
-fn = '<fn>'
-filename = '' # g.os.path.basename(arg)
-vtuple = [arg0,fn]
-
-table = (
-    #('os.system',       'os.system(%s)' % (arg+fn)),
-    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    #('exec',            'exec(%s)' % (arg+fn)),
-    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
-    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
-    ('huh?',            'bad command:'+'huh?'),
-)
-
-for openType,result in table:
-    if openType in ('os.spawnv','subprocess.Popen'):
-        arg2 = ['one']
-    else:
-        arg2 = None
-    result2 = c.openTempFileInExternalEditor(
-        arg2,fn,openType,testing=True)
-    assert result==result2,'expected %s, got %s' % (
-        repr(result),repr(result2))
-#@+node:ekr.20100203103015.5354: *4* @test c.openWithTempFilePath
-s = c.openWithTempFilePath(p,'.py')
-assert s.find('LeoTemp') > -1
-assert s.endswith('.py')
-#@+node:ekr.20040802065214: *4* @test changing headline marks descendent @thin nodes dirty
-# Make sure that changing this headline marks descendant @thin nodes dirty.
-h = p.h
-
-try:
-    child = p.firstChild()
-    child.initHeadString("@thin bogus")
-    assert child.h == "@thin bogus", "setting headline failed"
-    child.clearDirty()
-    assert not child.isDirty(), "clearing dirty failed"
-    c.setHeadString(p,"changed")
-    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
-finally:
-    try:
-        c.setHeadString(p,h)
-        c.setHeadString(child,"bogus")
-        p.clearDirty()
-        child.clearDirty()
-    finally: pass
-
-#### c.redraw()
-#@+node:ekr.20040802065214.1: *5* bogus
-test
-#@+node:ekr.20050512084850: *4* @test check outline
+#@+node:ekr.20050512084850: *4* @test c.checkOutline
 errors = c.checkOutline(verbose=False,unittest=True,full=True) # Run full check.
 
 assert errors == 0, "Check Outline reported %d errors" % errors
@@ -4582,6 +4555,470 @@ class eggs:
     """ A typical doc string """
 
     @others
+#@+node:ekr.20071113145804.10: *4* @test c.contractAllHeadlines
+c.contractAllHeadlines()
+p = c.rootPosition()
+while p.hasNext():
+    p.moveToNext()
+c.selectPosition(p)
+#@+node:ekr.20070611105423.1: *4* @test c.contractAllHeadlines
+c.contractAllHeadlines()
+#@+node:ekr.20111104171708.3843: *4* @test c.CPrettyPrinter
+cpp = c.CPrettyPrinter(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+
+if 1: # test of indent.
+    # import os ; os.system('cls')
+    cpp.indent(p2)
+
+if 0: # test of tokenize.
+    aList = cpp.tokenize(p2.b)
+    assert(p2.b == ''.join(aList))
+    if 0:
+        import os ; os.system('cls')
+        print('*' * 40)
+        # print(''.join(aList))
+        for z in aList:
+            print(repr(z))
+#@+node:ekr.20111104171708.3844: *5* c tokenize test
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+#@+node:ekr.20100209155559.5386: *4* @test c.createOpenWithTempFile
+c.createOpenWithTempFile(p,'.py')
+#@+node:ekr.20070611105728: *4* @test c.demote: illegal clone demote
+# Remove any previous children.
+while p.hasChildren():
+    p.firstChild().doDelete()
+# Create two cloned children.
+c.selectPosition(p)
+c.insertHeadline()
+p2 = c.p
+p2.moveToFirstChildOf(p)
+p2.setHeadString('aClone')
+c.selectPosition(p2)
+c.clone()
+assert 2 == p.numberOfChildren()
+
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()
+#@+node:ekr.20100203103015.5355: *4* @test c.getOpenWithExt
+@language python
+
+table = (
+    # (None,'.py'),
+    # ('','.py'),
+    ('txt','.txt'),
+    ('.txt','.txt'),
+)
+
+for ext,result in table:
+    result2 = c.getOpenWithExt(p,ext)
+    assert result==result2,'ext: %s, expected %s, got %s' % (
+        repr(ext),repr(result),repr(result2))
+#@+node:ekr.20100212072149.5341: *4* @test c.goToScriptLineNumber
+child = g.findNodeInChildren(c,p,'syntax-error')
+assert child,'no child'
+script = child.b
+try:
+    c.goToScriptLineNumber(child,script,1)
+finally:
+    p.contract()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20100212072149.5342: *5* syntax-error
+@language python
+def spam:
+    pass
+#@+node:ekr.20071113105654.1: *4* @test c.hoist with no children
+c.hoist()
+c.dehoist()
+#@+node:ekr.20061106112522: *4* @test c.insertBodyTime
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+
+try:
+    w.setInsertPoint(len(s))
+    c.insertBodyTime()
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # c.recolor()
+
+# end:
+#@+node:ekr.20050512083807.1: *4* @test c.markAllAtFileNodesDirty
+marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.markAllAtFileNodesDirty()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
+#@+node:ekr.20050512083822.1: *4* @test c.markSubheads
+marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.markSubheads()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
+#@+node:ekr.20050512084850.1: *5* child 1
+pass
+#@+node:ekr.20050512084850.2: *5* child 2
+pass
+#@+node:ekr.20100203103015.5354: *4* @test c.openWithTempFilePath
+s = c.openWithTempFilePath(p,'.py')
+assert s.find('LeoTemp') > -1
+assert s.endswith('.py')
+#@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
+c.selectPosition(p)
+c.copyOutline()
+try:
+    p2 = c.pasteOutline()
+    assert p2
+    assert not p2.isCloned()
+finally:
+    if p2: p2.doDelete()
+    c.redraw(p)
+#@+node:ekr.20111212142649.3972: *5* child
+# child text.
+#@+node:ekr.20041019124050: *4* @test c.prettyPrintPythonCode
+test1 = p.firstChild()
+test2 = p.firstChild().next()
+
+c.prettyPrintPythonCode(p=test2,dump=False)
+
+assert(test2.b==test1.b)
+#@+node:ekr.20041019124050.1: *5* Original
+"""
+line 1
+line 2
+line 3
+"""
+#@+node:ekr.20041019124050.2: *5* Test
+"""
+line 1
+line 2
+line 3
+"""
+#@+node:ekr.20040802065214: *4* @test c.setHeadString marks descendent @thin nodes dirty
+# Make sure that changing this headline marks descendant @thin nodes dirty.
+h = p.h
+
+try:
+    child = p.firstChild()
+    child.initHeadString("@thin bogus")
+    assert child.h == "@thin bogus", "setting headline failed"
+    child.clearDirty()
+    assert not child.isDirty(), "clearing dirty failed"
+    c.setHeadString(p,"changed")
+    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
+finally:
+    try:
+        c.setHeadString(p,h)
+        c.setHeadString(child,"bogus")
+        p.clearDirty()
+        child.clearDirty()
+    finally: pass
+
+#### c.redraw()
+#@+node:ekr.20040802065214.1: *5* bogus
+test
+#@+node:ekr.20050512083822.2: *4* @test c.unmarkAll
+marks = [p.v for p in c.all_positions() if p.isMarked()]
+try:
+    ok = True
+    try:
+        c.unmarkAll()
+    except Exception:
+        ok = False
+finally:
+    for p in c.all_positions():
+        if p.v in marks:
+            if not p.isMarked():
+                c.setMarked(p)
+        else:
+            if p.isMarked():
+                c.clearMarked(p)
+
+if not ok: raise
 #@+node:ekr.20100131180007.5465: *4* @test class StubConfig
 class StubConfig(g.nullObject):
     pass
@@ -4589,8 +5026,6 @@ class StubConfig(g.nullObject):
 x = StubConfig()
 assert not x.getBool(c,'mySetting')
 assert not x.enabledPluginsFileName
-#@+node:ekr.20070611105423.1: *4* @test contract all
-c.contractAllHeadlines()
 #@+node:ville.20090602190735.4770: *4* @test g.command decorator
 _foo = 0
 
@@ -4628,54 +5063,6 @@ for obj,val in table:
     val2 = g.isCallable(obj)
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
-#@+node:ekr.20071113105654.1: *4* @test hoist with no children
-c.hoist()
-c.dehoist()
-#@+node:ekr.20070611105728: *4* @test illegal clone demote
-# Remove any previous children.
-while p.hasChildren():
-    p.firstChild().doDelete()
-# Create two cloned children.
-c.selectPosition(p)
-c.insertHeadline()
-p2 = c.p
-p2.moveToFirstChildOf(p)
-p2.setHeadString('aClone')
-c.selectPosition(p2)
-c.clone()
-assert 2 == p.numberOfChildren()
-
-# Select the first clone and demote (it should be illegal)
-c.selectPosition(p2)
-c.demote() # This should do nothing.
-assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
-assert 2 == p.numberOfChildren(), 'fail 3'
-# Delete the children, but only if there are no errors.
-while p.hasChildren():
-    p.firstChild().doDelete()
-#@+node:ekr.20050512083822.1: *4* @test markSubheads
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markSubheads()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-#@+node:ekr.20050512084850.1: *5* child 1
-pass
-#@+node:ekr.20050512084850.2: *5* child 2
-pass
 #@+node:ekr.20100203103015.5353: *4* @test open-with conflict dialog
 # A copy of the code from c.createOrRecreateTempFileAsNeeded.
 # Not a perfect test, but stil significant.
@@ -4689,43 +5076,6 @@ result = g.app.gui.runAskYesNoCancelDialog(c,
     defaultButton = "Cancel")
 
 assert result in (None,'cancel'),'fail 2: %s' % result
-#@+node:ekr.20041019124050: *4* @test prettyPrintPythonCode
-test1 = p.firstChild()
-test2 = p.firstChild().next()
-
-c.prettyPrintPythonCode(p=test2,dump=False)
-
-assert(test2.b==test1.b)
-#@+node:ekr.20041019124050.1: *5* Original
-"""
-line 1
-line 2
-line 3
-"""
-#@+node:ekr.20041019124050.2: *5* Test
-"""
-line 1
-line 2
-line 3
-"""
-#@+node:ekr.20050512083822.2: *4* @test unmarkAll
-marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.unmarkAll()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
 #@+node:ekr.20071113201833: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -4786,7 +5136,19 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 #@+node:sps.20100531034136.20113: *8* xyz
 #@+node:ekr.20071113194216: *3* leoConfig
 # 3 failurs with Alt-5
-#@+node:ekr.20060325071703.2: *4* @@test ifgui
+#@+node:ekr.20120201125738.3958: *4* @@@test g.app.config.getShortcuts works when no local shortcuts
+# This tests is valid only if not g.new_config.
+
+sd = g.app.config.localShortcutsDict
+d = sd.get(c.hash(),{})
+try:
+    sd[c.hash()] = {}
+    key,aList = c.config.getShortcut('new')
+    # print(key,aList)
+    assert aList,'key: %s' % (key)
+finally:
+    sd[c.hash()] = d
+#@+node:ekr.20060325071703.2: *4* @@@test ifgui
 guiname = g.app.gui.guiName()
 
 tkinter = c.config.getBool('test_tkinter_setting')
@@ -4801,10 +5163,68 @@ if guiname == 'tkinter':
 if guiname == 'wxWindows':
     assert(not tkinter)
     assert(wx)
-#@+node:ekr.20050203084930.1: *4* @test global settings
+#@+node:ekr.20111115071700.3870: *4* @test c.config.printSettings
+c.config.printSettings()
+
+#@+node:ekr.20120201101804.3907: *4* @test c.config.updateSetting with no @settings node
+import leo.core.leoConfig as leoConfig
+    
+p = c.config.settingsRoot()
+assert c
+if p:
+    # p will not exist when run externally.
+    h = p.h
+    p.h = '@@' + h
+try:
+    parser = leoConfig.SettingsTreeParser(c,localFlag=True)
+    d1,d2 = parser.traverse()
+    assert isinstance(d1,g.TypedDictOfLists),d1
+    assert isinstance(d2,g.TypedDict),d2
+finally:
+    if p:
+        p.h = h
+        c.redraw()
+#@+node:ekr.20111124090010.3939: *4* @test g.app.config @buttons and @commands logic
+'''Test that the config parser visits @buttons and @commands nodes for
+leoSettings.leo and unitTest.leo.
+
+If strict is True, also test that the config parser vists the nodes in
+myLeoSettings.leo. This may fail on machines without @buttons and @commands
+nodes in myLeoSettings.leo.
+'''
+
+if g.app.isExternalUnitTest:
+    pass
+else:
+    strict = True # Set to False if you are not EKR.
+    
+    table = ['leoSettings.leo','unitTest.leo']
+    if strict:
+        table.append('myLeoSettings.leo')
+    
+    keys = ('config.doButtons-file-names','config.doCommands-file-names')
+    d = g.app.config.unitTestDict # Always created for this unit test.
+    
+    for key in keys:
+        aList = d.get(key,[])
+        for fn in table:
+            # print(fn)
+            # print(repr(aList))
+            assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+#@+node:ekr.20050203084930.1: *4* @test g.app.config.get
 w = g.app.config.get('global_setting_for_unit_tests','int')
 
 assert w in (None,132) # Will be None when tests run dynamically.
+#@+node:ekr.20111105124216.3840: *4* @test g.app.config.set
+setting = 'import_html_tags'
+html_tags = ('body','head','html','table','xxx')
+
+# When run externally, c.config.getData will return None.
+existing_tags = c.config.getData(setting)
+if not existing_tags:
+    g.app.config.set(None,setting,'data',html_tags)
+    tags = c.config.getData(setting)
+    assert c.config.getData(setting) == html_tags
 #@+node:ekr.20060325071703.1: *4* @test ifplatform
 import sys
 
@@ -5442,6 +5862,267 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 #@+node:ekr.20081111084046.2: *4*  Commands C-E
+#@+node:ekr.20111104171708.3847: *5* @test C_to_python
+cpp = c.CPrettyPrinter(c)
+c2p = c.editCommands.C_to_python(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+c2p.convertCodeList(aList)
+s = ''.join(aList)
+#@+node:ekr.20111104171708.3848: *6* c tokenize test
+@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos->can_break;
+        }
+
+        parser_state_tos->last_saw_nl = false;
+        parser_state_tos->can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col > 0) &&
+            (buf_break != NULL) &&
+            ( ( (parser_state_tos->last_token == ident) &&
+                (type_code != comma) &&
+                (type_code != semicolon) &&
+                (type_code != newline) &&
+                (type_code != form_feed) &&
+                (type_code != rparen) &&
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos->last_token == rparen) &&
+                (type_code != comma) &&
+                (type_code != rparen) ) ) &&
+            (output_line_length () > settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp > 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos->procname[0] != '\0') &&
+                  parser_state_tos->in_parameter_declaration) ||
+                 (parser_state_tos->classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &paren_target);
+            }
+
+            if (parser_state_tos->tos > 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines > 0 && code_lines > 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            if (force_nl &&
+                (type_code != semicolon) &&
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos->in_decl && !settings.btype_2) ||
+                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos->last_token == rbrace)))
+            {
+                if (settings.verbose && !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &paren_target);
+                parser_state_tos->want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos->in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos->want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &&
+                 (type_code != cplus_comment) &&
+                 !(settings.break_function_decl_args &&
+                   (parser_state_tos->last_token == comma)) &&
+                 !( (parser_state_tos->last_token == comma) &&
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
+                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
+                         can_break, &last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &&
+            (type_code != cplus_comment) &&
+            (type_code != newline) &&
+            (type_code != preesc) &&
+            (type_code != form_feed))
+        {
+            parser_state_tos->last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col > 0) && (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) && (scase || (squest <= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) && (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &&
+                 (output_line_length () > settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
 #@+node:ekr.20061101121602.146: *5* @test capitalize-word
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.147: *6* work
@@ -5566,14 +6247,6 @@ if not g.app.isExternalUnitTest:
         test(p)
     finally:
         tear_down(p,'Clones of marked nodes')
-#@+node:ekr.20120212130242.3942: *5* data
-#@+node:ekr.20120212130242.3948: *6* a
-#@+node:ekr.20120212130242.3949: *7* b
-#@+node:ekr.20120212130242.3945: *6* c
-#@+node:ekr.20120212130242.3946: *6* d
-#@+node:ekr.20120212130242.3947: *6* e
-#@+node:ekr.20120212130242.3948: *7* a
-#@+node:ekr.20120212130242.3949: *8* b
 #@+node:ekr.20061101121602.162: *5* @test count-region
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.163: *6* work
@@ -5597,6 +6270,61 @@ line 1
         line b
 line c
 last line
+#@+node:ekr.20111120124051.3994: *5* @test cycle-all-focus
+'''Test that cycle-all-focus cycles through all tabs.'''
+
+if g.app.isExternalUnitTest or not g.isPython3:
+    # print('external test')
+    pass
+else:
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    tabs = log.orderedTabNames()
+    last_widget = c.frame.body
+    
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        # print('pass',tab,last_widget)
+        
+    # Test transfer into tree widget.
+    event = g.bunch(widget=last_widget)
+    c.editCommands.cycleAllFocus(event=event)
+    last_widget = w = g.app.gui.get_focus()
+    name = w.__class__.__name__
+    assert name == 'LeoQTreeWidget',name
+    
+    # Test transfer into body widget.
+    event = g.bunch(widget=last_widget)
+    c.editCommands.cycleAllFocus(event=event)
+    w = g.app.gui.get_focus()
+    w_name = g.app.gui.widget_name(w)
+    assert w_name == 'richTextEdit',w_name
+
+#@+node:ekr.20111121164644.3928: *5* @test cycle-tab-focus
+'''Test that cycle-all-focus cycles through all tabs.'''
+
+if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    log = c.frame.log
+    tabs = log.orderedTabNames()[1:]
+    tabs.append('Log')
+    
+    # Set up the initial state.
+    c.k.keyboardQuit()
+    c.bodyWantsFocusNow()
+    
+    for tab in tabs:
+        log.cycleTabFocus(event=None)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        # print('pass',tab)
 #@+node:ekr.20061101121602.166: *5* @test delete-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.167: *6* work
@@ -6039,6 +6767,14 @@ last line
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
+#@+node:ekr.20120212130242.3942: *5* data
+#@+node:ekr.20120212130242.3948: *6* a
+#@+node:ekr.20120212130242.3949: *7* b
+#@+node:ekr.20120212130242.3945: *6* c
+#@+node:ekr.20120212130242.3946: *6* d
+#@+node:ekr.20120212130242.3947: *6* e
+#@+node:ekr.20120212130242.3948: *7* a
+#@+node:ekr.20120212130242.3949: *8* b
 #@+node:ekr.20070131175538.1: *4*  Commands F-L
 #@+node:ekr.20061128090441: *5* @@test kill-line end-2
 c.testManager.runEditCommandTest(p)
@@ -7511,6 +8247,18 @@ X
 c
 b
 A
+#@+node:ekr.20111121140833.3916: *5* @test selectToMatchingBracket
+'''selectToMatchingBracket was crashing.'''
+
+ec = c.editCommands
+w = c.frame.body
+
+s = w.getAllText()
+i = s.find('(')
+w.setInsertPoint(i)
+ec.selectToMatchingBracket(event=None)
+i,j = w.getSelectionRange()
+assert i < j,'i: %s j: %s' % (i,j)
 #@+node:ekr.20071113145804.4: *5* @test selfInsertCommand-1
 @first # -*- coding: utf-8 -*-
 @language python
@@ -9494,6 +10242,111 @@ s = w.getSelectedText()
 assert s == 'BCD',repr(s)
 
 w.deleteTextSelection() ; check('xzAc')
+#@+node:ekr.20061106201509.6: *4* @test c.frame.body.getInsertLines
+# line 1
+# line 2
+# line 3
+
+w = c.frame.body.bodyCtrl
+index = 11 # in the second line.
+w.setInsertPoint(index)
+before,ins,after = c.frame.body.getInsertLines()
+assert before == '# line 1\n','Got %s' % repr(before)
+assert ins    == '# line 2\n','Got %s' % repr(ins)
+assert after.startswith('# line 3\n'),'line3'
+assert after.endswith('# end.\n'),'end'
+
+# end.
+#@+node:ekr.20061106201509.7: *4* @test c.frame.body.getSelectionAreas
+# line 1
+# line 2
+# line 3
+
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+start,end = 11,15
+w.setSelectionRange(start,end)
+before,ins,after = c.frame.body.getSelectionAreas()
+assert before == s[0:start],'Got %s' % repr(before)
+assert ins    == s[start:end],'Got %s' % repr(ins)
+assert after == s[end:]
+
+# end.
+#@+node:ekr.20071113145804.32: *4* @test c.frame.body.getSelectionAreas & test
+# line 1
+# line 2
+# line 3
+
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+start,end = 11,15
+w.setSelectionRange(start,end)
+before,ins,after = c.frame.body.getSelectionAreas()
+assert before == s[0:start],'Got %s' % repr(before)
+assert ins    == s[start:end],'Got %s' % repr(ins)
+assert after == s[end:]
+
+# end.
+#@+node:ekr.20111121152019.3929: *4* @test c.frame.body.updateEditors
+'''updateEditors was crashing due to calling setSelectionRange(ins=i).
+The proper keyword argument is insert=i.
+'''
+
+c.frame.body.updateEditors()
+#@+node:ekr.20111121142012.4030: *4* @test c.frame.log relationships
+import PyQt4.QtGui as QtGui
+
+log = c.frame.log
+name = log.__class__.__name__
+
+if g.app.isExternalUnitTest:
+    assert name == 'nullLog',name
+else:
+    assert name == 'leoQtLog',name
+    assert log.widget.__class__.__name__ == 'leoQTextEditWidget' 
+    assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
+        # leoQTextEditWidget us a poor name: it is not a Qt widget.
+    assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
+    assert hasattr(log.widget,'widget') and log.widget.widget
+    assert hasattr(log.widget.widget,'leo_log_wrapper')
+    wrapper = log.widget.widget.leo_log_wrapper
+    assert wrapper == log.widget
+
+#@+node:ekr.20111121081052.3908: *4* @test c.frame.log.numberOfVisibleTabs
+if g.app.isExternalUnitTest or not g.isPython3:
+    print('external test')
+    pass
+else:
+    log = c.frame.log
+    d = log.contentsDict
+    keys = list(d.keys())
+    tabs = log.orderedTabNames()
+    
+    n = len(keys)
+    n2 = log.numberOfVisibleTabs()
+    n3 = len(tabs)
+
+    assert n == n2,'n: %s n2: %s' % (n,n2)
+    assert n == n3,'n: %s len(log.orederedTabNames()): %s' % (n,n3)
+#@+node:ekr.20111121140833.3917: *4* @test c.frame.log.put & putNl
+'''These were changed, then reverted, but a unit test is important.'''
+
+if g.app.isExternalUnitTest:
+    pass # Prints to console, which is annoying.
+else:
+    log = c.frame.log
+    log.put(p.h)
+    log.putnl()
+#@+node:ekr.20111107065245.3833: *4* @test c.frame.minimize-all
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if not g.app.isExternalUnitTest:
+    d = g.app.unitTestDict
+    tag = 'minimize-all'
+    assert not d.get(tag)
+    c.frame.minimizeAll()
+    assert d.get(tag) is True
 #@+node:ekr.20061104172236.22: *4* @test c.frame.pasteText
 # target.
 
@@ -9534,52 +10387,18 @@ finally:
     c.recolor()
 
 # end5target
-#@+node:ekr.20061106201509.6: *4* @test leoBody.getInsertLines
-# line 1
-# line 2
-# line 3
+#@+node:ekr.20111107065530.3833: *4* @test c.frame.resize-to-screen
+# The actual code contains the unit test.
+# This test will have effect only when run locally.
 
-w = c.frame.body.bodyCtrl
-index = 11 # in the second line.
-w.setInsertPoint(index)
-before,ins,after = c.frame.body.getInsertLines()
-assert before == '# line 1\n','Got %s' % repr(before)
-assert ins    == '# line 2\n','Got %s' % repr(ins)
-assert after.startswith('# line 3\n'),'line3'
-assert after.endswith('# end.\n'),'end'
+if not g.app.isExternalUnitTest:
 
-# end.
-#@+node:ekr.20061106201509.7: *4* @test leoBody.getSelectionAreas
-# line 1
-# line 2
-# line 3
-
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-start,end = 11,15
-w.setSelectionRange(start,end)
-before,ins,after = c.frame.body.getSelectionAreas()
-assert before == s[0:start],'Got %s' % repr(before)
-assert ins    == s[start:end],'Got %s' % repr(ins)
-assert after == s[end:]
-
-# end.
-#@+node:ekr.20071113145804.32: *4* @test leoBody.getSelectionAreas & test
-# line 1
-# line 2
-# line 3
-
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-start,end = 11,15
-w.setSelectionRange(start,end)
-before,ins,after = c.frame.body.getSelectionAreas()
-assert before == s[0:start],'Got %s' % repr(before)
-assert ins    == s[start:end],'Got %s' % repr(ins)
-assert after == s[end:]
-
-# end.
-#@+node:ekr.20100131180007.5359: *4* @test OnIconDoubleClick
+    d = g.app.unitTestDict
+    tag = 'resize-to-screen'
+    assert not d.get(tag)
+    c.frame.resizeToScreen()
+    assert d.get(tag) is True
+#@+node:ekr.20100131180007.5359: *4* @test c.frame.tree.OnIconDoubleClick
 c.frame.tree.OnIconDoubleClick(p)
 #@+node:ekr.20071113202153.1: *4* @test zz restore the screen
 # This is **not** a real unit test.
@@ -9835,7 +10654,28 @@ assert s[i:j] == 'xy_z5','got %s' % s[i:j]
 #@+node:ekr.20110612064437.3310: *4* @test g.guessExternalEditor
 val = g.guessExternalEditor(c)
 assert val,'no val' # This can be different on different platforms.
+#@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
+'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
+
+path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
+assert not g.os_path_exists(path)
+module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
+assert not module,repr(module)
 #@+node:ekr.20101021205258.6010: *4* @test g.makeAllNonExistentDirectories
+#@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
+import os
+
+path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
+path2 = r'\N:Home\PTC_Creo\Creo.wmv'
+path3 = r'N:\Home\PTC_Creo\Creo.wmv'
+
+path12 = os.path.join(path1,path2)
+path13 = os.path.join(path1,path3)
+
+if 0:
+
+    print(path12,g.os.path.abspath(path12))
+    print(path13,g.os.path.abspath(path13))
 #@+node:ekr.20071113145804.19: *4* @test g.pdb
 import sys
 
@@ -10243,7 +11083,60 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoGlobals tests.')
-#@+node:ekr.20100131171342.5599: *3* leoGui
+#@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
+#@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+import leo.plugins.qtGui as leoQtGui
+
+if g.app.isExternalUnitTest:
+    pass
+else:
+    def setup(p):
+        delete_children(p)
+        p2 = p.insertAsLastChild()
+        c.selectPosition(p2)
+        p2.h = 'first-child'
+    
+    def delete_children(p):
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    
+    app = g.app.gui.qtApp
+    assert issubclass(app.__class__,QtGui.QApplication)
+    
+    w = c.frame.body.bodyCtrl.widget
+    assert issubclass(w.__class__,QtGui.QTextEdit)
+    w_name = w.__class__.__name__
+    assert w_name == 'LeoQTextBrowser',w_name
+    
+    p1 = p.copy()
+    
+    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+    
+    try:
+        ev = QtCore.QEvent
+        table = (
+            ev.KeyPress,
+            # ev.KeyRelease, # Ignored except in QLineEdit's.
+            # ev.ShortcutOverride, # Ignored everywhere.
+        )
+        for theType in table:
+            # Create the event.
+            setup(p1)
+            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+            # Pass it to eventFilter.
+            filter_obj.eventFilter(w,e)
+            # Check the results.
+            c.redraw()
+            n = p1.numberOfChildren()
+            assert n==2,'%s children' % (n)
+            delete_children(p1)
+    
+    finally:
+        delete_children(p1)
+        c.redraw()
 #@+node:ekr.20111003145300.3466: *4* @test illegal drag gives warning
 '''Test that dragging this node onto the child node generates a warning.'''
 
@@ -10302,6 +11195,28 @@ if g.app.gui.guiName() == 'tkinter':
     w.tag_add('test',4,6)
     aTuple = w.tag_ranges('test')
     assert aTuple == (4,6),'tag_add failed: %s' % aTuple
+#@+node:ekr.20111123214629.3941: *4* @test unbound Alt-N key is completely ignored
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+import leo.plugins.qtGui as leoQtGui
+
+if g.app.isExternalUnitTest:
+    pass
+else:
+    w = c.frame.body.bodyCtrl.widget
+    assert issubclass(w.__class__,QtGui.QTextEdit)
+    
+    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
+
+    # Create an Alt-7 key event.
+    ev = QtCore.QEvent
+    e = QtGui.QKeyEvent(ev.KeyPress,ord('7'),QtCore.Qt.AltModifier)
+    filter_obj.eventFilter(w,e)
+
+    # Assert that handleUnboundChar actually ignored it.
+    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+
 #@+node:ekr.20100131171342.5600: *4* @test w.toGui/PythonIndex
 w = c.frame.body.bodyCtrl
 s = w.getAllText()
@@ -12012,6 +12927,25 @@ for ext in g.app.extension_dict.keys():
     if 0:
         if language is None:
             print('no language for ext=%s' % (ext))
+#@+node:ekr.20111228125719.3909: *4* @test ic.baseScannerClass.insertIgnoreDirective
+import leo.core.leoImport as leoImport
+
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+importCommands = c.importCommands
+bic = leoImport.baseScannerClass(importCommands,atAuto=False,language='python')
+
+try:
+    setup(p)
+    child = p.insertAsLastChild()
+    child.h = 'child'
+    bic.insertIgnoreDirective(parent=child)
+    assert child.b.find('@ignore') == 0
+finally:
+    if 1:
+        setup(p)
 #@+node:ekr.20111110095252.3845: *4* @test ic.compareTokens: mismatched length
 import leo.core.leoImport as leoImport
 
@@ -12044,22 +12978,61 @@ tokens12 = (('id','abc',0),)
 
 tokens21 = (('id','abc',0),)
 tokens22 = ()
-#@+node:ekr.20100131180007.5393: *4* @test ic.reportMismatch
-import leo.core.leoImport as leoImport
+#@+node:ekr.20111105221757.3831: *4* @test ic.createImportParent
+files = ('x.h','x.cpp')
 
+while p.hasChildren():
+    p.firstChild().doDelete()
+
+try:
+    current = c.importCommands.createImportParent(c.p,files)
+    assert current
+    assert current.h == 'x'
+    assert p.firstChild() == current
+finally:
+    while p.hasChildren():
+        p.firstChild().doDelete()
+    c.redraw()
+#@+node:ekr.20111214100515.3921: *4* @test ic.createOutline: at-auto with lines that look like section references
 ic = c.importCommands
-scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
-scanner.root = p
-s1 = ["abc","xyz",]
-s2 = ["xyz",]
 
-scanner.reportMismatch(s1,s2,1,1)
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
 
-s1 = ["xyz",]
-s2 = ["abc","xyz",]
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-auto-section-ref-test.py')
+# fn = r'c:\Users\edreamleo\at-auto-test.py'
+assert g.os_path_exists(fn),fn
 
-scanner.reportMismatch(s1,s2,1,1)
-#@+node:ekr.20111111074026.3972: *4* @test htmlScanner.skipComment/Id/String
+try:
+    setup(p)
+    child = p.insertAsNthChild(0)
+    child.h = 'child'
+    assert child
+
+    ic.errors = 0
+    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
+    assert ic.errors == 0
+finally:
+    setup(p)
+    c.redraw(p)
+#@+node:ekr.20111104112332.3954: *4* @test ic.htmlScanner.adjust_class_ref
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<aTag>  @others
+</aTag>
+'''
+
+# Avoid probems with representation of @others in scripts.
+expected = '\n<aTag>\n@others\n</aTag>\n'
+
+result = hs.adjust_class_ref(s)
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
+#@+node:ekr.20111111074026.3972: *4* @test ic.htmlScanner.skipComment/Id/String
 import leo.core.leoImport as leoImport
 ic = c.importCommands
 hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
@@ -12084,6 +13057,213 @@ for func,s,expected in table:
     result = s[0:i]
     assert result == expected,'expected %s got %s' % (
         repr(expected),repr(result))
+#@+node:ekr.20100131180007.5393: *4* @test ic.reportMismatch
+import leo.core.leoImport as leoImport
+
+ic = c.importCommands
+scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
+scanner.root = p
+s1 = ["abc","xyz",]
+s2 = ["xyz",]
+
+scanner.reportMismatch(s1,s2,1,1)
+
+s1 = ["xyz",]
+s2 = ["abc","xyz",]
+
+scanner.reportMismatch(s1,s2,1,1)
+#@+node:ekr.20111105065243.3837: *4* @test ic.rstScanner.removeBlankLinesTokens (rst)
+# Important: at present only the rstScanner sets ignoreBlankLines == True
+import leo.core.leoImport as leoImport
+sc = leoImport.rstScanner(c.importCommands,atAuto=False)
+
+assert sc.ignoreBlankLines,'fail0'
+
+def strip(tokens):
+    '''Remove the line number item from all tokens.'''
+    return [(kind,val) for kind,val,n in tokens]
+    
+table = (
+    ('a\n\nb',          'a\nb'),
+    ('a\n \t\nb',       'a\nb'),
+    ('a\n \n\t\n\n\nb', 'a\nb'),
+    ('a\nb\n',          'a\nb\n'),
+)
+
+for s,expected in table:
+
+    tokens = sc.tokenize(s)
+    s2 = ''.join([val for (kind,val,n) in tokens])
+    assert s == s2,'fail1\nexpected:\n%s\ngot:\n%s' % (
+        repr(s),repr(s2))
+    
+    # A: Remove tokens for blank lines from tokens.
+    tokens2 = sc.removeBlankLinesTokens(tokens)
+    
+    # B: Remove blank lines first, then tokenize.
+    lines = g.splitLines(s)
+    lines2 = [z for z in lines if z.strip()]
+    s2 = ''.join(lines2)
+    tokens3 = sc.tokenize(s2)
+    
+    if 0:
+        for kind,val,n in tokens3:
+            print('%3s %7s %s' % (n,kind,repr(val)))
+    
+    # A and B should give the same result: just like abstract algebra diagrams.
+    if 0:
+        if strip(tokens2) != strip(tokens3):
+            sc.compareTokens(tokens2,tokens3,trace=True)
+    assert strip(tokens2) == strip(tokens3),'fail2\nexpected:\n%s\ngot:\n%s' % (
+        strip(tokens3),strip(tokens2))
+    
+    # C: Removing blank tokens from already-compressed tokens should have no effect.
+    tokens4 = sc.removeBlankLinesTokens(tokens3)
+    assert tokens4 == tokens3,'fail3'
+#@+node:ekr.20111104112332.3955: *4* @test ic.skip...Token (htmlScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+tails = (
+    '<whatever>',
+    '+ abc', # don't concatenate with id or whitespace.
+    '<!-- tail comment -->',
+    '"tail string"',
+)
+    
+table = (
+    (scanner.skipCommentToken,  '<!-- Test -->'),
+    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
+    # (scanner.skipNewlineToken,'\n'),
+        # xmlScanner.skipNewlineToken throws exception (on purpose).
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+)
+
+# Special test for whitespace: Converts all runs of whitespace to a single blank.
+if 0: # No longer does this.
+    s = ' \n\t\t \n'
+    i,result = scanner.skipWsToken(s+tails[0],0)
+    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+    expected = ' '
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+    
+for f,s in table:
+    for tail in tails:
+        i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+#@+node:ekr.20111104112332.3956: *4* @test ic.skip...Token (pythonScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
+    
+tails = (
+    '+ abc', # don't concatenate with id or whitespace.
+    '# tail comment',
+    '"tail string"',
+    "'tail string'",
+)
+
+table = (
+    (scanner.skipCommentToken,  '# Test'),
+    (scanner.skipIdToken,       'ab_c'),
+    (scanner.skipNewlineToken,  '\n'),
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+    (scanner.skipWsToken,       '\t '),
+)
+    
+for f,s in table:
+    for tail in tails:
+        if f.__name__ == 'skipCommentToken':
+            i,result = f(s,0)
+        else:
+            i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+#@+node:ekr.20111104114406.3833: *4* @test ic.tokenize (htmlScanner)
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<!-- a comment -->
+<html "string">
+Test.
+</html>
+'''
+
+<< define expected >>
+
+result = hs.tokenize(s)
+
+if 1:
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+else:
+    print(result)
+    
+@
+
+
+AssertionError: expected...
+[('ws', ' ', 0), ('comment', '<!-- a comment -->', 1), ('ws', ' ', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', ' ',
+ 2), ('string', '"string"', 2), ('other', '>', 2), ('ws', ' ', 2), ('id', 'Test.', 3), ('ws', ' ', 3), ('other', '<', 4)
+, ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('ws', ' ', 4)]
+got...
+[('nl', '\n', 0), ('comment', '<!-- a comment -->', 1), ('nl', '\n', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', '
+', 2), ('string', '"string"', 2), ('other', '>', 2), ('nl', '\n', 2), ('id', 'Test.', 3), ('nl', '\n', 3), ('other', '<'
+, 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('nl', '\n', 4)]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.018s
+
+FAILED (failures=1)
+
+#@+node:ekr.20111104114406.3834: *5* << define expected >>
+# expected = [
+    # ('ws', ' ', 0),
+    # ('comment', '<!-- a comment -->', 1),
+    # ('ws', ' ', 1),
+    # ('other', '<', 2), ('id', 'html', 2),
+    # ('ws', ' ',2), ('string', '"string"', 2),
+    # ('other', '>', 2),
+    # ('ws', ' ', 2),
+    # ('id', 'Test.', 3),
+    # ('ws', ' ', 3),
+    # ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
+    # ('ws', ' ', 4),
+# ]
+
+expected = [
+    ('nl', '\n', 0),
+    ('comment', '<!-- a comment -->', 1),
+    ('nl', '\n', 1),
+    ('other', '<', 2),
+    ('id', 'html', 2),
+    ('ws', ' ', 2),
+    ('string', '"string"', 2),
+    ('other', '>', 2),
+    ('nl', '\n', 2),
+    ('id', 'Test.', 3),
+    ('nl', '\n', 3),
+    ('other', '<', 4),
+    ('other', '/', 4),
+    ('id', 'html', 4),
+    ('other', '>', 4),
+    ('nl', '\n', 4),
+]
 #@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
 # This test is difficult to get right on all platforms.
@@ -12124,6 +13304,28 @@ for expected,prefix in table:
         print()
         for z in aList:
             print(z)
+#@+node:ekr.20111121224307.3934: *4* @test k.handleDefaultChar from log pane
+if g.app.isExternalUnitTest:
+    # print('external test')
+    pass
+else:
+    tabs = ('Log','Find')
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+        
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        # print('pass',tab,last_widget)
+        event = g.bunch(widget=last_widget)
+        
+        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
+        c.k.handleDefaultChar(event, stroke='a')
 #@+node:ekr.20100131171342.5605: *4* @test k.isPlainKey
 import string
 
@@ -12234,6 +13436,62 @@ except AssertionError:
     print("parents2")
     for parent in parents2: print(parent)
     raise
+#@+node:ville.20090312195309.2: *4* @@@test find_h / find_b / filter_h / filter_b
+#if this starts failing due to much refacting in unitTest.leo,
+# adjust accordingly
+
+# These seem to fail if various nodes are cloned.
+import random,fnmatch
+
+all_h = [z.copy().h for z in c.find_h('.')]
+
+assert len(all_h) > 1000,'fail 1'
+
+sample = random.sample(all_h, 20)    
+
+# Test that all nodes are found at least once.
+for h in sample:
+    pat = fnmatch.translate(h)
+    pl = c.find_h(pat)
+    assert len(pl) > 0 and len(pl) < len(all_h),'fail 2'
+
+tests = c.find_h('@test(.*)')
+
+bm = tests.filter_b('(.*)all_positions')
+forloops = 0
+for node in bm:   
+    # many of these are for loops
+    for m in node.matchiter:
+        if 'for' in m.group(1):
+            forloops += 1
+
+assert forloops > 10,'fail for'
+
+# all of these should also be found by find_b
+all_bm = c.find_b('(.*)all_positions')
+assert len(all_bm) >= len(bm),'fail len'
+
+assert set(el.h for el in bm).issubset(set(el.h for el in all_bm)),'fail set'
+
+itertest = c.find_h('@test p.iters and v.iters')
+assert len(itertest) >= 1,'fail 3'
+tn = itertest[0]
+assert tn.h == '@test p.iters and v.iters','fail h'
+assert len(itertest.filter_b('notfound, really')) == 0,'fail 4'
+assert len(itertest.filter_b('leoNodes')) == 1,'fail 5'
+chi = itertest.children().filter_h('child?')
+assert chi[0].h == 'child1','fail 6'
+assert chi[1].h == 'child2','fail 7'
+# twice, in clones
+chi_b = chi.children().filter_h('a').children().filter_h('b')
+
+if 0:
+    assert len(chi_b) == 2,'fail len 2: %s: %s' % (chi_b,len(chi_b))
+    assert chi_b[0].h == chi_b[1].h == 'b'
+    chi_e = chi.children().filter_h('d').children().filter_h('e')
+    assert len(chi_e) == 1,'fail 8'
+    assert chi_e[0].h == 'e','fail 9'
+
 #@+node:ekr.20040712101754.175: *4* @@test p.t == p.v
 # p.__getattr__ must be enabled for this test to work.
 
@@ -12457,62 +13715,6 @@ def moreBody (self):
                 s = s[:i] + '\\' + s[i:]
         result.append(s)
     return string.join(result,'\n')
-#@+node:ville.20090312195309.2: *4* @@@test find_h / find_b / filter_h / filter_b
-#if this starts failing due to much refacting in unitTest.leo,
-# adjust accordingly
-
-# These seem to fail if various nodes are cloned.
-import random,fnmatch
-
-all_h = [z.copy().h for z in c.find_h('.')]
-
-assert len(all_h) > 1000,'fail 1'
-
-sample = random.sample(all_h, 20)    
-
-# Test that all nodes are found at least once.
-for h in sample:
-    pat = fnmatch.translate(h)
-    pl = c.find_h(pat)
-    assert len(pl) > 0 and len(pl) < len(all_h),'fail 2'
-
-tests = c.find_h('@test(.*)')
-
-bm = tests.filter_b('(.*)all_positions')
-forloops = 0
-for node in bm:   
-    # many of these are for loops
-    for m in node.matchiter:
-        if 'for' in m.group(1):
-            forloops += 1
-
-assert forloops > 10,'fail for'
-
-# all of these should also be found by find_b
-all_bm = c.find_b('(.*)all_positions')
-assert len(all_bm) >= len(bm),'fail len'
-
-assert set(el.h for el in bm).issubset(set(el.h for el in all_bm)),'fail set'
-
-itertest = c.find_h('@test p.iters and v.iters')
-assert len(itertest) >= 1,'fail 3'
-tn = itertest[0]
-assert tn.h == '@test p.iters and v.iters','fail h'
-assert len(itertest.filter_b('notfound, really')) == 0,'fail 4'
-assert len(itertest.filter_b('leoNodes')) == 1,'fail 5'
-chi = itertest.children().filter_h('child?')
-assert chi[0].h == 'child1','fail 6'
-assert chi[1].h == 'child2','fail 7'
-# twice, in clones
-chi_b = chi.children().filter_h('a').children().filter_h('b')
-
-if 0:
-    assert len(chi_b) == 2,'fail len 2: %s: %s' % (chi_b,len(chi_b))
-    assert chi_b[0].h == chi_b[1].h == 'b'
-    chi_e = chi.children().filter_h('d').children().filter_h('e')
-    assert len(chi_e) == 1,'fail 8'
-    assert chi_e[0].h == 'e','fail 9'
-
 #@+node:ekr.20090130133404.2: *4* @test leoNodes properties
 v = p.v
 b = p.b
@@ -12760,6 +13962,28 @@ if 0: # subtree of root node:
 if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): print(v)
     for t in child.tnodes_iter(): print(t)
+#@+node:ekr.20111210104652.3958: *4* @test p.moveToFirst/LastChild
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+child = p.firstChild()
+assert child
+setup(child)
+p2 = child.insertAfter()
+p2.h = "test"
+try:
+    assert c.positionExists(p2),p2
+    p2.moveToFirstChildOf(child)
+    assert c.positionExists(p2),p2
+    p2.moveToLastChildOf(child)
+    assert c.positionExists(p2),p2
+finally:
+    if 1:
+        setup(child)
+    c.redraw(p)
+#@+node:ekr.20111210104652.3959: *5* child
+#@+node:ekr.20120212130242.4755: *5* test
 #@+node:ekr.20040802071519: *4* @test p.setBodyString
 # Tests that c.setBodyString works immediately.
 h = p.h
@@ -13416,7 +14640,320 @@ for fn,expected in table:
     assert result2==result
 #@+node:ekr.20091219122958.5066: *3* leoRst
 # Warning: these depend on the .css files in leo\test\unittest.
-#@+node:ekr.20091219121039.5065: *4* @test rst3 handleMissingStyleSheetArgs
+#@+node:ekr.20100813100841.5825: *4* @@@test show_doc_parts_in_rst_mode
+# Applies to options doc parts as well.
+#@+node:ekr.20100813100841.5847: *4* @ignore
+#@+node:ekr.20100812213445.5824: *5* @test code_mode: rst3 show_doc_parts_as_paragraphs
+exec(g.findTestScript(c,'@common leoRst test code'))
+
+rst3Test(c,p)
+#@+node:ekr.20100812213445.5825: *6* source
+@language rest
+#@+node:ekr.20100812213445.5826: *7* @rst test.html
+@ @rst-options
+show_doc_parts_as_paragraphs=True
+@c
+#####
+Title
+#####
+
+This is test.html
+#@+node:ekr.20100812213445.5827: *8* section
+@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+#@+node:ekr.20100812213445.5828: *6* expected
+@language html
+#@+node:ekr.20100813100841.5843: *7* rst
+.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+@c
+
+This is the body of the section.
+
+#@+node:ekr.20100813100841.5844: *7*  html
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<title>Title</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document" id="title">
+<h1 class="title">Title</h1>
+
+<!-- rst3: filename: test.html -->
+<p>This is test.html</p>
+<div class="section" id="section">
+<h1>section</h1>
+<p>&#64; This is a doc part
+it has two lines.
+&#64;c</p>
+<p>This is the body of the section.</p>
+</div>
+</div>
+</body>
+</html>
+#@+node:ekr.20100813100841.5827: *5* @test code_mode: show_leo_directives
+#@+node:ekr.20100813100841.5828: *5* @test code_mode: show_markup_doc_parts
+#@+node:ekr.20100813100841.5829: *5* @test code_mode: show_options_doc_parts
+#@+node:ekr.20091219121039.5065: *4* @test c.rstCommands.handleMissingStyleSheetArgs
 x = c.rstCommands
 
 result = x.handleMissingStyleSheetArgs(s=None)
@@ -13436,7 +14973,611 @@ for s in (
 
     result = x.handleMissingStyleSheetArgs(s=s)
     assert result == expected,'expected %s\ngot %s' % (expected,result)
-#@+node:ekr.20100812172232.5801: *4* @test rst3 defaults
+#@+node:ekr.20111103213154.3823: *4* @test c.rstCommands.writeToDocutils: pdf
+@first # -*- coding: utf-8 -*-
+@encoding utf-8
+
+'''Test the interface between docutils and leo_pdf.py.
+No file is written.
+'''
+
+try:
+    import docutils
+    import reportlab.platypus
+except ImportError:
+    # print('skipping test')
+    docutils = None
+
+if docutils:
+    path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+    module = g.importFromPath(name = 'leo_pdf.py',
+        path=path,
+        pluginName = 'leo_pdf',
+        verbose = False)
+
+    assert module
+    s = '''This is a test.'''
+    result = c.rstCommands.writeToDocutils(s,'.pdf')
+    # print(result)
+    assert result,result
+#@+node:ekr.20100131180007.5459: *4* @test rst.initAtAutoWrite
+rst = c.rstCommands
+rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
+
+# Ensure we are actually testing the default logic.
+d = p.v.u.get('rst-import',{})
+underlines = d.get('underline_characters')
+assert underlines is None,'fail 1: %s' % repr(underlines)
+assert d == {},'fail 2: %s' % repr(d)
+# Now test the logic.
+assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
+assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
+assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
+    repr(rst.atAutoWriteUnderlines))
+#@+node:ekr.20100813100841.5850: *4* @test rst3Test @no-head
+s = g.findTestScript(c,'@common leoRst test code',warn=False)
+if s:
+    exec(s)
+    rst3Test(c,p)
+#@+node:ekr.20100813100841.5854: *5* source
+@language rest
+#@+node:ekr.20100813100841.5855: *6* @rst test.html
+@language rest
+
+#####
+Title
+#####
+
+This is test.html
+#@+node:ekr.20100813100841.5856: *7* @rst-no-head section
+This is the body of the section.
+#@+node:ekr.20100813100841.5857: *5* expected
+#@+node:ekr.20100813100841.5858: *6* rst
+.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+This is the body of the section.
+
+#@+node:ekr.20100813100841.5859: *6* html
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<title>Title</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document" id="title">
+<h1 class="title">Title</h1>
+
+<!-- rst3: filename: test.html -->
+<p>This is test.html</p>
+<p>This is the body of the section.</p>
+</div>
+</body>
+</html>
+#@+node:ekr.20100827182529.6843: *5* got
+#@+node:ekr.20100827182529.6844: *6* rst
+.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+This is the body of the section.
+
+#@+node:ekr.20100827182529.6845: *6* html
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<title>Title</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document" id="title">
+<h1 class="title">Title</h1>
+
+<!-- rst3: filename: test.html -->
+<p>This is test.html</p>
+<p>This is the body of the section.</p>
+</div>
+</body>
+</html>
+#@+node:ekr.20100812172232.5801: *4* @test rst3Test default
 s = g.findTestScript(c,'@common leoRst test code',warn=False)
 if s:
     exec(s)
@@ -14023,570 +16164,7 @@ This is the body of the section.</p>
 </div>
 </body>
 </html>
-#@+node:ekr.20100813100841.5850: *4* @test rst3 @no-head
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
-#@+node:ekr.20100813100841.5854: *5* source
-@language rest
-#@+node:ekr.20100813100841.5855: *6* @rst test.html
-@language rest
-
-#####
-Title
-#####
-
-This is test.html
-#@+node:ekr.20100813100841.5856: *7* @rst-no-head section
-This is the body of the section.
-#@+node:ekr.20100813100841.5857: *5* expected
-#@+node:ekr.20100813100841.5858: *6* rst
-.. rst3: filename: test.html
-
-
-#####
-Title
-#####
-
-This is test.html
-
-This is the body of the section.
-
-#@+node:ekr.20100813100841.5859: *6* html
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
-<title>Title</title>
-<style type="text/css">
-
-/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
-:Author: David Goodger
-:Contact: goodger@users.sourceforge.net
-:date: $Date: 2006/10/19 13:23:15 $
-:version: $Revision: 1.2 $
-:copyright: This stylesheet has been placed in the public domain.
-
-Default cascading style sheet for the HTML output of Docutils.
-*/
-
-/* EKR 10/19/06 */
-/* some browsers require imported rules to precede all rulesets */
-@import url(leo_rst.css);
-@import url(silver_city.css);
-
-.first {
-  margin-top: 0 }
-
-.last {
-  margin-bottom: 0 }
-
-a.toc-backref {
-  text-decoration: none ;
-  color: black }
-
-dd {
-  margin-bottom: 0.5em }
-
-div.abstract {
-  margin: 2em 5em }
-
-div.abstract p.topic-title {
-  font-weight: bold ;
-  text-align: center }
-
-div.attention, div.caution, div.danger, div.error, div.hint,
-div.important, div.note, div.tip, div.warning, div.admonition {
-  margin: 2em ;
-  border: medium outset ;
-  padding: 1em }
-
-div.attention p.admonition-title, div.caution p.admonition-title,
-div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title {
-  color: red ;
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.hint p.admonition-title, div.important p.admonition-title,
-div.note p.admonition-title, div.tip p.admonition-title,
-div.admonition p.admonition-title {
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.dedication {
-  margin: 2em 5em ;
-  text-align: center ;
-  font-style: italic }
-
-div.dedication p.topic-title {
-  font-weight: bold ;
-  font-style: normal }
-
-div.figure {
-  margin-left: 2em }
-
-div.footer, div.header {
-  font-size: smaller }
-
-div.sidebar {
-  margin-left: 1em ;
-  border: medium outset ;
-  padding: 0em 1em ;
-  background-color: #ffffee ;
-  width: 40% ;
-  float: right ;
-  clear: right }
-
-div.sidebar p.rubric {
-  font-family: sans-serif ;
-  font-size: medium }
-
-div.system-messages {
-  margin: 5em }
-
-div.system-messages h1 {
-  color: red }
-
-div.system-message {
-  border: medium outset ;
-  padding: 1em }
-
-div.system-message p.system-message-title {
-  color: red ;
-  font-weight: bold }
-
-div.topic {
-  margin: 2em }
-
-h1.title {
-  text-align: center }
-
-h2.subtitle {
-  text-align: center }
-
-ol.simple, ul.simple {
-  margin-bottom: 1em }
-
-ol.arabic {
-  list-style: decimal }
-
-ol.loweralpha {
-  list-style: lower-alpha }
-
-ol.upperalpha {
-  list-style: upper-alpha }
-
-ol.lowerroman {
-  list-style: lower-roman }
-
-ol.upperroman {
-  list-style: upper-roman }
-
-p.attribution {
-  text-align: right ;
-  margin-left: 50% }
-
-p.caption {
-  font-style: italic }
-
-p.credits {
-  font-style: italic ;
-  font-size: smaller }
-
-p.label {
-  white-space: nowrap }
-
-p.rubric {
-  font-weight: bold ;
-  font-size: larger ;
-  color: maroon ;
-  text-align: center }
-
-p.sidebar-title {
-  font-family: sans-serif ;
-  font-weight: bold ;
-  font-size: larger }
-
-p.sidebar-subtitle {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-p.topic-title {
-  font-weight: bold }
-
-pre.address {
-  margin-bottom: 0 ;
-  margin-top: 0 ;
-  font-family: serif ;
-  font-size: 100% }
-
-pre.line-block {
-  font-family: serif ;
-  font-size: 100% }
-
-pre.literal-block, pre.doctest-block {
-  margin-left: 2em ;
-  margin-right: 2em ;}
-  /*background-color: #eeeeee }*/
-  /*for some reason i can't overide in an import*/
-
-span.classifier {
-  font-family: sans-serif ;
-  font-style: oblique }
-
-span.classifier-delimiter {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-span.interpreted {
-  font-family: sans-serif }
-
-span.option {
-  white-space: nowrap }
-
-span.option-argument {
-  font-style: italic }
-
-span.pre {
-  white-space: pre }
-
-span.problematic {
-  color: red }
-
-table {
-  margin-top: 0.5em ;
-  margin-bottom: 0.5em }
-
-table.citation {
-  border-left: solid thin gray ;
-  padding-left: 0.5ex }
-
-table.docinfo {
-  margin: 2em 4em }
-
-table.footnote {
-  border-left: solid thin black ;
-  padding-left: 0.5ex }
-
-td, th {
-  padding-left: 0.5em ;
-  padding-right: 0.5em ;
-  vertical-align: top }
-
-th.docinfo-name, th.field-name {
-  font-weight: bold ;
-  text-align: left ;
-  white-space: nowrap }
-
-h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
-  font-size: 100% }
-
-/*for some reason, the following isn't being overridden by the imports
-at the end of this style sheet so I've commented it out*/
-/*tt {
-  background-color: #eeeeee }*/
-
-ul.auto-toc {
-  list-style-type: none }
-
-hr { /* EKR */
-  width: 100%;
-  height: 1pt;
-  color: gray;
-}
-
-
-
-</style>
-</head>
-<body>
-<div class="document" id="title">
-<h1 class="title">Title</h1>
-
-<!-- rst3: filename: test.html -->
-<p>This is test.html</p>
-<p>This is the body of the section.</p>
-</div>
-</body>
-</html>
-#@+node:ekr.20100827182529.6843: *5* got
-#@+node:ekr.20100827182529.6844: *6* rst
-.. rst3: filename: test.html
-
-
-#####
-Title
-#####
-
-This is test.html
-
-This is the body of the section.
-
-#@+node:ekr.20100827182529.6845: *6* html
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
-<title>Title</title>
-<style type="text/css">
-
-/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
-:Author: David Goodger
-:Contact: goodger@users.sourceforge.net
-:date: $Date: 2006/10/19 13:23:15 $
-:version: $Revision: 1.2 $
-:copyright: This stylesheet has been placed in the public domain.
-
-Default cascading style sheet for the HTML output of Docutils.
-*/
-
-/* EKR 10/19/06 */
-/* some browsers require imported rules to precede all rulesets */
-@import url(leo_rst.css);
-@import url(silver_city.css);
-
-.first {
-  margin-top: 0 }
-
-.last {
-  margin-bottom: 0 }
-
-a.toc-backref {
-  text-decoration: none ;
-  color: black }
-
-dd {
-  margin-bottom: 0.5em }
-
-div.abstract {
-  margin: 2em 5em }
-
-div.abstract p.topic-title {
-  font-weight: bold ;
-  text-align: center }
-
-div.attention, div.caution, div.danger, div.error, div.hint,
-div.important, div.note, div.tip, div.warning, div.admonition {
-  margin: 2em ;
-  border: medium outset ;
-  padding: 1em }
-
-div.attention p.admonition-title, div.caution p.admonition-title,
-div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title {
-  color: red ;
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.hint p.admonition-title, div.important p.admonition-title,
-div.note p.admonition-title, div.tip p.admonition-title,
-div.admonition p.admonition-title {
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.dedication {
-  margin: 2em 5em ;
-  text-align: center ;
-  font-style: italic }
-
-div.dedication p.topic-title {
-  font-weight: bold ;
-  font-style: normal }
-
-div.figure {
-  margin-left: 2em }
-
-div.footer, div.header {
-  font-size: smaller }
-
-div.sidebar {
-  margin-left: 1em ;
-  border: medium outset ;
-  padding: 0em 1em ;
-  background-color: #ffffee ;
-  width: 40% ;
-  float: right ;
-  clear: right }
-
-div.sidebar p.rubric {
-  font-family: sans-serif ;
-  font-size: medium }
-
-div.system-messages {
-  margin: 5em }
-
-div.system-messages h1 {
-  color: red }
-
-div.system-message {
-  border: medium outset ;
-  padding: 1em }
-
-div.system-message p.system-message-title {
-  color: red ;
-  font-weight: bold }
-
-div.topic {
-  margin: 2em }
-
-h1.title {
-  text-align: center }
-
-h2.subtitle {
-  text-align: center }
-
-ol.simple, ul.simple {
-  margin-bottom: 1em }
-
-ol.arabic {
-  list-style: decimal }
-
-ol.loweralpha {
-  list-style: lower-alpha }
-
-ol.upperalpha {
-  list-style: upper-alpha }
-
-ol.lowerroman {
-  list-style: lower-roman }
-
-ol.upperroman {
-  list-style: upper-roman }
-
-p.attribution {
-  text-align: right ;
-  margin-left: 50% }
-
-p.caption {
-  font-style: italic }
-
-p.credits {
-  font-style: italic ;
-  font-size: smaller }
-
-p.label {
-  white-space: nowrap }
-
-p.rubric {
-  font-weight: bold ;
-  font-size: larger ;
-  color: maroon ;
-  text-align: center }
-
-p.sidebar-title {
-  font-family: sans-serif ;
-  font-weight: bold ;
-  font-size: larger }
-
-p.sidebar-subtitle {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-p.topic-title {
-  font-weight: bold }
-
-pre.address {
-  margin-bottom: 0 ;
-  margin-top: 0 ;
-  font-family: serif ;
-  font-size: 100% }
-
-pre.line-block {
-  font-family: serif ;
-  font-size: 100% }
-
-pre.literal-block, pre.doctest-block {
-  margin-left: 2em ;
-  margin-right: 2em ;}
-  /*background-color: #eeeeee }*/
-  /*for some reason i can't overide in an import*/
-
-span.classifier {
-  font-family: sans-serif ;
-  font-style: oblique }
-
-span.classifier-delimiter {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-span.interpreted {
-  font-family: sans-serif }
-
-span.option {
-  white-space: nowrap }
-
-span.option-argument {
-  font-style: italic }
-
-span.pre {
-  white-space: pre }
-
-span.problematic {
-  color: red }
-
-table {
-  margin-top: 0.5em ;
-  margin-bottom: 0.5em }
-
-table.citation {
-  border-left: solid thin gray ;
-  padding-left: 0.5ex }
-
-table.docinfo {
-  margin: 2em 4em }
-
-table.footnote {
-  border-left: solid thin black ;
-  padding-left: 0.5ex }
-
-td, th {
-  padding-left: 0.5em ;
-  padding-right: 0.5em ;
-  vertical-align: top }
-
-th.docinfo-name, th.field-name {
-  font-weight: bold ;
-  text-align: left ;
-  white-space: nowrap }
-
-h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
-  font-size: 100% }
-
-/*for some reason, the following isn't being overridden by the imports
-at the end of this style sheet so I've commented it out*/
-/*tt {
-  background-color: #eeeeee }*/
-
-ul.auto-toc {
-  list-style-type: none }
-
-hr { /* EKR */
-  width: 100%;
-  height: 1pt;
-  color: gray;
-}
-
-
-
-</style>
-</head>
-<body>
-<div class="document" id="title">
-<h1 class="title">Title</h1>
-
-<!-- rst3: filename: test.html -->
-<p>This is test.html</p>
-<p>This is the body of the section.</p>
-</div>
-</body>
-</html>
-#@+node:ekr.20100813100841.5824: *4* @test doc_only_mode (set in headline)
+#@+node:ekr.20100813100841.5824: *4* @test rst3Test doc_only_mode (set in headline)
 # Skip test when running test dynamically.
 s = g.findTestScript(c,'@common leoRst test code',warn=False)
 if s:
@@ -15170,7 +16748,7 @@ it has two lines.</p>
 </div>
 </body>
 </html>
-#@+node:ekr.20100813124317.5879: *4* @test doc_only_mode (set in options doc part)
+#@+node:ekr.20100813124317.5879: *4* @test rst3Test doc_only_mode (set in options doc part)
 # Skip test when running test dynamically.
 s = g.findTestScript(c,'@common leoRst test code',warn=False)
 if s:
@@ -15752,9 +17330,7 @@ it has two lines.</p>
 </div>
 </body>
 </html>
-#@+node:ekr.20100813100841.5825: *4* @test show_doc_parts_in_rst_mode
-# Applies to options doc parts as well.
-#@+node:ekr.20100827140832.5913: *4* @test show_leo_directives=False
+#@+node:ekr.20100827140832.5913: *4* @test rst3Test show_leo_directives=False
 # Skip test when running test dynamically.
 s = g.findTestScript(c,'@common leoRst test code',warn=False)
 if s:
@@ -16347,331 +17923,6 @@ This is the body of the section.</p>
 </div>
 </body>
 </html>
-#@+node:ekr.20100813100841.5847: *4* @ignore
-#@+node:ekr.20100812213445.5824: *5* @test code_mode: rst3 show_doc_parts_as_paragraphs
-exec(g.findTestScript(c,'@common leoRst test code'))
-
-rst3Test(c,p)
-#@+node:ekr.20100812213445.5825: *6* source
-@language rest
-#@+node:ekr.20100812213445.5826: *7* @rst test.html
-@ @rst-options
-show_doc_parts_as_paragraphs=True
-@c
-#####
-Title
-#####
-
-This is test.html
-#@+node:ekr.20100812213445.5827: *8* section
-@ This is a doc part
-it has two lines.
-@c
-This is the body of the section.
-#@+node:ekr.20100812213445.5828: *6* expected
-@language html
-#@+node:ekr.20100813100841.5843: *7* rst
-.. rst3: filename: test.html
-
-
-#####
-Title
-#####
-
-This is test.html
-
-section
-+++++++
-
-@ This is a doc part
-it has two lines.
-@c
-
-This is the body of the section.
-
-#@+node:ekr.20100813100841.5844: *7*  html
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
-<title>Title</title>
-<style type="text/css">
-
-/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
-:Author: David Goodger
-:Contact: goodger@users.sourceforge.net
-:date: $Date: 2006/10/19 13:23:15 $
-:version: $Revision: 1.2 $
-:copyright: This stylesheet has been placed in the public domain.
-
-Default cascading style sheet for the HTML output of Docutils.
-*/
-
-/* EKR 10/19/06 */
-/* some browsers require imported rules to precede all rulesets */
-@import url(leo_rst.css);
-@import url(silver_city.css);
-
-.first {
-  margin-top: 0 }
-
-.last {
-  margin-bottom: 0 }
-
-a.toc-backref {
-  text-decoration: none ;
-  color: black }
-
-dd {
-  margin-bottom: 0.5em }
-
-div.abstract {
-  margin: 2em 5em }
-
-div.abstract p.topic-title {
-  font-weight: bold ;
-  text-align: center }
-
-div.attention, div.caution, div.danger, div.error, div.hint,
-div.important, div.note, div.tip, div.warning, div.admonition {
-  margin: 2em ;
-  border: medium outset ;
-  padding: 1em }
-
-div.attention p.admonition-title, div.caution p.admonition-title,
-div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title {
-  color: red ;
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.hint p.admonition-title, div.important p.admonition-title,
-div.note p.admonition-title, div.tip p.admonition-title,
-div.admonition p.admonition-title {
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.dedication {
-  margin: 2em 5em ;
-  text-align: center ;
-  font-style: italic }
-
-div.dedication p.topic-title {
-  font-weight: bold ;
-  font-style: normal }
-
-div.figure {
-  margin-left: 2em }
-
-div.footer, div.header {
-  font-size: smaller }
-
-div.sidebar {
-  margin-left: 1em ;
-  border: medium outset ;
-  padding: 0em 1em ;
-  background-color: #ffffee ;
-  width: 40% ;
-  float: right ;
-  clear: right }
-
-div.sidebar p.rubric {
-  font-family: sans-serif ;
-  font-size: medium }
-
-div.system-messages {
-  margin: 5em }
-
-div.system-messages h1 {
-  color: red }
-
-div.system-message {
-  border: medium outset ;
-  padding: 1em }
-
-div.system-message p.system-message-title {
-  color: red ;
-  font-weight: bold }
-
-div.topic {
-  margin: 2em }
-
-h1.title {
-  text-align: center }
-
-h2.subtitle {
-  text-align: center }
-
-ol.simple, ul.simple {
-  margin-bottom: 1em }
-
-ol.arabic {
-  list-style: decimal }
-
-ol.loweralpha {
-  list-style: lower-alpha }
-
-ol.upperalpha {
-  list-style: upper-alpha }
-
-ol.lowerroman {
-  list-style: lower-roman }
-
-ol.upperroman {
-  list-style: upper-roman }
-
-p.attribution {
-  text-align: right ;
-  margin-left: 50% }
-
-p.caption {
-  font-style: italic }
-
-p.credits {
-  font-style: italic ;
-  font-size: smaller }
-
-p.label {
-  white-space: nowrap }
-
-p.rubric {
-  font-weight: bold ;
-  font-size: larger ;
-  color: maroon ;
-  text-align: center }
-
-p.sidebar-title {
-  font-family: sans-serif ;
-  font-weight: bold ;
-  font-size: larger }
-
-p.sidebar-subtitle {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-p.topic-title {
-  font-weight: bold }
-
-pre.address {
-  margin-bottom: 0 ;
-  margin-top: 0 ;
-  font-family: serif ;
-  font-size: 100% }
-
-pre.line-block {
-  font-family: serif ;
-  font-size: 100% }
-
-pre.literal-block, pre.doctest-block {
-  margin-left: 2em ;
-  margin-right: 2em ;}
-  /*background-color: #eeeeee }*/
-  /*for some reason i can't overide in an import*/
-
-span.classifier {
-  font-family: sans-serif ;
-  font-style: oblique }
-
-span.classifier-delimiter {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-span.interpreted {
-  font-family: sans-serif }
-
-span.option {
-  white-space: nowrap }
-
-span.option-argument {
-  font-style: italic }
-
-span.pre {
-  white-space: pre }
-
-span.problematic {
-  color: red }
-
-table {
-  margin-top: 0.5em ;
-  margin-bottom: 0.5em }
-
-table.citation {
-  border-left: solid thin gray ;
-  padding-left: 0.5ex }
-
-table.docinfo {
-  margin: 2em 4em }
-
-table.footnote {
-  border-left: solid thin black ;
-  padding-left: 0.5ex }
-
-td, th {
-  padding-left: 0.5em ;
-  padding-right: 0.5em ;
-  vertical-align: top }
-
-th.docinfo-name, th.field-name {
-  font-weight: bold ;
-  text-align: left ;
-  white-space: nowrap }
-
-h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
-  font-size: 100% }
-
-/*for some reason, the following isn't being overridden by the imports
-at the end of this style sheet so I've commented it out*/
-/*tt {
-  background-color: #eeeeee }*/
-
-ul.auto-toc {
-  list-style-type: none }
-
-hr { /* EKR */
-  width: 100%;
-  height: 1pt;
-  color: gray;
-}
-
-
-
-</style>
-</head>
-<body>
-<div class="document" id="title">
-<h1 class="title">Title</h1>
-
-<!-- rst3: filename: test.html -->
-<p>This is test.html</p>
-<div class="section" id="section">
-<h1>section</h1>
-<p>&#64; This is a doc part
-it has two lines.
-&#64;c</p>
-<p>This is the body of the section.</p>
-</div>
-</div>
-</body>
-</html>
-#@+node:ekr.20100813100841.5827: *5* @test code_mode: show_leo_directives
-#@+node:ekr.20100813100841.5828: *5* @test code_mode: show_markup_doc_parts
-#@+node:ekr.20100813100841.5829: *5* @test code_mode: show_options_doc_parts
-#@+node:ekr.20100131180007.5459: *4* @test rst.initAtAutoWrite
-rst = c.rstCommands
-rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
-
-# Ensure we are actually testing the default logic.
-d = p.v.u.get('rst-import',{})
-underlines = d.get('underline_characters')
-assert underlines is None,'fail 1: %s' % repr(underlines)
-assert d == {},'fail 2: %s' % repr(d)
-# Now test the logic.
-assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
-assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
-assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
-    repr(rst.atAutoWriteUnderlines))
 #@+node:ekr.20090529115704.4396: *3* leoShadow
 #@+node:ekr.20090529115704.4560: *4* @@test (minitest) x.show_error
 x = c.shadowController
@@ -17440,15 +18691,6 @@ assert x.errors == n+1
 assert x.last_error.startswith('can not delete xyzzy')
 # print(x.last_error)
 #@+node:ekr.20100131171342.5612: *3* leoTest
-#@+node:ekr.20100131171342.5613: *4* @test unit testing with embedded class
-def sendEmail(self):
-    pass # g.trace('self2',self)
-
-class test:
-    pass
-
-X = test()
-sendEmail(X)
 #@+node:ekr.20111102122424.3975: *4* @test all unit tests have access to sources
 if c.shortFileName() == 'dynamicUnitTest.leo':
     
@@ -17458,6 +18700,33 @@ if c.shortFileName() == 'dynamicUnitTest.leo':
 else:
     setting = "c.config.getBool('write_script_file')"
     assert c.write_script_file is True,'fail2: check %s' % (setting)
+#@+node:ekr.20111105221757.3833: *4* @test TM.findAllUnitTestNodes
+p1 = p.copy()
+
+def found(p,result):
+    for p2 in result:
+        if p == p2: return True
+    else: return False
+
+table = (('all',True,False),('marked',False,True))
+
+try:
+    p.setMarked()
+    for kind,all,marked in table:
+        result = c.testManager.findAllUnitTestNodes(all,marked)
+        assert found(p,result),kind
+    assert p == p1
+finally:
+    p1.clearMarked()
+#@+node:ekr.20100131171342.5613: *4* @test unit testing with embedded class
+def sendEmail(self):
+    pass # g.trace('self2',self)
+
+class test:
+    pass
+
+X = test()
+sendEmail(X)
 #@+node:ekr.20071113193729: *3* leoUndo
 @
 
@@ -18216,1310 +19485,6 @@ if p:
 
 print('\nEnd of plugins unit tests')
 #@+node:ekr.20111103213154.3822: ** Recent unit tests
-#@+node:ekr.20111108170253.3968: *3* mini-test: unicode stuff
-@first # -*- coding: utf-8 -*-
-
-table = (
-    'test',
-    'Ä 궯 奠',
-    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
-)
-
-print('*'*20)
-print('isPython3: %s' % g.isPython3)
-
-for s in table:
-    if g.isPython3:
-        s = s.encode('ascii','replace') # create bytes.
-    g.es(repr(s))
-    g.es(s)
-    g.pr ('g.pr(s)       : %s' % s)
-    g.pr ('g.pr(repr(s)) : %s' % repr(s))
-    print('print(s)      : %s' % s)
-    print('print(repr(s)): %s' % s)
-#@+node:ekr.20111104171708.3843: *3* @test CPrettyPrinter
-cpp = c.CPrettyPrinter(c)
-fn = 'c tokenize test'
-p2 = g.findNodeInTree(c,p,fn)
-assert p2,'not found: %s' % (fn)
-
-if 1: # test of indent.
-    # import os ; os.system('cls')
-    cpp.indent(p2)
-
-if 0: # test of tokenize.
-    aList = cpp.tokenize(p2.b)
-    assert(p2.b == ''.join(aList))
-    if 0:
-        import os ; os.system('cls')
-        print('*' * 40)
-        # print(''.join(aList))
-        for z in aList:
-            print(repr(z))
-#@+node:ekr.20111104171708.3844: *4* c tokenize test
-@language c
-
-static exit_values_ty indent_main_loop(void)
-{
-    codes_ty         hd_type         = code_eof;
-    char           * t_ptr           = NULL;
-    codes_ty         type_code       = start_token;
-    exit_values_ty   file_exit_value = total_success;
-    int              dec_ind         = 0; /* current indentation for declarations */
-
-    BOOLEAN          scase           = false; /* true when we've just see a "case";
-                                               * determines what to do with the
-                                               * following colon */
-    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
-                                               * a newline was passed over */
-    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
-                                               * while(...), etc. */
-    BOOLEAN          force_nl        = false;
-
-    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
-     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
-     * set to 2 in the middle of the main token reading loop and is decremented
-     * at the beginning of the loop, so it will reach zero when the second token
-     * after the ')' is read.
-     */
-
-    BOOLEAN          last_token_ends_sp = false;
-
-    BOOLEAN          last_else = false; /* true if last keyword was an else */
-
-    for (;;)
-    {
-        /* this is the main loop.  it will go until
-         * we reach eof */
-
-        BOOLEAN is_procname_definition;
-        bb_code_ty can_break;
-
-        if (type_code != newline)
-        {
-            can_break = parser_state_tos->can_break;
-        }
-
-        parser_state_tos->last_saw_nl = false;
-        parser_state_tos->can_break = bb_none;
-
-        type_code = lexi ();    /* lexi reads one token.  "token" points to
-                                 * the actual characters. lexi returns a code
-                                 * indicating the type of token */
-
-        /* If the last time around we output an identifier or
-         * a paren, then consider breaking the line here if it's
-         * too long.
-         *
-         * A similar check is performed at the end of the loop, after
-         * we've put the token on the line. */
-
-        if ((settings.max_col > 0) &&
-            (buf_break != NULL) &&
-            ( ( (parser_state_tos->last_token == ident) &&
-                (type_code != comma) &&
-                (type_code != semicolon) &&
-                (type_code != newline) &&
-                (type_code != form_feed) &&
-                (type_code != rparen) &&
-                (type_code != struct_delim)) ||
-              ( (parser_state_tos->last_token == rparen) &&
-                (type_code != comma) &&
-                (type_code != rparen) ) ) &&
-            (output_line_length () > settings.max_col))
-        {
-            break_line = 1;
-        }
-
-        if (last_token_ends_sp > 0)
-        {
-            last_token_ends_sp--;
-        }
-
-        is_procname_definition =
-                (((parser_state_tos->procname[0] != '\0') &&
-                  parser_state_tos->in_parameter_declaration) ||
-                 (parser_state_tos->classname[0] != '\0'));
-
-        /* The following code moves everything following an if (), while (),
-         * else, etc. up to the start of the following stmt to a buffer. This
-         * allows proper handling of both kinds of brace placement.
-         */
-
-        flushed_nl = false;
-
-        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
-        {
-            /* Hit EOF unexpectedly in comment. */
-            return indent_punt;
-        }
-        
-        if (type_code == code_eof)
-        {
-            /* we got eof */
-            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
-            {
-                dump_line(true, &paren_target);
-            }
-
-            if (parser_state_tos->tos > 1)      /* check for balanced braces */
-            {
-                ERROR (_("Unexpected end of file"), 0, 0);
-                file_exit_value = indent_error;
-            }
-
-            if (settings.verbose)
-            {
-                printf (_("There were %d non-blank output lines and %d comments\n"),
-                        (int) out_lines, (int) com_lines);
-                if (com_lines > 0 && code_lines > 0)
-                {
-                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
-                            (1.0 * com_lines) / code_lines);
-                }
-            }
-            flush_output ();
-
-            return file_exit_value;                                              /* RETURN */
-        }
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            if (force_nl &&
-                (type_code != semicolon) &&
-                ( (type_code != lbrace) ||
-                  (!parser_state_tos->in_decl && !settings.btype_2) ||
-                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
-                  (parser_state_tos->last_token == rbrace)))
-            {
-                if (settings.verbose && !flushed_nl)
-                {
-                    WARNING (_("Line broken 2"), 0, 0);
-                }
-
-                flushed_nl = false;
-                dump_line(true, &paren_target);
-                parser_state_tos->want_blank = false;
-                force_nl = false;
-            }
-
-            parser_state_tos->in_stmt = true;   /* turn on flag which causes
-                                                 * an extra level of
-                                                 * indentation. this is
-                                                 * turned off by a ; or } */
-            if (s_com != e_com)
-            {
-                /* the code has an embedded comment in the
-                 * line. Move it from the com buffer to the
-                 * code buffer.
-                 *
-                 * Do not add a space before the comment if it is the first
-                 * thing on the line.
-                 */
-
-                if (e_code != s_code)
-                {
-                    set_buf_break (bb_embedded_comment_start, paren_target);
-                    *e_code++ = ' ';
-                    embedded_comment_on_line = 2;
-                }
-                else
-                {
-                    embedded_comment_on_line = 1;
-                }
-
-                for (t_ptr = s_com; *t_ptr; ++t_ptr)
-                {
-                    check_code_size();
-                    *e_code++ = *t_ptr;
-                }
-
-                set_buf_break (bb_embedded_comment_end, paren_target);
-                *e_code++ = ' ';
-                *e_code = '\0'; /* null terminate code sect */
-                parser_state_tos->want_blank = false;
-                e_com = s_com;
-            }
-        }
-        else if ((type_code != comment) &&
-                 (type_code != cplus_comment) &&
-                 !(settings.break_function_decl_args &&
-                   (parser_state_tos->last_token == comma)) &&
-                 !( (parser_state_tos->last_token == comma) &&
-                    !settings.leave_comma))
-        {
-            /* preserve force_nl thru a comment but
-             * cancel forced newline after newline, form feed, etc.
-             * however, don't cancel if last thing seen was comma-newline
-             * and -bc flag is on. */
-
-            force_nl = false;
-        }
-
-        /* Main switch on type of token scanned */
-
-        check_code_size();
-        
-        /* now, decide what to do with the token */
-
-        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
-                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
-                         can_break, &last_else, is_procname_definition);
-        
-        *e_code = '\0';         /* make sure code section is null terminated */
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            parser_state_tos->last_token = type_code;
-        }
-
-        /* Now that we've put the token on the line (in most cases),
-         * consider breaking the line because it's too long.
-         *
-         * Don't consider the cases of `unary_op', newlines,
-         * declaration types (int, etc.), if, while, for,
-         * identifiers (handled at the beginning of the loop),
-         * periods, or preprocessor commands. */
-
-        if ((settings.max_col > 0) && (buf_break != NULL))
-        {
-            if ( ( (type_code == binary_op) ||
-                   (type_code == postop) ||
-                   (type_code == question) ||
-                   ((type_code == colon) && (scase || (squest <= 0))) ||
-                   (type_code == semicolon) ||
-                   (type_code == sp_nparen) ||
-                   (type_code == sp_else) ||
-                   ((type_code == ident) && (*token == '\"')) ||
-                   (type_code == struct_delim) ||
-                   (type_code == comma)) &&
-                 (output_line_length () > settings.max_col))
-            {
-                break_line = 1;
-            }
-        }
-    }                           /* end of main infinite loop */
-}
-#@+node:ekr.20111104171708.3847: *3* @test cToPy
-cpp = c.CPrettyPrinter(c)
-c2p = c.editCommands.C_to_python(c)
-fn = 'c tokenize test'
-p2 = g.findNodeInTree(c,p,fn)
-assert p2,'not found: %s' % (fn)
-aList = cpp.tokenize(p2.b)
-c2p.convertCodeList(aList)
-s = ''.join(aList)
-#@+node:ekr.20111104171708.3848: *4* c tokenize test
-@language c
-
-static exit_values_ty indent_main_loop(void)
-{
-    codes_ty         hd_type         = code_eof;
-    char           * t_ptr           = NULL;
-    codes_ty         type_code       = start_token;
-    exit_values_ty   file_exit_value = total_success;
-    int              dec_ind         = 0; /* current indentation for declarations */
-
-    BOOLEAN          scase           = false; /* true when we've just see a "case";
-                                               * determines what to do with the
-                                               * following colon */
-    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
-                                               * a newline was passed over */
-    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
-                                               * while(...), etc. */
-    BOOLEAN          force_nl        = false;
-
-    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
-     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
-     * set to 2 in the middle of the main token reading loop and is decremented
-     * at the beginning of the loop, so it will reach zero when the second token
-     * after the ')' is read.
-     */
-
-    BOOLEAN          last_token_ends_sp = false;
-
-    BOOLEAN          last_else = false; /* true if last keyword was an else */
-
-    for (;;)
-    {
-        /* this is the main loop.  it will go until
-         * we reach eof */
-
-        BOOLEAN is_procname_definition;
-        bb_code_ty can_break;
-
-        if (type_code != newline)
-        {
-            can_break = parser_state_tos->can_break;
-        }
-
-        parser_state_tos->last_saw_nl = false;
-        parser_state_tos->can_break = bb_none;
-
-        type_code = lexi ();    /* lexi reads one token.  "token" points to
-                                 * the actual characters. lexi returns a code
-                                 * indicating the type of token */
-
-        /* If the last time around we output an identifier or
-         * a paren, then consider breaking the line here if it's
-         * too long.
-         *
-         * A similar check is performed at the end of the loop, after
-         * we've put the token on the line. */
-
-        if ((settings.max_col > 0) &&
-            (buf_break != NULL) &&
-            ( ( (parser_state_tos->last_token == ident) &&
-                (type_code != comma) &&
-                (type_code != semicolon) &&
-                (type_code != newline) &&
-                (type_code != form_feed) &&
-                (type_code != rparen) &&
-                (type_code != struct_delim)) ||
-              ( (parser_state_tos->last_token == rparen) &&
-                (type_code != comma) &&
-                (type_code != rparen) ) ) &&
-            (output_line_length () > settings.max_col))
-        {
-            break_line = 1;
-        }
-
-        if (last_token_ends_sp > 0)
-        {
-            last_token_ends_sp--;
-        }
-
-        is_procname_definition =
-                (((parser_state_tos->procname[0] != '\0') &&
-                  parser_state_tos->in_parameter_declaration) ||
-                 (parser_state_tos->classname[0] != '\0'));
-
-        /* The following code moves everything following an if (), while (),
-         * else, etc. up to the start of the following stmt to a buffer. This
-         * allows proper handling of both kinds of brace placement.
-         */
-
-        flushed_nl = false;
-
-        if (!search_brace(&type_code, &force_nl, &flushed_nl, &last_else, &is_procname_definition))
-        {
-            /* Hit EOF unexpectedly in comment. */
-            return indent_punt;
-        }
-        
-        if (type_code == code_eof)
-        {
-            /* we got eof */
-            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
-            {
-                dump_line(true, &paren_target);
-            }
-
-            if (parser_state_tos->tos > 1)      /* check for balanced braces */
-            {
-                ERROR (_("Unexpected end of file"), 0, 0);
-                file_exit_value = indent_error;
-            }
-
-            if (settings.verbose)
-            {
-                printf (_("There were %d non-blank output lines and %d comments\n"),
-                        (int) out_lines, (int) com_lines);
-                if (com_lines > 0 && code_lines > 0)
-                {
-                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
-                            (1.0 * com_lines) / code_lines);
-                }
-            }
-            flush_output ();
-
-            return file_exit_value;                                              /* RETURN */
-        }
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            if (force_nl &&
-                (type_code != semicolon) &&
-                ( (type_code != lbrace) ||
-                  (!parser_state_tos->in_decl && !settings.btype_2) ||
-                  (parser_state_tos->in_decl && !settings.braces_on_struct_decl_line) ||
-                  (parser_state_tos->last_token == rbrace)))
-            {
-                if (settings.verbose && !flushed_nl)
-                {
-                    WARNING (_("Line broken 2"), 0, 0);
-                }
-
-                flushed_nl = false;
-                dump_line(true, &paren_target);
-                parser_state_tos->want_blank = false;
-                force_nl = false;
-            }
-
-            parser_state_tos->in_stmt = true;   /* turn on flag which causes
-                                                 * an extra level of
-                                                 * indentation. this is
-                                                 * turned off by a ; or } */
-            if (s_com != e_com)
-            {
-                /* the code has an embedded comment in the
-                 * line. Move it from the com buffer to the
-                 * code buffer.
-                 *
-                 * Do not add a space before the comment if it is the first
-                 * thing on the line.
-                 */
-
-                if (e_code != s_code)
-                {
-                    set_buf_break (bb_embedded_comment_start, paren_target);
-                    *e_code++ = ' ';
-                    embedded_comment_on_line = 2;
-                }
-                else
-                {
-                    embedded_comment_on_line = 1;
-                }
-
-                for (t_ptr = s_com; *t_ptr; ++t_ptr)
-                {
-                    check_code_size();
-                    *e_code++ = *t_ptr;
-                }
-
-                set_buf_break (bb_embedded_comment_end, paren_target);
-                *e_code++ = ' ';
-                *e_code = '\0'; /* null terminate code sect */
-                parser_state_tos->want_blank = false;
-                e_com = s_com;
-            }
-        }
-        else if ((type_code != comment) &&
-                 (type_code != cplus_comment) &&
-                 !(settings.break_function_decl_args &&
-                   (parser_state_tos->last_token == comma)) &&
-                 !( (parser_state_tos->last_token == comma) &&
-                    !settings.leave_comma))
-        {
-            /* preserve force_nl thru a comment but
-             * cancel forced newline after newline, form feed, etc.
-             * however, don't cancel if last thing seen was comma-newline
-             * and -bc flag is on. */
-
-            force_nl = false;
-        }
-
-        /* Main switch on type of token scanned */
-
-        check_code_size();
-        
-        /* now, decide what to do with the token */
-
-        handle_the_token(type_code, &scase, &force_nl, &sp_sw, &flushed_nl,
-                         &hd_type, &dec_ind, &last_token_ends_sp, &file_exit_value,
-                         can_break, &last_else, is_procname_definition);
-        
-        *e_code = '\0';         /* make sure code section is null terminated */
-
-        if ((type_code != comment) &&
-            (type_code != cplus_comment) &&
-            (type_code != newline) &&
-            (type_code != preesc) &&
-            (type_code != form_feed))
-        {
-            parser_state_tos->last_token = type_code;
-        }
-
-        /* Now that we've put the token on the line (in most cases),
-         * consider breaking the line because it's too long.
-         *
-         * Don't consider the cases of `unary_op', newlines,
-         * declaration types (int, etc.), if, while, for,
-         * identifiers (handled at the beginning of the loop),
-         * periods, or preprocessor commands. */
-
-        if ((settings.max_col > 0) && (buf_break != NULL))
-        {
-            if ( ( (type_code == binary_op) ||
-                   (type_code == postop) ||
-                   (type_code == question) ||
-                   ((type_code == colon) && (scase || (squest <= 0))) ||
-                   (type_code == semicolon) ||
-                   (type_code == sp_nparen) ||
-                   (type_code == sp_else) ||
-                   ((type_code == ident) && (*token == '\"')) ||
-                   (type_code == struct_delim) ||
-                   (type_code == comma)) &&
-                 (output_line_length () > settings.max_col))
-            {
-                break_line = 1;
-            }
-        }
-    }                           /* end of main infinite loop */
-}
-#@+node:ekr.20111105221757.3833: *3* @test findAllUnitTestNodes
-p1 = p.copy()
-
-def found(p,result):
-    for p2 in result:
-        if p == p2: return True
-    else: return False
-
-table = (('all',True,False),('marked',False,True))
-
-try:
-    p.setMarked()
-    for kind,all,marked in table:
-        result = c.testManager.findAllUnitTestNodes(all,marked)
-        assert found(p,result),kind
-    assert p == p1
-finally:
-    p1.clearMarked()
-#@+node:ekr.20111105124216.3840: *3* @test g.app.config.set with c==None
-setting = 'import_html_tags'
-html_tags = ('body','head','html','table','xxx')
-
-# When run externally, c.config.getData will return None.
-existing_tags = c.config.getData(setting)
-if not existing_tags:
-    g.app.config.set(None,setting,'data',html_tags)
-    tags = c.config.getData(setting)
-    assert c.config.getData(setting) == html_tags
-#@+node:ekr.20111107065245.3833: *3* @test minimize-all
-# The actual code contains the unit test.
-# This test will have effect only when run locally.
-
-if not g.app.isExternalUnitTest:
-    d = g.app.unitTestDict
-    tag = 'minimize-all'
-    assert not d.get(tag)
-    c.frame.minimizeAll()
-    assert d.get(tag) is True
-#@+node:ekr.20111107065530.3833: *3* @test resize-to-screen
-# The actual code contains the unit test.
-# This test will have effect only when run locally.
-
-if not g.app.isExternalUnitTest:
-
-    d = g.app.unitTestDict
-    tag = 'resize-to-screen'
-    assert not d.get(tag)
-    c.frame.resizeToScreen()
-    assert d.get(tag) is True
-#@+node:ekr.20111103213154.3823: *3* @test writeToDocutils: pdf
-@first # -*- coding: utf-8 -*-
-@encoding utf-8
-
-'''Test the interface between docutils and leo_pdf.py.
-No file is written.
-'''
-
-try:
-    import docutils
-    import reportlab.platypus
-except ImportError:
-    # print('skipping test')
-    docutils = None
-
-if docutils:
-    path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
-    module = g.importFromPath(name = 'leo_pdf.py',
-        path=path,
-        pluginName = 'leo_pdf',
-        verbose = False)
-
-    assert module
-    s = '''This is a test.'''
-    result = c.rstCommands.writeToDocutils(s,'.pdf')
-    # print(result)
-    assert result,result
-#@+node:ekr.20111121171738.3932: *3* Import tests
-#@+node:ekr.20111105221757.3831: *4* @test createImportParent
-files = ('x.h','x.cpp')
-
-while p.hasChildren():
-    p.firstChild().doDelete()
-
-try:
-    current = c.importCommands.createImportParent(c.p,files)
-    assert current
-    assert current.h == 'x'
-    assert p.firstChild() == current
-finally:
-    while p.hasChildren():
-        p.firstChild().doDelete()
-    c.redraw()
-#@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
-'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
-
-path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
-assert not g.os_path_exists(path)
-module = g.importFromPath ('xyz',path,pluginName='xyz',verbose=False)
-assert not module,repr(module)
-#@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
-import os
-
-path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
-path2 = r'\N:Home\PTC_Creo\Creo.wmv'
-path3 = r'N:\Home\PTC_Creo\Creo.wmv'
-
-path12 = os.path.join(path1,path2)
-path13 = os.path.join(path1,path3)
-
-if 0:
-
-    print(path12,g.os.path.abspath(path12))
-    print(path13,g.os.path.abspath(path13))
-#@+node:ekr.20111104112332.3954: *4* @test htmlScanner.adjust_class_ref
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-<aTag>  @others
-</aTag>
-'''
-
-# Avoid probems with representation of @others in scripts.
-expected = '\n<aTag>\n@others\n</aTag>\n'
-
-result = hs.adjust_class_ref(s)
-assert result == expected,'expected...\n%s\ngot...\n%s' % (
-    repr(expected),repr(result))
-#@+node:ekr.20111104112332.3955: *4* @test ic.skip...Token (htmlScanner)
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-tails = (
-    '<whatever>',
-    '+ abc', # don't concatenate with id or whitespace.
-    '<!-- tail comment -->',
-    '"tail string"',
-)
-    
-table = (
-    (scanner.skipCommentToken,  '<!-- Test -->'),
-    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
-    # (scanner.skipNewlineToken,'\n'),
-        # xmlScanner.skipNewlineToken throws exception (on purpose).
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-)
-
-# Special test for whitespace: Converts all runs of whitespace to a single blank.
-if 0: # No longer does this.
-    s = ' \n\t\t \n'
-    i,result = scanner.skipWsToken(s+tails[0],0)
-    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-    expected = ' '
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-    
-for f,s in table:
-    for tail in tails:
-        i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-#@+node:ekr.20111104112332.3956: *4* @test ic.skip...Token (pythonScanner)
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
-    
-tails = (
-    '+ abc', # don't concatenate with id or whitespace.
-    '# tail comment',
-    '"tail string"',
-    "'tail string'",
-)
-
-table = (
-    (scanner.skipCommentToken,  '# Test'),
-    (scanner.skipIdToken,       'ab_c'),
-    (scanner.skipNewlineToken,  '\n'),
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-    (scanner.skipWsToken,       '\t '),
-)
-    
-for f,s in table:
-    for tail in tails:
-        if f.__name__ == 'skipCommentToken':
-            i,result = f(s,0)
-        else:
-            i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-#@+node:ekr.20111104114406.3833: *4* @test ic.tokenize (htmlScanner)
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-<!-- a comment -->
-<html "string">
-Test.
-</html>
-'''
-
-<< define expected >>
-
-result = hs.tokenize(s)
-
-if 1:
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-else:
-    print(result)
-    
-@
-
-
-AssertionError: expected...
-[('ws', ' ', 0), ('comment', '<!-- a comment -->', 1), ('ws', ' ', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', ' ',
- 2), ('string', '"string"', 2), ('other', '>', 2), ('ws', ' ', 2), ('id', 'Test.', 3), ('ws', ' ', 3), ('other', '<', 4)
-, ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('ws', ' ', 4)]
-got...
-[('nl', '\n', 0), ('comment', '<!-- a comment -->', 1), ('nl', '\n', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', '
-', 2), ('string', '"string"', 2), ('other', '>', 2), ('nl', '\n', 2), ('id', 'Test.', 3), ('nl', '\n', 3), ('other', '<'
-, 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('nl', '\n', 4)]
-
-----------------------------------------------------------------------
-Ran 1 test in 0.018s
-
-FAILED (failures=1)
-
-#@+node:ekr.20111104114406.3834: *5* << define expected >>
-# expected = [
-    # ('ws', ' ', 0),
-    # ('comment', '<!-- a comment -->', 1),
-    # ('ws', ' ', 1),
-    # ('other', '<', 2), ('id', 'html', 2),
-    # ('ws', ' ',2), ('string', '"string"', 2),
-    # ('other', '>', 2),
-    # ('ws', ' ', 2),
-    # ('id', 'Test.', 3),
-    # ('ws', ' ', 3),
-    # ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
-    # ('ws', ' ', 4),
-# ]
-
-expected = [
-    ('nl', '\n', 0),
-    ('comment', '<!-- a comment -->', 1),
-    ('nl', '\n', 1),
-    ('other', '<', 2),
-    ('id', 'html', 2),
-    ('ws', ' ', 2),
-    ('string', '"string"', 2),
-    ('other', '>', 2),
-    ('nl', '\n', 2),
-    ('id', 'Test.', 3),
-    ('nl', '\n', 3),
-    ('other', '<', 4),
-    ('other', '/', 4),
-    ('id', 'html', 4),
-    ('other', '>', 4),
-    ('nl', '\n', 4),
-]
-#@+node:ekr.20111103213154.3825: *4* @@@test imports needed for unit tests
-# It's better simply to disable unit tests if docutils is not present.
-import docutils
-#@+node:ekr.20111105065243.3837: *4* @test removeBlankLinesTokens (rst)
-# Important: at present only the rstScanner sets ignoreBlankLines == True
-import leo.core.leoImport as leoImport
-sc = leoImport.rstScanner(c.importCommands,atAuto=False)
-
-assert sc.ignoreBlankLines,'fail0'
-
-def strip(tokens):
-    '''Remove the line number item from all tokens.'''
-    return [(kind,val) for kind,val,n in tokens]
-    
-table = (
-    ('a\n\nb',          'a\nb'),
-    ('a\n \t\nb',       'a\nb'),
-    ('a\n \n\t\n\n\nb', 'a\nb'),
-    ('a\nb\n',          'a\nb\n'),
-)
-
-for s,expected in table:
-
-    tokens = sc.tokenize(s)
-    s2 = ''.join([val for (kind,val,n) in tokens])
-    assert s == s2,'fail1\nexpected:\n%s\ngot:\n%s' % (
-        repr(s),repr(s2))
-    
-    # A: Remove tokens for blank lines from tokens.
-    tokens2 = sc.removeBlankLinesTokens(tokens)
-    
-    # B: Remove blank lines first, then tokenize.
-    lines = g.splitLines(s)
-    lines2 = [z for z in lines if z.strip()]
-    s2 = ''.join(lines2)
-    tokens3 = sc.tokenize(s2)
-    
-    if 0:
-        for kind,val,n in tokens3:
-            print('%3s %7s %s' % (n,kind,repr(val)))
-    
-    # A and B should give the same result: just like abstract algebra diagrams.
-    if 0:
-        if strip(tokens2) != strip(tokens3):
-            sc.compareTokens(tokens2,tokens3,trace=True)
-    assert strip(tokens2) == strip(tokens3),'fail2\nexpected:\n%s\ngot:\n%s' % (
-        strip(tokens3),strip(tokens2))
-    
-    # C: Removing blank tokens from already-compressed tokens should have no effect.
-    tokens4 = sc.removeBlankLinesTokens(tokens3)
-    assert tokens4 == tokens3,'fail3'
-#@+node:ekr.20111121142012.4141: *3* Tests of the new log code
-#@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-import leo.plugins.qtGui as leoQtGui
-
-if g.app.isExternalUnitTest:
-    pass
-else:
-    def setup(p):
-        delete_children(p)
-        p2 = p.insertAsLastChild()
-        c.selectPosition(p2)
-        p2.h = 'first-child'
-    
-    def delete_children(p):
-        while p.hasChildren():
-            p.firstChild().doDelete()
-    
-    app = g.app.gui.qtApp
-    assert issubclass(app.__class__,QtGui.QApplication)
-    
-    w = c.frame.body.bodyCtrl.widget
-    assert issubclass(w.__class__,QtGui.QTextEdit)
-    w_name = w.__class__.__name__
-    assert w_name == 'LeoQTextBrowser',w_name
-    
-    p1 = p.copy()
-    
-    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
-    
-    try:
-        ev = QtCore.QEvent
-        table = (
-            ev.KeyPress,
-            # ev.KeyRelease, # Ignored except in QLineEdit's.
-            # ev.ShortcutOverride, # Ignored everywhere.
-        )
-        for theType in table:
-            # Create the event.
-            setup(p1)
-            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
-            # Pass it to eventFilter.
-            filter_obj.eventFilter(w,e)
-            # Check the results.
-            c.redraw()
-            n = p1.numberOfChildren()
-            assert n==2,'%s children' % (n)
-            delete_children(p1)
-    
-    finally:
-        delete_children(p1)
-        c.redraw()
-#@+node:ekr.20111120124051.3994: *4* @test cycle-all-focus
-'''Test that cycle-all-focus cycles through all tabs.'''
-
-if g.app.isExternalUnitTest or not g.isPython3:
-    # print('external test')
-    pass
-else:
-    log = c.frame.log
-    c.bodyWantsFocusNow()
-    tabs = log.orderedTabNames()
-    last_widget = c.frame.body
-    
-    for tab in tabs:
-        # A small hack: fudge up the widget to pass to the command.
-        event = g.bunch(widget=last_widget)
-        c.editCommands.cycleAllFocus(event=event)
-        assert log.tabName == tab,'expected %s, got %s' % (
-            tab,log.tabName)
-        last_widget = log.contentsDict.get(tab)
-        # print('pass',tab,last_widget)
-        
-    # Test transfer into tree widget.
-    event = g.bunch(widget=last_widget)
-    c.editCommands.cycleAllFocus(event=event)
-    last_widget = w = g.app.gui.get_focus()
-    name = w.__class__.__name__
-    assert name == 'LeoQTreeWidget',name
-    
-    # Test transfer into body widget.
-    event = g.bunch(widget=last_widget)
-    c.editCommands.cycleAllFocus(event=event)
-    w = g.app.gui.get_focus()
-    w_name = g.app.gui.widget_name(w)
-    assert w_name == 'richTextEdit',w_name
-
-#@+node:ekr.20111121164644.3928: *4* @test cycle-tab-focus
-'''Test that cycle-all-focus cycles through all tabs.'''
-
-if g.app.isExternalUnitTest:
-    # print('external test')
-    pass
-else:
-    log = c.frame.log
-    tabs = log.orderedTabNames()[1:]
-    tabs.append('Log')
-    
-    # Set up the initial state.
-    c.k.keyboardQuit()
-    c.bodyWantsFocusNow()
-    
-    for tab in tabs:
-        log.cycleTabFocus(event=None)
-        assert log.tabName == tab,'expected %s, got %s' % (
-            tab,log.tabName)
-        # print('pass',tab)
-#@+node:ekr.20111121224307.3934: *4* @test handleDefaultChar from log pane
-if g.app.isExternalUnitTest:
-    # print('external test')
-    pass
-else:
-    tabs = ('Log','Find')
-    log = c.frame.log
-    c.bodyWantsFocusNow()
-    last_widget = c.frame.body
-        
-    for tab in tabs:
-        # A small hack: fudge up the widget to pass to the command.
-        event = g.bunch(widget=last_widget)
-        c.editCommands.cycleAllFocus(event=event)
-        assert log.tabName == tab,'expected %s, got %s' % (
-            tab,log.tabName)
-        last_widget = log.contentsDict.get(tab)
-        # print('pass',tab,last_widget)
-        event = g.bunch(widget=last_widget)
-        
-        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
-        c.k.handleDefaultChar(event, stroke='a')
-#@+node:ekr.20111121081052.3908: *4* @test log.numberOfVisibleTabs
-if g.app.isExternalUnitTest or not g.isPython3:
-    print('external test')
-    pass
-else:
-    log = c.frame.log
-    d = log.contentsDict
-    keys = list(d.keys())
-    tabs = log.orderedTabNames()
-    
-    n = len(keys)
-    n2 = log.numberOfVisibleTabs()
-    n3 = len(tabs)
-
-    assert n == n2,'n: %s n2: %s' % (n,n2)
-    assert n == n3,'n: %s len(log.orederedTabNames()): %s' % (n,n3)
-#@+node:ekr.20111121140833.3917: *4* @test put & putNl (leoQtLog)
-'''These were changed, then reverted, but a unit test is important.'''
-
-if g.app.isExternalUnitTest:
-    pass # Prints to console, which is annoying.
-else:
-    log = c.frame.log
-    log.put(p.h)
-    log.putnl()
-#@+node:ekr.20111121142012.4030: *4* @test relationships between log-related objects
-import PyQt4.QtGui as QtGui
-
-log = c.frame.log
-name = log.__class__.__name__
-
-if g.app.isExternalUnitTest:
-    assert name == 'nullLog',name
-else:
-    assert name == 'leoQtLog',name
-    assert log.widget.__class__.__name__ == 'leoQTextEditWidget' 
-    assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
-        # leoQTextEditWidget us a poor name: it is not a Qt widget.
-    assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
-    assert hasattr(log.widget,'widget') and log.widget.widget
-    assert hasattr(log.widget.widget,'leo_log_wrapper')
-    wrapper = log.widget.widget.leo_log_wrapper
-    assert wrapper == log.widget
-
-#@+node:ekr.20111121113227.4035: *4* mini-test: add-editor
-c.k.simulateCommand('add-editor')
-c.k.simulateCommand('delete-editor')
-#@+node:ekr.20111121081052.3909: *4* mini-test: g.es leave focus unchanged
-if g.app.isExternalUnitTest:
-    pass # Prints to console, which is annoying.
-else:
-    old_focus = c.get_focus()
-    
-    for flag in (False,True):
-        g.es('Hi')
-        
-    if flag:
-        c.outerUpdate() # Restores focus, especially when run from a script.
-    new_focus = c.get_focus()
-    
-    try:
-        assert old_focus == new_focus,'old focus: %s new focus: %s' % (
-            old_focus,new_focus)
-    except AssertionError:
-        c.bodyWantsFocusNow()
-#@+node:ekr.20111121090700.3914: *4* mini-test: print-bindings puts results in Bindings tab
-if g.app.isExternalUnitTest:
-    pass
-else:
-    c.k.simulateCommand('print-bindings')
-    log = c.frame.log
-    
-    # This works when run via execute-script.
-    assert log.tabName == 'Bindings',log.tabName
-    
-    # w = c.frame.log.contentsDict.get('Bindings')
-    # assert w,'no Bindings widget'
-    # wrapper = w.leo_log_wrapper
-    # s = wrapper.getAllText()
-    # assert s,wrapper
-#@+node:ekr.20111121151031.3925: *3* Fixed crashers in selectToMatchingBracket and updateEditor
-#@+node:ekr.20111121140833.3916: *4* @test selectToMatchingBracket (leoEditCommands)
-'''selectToMatchingBracket was crashing.'''
-
-ec = c.editCommands
-w = c.frame.body
-
-s = w.getAllText()
-i = s.find('(')
-w.setInsertPoint(i)
-ec.selectToMatchingBracket(event=None)
-i,j = w.getSelectionRange()
-assert i < j,'i: %s j: %s' % (i,j)
-#@+node:ekr.20111121152019.3929: *4* @test updateEditors (leoQtBody)
-'''updateEditors was crashing due to calling setSelectionRange(ins=i).
-The proper keyword argument is insert=i.
-'''
-
-c.frame.body.updateEditors()
-#@+node:ekr.20111123214629.3941: *3* @test unbound Alt-N key is completely ignored
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-import leo.plugins.qtGui as leoQtGui
-
-if g.app.isExternalUnitTest:
-    pass
-else:
-    w = c.frame.body.bodyCtrl.widget
-    assert issubclass(w.__class__,QtGui.QTextEdit)
-    
-    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
-
-    # Create an Alt-7 key event.
-    ev = QtCore.QEvent
-    e = QtGui.QKeyEvent(ev.KeyPress,ord('7'),QtCore.Qt.AltModifier)
-    filter_obj.eventFilter(w,e)
-
-    # Assert that handleUnboundChar actually ignored it.
-    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
-
-#@+node:ekr.20111124090010.3939: *3* @test @buttons and @commands logic
-'''Test that the config parser visits @buttons and @commands nodes for
-leoSettings.leo and unitTest.leo.
-
-If strict is True, also test that the config parser vists the nodes in
-myLeoSettings.leo. This may fail on machines without @buttons and @commands
-nodes in myLeoSettings.leo.
-'''
-
-if g.app.isExternalUnitTest:
-    pass
-else:
-    strict = True # Set to False if you are not EKR.
-    
-    table = ['leoSettings.leo','unitTest.leo']
-    if strict:
-        table.append('myLeoSettings.leo')
-    
-    keys = ('config.doButtons-file-names','config.doCommands-file-names')
-    d = g.app.config.unitTestDict # Always created for this unit test.
-    
-    for key in keys:
-        aList = d.get(key,[])
-        for fn in table:
-            # print(fn)
-            # print(repr(aList))
-            assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
-#@+node:ekr.20111210104652.3958: *3* @test p.moveToFirst/LastChild
-def setup(p):
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-child = p.firstChild()
-assert child
-setup(child)
-p2 = child.insertAfter()
-p2.h = "test"
-try:
-    assert c.positionExists(p2),p2
-    p2.moveToFirstChildOf(child)
-    assert c.positionExists(p2),p2
-    p2.moveToLastChildOf(child)
-    assert c.positionExists(p2),p2
-finally:
-    if 1:
-        setup(child)
-    c.redraw(p)
-#@+node:ekr.20111210104652.3959: *4* child
-#@+node:ekr.20120212130242.4755: *4* test
-#@+node:ekr.20111212142649.3971: *3* @test paste outline does not clone top node
-c.selectPosition(p)
-c.copyOutline()
-try:
-    p2 = c.pasteOutline()
-    assert p2
-    assert not p2.isCloned()
-finally:
-    if p2: p2.doDelete()
-    c.redraw(p)
-#@+node:ekr.20111212142649.3972: *4* child
-# child text.
-#@+node:ekr.20111214100515.3921: *3* @test at-auto with lines that look like section references
-ic = c.importCommands
-
-def setup(p):
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-auto-section-ref-test.py')
-# fn = r'c:\Users\edreamleo\at-auto-test.py'
-assert g.os_path_exists(fn),fn
-
-try:
-    setup(p)
-    child = p.insertAsNthChild(0)
-    child.h = 'child'
-    assert child
-
-    ic.errors = 0
-    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
-    assert ic.errors == 0
-finally:
-    setup(p)
-    c.redraw(p)
-#@+node:ekr.20111221062755.3909: *3* @test all top-level read/write commands give proper read/write error dialogs
-child = p.firstChild()
-assert child
-assert child.h == 'child',child.h
-c.selectPosition(child)
-
-table = (
-    'import-file',
-    'open-outline',
-    'read-at-auto-nodes',
-    'read-at-file-nodes',
-    'read-at-shadow-nodes',
-   # 'read-file-into-node',
-   # 'read-outline-only',
-   'save-file',
-   'save-file-as',
-   'save-file-to',
-    'write-at-auto-nodes',
-    'write-at-file-nodes',
-    'write-at-shadow-nodes',
-    'write-dirty-at-auto-nodes',
-    'write-dirty-at-file-nodes',
-    'write-dirty-at-shadow-nodes',
-    #'write-file-from-node',
-    'write-missing-at-file-nodes',
-    #'write-outline-only',
-)
-
-tags = (('init_error_dialogs',2), ('raise_error_dialogs',1))
-
-d = g.app.unitTestDict
-for commandName in table:
-    for tag,n in tags:
-        d[tag] = 0
-    c.k.simulateCommand(commandName)
-    for tag,n in tags:
-        assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
-#@+node:ekr.20111221062755.3910: *4* child
-#@+node:ekr.20111228125719.3909: *3* @test insertIgnoreDirective
-import leo.core.leoImport as leoImport
-
-def setup(p):
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-importCommands = c.importCommands
-bic = leoImport.baseScannerClass(importCommands,atAuto=False,language='python')
-
-try:
-    setup(p)
-    child = p.insertAsLastChild()
-    child.h = 'child'
-    bic.insertIgnoreDirective(parent=child)
-    assert child.b.find('@ignore') == 0
-finally:
-    if 1:
-        setup(p)
-#@+node:ekr.20120201101804.3907: *3* @test config.updateSetting with no @settings node
-import leo.core.leoConfig as leoConfig
-    
-p = c.config.settingsRoot()
-assert c
-if p:
-    # p will not exist when run externally.
-    h = p.h
-    p.h = '@@' + h
-try:
-    parser = leoConfig.SettingsTreeParser(c,localFlag=True)
-    d1,d2 = parser.traverse()
-    assert isinstance(d1,g.TypedDictOfLists),d1
-    assert isinstance(d2,g.TypedDict),d2
-finally:
-    if p:
-        p.h = h
-        c.redraw()
-#@+node:ekr.20120201125738.3958: *3* @@@test config.getShortcuts works when no local shortcuts
-# This tests is valid only if not g.new_config.
-
-sd = g.app.config.localShortcutsDict
-d = sd.get(c.hash(),{})
-try:
-    sd[c.hash()] = {}
-    key,aList = c.config.getShortcut('new')
-    # print(key,aList)
-    assert aList,'key: %s' % (key)
-finally:
-    sd[c.hash()] = d
-#@+node:ekr.20111115071700.3870: *3* @test printSettings
-c.config.printSettings()
-
-#@+node:ekr.20120207151139.3911: *3* newHeadline
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):

@@ -137,47 +137,87 @@ for i in range(len(aList)):
 
 g.es('"%s": total tests: %s' % (p.h,total))
 #@+node:ekr.20080703104536.1: ** @ignore mini tests
-#@+node:ekr.20051104081502.108: *3* runProfile button mini-test
-for i in range(10000):
-    if i and (i % 1000) == 0:
-        g.pr(i)
-#@+node:ekr.20051104081502.109: *3* runTimeit mini-test
-i = 0
-for i in range(100000):
-    i += 1
-    i -= 1
-#@+node:ekr.20080821123427.2: *3* Standard print test
-@first # -*- coding: utf-8 -*-
+#@+node:ekr.20100203163606.5365: *3* 2to3 script
+import os
 
-import sys
+def run(files):
+    args = [r'python c:\python26\Tools\Scripts\2to3.py']
+    for z in files:
+        args.append(z)
+        # args.append('-xprint')
+    args.append('>out2')
+    args = ','.join(args)
+    os.system(args)
 
-print('=' * 40)
-
-e = sys.getdefaultencoding()
-print('encoding',e)
-
-table = (
-    'La Peña',
-    g.u('La Peña'),
-    # u'La Peña',
-    g.u('La Pe\xf1a')
+tkPass = (
+    'EditAttributes','Library',
+    'URLloader','UniversalScrolling','UASearch',
+    'autotrees','chapter_hoist','cleo','dump_globals',
+    'expfolder','geotag','graphed','groupOperations',
+    'hoist','import_cisco_config',
+    'keybindings','leoupdate',
+    'maximizeNewWindows', 'mnplugins','mod_labels',
+    'mod_read_dir_outline','mod_tempfname','multifile',
+    'newButtons','nodeActions','nodenavigator',
+    'open_with','pie_menus','pluginsTest',
+    'read_only_nodes','rClick',
+    'scheduler','searchbar','searchbox','shortcut_button',
+    'script_io_to_body','searchbox',
+    'templates','textnode','tkGui','toolbar',
+    'xcc_nodes',
 )
 
-for s in table:
-    print(type(s))
-    g.es_print('g.es_print',s)
-    if type(s) != type(u'a'):
-        s = unicode(s,e)
-    print('print     ',s)
-    print('repr(s)   ',repr(s))
-#@+node:ekr.20100125180231.5120: *3* Print a unicode character
-@first # -*- coding: utf-8 -*-
+passList = (
+    '__init__','FileActions','UNL',
+    'active_path','add_directives','attrib_edit',
+    'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
+    'codewisecompleter','colorize_headlines','contextmenu',
+    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
+    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
+    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
+    'leoOPML','leoremote','lineNumbers',
+    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+    'mod_scripting','mod_speedups','mod_timestamp',
+    'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
+    'open_shell','outline_export','quit_leo',
+    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
+    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'quickMove',
+        # Warning: changed this line by guessing!
+        # func = types.MethodType(func, quickMove)
+    'quicksearch','redirect_to_log','rClickBasePluginClasses',
+    'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
+    'rst3',
+    'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
+    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+    'vim','xemacs',
+)
+core_files = (
+    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
+    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
+    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
+    'leoPlugins','leoShadow','leoTangle','leoUndo',
+)
+external_files = (
+    'ipy_leo','lproto',
+)
+table = (
+    ('plugins',passList),
+    ('plugins',tkPass),
+    ('core',core_files),
+    ('external',external_files),
+)
+files = []
+for theDir,aList in table:
+    for z in aList:
+        if not z.endswith('.py'): z = z + '.py'
+        # print(z)
+        fn = os.path.abspath(os.path.join('leo',theDir,z))
+        if os.path.exists(fn): files.append(fn)
+        else: print('*** file not found:',fn)
 
-s = g.ue('炰','utf-8')
-g.es(s)
-g.pr(s)
-s = '炰'
-g.pr(s)
+run(files)
+print('done: results are in out2')
 #@+node:ekr.20100127162342.5123: *3* Import all plugins script
 import glob,os
 
@@ -268,87 +308,6 @@ for fn in files:
         except Exception:
             if 1: g.es_exception()
             if 1: print('error %s' % m)
-#@+node:ekr.20100203163606.5365: *3* 2to3 script
-import os
-
-def run(files):
-    args = [r'python c:\python26\Tools\Scripts\2to3.py']
-    for z in files:
-        args.append(z)
-        # args.append('-xprint')
-    args.append('>out2')
-    args = ','.join(args)
-    os.system(args)
-
-tkPass = (
-    'EditAttributes','Library',
-    'URLloader','UniversalScrolling','UASearch',
-    'autotrees','chapter_hoist','cleo','dump_globals',
-    'expfolder','geotag','graphed','groupOperations',
-    'hoist','import_cisco_config',
-    'keybindings','leoupdate',
-    'maximizeNewWindows', 'mnplugins','mod_labels',
-    'mod_read_dir_outline','mod_tempfname','multifile',
-    'newButtons','nodeActions','nodenavigator',
-    'open_with','pie_menus','pluginsTest',
-    'read_only_nodes','rClick',
-    'scheduler','searchbar','searchbox','shortcut_button',
-    'script_io_to_body','searchbox',
-    'templates','textnode','tkGui','toolbar',
-    'xcc_nodes',
-)
-
-passList = (
-    '__init__','FileActions','UNL',
-    'active_path','add_directives','attrib_edit',
-    'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
-    'codewisecompleter','colorize_headlines','contextmenu',
-    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
-    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
-    'leoOPML','leoremote','lineNumbers',
-    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
-    'mod_scripting','mod_speedups','mod_timestamp',
-    'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
-    'open_shell','outline_export','quit_leo',
-    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qtGui','qt_main','qt_quicksearch','qtframecommands',
-    'quickMove',
-        # Warning: changed this line by guessing!
-        # func = types.MethodType(func, quickMove)
-    'quicksearch','redirect_to_log','rClickBasePluginClasses',
-    'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
-    'rst3',
-    'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
-    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
-    'vim','xemacs',
-)
-core_files = (
-    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
-    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
-    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
-    'leoPlugins','leoShadow','leoTangle','leoUndo',
-)
-external_files = (
-    'ipy_leo','lproto',
-)
-table = (
-    ('plugins',passList),
-    ('plugins',tkPass),
-    ('core',core_files),
-    ('external',external_files),
-)
-files = []
-for theDir,aList in table:
-    for z in aList:
-        if not z.endswith('.py'): z = z + '.py'
-        # print(z)
-        fn = os.path.abspath(os.path.join('leo',theDir,z))
-        if os.path.exists(fn): files.append(fn)
-        else: print('*** file not found:',fn)
-
-run(files)
-print('done: results are in out2')
 #@+node:ekr.20051104081502.99: *3* Manual tests...
 #@+node:ekr.20051104081502.101: *4* Other Reformat Paragraph tests
 @language plain
@@ -644,6 +603,9 @@ def checkOneHook (arg_type, val):
         (arg_type is type(val)) or
         (arg_type == types.StringType and type(val) is types.UnicodeType) or
         (type(arg_type) == types.ClassType and isinstance(val,arg_type)))
+#@+node:ekr.20111121113227.4035: *3* Mini test of add-editor
+c.k.simulateCommand('add-editor')
+c.k.simulateCommand('delete-editor')
 #@+node:ekr.20051104081502.312: *3* Mini test of g.es_exception
 try:
     assert False, 'Assert False'
@@ -652,6 +614,60 @@ except AssertionError:
 #@+node:ekr.20051104081502.311: *3* Mini test of g.pdb
 # Running this as a unit test would hang the unit tests!
 g.pdb()
+#@+node:ekr.20111108170253.3968: *3* Mini test of unicode stuff
+@first # -*- coding: utf-8 -*-
+
+table = (
+    'test',
+    'Ä 궯 奠',
+    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
+)
+
+print('*'*20)
+print('isPython3: %s' % g.isPython3)
+
+for s in table:
+    if g.isPython3:
+        s = s.encode('ascii','replace') # create bytes.
+    g.es(repr(s))
+    g.es(s)
+    g.pr ('g.pr(s)       : %s' % s)
+    g.pr ('g.pr(repr(s)) : %s' % repr(s))
+    print('print(s)      : %s' % s)
+    print('print(repr(s)): %s' % s)
+#@+node:ekr.20111121081052.3909: *3* Mini test that g.es leaves focus unchanged
+if g.app.isExternalUnitTest:
+    pass # Prints to console, which is annoying.
+else:
+    old_focus = c.get_focus()
+    
+    for flag in (False,True):
+        g.es('Hi')
+        
+    if flag:
+        c.outerUpdate() # Restores focus, especially when run from a script.
+    new_focus = c.get_focus()
+    
+    try:
+        assert old_focus == new_focus,'old focus: %s new focus: %s' % (
+            old_focus,new_focus)
+    except AssertionError:
+        c.bodyWantsFocusNow()
+#@+node:ekr.20111121090700.3914: *3* mini test that print-bindings puts results in Bindings tab
+if g.app.isExternalUnitTest:
+    pass
+else:
+    c.k.simulateCommand('print-bindings')
+    log = c.frame.log
+    
+    # This works when run via execute-script.
+    assert log.tabName == 'Bindings',log.tabName
+    
+    # w = c.frame.log.contentsDict.get('Bindings')
+    # assert w,'no Bindings widget'
+    # wrapper = w.leo_log_wrapper
+    # s = wrapper.getAllText()
+    # assert s,wrapper
 #@+node:ekr.20051104081502.106: *3* Mini tests of script buttons
 #@+node:ekr.20051104081502.107: *4* Redundant: @suite run all doctests in @file nodes
 import doctest
@@ -691,64 +707,6 @@ for i in range(100000):
 # We want to profile the actual idle-time drawing.
 
 c.frame.tree.idle_redraw()
-#@+node:ekr.20051104081502.160: *3* User Icon tests
-#@+node:ekr.20051104081502.161: *4* Delete user icons
-for p in c.allNodes_iter():
-
-    if hasattr(p.v.t,"unknownAttributes"):
-        a = p.v.t.unknownAttributes
-        iconsList = a.get("icons")
-        if dict:
-            a["icons"] = []
-            a["lineYOffset"] = 0
-
-c.redraw()
-#@+node:ekr.20051104081502.162: *4* Test of user icons
-p.v.t.unknownAttributes = {}
-a = p.v.t.unknownAttributes
-
-<< define event callbacks >>
-
-path = g.os_path_join(g.app.loadDir,"..","Icons")
-icon1 = g.os_path_join(path,"lt_arrow_enabled.gif")
-icon2 = g.os_path_join(path,"rt_arrow_enabled.gif")
-
-d1 = {
-    "type" : "file", "file" : icon1,
-    "where" : "beforeIcon",
-    "yoffset" : -3,
-    # "yoffset" : 5, "ypad" : -5,
-    # "height" : 40, # automatically adjust headline y position.
-    "xpad": 2
-}
-
-# Classes and functions can only be pickled if they are at the top level of a module.
-    #"onClick" : onClick,
-    #"onRightClick" : onRightClick,
-    #"onDoubleClick" : onDoubleClick }
-
-d2 = {
-    "type" : "file", "file" : icon2,
-    "where" : "beforeHeadline",
-    "yoffset" : -3,
-    "xoffset" : 2, "xpad" : -2 }
-
-a["icons"] = [d1,d2] # [d1,d2]
-a["lineYOffset"] = 3
-
-c.redraw()
-#@+node:ekr.20051104081502.163: *5* << define event callbacks >>
-def onClick(p=p):
-
-    g.trace(p)
-
-def onRightClick(p=p):
-
-    g.trace(p)
-
-def onDoubleClick(p=p):
-
-    g.trace(p)
 #@+node:ekr.20051104081502: *3* Other tests
 @language python
 @tabwidth -4
@@ -5865,6 +5823,105 @@ g.es('Test',color='blue')
 #@+node:ekr.20051104081502.548: *4* Write to test tab
 c.frame.log.selectTab('Test')
 g.es('Test',color='red',tabName='Test')
+#@+node:ekr.20100125180231.5120: *3* Print a unicode character
+@first # -*- coding: utf-8 -*-
+
+s = g.ue('炰','utf-8')
+g.es(s)
+g.pr(s)
+s = '炰'
+g.pr(s)
+#@+node:ekr.20051104081502.108: *3* runProfile button mini-test
+for i in range(10000):
+    if i and (i % 1000) == 0:
+        g.pr(i)
+#@+node:ekr.20051104081502.109: *3* runTimeit mini-test
+i = 0
+for i in range(100000):
+    i += 1
+    i -= 1
+#@+node:ekr.20080821123427.2: *3* Standard print test
+@first # -*- coding: utf-8 -*-
+
+import sys
+
+print('=' * 40)
+
+e = sys.getdefaultencoding()
+print('encoding',e)
+
+table = (
+    'La Peña',
+    g.u('La Peña'),
+    # u'La Peña',
+    g.u('La Pe\xf1a')
+)
+
+for s in table:
+    print(type(s))
+    g.es_print('g.es_print',s)
+    if type(s) != type(u'a'):
+        s = unicode(s,e)
+    print('print     ',s)
+    print('repr(s)   ',repr(s))
+#@+node:ekr.20051104081502.160: *3* User Icon tests
+#@+node:ekr.20051104081502.161: *4* Delete user icons
+for p in c.allNodes_iter():
+
+    if hasattr(p.v.t,"unknownAttributes"):
+        a = p.v.t.unknownAttributes
+        iconsList = a.get("icons")
+        if dict:
+            a["icons"] = []
+            a["lineYOffset"] = 0
+
+c.redraw()
+#@+node:ekr.20051104081502.162: *4* Test of user icons
+p.v.t.unknownAttributes = {}
+a = p.v.t.unknownAttributes
+
+<< define event callbacks >>
+
+path = g.os_path_join(g.app.loadDir,"..","Icons")
+icon1 = g.os_path_join(path,"lt_arrow_enabled.gif")
+icon2 = g.os_path_join(path,"rt_arrow_enabled.gif")
+
+d1 = {
+    "type" : "file", "file" : icon1,
+    "where" : "beforeIcon",
+    "yoffset" : -3,
+    # "yoffset" : 5, "ypad" : -5,
+    # "height" : 40, # automatically adjust headline y position.
+    "xpad": 2
+}
+
+# Classes and functions can only be pickled if they are at the top level of a module.
+    #"onClick" : onClick,
+    #"onRightClick" : onRightClick,
+    #"onDoubleClick" : onDoubleClick }
+
+d2 = {
+    "type" : "file", "file" : icon2,
+    "where" : "beforeHeadline",
+    "yoffset" : -3,
+    "xoffset" : 2, "xpad" : -2 }
+
+a["icons"] = [d1,d2] # [d1,d2]
+a["lineYOffset"] = 3
+
+c.redraw()
+#@+node:ekr.20051104081502.163: *5* << define event callbacks >>
+def onClick(p=p):
+
+    g.trace(p)
+
+def onRightClick(p=p):
+
+    g.trace(p)
+
+def onDoubleClick(p=p):
+
+    g.trace(p)
 #@+node:ekr.20111107113442.3849: ** @ignore unused tests
 #@+node:ekr.20101021205258.6013: *3* general file stuff
 #@+node:ekr.20100204153116.5369: *4* @@test raw file copy

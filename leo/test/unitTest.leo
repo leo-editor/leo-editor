@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.56" body_secondary_ratio="0.62">
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.62">
 	<global_window_position top="58" left="221" height="987" width="1134"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -103,8 +103,8 @@
 <v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20110610122533.3407"><vh>@auto ../test/at-auto-unit-test.py</vh></v>
-<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
 <v t="ekr.20111214104615.3942"><vh>@auto ../test/unittest/at-auto-section-ref-test.py</vh></v>
+<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 <v t="ekr.20110615130436.3317" a="O"><vh>@file nonexistent-directory/orphan-bit-test.txt</vh>
@@ -121,6 +121,10 @@
 <v t="ekr.20090704085350.5014"><vh>@shadow ../test/unittest/at-shadow-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
 <v t="ekr.20111213122041.3930"><vh>@shadow unittest/at-shadow-unlink-clones.py</vh></v>
+<v t="ekr.20120229082711.3934"><vh>@@@shadow unittest/at-shadow-unlink-clones.py (COPY)</vh>
+<v t="ekr.20120229082711.3935"><vh>Node 1</vh></v>
+<v t="ekr.20120229082711.3936"><vh>Node 2</vh></v>
+</v>
 <v t="ekr.20100731163237.5782"><vh>@thin ../test/unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin ../test/unittest/at-thin-test.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
@@ -144,12 +148,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016" a="M"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31362e3671017d71025808000000616e6e6f7461746571037d7104735805000000302e382e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3471097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20120217052728.3921"><vh>Failing unit tests</vh>
-<v t="ekr.20111210175541.3957"><vh>@test refresh @shadow links clones</vh>
-<v t="ekr.20111213122041.3931"><vh>shadow node 1</vh></v>
-</v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -566,7 +565,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9,0"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1054,26 +1053,19 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
-<t tx="ekr.20111210175541.3957">if not g.app.isExternalUnitTest:
-    # print('start',p.h)
-    h = '@shadow unittest/at-shadow-unlink-clones.py'
-    root = g.findNodeAnywhere(c,h)
-    assert root
-    assert root.h == h,repr(root.h)
-    child = p.firstChild()
-    assert child
-    assert child.isCloned(),'fail 1'
-    c.selectPosition(root)
-    fn = root.atShadowFileNodeName()
-    assert fn
-    c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
-    assert child.isCloned(),'fail 2'
-    c.selectPosition(p)
-    c.redraw()
-</t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20111213122041.3931"># node 1 text A.
+<t tx="ekr.20120229082711.3934">@language python
+@tabwidth -4
+
+# Begin
+
+@others
+
+# End
 </t>
-<t tx="ekr.20120217052728.3921"></t>
+<t tx="ekr.20120229082711.3935"># node 1 text A.
+</t>
+<t tx="ekr.20120229082711.3936"># node 2 text B.
+</t>
 </tnodes>
 </leo_file>
