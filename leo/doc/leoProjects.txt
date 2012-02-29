@@ -11748,6 +11748,11 @@ The fix was the following lines in c.initConfigSettings:
     
     c.page_width = getInt('page_width') or 132
         # 2012/02/27: this appears to be a fix of an *ancient* bug.
+#@+node:ekr.20120228164039.10046: *4* Fixed bug: goto end line handler is broken 
+@nocolor-node
+
+The fix was easy: moveWithinLineHelper does *not* call
+leoMoveCursorHelper for the case spot == 'end-line'
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
