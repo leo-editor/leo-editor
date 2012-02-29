@@ -238,111 +238,6 @@
 </v>
 <v t="ekr.20111107194933.5505"><vh>@test rst intro</vh></v>
 <v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
-<v t="ekr.20120229094652.14518"><vh>Code</vh>
-<v t="ekr.20120229094652.14522"><vh>Eliminated the low-level interface</vh></v>
-<v t="ekr.20120229094652.14523"><vh>Removed unused cruft from high-level interface</vh></v>
-<v t="ekr.20120229094652.14524"><vh>All unit tests may now be run externally</vh></v>
-<v t="ekr.20120229094652.14525"><vh>Unified the high-level interface</vh></v>
-<v t="ekr.20120229094652.14526"><vh>Create properties for logCtrl &amp; bodyCtrl</vh></v>
-<v t="ekr.20120229094652.14527"><vh>Added eventFilters to top-level frames</vh></v>
-<v t="ekr.20120229094652.14528"><vh>added log.orderedTabNames</vh></v>
-<v t="ekr.20120229094652.14531"><vh>Removed many module-level imports</vh></v>
-<v t="ekr.20120229094652.14532"><vh>Created the TestManager class</vh></v>
-<v t="ekr.20120229094652.14533"><vh>Created the LoadManager class (docs)</vh></v>
-<v t="ekr.20120229094652.14534"><vh>Removed c argument from g.app.config getters</vh></v>
-<v t="ekr.20120229094652.14535"><vh>Delay "reading settings" message until after signon</vh>
-<v t="ekr.20120229094652.14536"><vh>pr (codewise)</vh></v>
-<v t="ekr.20120229094652.14537"><vh>g.pr</vh></v>
-</v>
-<v t="ekr.20120229094652.14538"><vh>Use at.readOneAtAutoNode instead of ic.readOneAtAutoNode</vh></v>
-</v>
-<v t="ekr.20120229094652.15157"><vh>Investigations</vh>
-<v t="ekr.20120229094652.15158"><vh>Investigated unicode problems with print</vh></v>
-<v t="ekr.20120229094652.15159"><vh>Investigated autocomplete popup bug</vh></v>
-</v>
-<v t="ekr.20120229094652.14539"><vh>Features</vh>
-<v t="ekr.20120229094652.14540"><vh>Supported auto-hide in viewrendered plugin</vh></v>
-<v t="ekr.20120229094652.14541"><vh>set g.app.execute_script during script execution</vh></v>
-<v t="ekr.20120229094652.14542"><vh>Added select-to-matching-bracket command</vh></v>
-<v t="ekr.20120229094652.14543"><vh>Improved recursive import script</vh></v>
-<v t="ekr.20120229094652.14544"><vh>Added beautify-c command</vh></v>
-<v t="ekr.20120229094652.14545"><vh>Added c-to-python command</vh></v>
-<v t="ekr.20120229094652.14566"><vh>removed scrolledmessage plugin</vh></v>
-<v t="ekr.20120229094652.14567"><vh>Added import-org-mode script</vh>
-<v t="ekr.20120229094652.14568"><vh>import-org-mode (command, not used)</vh>
-<v t="ekr.20120229094652.14569"><vh>ctor</vh></v>
-<v t="ekr.20120229094652.14570"><vh>go</vh></v>
-<v t="ekr.20120229094652.14571"><vh>scan</vh></v>
-<v t="ekr.20120229094652.14572"><vh>test</vh></v>
-</v>
-<v t="ekr.20120229094652.14573"><vh>@@button import-org-mode</vh>
-<v t="ekr.20120229094652.14574"><vh>scan</vh></v>
-</v>
-<v t="ekr.20120229094652.14575"><vh>test-import-org-mode</vh></v>
-</v>
-<v t="ekr.20120229094652.14576"><vh>The Find tab now scrolls</vh></v>
-<v t="ekr.20120229094652.14577"><vh>Removed Leo's old syntax coloring code</vh></v>
-<v t="ekr.20120229094652.14578"><vh>Added p.positionAfterDeletedTree</vh></v>
-<v t="ekr.20120229094652.14579"><vh>Added delete-marked-nodes and move-marked-nodes commands</vh></v>
-<v t="ekr.20120229094652.14580"><vh>Open now shows all files</vh></v>
-<v t="ekr.20120229094652.14581"><vh>Made open smarter</vh></v>
-<v t="ekr.20120229094652.14582"><vh>Improved create @auto nodes script</vh></v>
-<v t="ekr.20120229094652.14583"><vh>Rewrote shell-command commands</vh></v>
-<v t="ekr.20120229094652.14584"><vh>Added shell commands to Cmds menu</vh></v>
-<v t="ekr.20120229094652.14585"><vh>Added quick edit/save mode</vh>
-<v t="ekr.20120229094652.14586"><vh>Request</vh></v>
-<v t="ekr.20120229094652.14587"><vh>Checkin log</vh></v>
-<v t="ekr.20120229094652.14588"><vh>Changed</vh></v>
-</v>
-<v t="ekr.20120229094652.14589"><vh>Searches from Leo's web pages now work</vh></v>
-<v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
-<v t="ekr.20120229094652.14591"><vh>MacOS is no longer fully supported</vh></v>
-<v t="ekr.20120229094652.14592"><vh>Added support for tags in @button nodes</vh></v>
-<v t="ekr.20120229094652.14593"><vh>Reorganized @button &amp; @command nodes.</vh></v>
-<v t="ekr.20120229094652.14594"><vh>DingDing: big Aha's</vh></v>
-<v t="ekr.20120229094652.14595"><vh>help-for-command now uses g.getDocStringFromFunction</vh></v>
-<v t="ekr.20120229094652.14596"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
-<v t="ekr.20120229094652.14597"><vh>Added support for solarized colors</vh></v>
-<v t="ekr.20120229094652.14598"><vh>Added border around selected pane</vh></v>
-<v t="ekr.20120229094652.14599"><vh>Applied patch for bug 800399: Leo should have smart word jumps/deletes</vh></v>
-<v t="ekr.20120229094652.14600"><vh>Support single-line nodes like &lt;node/&gt; xml import code</vh></v>
-<v t="ekr.20120229094652.14601"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
-<v t="ekr.20120229094652.14602"><vh>Support run-marked-unit-tests-locally/externally</vh></v>
-<v t="ekr.20120229094652.14603"><vh>Disabled messages on external unit tests</vh></v>
-<v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
-<v t="ekr.20120229094652.14605"><vh>Support marking an entire tree</vh></v>
-<v t="ekr.20120229094652.14606"><vh>Added support for @bool use_body_focus_border</vh></v>
-<v t="ekr.20120229094652.14607"><vh>Call unselect1 hook only once</vh></v>
-<v t="ekr.20120229094652.14608"><vh>Added g.app.isExternalUnitTest</vh></v>
-<v t="ekr.20120229094652.14609"><vh>External unit tests now *do* read settings</vh></v>
-<v t="ekr.20120229094652.14610"><vh>bridgeController.initLeo now kills events if plugins not loaded</vh></v>
-<v t="ekr.20120229094652.14611"><vh>Added c.config.set</vh></v>
-<v t="ekr.20120229094652.14612"><vh>Alt-left-arrow collapses all children when selecting the parent</vh></v>
-<v t="ekr.20120229094652.14613"><vh>Improved scannerUnitTest</vh></v>
-<v t="ekr.20120229094652.14614"><vh>External unit tests now always read config settings</vh></v>
-<v t="ekr.20120229094652.14615"><vh>Added @bool indent_added_comments setting</vh></v>
-<v t="ekr.20120229094652.14616"><vh>Improved add/delete-comments</vh></v>
-<v t="ekr.20120229094652.14617"><vh>Selected @test node always run</vh></v>
-<v t="ekr.20120229094652.14618"><vh>Improve print-bindings &amp; print-commands.</vh></v>
-<v t="ekr.20120229094652.14619"><vh>Added show-decoration-selected: 1 to</vh></v>
-<v t="ekr.20120229094652.14620"><vh>Added stylesheets for Log &amp; Find tabs</vh></v>
-<v t="ekr.20120229094652.14621"><vh>Warn when importing/reading/writing @ignored nodes</vh></v>
-<v t="ekr.20120229094652.14622"><vh>Improved presentation of bindings</vh></v>
-<v t="ekr.20120229094652.14623"><vh>Brian's new page up/down code</vh>
-<v t="ekr.20120229094652.14624"><vh>pageUpDown</vh></v>
-</v>
-<v t="ekr.20120229094652.14625"><vh>Added clone-find-all-flattened command</vh>
-<v t="ekr.20120229094652.14626"><vh>cloneFindAll (minibufferFind)</vh></v>
-<v t="ekr.20120229094652.14627"><vh>cloneFindAllCommand &amp; cloneFindAllFlattenedCommand</vh></v>
-<v t="ekr.20120229094652.14628"><vh>cloneFindAllFlattened (minibufferFind)</vh></v>
-<v t="ekr.20120229094652.14629"><vh>Find wrappers</vh></v>
-<v t="ekr.20120229094652.14630"><vh>generalSearchHelper (minibufferFind)</vh></v>
-<v t="ekr.20120229094652.14631"><vh>getPublicCommands (searchCommandsClass)</vh></v>
-<v t="ekr.20120229094652.14632"><vh>findAll &amp; helper (leoFind)</vh>
-<v t="ekr.20120229094652.14633"><vh>createCloneFindAllNode</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20120229094652.14757"><vh>Bugs</vh>
 <v t="ekr.20120229094652.14758"><vh>Fixed ancient hanger in paste-retaining-clones</vh></v>
 <v t="ekr.20120229094652.14759"><vh>Fixed bug in p.setAllAncestorAtFileNodesDirty</vh></v>
@@ -423,19 +318,160 @@
 <v t="ekr.20120229094652.15012"><vh>Fixed bug: @int pagewidth now set c.page_width</vh></v>
 <v t="ekr.20120229094652.15013"><vh>Fixed bug: goto end line handler is broken</vh></v>
 <v t="ekr.20120229094652.14520"><vh>Removed unused color tags</vh></v>
+<v t="ekr.20120229094652.15147"><vh>Fixed bug: End only goes to physical line</vh></v>
+<v t="ekr.20120229094652.15146"><vh>rev 4952 fixes bug 87933 with major key reorg</vh></v>
 </v>
-<v t="ekr.20120229094652.15085"><vh>Document new features</vh>
-<v t="ekr.20120229094652.15086"><vh>Document leoInspect</vh></v>
-<v t="ekr.20120229094652.15087"><vh>Add short intro to scripting</vh>
-<v t="ekr.20120229094652.15088"><vh>Easier scripting</vh></v>
+<v t="ekr.20120229094652.14518"><vh>Code improvements</vh>
+<v t="ekr.20120229094652.15175"><vh>Major</vh>
+<v t="ekr.20120229094652.15142"><vh>Leo's new classes</vh></v>
 </v>
-<v t="ekr.20120229094652.15089"><vh>Terry added bookmark scripts</vh></v>
-<v t="ekr.20120229094652.15090"><vh>Document clone/move/delete-marked commands</vh></v>
+<v t="ekr.20120229094652.15176"><vh>Minor</vh>
+<v t="ekr.20120229094652.14522"><vh>Eliminated the low-level interface</vh></v>
+<v t="ekr.20120229094652.14523"><vh>Removed unused cruft from high-level interface</vh></v>
+<v t="ekr.20120229094652.14524"><vh>All unit tests may now be run externally</vh></v>
+<v t="ekr.20120229094652.14525"><vh>Unified the high-level interface</vh></v>
+<v t="ekr.20120229094652.14526"><vh>Create properties for logCtrl &amp; bodyCtrl</vh></v>
+<v t="ekr.20120229094652.14527"><vh>Added eventFilters to top-level frames</vh></v>
+<v t="ekr.20120229094652.14528"><vh>added log.orderedTabNames</vh></v>
+<v t="ekr.20120229094652.14531"><vh>Removed many module-level imports</vh></v>
+<v t="ekr.20120229094652.14532"><vh>Created the TestManager class</vh></v>
+<v t="ekr.20120229094652.14533"><vh>Created the LoadManager class (docs)</vh></v>
+<v t="ekr.20120229094652.14534"><vh>Removed c argument from g.app.config getters</vh></v>
+<v t="ekr.20120229094652.14535"><vh>Delay "reading settings" message until after signon</vh>
+<v t="ekr.20120229094652.14536"><vh>pr (codewise)</vh></v>
+<v t="ekr.20120229094652.14537"><vh>g.pr</vh></v>
+</v>
+<v t="ekr.20120229094652.14538"><vh>Use at.readOneAtAutoNode instead of ic.readOneAtAutoNode</vh></v>
+<v t="ekr.20120229094652.14578"><vh>Added p.positionAfterDeletedTree</vh></v>
+<v t="ekr.20120229094652.14577"><vh>Removed Leo's old syntax coloring code</vh></v>
+<v t="ekr.20120229094652.14583"><vh>Rewrote shell-command commands</vh></v>
+<v t="ekr.20120229094652.14608"><vh>Added g.app.isExternalUnitTest</vh></v>
+<v t="ekr.20120229094652.14611"><vh>Added c.config.set</vh></v>
+</v>
+<v t="ekr.20120229094652.15157"><vh>Investigations</vh>
+<v t="ekr.20120229094652.15158"><vh>Investigated unicode problems with print</vh></v>
+<v t="ekr.20120229094652.15159"><vh>Investigated autocomplete popup bug</vh></v>
+</v>
+<v t="ekr.20120229094652.15138"><vh>version.py now uses bzr_version.py</vh></v>
+<v t="ekr.20120229094652.15139"><vh>Changed calling signatures of g.openWithFileName and g.app.newCommander</vh></v>
+</v>
+<v t="ekr.20120229094652.15170"><vh>Commands: improved</vh>
+<v t="ekr.20120229094652.14612"><vh>Alt-left-arrow collapses all children when selecting the parent</vh></v>
+<v t="ekr.20120229094652.15169"><vh>Improved page-up &amp; page-down commands</vh></v>
+<v t="ekr.20120229094652.14622"><vh>Improved presentation of bindings</vh></v>
+<v t="ekr.20120229094652.14618"><vh>Improved print-bindings &amp; print-commands</vh></v>
+<v t="ekr.20120229094652.14580"><vh>Open now shows all files</vh></v>
+<v t="ekr.20120229094652.14617"><vh>Selected @test node always run</vh></v>
+</v>
+<v t="ekr.20120229094652.15164"><vh>Commands: new</vh>
+<v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
+<v t="ekr.20120229094652.14544"><vh>Added beautify-c command</vh></v>
+<v t="ekr.20120229094652.14545"><vh>Added c-to-python command</vh></v>
+<v t="ekr.20120229094652.14625"><vh>Added clone-find-all-flattened command</vh>
+<v t="ekr.20120229094652.14626"><vh>cloneFindAll (minibufferFind)</vh></v>
+<v t="ekr.20120229094652.14627"><vh>cloneFindAllCommand &amp; cloneFindAllFlattenedCommand</vh></v>
+<v t="ekr.20120229094652.14628"><vh>cloneFindAllFlattened (minibufferFind)</vh></v>
+<v t="ekr.20120229094652.14629"><vh>Find wrappers</vh></v>
+<v t="ekr.20120229094652.14630"><vh>generalSearchHelper (minibufferFind)</vh></v>
+<v t="ekr.20120229094652.14631"><vh>getPublicCommands (searchCommandsClass)</vh></v>
+<v t="ekr.20120229094652.14632"><vh>findAll &amp; helper (leoFind)</vh>
+<v t="ekr.20120229094652.14633"><vh>createCloneFindAllNode</vh></v>
+</v>
+</v>
+<v t="ekr.20120229094652.15090"><vh>Added clone/move/delete-marked commands</vh></v>
+<v t="ekr.20120229094652.14579"><vh>Added delete-marked-nodes and move-marked-nodes commands</vh></v>
+<v t="ekr.20120229094652.14584"><vh>Added shell commands to Cmds menu</vh></v>
+<v t="ekr.20120229094652.14602"><vh>Support run-marked-unit-tests-locally/externally</vh></v>
+</v>
+<v t="ekr.20120229094652.15162"><vh>Features: major</vh>
+<v t="ekr.20120229094652.14585"><vh>Added quick edit/save mode</vh>
+<v t="ekr.20120229094652.14586"><vh>Request</vh></v>
+<v t="ekr.20120229094652.14587"><vh>Checkin log</vh></v>
+<v t="ekr.20120229094652.14588"><vh>Changed</vh></v>
+</v>
+<v t="ekr.20120229094652.14597"><vh>Added support for solarized colors</vh></v>
+<v t="ekr.20120229094652.15153"><vh>Detached windows</vh></v>
+<v t="ekr.20120229094652.15151"><vh>Leo now raises a dialog on @ignore @&lt;file&gt; nodes</vh></v>
+<v t="ekr.20120229094652.15135"><vh>The leoInspect module</vh></v>
+</v>
+<v t="ekr.20120229094652.15163"><vh>Features: minor</vh>
+<v t="ekr.20120229094652.14540"><vh>Supported auto-hide in viewrendered plugin</vh></v>
+<v t="ekr.20120229094652.14541"><vh>set g.app.execute_script during script execution</vh></v>
+<v t="ekr.20120229094652.14542"><vh>Added select-to-matching-bracket command</vh></v>
+<v t="ekr.20120229094652.14576"><vh>The Find tab now scrolls</vh></v>
+<v t="ekr.20120229094652.14581"><vh>Made open smarter</vh></v>
+<v t="ekr.20120229094652.14592"><vh>Added support for tags in @button nodes</vh></v>
+<v t="ekr.20120229094652.14593"><vh>Reorganized @button &amp; @command nodes.</vh></v>
+<v t="ekr.20120229094652.14594"><vh>DingDing: big Aha's</vh></v>
+<v t="ekr.20120229094652.14595"><vh>help-for-command now uses g.getDocStringFromFunction</vh></v>
+<v t="ekr.20120229094652.14596"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
+<v t="ekr.20120229094652.14599"><vh>Applied patch for bug 800399: Leo should have smart word jumps/deletes</vh></v>
+<v t="ekr.20120229094652.14600"><vh>Support single-line nodes like &lt;node/&gt; xml import code</vh></v>
+<v t="ekr.20120229094652.14603"><vh>Disabled messages on external unit tests</vh></v>
+<v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
+<v t="ekr.20120229094652.14605"><vh>Support marking an entire tree</vh></v>
+<v t="ekr.20120229094652.14607"><vh>Call unselect1 hook only once</vh></v>
+<v t="ekr.20120229094652.14610"><vh>bridgeController.initLeo now kills events if plugins not loaded</vh></v>
+<v t="ekr.20120229094652.14613"><vh>Improved scannerUnitTest</vh></v>
+<v t="ekr.20120229094652.14614"><vh>External unit tests now always read config settings</vh></v>
+<v t="ekr.20120229094652.14616"><vh>Improved add/delete-comments</vh></v>
+<v t="ekr.20120229094652.14619"><vh>Added show-decoration-selected: 1 to</vh></v>
+<v t="ekr.20120229094652.14621"><vh>Warn when importing/reading/writing @ignored nodes</vh></v>
+</v>
+<v t="ekr.20120229094652.15167"><vh>Leo's web site</vh>
+<v t="ekr.20120229094652.14589"><vh>Searches from Leo's web pages now work</vh></v>
+<v t="ekr.20120229094652.14601"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
+</v>
+<v t="ekr.20120229094652.15174"><vh>MacOS</vh>
+<v t="ekr.20120229094652.15128"><vh>Leo on Mac OSX: new installation instructions</vh></v>
+<v t="ekr.20120229094652.14591"><vh>MacOS is no longer fully supported???</vh></v>
+</v>
+<v t="ekr.20120229094652.15165"><vh>Plugins</vh>
+<v t="ekr.20120229094652.14582"><vh>Improved create @auto nodes script</vh></v>
+<v t="ekr.20120229094652.14566"><vh>removed scrolledmessage plugin</vh></v>
 <v t="ekr.20120229094652.15091"><vh>Improved quicksearch plugin</vh></v>
+</v>
+<v t="ekr.20120229094652.15166"><vh>Scripts</vh>
+<v t="ekr.20120229094652.14567"><vh>Added import-org-mode script</vh>
+<v t="ekr.20120229094652.14568"><vh>import-org-mode (command, not used)</vh>
+<v t="ekr.20120229094652.14569"><vh>ctor</vh></v>
+<v t="ekr.20120229094652.14570"><vh>go</vh></v>
+<v t="ekr.20120229094652.14571"><vh>scan</vh></v>
+<v t="ekr.20120229094652.14572"><vh>test</vh></v>
+</v>
+<v t="ekr.20120229094652.14573"><vh>@@button import-org-mode</vh>
+<v t="ekr.20120229094652.14574"><vh>scan</vh></v>
+</v>
+<v t="ekr.20120229094652.14575"><vh>test-import-org-mode</vh></v>
+</v>
+<v t="ekr.20120229094652.15131"><vh>Code for displaying a function call hierarchy in Leo</vh>
+<v t="ekr.20120229094652.15132"><vh>call tree</vh>
+<v t="ekr.20120229094652.15133"><vh>displayCalltree</vh></v>
+<v t="ekr.20120229094652.15134"><vh>trace session</vh></v>
+</v>
+</v>
+<v t="ekr.20120229094652.14543"><vh>Improved recursive import script</vh></v>
+<v t="ekr.20120229094652.15149"><vh>Replacing Qt stylesheets on the fly</vh></v>
+<v t="ekr.20120229094652.15089"><vh>Terry added bookmark scripts</vh></v>
+</v>
+<v t="ekr.20120229094652.15168"><vh>Settings</vh>
+<v t="ekr.20120229094652.14606"><vh>Added @bool use_body_focus_border</vh></v>
+<v t="ekr.20120229094652.14598"><vh>Added border around selected pane</vh></v>
+<v t="ekr.20120229094652.14620"><vh>Added stylesheets for Log &amp; Find tabs</vh></v>
+<v t="ekr.20120229094652.14615"><vh>Added @bool indent_added_comments setting</vh></v>
+<v t="ekr.20120229094652.15143"><vh>Eliminated the -c option</vh></v>
+<v t="ekr.20120229094652.15140"><vh>New format for @openwith settings nodes</vh></v>
+<v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
+</v>
+<v t="ekr.20120229094652.15172"><vh>Unit testing</vh>
 <v t="ekr.20120229094652.15092"><vh>Use Alt-4 for all unit tests</vh></v>
 <v t="ekr.20120229094652.15093"><vh>Weightless unit testsing</vh></v>
 </v>
-<v t="ekr.20120229094652.15094"><vh>Revise docs</vh>
+<v t="ekr.20120229094652.15173"><vh>Update docs</vh>
+<v t="ekr.20120229094652.15087"><vh>Add short intro to scripting</vh>
+<v t="ekr.20120229094652.15088"><vh>Easier scripting</vh></v>
+</v>
+<v t="ekr.20120229094652.15130"><vh>Add to scripting chapter</vh></v>
 <v t="ekr.20120229094652.15095"><vh>Review bzr instructions</vh></v>
 <v t="ekr.20120229094652.15096"><vh>Document new organization for @command and @button nodes</vh></v>
 <v t="ekr.20120229094652.15097"><vh>Document @mark-for-unit-test trees!</vh></v>
@@ -475,35 +511,11 @@
 <v t="ekr.20120229094652.15125"><vh>Document loading plugins when running unit tests externally</vh></v>
 <v t="ekr.20120229094652.15126"><vh>Move UNL.py plugins docs somewhere else: it's no longer a plugin.</vh></v>
 <v t="ekr.20120229094652.15127"><vh>Revise Leo's docs re import commands</vh></v>
-<v t="ekr.20120229094652.15128"><vh>Leo on Mac OSX: new installation instructions</vh></v>
-</v>
-<v t="ekr.20120229094652.15129"><vh>Prewriting</vh>
-<v t="ekr.20120229094652.15130"><vh>Add to scripting chapter</vh></v>
-<v t="ekr.20120229094652.15131"><vh>Code for displaying a function call hierarchy in Leo</vh>
-<v t="ekr.20120229094652.15132"><vh>call tree</vh>
-<v t="ekr.20120229094652.15133"><vh>displayCalltree</vh></v>
-<v t="ekr.20120229094652.15134"><vh>trace session</vh></v>
-</v>
-</v>
-<v t="ekr.20120229094652.15135"><vh>The leoInspect module</vh></v>
-<v t="ekr.20120229094652.15136"><vh>Issue: @path @auto - strange behaviour</vh></v>
 <v t="ekr.20120229094652.15137"><vh>How to upgrade properly</vh></v>
-<v t="ekr.20120229094652.15138"><vh>version.py now uses bzr_version.py</vh></v>
-<v t="ekr.20120229094652.15139"><vh>Changed calling signatures of g.openWithFileName and g.app.newCommander</vh></v>
-<v t="ekr.20120229094652.15140"><vh>Open with problems and proposed solutions</vh></v>
-<v t="ekr.20120229094652.15141"><vh>Understanding Leo's load process</vh></v>
-<v t="ekr.20120229094652.15142"><vh>Leo's new classes</vh></v>
-<v t="ekr.20120229094652.15143"><vh>Eliminated the -c option</vh></v>
-<v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
-<v t="ekr.20120229094652.15145"><vh>About key handling</vh></v>
-<v t="ekr.20120229094652.15146"><vh>rev 4952 fixes bug 87933 with major key reorg</vh></v>
-<v t="ekr.20120229094652.15147"><vh>Fix bug: End only goes to physical line</vh></v>
-<v t="ekr.20120229094652.15148"><vh>BibTeX citations from Leo</vh></v>
-<v t="ekr.20120229094652.15149"><vh>Replacing Qt stylesheets on the fly</vh></v>
-<v t="ekr.20120229094652.15150"><vh>Eliminated v.bat</vh></v>
-<v t="ekr.20120229094652.15151"><vh>Leo will now raise a dialog on @ignore @&lt;file&gt; nodes</vh></v>
 <v t="ekr.20120229094652.15152"><vh>All about clone conflicts</vh></v>
-<v t="ekr.20120229094652.15153"><vh>Detached windows</vh></v>
+<v t="ekr.20120229094652.15148"><vh>BibTeX citations from Leo</vh></v>
+<v t="ekr.20120229094652.15141"><vh>Theory of operations: Understanding Leo's load process</vh></v>
+<v t="ekr.20120229094652.15145"><vh>Theory of operation: About key handling</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2414,7 +2426,6 @@ def pr(*args,**keys):
 </t>
 <t tx="ekr.20120229094652.14538"># It's important to use only one version of the code.
 </t>
-<t tx="ekr.20120229094652.14539"></t>
 <t tx="ekr.20120229094652.14540"></t>
 <t tx="ekr.20120229094652.14541">This allows the following pattern to appear in Leo source files::
 
@@ -3076,8 +3087,6 @@ Isee the following
 </t>
 <t tx="ekr.20120229094652.14608">Unit tests can test this ivar.
 </t>
-<t tx="ekr.20120229094652.14609">This adds about 0.35 seconds. This is not important with the new meaning of Alt-4.
-</t>
 <t tx="ekr.20120229094652.14610">The new code monkey-patches g.doHook to a do-nothing::
     
     if not self.loadPlugins:
@@ -3145,39 +3154,6 @@ fc.writeDirtyAtFileNodes
 - Improved print-commands &amp; print-bindings: don't print 'all'
 
 - Simplfied the code in various ways.
-</t>
-<t tx="ekr.20120229094652.14623"></t>
-<t tx="ekr.20120229094652.14624">def pageUpDown (self, op, moveMode):
-
-    '''The QTextEdit PageUp/PageDown functionality seems to be "baked-in"
-       and not externally accessible.  Since Leo has its own keyhandling
-       functionality, this code emulates the QTextEdit paging.  This is
-       a straight port of the C++ code found in the pageUpDown method
-       of gui/widgets/qtextedit.cpp'''
-
-    control = self.widget
-    cursor = control.textCursor()
-    moved = False
-    lastY = control.cursorRect(cursor).top()
-    distance = 0
-    # move using movePosition to keep the cursor's x
-    while True:
-        y = control.cursorRect(cursor).top()
-        distance += abs(y - lastY)
-        lastY = y
-        moved = cursor.movePosition(op, moveMode)
-        if (not moved or distance &gt;= control.height()):
-            break
-    tc = QtGui.QTextCursor
-    sb = control.verticalScrollBar()
-    if moved:
-        if (op == tc.Up):
-            cursor.movePosition(tc.Down, moveMode)
-            sb.triggerAction(QtGui.QAbstractSlider.SliderPageStepSub)
-        else:
-            cursor.movePosition(tc.Up, moveMode)
-            sb.triggerAction(QtGui.QAbstractSlider.SliderPageStepAdd)
-    control.setTextCursor(cursor)
 </t>
 <t tx="ekr.20120229094652.14625">The clone-find-all command includes nodes only once: if a
 node's ancestor appears in the list, the node is not include
@@ -4111,8 +4087,6 @@ The fix was the following lines in c.initConfigSettings:
 <t tx="ekr.20120229094652.15013">The fix was easy: moveWithinLineHelper does *not* call
 leoMoveCursorHelper for the case spot == 'end-line'
 </t>
-<t tx="ekr.20120229094652.15085"></t>
-<t tx="ekr.20120229094652.15086"></t>
 <t tx="ekr.20120229094652.15087">http://mail.google.com/mail/#inbox/1330f306b947656c
 
 &gt; Maybe I'm missing something here, probably because I've always
@@ -4260,7 +4234,6 @@ When I am satisfied with the @test node, I can leave it where it is
 The energy difference between weightless and heavy is astounding.  Try
 the new way: you will surely like it. 
 </t>
-<t tx="ekr.20120229094652.15094"></t>
 <t tx="ekr.20120229094652.15095"></t>
 <t tx="ekr.20120229094652.15096">Recent revs to to the trunk complete, with perhaps one or two small
 additions to come, a grand redesign of all of Leo's @command/@button
@@ -5548,7 +5521,6 @@ Now I just have to start using Leo after all these years of checking
 it out... :-)
 
 </t>
-<t tx="ekr.20120229094652.15129"></t>
 <t tx="ekr.20120229094652.15130">I want to learn about PyQt and leo's qtGui. As a first step,
 I'm trying to execute a script from within a leo body::
 
@@ -5672,16 +5644,6 @@ leoInspect: a hobby with a future?
 http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
 leoInspect: remarkable collapse in complexity and attempted assessment
 
-</t>
-<t tx="ekr.20120229094652.15136">http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
-
-&gt; In short, I am now willing, on an experimental basis, to have Leo put
-&gt; up a dialog when inserting an @ignore, and also when writing an
-&gt; @&lt;file&gt; node containing @ignore.
-
-&gt; In the past, I have always found read/write dialogs to be a) intrusive
-&gt; and b) panic-inducing, but this may be a tolerable exception.  We
-&gt; shall see.
 </t>
 <t tx="ekr.20120229094652.15137">http://groups.google.com/group/leo-editor/browse_thread/thread/61019e45d75a6f18/71ee770ee4421222
 
@@ -6417,57 +6379,16 @@ As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
 set the stylesheet for that widget only: the top-level stylesheet (the
 stylesheet for c.frame.top.leo_ui) remains unchanged.
 </t>
-<t tx="ekr.20120229094652.15150">http://groups.google.com/group/leo-editor/browse_thread/thread/6c0a05306fb9b18f
+<t tx="ekr.20120229094652.15151">http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
 
-I'd like to start a new thread here, rather than continue the
-discussion for bug "911521: Help about and --version should be
-accurate" so that more people might see it.
+&gt; In short, I am now willing, on an experimental basis, to have Leo put
+&gt; up a dialog when inserting an @ignore, and also when writing an
+&gt; @&lt;file&gt; node containing @ignore.
 
-Here is my present summary of the situation:
-
-The v.bat way is not acceptable: it effectively doubles the number of
-commits needed, which adds a lot of cruft to the bzr log.
-
-But how to fix matters?  There are three cases, two of which are
-almost identical:
-
-1. Running Leo from a bzr repository.  This is the easy case.
-leoVersion.py should get the version from the .bzr/branch/last-
-revision file.  I am going to add this code today.
-
-2. Running Leo from a nightly snapshot.
-
-3. Running Leo from an official release.
-
-Cases 2 and 3 are almost identical.  The only difference is that for
-case 3 we could consider running a distribution script to update
-leoVersion.py.  We could also run such a script for nightly snapshots,
-but that would not be automatic.
-
-In short, the essential question is how to update leoVersion.py for
-nightly snapshots.
-
-Terry, I don't recall whether you have ever published the script that
-builds the snapshots.  I think maybe you did, but I have no
-recollection of it.  Would it be possible for this script to update
-the source code of leoVersion.py?  If so, leoVersion.py would get the
-version from the last-revision file if it exists, and otherwise use
-the hard coded version inserted by your script.
-
-I suppose the essential point here is that updated leoVersion.py would
-*not* be committed to bzr: it would exist only for the nightly build.
-This should be safe enough.
-
-Any other comments or ideas? 
-
-=====
-
-In short, all that needs to be done is to have leoVersion.py look in
-Leo's core folder for bzr_version.py if last-revision does not exist.
-The core folder is as good a place as any, imo, so there should be no
-need to change your daily build script. 
+&gt; In the past, I have always found read/write dialogs to be a) intrusive
+&gt; and b) panic-inducing, but this may be a tolerable exception.  We
+&gt; shall see.
 </t>
-<t tx="ekr.20120229094652.15151"></t>
 <t tx="ekr.20120229094652.15152">groups.google.com/group/leo-editor/browse_thread/thread/5da0de4502154b2c/1b077a8bb8e65811
 
 Some people seem to think that it is difficult to understand how Leo
@@ -6596,6 +6517,20 @@ Anyway, calling setWindowModality(QtCore.Qt.NonModal) does not seem to
 have much effect on Ubuntu, so I think I can safely say there is
 nothing more I can do. 
 </t>
+<t tx="ekr.20120229094652.15162"></t>
+<t tx="ekr.20120229094652.15163"></t>
+<t tx="ekr.20120229094652.15164"></t>
+<t tx="ekr.20120229094652.15165"></t>
+<t tx="ekr.20120229094652.15166"></t>
+<t tx="ekr.20120229094652.15167"></t>
+<t tx="ekr.20120229094652.15168"></t>
+<t tx="ekr.20120229094652.15169"></t>
+<t tx="ekr.20120229094652.15170"></t>
+<t tx="ekr.20120229094652.15172"></t>
+<t tx="ekr.20120229094652.15173"></t>
+<t tx="ekr.20120229094652.15174"></t>
+<t tx="ekr.20120229094652.15175"></t>
+<t tx="ekr.20120229094652.15176"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
