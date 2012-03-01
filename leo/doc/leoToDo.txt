@@ -19,6 +19,10 @@ Top 10:
 @language rest
 
 .. @+node:ekr.20120228164039.11403: *4* Bugs 6
+.. @+node:ekr.20120301053039.15578: *5* Special-case tilde (optional)_for brazilian keyboards
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/QTvpgWERSJY
+
+The idea is to set a "tilde-flag" (where??) to enable tilde-a to be turned into an accented a.
 .. @+node:ekr.20120229094652.15181: *5* Fix print-bindings bugs
 https://bugs.launchpad.net/leo-editor/+bug/903469
 Alt+F3 and Alt-delete aren't shown by print-bindings
@@ -7591,15 +7595,15 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
     if c.macroCommands.recordingMacro:
         c.macroCommands.startRecordingMacro(event)
         # 2011/06/06: Show the key, if possible.
-        # return # (for Tk) 'break'
+        # return
 
     if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
         k.keyboardQuit()
         k.endCommand(commandName)
-        return # (for Tk) 'break'
+        return
 
     if special: # Don't pass these on.
-        return # (for Tk) 'break' 
+        return
 
     # if k.regx.iter:
         # try:
@@ -7607,11 +7611,11 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
             # k.regx.iter.next() # EKR: next() may throw StopIteration.
         # except StopIteration:
             # pass
-        # return # (for Tk) 'break'
+        # return
 
     if k.abbrevOn:
         expanded = c.abbrevCommands.expandAbbrev(event,stroke)
-        if expanded: return # (for Tk) 'break'
+        if expanded: return
 
     if func: # Func is an argument.
         if commandName == 'propagate-key-event':

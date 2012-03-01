@@ -392,7 +392,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
         if stroke:
-            ch = d.get(stroke.s,stroke.s) #### To do.
+            ch = d.get(stroke.s,stroke.s)
             if len(ch) > 1:
                 if (stroke.find('Ctrl+') > -1 or
                     stroke.find('Alt+') > -1 or
@@ -405,48 +405,31 @@ class abbrevCommandsClass (baseEditCommandsClass):
             ch = event.char
             
         if trace: g.trace('ch',repr(ch),'stroke',repr(stroke))
-
-        if len(ch) != 1 or (len(ch) == 1 and ch.isalpha()):
-            # Normal chars other special chars abort abbreviations.
+        
+        # New code allows *any* sequence longer than 1 to be an abbreviation.
+        # Only newlines stop the search.
+        s = w.getAllText()
+        j = w.getInsertPoint()
+        i = j-1
+        while i >= 0 and s[i] != '\n':
+            prefix = s[i:j]
+            word = prefix+ch
+            val,tag = self.abbrevs.get(word,(None,None))
+            if trace: g.trace(repr(word),val,tag)
+            if val: break
+            else: i -= 1
+        else:
             return False
 
-        # Get the text and insert point.
-        s = w.getAllText()
-        i = i1 = w.getInsertPoint()
+        if trace: g.trace('**inserting',repr(val))
+        oldSel = j,j
+        c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
+        if i != j: w.delete(i,j)
+        w.insert(i,val)
+        c.frame.body.forceFullRecolor() # 2011/10/21
+        c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
 
-        # Find the word to the left of the insert point.
-        j = i ; i -= 1
-        while 0 <= i < len(s) and g.isWordChar(s[i]):
-            i -= 1
-        if 0 <= i < len(s) and s[i] == '@':
-            i -= 1
-        i += 1
-        word = s[i:j].strip()
-        if trace: g.trace(i,j,repr(word))
-        if not word: return False
-
-        # First, look up the word without ch.
-        val,tag = self.abbrevs.get(word,(None,None))
-        if trace: g.trace(word,val,tag)
-        
-        if val:
-            # Add ch to the result.
-            if ch: val = val + ch
-        else:
-            # Look up the word with ch.
-            if ch and not val:
-                val,tag = self.abbrevs.get(word+ch,(None,None))
-                if trace: g.trace(word+ch,val,tag)
-        if val:
-            if trace: g.trace('**inserting',repr(val))
-            oldSel = j,j
-            c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
-            if i != j: w.delete(i,j)
-            w.insert(i,val)
-            c.frame.body.forceFullRecolor() # 2011/10/21
-            c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
-
-        return val is not None
+        return True
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion
     def dynamicCompletion (self,event=None):
@@ -557,13 +540,17 @@ class abbrevCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20070531103114: *3* static abbrevs
     #@+node:ekr.20100901080826.6001: *4* addAbbrevHelper
     def addAbbrevHelper (self,s,tag=''):
+        
+        '''Enter the abbreviation 's' into the self.abbrevs dict.'''
 
         if not s.strip(): return
 
         try:
             d = self.abbrevs
             data = s.split('=')
-            name = data[0].strip()
+            # name = data[0].strip()
+            # 2012/02/29: Do *not* strip ws, and allow the user to specify ws.
+            name = data[0].replace('\\t','\t').replace('\\n','\n')
             val = '='.join(data[1:])
             if val.endswith('\n'): val = val[:-1]
             val = val.replace('\\n','\n')

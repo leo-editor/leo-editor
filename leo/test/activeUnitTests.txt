@@ -9165,9 +9165,10 @@ This paragraph ends the test. It is the
 f = c.abbrevCommands.addAbbrevHelper
 d = c.abbrevCommands.abbrevs
 
+# New in Leo 4.10: whitespace (blank,tab,newline) *is* significant in definitions.
 table = (
     ('ut1','ut1=aa','aa'),
-    ('ut2','ut2 =bb','bb'),
+    # ('ut2','ut2 =bb','bb'),
     ('ut3','ut3=cc=dd','cc=dd'),
     ('ut4','ut4= ee',' ee'),
     ('ut5','ut5= ff = gg',' ff = gg'),
@@ -9181,8 +9182,8 @@ for name,s,expected in table:
     for s2,kind in ((s,'(no nl)'),(s+'\n','(nl)')):
         f(s2,tag='unit-test')
         result,tag = d.get(name,(None,None),)
-        assert result==expected, '%s expected <%s>, got <%s>' % (
-            kind,expected,result)
+        assert result==expected, '%s <%s> expected <%s>, got <%s>' % (
+            kind,s,expected,result)
 #@+node:ekr.20061104172236.3: *5* @test capitalizeHelper
 # TARGETWORD
 

@@ -2727,15 +2727,15 @@ class keyHandlerClass:
         if c.macroCommands.recordingMacro:
             c.macroCommands.startRecordingMacro(event)
             # 2011/06/06: Show the key, if possible.
-            # return # (for Tk) 'break'
+            # return
 
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
             k.endCommand(commandName)
-            return # (for Tk) 'break'
+            return
 
         if special: # Don't pass these on.
-            return # (for Tk) 'break' 
+            return
 
         # if k.regx.iter:
             # try:
@@ -2743,11 +2743,11 @@ class keyHandlerClass:
                 # k.regx.iter.next() # EKR: next() may throw StopIteration.
             # except StopIteration:
                 # pass
-            # return # (for Tk) 'break'
+            # return
 
         if k.abbrevOn:
             expanded = c.abbrevCommands.expandAbbrev(event,stroke)
-            if expanded: return # (for Tk) 'break'
+            if expanded: return
 
         if func: # Func is an argument.
             if commandName == 'propagate-key-event':
