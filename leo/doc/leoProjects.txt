@@ -1483,6 +1483,175 @@ def doCommands (self,p,kind,name,val):
     aList = d.get(key,[])
     aList.append(c.shortFileName())
     d[key] = aList
+#@+node:ekr.20120301053039.15579: *3* Allow "instant" abbreviations like ~a
+@nocolor-node
+
+Rev 5051 contains a *major* improvement in Leo's abbreviation code.
+It is simpler, and more general than before.
+
+The downside is that you will likely have to revise your
+abbreviations.  I believe the extra work will be well worthwhile.
+
+Here are the changes:
+
+1. Abbreviations may consist of *any* sequence of characters,
+including whitespace or "special" characters. You may include
+whitespace characters in definitions using the '\t' and '\n' escapes.
+However, '\n' may only appear at the *end* of definitions.
+
+2. You must take care to disambiguate abbreviations if one is a prefix
+of another.
+
+Here is an example of both points.  As always, you define
+abbreviations in the body of an @global-abbreviation node or
+@abbreviation node::
+
+    nc =@nocolor\n
+    nc\n=@nocolor\n
+    nc\t=@nocolor\n
+
+    ncn=@nocolor-node\n
+
+As you can see, the definitions uses whitespace in the definition of
+"nc" to prevent it from being expanded when typing "ncn".
+
+3. The reason I call these abbreviations "instant" is that they can be
+triggered on *any* keystroke, not just the end of a "word".  This
+allows you to define::
+
+    teh=the
+
+Hurray!
+
+4. Two rules limit scans.  They are useful and shouldn't cause
+hardships.
+
+A.  The backspace character *never* triggers a substitution. As I
+write this, I see that the Delete key should also never trigger an
+abbreviation.  That will be the next rev :-)
+
+B.  The scan for definitions ends at the preceding newline.
+Therefore, newlines will have effect only at the *end* of a
+definition.
+
+**Important**: these rules can cause problems when *defining*
+abbreviations:  it's easy to trigger an unwanted definition.  The
+solution is to use rule 4B:
+
+I want to type::
+
+    ncn=@nocolor-node\n
+
+But I **cant** type this directly if nc is already defined!  The trick
+is to type::
+
+   nxcn=@nocolor-node\n
+
+and then delete the leading x with a backspace character.
+
+Of course, you could also turn abbrevions off while defining abbreviations...
+
+Instant abbreviations solve the problems with Brazilian
+keyboards.  Just define::
+
+    ~a=ã
+    ~A=Ã
+    etc.
+
+The beauty of this is that it works regardless of keyboard, regardless
+of OS, etc. You might want to define::
+
+    ~\a=~a
+    ~\A=~A
+
+in the somewhat unlikely event that you want to type ~a rather than,
+say, ~+a.  Of course, you don't need these, provided you remember to
+type ~xa <Right><Delete> :-)
+#@+node:ekr.20050920084036.27: *4* expandAbbrev
+def expandAbbrev (self,event,stroke):
+
+    '''Not a command.  Called from k.masterCommand to expand
+    abbreviations in event.widget.
+
+    Words start with '@'.
+    '''
+
+    trace = False and not g.unitTesting
+    k = self.k ; c = self.c
+    ch = event and event.char or ''
+    w = self.editWidget(event,forceFocus=False)
+    if not w: return False
+    if w.hasSelection(): return False
+    
+    assert g.isStrokeOrNone(stroke)
+
+    if stroke in ('BackSpace','Delete'):
+        if trace: g.trace(stroke)
+        return False
+
+    d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
+    if stroke:
+        ch = d.get(stroke.s,stroke.s)
+        if len(ch) > 1:
+            if (stroke.find('Ctrl+') > -1 or
+                stroke.find('Alt+') > -1 or
+                stroke.find('Meta+') > -1
+            ):
+                ch = ''
+            else:
+                ch = event and event.char or ''
+    else:
+        ch = event.char
+        
+    if trace: g.trace('ch',repr(ch),'stroke',repr(stroke))
+    
+    # New code allows *any* sequence longer than 1 to be an abbreviation.
+    # Any whitespace stops the search.
+    s = w.getAllText()
+    j = w.getInsertPoint()
+    i = j-1
+    while i >= 0 and s[i] not in ' \t\n':
+        prefix = s[i:j]
+        word = prefix+ch
+        val,tag = self.abbrevs.get(word,(None,None))
+        if trace: g.trace(repr(word),val,tag)
+        if val: break
+        else: i -= 1
+    else:
+        return False
+
+    if trace: g.trace('**inserting',repr(val))
+    oldSel = j,j
+    c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
+    if i != j: w.delete(i,j)
+    w.insert(i,val)
+    c.frame.body.forceFullRecolor() # 2011/10/21
+    c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
+
+    return True
+#@+node:ekr.20100901080826.6001: *4* addAbbrevHelper
+def addAbbrevHelper (self,s,tag=''):
+    
+    '''Enter the abbreviation 's' into the self.abbrevs dict.'''
+
+    if not s.strip(): return
+
+    try:
+        d = self.abbrevs
+        data = s.split('=')
+        # name = data[0].strip()
+        # 2012/02/29: Do *not* strip ws, and allow the user to specify ws.
+        name = data[0].replace('\\t','\t').replace('\\n','\n')
+        val = '='.join(data[1:])
+        if val.endswith('\n'): val = val[:-1]
+        val = val.replace('\\n','\n')
+        old,tag = d.get(name,(None,None),)
+        if old and old != val and not g.unitTesting:
+            g.es_print('redefining abbreviation',name,
+                '\nfrom',repr(old),'to',repr(val))
+        d [name] = val,tag
+    except ValueError:
+        g.es_print('bad abbreviation: %s' % s)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

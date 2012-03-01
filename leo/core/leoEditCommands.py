@@ -387,7 +387,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         
         assert g.isStrokeOrNone(stroke)
 
-        if stroke in ('\b','BackSpace'):
+        if stroke in ('BackSpace','Delete'):
+            if trace: g.trace(stroke)
             return False
 
         d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
@@ -407,11 +408,11 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if trace: g.trace('ch',repr(ch),'stroke',repr(stroke))
         
         # New code allows *any* sequence longer than 1 to be an abbreviation.
-        # Only newlines stop the search.
+        # Any whitespace stops the search.
         s = w.getAllText()
         j = w.getInsertPoint()
         i = j-1
-        while i >= 0 and s[i] != '\n':
+        while i >= 0 and s[i] not in ' \t\n':
             prefix = s[i:j]
             word = prefix+ch
             val,tag = self.abbrevs.get(word,(None,None))
