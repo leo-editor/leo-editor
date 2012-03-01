@@ -564,7 +564,11 @@
 </v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407"><vh>@buttons</vh></v>
+<v t="ekr.20070926082407"><vh>@buttons</vh>
+<v t="ekr.20120229173025.20628"><vh>@ignore</vh>
+<v t="ekr.20120229173025.20627"><vh>@button leo-settings-hi</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh>
@@ -1842,7 +1846,7 @@ Notes:
   where s is the value of this setting.
 - Please set this field empty when uploading to CVS.
 - Very old versions of Leo did not support reading files containing xml-stylesheet lines.</t>
-<t tx="ekr.20041119035137">@nocolor
+<t tx="ekr.20041119035137">@language rest
 @pagewidth 80
 
 This is Leo's main settings file.  It specifies settings used to customize Leo.
@@ -1866,7 +1870,7 @@ The basic types are: @bool, @color, @directory, @encoding, @font, @int, @path, a
 
 None is a valid value for all types.  It indicates that the setting node has no effect.
 </t>
-<t tx="ekr.20041119035704.1">Organizer nodes have headlines that do no start with @.
+<t tx="ekr.20041119035704.1">Organizer nodes have headlines that do **not** start with @.
 
 Organizer nodes may be inserted freely without changing the meaning of an @setting tree.</t>
 <t tx="ekr.20041119035704.2">Leo ignores subtrees of @settings trees whose headline starts with @ignore.</t>
@@ -2097,7 +2101,7 @@ False: Don't issue such messages.
 
 </t>
 <t tx="ekr.20041119053445">Background color of log text.</t>
-<t tx="ekr.20041119105509">Not implemented yet.
+<t tx="ekr.20041119105509">**Not implemented**.
 
 Creates a permanent value that can be tested later with @if. That is, it alters
 the environment in which @if code is executed.</t>
@@ -3281,8 +3285,8 @@ sets. setNames is a list of the roots of all such sets.'''
 import leo.core.leoConfig as leoConfig
 import leo.core.leoTest as leoTest
 
-u = leoTest.testUtils(c)
-parser = leoConfig.settingsTreeParser(c)
+# u = leoTest.testUtils(c)
+parser = leoConfig.SettingsTreeParser(c)
 
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
@@ -3397,9 +3401,6 @@ main()
     global setNames
     defineSetNames()
 
-    # root = u.findNodeAnywhere('Keyboard shortcuts')
-    # for p in root.self_and_subtree_iter():
-
     g.es_print('-' * 40)
     seen = {}
     for p in c.allNodes_iter():
@@ -3422,15 +3423,15 @@ main()
     for line in lines:
         line = line.strip()
         if line and not line.startswith('#'):
-            commandName,bunch = parser.parseShortcutLine(line)
-            if not bunch:
+            commandName,si = parser.parseShortcutLine('test',line)
+            if not si:
                 g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
                     p.headString(),repr(line)),color='red')
             else:
                 # Having multiple shortcuts for a command if fine,
                 # But having multiple commands for a shortcut is not.
-                shortcut = bunch and bunch.val
-                pane = bunch and bunch.pane
+                shortcut = si.stroke
+                pane = si.pane
                 if shortcut not in (None,'None','none'):
                     aList = shortcutsDict.get(shortcut,[])
                     if aList:
@@ -5184,6 +5185,9 @@ For some reason, colors in the text widget do not match the colors in the canvas
 <t tx="ekr.20080511041907.2"></t>
 <t tx="ekr.20080512082834.1"># Now that we know what commands are single-line editing commands,
 # Only &lt;return&gt; and arrow keys need per-pane bindings.
+
+do-nothing  = Ctrl-DnArrow  # Causes problems on Ubuntu.
+do-nothing  = Ctrl-UpArrow  # Causes problesm on Ubuntu.
 
 end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
@@ -8414,10 +8418,8 @@ Controller(c).run()</t>
     '''Open files as needed and set the commander ivars.'''
     
     def open_commander(fn):
-        ok,frame = g.openWithFileName(fn,old_c=self.c,
-            enableLog=True,gui=None,readAtFileNodesFlag=True)
-        if ok:
-            return frame.c
+        c = g.openWithFileName(fn,old_c=self.c,gui=g.app.nullGui)
+        if c: return c
         else:
             self.error('not found: %s' % fn)
             
@@ -8584,7 +8586,7 @@ Controller(c).run()</t>
     if self.errors == 0:
         self.check(configs,settings)
         
-    # g.trace('done')</t>
+    g.trace('done')</t>
 <t tx="ekr.20111007043902.15697">def print_missing(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
     
     '''Print the canonical name, followed by the list of names that match.'''
@@ -8932,8 +8934,7 @@ sets. setNames is a list of the roots of all such sets.'''
 import leoConfig
 import leoTest
 
-u = leoTest.testUtils(c)
-parser = leoConfig.settingsTreeParser(c)
+parser = leoConfig.SettingsTreeParser(c)
 
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
@@ -9001,7 +9002,7 @@ main()
     for line in lines:
         line = line.strip()
         if line and not line.startswith('#'):
-            commandName,bunch = parser.parseShortcutLine(line)
+            commandName,bunch = parser.parseShortcutLine('test',line)
             if not bunch:
                 g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
                     p.headString(),repr(line)),color='red')
@@ -9090,9 +9091,6 @@ main()
 
     global setNames
     defineSetNames()
-
-    # root = u.findNodeAnywhere('Keyboard shortcuts')
-    # for p in root.self_and_subtree_iter():
 
     g.es_print('-' * 40)
     seen = {}
@@ -9483,6 +9481,8 @@ children of the to-be-selected parent.
 <t tx="ekr.20120205022040.15411">This setting has effect only on MacOS.
 
 When True, bindings that appear to specify the control key actually specify the command (clover) key.</t>
+<t tx="ekr.20120229173025.20627">print('hi from leoSettings.leo')</t>
+<t tx="ekr.20120229173025.20628"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
