@@ -1304,13 +1304,13 @@ class Commands (object):
         c = self ; p = c.p
         try:
             ext = d.get('ext')
-            if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d): #### openType=openType,arg=arg,ext=ext):
+            if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
                 ext = c.getOpenWithExt(p,ext)
                 fn = c.openWithHelper(p,ext)
                 if fn:
                     g.enableIdleTimeHook(idleTimeDelay=500)
                     c.openTempFileInExternalEditor(d,fn)
-            g.doHook('openwith2',c=c,p=p,v=p.v,d=d) ### openType=openType,arg=arg,ext=ext)
+            g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
         except Exception:
             g.es('unexpected exception in c.openWith')
             g.es_exception()
@@ -1376,16 +1376,11 @@ class Commands (object):
 
         try:
             command = '<no command>'
-            # if openType == 'os.system':
-                # command = '%s %s' % (arg,fn)
-                # if trace:
-                    # g.trace()
-                    # print('  %s' % (arg))
-                    # print('  %s' % (fn))
-                # if not testing:
-                    # os.system(command)
-            # el
-            if openType == 'os.startfile':
+            if openType == 'os.system':
+                command = 'os.system(%s)' % join(arg,fn)
+                if not testing:
+                    os.system(command)
+            elif openType == 'os.startfile':
                 command = 'os.startfile(%s)' % join(arg,fn)
                 if trace: g.trace(command)
                 if not testing: os.startfile(join(arg,fn))
@@ -1405,9 +1400,10 @@ class Commands (object):
                     # add the name of the program as the first argument.
                     # Change suggested by Jim Sizelove.
                 vtuple.append(fn)
-                command = 'os.spawnv(%s,%s)' % (arg[0],repr(vtuple))
+                command = 'os.spawnv(%s)' % (vtuple)
                 if trace: g.trace(command)
-                if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
+                if not testing:
+                    os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
             elif openType == 'subprocess.Popen':
                 use_shell = True
                 c_arg = join(arg,fn)

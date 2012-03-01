@@ -562,8 +562,8 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'new'                                  start of New command                c,old_c,new_c (note 9)
 'open1'                        yes     before opening any file             c,old_c,new_c,fileName (note 4)
 'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
-'openwith1'                    yes     before Open With command            c,p,v,openType,arg,ext
-'openwith2'                            after  Open With command            c,p,v,openType,arg,ext
+'openwith1'                    yes     before Open With command            c,p,v,d (note 14)
+'openwith2'                            after  Open With command            c,p,v,(note 14)
 'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName,closeFlag
 'recentfiles2'                         after  Recent Files command         c,p,v,fileName,closeFlag
 'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
@@ -649,6 +649,10 @@ Event name (tag argument)     Stop?    When called                         Keys 
 12. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
 
 13. p is the new node (position) containing '@auto filename.ext'
+
+14. New in Leo 4.10: the d argument to the open-with event handlers is a python
+    dictionary whose keys are all the tags specified by the user in the body of the
+    @open-with node.
 .. @+node:ekr.20071021102946: *4* Enabling idle time event handlers
 Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
 **g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.

@@ -18,9 +18,16 @@ Top 10:
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 @language rest
 
-.. @+node:ekr.20120228164039.11410: *4* Revise bugs page
-The wishlist items should be last.
-.. @+node:ekr.20120228164039.11403: *4* Bugs 4
+.. @+node:ekr.20120228164039.11403: *4* Bugs 6
+.. @+node:ekr.20120229094652.15181: *5* Fix print-bindings bugs
+https://bugs.launchpad.net/leo-editor/+bug/903469
+Alt+F3 and Alt-delete aren't shown by print-bindings
+
+https://bugs.launchpad.net/leo-editor/+bug/903470
+print-bindings no longer properly terminates each line
+
+https://bugs.launchpad.net/leo-editor/+bug/903472
+print-bindings fails to show the origin of bindings to commands defined in myLeoSettings
 .. @+node:ekr.20110929165422.15449: *5* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
@@ -1888,6 +1895,15 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
+.. @+node:ekr.20120229094652.19497: *5* Bug 930726:expandNodeAndGoToFirstChild only expands or only goes to first child 
+https://bugs.launchpad.net/leo-editor/+bug/930726
+
+Bug: If the node is not expanded already, then the position is left on the parent, not the first child.
+
+Function expandNodeAndGoToFirstChild() is referenced only once in LeoPyRef.leo. This reference is in table of public Leo commands.
+
+The node in which expandNodeAndGoToFirstChild() is defined also contains the definition of function expandNodeOrGoToFirstChild(). At present these two functions are equivalent.
+The comments including the header for the node imply that they should not be equivalent and that expandNodeAndGoToFirstChild() is not correctly implemented.
 .. @+node:ekr.20111026091322.16496: *5* Bug 844953: copy-clone-pasted node appears in other tab
 @nocolor-node
 
@@ -1913,42 +1929,121 @@ nodes at once.
 I wrote the context menu delete, but I don't understand the undo system
 that well - it's possible it just doesn't support a redo of something
 like this.
-.. @+node:ekr.20120228164039.11409: *4* Features 4
-.. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for call-last-macro
+.. @+node:ekr.20120229094652.15177: *4* Finish docs
+.. @+node:ekr.20120301053039.15577: *4* check scripts in leoSetting.leo pass
+.. @+node:ekr.20120229094652.19779: *4* Others 2
 .. @+node:ekr.20120203053243.10111: *5* Complete OpenWith menu
 @nocolor-node
 
-To do:
-    
-- Update or abandon the unit test.
-- update the docs.
-    - open-with hook has changed: it now uses a "d" arg.
 - test other open-handlers besides subprocess.Popen.
-.. @+node:ekr.20120227073551.11666: *6* @test c.openTempFileInExternalEditor
-arg = ''
-arg0 = 'one'
-fn = '<fn>'
-filename = '' # g.os.path.basename(arg)
-vtuple = [arg0,fn]
+.. @+node:ekr.20031218072017.2829: *6* c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
 
-table = (
-    #('os.system',       'os.system(%s)' % (arg+fn)),
-    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    #('exec',            'exec(%s)' % (arg+fn)),
-    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
-    ('subprocess.Popen', 'subprocess.Popen(%s %s)' % (arg0,fn)),
-    ('huh?',             'bad command:'+'huh?'),
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    
+    def join(s1,s2):
+        return '%s %s' % (s1,s2)
+    
+    if trace:
+        print()
+        g.trace(fn)
+        for key in sorted(list(d.keys())):
+            print('%15s %s' % (key,d.get(key)))
+    
+    arg_tuple = d.get('args',[])
+    arg = ' '.join(arg_tuple)
+    openType = d.get('kind')
+
+    try:
+        command = '<no command>'
+        if openType == 'os.system':
+            command = 'os.system(%s)' % join(arg,fn)
+            if not testing:
+                os.system(command)
+        elif openType == 'os.startfile':
+            command = 'os.startfile(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(join(arg,fn))
+        elif openType == 'exec':
+            command = 'exec(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: exec(join(arg,fn),{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0]) 
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            c_arg = join(arg,fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg,shell=use_shell)
+                except OSError:
+                    g.es_print('c_arg',repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+.. @+node:ekr.20120227073551.11666: *6* @test c.openTempFileInExternalEditor
+arg1 = 'arg1'
+arg2 = 'arg2'
+fn = 'fn'
+
+table1 = (
+    ('os.system',       'os.system(arg1 fn)'),
+    ('os.startfile',    'os.startfile(arg1 fn)'),
+    ('exec',            'exec(arg1 fn)'),
+    ('os.spawnl',       'os.spawnl(arg1,arg1,fn)'),
+    ('subprocess.Popen','subprocess.Popen(arg1 fn)'),
+    ('huh?',            'bad command:huh?'),
 )
 
-for openType,result in table:
-    if openType in ('os.spawnv','subprocess.Popen'):
-        arg2 = ['one']
-    else:
-        arg2 = None
-    result2 = c.openTempFileInExternalEditor(arg2,fn,openType,testing=True)
-    assert result==result2,'expected %s, got %s' % (
-        result,result2)
+for kind,result in table1:
+    d = {'kind':kind,'args':[arg1]}
+    result2 = c.openTempFileInExternalEditor(d,fn,testing=True)
+    assert result==result2,'kind %s expected %s, got %s' % (
+        d.get('kind'),result,result2)
+        
+table2 = (
+    ('os.spawnv',"os.spawnv(['arg1', 'arg2', 'fn'])"),
+)
+        
+for kind,result in table2:
+    d = {'kind':kind,'args':[arg1,arg2]}
+    result2 = c.openTempFileInExternalEditor(d,fn,testing=True)
+    assert result==result2,'kind %s expected %s, got %s' % (
+        d.get('kind'),result,result2)
 .. @+node:ekr.20120205022040.17745: *6* @openwith docs (copy)
 @language rest
 
@@ -2272,13 +2367,13 @@ def openWith(self,event=None,d=None):
     c = self ; p = c.p
     try:
         ext = d.get('ext')
-        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d): #### openType=openType,arg=arg,ext=ext):
+        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
             ext = c.getOpenWithExt(p,ext)
             fn = c.openWithHelper(p,ext)
             if fn:
                 g.enableIdleTimeHook(idleTimeDelay=500)
                 c.openTempFileInExternalEditor(d,fn)
-        g.doHook('openwith2',c=c,p=p,v=p.v,d=d) ### openType=openType,arg=arg,ext=ext)
+        g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
     except Exception:
         g.es('unexpected exception in c.openWith')
         g.es_exception()
@@ -2344,16 +2439,11 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
 
     try:
         command = '<no command>'
-        # if openType == 'os.system':
-            # command = '%s %s' % (arg,fn)
-            # if trace:
-                # g.trace()
-                # print('  %s' % (arg))
-                # print('  %s' % (fn))
-            # if not testing:
-                # os.system(command)
-        # el
-        if openType == 'os.startfile':
+        if openType == 'os.system':
+            command = 'os.system(%s)' % join(arg,fn)
+            if not testing:
+                os.system(command)
+        elif openType == 'os.startfile':
             command = 'os.startfile(%s)' % join(arg,fn)
             if trace: g.trace(command)
             if not testing: os.startfile(join(arg,fn))
@@ -2373,9 +2463,10 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
                 # add the name of the program as the first argument.
                 # Change suggested by Jim Sizelove.
             vtuple.append(fn)
-            command = 'os.spawnv(%s,%s)' % (arg[0],repr(vtuple))
+            command = 'os.spawnv(%s)' % (vtuple)
             if trace: g.trace(command)
-            if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
         elif openType == 'subprocess.Popen':
             use_shell = True
             c_arg = join(arg,fn)
@@ -2747,13 +2838,13 @@ def openWith(self,event=None,d=None):
     c = self ; p = c.p
     try:
         ext = d.get('ext')
-        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d): #### openType=openType,arg=arg,ext=ext):
+        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
             ext = c.getOpenWithExt(p,ext)
             fn = c.openWithHelper(p,ext)
             if fn:
                 g.enableIdleTimeHook(idleTimeDelay=500)
                 c.openTempFileInExternalEditor(d,fn)
-        g.doHook('openwith2',c=c,p=p,v=p.v,d=d) ### openType=openType,arg=arg,ext=ext)
+        g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
     except Exception:
         g.es('unexpected exception in c.openWith')
         g.es_exception()
@@ -2819,16 +2910,11 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
 
     try:
         command = '<no command>'
-        # if openType == 'os.system':
-            # command = '%s %s' % (arg,fn)
-            # if trace:
-                # g.trace()
-                # print('  %s' % (arg))
-                # print('  %s' % (fn))
-            # if not testing:
-                # os.system(command)
-        # el
-        if openType == 'os.startfile':
+        if openType == 'os.system':
+            command = 'os.system(%s)' % join(arg,fn)
+            if not testing:
+                os.system(command)
+        elif openType == 'os.startfile':
             command = 'os.startfile(%s)' % join(arg,fn)
             if trace: g.trace(command)
             if not testing: os.startfile(join(arg,fn))
@@ -2848,9 +2934,10 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
                 # add the name of the program as the first argument.
                 # Change suggested by Jim Sizelove.
             vtuple.append(fn)
-            command = 'os.spawnv(%s,%s)' % (arg[0],repr(vtuple))
+            command = 'os.spawnv(%s)' % (vtuple)
             if trace: g.trace(command)
-            if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
         elif openType == 'subprocess.Popen':
             use_shell = True
             c_arg = join(arg,fn)
@@ -3064,16 +3151,11 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
 
     try:
         command = '<no command>'
-        # if openType == 'os.system':
-            # command = '%s %s' % (arg,fn)
-            # if trace:
-                # g.trace()
-                # print('  %s' % (arg))
-                # print('  %s' % (fn))
-            # if not testing:
-                # os.system(command)
-        # el
-        if openType == 'os.startfile':
+        if openType == 'os.system':
+            command = 'os.system(%s)' % join(arg,fn)
+            if not testing:
+                os.system(command)
+        elif openType == 'os.startfile':
             command = 'os.startfile(%s)' % join(arg,fn)
             if trace: g.trace(command)
             if not testing: os.startfile(join(arg,fn))
@@ -3093,9 +3175,10 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
                 # add the name of the program as the first argument.
                 # Change suggested by Jim Sizelove.
             vtuple.append(fn)
-            command = 'os.spawnv(%s,%s)' % (arg[0],repr(vtuple))
+            command = 'os.spawnv(%s)' % (vtuple)
             if trace: g.trace(command)
-            if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
         elif openType == 'subprocess.Popen':
             use_shell = True
             c_arg = join(arg,fn)
@@ -3823,13 +3906,10 @@ def token_range (self):
         return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
     else:
         return -1,-1
-.. @+node:ekr.20120226131923.10221: *5* Allow abbreviations in minibuffer 
-@nocolor-node
-
-cfa=clone-find-all-flattened
-.. @+node:ekr.20120228164039.11406: *4* Clean up #### in leoKeys
-.. @+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
-.. @+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
+.. @+node:ekr.20120229094652.15178: *4* Optional 4
+.. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
+.. @+node:ekr.20111114085925.9932: *5* Why does the unittest/output folder contain empty files?
+.. @+node:ekr.20031218072017.1462: *6* ic.exportHeadlines
 def exportHeadlines (self,fileName):
 
     c = self.c ; p = c.p
@@ -3852,7 +3932,7 @@ def exportHeadlines (self,fileName):
             s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
         theFile.write(s)
     theFile.close()
-.. @+node:ekr.20051104075904.78: *5* TM.makeImportExportSuite
+.. @+node:ekr.20051104075904.78: *6* TM.makeImportExportSuite
 def makeImportExportSuite(self,parentHeadline,doImport):
 
     """Create an Import/Export test for every descendant of testParentHeadline.."""
@@ -3877,13 +3957,13 @@ def makeImportExportSuite(self,parentHeadline,doImport):
             suite.addTest(test)
 
     return suite
-.. @+node:ekr.20051104075904.79: *5* class importExportTestCase
+.. @+node:ekr.20051104075904.79: *6* class importExportTestCase
 class importExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
     @others
-.. @+node:ekr.20051104075904.80: *6* __init__ (importExportTestCase)
+.. @+node:ekr.20051104075904.80: *7* __init__ (importExportTestCase)
 def __init__ (self,c,p,dialog,temp_p,doImport):
 
     # Init the base class.
@@ -3901,7 +3981,7 @@ def __init__ (self,c,p,dialog,temp_p,doImport):
     self.doImport = doImport
 
     self.old_p = c.p
-.. @+node:ekr.20051104075904.81: *6*  fail (importExportTestCase)
+.. @+node:ekr.20051104075904.81: *7*  fail (importExportTestCase)
 def fail (self,msg=None):
 
     """Mark a unit test as having failed."""
@@ -3909,7 +3989,7 @@ def fail (self,msg=None):
     import leo.core.leoGlobals as g
 
     g.app.unitTestDict["fail"] = g.callers()
-.. @+node:ekr.20051104075904.82: *6* importExport
+.. @+node:ekr.20051104075904.82: *7* importExport
 def importExport (self):
 
     c = self.c ; p = self.p
@@ -3922,13 +4002,13 @@ def importExport (self):
 
     failedMethod = g.app.unitTestDict.get("fail")
     self.failIf(failedMethod,failedMethod)
-.. @+node:ekr.20051104075904.83: *6* runTest
+.. @+node:ekr.20051104075904.83: *7* runTest
 def runTest(self):
 
     # """Import Export Test Case"""
 
     self.importExport()
-.. @+node:ekr.20051104075904.84: *6* setUp
+.. @+node:ekr.20051104075904.84: *7* setUp
 def setUp(self):
 
     trace = False
@@ -3967,14 +4047,14 @@ def setUp(self):
 
     self.oldGui = g.app.gui
     self.gui = leoGui.unitTestGui(theDict,trace=False)
-.. @+node:ekr.20051104075904.85: *6* shortDescription
+.. @+node:ekr.20051104075904.85: *7* shortDescription
 def shortDescription (self):
 
     try:
         return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
     except Exception:
         return "ImportExportTestCase"
-.. @+node:ekr.20051104075904.86: *6* tearDown
+.. @+node:ekr.20051104075904.86: *7* tearDown
 def tearDown (self):
 
     c = self.c ; temp_p = self.temp_p
@@ -3995,7 +4075,7 @@ def tearDown (self):
 
     g.app.gui = self.oldGui
     c.selectPosition(self.old_p)
-.. @+node:ekr.20031218072017.2850: *5* c.exportHeadlines
+.. @+node:ekr.20031218072017.2850: *6* c.exportHeadlines
 def exportHeadlines (self,event=None):
 
     '''Export all headlines to an external file.'''
@@ -4015,6 +4095,11 @@ def exportHeadlines (self,event=None):
         g.setGlobalOpenDir(fileName)
         g.chdir(fileName)
         c.importCommands.exportHeadlines(fileName)
+.. @+node:ekr.20120228164039.11406: *5* Clean up #### in leoKeys
+.. @+node:ekr.20120226131923.10221: *5* Allow abbreviations in minibuffer 
+@nocolor-node
+
+cfa=clone-find-all-flattened
 .. @+node:ekr.20120228164039.10048: *3* Before 4.10 final
 @language rest
 
@@ -4064,6 +4149,22 @@ how about a link "Search", leading to
 > where there's a search box.
 
 Good idea.  I'll do it today. 
+.. @+node:ekr.20120229094652.15180: *5* Fix broken link (doc bug 896809)
+https://bugs.launchpad.net/leo-editor/+bug/896809
+
+The link cited here:
+http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-display-graphics-in-leo
+
+is broken I would suggest embedding a short summary howto on
+the procedure rather than relying on links to forum/maillist
+postings.
+.. @+node:ekr.20120229173025.20629: *5* Remove online-tutorial link
+http://groups.google.com/group/leo-editor/browse_thread/thread/2157d8bfc0f381f1
+
+es, choosing Help-->"Open Online Tutorial" tries to go to a page on
+3dTree.com the site for which is no longer held.
+
+Should the Quick Intro be brought back instead? 
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again (maybe)
 # This may get moved to Leo 4.10.1.
 .. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
