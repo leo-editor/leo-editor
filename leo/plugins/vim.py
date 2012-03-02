@@ -40,16 +40,11 @@ When properly installed, this plugin does the following:
 
 To install this plugin do the following:
 
-1. Make sure to enable open_with plugin (if you are using Tk ui).
-
-2. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim
+1. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim
    as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is
    on your PATH.
 
-3. If you are using Python 2.4 or above, that's all you need to do. Jim
-   Sizelove's new code will start vim automatically using Python's subprocess
-   module. The subprocess module comes standard with Python 2.4. For Linux
-   systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
+That's all you need to do. This plugin will start vim automatically.
 
 '''
 #@-<< docstring >>
@@ -235,8 +230,6 @@ def on_open_window (tag,keywords):
 
     if event.lower() != 'disable':
         g.registerHandler(event,open_in_vim)
-
-    
 #@+node:EKR.20040517075715.11: ** open_in_vim
 def open_in_vim (tag,keywords):
 
@@ -247,14 +240,9 @@ def open_in_vim (tag,keywords):
     if not c: return
     p = c.p
 
-    # g.trace(tag,p and p.h)
-
     if tag.startswith('select') and p == p2:
         return
 
-    #Avoid @file node types
-    #if p.isAnyAtFileNode():
-    #   return
     if p.h.find('file-ref') == 1: # Must be at 2nd position
         return
 
@@ -268,6 +256,7 @@ def open_in_vim (tag,keywords):
     vim_exe = c.config.getString('vim_exe') or _vim_exe
 
     global locationMessageGiven
+
     if not locationMessageGiven:
         locationMessageGiven = True
         print('vim_cmd: %s' % vim_cmd)
@@ -312,19 +301,11 @@ def open_in_vim (tag,keywords):
             g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
             os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd "+path+"<CR>'")
         v.OpenWithOldBody=v.b # Remember the previous contents.
-        if subprocess:
-            # New code by Jim Sizemore (TL: added support for gVim tabs).
-            data = "subprocess.Popen",[vim_exe, "--servername", "LEO" \
-                  ,"--remote" + useTabs + "-silent", Lnum], None
-
-            # the approach below fails when spaces in filename
-            #data = ("subprocess.Popen", '"%s" --servername LEO --remote%s-silent %s' % (vim_exe, useTabs, Lnum), None)
-            c.openWith(data=data)
-        else:
-            # Works, but gives weird error message on first open of Vim.
-            # note the space after --remote.
-            data = "os.spawnv", [vim_exe,"--servername LEO ","--remote "], None            
-            c.openWith(data=data)
+    
+        # New code by Jim Sizemore. TL: added support for gVim tabs.
+        args = [vim_exe,"--servername","LEO","--remote"+useTabs+"-silent",Lnum]
+        d = {'kind':'subprocess.Popen','args':args,'ext':None}
+        c.openWith(d=d)
     else:
         # Reopen the old temp file.
         os.system(vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'")

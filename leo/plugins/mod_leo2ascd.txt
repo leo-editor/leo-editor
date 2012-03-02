@@ -2331,7 +2331,9 @@ def OpenTreeInXEmacs (c):
     stopHere = vnode.nodeAfterTree()
     v = vnode
     while v != stopHere:
-        c.openWith(data=("os.system",XEmacsCommand,None))
+        # c.openWith(data=("os.system",XEmacsCommand,None))
+        d = {'kind':'subprocess.Popen','args':[XEmacsCommand],'ext':None}
+        c.openWith(d=d)
         v = v.threadNext()
         if (not v) or (v==stopHere):
             break

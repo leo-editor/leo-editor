@@ -95,7 +95,6 @@ def openwith_rclick(c,p, menu):
     if fname is None:
         return
 
-    ### path, err = g.getPathFromDirectives(c,p)
     path = g.scanAllAtPathDirectives(c,p)
     editor = g.guessExternalEditor()
 
@@ -208,7 +207,9 @@ def editnode_rclick(c,p, menu):
     action = menu.addAction("Edit in " + editor)
 
     def editnode_rclick_cb():
-        c.openWith(data = ('subprocess.Popen', [editor], None))
+        # c.openWith(data = ('subprocess.Popen', [editor], None))
+        d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
+        c.openWith(d=d)
 
     action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
 #@+node:ville.20090702171015.5480: ** nextclone_rclick
@@ -368,9 +369,10 @@ def install_handlers():
         c = event['c']
         pos = c.currentPosition()
         editor = g.guessExternalEditor()
-        c.openWith(data = ('subprocess.Popen', editor, None))
 
-
+        # c.openWith(data = ('subprocess.Popen', editor, None))
+        d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
+        c.openWith(d=d)
 
 
 

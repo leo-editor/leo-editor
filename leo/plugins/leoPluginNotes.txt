@@ -1,132 +1,289 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090430075506.3: * @file leoPluginNotes.txt
 #@+all
-#@+node:ekr.20110317080650.14388: ** Unused code
-#@+node:leohag.20081203143921.18: *3* show (not used from scrolledmessage)
-def show(self):
+#@+node:ekr.20120302043834.12029: ** Projects
+#@+node:ekr.20120301114648.9929: *3* Define @command foo and foo as alt-x commands
+#@+node:ekr.20060929135558: *4* cleanButtonText
+def cleanButtonText (self,s,minimal=False):
+
+    '''Clean the text following @button or @command so that it is a valid name of a minibuffer command.'''
+
+    # 2011/10/16: Delete {tag}
+    s = s.strip()
+    i,j = s.find('{'),s.find('}')
+    if -1 < i < j:
+        s = s[:i] + s[j+1:]
+        s = s.strip()
+    if minimal:
+        return s.lower()
+
+    for tag in ('@key','@args',):
+        i = s.find(tag)
+        if i > -1:
+            j = s.find('@',i+1)
+            if i < j:
+                s = s[:i] + s[j+1:]
+            else:
+                s = s[:i]
+            s = s.strip()
+    if 1: # Not great, but spaces, etc. interfere with tab completion.
+        # 2011/10/16 *do* allow '@' sign.
+        chars = g.toUnicode(string.ascii_letters + string.digits + '@')
+        aList = [g.choose(ch in chars,ch,'-') for ch in g.toUnicode(s)]
+        s = ''.join(aList)
+        s = s.replace('--','-')
+    while s.startswith('-'):
+        s = s[1:]
+    while s.endswith('-'):
+        s = s[:-1]
+    return s.lower()
+#@+node:ekr.20060328125248.16: *4* getShortcut
+def getShortcut(self,h):
+
+    '''Returns the keyboard shortcut from the given headline string'''
+
+    shortcut = None
+    i = h.find('@key')
+
+    if i > -1:
+        j = g.skip_ws(h,i+len('@key'))
+        if g.match(h,j,'='): j += 1
+        shortcut = h[j:].strip()
+
+    return shortcut
+#@+node:ekr.20120301114648.9932: *4* registerTwoCommands
+def registerTwoCommands(self,h,func,pane,tag):
+
+    trace = False and not g.unitTesting
+    k = self.c.k
+
+    shortcut = self.getShortcut(h)
+    s = self.cleanButtonText(h)
+
+    if trace: g.trace(s)
+
+    k.registerCommand(s,func=func,
+        pane=pane,shortcut=shortcut,verbose=trace)
+        
+    for tag in ('@button-','@command-'):
+        if s.startswith(tag):
+            command = s[len(tag):].strip()
+            # Create a *second* func, to avoid collision in c.commandsDict.
+            if tag == '@button':
+                def atButtonCallBack(event=None,func=func):
+                    func()
+                cb = atButtonCallBack
+            else:
+                def atCommandCallBack(event=None,func=func):
+                    func()
+                cb = atCommandCallBack
+            if trace: g.trace('second',command)
+            k.registerCommand(command,func=cb,
+                pane=pane,shortcut=None,verbose=trace)
+#@+node:ekr.20120301114648.9931: *4* Found: registerCommand
+#@+node:ekr.20070926085149: *5* createAtButtonFromSettingHelper & callback
+def createAtButtonFromSettingHelper (self,h,script,statusLine,bg='LightSteelBlue2'):
+
+    '''Create a button from an @button node.
+
+    - Calls createIconButton to do all standard button creation tasks.
+    - Binds button presses to a callback that executes the script.
+    '''
     
-    g.trace(g.callers())
+    c = self.c
+
+    # We must define the callback *after* defining b,
+    # so set both command and shortcut to None here.
+    b = self.createIconButton(text=h,
+        command=None,statusLine=statusLine,bg=bg)
+    if not b: return None
+
+    # Now that b is defined we can define the callback.
+    # Yes, the callback *does* use b (to delete b if requested by the script).
+    args = self.getArgs(h)
+    buttonText = self.cleanButtonText(h)
     
-    self.ui.show()
-#@+node:ekr.20110321072702.14506: *3* Unused viewrendered commands
-#@+node:tbrown.20101127112443.14856: *4* g.command('viewrendered-html') (not used)
-# @g.command('viewrendered-html')
-# def viewrendered(event):
-    # """Open view of html which would be rendered"""
+    def atSettingButtonCallback (event=None,
+        self=self,args=args,b=b,c=c,script=script,buttonText=buttonText
+    ):
+        self.executeScriptFromSettingButton (args,b,script,buttonText)
+        if c.exists: c.outerUpdate()
 
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc: pc.view('html')
-#@+node:tbrown.20101127112443.14854: *4* g.command('viewrendered-big') (not used)
-# @g.command('viewrendered-big')
-# def viewrendered(event):
-    # """Open render view for commander, with big text
+    self.iconBar.setCommandForButton(b,atSettingButtonCallback)
 
-    # (useful for presentations)
+    # At last we can define the command.
+    self.registerTwoCommands(h,func=atSettingButtonCallback,
+        pane='button',tag='@button')
 
-    # """
+    return b
+#@+node:ekr.20070926085149.1: *6* executeScriptFromSettingButton (mod_scripting)
+def executeScriptFromSettingButton (self,args,b,script,buttonText):
 
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc:
-            # w = pc.w
-            # pc.view('big')
-            # w.zoomIn(4)
-#@+node:ekr.20110317080650.14383: *4* g.command('hide-rendering-pane') (not used)
-# @g.command('hide-rendering-pane')
-# def hide_rendering_pane(event):
+    '''Called from callbacks to execute the script in node p.'''
+
+    c = self.c
+
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(args=args,script=script,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
+
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@+node:ekr.20080312071248.2: *5* createCommonCommands (mod_scripting)
+def createCommonCommands (self):
+
+    c = self.c ; k = c.k
+
+    # trace = True and not g.app.unitTesting # and not g.app.batchMode
+    aList = c.config.getCommands()
+    if aList:
+        for z in aList:
+            h,script = z
+            args = self.getArgs(h)
     
-    # '''Hide the rendering pane, but do not delete it.'''
+            def commonCommandCallback (event=None,script=script):
+                c.executeScript(args=args,script=script,silent=True)
+                
+            self.registerTwoCommands(h,func=commonCommandCallback,
+                pane='all',tag='global @command')
+#@+node:ekr.20060328125248.10: *5* handleAtCommandNode @command (mod_scripting)
+def handleAtCommandNode (self,p):
 
-    # c = event.get('c')
-    # if c:
-        # pc = controllers.get(c.hash())
-        # if pc: pc.hide()
-#@+node:ekr.20110929165422.15433: *3* Deleted docs for todo.py
-@nocolor-node
+    '''Handle @command name [@key[=]shortcut].'''
 
-The Times Menu
-=================
+    # trace = True and not g.app.unitTesting # and not g.app.batchMode
 
-**Show Times** Adds entries of the form::
+    c = self.c ; k = c.keyHandler ; h = p.h
+    if not h.strip(): return
+
+    args = self.getArgs(h)
+
+    def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
+        c.executeScript(args=args,p=p,silent=True)
+        
+    self.registerTwoCommands(h,func=atCommandCallback,
+        pane='all',tag='local @command')
+#@+node:ekr.20060328125248.24: *5* createAtButtonHelper & callback
+def createAtButtonHelper (self,p,h,statusLine,bg='LightSteelBlue1',verbose=True):
+
+    '''Create a button from an @button node.
+
+    - Calls createIconButton to do all standard button creation tasks.
+    - Binds button presses to a callback that executes the script in node p.
+    '''
     
-     '<2 days, 45%>'
-     
-to nodes with associated due dates or completion times.
-
-'days' can be changed to 'hours' or 'weeks' or whatever using the setting::
+    # trace = True and not g.unitTesting
+    c = self.c ; k = c.k
     
-     @string todo_time_name = hours
+    buttonText = self.cleanButtonText(h,minimal=True)
 
-*Note*: Removing / updating these strings in the node headlines relies on the
-'< ... >' being the last thing on the line, if you add anything after it it will
-no longer be touched by these functions.
+    # We must define the callback *after* defining b,
+    # so set both command and shortcut to None here.
+    b = self.createIconButton(text=h,command=None,statusLine=statusLine,bg=bg)
+    if not b: return None
 
-The times shown are not updated automatically unless you use @project nodes.
+    # Now that b is defined we can define the callback.
+    # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
+    # 20100518 - TNB replace callback function with callable class instance
+    #   so qt gui can add 'Goto Script' command to context menu for button
+    class atButtonCallback(object):
+        def __init__(self,controller,p,b,c,buttonText):
+            self.controller = controller
+            self.p = p.copy()
+            self.b = b
+            self.c = c
+            self.buttonText = buttonText
 
-**Re-calc. derived times** recalculates the time required for the selected node
-using the the data in all descendant nodes. This function may appear to fail if
-@project nodes are present.
+        def __call__(self, event=None):
+            self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
+            if self.c.exists: self.c.outerUpdate()
+            
+        # 2011/10/17: Add support for docstrings.
+        def docstring(self):
+            return g.getDocString(self.p.b)
 
-Basically the time required and progress from pseudo-leaf nodes (nodes with no
-children that have time-required settings) is always preserved, but all non-leaf
-nodes are considered to be groups of tasks with no inherent time-required and
-progress-level of their own.
+    cb = atButtonCallback(controller=self,
+        p=p.copy(),b=b,c=c,buttonText=buttonText)
 
-Consider this tree::
+    self.iconBar.setCommandForButton(b,cb)
 
-    + To do
-        + Complete day
-            + Dress
-                - Find shoes
-                - Tie shoes
-            + Commute
-                - Start car
-                - Drive to work
-            + Work
-                - Read email
-                - Write code
+    # At last we can define the command and use the shortcut.
+    self.registerTwoCommands(h,func=cb,pane='button',tag='local @button')
 
-The leaf nodes are the ones on the right starting with '-'. Using 'Re-calc. time
-required' on ' Complete day' would add or replace the progress and time-required
-attributes of the non-leaf nodes to make them reflect the time-required /
-progress of their descendants. Note however that if say 'Commute' had a
-time-required value set and neither 'Start car' nor 'Drive to work' had any
-time-required setting, 'Commute''s setting would be left alone, it would be
-treated as a sort of effective leaf node in this context.
+    return b
+#@+node:ekr.20060328125248.28: *6* executeScriptFromButton (mod_scripting)
+def executeScriptFromButton (self,p,b,buttonText):
 
-If you set up a tree like this::
+    '''Called from callbacks to execute the script in node p.'''
 
-    + Big project (100 days, 0%)
-        - Set up SVN (1 day, 0%)
+    c = self.c
 
-and then run the "Re-calc. derived times" command on 'Big project', its
-time-required will be reduced to 1 day. To avoid this you should add another
-leaf node, 'Rest of project', with a time-required of 99 days, after 'Set up
-SVN'. Or just pay no attention to the time-required on 'Big project' until
-you've made a more complete list of its sub-components.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        h = p.h
+        args = self.getArgs(h)
+        c.executeScript(args=args,p=p,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
 
-The progress and times shown are not updated automatically unless you use @project nodes.
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@+node:ekr.20060328125248.17: *5* createIconButton
+def createIconButton (self,text,command,statusLine,bg):
 
-**Clear derived times** behaves like Re-calc. time required except instead of
-adding time and progress information it clears it.
+    '''Create an icon button.  All icon buttons get created using this utility.
 
-\@Project Nodes
-===============
+    - Creates the actual button and its balloon.
+    - Adds the button to buttonsDict.
+    - Registers command with the shortcut.
+    - Creates x amd delete-x-button commands, where x is the cleaned button name.
+    - Binds a right-click in the button to a callback that deletes the button.'''
 
-\@project nodes can be used to make updates of progress bars and displayed times
-automatic.
+    c = self.c ; k = c.k
 
-Whenever you change the progress-level or time-required on a node, cleo will
-search back up through the tree to find the highest level parent node with
-'\@project' in the headline. cleo will then execute Re-calc. time required on
-that node. If the node contains '\@project time' (one space) the Show times
-command will also be executed on that node.
+    # Create the button and add it to the buttons dict.
+    commandName = self.cleanButtonText(text)
 
-Remember that when a \@project node is present, attempts to remove progress and
-time required values may appear to fail as Re-calc. time required replaces them
-as you remove them.
+    # Truncate only the text of the button, not the command name.
+    truncatedText = self.truncateButtonText(commandName)
+    if not truncatedText.strip():
+        g.es_print('%s ignored: no cleaned text' % (text.strip() or ''),color='red')
+        return None
+
+    # Command may be None.
+    b = self.iconBar.add(text=truncatedText,command=command,bg=bg)
+    if not b: return None
+
+    self.buttonsDict[b] = truncatedText
+
+    if statusLine:
+        self.createBalloon(b,statusLine)
+
+    # Register the command name if it exists.
+    if command:
+        self.registerTwoCommands(text,func=command,
+            pane='button',tag='icon button')
+
+    # Define the callback used to delete the button.
+    def deleteButtonCallback(event=None,self=self,b=b):
+        self.deleteButton(b, event=event)
+
+    # Register the delete-x-button command.
+    deleteCommandName= 'delete-%s-button' % commandName
+    k.registerCommand(deleteCommandName,shortcut=None,
+        func=deleteButtonCallback,pane='button',verbose=False)
+        # Reporting this command is way too annoying.
+
+    return b
 #@-all
 #@-leo
