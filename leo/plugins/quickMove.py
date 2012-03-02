@@ -306,8 +306,8 @@ class quickMove(object):
             b = sc.createIconButton(
                 text,
                 command = mb.moveCurrentNodeToTarget,
-                shortcut = None,
-                statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),v.h),
+                statusLine = 'Move current node to %s child of %s' % (
+                    g.choose(first,'first','last'),v.h),
                 bg = "LightBlue"
             )
 

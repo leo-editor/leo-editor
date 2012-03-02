@@ -70,7 +70,6 @@ class chapterHoist:
         b = sc.createIconButton(
             text='save-hoist',
             command = saveHoistCallback,
-            shortcut = None,
             statusLine='Create hoist button current node',
             bg='LightSteelBlue1')
 
@@ -85,7 +84,6 @@ class chapterHoist:
         b = sc.createIconButton(
             text='dehoist',
             command=dehoistCallback,
-            shortcut=None,
             statusLine='Dehoist',
             bg='LightSteelBlue1')
 
@@ -109,7 +107,6 @@ class chapterHoist:
             text=buttonText,
             command=hoistButtonCallback,
             statusLine=statusLine,
-            shortcut=None,
             bg='LightSteelBlue1')
     #@-others
 #@-others

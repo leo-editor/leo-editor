@@ -2576,8 +2576,10 @@ class keyHandlerClass:
 
         '''
 
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting ; verbose = False
         k = self ; c = k.c
+        
+        if trace: g.trace(commandName,shortcut)
 
         if wrap:
             func = c.universalCallback(func)
@@ -2595,7 +2597,7 @@ class keyHandlerClass:
             g.trace('leoCommands %24s = %s' % (fname,commandName))
 
         if shortcut:
-            if trace: g.trace('shortcut',shortcut,g.callers())
+            if trace: g.trace('shortcut',shortcut)
             stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
@@ -2607,7 +2609,7 @@ class keyHandlerClass:
                 assert g.isShortcutInfo(si),si
                 assert g.isStrokeOrNone(si.stroke)
                 if si.stroke and not si.pane.endswith('-mode'):
-                    if trace: g.trace('*** found',si)
+                    # if trace: g.trace('*** found',si)
                     stroke = si.stroke
                     break
 
@@ -2616,7 +2618,6 @@ class keyHandlerClass:
             ok = k.bindKey (pane,stroke,func,commandName,tag='register-command') # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
             if trace and verbose and ok and not g.app.silentMode:
-                # g.trace(g.callers())
                 g.es_print('','@command: %s = %s' % (
                     commandName,k.prettyPrintKey(stroke)),color='blue')
                 if 0:
@@ -2624,7 +2625,6 @@ class keyHandlerClass:
                     g.print_dict(d)
             c.frame.tree.setBindings()
         elif trace and verbose and not g.app.silentMode:
-            g.trace(g.callers())
             g.es_print('','@command: %s' % (commandName),color='blue')
 
         # Fixup any previous abbreviation to press-x-button commands.

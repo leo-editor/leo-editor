@@ -88,7 +88,7 @@ def getPassList():
 def getPluginsList():
 
     return (
-        ('mod_http', ''),
+        # ('mod_http', ''),
 
         ('mod_scripting',''), # 'E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:

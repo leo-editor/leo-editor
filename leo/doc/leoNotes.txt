@@ -6327,5 +6327,17 @@ def getCommandList (self,d):
     else:
         return ''
     
+#@+node:ekr.20120301114648.10671: *3* << get the commandName and optional shortcut >> handleAtCommandNode
+tag = '@command' ; shortcut = None
+
+i = h.find('@key')
+if i > -1:
+    commandName = h[len(tag):i].strip()
+    j = g.skip_ws(h,i+len('@key'))
+    if g.match(h,j,'='): # Make the equal sign optional.
+        j += 1
+    shortcut = h[j:].strip()
+else:
+    commandName = h[len(tag):].strip()
 #@-all
 #@-leo

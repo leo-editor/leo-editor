@@ -328,7 +328,6 @@ class InteractController:
             b = sc.createIconButton(
                 text = mb.interactor.buttonText(),
                 command = mb.run,
-                shortcut = None,
                 statusLine = mb.interactor.statusText(),
                 bg = "LightBlue",
             )

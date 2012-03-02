@@ -276,8 +276,7 @@ class scriptingController:
         if buttons:
             for z in buttons:
                 h,script = z
-                shortcut = self.getShortcut(h)
-                if trace: g.trace('global @button',h,'',shortcut or '')
+                if trace: g.trace('global @button',h)
                 self.handleAtButtonSetting(h,script)
     #@+node:ekr.20070926084600: *5* handleAtButtonSetting & helper
     def handleAtButtonSetting (self,h,script):
@@ -294,35 +293,40 @@ class scriptingController:
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
-        b = self.createAtButtonFromSettingHelper(h,script,statusLine,shortcut)
+        b = self.createAtButtonFromSettingHelper(h,script,statusLine)
     #@+node:ekr.20070926085149: *6* createAtButtonFromSettingHelper & callback
-    def createAtButtonFromSettingHelper (self,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,bg='LightSteelBlue2'):
 
         '''Create a button from an @button node.
 
         - Calls createIconButton to do all standard button creation tasks.
         - Binds button presses to a callback that executes the script.
         '''
+        
         c = self.c
 
-        # We must define the callback *after* defining b, so set both command and shortcut to None here.
-        b = self.createIconButton(text=h,command=None,shortcut=None,statusLine=statusLine,bg=bg)
+        # We must define the callback *after* defining b,
+        # so set both command and shortcut to None here.
+        b = self.createIconButton(text=h,
+            command=None,statusLine=statusLine,bg=bg)
         if not b: return None
 
         # Now that b is defined we can define the callback.
         # Yes, the callback *does* use b (to delete b if requested by the script).
         args = self.getArgs(h)
         buttonText = self.cleanButtonText(h)
-        def atSettingButtonCallback (event=None,self=self,args=args,b=b,c=c,script=script,buttonText=buttonText):
+        
+        def atSettingButtonCallback (event=None,
+            self=self,args=args,b=b,c=c,script=script,buttonText=buttonText
+        ):
             self.executeScriptFromSettingButton (args,b,script,buttonText)
             if c.exists: c.outerUpdate()
 
         self.iconBar.setCommandForButton(b,atSettingButtonCallback)
 
-        # At last we can define the command and use the shortcut.
-        c.k.registerCommand(self.cleanButtonText(h,minimal=True),
-            shortcut=shortcut,func=atSettingButtonCallback,
-            pane='button',verbose=False)
+        # At last we can define the command.
+        self.registerTwoCommands(h,func=atSettingButtonCallback,
+            pane='button',tag='@button')
 
         return b
     #@+node:ekr.20070926085149.1: *7* executeScriptFromSettingButton (mod_scripting)
@@ -349,21 +353,18 @@ class scriptingController:
 
         c = self.c ; k = c.k
 
-        trace = False and not g.app.unitTesting and not g.app.batchMode
+        # trace = True and not g.app.unitTesting # and not g.app.batchMode
         aList = c.config.getCommands()
         if aList:
             for z in aList:
                 h,script = z
-                shortcut = self.getShortcut(h)
                 args = self.getArgs(h)
-                # 2011/10/16: just remove {comments}
-                h = self.cleanButtonText(h,minimal=True)
         
                 def commonCommandCallback (event=None,script=script):
                     c.executeScript(args=args,script=script,silent=True)
-        
-                if trace: g.es('global @command',h,'',shortcut or '')
-                k.registerCommand(h,shortcut,commonCommandCallback,verbose=False)
+                    
+                self.registerTwoCommands(h,func=commonCommandCallback,
+                    pane='all',tag='global @command')
     #@+node:ekr.20060328125248.20: *4* createRunScriptIconButton 'run-script' & callback
     def createRunScriptIconButton (self):
 
@@ -372,7 +373,6 @@ class scriptingController:
         self.createIconButton(
             text='run-script',
             command = self.runScriptCommand,
-            shortcut=None,
             statusLine='Run script in selected node',
             bg='MistyRose1',
         )
@@ -398,7 +398,6 @@ class scriptingController:
         self.createIconButton(
             text='debug-script',
             command=self.runDebugScriptCommand,
-            shortcut=None,
             statusLine='Debug script in selected node',
             bg='MistyRose1')
     #@+node:ekr.20060522105937.1: *5* runDebugScriptCommand
@@ -469,7 +468,6 @@ class scriptingController:
         self.createIconButton(
             text='script-button',
             command = self.addScriptButtonCommand,
-            shortcut=None,
             statusLine='Make script button from selected node',
             bg="#ffffcc")
     #@+node:ekr.20060328125248.23: *5* addScriptButtonCommand
@@ -483,7 +481,7 @@ class scriptingController:
         statusLine = "Run Script: %s" % buttonText
         if shortcut:
             statusLine = statusLine + " @key=" + shortcut
-        b = self.createAtButtonHelper(p,h,statusLine,shortcut,bg='MistyRose1',verbose=True)
+        b = self.createAtButtonHelper(p,h,statusLine,bg='MistyRose1',verbose=True)
         c.frame.bodyWantsFocus()
     #@+node:ekr.20060328125248.12: *4* handleAtButtonNode @button
     def handleAtButtonNode (self,p):
@@ -502,8 +500,8 @@ class scriptingController:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
         # This helper is also called by the script-button callback.
-        if trace: g.trace('local @command',h,'',shortcut or '')
-        b = self.createAtButtonHelper(p,h,statusLine,shortcut,verbose=False)
+        if trace: g.trace('local @command',h)
+        b = self.createAtButtonHelper(p,h,statusLine,verbose=False)
 
         # g.trace('p',p,'b',b)
     #@+node:ekr.20060328125248.10: *4* handleAtCommandNode @command (mod_scripting)
@@ -511,32 +509,18 @@ class scriptingController:
 
         '''Handle @command name [@key[=]shortcut].'''
 
-        trace = False and not g.app.unitTesting and not g.app.batchMode
+        # trace = True and not g.app.unitTesting # and not g.app.batchMode
+
         c = self.c ; k = c.keyHandler ; h = p.h
         if not h.strip(): return
 
-        #@+<< get the commandName and optional shortcut >>
-        #@+node:ekr.20060328125248.11: *5* << get the commandName and optional shortcut >>
-        tag = '@command' ; shortcut = None
-
-        i = h.find('@key')
-        if i > -1:
-            commandName = h[len(tag):i].strip()
-            j = g.skip_ws(h,i+len('@key'))
-            if g.match(h,j,'='): # Make the equal sign optional.
-                j += 1
-            shortcut = h[j:].strip()
-        else:
-            commandName = h[len(tag):].strip()
-        #@-<< get the commandName and optional shortcut >>
         args = self.getArgs(h)
 
         def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
-            # The 'end-of-script command messes up tabs.
             c.executeScript(args=args,p=p,silent=True)
-
-        if trace: g.es('local @command',commandName,'',shortcut or '')
-        k.registerCommand(commandName,shortcut,atCommandCallback,verbose=False)
+            
+        self.registerTwoCommands(h,func=atCommandCallback,
+            pane='all',tag='local @command')
     #@+node:ekr.20060328125248.13: *4* handleAtPluginNode @plugin
     def handleAtPluginNode (self,p):
 
@@ -618,19 +602,22 @@ class scriptingController:
             s = s[:-1]
         return s.lower()
     #@+node:ekr.20060328125248.24: *4* createAtButtonHelper & callback
-    def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verbose=True):
+    def createAtButtonHelper (self,p,h,statusLine,bg='LightSteelBlue1',verbose=True):
 
         '''Create a button from an @button node.
 
         - Calls createIconButton to do all standard button creation tasks.
         - Binds button presses to a callback that executes the script in node p.
         '''
+        
+        # trace = True and not g.unitTesting
         c = self.c ; k = c.k
         
         buttonText = self.cleanButtonText(h,minimal=True)
 
-        # We must define the callback *after* defining b, so set both command and shortcut to None here.
-        b = self.createIconButton(text=h,command=None,shortcut=None,statusLine=statusLine,bg=bg)
+        # We must define the callback *after* defining b,
+        # so set both command and shortcut to None here.
+        b = self.createIconButton(text=h,command=None,statusLine=statusLine,bg=bg)
         if not b: return None
 
         # Now that b is defined we can define the callback.
@@ -653,13 +640,13 @@ class scriptingController:
             def docstring(self):
                 return g.getDocString(self.p.b)
 
-        cb = atButtonCallback(controller=self,p=p.copy(),b=b,c=c,buttonText=buttonText)
+        cb = atButtonCallback(controller=self,
+            p=p.copy(),b=b,c=c,buttonText=buttonText)
+
         self.iconBar.setCommandForButton(b,cb)
 
         # At last we can define the command and use the shortcut.
-        k.registerCommand(buttonText,
-            shortcut=shortcut,func=cb,
-            pane='button',verbose=verbose)
+        self.registerTwoCommands(h,func=cb,pane='button',tag='local @button')
 
         return b
     #@+node:ekr.20060328125248.28: *5* executeScriptFromButton (mod_scripting)
@@ -684,7 +671,7 @@ class scriptingController:
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@+node:ekr.20060328125248.17: *4* createIconButton
-    def createIconButton (self,text,command,shortcut,statusLine,bg):
+    def createIconButton (self,text,command,statusLine,bg):
 
         '''Create an icon button.  All icon buttons get created using this utility.
 
@@ -716,7 +703,8 @@ class scriptingController:
 
         # Register the command name if it exists.
         if command:
-            k.registerCommand(commandName,shortcut=shortcut,func=command,pane='button',verbose=shortcut)
+            self.registerTwoCommands(text,func=command,
+                pane='button',tag='icon button')
 
         # Define the callback used to delete the button.
         def deleteButtonCallback(event=None,self=self,b=b):
@@ -733,28 +721,6 @@ class scriptingController:
     def createBalloon (self,w,label):
 
         'Create a balloon for a widget.'
-
-        ### 
-        # if self.gui.guiName() == 'tkinter':
-            # balloon = Pmw.Balloon(w,initwait=100)
-            # if w and balloon:
-                # balloon.bind(w,label)
-    #@+node:ekr.20060929131245: *4* definePressButtonCommand (no longer used)
-    def definePressButtonCommand (self,buttonText,atButtonCallback,shortcut=None):
-
-        '''Define the press-x-button command, were x is the cleaned button text.
-
-        Called to create the run-script, script-button and debug-script buttons.'''
-
-        # This will use any shortcut defined in an @shortcuts node if no shortcut is defined.
-
-        # New in Leo 4.4.2: Just use the (cleaned) name of the button text
-        c = self.c ; k = c.k
-        buttonText = self.cleanButtonText(buttonText).lower()
-
-        # if shortcut: shortcut = k.canonicalizeShortcut(shortcut)
-
-        k.registerCommand(buttonText,shortcut=shortcut,func=atButtonCallback,pane='button',verbose=shortcut)
     #@+node:ekr.20060328125248.26: *4* deleteButton
     def deleteButton(self,button,**kw):
 
@@ -814,6 +780,35 @@ class scriptingController:
             shortcut = h[j:].strip()
 
         return shortcut
+    #@+node:ekr.20120301114648.9932: *4* registerTwoCommands
+    def registerTwoCommands(self,h,func,pane,tag):
+
+        trace = False and not g.unitTesting
+        k = self.c.k
+
+        shortcut = self.getShortcut(h)
+        s = self.cleanButtonText(h)
+
+        if trace: g.trace(s)
+
+        k.registerCommand(s,func=func,
+            pane=pane,shortcut=shortcut,verbose=trace)
+            
+        for tag in ('@button-','@command-'):
+            if s.startswith(tag):
+                command = s[len(tag):].strip()
+                # Create a *second* func, to avoid collision in c.commandsDict.
+                if tag == '@button':
+                    def atButtonCallBack(event=None,func=func):
+                        func()
+                    cb = atButtonCallBack
+                else:
+                    def atCommandCallBack(event=None,func=func):
+                        func()
+                    cb = atCommandCallBack
+                if trace: g.trace('second',command)
+                k.registerCommand(command,func=cb,
+                    pane=pane,shortcut=None,verbose=trace)
     #@+node:ekr.20061015125212: *4* truncateButtonText
     def truncateButtonText (self,s):
         
