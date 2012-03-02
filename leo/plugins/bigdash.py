@@ -1,9 +1,64 @@
-#!/usr/bin/env python
+#@+leo-ver=5-thin
+#@+node:ville.20120302233106.3578: * @file bigdash.py
+#@+<< docstring >>
+#@+node:ville.20120302233106.3583: ** << docstring >>
+''' Creates a wizard that creates @auto nodes.
 
+Opens a file dialog and recursively creates @auto & @path nodes from the path
+where the selected file is (the selected file itself doesn't matter.)
+
+'''
+#@-<< docstring >>
+
+__version__ = '0.0'
+#@+<< version history >>
+#@+node:ville.20120302233106.3585: ** << version history >>
+#@@killcolor
+#@+at
+# 
+# 0.1 First released version (VMV)
+#@-<< version history >>
+
+#@+<< imports >>
+#@+node:ville.20120302233106.3581: ** << imports >>
 import sys
+print "importing bigdash"
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
+#@-<< imports >>
+
+#@+others
+#@+node:ville.20120302233106.3580: ** init
+def init ():
+
+    print "bigdash init"
+    import leo.core.leoGlobals as g
+    
+    ok = g.app.gui.guiName() == "qt"
+
+    
+    g._global_search = None
+    if ok:
+        
+        @g.command("global-search")
+        def global_search_f(event):
+            """ Do global search """
+            c = event['c']
+            if g._global_search:
+                g._global_search.show()
+            else:
+                g._global_search = gs = GlobalSearch()
+                gs.set_leo(g)
+                
+            
+        g.plugin_signon(__name__)
+
+    return ok
+#@+node:ville.20120225144051.3580: ** Content
+#@@language python
+#!/usr/bin/env python
+
 
 class LeoConnector(QObject):
     pass
@@ -15,12 +70,31 @@ class GlobalSearch:
         self.bd.add_cmd_handler(self.do_search)
         self.bd.set_link_handler(self.do_link)
         
-    def do_search(self,tgt, qs):
-        s = str(qs)
-        if s.startswith("s "):
-            print "searching",s[2:]
-            tgt.web.setHtml("""<b>Hit</b><a href="urli">btn</a>""" + s)
+    def set_leo(self,g):
+        self.g = g
+        
+    def show():
+        self.bd.w.show()
+    def do_search(self,tgt, qs):        
+        ss = str(qs)
+        hitparas = []
+        if ss.startswith("s "):
+            s = ss[2:]
+            print "searching",s,self.g
             
+            for c2 in self.g.app.commanders():
+                hits = c2.find_b(s)                
+                
+                for h in hits:
+                    print h
+                    hitparas.append("<p>" + h.h + "</p><p>" + h.b + "</p>")
+            
+           
+        html = "".join(hitparas)
+        tgt.web.setHtml(html)     
+                
+                    
+          
     
     def do_link(self,l):
         print "link",l
@@ -77,3 +151,16 @@ if __name__ == '__main__':
     
     
     sys.exit(app.exec_())
+#@-others
+
+#@+<< imports >>
+#@+node:ville.20120302233106.3581: ** << imports >>
+import sys
+print "importing bigdash"
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4.QtWebKit import *
+#@-<< imports >>
+#@+others
+#@-others
+#@-leo
