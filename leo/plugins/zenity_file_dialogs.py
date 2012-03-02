@@ -31,17 +31,7 @@ import os
 
 trace = False
 
-try:
-    from subprocess import *
-    ok = True
-except:
-    ok = False
-
-if trace:
-    if ok:
-        print('subprocess imported ok')
-    else:
-        g.trace('failed to import subprocess')
+from subprocess import *
 #@-<< imports >>
 
 #@+others
@@ -66,15 +56,13 @@ def testForZenity():
     return not ret
 #@+node:ekr.20101110095557.5888: ** init
 def init ():
-    global ok
-
+    
     if g.unitTesting:
         return False
 
+    ok = testForZenity()
     if ok:
-        ok = ok and testForZenity()
-        # trace and g.trace('imported ok')
-        trace and g.trace('zenity ok')
+        # g.trace('zenity ok')
         leoPlugins.registerHandler('start2', onStart2)
         g.plugin_signon(__name__)
     else:

@@ -1292,13 +1292,13 @@ class Commands (object):
 
         '''This routine handles the items in the Open With... menu.
 
-        These items can only be created by createOpenWithMenuFromTable().
-        Typically this would be done from the "open2" hook.
-
-        New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
-        using a list, e.g.:
-
-        openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+        The "d" arg is a Python dictionary whose keys and values
+        are set from the body text of @openwith nodes.
+        
+        d.get('ext'):   The temp file's extension.
+        d.get('kind'):  The method used to open the file.  One of:
+            ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
+        d.get('args'):  A list of arguments specified by the arg tag.
         '''
         
         c = self ; p = c.p
@@ -1376,11 +1376,13 @@ class Commands (object):
 
         try:
             command = '<no command>'
-            if openType == 'os.system':
-                command = 'os.system(%s)' % join(arg,fn)
-                if not testing:
-                    os.system(command)
-            elif openType == 'os.startfile':
+            # if openType == 'os.system':
+                # command = 'os.system(%s)' % join(arg,fn)
+                # if not testing:
+                    # os.system(command)
+            # el
+            
+            if openType == 'os.startfile':
                 command = 'os.startfile(%s)' % join(arg,fn)
                 if trace: g.trace(command)
                 if not testing: os.startfile(join(arg,fn))

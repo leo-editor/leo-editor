@@ -163,6 +163,7 @@ if g.isPython3:
 else:
     import ConfigParser
 
+import subprocess
 import webbrowser
 import tempfile
 import os
@@ -677,17 +678,11 @@ class Leo_to_HTML(object):
             g.trace(self.browser_command)
 
             try:
-                import subprocess
+                subprocess.Popen([self.browser_command, url])
+                return True
             except:
-                msg = 'cant import subprocess'
-
-            if subprocess:
-                try:
-                    subprocess.Popen([self.browser_command, url])
-                    return True
-                except:
-                    msg = 'can\'t open browser using \n    %s\n'%self.browser_command + \
-                    'Using default browser instead.'
+                msg = 'can\'t open browser using \n    %s\n'%self.browser_command + \
+                'Using default browser instead.'
 
         if msg:
             self.announce_fail(msg)

@@ -4,9 +4,6 @@
 #@+node:ekr.20101112195628.5434: ** << docstring >>
 ''' Allows you to edit nodes in emacs/xemacs.
 
-**Important**: the open_with plugin must be enabled for this plugin to work
-properly.
-
 Depending on your preference, selecting or double-clicking a node will pass the
 body text of that node to emacs. You may edit the node in the emacs buffer and
 changes will appear in Leo.
@@ -126,9 +123,11 @@ def open_in_emacs (tag,keywords):
                 if d.get('path') != path]
             os.system(emacs_cmd)
         v.OpenWithOldBody=v.b # Remember the old contents
+
         # open the node in emacs (note the space after _emacs_cmd)
-        data = "os.spawnl", emacs_cmd, None
-        c.openWith(data=data)
+        # data = "os.spawnl", emacs_cmd, None
+        d = {'kind':'os.spawnl','args':[emacs_cmd],'ext':None}
+        c.openWith(d=d)
     else:
         # Reopen the old temp file.
         os.system(emacs_cmd)

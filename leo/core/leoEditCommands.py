@@ -412,7 +412,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         s = w.getAllText()
         j = w.getInsertPoint()
         i = j-1
-        while i >= 0 and s[i] not in ' \t\n':
+        while len(s) > i >= 0 and s[i] not in ' \t\n':
             prefix = s[i:j]
             word = prefix+ch
             val,tag = self.abbrevs.get(word,(None,None))
