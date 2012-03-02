@@ -1,11 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ville.20120302233106.3578: * @file bigdash.py
+#@@language python
+
 #@+<< docstring >>
 #@+node:ville.20120302233106.3583: ** << docstring >>
-''' Creates a wizard that creates @auto nodes.
-
-Opens a file dialog and recursively creates @auto & @path nodes from the path
-where the selected file is (the selected file itself doesn't matter.)
+''' Global search window
 
 '''
 #@-<< docstring >>
@@ -22,7 +21,9 @@ __version__ = '0.0'
 #@+<< imports >>
 #@+node:ville.20120302233106.3581: ** << imports >>
 import sys
+
 print "importing bigdash"
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
@@ -56,7 +57,7 @@ def init ():
 
     return ok
 #@+node:ville.20120225144051.3580: ** Content
-#@@language python
+
 #!/usr/bin/env python
 
 
@@ -73,7 +74,7 @@ class GlobalSearch:
     def set_leo(self,g):
         self.g = g
         
-    def show():
+    def show(self):
         self.bd.w.show()
     def do_search(self,tgt, qs):        
         ss = str(qs)
@@ -87,7 +88,7 @@ class GlobalSearch:
                 
                 for h in hits:
                     print h
-                    hitparas.append("<p>" + h.h + "</p><p>" + h.b + "</p>")
+                    hitparas.append('<p><a href="t">' + h.h + "</a></p><p>" + h.b + "</p>")
             
            
         html = "".join(hitparas)
@@ -151,16 +152,5 @@ if __name__ == '__main__':
     
     
     sys.exit(app.exec_())
-#@-others
-
-#@+<< imports >>
-#@+node:ville.20120302233106.3581: ** << imports >>
-import sys
-print "importing bigdash"
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
-#@-<< imports >>
-#@+others
 #@-others
 #@-leo
