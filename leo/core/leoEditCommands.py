@@ -417,7 +417,16 @@ class abbrevCommandsClass (baseEditCommandsClass):
             word = prefix+ch
             val,tag = self.abbrevs.get(word,(None,None))
             if trace: g.trace(repr(word),val,tag)
-            if val: break
+            if val:
+                # Require a word match if the abbreviation is itself a word.
+                if ch in ' \t\n': word = word.rstrip()
+                if word.isalnum() and word[0].isalpha():
+                    if i == 0 or s[i-1] in ' \t\n':
+                        break
+                    else:
+                        i -= 1
+                else:
+                    break
             else: i -= 1
         else:
             return False
