@@ -317,7 +317,8 @@ def deletenodes_rclick(c,p, menu):
                 c.selectPosition(pos)
                 break
         else:
-            c.selectPosition(c.allNodes_iter().next())
+            # c.selectPosition(c.allNodes_iter().next())
+            c.selectPosition(c.rootPosition())
 
         c.redraw()                        
 

@@ -1660,6 +1660,60 @@ def addAbbrevHelper (self,s,tag=''):
         d [name] = val,tag
     except ValueError:
         g.es_print('bad abbreviation: %s' % s)
+#@+node:ekr.20120229094652.19497: *3* Fixed Bug 930726:expandNodeAndGoToFirstChild only expands or only goes to first child 
+https://bugs.launchpad.net/leo-editor/+bug/930726
+
+Bug: If the node is not expanded already, then the position
+is left on the parent, not the first child.
+
+Function expandNodeAndGoToFirstChild() is referenced only
+once in LeoPyRef.leo. This reference is in table of public
+Leo commands.
+
+The node in which expandNodeAndGoToFirstChild() is defined
+also contains the definition of function
+expandNodeOrGoToFirstChild(). At present these two functions
+are equivalent. The comments including the header for the
+node imply that they should not be equivalent and that
+expandNodeAndGoToFirstChild() is not correctly implemented.
+#@+node:ekr.20040930064232.1: *4* expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    c = self ; p = c.p
+
+    if p.hasChildren():
+        if p.isExpanded():
+            c.selectPosition(p.firstChild())
+        else:
+            c.expandNode()
+            # Fix bug 930726
+            # expandNodeAndGoToFirstChild only expands or only goes to first child .
+            c.selectPosition(p.firstChild())
+
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@+node:ekr.20111026091322.16496: *3* Bug 844953: copy-clone-pasted node appears in other tab
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/844953
+
+Select "Paste Node As Clone" from the outline menu: Node is
+not inserted as clone, but inserted as a copy in the second
+file/tab.
+
+This bug is invalid.  paste-retaining-clones might better be called paste-retaining-gnx's.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
