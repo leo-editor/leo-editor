@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
 <?xml-stylesheet ekr_test?>
-<leo_file>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -93,6 +94,7 @@
 </v>
 <v t="ville.20090806182306.6324"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ville.20091008194838.3931"><vh>@data contextmenu_commands</vh></v>
+<v t="ville.20120303151721.3838"><vh>@bool use_body_focus_border = False</vh></v>
 </v>
 </v>
 <v t="ville.20090701182804.1550"><vh>Search and replace</vh></v>
@@ -823,5 +825,6 @@ need to reopen the document to make it appear.
 <t tx="ville.20101221131940.2218"># p is current position
 
 g.es("p.h is " + p.h)</t>
+<t tx="ville.20120303151721.3838">Avoid red focus borders in body pane (if it's not in your aesthetic taste)</t>
 </tnodes>
 </leo_file>
