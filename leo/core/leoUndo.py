@@ -1554,6 +1554,7 @@ class undoer:
 
         '''Process beads until the matching 'afterGroup' bead is seen.'''
 
+        trace = False and not g.unitTesting
         u = self
 
         # Remember these values.
@@ -1567,14 +1568,15 @@ class undoer:
         bunch = u.beads[u.bead] ; count = 0
         if not hasattr(bunch,'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+            g.trace(bunch)
         else:
             for z in bunch.items:
                 self.setIvarsFromBunch(z)
                 if z.redoHelper:
-                    # g.trace(z.redoHelper)
+                    if trace: g.trace(z.redoHelper.__name__,p.h)
                     z.redoHelper() ; count += 1
                 else:
-                    g.trace('oops: no redo helper for %s' % u.undoType)
+                    g.trace('oops: no redo helper for %s %s' % (u.undoType,p.h))
 
         u.groupCount -= 1
 
@@ -1932,6 +1934,7 @@ class undoer:
 
         '''Process beads until the matching 'beforeGroup' bead is seen.'''
 
+        trace = False and not g.unitTesting
         u = self
 
         # Remember these values.
@@ -1946,17 +1949,18 @@ class undoer:
 
         if not hasattr(bunch,'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+            g.trace(bunch)
         else:
             # Important bug fix: 9/8/06: reverse the items first.
             reversedItems = bunch.items[:]
             reversedItems.reverse()
             for z in reversedItems:
                 self.setIvarsFromBunch(z)
-                # g.trace(z.undoHelper)
                 if z.undoHelper:
+                    if trace: g.trace(z.undoHelper.__name__,p.h)
                     z.undoHelper() ; count += 1
                 else:
-                    g.trace('oops: no undo helper for %s' % u.undoType)
+                    g.trace('oops: no undo helper for %s %s' % (u.undoType,p.h))
 
         u.groupCount -= 1
 

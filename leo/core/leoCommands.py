@@ -7701,7 +7701,8 @@ class Commands (object):
 
         """Return True if a position exists in c's tree"""
 
-        trace = True and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting
+        verbose = False
         c = self ; p = p.copy()
         
         def report(i,children,v,tag=''):
