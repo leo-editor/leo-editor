@@ -78,8 +78,8 @@ def matchlines(b, miter):
         li = b[st:en]
         ipre = b.rfind("\n", 0, st-2)
         ipost = b.find("\n", en +1 )
-        spre = b[ipre +1 : st-1]
-        spost = b[en+1 : ipost]
+        spre = b[ipre +1 : st-1] + "\n"
+        spost = b[en : ipost]
         
         print "pre", spre
         print "post", spost
@@ -101,6 +101,8 @@ class GlobalSearch:
     def do_search(self,tgt, qs):        
         ss = str(qs)
         hitparas = []
+        def em(l):
+            hitparas.append(l)
         if ss.startswith("s "):
             s = ss[2:]
             print "searching",s
@@ -115,12 +117,14 @@ class GlobalSearch:
                     mlines = matchlines(b, h.matchiter)
                     key = "c%dh%d" % (ndxc, ndxh)
                     self.anchors[key] = (c2, h.copy())
-                    hitparas.append('<p><a href="%s">%s</a></p>' % (key, h.h))
+                    em('<p><a href="%s">%s</a></p>' % (key, h.h))
                     for line, (st, en), (pre, post) in mlines:
-                        hitparas.append("<p>" + pre + "<br/>")
-                        hitparas.append("%s<b>%s</b>%s<br/>" % (line[:st], line[st:en], line[en:]))
-                        hitparas.append(post + "</p>")
-                    hitparas.append("""<p><small><i>%s</i></small></p>""" % h.get_UNL() )
+                        em("<pre>")
+                        em(pre)
+                        em("%s<b>%s</b>%s" % (line[:st], line[st:en], line[en:]))
+                        em(post)
+                        em("</pre>")
+                    em("""<p><small><i>%s</i></small></p>""" % h.get_UNL())
                        
         html = "".join(hitparas)
         tgt.web.setHtml(html)     
