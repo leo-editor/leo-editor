@@ -36,17 +36,18 @@ def init ():
     print "bigdash init"
     import leo.core.leoGlobals as g
     
+    set_leo(g)
     ok = g.app.gui.guiName() == "qt"
 
     
     g._global_search = None
-    if ok:
-        
+    if ok:        
         @g.command("global-search")
         def global_search_f(event):
             """ Do global search """
             c = event['c']
             if g._global_search:
+                
                 g._global_search.show()
             else:
                 g._global_search = gs = GlobalSearch()
@@ -60,6 +61,11 @@ def init ():
 #!/usr/bin/env python
 
 g = None
+
+def set_leo(gg):
+    global g
+    g = gg
+
 
 class LeoConnector(QObject):
     pass
@@ -81,16 +87,13 @@ def matchlines(b, miter):
         res.append((li, (m.start()-st, m.end()-st ), (spre, spost)))
     return res
 
-def set_leo(gg):
-    global g
-    g = gg
-
 class GlobalSearch:
     def __init__(self):
         self.bd = BigDash()
         #self.bd.show()
         self.bd.add_cmd_handler(self.do_search)
         self.bd.set_link_handler(self.do_link)
+        self.anchors = {}
         
         
     def show(self):
@@ -102,15 +105,17 @@ class GlobalSearch:
             s = ss[2:]
             print "searching",s
             
-            for c2 in g.app.commanders():
+            
+            for ndxc,c2 in enumerate(g.app.commanders()):
                 hits = c2.find_b(s)                
                                 
-                for h in hits:
+                for ndxh, h in enumerate(hits):
                     print h
                     b = h.b
                     mlines = matchlines(b, h.matchiter)
-                    
-                    hitparas.append('<p><a href="t">' + h.h + "</a></p>")
+                    key = "c%dh%d" % (ndxc, ndxh)
+                    self.anchors[key] = (c2, h.copy())
+                    hitparas.append('<p><a href="%s">%s</a></p>' % (key, h.h))
                     for line, (st, en), (pre, post) in mlines:
                         hitparas.append("<p>" + pre + "<br/>")
                         hitparas.append("%s<b>%s</b>%s<br/>" % (line[:st], line[st:en], line[en:]))
@@ -120,7 +125,11 @@ class GlobalSearch:
         tgt.web.setHtml(html)     
     
     def do_link(self,l):
-        print "link",l
+        a = self.anchors[l]
+        print "link",a
+        c, p = a
+        c.selectPosition(p)
+        
 
 class BigDash:
     def docmd(self):
@@ -139,10 +148,11 @@ class BigDash:
         self.handlers.append(f)
     
     def _lnk_handler(self, url):
-        self.link_handler(str(url))
+        self.link_handler(str(url.toString()))
         
     def create_ui(self):
         self.w = w = QWidget()
+        w.setWindowTitle("Leo search")
         lay = QVBoxLayout()
             
         self.web = web = QWebView(w)
@@ -158,7 +168,13 @@ class BigDash:
                                                        lc);
         web.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         w.setLayout(lay)
-        web.load(QUrl("http://google.fi"))
+        web.setHtml("""
+                    <h12>Dashboard</h2>
+                    <table cellspacing="50">
+                    <tr><td> <b>s</b> foobar</td><td>   <i>Search for "foobar" in all open documents</i></td></tr>
+                    </table>
+                    """)
+        #web.load(QUrl("http://google.fi"))
         w.show()
         
     def __init__(self):
