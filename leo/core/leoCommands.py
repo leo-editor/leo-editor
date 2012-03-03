@@ -5576,6 +5576,9 @@ class Commands (object):
                 c.selectPosition(p.firstChild())
             else:
                 c.expandNode()
+                # Fix bug 930726
+                # expandNodeAndGoToFirstChild only expands or only goes to first child .
+                c.selectPosition(p.firstChild())
 
         c.treeFocusHelper()
 

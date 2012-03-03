@@ -6636,6 +6636,13 @@ line 1
         line b
 line c
 last line
+#@+node:ekr.20120303054735.3931: *5* @test expand-and-go-right
+# Test of bug 930726: expandNodeAndGoToFirstChild only expands or only goes to first child .
+
+p.contract()
+c.expandNodeAndGoToFirstChild()
+assert c.p == p.firstChild()
+#@+node:ekr.20120303054735.3932: *6* child
 #@+node:ekr.20061101121602.202: *5* @test extend-to-line
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.203: *6* work
