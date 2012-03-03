@@ -120,6 +120,7 @@ class GlobalSearch:
                         hitparas.append("<p>" + pre + "<br/>")
                         hitparas.append("%s<b>%s</b>%s<br/>" % (line[:st], line[st:en], line[en:]))
                         hitparas.append(post + "</p>")
+                    hitparas.append("""<p><small><i>%s</i></small></p>""" % h.get_UNL() )
                        
         html = "".join(hitparas)
         tgt.web.setHtml(html)     
