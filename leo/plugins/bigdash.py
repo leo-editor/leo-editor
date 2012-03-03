@@ -50,9 +50,8 @@ def init ():
                 g._global_search.show()
             else:
                 g._global_search = gs = GlobalSearch()
-                gs.set_leo(g)
-                
-            
+                set_leo(g)
+                        
         g.plugin_signon(__name__)
 
     return ok
@@ -60,9 +59,31 @@ def init ():
 
 #!/usr/bin/env python
 
+g = None
 
 class LeoConnector(QObject):
     pass
+
+def matchlines(b, miter):
+
+    res = []
+    for m in miter:
+        st, en = g.getLine(b, m.start())
+        li = b[st:en]
+        ipre = b.rfind("\n", 0, st-2)
+        ipost = b.find("\n", en +1 )
+        spre = b[ipre +1 : st-1]
+        spost = b[en+1 : ipost]
+        
+        print "pre", spre
+        print "post", spost
+
+        res.append((li, (m.start()-st, m.end()-st ), (spre, spost)))
+    return res
+
+def set_leo(gg):
+    global g
+    g = gg
 
 class GlobalSearch:
     def __init__(self):
@@ -71,8 +92,6 @@ class GlobalSearch:
         self.bd.add_cmd_handler(self.do_search)
         self.bd.set_link_handler(self.do_link)
         
-    def set_leo(self,g):
-        self.g = g
         
     def show(self):
         self.bd.w.show()
@@ -81,21 +100,24 @@ class GlobalSearch:
         hitparas = []
         if ss.startswith("s "):
             s = ss[2:]
-            print "searching",s,self.g
+            print "searching",s
             
-            for c2 in self.g.app.commanders():
+            for c2 in g.app.commanders():
                 hits = c2.find_b(s)                
-                
+                                
                 for h in hits:
                     print h
-                    hitparas.append('<p><a href="t">' + h.h + "</a></p><p>" + h.b + "</p>")
-            
-           
+                    b = h.b
+                    mlines = matchlines(b, h.matchiter)
+                    
+                    hitparas.append('<p><a href="t">' + h.h + "</a></p>")
+                    for line, (st, en), (pre, post) in mlines:
+                        hitparas.append("<p>" + pre + "<br/>")
+                        hitparas.append("%s<b>%s</b>%s<br/>" % (line[:st], line[st:en], line[en:]))
+                        hitparas.append(post + "</p>")
+                       
         html = "".join(hitparas)
         tgt.web.setHtml(html)     
-                
-                    
-          
     
     def do_link(self,l):
         print "link",l
