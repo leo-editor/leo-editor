@@ -22,7 +22,7 @@ __version__ = '0.0'
 #@+node:ville.20120302233106.3581: ** << imports >>
 import sys
 
-print "importing bigdash"
+print("importing bigdash")
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -33,7 +33,7 @@ from PyQt4.QtWebKit import *
 #@+node:ville.20120302233106.3580: ** init
 def init ():
 
-    print "bigdash init"
+    print("bigdash init")
     import leo.core.leoGlobals as g
     
     ok = g.app.gui.guiName() == "qt"
@@ -81,13 +81,13 @@ class GlobalSearch:
         hitparas = []
         if ss.startswith("s "):
             s = ss[2:]
-            print "searching",s,self.g
+            print("searching",s,self.g)
             
             for c2 in self.g.app.commanders():
                 hits = c2.find_b(s)                
                 
                 for h in hits:
-                    print h
+                    print(h)
                     hitparas.append('<p><a href="t">' + h.h + "</a></p><p>" + h.b + "</p>")
             
            
@@ -98,12 +98,12 @@ class GlobalSearch:
           
     
     def do_link(self,l):
-        print "link",l
+        print("link",l)
 
 class BigDash:
     def docmd(self):
         t = self.led.text()
-        print "cmd",t
+        print("cmd",t)
         for h in self.handlers:
             r = h(self, t)
             if r:
