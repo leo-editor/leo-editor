@@ -226,7 +226,7 @@ def on_open_window (tag,keywords):
 
     event = c.config.getString('vim_trigger_event') or 'icondclick1'
     
-    g.trace('trigger event:',event)
+    # g.trace('trigger event:',event)
 
     if event.lower() != 'disable':
         g.registerHandler(event,open_in_vim)

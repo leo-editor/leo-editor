@@ -2684,7 +2684,7 @@ class keyHandlerClass:
         verbose = True
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
-        
+
         if event: c.check_event(event)
 
         c.setLog()

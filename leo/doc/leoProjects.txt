@@ -1660,7 +1660,7 @@ def addAbbrevHelper (self,s,tag=''):
         d [name] = val,tag
     except ValueError:
         g.es_print('bad abbreviation: %s' % s)
-#@+node:ekr.20120229094652.19497: *3* Fixed Bug 930726:expandNodeAndGoToFirstChild only expands or only goes to first child 
+#@+node:ekr.20120229094652.19497: *3* Fixed Bug 930726:expandNodeAndGoToFirstChild only expands or only goes to first child
 https://bugs.launchpad.net/leo-editor/+bug/930726
 
 Bug: If the node is not expanded already, then the position
@@ -1704,16 +1704,198 @@ def expandNodeOrGoToFirstChild (self,event=None):
             c.expandNode() # Calls redraw_after_expand.
         else:
             c.redraw_after_expand(p.firstChild(),setFocus=True)
-#@+node:ekr.20111026091322.16496: *3* Bug 844953: copy-clone-pasted node appears in other tab
+#@+node:ekr.20111026091322.16494: *3* Fixed Bug 869429 (undo & redo when deleting nodes from contextmenu)
 @nocolor-node
 
-https://bugs.launchpad.net/leo-editor/+bug/844953
+https://bugs.launchpad.net/leo-editor/+bug/869429
+Undo and Redo delete from context menu does not redo properly
 
-Select "Paste Node As Clone" from the outline menu: Node is
-not inserted as clone, but inserted as a copy in the second
-file/tab.
+The fix was to deletenodes_rclick in contextmenu.py.
+The fallback position should be c.rootPosition()
 
-This bug is invalid.  paste-retaining-clones might better be called paste-retaining-gnx's.
+===== Original report.
+
+Delete (node) in context_menu (right click on headline) has unexpected undo /
+redo effects.
+
+Redo after Undo often fails, but you can Undo again, without the
+ReDo taking effect, which mans an extra node is created.
+
+In essence: -1 delete,
++1 Undo (restore node),
+0 ReDo (should redelete but does nothing),
++1 Undo
+
+(again) = 1 Should = 0 (delete, undelete, redelete, undo redelete) Deleting a
+node through Outline menu works differently and properly. The undo code in the
+two delete methods must be different
+
+===== Terry
+
+The undo code in the two delete methods must be different
+
+It's different because the context menu delete can delete multiple
+nodes at once.
+
+I wrote the context menu delete, but I don't understand the undo system
+that well - it's possible it just doesn't support a redo of something
+like this.
+#@+node:ekr.20031218072017.1193: *4* c.deleteOutline
+def deleteOutline (self,event=None,op_name="Delete Node"):
+
+    """Deletes the selected outline."""
+
+    c = self ; cc = c.chapterController ; u = c.undoer
+    p = c.p
+    if not p: return
+
+    c.endEditing() # Make sure we capture the headline for Undo.
+
+    if p.hasVisBack(c): newNode = p.visBack(c)
+    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
+    if not newNode: return
+
+    if cc: # Special cases for @chapter and @chapters nodes.
+        chapter = '@chapter ' ; chapters = '@chapters ' 
+        h = p.h
+        if h.startswith(chapters):
+            if p.hasChildren():
+                return cc.note('Can not delete @chapters node with children.')
+        elif h.startswith(chapter):
+            name = h[len(chapter):].strip()
+            if name:
+                # Bug fix: 2009/3/23: Make sure the chapter exists!
+                # This might be an @chapter node outside of @chapters tree.
+                theChapter = cc.chaptersDict.get(name)
+                if theChapter:
+                    return cc.removeChapterByName(name)
+
+    undoData = u.beforeDeleteNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.doDelete(newNode)
+    c.setChanged(True)
+    u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    c.redraw(newNode)
+
+    c.validateOutline()
+#@+node:ekr.20031218072017.3069: *4* changeAll (leoFind)
+def changeAll(self):
+
+    # g.trace('leoFind',g.callers())
+
+    c = self.c ; u = c.undoer ; undoType = 'Change All'
+    current = c.p
+    w = self.s_ctrl
+    if not self.checkArgs(): return
+    self.initInHeadline()
+    saveData = self.save()
+    self.initBatchCommands()
+    count = 0
+    u.beforeChangeGroup(current,undoType)
+    while 1:
+        pos1, pos2 = self.findNextMatch()
+        if pos1 is None: break
+        count += 1
+        self.batchChange(pos1,pos2)
+        s = w.getAllText()
+        i,j = g.getLine(s,pos1)
+        line = s[i:j]
+        # self.printLine(line,allFlag=True)
+    p = c.p
+    u.afterChangeGroup(p,undoType,reportFlag=True)
+    g.es("changed:",count,"instances")
+    c.redraw(p)
+    self.restore(saveData)
+#@+node:ekr.20050318085432.6: *4* redoGroup
+def redoGroup (self):
+
+    '''Process beads until the matching 'afterGroup' bead is seen.'''
+
+    trace = False and not g.unitTesting
+    u = self
+
+    # Remember these values.
+    c = u.c
+    dirtyVnodeList = u.dirtyVnodeList or []
+    newSel = u.newSel
+    p = u.p.copy()
+
+    u.groupCount += 1
+
+    bunch = u.beads[u.bead] ; count = 0
+    if not hasattr(bunch,'items'):
+        g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+        g.trace(bunch)
+    else:
+        for z in bunch.items:
+            self.setIvarsFromBunch(z)
+            if z.redoHelper:
+                if trace: g.trace(z.redoHelper.__name__,p.h)
+                z.redoHelper() ; count += 1
+            else:
+                g.trace('oops: no redo helper for %s %s' % (u.undoType,p.h))
+
+    u.groupCount -= 1
+
+    u.updateMarks('new') # Bug fix: Leo 4.4.6.
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if not g.unitTesting:
+        g.es("redo",count,"instances")
+
+    c.selectPosition(p)
+    if newSel:
+        i,j = newSel
+        c.frame.body.setSelectionRange(i,j)
+#@+node:ekr.20050318085713: *4* undoGroup
+def undoGroup (self):
+
+    '''Process beads until the matching 'beforeGroup' bead is seen.'''
+
+    trace = False and not g.unitTesting
+    u = self
+
+    # Remember these values.
+    c = u.c
+    dirtyVnodeList = u.dirtyVnodeList or []
+    oldSel = u.oldSel
+    p = u.p.copy()
+
+    u.groupCount += 1
+
+    bunch = u.beads[u.bead] ; count = 0
+
+    if not hasattr(bunch,'items'):
+        g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+        g.trace(bunch)
+    else:
+        # Important bug fix: 9/8/06: reverse the items first.
+        reversedItems = bunch.items[:]
+        reversedItems.reverse()
+        for z in reversedItems:
+            self.setIvarsFromBunch(z)
+            if z.undoHelper:
+                if trace: g.trace(z.undoHelper.__name__,p.h)
+                z.undoHelper() ; count += 1
+            else:
+                g.trace('oops: no undo helper for %s %s' % (u.undoType,p.h))
+
+    u.groupCount -= 1
+
+    u.updateMarks('old') # Bug fix: Leo 4.4.6.
+
+    for v in dirtyVnodeList:
+        v.setDirty() # Bug fix: Leo 4.4.6.
+
+    if not g.unitTesting:
+        g.es("undo",count,"instances")
+
+    c.selectPosition(p)
+    if oldSel:
+        i,j = oldSel
+        c.frame.body.setSelectionRange(i,j)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

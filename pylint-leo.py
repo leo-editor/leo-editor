@@ -128,7 +128,7 @@ def getRecentCoreList():
         # ('leoGui',            ''),
         # ('leoImport',         ''),
         # ('leoKeys',           ''),
-        ('leoMenu',           'W0108'),
+        # ('leoMenu',           'W0108'),
             # W0108: Lambda may not be necessary (it is).
         # ('leoNodes',          ''),
         # ('leoPlugins',        ''),
@@ -227,12 +227,12 @@ recentPluginsList = (
 # )
 
 tables_table = (
-    (coreList,'core'),
-    (guiPluginsList,'plugins'),
+    #(coreList,'core'),
+    #(guiPluginsList,'plugins'),
     # (pluginsList,'plugins'),
     
     # (onlySupressionsList,'core'),
-    # (recentCoreList,'core'),
+    (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
     
     # Not often used...

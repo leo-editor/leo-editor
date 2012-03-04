@@ -641,9 +641,7 @@ class baseFileCommands:
         children = c.hiddenRootNode.children
 
         # 2011/12/10: never recreate the gnxDict.
-            # Always recreate the gnxDict
             # self.gnxDict = {}
-        # g.trace('*** clearing gnxDict',g.callers())
         
         # 2011/12/12: save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.

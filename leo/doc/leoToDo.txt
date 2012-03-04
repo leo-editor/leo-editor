@@ -7561,7 +7561,7 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
     verbose = True
     traceGC = False
     if traceGC: g.printNewObjects('masterCom 1')
-    
+
     if event: c.check_event(event)
 
     c.setLog()

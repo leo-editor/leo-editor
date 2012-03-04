@@ -3909,8 +3909,8 @@ class Commands (object):
         g.es('the',commandName,"command is not valid in batch mode")
     #@+node:ekr.20031218072017.2894: *4* Outline menu...
     #@+node:ekr.20031218072017.2895: *5*  Top Level... (Commands)
-    #@+node:ekr.20031218072017.1548: *6* Cut & Paste Outlines
-    #@+node:ekr.20031218072017.1549: *7* cutOutline
+    #@+node:ekr.20031218072017.1548: *6* c.Cut & Paste Outlines
+    #@+node:ekr.20031218072017.1549: *7* c.cutOutline
     def cutOutline (self,event=None):
 
         '''Delete the selected outline and send it to the clipboard.'''
@@ -3920,7 +3920,7 @@ class Commands (object):
             c.copyOutline()
             c.deleteOutline("Cut Node")
             c.recolor()
-    #@+node:ekr.20031218072017.1550: *7* copyOutline
+    #@+node:ekr.20031218072017.1550: *7* c.copyOutline
     def copyOutline (self,event=None):
 
         '''Copy the selected outline to the clipboard.'''
@@ -3930,7 +3930,7 @@ class Commands (object):
         c.endEditing()
         s = c.fileCommands.putLeoOutline()
         g.app.gui.replaceClipboardWith(s)
-    #@+node:ekr.20031218072017.1551: *7* pasteOutline
+    #@+node:ekr.20031218072017.1551: *7* c.pasteOutline
     # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
     def pasteOutline(self,event=None,reassignIndices=True):
@@ -3949,54 +3949,22 @@ class Commands (object):
             return # This should never happen.
 
         isLeo = g.match(s,0,g.app.prolog_prefix_string)
-        vnodeInfoDict = {}
-        if pasteAsClone:
-            #@+<< remember all data for undo/redo Paste As Clone >>
-            #@+node:ekr.20050418084539: *8* << remember all data for undo/redo Paste As Clone >>
-            #@+at
-            # 
-            # We don't know yet which nodes will be affected by the paste, so we remember
-            # everything. This is expensive, but foolproof.
-            # 
-            # The alternative is to try to remember the 'before' values of tnodes in the
-            # fileCommands read logic. Several experiments failed, and the code is very ugly.
-            # In short, it seems wise to do things the foolproof way.
-            # 
-            #@@c
-
-            for v in c.all_unique_nodes():
-                if v not in vnodeInfoDict:
-                    vnodeInfoDict[v] = g.Bunch(
-                        v=v,head=v.headString(),body=v.b)
-            #@-<< remember all data for undo/redo Paste As Clone >>
+            
+        vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
+        
         # create a *position* to be pasted.
-
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
 
         if not pasted: return None
-
-        copiedBunchList = []
+        
         if pasteAsClone:
-            #@+<< put only needed info in copiedBunchList >>
-            #@+node:ekr.20050418084539.2: *8* << put only needed info in copiedBunchList >>
-            # Create a dict containing only copied tnodes.
-            copiedVnodeDict = {}
-            for p in pasted.self_and_subtree():
-                if p.v not in copiedVnodeDict:
-                    copiedVnodeDict[p.v] = p.v
+            copiedBunchList = c.computeCopiedBunchList(pasted,vnodeInfoDict)
+        else:
+            copiedBunchList = []
 
-            # g.trace(list(copiedVnodeDict.keys()))
-
-            for v in vnodeInfoDict:
-                bunch = vnodeInfoDict.get(v)
-                if copiedVnodeDict.get(v):
-                    copiedBunchList.append(bunch)
-
-            # g.trace('copiedBunchList',copiedBunchList)
-            #@-<< put only needed info in copiedBunchList >>
         undoData = u.beforeInsertNode(current,
             pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
 
@@ -4004,6 +3972,7 @@ class Commands (object):
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True)
+
         # paste as first child if back is expanded.
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
@@ -4023,6 +3992,43 @@ class Commands (object):
         c.recolor()
         
         return pasted # For unit testing.
+    #@+node:ekr.20050418084539: *8* c.computeVnodeInfoDict
+    #@+at
+    # 
+    # We don't know yet which nodes will be affected by the paste, so we remember
+    # everything. This is expensive, but foolproof.
+    # 
+    # The alternative is to try to remember the 'before' values of nodes in the
+    # fileCommands read logic. Several experiments failed, and the code is very ugly.
+    # In short, it seems wise to do things the foolproof way.
+    # 
+    #@@c
+
+    def computeVnodeInfoDict (self):
+        
+        c,d = self,{}
+        for v in c.all_unique_nodes():
+            if v not in d:
+                d[v] = g.Bunch(v=v,head=v.h,body=v.b)
+
+        return d
+    #@+node:ekr.20050418084539.2: *8* c.computeCopiedBunchList
+    def computeCopiedBunchList(self,pasted,vnodeInfoDict):
+
+        # Create a dict containing only copied vnodes.
+        d = {}
+        for p in pasted.self_and_subtree():
+            d[p.v] = p.v
+        
+        # g.trace(sorted(list(d.keys())))
+        
+        aList = []
+        for v in vnodeInfoDict:
+            if d.get(v):
+                bunch = vnodeInfoDict.get(v)
+                aList.append(bunch)
+        
+        return aList
     #@+node:EKR.20040610130943: *7* pasteOutlineRetainingClones
     def pasteOutlineRetainingClones (self,event=None):
 

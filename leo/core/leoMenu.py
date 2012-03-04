@@ -1433,6 +1433,7 @@ class leoMenu:
 
             # The first parameter must be event, and it must default to None.
             def legacyMenuCallback(event=None,self=self,command=command,label=name):
+                c = self.c # 2012/03/04.
                 c.check_event(event)
                 return c.doCommand(command,label)
 
