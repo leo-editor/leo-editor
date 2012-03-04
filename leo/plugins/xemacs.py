@@ -93,11 +93,21 @@ def init ():
 
     return ok
 #@+node:ekr.20050313071202: ** open_in_emacs
+contextmenu_message_given = False
+
 def open_in_emacs (tag,keywords):
 
     c = keywords.get('c')
     p = keywords.get('p')
     if not c or not p: return
+    
+    # Load contextmenu plugin if required.
+    contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
+    if not contextMenu:
+        if not contextmenu_message_given:
+            contextmenu_message_given = True
+            g.trace('can not load contextmenu.py')
+        return
 
     v = p.v
 

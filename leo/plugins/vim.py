@@ -231,6 +231,8 @@ def on_open_window (tag,keywords):
     if event.lower() != 'disable':
         g.registerHandler(event,open_in_vim)
 #@+node:EKR.20040517075715.11: ** open_in_vim
+contextmenu_message_given = False
+
 def open_in_vim (tag,keywords):
 
     if g.unitTesting: return
@@ -238,6 +240,15 @@ def open_in_vim (tag,keywords):
     c = keywords.get('c')
     p2 = keywords.get('old_p')
     if not c: return
+    
+    # Load contextmenu plugin if required.
+    contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
+    if not contextMenu:
+        if not contextmenu_message_given:
+            contextmenu_message_given = True
+            g.trace('can not load contextmenu.py')
+        return
+    
     p = c.p
 
     if tag.startswith('select') and p == p2:
@@ -300,6 +311,7 @@ def open_in_vim (tag,keywords):
             os.remove(path)
             g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
             os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd "+path+"<CR>'")
+
         v.OpenWithOldBody=v.b # Remember the previous contents.
     
         # New code by Jim Sizemore. TL: added support for gVim tabs.

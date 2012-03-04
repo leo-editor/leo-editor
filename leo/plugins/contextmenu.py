@@ -432,11 +432,16 @@ def editnode_on_idle (tag,keywords):
 
                     # Set update if we should update the outline from the file.
                     if conflict:
-                        # See how the user wants to resolve the conflict.
-                        g.es("conflict in " + g.shortFileName(path),color="red")
-                        message = "Replace changed outline with external changes?"
-                        result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
-                        update = result.lower() == "yes"
+                        # 2012/02/04: Don't raise dialog for files opened with vim.py, xemacs.py, etc.
+                        paths = [z.get('path') for z in g.app.openWithFiles]
+                        if path in paths:
+                            update = True
+                        else:
+                            # See how the user wants to resolve the conflict.
+                            g.es("conflict in " + g.shortFileName(path),color="red")
+                            message = "Replace changed outline with external changes?"
+                            result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
+                            update = result.lower() == "yes"
                     else:
                         update = s != body
 

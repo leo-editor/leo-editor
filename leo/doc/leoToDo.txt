@@ -19,8 +19,8 @@ Top 10:
 @language rest
 
 .. @+node:ekr.20120303051059.9928: *4* Make sure vim and xemacs plugins work smoothly
-.. @+node:ekr.20120228164039.11403: *4* Bugs & testing
-.. @+node:ekr.20110929165422.15449: *5* Test bug fix: noweb expansions in rst3 command
+.. @+node:ekr.20120304065838.14230: *4* Fix URL bugs
+.. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
 *** Important *** This was all done in Leo 4.9
@@ -37,7 +37,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
 - When expand_noweb_references is True, definitions (typically clones)
   must be descendants of the referencing node (in the @rst tree)
-.. @+node:ekr.20111018104244.15918: *6* Report
+.. @+node:ekr.20111018104244.15918: *5* Report
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/15239f5f504cee6f
@@ -79,8 +79,8 @@ But now I can go see what happens in the code for debugging, since the
 option gives a pointer into the code.
 
 Thanks!
-.. @+node:ekr.20100813041139.5920: *6* Entry points
-.. @+node:ekr.20100812082517.5945: *7* code_to_rst_command & helpers
+.. @+node:ekr.20100813041139.5920: *5* Entry points
+.. @+node:ekr.20100812082517.5945: *6* code_to_rst_command & helpers
 def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
 
     '''Format the presently selected node as computer code.
@@ -127,7 +127,7 @@ def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString
 
     if callDocutils or writeIntermediateFile:
         self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100812082517.5963: *8* write_code_body & helpers
+.. @+node:ekr.20100812082517.5963: *7* write_code_body & helpers
 def write_code_body (self,p):
 
     trace = False
@@ -160,7 +160,7 @@ def write_code_body (self,p):
     # Write the lines with exactly two trailing newlines.
     s = ''.join(result).rstrip() + '\n\n'
     self.write(s)
-.. @+node:ekr.20100812082517.5964: *9* split_parts
+.. @+node:ekr.20100812082517.5964: *8* split_parts
 def split_parts (self,lines,showDocsAsParagraphs):
 
     '''Split a list of body lines into a list of tuples (kind,lines).'''
@@ -198,7 +198,7 @@ def split_parts (self,lines,showDocsAsParagraphs):
         parts.append((kind,part_lines[:]),)
 
     return parts
-.. @+node:ekr.20100812082517.5965: *9* write_code_block
+.. @+node:ekr.20100812082517.5965: *8* write_code_block
 def write_code_block (self,lines):
 
     result = ['::\n\n'] # ['[**code block**]\n\n']
@@ -213,7 +213,7 @@ def write_code_block (self,lines):
 
     s = ''.join(result).rstrip()+'\n\n'
     return g.splitLines(s)
-.. @+node:ekr.20100812082517.5966: *8* write_code_headline & helper
+.. @+node:ekr.20100812082517.5966: *7* write_code_headline & helper
 def write_code_headline (self,p):
 
     '''Generate an rST section if options permit it.
@@ -239,7 +239,7 @@ def write_code_headline (self,p):
         return
 
     self.write_code_headline_helper(p)
-.. @+node:ekr.20100812082517.5967: *9* write_code_headline_helper
+.. @+node:ekr.20100812082517.5967: *8* write_code_headline_helper
 def write_code_headline_helper (self,p):
 
     h = p.h.strip()
@@ -264,7 +264,7 @@ def write_code_headline_helper (self,p):
         self.write(self.underline(h,p))
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20100812082517.5968: *8* write_code_node
+.. @+node:ekr.20100812082517.5968: *7* write_code_node
 def write_code_node (self,p):
 
     '''Format a node according to the options presently in effect.
@@ -285,7 +285,7 @@ def write_code_node (self,p):
         self.write_code_headline(p)
         self.write_code_body(p)
         p.moveToThreadNext()
-.. @+node:ekr.20100812082517.5939: *8* write_code_tree
+.. @+node:ekr.20100812082517.5939: *7* write_code_tree
 def write_code_tree (self,p,fn):
 
     '''Write p's tree as code to self.outputFile.'''
@@ -301,13 +301,13 @@ def write_code_tree (self,p,fn):
     after = p.nodeAfterTree()
     while p and p != after:
         self.write_code_node(p) # Side effect: advances p.
-.. @+node:ekr.20090511055302.5793: *7* rst3 command & helpers
+.. @+node:ekr.20090511055302.5793: *6* rst3 command & helpers
 def rst3 (self,event=None):
 
     '''Write all @rst nodes.'''
 
     self.processTopTree(self.c.p)
-.. @+node:ekr.20090502071837.62: *8* processTopTree
+.. @+node:ekr.20090502071837.62: *7* processTopTree
 def processTopTree (self,p,justOneFile=False):
 
     c = self.c ; current = p.copy()
@@ -325,7 +325,7 @@ def processTopTree (self,p,justOneFile=False):
         self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
     g.es_print('done',color='blue')
-.. @+node:ekr.20090502071837.63: *8* processTree
+.. @+node:ekr.20090502071837.63: *7* processTree
 def processTree(self,p,ext=None,toString=False,justOneFile=False):
 
     '''Process all @rst nodes in a tree.
@@ -359,7 +359,7 @@ def processTree(self,p,ext=None,toString=False,justOneFile=False):
     if not found:
         g.es('No @rst or @slides nodes in selected tree',color='blue')
     return None,None
-.. @+node:ekr.20090502071837.64: *8* write_rst_tree
+.. @+node:ekr.20090502071837.64: *7* write_rst_tree
 def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
 
     '''Convert p's tree to rst sources.
@@ -395,7 +395,7 @@ def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
 
     if callDocutils or writeIntermediateFile:
         self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
-.. @+node:ekr.20100822092546.5835: *8* write_slides & helper
+.. @+node:ekr.20100822092546.5835: *7* write_slides & helper
 def write_slides (self,p,toString=False):
 
     '''Convert p's children to slides.'''
@@ -426,7 +426,7 @@ def write_slides (self,p,toString=False):
             callDocutils=self.getOption('call_docutils'),
             toString=toString,
             writeIntermediateFile=self.getOption('write_intermediate_file'))
-.. @+node:ekr.20100822174725.5836: *9* writeSlideTitle
+.. @+node:ekr.20100822174725.5836: *8* writeSlideTitle
 def writeSlideTitle (self,title,n,n_tot):
 
     '''Write the title, underlined with the '#' character.'''
@@ -438,8 +438,8 @@ def writeSlideTitle (self,title,n,n_tot):
         encoding=self.encoding,reportErrors=False)))
 
     self.write('%s\n%s \n\n' % (title,('#'*width)))
-.. @+node:ekr.20090502071837.58: *8* write methods (rst3 command)
-.. @+node:ekr.20090502071837.68: *9* getDocPart
+.. @+node:ekr.20090502071837.58: *7* write methods (rst3 command)
+.. @+node:ekr.20090502071837.68: *8* getDocPart
 def getDocPart (self,lines,n):
 
     # g.trace('n',n,repr(''.join(lines)))
@@ -452,7 +452,7 @@ def getDocPart (self,lines,n):
             break
         result.append(s)
     return n, result
-.. @+node:ekr.20090502071837.69: *10* << Append whatever follows @doc or @space to result >>
+.. @+node:ekr.20090502071837.69: *9* << Append whatever follows @doc or @space to result >>
 if n > 0:
     line = lines[n-1]
     if line.startswith('@doc'):
@@ -469,7 +469,7 @@ if n > 0:
 
     if s.strip():
         result.append(s)
-.. @+node:ekr.20090502071837.81: *9* handleSpecialDocParts
+.. @+node:ekr.20090502071837.81: *8* handleSpecialDocParts
 def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
     # g.trace(kind,g.listToString(lines))
@@ -496,7 +496,7 @@ def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
             result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.77: *9* isAnyDocPart
+.. @+node:ekr.20090502071837.77: *8* isAnyDocPart
 def isAnyDocPart (self,s):
 
     if s.startswith('@doc'):
@@ -505,7 +505,7 @@ def isAnyDocPart (self,s):
         return False
     else:
         return len(s) == 1 or s[1].isspace()
-.. @+node:ekr.20090502071837.79: *9* isAnySpecialDocPart
+.. @+node:ekr.20090502071837.79: *8* isAnySpecialDocPart
 def isAnySpecialDocPart (self,s):
 
     for kind in (
@@ -517,7 +517,7 @@ def isAnySpecialDocPart (self,s):
             return True
 
     return False
-.. @+node:ekr.20090502071837.78: *9* isSpecialDocPart
+.. @+node:ekr.20090502071837.78: *8* isSpecialDocPart
 def isSpecialDocPart (self,s,kind):
 
     '''Return True if s is a special doc part of the indicated kind.
@@ -539,7 +539,7 @@ def isSpecialDocPart (self,s,kind):
         # repr(kind),result,repr(s)))
 
     return result
-.. @+node:ekr.20090502071837.80: *9* removeLeoDirectives
+.. @+node:ekr.20090502071837.80: *8* removeLeoDirectives
 def removeLeoDirectives (self,lines):
 
     '''Remove all Leo directives, except within literal blocks.'''
@@ -561,7 +561,7 @@ def removeLeoDirectives (self,lines):
             result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.82: *9* replaceCodeBlockDirectives
+.. @+node:ekr.20090502071837.82: *8* replaceCodeBlockDirectives
 def replaceCodeBlockDirectives (self,lines):
 
     '''Replace code-block directive, but not in literal blocks.'''
@@ -587,7 +587,7 @@ def replaceCodeBlockDirectives (self,lines):
                 result.append(s)
 
     return result
-.. @+node:ekr.20090502071837.70: *9* skip_literal_block
+.. @+node:ekr.20090502071837.70: *8* skip_literal_block
 def skip_literal_block (self,lines,n):
 
     s = lines[n] ; result = [s] ; n += 1
@@ -604,7 +604,7 @@ def skip_literal_block (self,lines,n):
 
     # g.printList(result,tag='literal block')
     return n, result
-.. @+node:ekr.20090502071837.71: *9* writeBody & helpers
+.. @+node:ekr.20090502071837.71: *8* writeBody & helpers
 def writeBody (self,p):
 
     trace = False and not g.unitTesting
@@ -662,7 +662,7 @@ def writeBody (self,p):
     # s = g.ensureLeadingNewlines(s,1)
     s = g.ensureTrailingNewlines(s,2)
     self.write(s)
-.. @+node:ekr.20110610144305.6749: *10* isSectionDef/Ref
+.. @+node:ekr.20110610144305.6749: *9* isSectionDef/Ref
 def isSectionDef (self,p):
     
     return self.isSectionRef(p.h)
@@ -672,7 +672,7 @@ def isSectionRef (self,s):
     n1 = s.find("<<",0)
     n2 = s.find(">>",0)
     return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *10* expandSectionRefs
+.. @+node:ekr.20110610144305.6750: *9* expandSectionRefs
 def expandSectionRefs (self,lines,p,seen):
     
     trace = False and not g.unitTesting
@@ -703,7 +703,7 @@ def expandSectionRefs (self,lines,p,seen):
             result.append(s)
 
     return result
-.. @+node:ekr.20110610144305.6751: *10* findSectionDef
+.. @+node:ekr.20110610144305.6751: *9* findSectionDef
 def findSectionDef (self,name,p):
     
     for p2 in p.subtree():
@@ -712,7 +712,7 @@ def findSectionDef (self,name,p):
             return p2
     
     return None
-.. @+node:ekr.20090502071837.72: *10* handleCodeMode & helper
+.. @+node:ekr.20090502071837.72: *9* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -776,7 +776,7 @@ def handleCodeMode (self,lines):
         else: result2.append('%s\n' % z.rstrip())
 
     return result2
-.. @+node:ekr.20090502071837.73: *11* formatCodeModeLine
+.. @+node:ekr.20090502071837.73: *10* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -785,7 +785,7 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *11* rstripList
+.. @+node:ekr.20090502071837.74: *10* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
@@ -793,7 +793,7 @@ def rstripList (self,theList):
     # 2010/08/27: fix bug 618482.
     s = ''.join(theList).rstrip()
     return s.split('\n')
-.. @+node:ekr.20090502071837.75: *11* finishCodePart
+.. @+node:ekr.20090502071837.75: *10* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -802,7 +802,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *10* handleDocOnlyMode
+.. @+node:ekr.20090502071837.76: *9* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -832,7 +832,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20090502071837.83: *9* writeHeadline & helper
+.. @+node:ekr.20090502071837.83: *8* writeHeadline & helper
 def writeHeadline (self,p):
 
     '''Generate an rST section if options permit it.
@@ -859,7 +859,7 @@ def writeHeadline (self,p):
         return
 
     self.writeHeadlineHelper(p)
-.. @+node:ekr.20090502071837.84: *10* writeHeadlineHelper
+.. @+node:ekr.20090502071837.84: *9* writeHeadlineHelper
 def writeHeadlineHelper (self,p):
 
     h = p.h
@@ -900,7 +900,7 @@ def writeHeadlineHelper (self,p):
             self.write('\n%s\n\n' % h)
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-.. @+node:ekr.20090502071837.85: *9* writeNode (leoRst)
+.. @+node:ekr.20090502071837.85: *8* writeNode (leoRst)
 def writeNode (self,p):
 
     '''Format a node according to the options presently in effect.'''
@@ -928,7 +928,7 @@ def writeNode (self,p):
         self.writeHeadline(p)
         self.writeBody(p)
         p.moveToThreadNext()
-.. @+node:ekr.20090502071837.86: *9* writePreformat
+.. @+node:ekr.20090502071837.86: *8* writePreformat
 def writePreformat (self,p):
 
     '''Write p's body text lines as if preformatted.
@@ -948,7 +948,7 @@ def writePreformat (self,p):
     s = '\n'.join(lines)
     if s.strip():
         self.write('%s\n\n' % s)
-.. @+node:ekr.20090502071837.87: *9* writeTree
+.. @+node:ekr.20090502071837.87: *8* writeTree
 def writeTree(self,p,fn):
 
     '''Write p's tree to self.outputFile.'''
@@ -965,7 +965,7 @@ def writeTree(self,p,fn):
     after = p.nodeAfterTree()
     while p and p != after:
         self.writeNode(p) # Side effect: advances p.
-.. @+node:ekr.20090502071837.67: *7* writeNodeToString
+.. @+node:ekr.20090502071837.67: *6* writeNodeToString
 def writeNodeToString (self,p=None,ext=None):
 
     '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
@@ -985,7 +985,7 @@ def writeNodeToString (self,p=None,ext=None):
             return self.processTree(p,ext=ext,toString=True,justOneFile=True)
     else:
         return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-.. @+node:ekr.20090512153903.5803: *7* writeAtAutoFile
+.. @+node:ekr.20090512153903.5803: *6* writeAtAutoFile
 def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
     '''Write an @auto tree containing imported rST code.
@@ -1006,7 +1006,7 @@ def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
     finally:
         self.atAutoWrite = False
     return ok
-.. @+node:ekr.20090513073632.5733: *8* initAtAutoWrite (rstCommands)
+.. @+node:ekr.20090513073632.5733: *7* initAtAutoWrite (rstCommands)
 def initAtAutoWrite(self,p,fileName,outputFile):
 
     # Set up for a standard write.
@@ -1039,7 +1039,7 @@ def initAtAutoWrite(self,p,fileName,outputFile):
     self.atAutoWriteUnderlines   = underlines2 + underlines1
     self.underlines1 = underlines1
     self.underlines2 = underlines2
-.. @+node:ekr.20091228080620.6499: *8* isSafeWrite
+.. @+node:ekr.20091228080620.6499: *7* isSafeWrite
 def isSafeWrite (self,p):
 
     '''Return True if node p contributes nothing but
@@ -1057,8 +1057,8 @@ def isSafeWrite (self,p):
             return False
     else:
         return True
-.. @+node:ekr.20090502071837.41: *6* Options
-.. @+node:ekr.20090502071837.42: *7* createDefaultOptionsDict
+.. @+node:ekr.20090502071837.41: *5* Options
+.. @+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Important: these must be munged names.
@@ -1104,7 +1104,7 @@ def createDefaultOptionsDict(self):
         'show_markup_doc_parts': False,
         'show_options_doc_parts': False,
     }
-.. @+node:ekr.20090502071837.43: *7* dumpSettings (debugging)
+.. @+node:ekr.20090502071837.43: *6* dumpSettings (debugging)
 def dumpSettings (self):
 
     d = self.optionsDict
@@ -1113,7 +1113,7 @@ def dumpSettings (self):
     g.pr('present settings...')
     for key in keys:
         g.pr('%20s %s' % (key,d.get(key)))
-.. @+node:ekr.20090502071837.44: *7* getOption & setOption
+.. @+node:ekr.20090502071837.44: *6* getOption & setOption
 def getOption (self,name):
 
     # 2010/08/12: munging names here is safe because setOption munges.
@@ -1123,7 +1123,7 @@ def getOption (self,name):
 def setOption (self,name,val,tag=None):
 
     self.optionsDict [self.munge(name)] = val
-.. @+node:ekr.20090502071837.45: *7* initCodeBlockString
+.. @+node:ekr.20090502071837.45: *6* initCodeBlockString
 def initCodeBlockString(self,p):
 
     trace = False and not g.unitTesting
@@ -1146,7 +1146,7 @@ def initCodeBlockString(self,p):
             language.title())
     else:
         self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-.. @+node:ekr.20090502071837.46: *7* preprocessTree & helpers
+.. @+node:ekr.20090502071837.46: *6* preprocessTree & helpers
 def preprocessTree (self,root):
 
     self.nodeOptionDict = {}
@@ -1163,14 +1163,14 @@ def preprocessTree (self,root):
         for key in self.nodeOptionDict.keys():
             g.trace(key)
             g.printDict(self.nodeOptionDict.get(key))
-.. @+node:ekr.20090502071837.47: *8* preprocessNode
+.. @+node:ekr.20090502071837.47: *7* preprocessNode
 def preprocessNode (self,p):
 
     d = self.nodeOptionDict.get(p.v)
     if d is None:
         d = self.scanNodeForOptions(p)
         self.nodeOptionDict [p.v] = d
-.. @+node:ekr.20090502071837.48: *8* parseOptionLine
+.. @+node:ekr.20090502071837.48: *7* parseOptionLine
 def parseOptionLine (self,s):
 
     '''Parse a line containing name=val and return (name,value) or None.
@@ -1191,7 +1191,7 @@ def parseOptionLine (self,s):
     else:
         # g.trace('*True')
         return name,'True'
-.. @+node:ekr.20090502071837.49: *8* scanForOptionDocParts
+.. @+node:ekr.20090502071837.49: *7* scanForOptionDocParts
 def scanForOptionDocParts (self,p,s):
 
     '''Return a dictionary containing all options from @rst-options doc parts in p.
@@ -1220,7 +1220,7 @@ def scanForOptionDocParts (self,p,s):
                             d.update(self.scanOption(p,line))
                     break
     return d
-.. @+node:ekr.20090502071837.50: *8* scanHeadlineForOptions
+.. @+node:ekr.20090502071837.50: *7* scanHeadlineForOptions
 def scanHeadlineForOptions (self,p):
 
     '''Return a dictionary containing the options implied by p's headline.'''
@@ -1269,7 +1269,7 @@ def scanHeadlineForOptions (self,p):
             g.trace('unknown kind of @rst headline',p.h,g.callers(4))
 
         return {}
-.. @+node:ekr.20090502071837.51: *8* scanNodeForOptions
+.. @+node:ekr.20090502071837.51: *7* scanNodeForOptions
 def scanNodeForOptions (self,p):
 
     '''Return a dictionary containing all the option-name:value entries in p.
@@ -1294,7 +1294,7 @@ def scanNodeForOptions (self,p):
             print('    %s: %s' % (z,d.get(z)))
 
     return d
-.. @+node:ekr.20090502071837.52: *8* scanOption
+.. @+node:ekr.20090502071837.52: *7* scanOption
 def scanOption (self,p,s):
 
     '''Return { name:val } if s is a line of the form name=val.
@@ -1319,7 +1319,7 @@ def scanOption (self,p,s):
         s2 = 'bad rst3 option in %s: %s' % (p.h,s)
         g.es_print(s2,color='red')
         return {}
-.. @+node:ekr.20090502071837.53: *8* scanOptions
+.. @+node:ekr.20090502071837.53: *7* scanOptions
 def scanOptions (self,p,s):
 
     '''Return a dictionary containing all the options in s.'''
@@ -1331,7 +1331,7 @@ def scanOptions (self,p,s):
         if d2: d.update(d2)
 
     return d
-.. @+node:ekr.20090502071837.54: *7* scanAllOptions & helpers
+.. @+node:ekr.20090502071837.54: *6* scanAllOptions & helpers
 # Once an option is seen, no other related options in ancestor nodes have any effect.
 
 def scanAllOptions(self,p):
@@ -1360,7 +1360,7 @@ def scanAllOptions(self,p):
         self.setOption("generate_rst_header_comment",True, "rst3_all")
         self.setOption("http_server_support", True, "rst3_all")
         self.setOption("write_intermediate_file", True, "rst3_all")
-.. @+node:ekr.20090502071837.55: *8* initOptionsFromSettings
+.. @+node:ekr.20090502071837.55: *7* initOptionsFromSettings
 def initOptionsFromSettings (self):
 
     c = self.c
@@ -1390,7 +1390,7 @@ def initOptionsFromSettings (self):
     if self.getOption('http_server_support') and not mod_http:
         g.es('No http_server_support: can not import mod_http plugin',color='red')
         self.setOption('http_server_support',False)
-.. @+node:ekr.20090502071837.56: *8* handleSingleNodeOptions
+.. @+node:ekr.20090502071837.56: *7* handleSingleNodeOptions
 def handleSingleNodeOptions (self,p):
 
     '''Init the settings of single-node options from the tnodeOptionsDict.
@@ -1404,7 +1404,7 @@ def handleSingleNodeOptions (self,p):
         #g.trace('%24s %8s %s' % (ivar,val,p.h))
         self.setOption(ivar,val,p.h)
 
-.. @+node:ekr.20090502071837.42: *6* createDefaultOptionsDict
+.. @+node:ekr.20090502071837.42: *5* createDefaultOptionsDict
 def createDefaultOptionsDict(self):
 
     # Important: these must be munged names.
@@ -1450,7 +1450,7 @@ def createDefaultOptionsDict(self):
         'show_markup_doc_parts': False,
         'show_options_doc_parts': False,
     }
-.. @+node:ekr.20090502071837.71: *6* writeBody & helpers
+.. @+node:ekr.20090502071837.71: *5* writeBody & helpers
 def writeBody (self,p):
 
     trace = False and not g.unitTesting
@@ -1508,7 +1508,7 @@ def writeBody (self,p):
     # s = g.ensureLeadingNewlines(s,1)
     s = g.ensureTrailingNewlines(s,2)
     self.write(s)
-.. @+node:ekr.20110610144305.6749: *7* isSectionDef/Ref
+.. @+node:ekr.20110610144305.6749: *6* isSectionDef/Ref
 def isSectionDef (self,p):
     
     return self.isSectionRef(p.h)
@@ -1518,7 +1518,7 @@ def isSectionRef (self,s):
     n1 = s.find("<<",0)
     n2 = s.find(">>",0)
     return -1 < n1 < n2 and s[n1+2:n2].strip()
-.. @+node:ekr.20110610144305.6750: *7* expandSectionRefs
+.. @+node:ekr.20110610144305.6750: *6* expandSectionRefs
 def expandSectionRefs (self,lines,p,seen):
     
     trace = False and not g.unitTesting
@@ -1549,7 +1549,7 @@ def expandSectionRefs (self,lines,p,seen):
             result.append(s)
 
     return result
-.. @+node:ekr.20110610144305.6751: *7* findSectionDef
+.. @+node:ekr.20110610144305.6751: *6* findSectionDef
 def findSectionDef (self,name,p):
     
     for p2 in p.subtree():
@@ -1558,7 +1558,7 @@ def findSectionDef (self,name,p):
             return p2
     
     return None
-.. @+node:ekr.20090502071837.72: *7* handleCodeMode & helper
+.. @+node:ekr.20090502071837.72: *6* handleCodeMode & helper
 def handleCodeMode (self,lines):
 
     '''Handle the preprocessed body text in code mode as follows:
@@ -1622,7 +1622,7 @@ def handleCodeMode (self,lines):
         else: result2.append('%s\n' % z.rstrip())
 
     return result2
-.. @+node:ekr.20090502071837.73: *8* formatCodeModeLine
+.. @+node:ekr.20090502071837.73: *7* formatCodeModeLine
 def formatCodeModeLine (self,s,n,numberOption):
 
     if not s.strip(): s = ''
@@ -1631,7 +1631,7 @@ def formatCodeModeLine (self,s,n,numberOption):
         return '\t%d: %s' % (n,s)
     else:
         return '\t%s' % s
-.. @+node:ekr.20090502071837.74: *8* rstripList
+.. @+node:ekr.20090502071837.74: *7* rstripList
 def rstripList (self,theList):
 
     '''Removed trailing blank lines from theList.'''
@@ -1639,7 +1639,7 @@ def rstripList (self,theList):
     # 2010/08/27: fix bug 618482.
     s = ''.join(theList).rstrip()
     return s.split('\n')
-.. @+node:ekr.20090502071837.75: *8* finishCodePart
+.. @+node:ekr.20090502071837.75: *7* finishCodePart
 def finishCodePart (self,result,code):
 
     numberOption = self.getOption('number_code_lines')
@@ -1648,7 +1648,7 @@ def finishCodePart (self,result,code):
     for line in code:
         i += 1
         result.append(self.formatCodeModeLine(line,i,numberOption))
-.. @+node:ekr.20090502071837.76: *7* handleDocOnlyMode
+.. @+node:ekr.20090502071837.76: *6* handleDocOnlyMode
 def handleDocOnlyMode (self,p,lines):
 
     '''Handle the preprocessed body text in doc_only mode as follows:
@@ -1678,7 +1678,7 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20111125072438.10214: *5* (Maybe) Fix bug: Another @shadow bug (test4.leo)
+.. @+node:ekr.20111125072438.10214: *4* (Maybe) Fix bug: Another @shadow bug (test4.leo)
 @nocolor-node
 
 email:
@@ -1693,7 +1693,7 @@ a bit of time, I am not very familiar with python.
 ===== EKR
 
 Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
-.. @+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
+.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
