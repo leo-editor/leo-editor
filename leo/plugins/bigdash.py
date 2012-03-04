@@ -22,8 +22,6 @@ __version__ = '0.0'
 #@+node:ville.20120302233106.3581: ** << imports >>
 import sys
 
-print "importing bigdash"
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
@@ -33,7 +31,7 @@ from PyQt4.QtWebKit import *
 #@+node:ville.20120302233106.3580: ** init
 def init ():
 
-    print "bigdash init"
+    print ("bigdash init")
     import leo.core.leoGlobals as g
     
     set_leo(g)
@@ -81,9 +79,6 @@ def matchlines(b, miter):
         spre = b[ipre +1 : st-1] + "\n"
         spost = b[en : ipost]
         
-        print "pre", spre
-        print "post", spost
-
         res.append((li, (m.start()-st, m.end()-st ), (spre, spost)))
     return res
 
@@ -105,14 +100,12 @@ class GlobalSearch:
             hitparas.append(l)
         if ss.startswith("s "):
             s = ss[2:]
-            print "searching",s
             
             
             for ndxc,c2 in enumerate(g.app.commanders()):
                 hits = c2.find_b(s)                
                                 
                 for ndxh, h in enumerate(hits):
-                    print h
                     b = h.b
                     mlines = matchlines(b, h.matchiter)
                     key = "c%dh%d" % (ndxc, ndxh)
@@ -131,7 +124,6 @@ class GlobalSearch:
     
     def do_link(self,l):
         a = self.anchors[l]
-        print "link",a
         c, p = a
         c.selectPosition(p)
         
@@ -139,7 +131,6 @@ class GlobalSearch:
 class BigDash:
     def docmd(self):
         t = self.led.text()
-        print "cmd",t
         for h in self.handlers:
             r = h(self, t)
             if r:
