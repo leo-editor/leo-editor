@@ -7391,16 +7391,30 @@ class TabbedFrameFactory:
         dw.show()
         tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18467: *4* deleteFrame
-    def deleteFrame(self, wdg):    
+    #@+node:ekr.20110605121601.18467: *4* deleteFrame (TabbedFrameFactory)
+    def deleteFrame(self, wdg):
+        
+        trace = False and not g.unitTesting
+        if not wdg: return
+
         if wdg not in self.leoFrames:
             # probably detached tab
             self.masterFrame.delete(wdg)
             return
+            
+        if trace: g.trace('old',wdg.leo_c.frame.title)
+            # wdg is a DynamicWindow.
+        
         tabw = self.masterFrame
         idx = tabw.indexOf(wdg)
         tabw.removeTab(idx)
         del self.leoFrames[wdg]
+
+        wdg2 = tabw.currentWidget()
+        if wdg2:
+            if trace: g.trace('new',wdg2 and wdg2.leo_c.frame.title)
+            g.app.selectLeoWindow(wdg2.leo_c)
+        
         tabw.tabBar().setVisible(
             self.alwaysShowTabs or tabw.count() > 1)
     #@+node:ekr.20110605121601.18468: *4* createMaster (TabbedFrameFactory)
@@ -7442,22 +7456,34 @@ class TabbedFrameFactory:
                         break
                 break
                 
-    #@+node:ekr.20110605121601.18470: *4* signal handlers
+    #@+node:ekr.20110605121601.18470: *4* signal handlers (TabbedFrameFactory)
     def slotCloseRequest(self,idx):
+        
+        trace = False and not g.unitTesting
         tabw = self.masterFrame
         w = tabw.widget(idx)
         f = self.leoFrames[w]
         c = f.c
-        c.close()
+        if trace: g.trace(f.title)
+        c.close(new_c=None)
+            # 2012/03/04: Don't set the frame here.
+            # Wait until the next slotCurrentChanged event.
+            # This keeps the log and the QTabbedWidget in sync.
 
     def slotCurrentChanged(self, idx):
+
+        # Two events are generated, one for the tab losing focus,
+        # and another event for the tab gaining focus.
+        trace = False and not g.unitTesting
         tabw = self.masterFrame
         w = tabw.widget(idx)
         f = self.leoFrames.get(w)
         if f:
-            # g.trace(f and f.title or '<no frame>')
+            if trace: g.trace(f.title)
             tabw.setWindowTitle(f.title)
-    #@+node:ekr.20110605121601.18471: *4* focusCurrentBody
+            g.app.selectLeoWindow(f.c)
+                # 2012/03/04: Set the frame now.
+    #@+node:ekr.20110605121601.18471: *4* focusCurrentBody (TabbedFrameFactory)
     def focusCurrentBody(self):
         """ Focus body control of current tab """
         tabw = self.masterFrame
@@ -7466,9 +7492,10 @@ class TabbedFrameFactory:
         f = self.leoFrames[w]
         c = f.c
         c.bodyWantsFocusNow()
+
         # Fix bug 690260: correct the log.
         g.app.log = f.log
-    #@+node:ekr.20110605121601.18472: *4* createTabCommands
+    #@+node:ekr.20110605121601.18472: *4* createTabCommands (TabbedFrameFactory)
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
 
@@ -7522,10 +7549,6 @@ class TabbedFrameFactory:
             """ Cycle to next tab """
             tab_cycle(-1)
         #@-<< Commands for tabs >>
-
-
-
-
     #@-others
 #@+node:ekr.20110605121601.18474: ** Gui wrapper
 #@+node:ekr.20110605121601.18475: *3* class leoQtGui

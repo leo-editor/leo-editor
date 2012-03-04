@@ -227,12 +227,12 @@ recentPluginsList = (
 # )
 
 tables_table = (
-    #(coreList,'core'),
-    #(guiPluginsList,'plugins'),
-    # (pluginsList,'plugins'),
+    (coreList,'core'),
+    (guiPluginsList,'plugins'),
+    (pluginsList,'plugins'),
     
     # (onlySupressionsList,'core'),
-    (recentCoreList,'core'),
+    # (recentCoreList,'core'),
     # (recentPluginsList,'plugins'),
     
     # Not often used...

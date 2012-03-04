@@ -18,7 +18,6 @@ Top 10:
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 @language rest
 
-.. @+node:ekr.20120303051059.9928: *4* Make sure vim and xemacs plugins work smoothly
 .. @+node:ekr.20120304065838.14230: *4* Fix URL bugs
 .. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node

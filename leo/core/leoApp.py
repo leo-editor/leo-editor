@@ -367,15 +367,16 @@ class LeoApp:
         self.global_commands_dict = {}
         #@-<< Define global data structures >>
     #@+node:ekr.20031218072017.2609: *3* app.closeLeoWindow
-    def closeLeoWindow (self,frame):
+    def closeLeoWindow (self,frame,new_c=None):
 
         """Attempt to close a Leo window.
 
         Return False if the user veto's the close."""
 
+        trace = False and not g.unitTesting
         c = frame.c
 
-        # g.trace('frame',frame,g.callers(4))
+        if trace: g.trace(frame.c,g.callers(4))
 
         c.endEditing() # Commit any open edits.
 
@@ -401,17 +402,9 @@ class LeoApp:
             g.app.destroyWindow(frame)
 
         if g.app.windowList:
-            # Pick a window to activate so we can set the log.
-            frame = g.app.windowList[0]
-            frame.deiconify()
-            frame.lift()
-            frame.c.setLog()
-            master = hasattr(frame.top,'leo_master') and frame.top.leo_master
-            if master: # 2011/11/21: selecting the new tab ensures focus is set.
-                # frame.top.leo_master is a TabbedTopLevel.
-                master.select(frame.c)
-            frame.c.bodyWantsFocus()
-            frame.c.outerUpdate()
+            c2 = new_c or g.app.windowList[0].c
+            g.app.selectLeoWindow(c2)
+           
         elif not g.app.unitTesting:
             g.app.finishQuit()
 
@@ -644,6 +637,26 @@ class LeoApp:
 
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
+    #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
+    def selectLeoWindow (self,c):
+        
+        trace = False and not g.unitTesting
+        assert c
+        if trace: g.trace(c.frame.title)
+        
+        frame = c.frame
+        frame.deiconify()
+        frame.lift()
+        c.setLog()
+        
+        master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+
+        if master: # 2011/11/21: selecting the new tab ensures focus is set.
+            # frame.top.leo_master is a TabbedTopLevel.
+            master.select(c)
+
+        c.bodyWantsFocus()
+        c.outerUpdate()
     #@+node:ville.20090620122043.6275: *3* app.setGlobalDb
     def setGlobalDb(self):
         """ Create global pickleshare db

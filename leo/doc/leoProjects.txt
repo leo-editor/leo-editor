@@ -1406,84 +1406,8 @@ run-selected-unit-tests-externally = Alt-4 # Standard binding, unchanged.
 run-marked-unit-tests-externally = Alt-5
 run-marked-unit-tests-locally = Alt-6
 #@+node:ekr.20110621074459.14908: ** 4.10
-#@+node:ekr.20120229094652.15179: *3* Made sure global @command & @button nodes work
-#@+node:ekr.20070925144337: *4* doButtons
-def doButtons (self,p,kind,name,val):
-
-    '''Handle an @buttons tree.'''
-
-    trace = False and not g.unitTesting
-    aList = [] ; c = self.c ; tag = '@button'
-    seen = []
-    after = p.nodeAfterTree()
-    while p and p != after:
-        if p.v in seen:
-            p.moveToNodeAfterTree()
-        elif p.isAtIgnoreNode():
-            seen.append(p.v)
-            p.moveToNodeAfterTree()
-        else:
-            seen.append(p.v)
-            if g.match_word(p.h,0,tag):
-                # We can not assume that p will be valid when it is used.
-                script = g.getScript(c,p,
-                    useSelectedText=False,
-                    forcePythonSentinels=True,
-                    useSentinels=True)
-                aList.append((p.h,script),)
-            p.moveToThreadNext()
-
-    # This setting is handled differently from most other settings,
-    # because the last setting must be retrieved before any commander exists.
-    if aList:
-        g.app.config.atCommonButtonsList.extend(aList)
-            # Bug fix: 2011/11/24: Extend the list, don't replace it.
-        g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
-
-    if trace: g.trace(len(aList),c.shortFileName())
-
-    d,key = g.app.config.unitTestDict,'config.doButtons-file-names'
-    aList = d.get(key,[])
-    aList.append(c.shortFileName())
-    d[key] = aList
-#@+node:ekr.20080312071248.6: *4* doCommands
-def doCommands (self,p,kind,name,val):
-
-    '''Handle an @commands tree.'''
-
-    trace = False and not g.unitTesting
-    aList = [] ; c = self.c ; tag = '@command'
-    seen = []
-    after = p.nodeAfterTree()
-    while p and p != after:
-        if p.v in seen:
-            p.moveToNodeAfterTree()
-        elif p.isAtIgnoreNode():
-            seen.append(p.v)
-            p.moveToNodeAfterTree()
-        else:
-            seen.append(p.v)
-            if g.match_word(p.h,0,tag):
-                # We can not assume that p will be valid when it is used.
-                script = g.getScript(c,p,
-                    useSelectedText=False,
-                    forcePythonSentinels=True,
-                    useSentinels=True)
-                aList.append((p.h,script),)
-            p.moveToThreadNext()
-
-    # This setting is handled differently from most other settings,
-    # because the last setting must be retrieved before any commander exists.
-    if aList:
-        g.app.config.atCommonCommandsList.extend(aList)
-            # Bug fix: 2011/11/24: Extend the list, don't replace it.
-    if trace: g.trace(len(aList),c.shortFileName())
-    
-    d,key = g.app.config.unitTestDict,'config.doCommands-file-names'
-    aList = d.get(key,[])
-    aList.append(c.shortFileName())
-    d[key] = aList
-#@+node:ekr.20120301053039.15579: *3* Instant abbreviations (~a)
+#@+node:ekr.20120304065838.15590: *3* Features
+#@+node:ekr.20120301053039.15579: *4* Instant abbreviations (~a)
 @nocolor-node
 
 Rev 5051 contains a *major* improvement in Leo's abbreviation code.
@@ -1566,7 +1490,7 @@ You might want to define::
 in the somewhat unlikely event that you want to type ~a rather than,
 say, ~+a.  Of course, you don't need these, provided you remember to
 type ~xa <Right><Delete> :-)
-#@+node:ekr.20050920084036.27: *4* expandAbbrev
+#@+node:ekr.20050920084036.27: *5* expandAbbrev
 def expandAbbrev (self,event,stroke):
 
     '''Not a command.  Called from k.masterCommand to expand
@@ -1637,7 +1561,7 @@ def expandAbbrev (self,event,stroke):
     c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
 
     return True
-#@+node:ekr.20100901080826.6001: *4* addAbbrevHelper
+#@+node:ekr.20100901080826.6001: *5* addAbbrevHelper
 def addAbbrevHelper (self,s,tag=''):
     
     '''Enter the abbreviation 's' into the self.abbrevs dict.'''
@@ -1660,7 +1584,85 @@ def addAbbrevHelper (self,s,tag=''):
         d [name] = val,tag
     except ValueError:
         g.es_print('bad abbreviation: %s' % s)
-#@+node:ekr.20120229094652.19497: *3* Fixed Bug 930726:expandNodeAndGoToFirstChild only expands or only goes to first child
+#@+node:ekr.20120304065838.15591: *3* Bugs
+#@+node:ekr.20120229094652.15179: *4* Made sure global @command & @button nodes work
+#@+node:ekr.20070925144337: *5* doButtons
+def doButtons (self,p,kind,name,val):
+
+    '''Handle an @buttons tree.'''
+
+    trace = False and not g.unitTesting
+    aList = [] ; c = self.c ; tag = '@button'
+    seen = []
+    after = p.nodeAfterTree()
+    while p and p != after:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        elif p.isAtIgnoreNode():
+            seen.append(p.v)
+            p.moveToNodeAfterTree()
+        else:
+            seen.append(p.v)
+            if g.match_word(p.h,0,tag):
+                # We can not assume that p will be valid when it is used.
+                script = g.getScript(c,p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=True)
+                aList.append((p.h,script),)
+            p.moveToThreadNext()
+
+    # This setting is handled differently from most other settings,
+    # because the last setting must be retrieved before any commander exists.
+    if aList:
+        g.app.config.atCommonButtonsList.extend(aList)
+            # Bug fix: 2011/11/24: Extend the list, don't replace it.
+        g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
+
+    if trace: g.trace(len(aList),c.shortFileName())
+
+    d,key = g.app.config.unitTestDict,'config.doButtons-file-names'
+    aList = d.get(key,[])
+    aList.append(c.shortFileName())
+    d[key] = aList
+#@+node:ekr.20080312071248.6: *5* doCommands
+def doCommands (self,p,kind,name,val):
+
+    '''Handle an @commands tree.'''
+
+    trace = False and not g.unitTesting
+    aList = [] ; c = self.c ; tag = '@command'
+    seen = []
+    after = p.nodeAfterTree()
+    while p and p != after:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        elif p.isAtIgnoreNode():
+            seen.append(p.v)
+            p.moveToNodeAfterTree()
+        else:
+            seen.append(p.v)
+            if g.match_word(p.h,0,tag):
+                # We can not assume that p will be valid when it is used.
+                script = g.getScript(c,p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=True)
+                aList.append((p.h,script),)
+            p.moveToThreadNext()
+
+    # This setting is handled differently from most other settings,
+    # because the last setting must be retrieved before any commander exists.
+    if aList:
+        g.app.config.atCommonCommandsList.extend(aList)
+            # Bug fix: 2011/11/24: Extend the list, don't replace it.
+    if trace: g.trace(len(aList),c.shortFileName())
+    
+    d,key = g.app.config.unitTestDict,'config.doCommands-file-names'
+    aList = d.get(key,[])
+    aList.append(c.shortFileName())
+    d[key] = aList
+#@+node:ekr.20120229094652.19497: *4* Fixed Bug 930726:expandNodeAndGoToFirstChild only expands or only goes to first child
 https://bugs.launchpad.net/leo-editor/+bug/930726
 
 Bug: If the node is not expanded already, then the position
@@ -1676,7 +1678,7 @@ expandNodeOrGoToFirstChild(). At present these two functions
 are equivalent. The comments including the header for the
 node imply that they should not be equivalent and that
 expandNodeAndGoToFirstChild() is not correctly implemented.
-#@+node:ekr.20040930064232.1: *4* expandNodeAnd/OrGoToFirstChild
+#@+node:ekr.20040930064232.1: *5* expandNodeAnd/OrGoToFirstChild
 def expandNodeAndGoToFirstChild (self,event=None):
 
     """If a node has children, expand it if needed and go to the first child."""
@@ -1704,7 +1706,7 @@ def expandNodeOrGoToFirstChild (self,event=None):
             c.expandNode() # Calls redraw_after_expand.
         else:
             c.redraw_after_expand(p.firstChild(),setFocus=True)
-#@+node:ekr.20111026091322.16494: *3* Fixed Bug 869429 (undo & redo when deleting nodes from contextmenu)
+#@+node:ekr.20111026091322.16494: *4* Fixed Bug 869429 (undo & redo when deleting nodes from contextmenu)
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/869429
@@ -1740,7 +1742,7 @@ nodes at once.
 I wrote the context menu delete, but I don't understand the undo system
 that well - it's possible it just doesn't support a redo of something
 like this.
-#@+node:ekr.20031218072017.1193: *4* c.deleteOutline
+#@+node:ekr.20031218072017.1193: *5* c.deleteOutline
 def deleteOutline (self,event=None,op_name="Delete Node"):
 
     """Deletes the selected outline."""
@@ -1778,7 +1780,7 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     c.redraw(newNode)
 
     c.validateOutline()
-#@+node:ekr.20031218072017.3069: *4* changeAll (leoFind)
+#@+node:ekr.20031218072017.3069: *5* changeAll (leoFind)
 def changeAll(self):
 
     # g.trace('leoFind',g.callers())
@@ -1806,7 +1808,7 @@ def changeAll(self):
     g.es("changed:",count,"instances")
     c.redraw(p)
     self.restore(saveData)
-#@+node:ekr.20050318085432.6: *4* redoGroup
+#@+node:ekr.20050318085432.6: *5* redoGroup
 def redoGroup (self):
 
     '''Process beads until the matching 'afterGroup' bead is seen.'''
@@ -1849,7 +1851,7 @@ def redoGroup (self):
     if newSel:
         i,j = newSel
         c.frame.body.setSelectionRange(i,j)
-#@+node:ekr.20050318085713: *4* undoGroup
+#@+node:ekr.20050318085713: *5* undoGroup
 def undoGroup (self):
 
     '''Process beads until the matching 'beforeGroup' bead is seen.'''
@@ -1896,7 +1898,7 @@ def undoGroup (self):
     if oldSel:
         i,j = oldSel
         c.frame.body.setSelectionRange(i,j)
-#@+node:ekr.20111026091322.16496: *3* Investigated Bug 844953: copy-clone-pasted node appears in other tab
+#@+node:ekr.20111026091322.16496: *4* Investigated Bug 844953: copy-clone-pasted node appears in other tab
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/844953
@@ -1911,8 +1913,8 @@ Sometimes even a standard Copy-Paste action results in the node being inserted i
 
 
 ===== EKR: It's working for me.
-#@+node:ekr.20031218072017.1548: *4* c.Cut & Paste Outlines
-#@+node:ekr.20031218072017.1549: *5* c.cutOutline
+#@+node:ekr.20031218072017.1548: *5* c.Cut & Paste Outlines
+#@+node:ekr.20031218072017.1549: *6* c.cutOutline
 def cutOutline (self,event=None):
 
     '''Delete the selected outline and send it to the clipboard.'''
@@ -1922,7 +1924,7 @@ def cutOutline (self,event=None):
         c.copyOutline()
         c.deleteOutline("Cut Node")
         c.recolor()
-#@+node:ekr.20031218072017.1550: *5* c.copyOutline
+#@+node:ekr.20031218072017.1550: *6* c.copyOutline
 def copyOutline (self,event=None):
 
     '''Copy the selected outline to the clipboard.'''
@@ -1932,6 +1934,114 @@ def copyOutline (self,event=None):
     c.endEditing()
     s = c.fileCommands.putLeoOutline()
     g.app.gui.replaceClipboardWith(s)
+#@+node:ekr.20031218072017.1551: *6* c.pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.p
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+        
+    vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
+    
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+
+    if not pasted: return None
+    
+    if pasteAsClone:
+        copiedBunchList = c.computeCopiedBunchList(pasted,vnodeInfoDict)
+    else:
+        copiedBunchList = []
+
+    undoData = u.beforeInsertNode(current,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+
+    # paste as first child if back is expanded.
+    back = pasted.back()
+    if back and back.hasChildren() and back.isExpanded():
+        # 2011/06/21: fixed hanger: test back.hasChildren().
+        pasted.moveToNthChildOf(back,0)
+    # c.setRootPosition()
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+    
+    return pasted # For unit testing.
+#@+node:ekr.20050418084539: *7* c.computeVnodeInfoDict
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of nodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+def computeVnodeInfoDict (self):
+    
+    c,d = self,{}
+    for v in c.all_unique_nodes():
+        if v not in d:
+            d[v] = g.Bunch(v=v,head=v.h,body=v.b)
+
+    return d
+#@+node:ekr.20050418084539.2: *7* c.computeCopiedBunchList
+def computeCopiedBunchList(self,pasted,vnodeInfoDict):
+
+    # Create a dict containing only copied vnodes.
+    d = {}
+    for p in pasted.self_and_subtree():
+        d[p.v] = p.v
+    
+    # g.trace(sorted(list(d.keys())))
+    
+    aList = []
+    for v in vnodeInfoDict:
+        if d.get(v):
+            bunch = vnodeInfoDict.get(v)
+            aList.append(bunch)
+    
+    return aList
+#@+node:EKR.20040610130943: *6* pasteOutlineRetainingClones
+def pasteOutlineRetainingClones (self,event=None):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes *retain* their original identify.'''
+
+    c = self
+
+    return c.pasteOutline(reassignIndices=False)
 #@+node:ekr.20031218072017.1551: *5* c.pasteOutline
 # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
@@ -2031,115 +2141,7 @@ def computeCopiedBunchList(self,pasted,vnodeInfoDict):
             aList.append(bunch)
     
     return aList
-#@+node:EKR.20040610130943: *5* pasteOutlineRetainingClones
-def pasteOutlineRetainingClones (self,event=None):
-
-    '''Paste an outline into the present outline from the clipboard.
-    Nodes *retain* their original identify.'''
-
-    c = self
-
-    return c.pasteOutline(reassignIndices=False)
-#@+node:ekr.20031218072017.1551: *4* c.pasteOutline
-# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
-
-def pasteOutline(self,event=None,reassignIndices=True):
-
-    '''Paste an outline into the present outline from the clipboard.
-    Nodes do *not* retain their original identify.'''
-
-    c = self ; u = c.undoer ; current = c.p
-    s = g.app.gui.getTextFromClipboard()
-    pasteAsClone = not reassignIndices
-    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
-
-    c.endEditing()
-
-    if not s or not c.canPasteOutline(s):
-        return # This should never happen.
-
-    isLeo = g.match(s,0,g.app.prolog_prefix_string)
-        
-    vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
-    
-    # create a *position* to be pasted.
-    if isLeo:
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
-    else:
-        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
-
-    if not pasted: return None
-    
-    if pasteAsClone:
-        copiedBunchList = c.computeCopiedBunchList(pasted,vnodeInfoDict)
-    else:
-        copiedBunchList = []
-
-    undoData = u.beforeInsertNode(current,
-        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
-
-    c.validateOutline()
-    c.selectPosition(pasted)
-    pasted.setDirty()
-    c.setChanged(True)
-
-    # paste as first child if back is expanded.
-    back = pasted.back()
-    if back and back.hasChildren() and back.isExpanded():
-        # 2011/06/21: fixed hanger: test back.hasChildren().
-        pasted.moveToNthChildOf(back,0)
-    # c.setRootPosition()
-
-    if pasteAsClone:
-        # Set dirty bits for ancestors of *all* pasted nodes.
-        # Note: the setDescendentsDirty flag does not do what we want.
-        for p in pasted.self_and_subtree():
-            p.setAllAncestorAtFileNodesDirty(
-                setDescendentsDirty=False)
-
-    u.afterInsertNode(pasted,undoType,undoData)
-    c.redraw(pasted)
-    c.recolor()
-    
-    return pasted # For unit testing.
-#@+node:ekr.20050418084539: *5* c.computeVnodeInfoDict
-@
-
-We don't know yet which nodes will be affected by the paste, so we remember
-everything. This is expensive, but foolproof.
-
-The alternative is to try to remember the 'before' values of nodes in the
-fileCommands read logic. Several experiments failed, and the code is very ugly.
-In short, it seems wise to do things the foolproof way.
-
-@c
-
-def computeVnodeInfoDict (self):
-    
-    c,d = self,{}
-    for v in c.all_unique_nodes():
-        if v not in d:
-            d[v] = g.Bunch(v=v,head=v.h,body=v.b)
-
-    return d
-#@+node:ekr.20050418084539.2: *5* c.computeCopiedBunchList
-def computeCopiedBunchList(self,pasted,vnodeInfoDict):
-
-    # Create a dict containing only copied vnodes.
-    d = {}
-    for p in pasted.self_and_subtree():
-        d[p.v] = p.v
-    
-    # g.trace(sorted(list(d.keys())))
-    
-    aList = []
-    for v in vnodeInfoDict:
-        if d.get(v):
-            bunch = vnodeInfoDict.get(v)
-            aList.append(bunch)
-    
-    return aList
-#@+node:ekr.20031218072017.1559: *4* fc.getLeoOutlineFromClipboard & helpers
+#@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
 def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
 
     '''Read a Leo outline from string s in clipboard format.'''
@@ -2225,7 +2227,7 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
     return p
 
 getLeoOutline = getLeoOutlineFromClipboard # for compatibility
-#@+node:ekr.20080410115129.1: *5* checkPaste
+#@+node:ekr.20080410115129.1: *6* checkPaste
 def checkPaste (self,parent,p):
 
     '''Return True if p may be pasted as a child of parent.'''
@@ -2242,7 +2244,7 @@ def checkPaste (self,parent,p):
                 return False
 
     return True
-#@+node:ekr.20031218072017.4117: *4* defineMenuCallback
+#@+node:ekr.20031218072017.4117: *5* defineMenuCallback
 def defineMenuCallback(self,command,name,minibufferCommand):
     
     c = self.c
@@ -2268,11 +2270,11 @@ def defineMenuCallback(self,command,name,minibufferCommand):
             return c.doCommand(command,label)
 
         return legacyMenuCallback
-#@+node:ekr.20110605121601.18340: *4* class leoQtMenu (leoMenu)
+#@+node:ekr.20110605121601.18340: *5* class leoQtMenu (leoMenu)
 class leoQtMenu (leoMenu.leoMenu):
 
     @others
-#@+node:ekr.20110605121601.18341: *5* leoQtMenu.__init__
+#@+node:ekr.20110605121601.18341: *6* leoQtMenu.__init__
 def __init__ (self,frame,label):
 
     assert frame
@@ -2301,10 +2303,10 @@ def __init__ (self,frame,label):
             'menu_text_font_family', 'menu_text_font_size',
             'menu_text_font_slant',  'menu_text_font_weight',
             c.config.defaultMenuFontSize)
-#@+node:ekr.20110605121601.18342: *5* Tkinter menu bindings
+#@+node:ekr.20110605121601.18342: *6* Tkinter menu bindings
 # See the Tk docs for what these routines are to do
-#@+node:ekr.20110605121601.18343: *6* Methods with Tk spellings
-#@+node:ekr.20110605121601.18344: *7* add_cascade (leoQtMenu)
+#@+node:ekr.20110605121601.18343: *7* Methods with Tk spellings
+#@+node:ekr.20110605121601.18344: *8* add_cascade (leoQtMenu)
 def add_cascade (self,parent,label,menu,underline):
 
     """Wrapper for the Tkinter add_cascade menu method.
@@ -2328,7 +2330,7 @@ def add_cascade (self,parent,label,menu,underline):
     menu.leo_menu_label = label
 
     return menu
-#@+node:ekr.20110605121601.18345: *7* add_command (leoQtMenu) (Called by createMenuEntries)
+#@+node:ekr.20110605121601.18345: *8* add_command (leoQtMenu) (Called by createMenuEntries)
 def add_command (self,**keys):
 
     """Wrapper for the Tkinter add_command menu method."""
@@ -2366,7 +2368,7 @@ def add_command (self,**keys):
 
         QtCore.QObject.connect(action,
             QtCore.SIGNAL("triggered()"),qt_add_command_callback)
-#@+node:ekr.20110605121601.18346: *7* add_separator (leoQtMenu)
+#@+node:ekr.20110605121601.18346: *8* add_separator (leoQtMenu)
 def add_separator(self,menu):
 
     """Wrapper for the Tkinter add_separator menu method."""
@@ -2374,7 +2376,7 @@ def add_separator(self,menu):
     if menu:
         action = menu.addSeparator()
         action.leo_menu_label = '*seperator*'
-#@+node:ekr.20110605121601.18347: *7* delete (leoQtMenu)
+#@+node:ekr.20110605121601.18347: *8* delete (leoQtMenu)
 def delete (self,menu,realItemName='<no name>'):
 
     """Wrapper for the Tkinter delete menu method."""
@@ -2383,7 +2385,7 @@ def delete (self,menu,realItemName='<no name>'):
 
     # if menu:
         # return menu.delete(realItemName)
-#@+node:ekr.20110605121601.18348: *7* delete_range (leoQtMenu)
+#@+node:ekr.20110605121601.18348: *8* delete_range (leoQtMenu)
 def delete_range (self,menu,n1,n2):
 
     """Wrapper for the Tkinter delete menu method."""
@@ -2394,21 +2396,21 @@ def delete_range (self,menu,n1,n2):
 
     for z in menu.actions()[n1:n2]:
         menu.removeAction(z)
-#@+node:ekr.20110605121601.18349: *7* destroy (leoQtMenu)
+#@+node:ekr.20110605121601.18349: *8* destroy (leoQtMenu)
 def destroy (self,menu):
 
     """Wrapper for the Tkinter destroy menu method."""
 
     # if menu:
         # return menu.destroy()
-#@+node:ekr.20110605121601.18350: *7* index (leoQtMenu)
+#@+node:ekr.20110605121601.18350: *8* index (leoQtMenu)
 def index (self,label):
 
     '''Return the index of the menu with the given label.'''
     # g.trace(label)
 
     return 0
-#@+node:ekr.20110605121601.18351: *7* insert (leoQtMenu)
+#@+node:ekr.20110605121601.18351: *8* insert (leoQtMenu)
 def insert (self,menuName,position,label,command,underline=None):
 
     # g.trace(menuName,position,label,command,underline)
@@ -2425,7 +2427,7 @@ def insert (self,menuName,position,label,command,underline=None):
                 command()
             QtCore.QObject.connect(
                 action,QtCore.SIGNAL("triggered()"),insert_callback)
-#@+node:ekr.20110605121601.18352: *7* insert_cascade (leoQtMenu)
+#@+node:ekr.20110605121601.18352: *8* insert_cascade (leoQtMenu)
 def insert_cascade (self,parent,index,label,menu,underline):
 
     """Wrapper for the Tkinter insert_cascade menu method."""
@@ -2449,7 +2451,7 @@ def insert_cascade (self,parent,index,label,menu,underline):
         g.trace('no action for menu',label)
 
     return menu
-#@+node:ekr.20110605121601.18353: *7* new_menu (leoQtMenu)
+#@+node:ekr.20110605121601.18353: *8* new_menu (leoQtMenu)
 def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
 
     """Wrapper for the Tkinter new_menu menu method."""
@@ -2462,8 +2464,8 @@ def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
     menu = qtMenuWrapper(c,leoFrame,parent,label)
 
     return menu
-#@+node:ekr.20110605121601.18354: *6* Methods with other spellings (Qtmenu)
-#@+node:ekr.20110605121601.18355: *7* clearAccel
+#@+node:ekr.20110605121601.18354: *7* Methods with other spellings (Qtmenu)
+#@+node:ekr.20110605121601.18355: *8* clearAccel
 def clearAccel(self,menu,name):
 
     pass
@@ -2475,14 +2477,14 @@ def clearAccel(self,menu,name):
     # realName = realName.replace("&","")
 
     # menu.entryconfig(realName,accelerator='')
-#@+node:ekr.20110605121601.18356: *7* createMenuBar (Qtmenu)
+#@+node:ekr.20110605121601.18356: *8* createMenuBar (Qtmenu)
 def createMenuBar(self,frame):
 
     '''Create all top-level menus.
     The menuBar itself has already been created.'''
 
     self.createMenusFromTables()
-#@+node:ekr.20110605121601.18357: *7* createOpenWithMenu (QtMenu)
+#@+node:ekr.20110605121601.18357: *8* createOpenWithMenu (QtMenu)
 def createOpenWithMenu(self,parent,label,index,amp_index):
 
     '''Create the File:Open With submenu.
@@ -2500,7 +2502,7 @@ def createOpenWithMenu(self,parent,label,index,amp_index):
             label,menu,underline=amp_index)
 
     return menu
-#@+node:ekr.20110605121601.18358: *7* disable/enableMenu (leoQtMenu) (not used)
+#@+node:ekr.20110605121601.18358: *8* disable/enableMenu (leoQtMenu) (not used)
 def disableMenu (self,menu,name):
     self.enableMenu(menu,name,False)
 
@@ -2522,14 +2524,14 @@ def enableMenu (self,menu,name,val):
                 break
         else:
             if trace: g.trace('not found:',name)
-#@+node:ekr.20110605121601.18359: *7* getMenuLabel
+#@+node:ekr.20110605121601.18359: *8* getMenuLabel
 def getMenuLabel (self,menu,name):
 
     '''Return the index of the menu item whose name (or offset) is given.
     Return None if there is no such menu item.'''
 
     # At present, it is valid to always return None.
-#@+node:ekr.20110605121601.18360: *7* setMenuLabel
+#@+node:ekr.20110605121601.18360: *8* setMenuLabel
 def setMenuLabel (self,menu,name,label,underline=-1):
 
     def munge(s):
@@ -2547,7 +2549,7 @@ def setMenuLabel (self,menu,name,label,underline=-1):
         if s == realName:
             action.setText(realLabel)
             break
-#@+node:ekr.20110605121601.18361: *5* Activate menu commands
+#@+node:ekr.20110605121601.18361: *6* Activate menu commands
 def activateMenu (self,menuName):
 
     '''Activate the menu with the given name'''
@@ -2561,12 +2563,12 @@ def activateMenu (self,menuName):
         r = top.geometry()
         pt = QtCore.QPoint(r.x()+pos.x(),r.y())
         menu.exec_(pt)
-#@+node:ekr.20110605121601.18362: *5* getMacHelpMenu
+#@+node:ekr.20110605121601.18362: *6* getMacHelpMenu
 def getMacHelpMenu (self,table):
 
     return None
-#@+node:ekr.20061031131434.145: *4* k.Master event handlers
-#@+node:ekr.20061031131434.105: *5* k.masterCommand & helpers
+#@+node:ekr.20061031131434.145: *5* k.Master event handlers
+#@+node:ekr.20061031131434.105: *6* k.masterCommand & helpers
 def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
     '''This is the central dispatching method.
@@ -2663,7 +2665,7 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
             c.frame.updateStatusLine()
         if traceGC: g.printNewObjects('masterCom 4')
         return val
-#@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
+#@+node:ekr.20061031131434.106: *7* << define specialKeysyms >>
 specialKeysyms = (
     'Alt_L','Alt_R',
     'Meta_L','Meta_R', # Meta support.
@@ -2671,7 +2673,7 @@ specialKeysyms = (
     'Num_Lock',
     'Shift_L','Shift_R',
 )
-#@+node:ekr.20061031131434.110: *6* k.handleDefaultChar
+#@+node:ekr.20061031131434.110: *7* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
 
     k = self ; c = k.c
@@ -2724,7 +2726,7 @@ def handleDefaultChar(self,event,stroke):
     else:
         # Let the widget handle the event.
         return # None
-#@+node:ekr.20061031131434.146: *5* k.masterKeyHandler & helpers
+#@+node:ekr.20061031131434.146: *6* k.masterKeyHandler & helpers
 master_key_count = 0
 
 def masterKeyHandler (self,event):
@@ -2787,7 +2789,7 @@ def masterKeyHandler (self,event):
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
         return k.handleUnboundKeys(event,char,stroke)
-#@+node:ekr.20061031131434.147: *6* << define vars >>
+#@+node:ekr.20061031131434.147: *7* << define vars >>
 w = event and event.widget
 char = event and event.char or ''
 stroke = event and event.stroke or None
@@ -2806,7 +2808,7 @@ special_keys = (
 self.master_key_count += 1
 
 isPlain =  k.isPlainKey(stroke)
-#@+node:ekr.20061031131434.108: *6* callStateFunction
+#@+node:ekr.20061031131434.108: *7* callStateFunction
 def callStateFunction (self,event):
 
     trace = False and not g.unitTesting
@@ -2840,7 +2842,7 @@ def callStateFunction (self,event):
             g.es_print('no state function for',k.state.kind,color='red')
 
     return val
-#@+node:ekr.20091230094319.6244: *6* doMode
+#@+node:ekr.20091230094319.6244: *7* doMode
 def doMode (self,event,state,stroke):
 
     trace = False and not g.unitTesting
@@ -2893,7 +2895,7 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True,'break'
-#@+node:ekr.20091230094319.6240: *6* getPaneBinding
+#@+node:ekr.20091230094319.6240: *7* getPaneBinding
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
@@ -2950,7 +2952,7 @@ def getPaneBinding (self,stroke,w):
                         return si
 
     return None
-#@+node:ekr.20061031131434.152: *6* handleMiniBindings
+#@+node:ekr.20061031131434.152: *7* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
@@ -2999,7 +3001,7 @@ def handleMiniBindings (self,event,state,stroke):
                     return True
 
     return False
-#@+node:ekr.20110209083917.16004: *6* isAutoCompleteChar
+#@+node:ekr.20110209083917.16004: *7* isAutoCompleteChar
 def isAutoCompleteChar (self,stroke):
     
     '''Return True if stroke is bound to the auto-complete in
@@ -3020,7 +3022,7 @@ def isAutoCompleteChar (self,stroke):
                     if si.commandName == 'auto-complete':
                         return True
     return False
-#@+node:ekr.20080510095819.1: *6* k.handleUnboundKeys
+#@+node:ekr.20080510095819.1: *7* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
@@ -3081,7 +3083,7 @@ def handleUnboundKeys (self,event,char,stroke):
     else:
         if trace: g.trace('no func',repr(char),repr(stroke))
         return k.masterCommand(event=event,stroke=stroke)
-#@+node:ekr.20111102072143.10016: *4* createMasterMenuCallback
+#@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
 def createMasterMenuCallback(self,dynamicMenu,command,commandName):
     
     trace = False and not g.unitTesting
@@ -3119,7 +3121,7 @@ def createMasterMenuCallback(self,dynamicMenu,command,commandName):
             event = g.app.gui.create_key_event(c,None,None,w)
             return c.k.masterCommand(commandName=commandName,event=event)
         return masterStaticMenuCallback
-#@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
+#@+node:ekr.20110605121601.18460: *5* onAboutToShow & helpers (qtMenuWrapper)
 def onAboutToShow(self,*args,**keys):
     
     trace = False and not g.unitTesting ; verbose = True
@@ -3134,7 +3136,7 @@ def onAboutToShow(self,*args,**keys):
             self.leo_enable_menu_item(action,commandName)
             self.leo_update_menu_label(action,commandName)
    
-#@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
+#@+node:ekr.20120120095156.10261: *6* leo_enable_menu_item
 def leo_enable_menu_item (self,action,commandName):
 
     func = self.c.frame.menu.enable_dict.get(commandName)
@@ -3144,7 +3146,7 @@ def leo_enable_menu_item (self,action,commandName):
         # g.trace('%5s %20s %s' % (val,commandName,val))
         action.setEnabled(bool(val))
         
-#@+node:ekr.20120124115444.10190: *5* leo_update_menu_label
+#@+node:ekr.20120124115444.10190: *6* leo_update_menu_label
 def leo_update_menu_label(self,action,commandName):
     
     c = self.c
@@ -3153,7 +3155,7 @@ def leo_update_menu_label(self,action,commandName):
         action.setText('UnMark' if c.p.isMarked() else 'Mark')
         self.leo_update_shortcut(action,commandName)
             # Set the proper shortcut.
-#@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
+#@+node:ekr.20120120095156.10260: *6* leo_update_shortcut
 def leo_update_shortcut(self,action,commandName):
     
     trace = False and not g.unitTesting
@@ -3179,6 +3181,41 @@ def leo_update_shortcut(self,action,commandName):
             action.setText(s)
     else:
         g.trace('can not happen: no action for %s' % (commandName))
+#@+node:ekr.20120303051059.9928: *4* vim and xemacs plugins now work smoothly with contextmenu plugin.
+@language rest
+
+- Open contextmenu plugin at first use (not at startup).
+
+- Disable contextmenu dialog for temp files.
+
+Here is the checkin log for rev 5066:
+
+Several changes so that the vim and xemacs plugins work well with contextmenu plugin.
+
+- vim.py and xemacs.py load contextmenu.py if necessary the first time they open a temp file.
+
+- contextmenu.py (edit_node_on_idle) suppresses the "conflicts dialog" if the file's path is in
+  [z.get('path') for z in g.app.openWithFiles]
+
+All expected unit tests pass, as do hand tests of the vim and xemacs plugins.
+
+#@+node:ekr.20120304065838.14231: *4* Investigated bug 805288:ctr - tab locks up in log pane
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/805288
+
+If the log tab is active in the log pane ctrl-tab will
+toggle through the body, tree and log panes. If any other
+tab is active the key combination will freeze in the log
+pane.
+
+Note: ctrl-tab could be bound to several things:
+    
+1. tab-cycle-focus cycles between the tabs representing .leo files.
+   It (correctly) always puts focus in the body pane:
+       
+2. Presumably, this bug refers to either cycle-focus or cycle-all-focus.
+   Both work at present.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -1083,11 +1083,11 @@ class Commands (object):
     #@+node:ekr.20031218072017.2819: *4* File Menu
     #@+node:ekr.20031218072017.2820: *5* top level (file menu)
     #@+node:ekr.20031218072017.2833: *6* c.close
-    def close (self,event=None):
+    def close (self,event=None,new_c=None):
 
         '''Close the Leo window, prompting to save it if it has been changed.'''
 
-        g.app.closeLeoWindow(self.frame)
+        g.app.closeLeoWindow(self.frame,new_c=new_c)
     #@+node:ekr.20110530124245.18245: *6* c.importAnyFile & helper
     def importAnyFile (self,event=None):
 
