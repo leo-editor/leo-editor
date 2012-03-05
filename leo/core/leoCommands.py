@@ -3970,6 +3970,8 @@ class Commands (object):
             pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
 
         c.validateOutline()
+        
+        
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True)

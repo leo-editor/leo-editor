@@ -2599,6 +2599,1312 @@ def hideFontTab (self,event=None):
     c = self.c
     c.frame.log.selectTab('Log')
     c.bodyWantsFocus()
+#@+node:ekr.20111026091322.16496: *4* Investigated Bug 844953: copy-clone-pasted node appears in other tab
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/844953
+
+1. Open two empty files with the LEO revision 4451/trunk using the qttabs GUI and save them both.
+2. Create a new node and write "Abc" in its head.
+3. Select "Copy Node" from the outline menu.
+4. Select "Paste Node As Clone" from the outline menu:
+   Node is not inserted as clone, but inserted as a copy in the second file/tab.
+
+Sometimes even a standard Copy-Paste action results in the node being inserted in the other file.
+
+
+===== EKR: It's working for me.
+
+It may be an Ubuntu Unity issue. If so, it will likely be
+hard to fix. I haven't got time for such nonsense now. Any
+fix will have to wait.
+
+#@+node:ekr.20031218072017.1548: *5* c.Cut & Paste Outlines
+#@+node:ekr.20031218072017.1549: *6* c.cutOutline
+def cutOutline (self,event=None):
+
+    '''Delete the selected outline and send it to the clipboard.'''
+
+    c = self
+    if c.canDeleteHeadline():
+        c.copyOutline()
+        c.deleteOutline("Cut Node")
+        c.recolor()
+#@+node:ekr.20031218072017.1550: *6* c.copyOutline
+def copyOutline (self,event=None):
+
+    '''Copy the selected outline to the clipboard.'''
+
+    # Copying an outline has no undo consequences.
+    c = self
+    c.endEditing()
+    s = c.fileCommands.putLeoOutline()
+    g.app.gui.replaceClipboardWith(s)
+#@+node:ekr.20031218072017.1551: *6* c.pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    trace = True and not g.unitTesting
+    c = self
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+        
+    vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
+    
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,c.p)
+
+    if not pasted: return None
+    
+    if pasteAsClone:
+        copiedBunchList = c.computeCopiedBunchList(pasted,vnodeInfoDict)
+    else:
+        copiedBunchList = []
+
+    undoData = c.undoer.beforeInsertNode(c.p,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    
+    
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+
+    if 1:
+        # This makes no sense: getLeoOutlineFromClipboard already does this.
+        # ***But**, we can't change anything significant until we demonstrate the problem!
+    
+        # paste as first child if back is expanded.
+        back = pasted.back()
+        #### back = c.p.back()
+    
+        if back and back.hasChildren() and back.isExpanded():
+            # 2011/06/21: fixed hanger: test back.hasChildren().
+            pasted.moveToNthChildOf(back,0)
+        # c.setRootPosition()
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
+    c.undoer.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+    
+    return pasted # For unit testing.
+#@+node:ekr.20050418084539: *7* c.computeVnodeInfoDict
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of nodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+def computeVnodeInfoDict (self):
+    
+    c,d = self,{}
+    for v in c.all_unique_nodes():
+        if v not in d:
+            d[v] = g.Bunch(v=v,head=v.h,body=v.b)
+
+    return d
+#@+node:ekr.20050418084539.2: *7* c.computeCopiedBunchList
+def computeCopiedBunchList(self,pasted,vnodeInfoDict):
+
+    # Create a dict containing only copied vnodes.
+    d = {}
+    for p in pasted.self_and_subtree():
+        d[p.v] = p.v
+    
+    # g.trace(sorted(list(d.keys())))
+    
+    aList = []
+    for v in vnodeInfoDict:
+        if d.get(v):
+            bunch = vnodeInfoDict.get(v)
+            aList.append(bunch)
+    
+    return aList
+#@+node:EKR.20040610130943: *6* pasteOutlineRetainingClones
+def pasteOutlineRetainingClones (self,event=None):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes *retain* their original identify.'''
+
+    c = self
+
+    return c.pasteOutline(reassignIndices=False)
+#@+node:ekr.20031218072017.4117: *5* defineMenuCallback
+def defineMenuCallback(self,command,name,minibufferCommand):
+    
+    c = self.c
+
+    if minibufferCommand:
+
+        # Create a dummy event as a signal to doCommand.
+        event = g.app.gui.create_key_event(c,None,None,None)
+
+        # The first parameter must be event, and it must default to None.
+        def minibufferMenuCallback(event=event,self=self,command=command,label=name):
+            c = self.c
+            return c.doCommand(command,label,event)
+
+        return minibufferMenuCallback
+
+    else:
+
+        # The first parameter must be event, and it must default to None.
+        def legacyMenuCallback(event=None,self=self,command=command,label=name):
+            c = self.c # 2012/03/04.
+            c.check_event(event)
+            return c.doCommand(command,label)
+
+        return legacyMenuCallback
+#@+node:ekr.20110605121601.18340: *5* class leoQtMenu (leoMenu)
+class leoQtMenu (leoMenu.leoMenu):
+
+    @others
+#@+node:ekr.20110605121601.18341: *6* leoQtMenu.__init__
+def __init__ (self,frame,label):
+
+    assert frame
+    assert frame.c
+
+    # Init the base class.
+    leoMenu.leoMenu.__init__(self,frame)
+    
+    self.leo_menu_label = label.replace('&','').lower()
+
+    # called from createMenuFromConfigList,createNewMenu,new_menu,qtMenuWrapper.ctor.
+    # g.trace('(leoQtMenu) %s' % (self.leo_menu_label or '<no label!>'))
+
+    self.frame = frame
+    self.c = c = frame.c
+
+    self.menuBar = c.frame.top.menuBar()
+    assert self.menuBar is not None
+
+    # Inject this dict into the commander.
+    if not hasattr(c,'menuAccels'):
+        setattr(c,'menuAccels',{})
+
+    if 0:
+        self.font = c.config.getFontFromParams(
+            'menu_text_font_family', 'menu_text_font_size',
+            'menu_text_font_slant',  'menu_text_font_weight',
+            c.config.defaultMenuFontSize)
+#@+node:ekr.20110605121601.18342: *6* Tkinter menu bindings
+# See the Tk docs for what these routines are to do
+#@+node:ekr.20110605121601.18343: *7* Methods with Tk spellings
+#@+node:ekr.20110605121601.18344: *8* add_cascade (leoQtMenu)
+def add_cascade (self,parent,label,menu,underline):
+
+    """Wrapper for the Tkinter add_cascade menu method.
+
+    Adds a submenu to the parent menu, or the menubar."""
+    
+    # menu and parent are a qtMenuWrappers.
+    c = self.c ; leoFrame = c.frame
+    n = underline
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+
+    menu.setTitle(label)
+
+    if parent:
+        parent.addMenu(menu) # QMenu.addMenu.
+    else:
+        self.menuBar.addMenu(menu)
+        
+    label = label.replace('&','').lower()
+    menu.leo_menu_label = label
+
+    return menu
+#@+node:ekr.20110605121601.18345: *8* add_command (leoQtMenu) (Called by createMenuEntries)
+def add_command (self,**keys):
+
+    """Wrapper for the Tkinter add_command menu method."""
+    
+    trace = False and not g.unitTesting # and label.startswith('Paste')
+
+    c = self.c
+    accel = keys.get('accelerator') or ''
+    command = keys.get('command')
+    commandName = keys.get('commandName')
+    label = keys.get('label')
+    n = keys.get('underline')
+    menu = keys.get('menu') or self
+    if not label: return
+    
+    if trace: g.trace(label)
+        # command is always add_commandCallback,
+        # defined in c.add_command.
+
+    if -1 < n < len(label):
+        label = label[:n] + '&' + label[n:]
+    if accel:
+        label = '%s\t%s' % (label,accel)
+
+    action = menu.addAction(label)
+    
+    # 2012/01/20: Inject the command name into the action
+    # so that it can be enabled/disabled dynamically.
+    action.leo_command_name = commandName
+
+    if command:
+        def qt_add_command_callback(label=label,command=command):
+            # g.trace(command)
+            return command()
+
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL("triggered()"),qt_add_command_callback)
+#@+node:ekr.20110605121601.18346: *8* add_separator (leoQtMenu)
+def add_separator(self,menu):
+
+    """Wrapper for the Tkinter add_separator menu method."""
+
+    if menu:
+        action = menu.addSeparator()
+        action.leo_menu_label = '*seperator*'
+#@+node:ekr.20110605121601.18347: *8* delete (leoQtMenu)
+def delete (self,menu,realItemName='<no name>'):
+
+    """Wrapper for the Tkinter delete menu method."""
+
+    # g.trace(menu)
+
+    # if menu:
+        # return menu.delete(realItemName)
+#@+node:ekr.20110605121601.18348: *8* delete_range (leoQtMenu)
+def delete_range (self,menu,n1,n2):
+
+    """Wrapper for the Tkinter delete menu method."""
+
+    # Menu is a subclass of QMenu and leoQtMenu.
+
+    # g.trace(menu,n1,n2,g.callers(4))
+
+    for z in menu.actions()[n1:n2]:
+        menu.removeAction(z)
+#@+node:ekr.20110605121601.18349: *8* destroy (leoQtMenu)
+def destroy (self,menu):
+
+    """Wrapper for the Tkinter destroy menu method."""
+
+    # if menu:
+        # return menu.destroy()
+#@+node:ekr.20110605121601.18350: *8* index (leoQtMenu)
+def index (self,label):
+
+    '''Return the index of the menu with the given label.'''
+    # g.trace(label)
+
+    return 0
+#@+node:ekr.20110605121601.18351: *8* insert (leoQtMenu)
+def insert (self,menuName,position,label,command,underline=None):
+
+    # g.trace(menuName,position,label,command,underline)
+
+    menu = self.getMenu(menuName)
+
+    if menu and label:
+        n = underline or 0
+        if -1 > n > len(label):
+            label = label[:n] + '&' + label[n:]
+        action = menu.addAction(label)
+        if command:
+            def insert_callback(label=label,command=command):
+                command()
+            QtCore.QObject.connect(
+                action,QtCore.SIGNAL("triggered()"),insert_callback)
+#@+node:ekr.20110605121601.18352: *8* insert_cascade (leoQtMenu)
+def insert_cascade (self,parent,index,label,menu,underline):
+
+    """Wrapper for the Tkinter insert_cascade menu method."""
+
+    # g.trace(label,menu)
+
+    menu.setTitle(label)
+    
+    label.replace('&','').lower()
+    menu.leo_menu_label = label # was leo_label
+
+    if parent:
+        parent.addMenu(menu)
+    else:
+        self.menuBar.addMenu(menu)
+        
+    action = menu.menuAction()
+    if action:
+        action.leo_menu_label = label
+    else:
+        g.trace('no action for menu',label)
+
+    return menu
+#@+node:ekr.20110605121601.18353: *8* new_menu (leoQtMenu)
+def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
+
+    """Wrapper for the Tkinter new_menu menu method."""
+
+    c = self.c ; leoFrame = self.frame
+
+    # g.trace(parent,label)
+
+    # Parent can be None, in which case it will be added to the menuBar.
+    menu = qtMenuWrapper(c,leoFrame,parent,label)
+
+    return menu
+#@+node:ekr.20110605121601.18354: *7* Methods with other spellings (Qtmenu)
+#@+node:ekr.20110605121601.18355: *8* clearAccel
+def clearAccel(self,menu,name):
+
+    pass
+
+    # if not menu:
+        # return
+
+    # realName = self.getRealMenuName(name)
+    # realName = realName.replace("&","")
+
+    # menu.entryconfig(realName,accelerator='')
+#@+node:ekr.20110605121601.18356: *8* createMenuBar (Qtmenu)
+def createMenuBar(self,frame):
+
+    '''Create all top-level menus.
+    The menuBar itself has already been created.'''
+
+    self.createMenusFromTables()
+#@+node:ekr.20110605121601.18357: *8* createOpenWithMenu (QtMenu)
+def createOpenWithMenu(self,parent,label,index,amp_index):
+
+    '''Create the File:Open With submenu.
+
+    This is called from leoMenu.createOpenWithMenuFromTable.'''
+
+    # Use the existing Open With menu if possible.
+    # g.trace(parent,label,index)
+
+    menu = self.getMenu('openwith')
+
+    if not menu:
+        menu = self.new_menu(parent,tearoff=False,label=label)
+        menu.insert_cascade(parent,index,
+            label,menu,underline=amp_index)
+
+    return menu
+#@+node:ekr.20110605121601.18358: *8* disable/enableMenu (leoQtMenu) (not used)
+def disableMenu (self,menu,name):
+    self.enableMenu(menu,name,False)
+
+def enableMenu (self,menu,name,val):
+    
+    '''Enable or disable the item in the menu with the given name.'''
+    
+    trace = False and name.startswith('Paste') and not g.unitTesting
+    
+    if trace: g.trace(val,name,menu)
+
+    if menu and name:
+        val = bool(val)
+        # g.trace('%5s %s %s' % (val,name,menu))
+        for action in menu.actions():
+            s = g.toUnicode(action.text()).replace('&','')
+            if s.startswith(name):
+                action.setEnabled(val)
+                break
+        else:
+            if trace: g.trace('not found:',name)
+#@+node:ekr.20110605121601.18359: *8* getMenuLabel
+def getMenuLabel (self,menu,name):
+
+    '''Return the index of the menu item whose name (or offset) is given.
+    Return None if there is no such menu item.'''
+
+    # At present, it is valid to always return None.
+#@+node:ekr.20110605121601.18360: *8* setMenuLabel
+def setMenuLabel (self,menu,name,label,underline=-1):
+
+    def munge(s):
+        return g.u(s or '').replace('&','')
+
+    # menu is a qtMenuWrapper.
+    # g.trace('menu',menu,'name: %20s label: %s' % (name,label))
+    if not menu: return
+
+    realName  = munge(self.getRealMenuName(name))
+    realLabel = self.getRealMenuName(label)
+    for action in menu.actions():
+        s = munge(action.text())
+        s = s.split('\t')[0]
+        if s == realName:
+            action.setText(realLabel)
+            break
+#@+node:ekr.20110605121601.18361: *6* Activate menu commands
+def activateMenu (self,menuName):
+
+    '''Activate the menu with the given name'''
+
+    c = self.c
+    menu = self.getMenu(menuName)
+    # g.trace(menuName,menu)
+    if menu:
+        top = c.frame.top.leo_ui
+        pos = menu.pos() # Doesn't do any good.
+        r = top.geometry()
+        pt = QtCore.QPoint(r.x()+pos.x(),r.y())
+        menu.exec_(pt)
+#@+node:ekr.20110605121601.18362: *6* getMacHelpMenu
+def getMacHelpMenu (self,table):
+
+    return None
+#@+node:ekr.20061031131434.145: *5* k.Master event handlers
+#@+node:ekr.20061031131434.105: *6* k.masterCommand & helpers
+def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
+
+    '''This is the central dispatching method.
+    All commands and keystrokes pass through here.'''
+
+    k = self ; c = k.c ; gui = g.app.gui
+    trace = (False or g.trace_masterCommand) and not g.unitTesting
+    verbose = True
+    traceGC = False
+    if traceGC: g.printNewObjects('masterCom 1')
+
+    if event: c.check_event(event)
+
+    c.setLog()
+    c.startRedrawCount = c.frame.tree.redrawCount
+    k.stroke = stroke # Set this global for general use.
+
+    char = ch = event and event.char or ''
+    w = event and event.w
+    
+    # 2011/10/28: compute func if not given.
+    if commandName and not func:
+        func = c.commandsDict.get(commandName)
+        
+    # Important: it is *not* an error for func to be None.
+    k.func = func
+    commandName = commandName or func and func.__name__ or '<no function>'
+    k.funcReturn = None # For unit testing.
+    << define specialKeysyms >>
+    special = char in specialKeysyms
+    interesting = func is not None
+    inserted = not special
+
+    if trace: # Useful.
+        g.trace('stroke: %s ch: %s func: %s' % (
+            stroke,repr(ch),func and func.__name__))
+
+    if inserted:
+        k.setLossage(ch,stroke)
+
+    # We *must not* interfere with the global state in the macro class.
+    if c.macroCommands.recordingMacro:
+        c.macroCommands.startRecordingMacro(event)
+        # 2011/06/06: Show the key, if possible.
+        # return
+
+    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        k.keyboardQuit()
+        k.endCommand(commandName)
+        return
+
+    if special: # Don't pass these on.
+        return
+
+    # if k.regx.iter:
+        # try:
+            # k.regXKey = char
+            # k.regx.iter.next() # EKR: next() may throw StopIteration.
+        # except StopIteration:
+            # pass
+        # return
+
+    if k.abbrevOn:
+        expanded = c.abbrevCommands.expandAbbrev(event,stroke)
+        if expanded: return
+
+    if func: # Func is an argument.
+        if commandName == 'propagate-key-event':
+            # Do *nothing* with the event.
+            return k.propagateKeyEvent(event)
+        elif commandName.startswith('specialCallback'):
+            # The callback function will call c.doCommand
+            if trace: g.trace('calling specialCallback for',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            val = func(event)
+            # k.simulateCommand uses k.funcReturn.
+            k.funcReturn = k.funcReturn or val # For unit tests.
+        else:
+            # Call c.doCommand directly
+            if trace: g.trace('calling command directly',commandName)
+            c.doCommand(func,commandName,event=event)
+        if c.exists:
+            k.endCommand(commandName)
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 2')
+        return # (for Tk) 'break'
+    elif k.inState():
+        return # (for Tk) 'break' #Ignore unbound keys in a state.
+    else:
+        if traceGC: g.printNewObjects('masterCom 3')
+        val = k.handleDefaultChar(event,stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 4')
+        return val
+#@+node:ekr.20061031131434.106: *7* << define specialKeysyms >>
+specialKeysyms = (
+    'Alt_L','Alt_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+)
+#@+node:ekr.20061031131434.110: *7* k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if trace and verbose:
+        g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
+
+    if (stroke and
+        not stroke.startswith('Alt+Ctrl') and
+        # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
+        k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
+        (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+    ):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
+        return # (for Tk) 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return # (for Tk) 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return # (for Tk) 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return # (for Tk) 'break'
+    elif name.startswith('log'):
+        # Bug fix: 2011/11/21: Because of universal bindings
+        # we may not be able to insert anything into w.
+        import leo.core.leoFrame as leoFrame
+        if issubclass(w.__class__,leoFrame.HighLevelInterface):
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event and event.stroke
+            if stroke:
+                s = stroke.toGuiChar()
+                w.logCtrl.insert(i,s)
+        else:
+            if trace: g.trace('Not a HighLevelInterface object',w)
+        return # None
+    else:
+        # Let the widget handle the event.
+        return # None
+#@+node:ekr.20061031131434.146: *6* k.masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event):
+
+    '''This is the handler for almost all key bindings.'''
+    
+    trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = g.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+    
+    k,c = self,self.c ; gui = g.app.gui
+    c.check_event(event)
+    << define vars >>
+    
+    assert g.isStrokeOrNone(stroke)
+
+    if char in special_keys:
+        if trace and verbose: g.trace('char',char)
+        return None
+    
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
+        repr(event and event.char),
+        'ch:',repr(event and event.char),
+        'state',state,'state2',k.unboundKeyAction)
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endMacro()
+            return # (for Tk) 'break'
+        else:
+            return k.masterCommand(commandName='keyboard-quit',
+                event=event,func=k.keyboardQuit,stroke=stroke)
+
+    if k.inState():
+        if trace: g.trace('   state %-10s %s' % (stroke,state))
+        done,val = k.doMode(event,state,stroke)
+        if done: return val
+
+    if traceGC: g.printNewObjects('masterKey 2')
+            
+    # 2011/02/08: An important simplification.
+    if isPlain and k.unboundKeyAction != 'command':
+        if self.isAutoCompleteChar(stroke):
+            if trace: g.trace('autocomplete key',stroke)
+        else:
+            if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
+            return k.handleUnboundKeys(event,char,stroke)
+
+    # 2011/02/08: Use getPandBindings for *all* keys.
+    si = k.getPaneBinding(stroke,w)
+    if si:
+        assert g.isShortcutInfo(si),si
+        if traceGC: g.printNewObjects('masterKey 3')
+        if trace: g.trace('   bound',stroke,si.func.__name__)
+        return k.masterCommand(event=event,
+            commandName=si.commandName,func=si.func,stroke=si.stroke)
+    else:
+        if traceGC: g.printNewObjects('masterKey 4')
+        if trace: g.trace(' unbound',stroke)
+        return k.handleUnboundKeys(event,char,stroke)
+#@+node:ekr.20061031131434.147: *7* << define vars >>
+w = event and event.widget
+char = event and event.char or ''
+stroke = event and event.stroke or None
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@+node:ekr.20061031131434.108: *7* callStateFunction
+def callStateFunction (self,event):
+
+    trace = False and not g.unitTesting
+    k = self ; val = None 
+    ch = event and event.char or ''
+    stroke = event and event.stroke or ''
+
+    if trace: g.trace(k.state.kind,'ch',ch,'stroke',stroke,
+        'ignore_unbound_non_ascii_keys',k.ignore_unbound_non_ascii_keys)
+        
+    if k.state.kind == 'auto-complete':
+        # 2011/06/17.
+        # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
+        val = k.state.handler(event)
+        if trace: g.trace('auto-complete returns',repr(val))
+        return val
+    elif k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and # 2011/04/01
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@+node:ekr.20091230094319.6244: *7* doMode
+def doMode (self,event,state,stroke):
+
+    trace = False and not g.unitTesting
+    k = self
+
+    # First, honor minibuffer bindings for all except user modes.
+    if state in ('getArg','getFileName','full-command','auto-complete'):
+        if k.handleMiniBindings(event,state,stroke):
+            return True,'break'
+
+    # Second, honor general modes.
+    if state == 'getArg':
+        return True,k.getArg(event,stroke=stroke)
+    elif state == 'getFileName':
+        return True,k.getFileName(event)
+    elif state in ('full-command','auto-complete'):
+        # Do the default state action.
+        if trace: g.trace('calling state function',k.state.kind)
+        val = k.callStateFunction(event) # Calls end-command.
+        if trace: g.trace('state function returns',repr(val))
+        if val == 'do-standard-keys':
+            return False,None # 2011/06/17.
+        else:
+            return True,'break'
+
+    # Third, pass keys to user modes.
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        assert g.isStrokeOrNone(stroke)
+        si = d.get(stroke)
+        if si:
+            assert g.isShortcutInfo(si),si
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=si.commandName,func=si.func,
+                modeName=state,nextMode=si.nextMode)
+            return True,'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            # if trace: g.trace('unbound key ends mode',stroke,state)
+            g.warning('unbound key ends mode',stroke) # 2011/02/02
+            k.endMode()
+            return False,None
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            if trace: g.trace('handler',handler)
+            handler(event)
+        else:
+            if trace: g.trace('No state handler for %s' % state)
+        return True,'break'
+#@+node:ekr.20091230094319.6240: *7* getPaneBinding
+def getPaneBinding (self,stroke,w):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    k = self ; w_name = k.c.widget_name(w)
+    # keyStatesTuple = ('command','insert','overwrite')
+    state = k.unboundKeyAction
+    
+    assert g.isStroke(stroke)
+
+    if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+    for key,name in (
+        # Order here is similar to bindtags order.
+        ('command',None),
+        ('insert',None),
+        ('overwrite',None),
+        ('button',None),
+        ('body','body'),
+        ('text','head'), # Important: text bindings in head before tree bindings.
+        ('tree','head'),
+        ('tree','canvas'),
+        ('log', 'log'),
+        ('text','log'),
+        ('text',None),
+        ('all',None),
+    ):
+        if (
+            # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+            name and w_name.startswith(name) or
+            key in ('command','insert','overwrite') and state == key or # 2010/02/09
+            key in ('text','all') and g.app.gui.isTextWidget(w) or
+            key in ('button','all')
+        ):
+            d = k.masterBindingsDict.get(key,{})
+            if trace and verbose:
+                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
+                    (key,name,stroke,stroke in d))
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+            if d:
+                si = d.get(stroke)
+                if si:
+                    assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                        # masterBindingsDict: keys are KeyStrokes
+                    assert g.isShortcutInfo(si),si
+                    table = ('previous-line','next-line',)
+                    if key == 'text' and name == 'head' and si.commandName in table:
+                        if trace: g.trace('***** special case',si.commandName)
+                    else:
+                        if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            key,name,repr(si.stroke),si.commandName))
+                        return si
+
+    return None
+#@+node:ekr.20061031131434.152: *7* handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
+
+    # Special case for bindings handled in k.getArg:
+        
+    assert g.isStroke(stroke)
+
+    if state in ('getArg','full-command'):
+        if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
+            return False
+        if k.isFKey(stroke):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                si = d.get(stroke)
+                if si:
+                    assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                        # masterBindingsDict: keys are KeyStrokes
+                    assert g.isShortcutInfo(si),si
+                    if si.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif si.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (
+                            pane),si.commandName,stroke)
+                        k.keyboardQuit()
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',si.commandName)
+                        c.minibufferWantsFocus() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(commandName=si.commandName,event=event,func=si.func,stroke=stroke)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@+node:ekr.20110209083917.16004: *7* isAutoCompleteChar
+def isAutoCompleteChar (self,stroke):
+    
+    '''Return True if stroke is bound to the auto-complete in
+    the insert or overwrite state.'''
+
+    k = self ; state = k.unboundKeyAction
+    
+    assert g.isStrokeOrNone(stroke)
+    
+    if stroke and state in ('insert','overwrite'):
+        for key in (state,'body','log','text','all'):
+            d = k.masterBindingsDict.get(key,{})
+            if d:
+                si = d.get(stroke)
+                if si:
+                    assert si.stroke == stroke,'si: %s stroke: %s' % (si,stroke)
+                    assert g.isShortcutInfo(si),si
+                    if si.commandName == 'auto-complete':
+                        return True
+    return False
+#@+node:ekr.20080510095819.1: *7* k.handleUnboundKeys
+def handleUnboundKeys (self,event,char,stroke):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    
+    # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
+    
+    assert g.isStroke(stroke)
+
+    if trace and verbose: g.trace('ch: %s, stroke %s' % (
+        repr(event and event.char),repr(stroke)))
+
+    # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        if trace: g.trace('ignoring unbound character in command mode',stroke)
+        return None
+        
+    elif stroke.isFKey():
+        if trace: g.trace('ignoring F-key',stroke)
+        return None
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event=event,stroke=stroke)
+
+    elif (not self.enable_alt_ctrl_bindings and
+        (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
+    ):
+        # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
+        if trace: g.trace('ignoring unbound Alt/Ctrl key',
+            repr(char),repr(stroke))
+        return None
+
+    elif k.ignore_unbound_non_ascii_keys and (
+        len(char) > 1 or
+        char not in string.printable # 2011/06/10: risky test?
+    ):
+        if trace: g.trace('ignoring unbound non-ascii key',
+            repr(char),repr(stroke))
+        return None
+
+    elif (
+        stroke and stroke.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
+        # Never insert escape or insert characters.
+        if trace: g.trace('ignore Escape/Ignore',stroke)
+        return None
+
+    else:
+        if trace: g.trace('no func',repr(char),repr(stroke))
+        return k.masterCommand(event=event,stroke=stroke)
+#@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
+def createMasterMenuCallback(self,dynamicMenu,command,commandName):
+    
+    trace = False and not g.unitTesting
+    c = self.c
+    
+    def setWidget():
+        w = c.frame.getFocus()
+        if w and sys.platform.startswith('darwin'):
+             # 2012/01/11: redirect (MacOS only).
+            wname = c.widget_name(w) or ''
+            if wname.startswith('head'):
+                w = c.frame.tree.edit_widget(c.p)
+        return w
+
+    if dynamicMenu:
+        if command:
+            def masterDynamicMenuCallback (c=c,command=command):
+                # 2012/01/07: set w here.
+                w = setWidget()
+                if trace: g.trace(command.__name__,w) 
+                event = g.app.gui.create_key_event(c,None,None,w)
+                return c.k.masterCommand(func=command,event=event)
+            return masterDynamicMenuCallback
+        else:
+            g.internalError('no callback for dynamic menu item.')
+            def dummyMasterMenuCallback():
+                pass
+            return dummyMasterMenuCallback
+    else:
+        def masterStaticMenuCallback (c=c,commandName=commandName):
+            # 2011/10/28: Use only the command name to dispatch the command.
+            # 2012/01/07: Bug fix: set w here.
+            w = setWidget()
+            if trace: g.trace(commandName,w,c)
+            event = g.app.gui.create_key_event(c,None,None,w)
+            return c.k.masterCommand(commandName=commandName,event=event)
+        return masterStaticMenuCallback
+#@+node:ekr.20110605121601.18460: *5* onAboutToShow & helpers (qtMenuWrapper)
+def onAboutToShow(self,*args,**keys):
+    
+    trace = False and not g.unitTesting ; verbose = True
+    name = self.leo_menu_label
+    if not name: return
+
+    for action in self.actions():
+        commandName = hasattr(action,'leo_command_name') and action.leo_command_name
+        if commandName:
+            if trace: g.trace(commandName)
+            self.leo_update_shortcut(action,commandName)
+            self.leo_enable_menu_item(action,commandName)
+            self.leo_update_menu_label(action,commandName)
+   
+#@+node:ekr.20120120095156.10261: *6* leo_enable_menu_item
+def leo_enable_menu_item (self,action,commandName):
+
+    func = self.c.frame.menu.enable_dict.get(commandName)
+
+    if action and func:
+        val = func()
+        # g.trace('%5s %20s %s' % (val,commandName,val))
+        action.setEnabled(bool(val))
+        
+#@+node:ekr.20120124115444.10190: *6* leo_update_menu_label
+def leo_update_menu_label(self,action,commandName):
+    
+    c = self.c
+    
+    if action and commandName == 'mark':
+        action.setText('UnMark' if c.p.isMarked() else 'Mark')
+        self.leo_update_shortcut(action,commandName)
+            # Set the proper shortcut.
+#@+node:ekr.20120120095156.10260: *6* leo_update_shortcut
+def leo_update_shortcut(self,action,commandName):
+    
+    trace = False and not g.unitTesting
+    c = self.c ; k = c.k
+    
+    if action:
+        s = action.text()
+        parts = s.split('\t')
+        if len(parts) >= 2: s = parts[0]
+        key,aList = c.config.getShortcut(commandName)
+        if aList:
+            result = []
+            for si in aList:
+                assert g.isShortcutInfo(si),si
+                # Don't show mode-related bindings.
+                if not si.isModeBinding():
+                    accel = k.prettyPrintKey(si.stroke)
+                    if trace: g.trace('%20s %s' % (accel,si.dump()))
+                    result.append(accel)
+                    # Break here if we want to show only one accerator.
+            action.setText('%s\t%s' % (s,', '.join(result)))
+        else:
+            action.setText(s)
+    else:
+        g.trace('can not happen: no action for %s' % (commandName))
+#@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; current = c.p ; check = not reassignIndices
+    checkAfterRead = False or c.config.getBool('check_outline_after_read')
+
+    self.initReadIvars() # 2010/02/05
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.children
+
+    # 2011/12/10: never recreate the gnxDict.
+        # self.gnxDict = {}
+    
+    # 2011/12/12: save and clear gnxDict.
+    # This ensures that new indices will be used for all nodes.
+    if reassignIndices:
+        oldGnxDict = self.gnxDict
+        self.gnxDict = {}
+    else:
+        # Make sure all pasted nodes are entered into the gnxDict.
+        x = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            index = x.toString(v.fileIndex)
+            self.gnxDict[index] = v
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        if trace: g.trace(s)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True,reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+    # Restore the hidden root's children
+    c.hiddenRootNode.children = children
+
+    # Unlink v from the hidden root.
+    v.parents.remove(c.hiddenRootNode)
+
+    p = leoNodes.position(v)
+
+    # Important: we must not adjust links when linking v
+    # into the outline.  The read code has already done that.
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p):
+            return None
+        p._linkAsNthChild(current,0,adjust=False)
+    else:
+        if check and not self.checkPaste(current.parent(),p):
+            return None
+        p._linkAfter(current,adjust=False)
+
+    if reassignIndices:
+        self.gnxDict = oldGnxDict
+            # 2011/12/12: restore gnxDict.
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            v.fileIndex = index = g.app.nodeIndices.getNewIndex()
+            self.gnxDict[index] = v
+
+    if trace and verbose:
+        g.trace('**** dumping outline...')
+        c.dumpOutline()
+
+    if checkAfterRead:
+        g.trace('checking outline after paste',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.selectPosition(p)
+    self.initReadIvars() # 2010/02/05
+    return p
+
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1: *6* checkPaste
+def checkPaste (self,parent,p):
+
+    '''Return True if p may be pasted as a child of parent.'''
+
+    if not parent: return True
+
+    parents = [z.copy() for z in parent.self_and_parents()]
+
+    for p in p.self_and_subtree():
+        for z in parents:
+            # g.trace(p.h,id(p.v),id(z.v))
+            if p.v == z.v:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
+
+    return True
+#@+node:ekr.20031218072017.1551: *5* c.pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    trace = True and not g.unitTesting
+    c = self
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+        
+    vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
+    
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,c.p)
+
+    if not pasted: return None
+    
+    if pasteAsClone:
+        copiedBunchList = c.computeCopiedBunchList(pasted,vnodeInfoDict)
+    else:
+        copiedBunchList = []
+
+    undoData = c.undoer.beforeInsertNode(c.p,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    
+    
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+
+    if 1:
+        # This makes no sense: getLeoOutlineFromClipboard already does this.
+        # ***But**, we can't change anything significant until we demonstrate the problem!
+    
+        # paste as first child if back is expanded.
+        back = pasted.back()
+        #### back = c.p.back()
+    
+        if back and back.hasChildren() and back.isExpanded():
+            # 2011/06/21: fixed hanger: test back.hasChildren().
+            pasted.moveToNthChildOf(back,0)
+        # c.setRootPosition()
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
+    c.undoer.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+    
+    return pasted # For unit testing.
+#@+node:ekr.20050418084539: *6* c.computeVnodeInfoDict
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of nodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+def computeVnodeInfoDict (self):
+    
+    c,d = self,{}
+    for v in c.all_unique_nodes():
+        if v not in d:
+            d[v] = g.Bunch(v=v,head=v.h,body=v.b)
+
+    return d
+#@+node:ekr.20050418084539.2: *6* c.computeCopiedBunchList
+def computeCopiedBunchList(self,pasted,vnodeInfoDict):
+
+    # Create a dict containing only copied vnodes.
+    d = {}
+    for p in pasted.self_and_subtree():
+        d[p.v] = p.v
+    
+    # g.trace(sorted(list(d.keys())))
+    
+    aList = []
+    for v in vnodeInfoDict:
+        if d.get(v):
+            bunch = vnodeInfoDict.get(v)
+            aList.append(bunch)
+    
+    return aList
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

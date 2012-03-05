@@ -4089,6 +4089,7 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
+.. @+node:ekr.20120305084218.9915: *5* Show all commands after <alt-x><tab>
 .. @+node:ekr.20120228164039.10048: *3* Before 4.10 final
 
 
