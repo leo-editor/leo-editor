@@ -19,51 +19,6 @@ Top 10:
 @language rest
 
 .. @+node:ekr.20120304065838.14230: *4* Fix URL bugs
-.. @+node:ekr.20120304214900.9938: *4* Bug 917814: Switching Log Pane tabs is done incompletely
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/917814
-
-Switching Log Pane tabs is not done cleanly and completely. To see this do the following:
-
-1) Start Leo-Editor
-2) Shift-Ctrl-F. This brings the Nav tab to the foreground and
-   leaves the focus in the search string field of the Nav pane.
-3) Click on the Log tab of the Log pane.
-4) Ctrl-A. This causes the following messags to be displayed in the Log tab of the Log pane:
-
-exception executing command
-Traceback (most recent call last):
-  File "/home/bob/bzrWork/trunk/leo/core/leoCommands.py", line 419, in doCommand
-    val = command(event)
-  File "/home/bob/bzrWork/trunk/leo/core/leoEditCommands.py", line 5755, in selectAllText
-    return w.selectAllText()
-  File "/home/bob/bzrWork/trunk/leo/core/leoFrame.py", line 168, in selectAllText
-    def selectAllText (self,insert=None): self.widget and self.widget.selectAllText(insert)
-AttributeError: 'LeoQuickSearchWidget' object has no attribute 'selectAllText'
-
-
-That is, it appears that the focus is on the Log tab and the
-intention is to select-all in the log tab, but Leo-Editor
-tries to select-all in the Nav pane.
-
-Strangely, doing a Ctrl-A in the Nav tab of the Log pane
-seems to do nothing---no errors, no select.
-
--------
-Ubuntu 11.10 with Fluxbox window manager
-Leo Log Window
-Leo 4.9.1 devel, build 4928, 2012-01-14 11:27:18
-Python 2.7.2, qt version 4.7.3
-linux2
-setting leoID from os.getenv('USER'): 'bob'
-load dir: /home/bob/bzrWork/trunk/leo/core
-global config dir: /home/bob/bzrWork/trunk/leo/config
-home dir: /home/bob
-reading settings in /home/bob/bzrWork/trunk/leo/config/leoSettings.leo
-reading settings in /home/bob/.leo/myLeoSettings.leo
-reading settings in /home/bob/.leo/workbook.leo
-reading: /home/bob/.leo/workbook.leo
 .. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
@@ -1722,247 +1677,12 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
-.. @+node:ekr.20111125072438.10214: *4* (Maybe) Fix bug: Another @shadow bug (test4.leo)
-@nocolor-node
-
-email:
-http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
-
-see attachment, shadow file won't get written correctly, and it won't reread
-correctly too. Using leo-editor-snapshot- 201111090253.
-
-Hopefully I will be able to look on some bugs myself, but don't know when. Needs
-a bit of time, I am not very familiar with python.
-
-===== EKR
-
-Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
-.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "cython"        : "#",
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "haxe"          : "//",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
-    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lisp"          : ";", # EKR: 2010/09/29
-    "lua"           : "--",  # ddm 13/02/06
-    "matlab"        : "%", # EKR: 2011/10/21
-    "nsi"           : ";", # EKR: 2010/10/27
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "scala"         : "// /* */",
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--',
-        # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-# Used only by c.getOpenWithExt.
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    #"cython"        : "pyd",
-    #"cython"        : "pyi",
-    "cython"        : "pyx", # Only one extension is valid at present.
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "haxe"          : "hx",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
-    "javaserverpage": "jsp", # EKR: 2011/11/25
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "matlab"        : "m", # EKR: 2011/10/21
-    "nsi"           : "nsi", # EKR: 2010/10/27
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    # "rst"           : "rst", # caught by pylint.
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "scala"         : "scala",
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
-    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "m"     : "matlab", # EKR 2011/10/21
-    "nsi"   : "nsi", # EKR: 2010/10/27
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "pyd"   : "cython",
-    "pyi"   : "cython",
-    "pyx"   : "cython",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "scala" : "scala",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-    "hx"    : "haxe",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'hx'    : 'none',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nsi'   : 'none', # Leo 4.8.
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
-.. @+node:ekr.20120229094652.15178: *4* Later
-.. @+node:ekr.20120229094652.15177: *5* Finish docs
-.. @+node:ekr.20120303051059.9929: *6* Document bigdash plugin
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
-
-I have now pushed a way to do global search, with one line of context
-(one line before, one line after).
-
-Screenshot here:
-
-https://plus.google.com/103097156557482112329/posts/6qSngscG38Y
-
-Instructions (with current trunk):
-
-- enable bigdash.py plugin
-- alt-x global-search
-- Enter "s somesearch" in the line editor and press enter
-- Browse the hits. Click on link to navigate to the node.
-
-Caveats:
-
-- If the document is not in currently active tab, the navigation is
-done "in the background". Correct implementation would be to activate
-the tab in order to bring attention to it. 
-.. @+node:ekr.20120203053243.10111: *5* Complete OpenWith menu
+.. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
 @language python
 
 - test other open-handlers besides subprocess.Popen.
-.. @+node:ekr.20031218072017.2829: *6* c.openTempFileInExternalEditor
+.. @+node:ekr.20031218072017.2829: *5* c.openTempFileInExternalEditor
 def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
 
     '''Open the closed mkstemp file fn in an external editor.
@@ -2043,7 +1763,7 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
         g.es('exception executing open-with command:',command)
         g.es_exception()
         return 'oops: %s' % command
-.. @+node:ekr.20120227073551.11666: *6* @test c.openTempFileInExternalEditor
+.. @+node:ekr.20120227073551.11666: *5* @test c.openTempFileInExternalEditor
 arg1 = 'arg1'
 arg2 = 'arg2'
 fn = 'fn'
@@ -2072,7 +1792,7 @@ for kind,result in table2:
     result2 = c.openTempFileInExternalEditor(d,fn,testing=True)
     assert result==result2,'kind %s expected %s, got %s' % (
         d.get('kind'),result,result2)
-.. @+node:ekr.20120205022040.17745: *6* @openwith docs (copy)
+.. @+node:ekr.20120205022040.17745: *5* @openwith docs (copy)
 @language rest
 
 @openwith nodes in @settings trees create menu items. The openWith
@@ -2117,8 +1837,8 @@ in myLeoSettings.leo override entries in leoSettings.leo.
 
 - If no @openwith nodes are found anywhere the openWith plugin uses hard-coded
 tables in the plugin itself.
-.. @+node:ekr.20120228111337.10057: *6* Creating the open-with menu
-.. @+node:ekr.20070926135612: *7* createMenusFromConfigList & helpers (leoMenu)
+.. @+node:ekr.20120228111337.10057: *5* Creating the open-with menu
+.. @+node:ekr.20070926135612: *6* createMenusFromConfigList & helpers (leoMenu)
 def createMenusFromConfigList (self,aList):
 
     '''Create menus from aList instead of 'hard coded' menus.
@@ -2140,7 +1860,7 @@ def createMenusFromConfigList (self,aList):
     if aList:
         # a list of dicts.
         self.createOpenWithMenuFromTable(aList)
-.. @+node:ekr.20070927082205: *8* createMenuFromConfigList
+.. @+node:ekr.20070927082205: *7* createMenuFromConfigList
 def createMenuFromConfigList (self,parentName,aList,level=0):
 
     table = [] ; parentMenu = self.getMenu(parentName)
@@ -2168,7 +1888,7 @@ def createMenuFromConfigList (self,parentName,aList,level=0):
 
     if table:
         self.createMenuEntries(parentMenu,table)
-.. @+node:ekr.20070927172712: *8* handleSpecialMenus
+.. @+node:ekr.20070927172712: *7* handleSpecialMenus
 def handleSpecialMenus (self,name,parentName,table=None):
 
     '''Handle a special menu if name is the name of a special menu.
@@ -2192,7 +1912,7 @@ def handleSpecialMenus (self,name,parentName,table=None):
         return helpMenu is not None
     else:
         return False
-.. @+node:ekr.20110605121601.18357: *7* createOpenWithMenu (QtMenu)
+.. @+node:ekr.20110605121601.18357: *6* createOpenWithMenu (QtMenu)
 def createOpenWithMenu(self,parent,label,index,amp_index):
 
     '''Create the File:Open With submenu.
@@ -2210,7 +1930,7 @@ def createOpenWithMenu(self,parent,label,index,amp_index):
             label,menu,underline=amp_index)
 
     return menu
-.. @+node:ekr.20031218072017.4116: *7* createOpenWithMenuFromTable & helpers (leoMenu)
+.. @+node:ekr.20031218072017.4116: *6* createOpenWithMenuFromTable & helpers (leoMenu)
 def createOpenWithMenuFromTable (self,table):
 
     '''table is a lists of dicts:
@@ -2267,7 +1987,7 @@ def createOpenWithMenuFromTable (self,table):
 
     for d in table:
         k.bindOpenWith(d)
-.. @+node:ekr.20051022043608.1: *8* createOpenWithMenuItemsFromTable & callback (leoMenu)
+.. @+node:ekr.20051022043608.1: *7* createOpenWithMenuItemsFromTable & callback (leoMenu)
 def createOpenWithMenuItemsFromTable (self,menu,table):
 
     '''Create an entry in the Open with Menu from the table.
@@ -2299,7 +2019,7 @@ def createOpenWithMenuItemsFromTable (self,menu,table):
                 accelerator=accel,
                 command=callback,
                 underline=underline)
-.. @+node:ekr.20031218072017.4118: *9* defineOpenWithMenuCallback (leoMenu)
+.. @+node:ekr.20031218072017.4118: *8* defineOpenWithMenuCallback (leoMenu)
 def defineOpenWithMenuCallback(self,d):
 
     # The first parameter must be event, and it must default to None.
@@ -2307,8 +2027,8 @@ def defineOpenWithMenuCallback(self,d):
         return self.c.openWith(d=d)
 
     return openWithMenuCallback
-.. @+node:ekr.20120227073551.10919: *6* Parsing open-with data
-.. @+node:ekr.20120215072959.12535: *7* c.config.getOpenWith
+.. @+node:ekr.20120227073551.10919: *5* Parsing open-with data
+.. @+node:ekr.20120215072959.12535: *6* c.config.getOpenWith
 def getOpenWith (self):
 
     '''Return a list of dictionaries corresponding to @openwith nodes.'''
@@ -2316,7 +2036,7 @@ def getOpenWith (self):
     val = self.get('openwithtable','openwithtable')
 
     return val
-.. @+node:ekr.20070411101643.1: *7* doOpenWith (ParserBaseClass)
+.. @+node:ekr.20070411101643.1: *6* doOpenWith (ParserBaseClass)
 def doOpenWith (self,p,kind,name,val):
 
     # g.trace(self.c.shortFileName(),'kind',kind,'name',name,'val',val)
@@ -2328,7 +2048,7 @@ def doOpenWith (self,p,kind,name,val):
     name = kind = 'openwithtable'
     self.openWithList.append(d)
     self.set(p,kind,name,self.openWithList)
-.. @+node:ekr.20070411101643.2: *7* parseOpenWith & helper
+.. @+node:ekr.20070411101643.2: *6* parseOpenWith & helper
 def parseOpenWith (self,p):
 
     d = {'command': None}
@@ -2339,7 +2059,7 @@ def parseOpenWith (self,p):
         self.parseOpenWithLine(line,d)
 
     return d
-.. @+node:ekr.20070411101643.4: *8* parseOpenWithLine
+.. @+node:ekr.20070411101643.4: *7* parseOpenWithLine
 def parseOpenWithLine (self,line,d):
     
     s = line.strip()
@@ -2377,8 +2097,8 @@ def parseOpenWithLine (self,line,d):
             d[tag] = val
     else:
         d['command'] = s
-.. @+node:ekr.20120228111337.10058: *6* Handling the open-with data
-.. @+node:ekr.20031218072017.2823: *7* c.openWith and helpers
+.. @+node:ekr.20120228111337.10058: *5* Handling the open-with data
+.. @+node:ekr.20031218072017.2823: *6* c.openWith and helpers
 def openWith(self,event=None,d=None):
 
     '''This routine handles the items in the Open With... menu.
@@ -2405,7 +2125,7 @@ def openWith(self,event=None,d=None):
     except Exception:
         g.es('unexpected exception in c.openWith')
         g.es_exception()
-.. @+node:ekr.20031218072017.2824: *8* c.getOpenWithExt
+.. @+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
 def getOpenWithExt (self,p,ext):
 
     trace = False and not g.app.unitTesting
@@ -2442,722 +2162,6 @@ def getOpenWithExt (self,p,ext):
     if trace: g.trace(ext)
 
     return ext
-.. @+node:ekr.20031218072017.2829: *8* c.openTempFileInExternalEditor
-def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
-
-    '''Open the closed mkstemp file fn in an external editor.
-    The arg and openType args come from the data arg to c.openWith.
-    '''
-
-    trace = False and not g.unitTesting
-    testing = testing or g.unitTesting
-    
-    def join(s1,s2):
-        return '%s %s' % (s1,s2)
-    
-    if trace:
-        print()
-        g.trace(fn)
-        for key in sorted(list(d.keys())):
-            print('%15s %s' % (key,d.get(key)))
-    
-    arg_tuple = d.get('args',[])
-    arg = ' '.join(arg_tuple)
-    openType = d.get('kind')
-
-    try:
-        command = '<no command>'
-        # if openType == 'os.system':
-            # command = 'os.system(%s)' % join(arg,fn)
-            # if not testing:
-                # os.system(command)
-        # el
-        
-        if openType == 'os.startfile':
-            command = 'os.startfile(%s)' % join(arg,fn)
-            if trace: g.trace(command)
-            if not testing: os.startfile(join(arg,fn))
-        elif openType == 'exec':
-            command = 'exec(%s)' % join(arg,fn)
-            if trace: g.trace(command)
-            if not testing: exec(join(arg,fn),{},{})
-        elif openType == 'os.spawnl':
-            filename = g.os_path_basename(arg)
-            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
-            if trace: g.trace(command)
-            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
-        elif openType == 'os.spawnv':
-            filename = os.path.basename(arg_tuple[0]) 
-            vtuple = arg_tuple[1:]
-            vtuple.insert(0, filename)
-                # add the name of the program as the first argument.
-                # Change suggested by Jim Sizelove.
-            vtuple.append(fn)
-            command = 'os.spawnv(%s)' % (vtuple)
-            if trace: g.trace(command)
-            if not testing:
-                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
-        elif openType == 'subprocess.Popen':
-            use_shell = True
-            c_arg = join(arg,fn)
-            command = 'subprocess.Popen(%s)' % c_arg
-            if trace: g.trace(command)
-            if not testing:
-                try:
-                    subprocess.Popen(c_arg,shell=use_shell)
-                except OSError:
-                    g.es_print('c_arg',repr(c_arg))
-                    g.es_exception()
-        elif g.isCallable(openType):
-            # Invoke openWith like this:
-            # c.openWith(data=[f,None,None])
-            # f will be called with one arg, the filename
-            if trace: g.trace('%s(%s)' % (openType,fn))
-            command = '%s(%s)' % (openType,fn)
-            if not testing: openType(fn)
-        else:
-            command='bad command:'+str(openType)
-            if not testing: g.trace(command)
-        return command # for unit testing.
-    except Exception:
-        g.es('exception executing open-with command:',command)
-        g.es_exception()
-        return 'oops: %s' % command
-.. @+node:ekr.20100203050306.5797: *8* c.openWithHelper
-def openWithHelper (self,p,ext):
-
-    '''create or reopen a temp file for p,
-    testing for conflicting changes.
-    '''
-
-    c = self
-
-    # May be over-ridden by mod_tempfname plugin.
-    searchPath = c.openWithTempFilePath(p,ext)
-    if not searchPath:
-        # Check the mod_tempfname plugin.
-        return g.trace('c.openWithTempFilePath failed',color='red')
-
-    # Set d and path if a temp file already refers to p.v
-    path = None
-    if g.os_path_exists(searchPath):
-        for d in g.app.openWithFiles:
-            if p.v == d.get('v') and searchPath == d.get('path'):
-                path = searchPath ; break
-
-    if path:
-        assert d.get('path') == searchPath
-        fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
-    else:
-        fn = c.createOpenWithTempFile(p,ext)
-
-    return fn # fn may be None.
-.. @+node:ekr.20031218072017.2827: *9* c.createOrRecreateTempFileAsNeeded
-conflict_message = '''
-Conflicting changes in outline and temp file.
-Do you want to use the data in the outline?
-Yes: use the data in the outline.
-No: use the data in the temp file.
-Cancel or Escape or Return: do nothing.
-'''
-
-def createOrRecreateTempFileAsNeeded (self,p,d,ext):
-
-    '''test for changes in both p and the temp file:
-
-    - If only p's body text has changed, we recreate the temp file.
-    - If only the temp file has changed, do nothing here.
-    - If both have changed we must prompt the user to see which code to use.
-
-    Return the file name.
-    '''
-    c = self
-
-    fn = d.get('path')
-    # Get the old & new body text and modification times.
-    encoding = d.get('encoding')
-    old_body = d.get('body')
-    new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
-    old_time = d.get('time')
-    try:
-        new_time = g.os_path_getmtime(fn)
-    except Exception:
-        new_time = None
-    body_changed = old_body != new_body
-    time_changed = old_time != new_time
-
-    if body_changed and time_changed:
-        g.es_print('Conflict in temp file for',p.h,color='red')
-        result = g.app.gui.runAskYesNoCancelDialog(c,
-            'Conflict!', c.conflict_message,
-            yesMessage = 'Outline',
-            noMessage = 'File',
-            defaultButton = 'Cancel')
-        if result is None or result.lower() == 'cancel':
-            return False
-        rewrite = result.lower() == 'yes'
-    else:
-        rewrite = body_changed
-
-    if rewrite:
-        # May be overridden by the mod_tempfname plugin.
-        fn = c.createOpenWithTempFile(p,ext)
-    else:
-        g.es('reopening:',g.shortFileName(fn),color='blue')
-
-    return fn
-.. @+node:ekr.20100203050306.5937: *9* c.createOpenWithTempFile
-def createOpenWithTempFile (self,p,ext):
-
-    trace = False and not g.unitTesting
-    c = self ; f = None
-
-    # May be over-ridden by mod_tempfname plugin.
-    fn = c.openWithTempFilePath(p,ext)
-
-    try:
-        if not g.unitTesting:
-            if g.os_path_exists(fn):
-                g.es('recreating:  ',g.shortFileName(fn),color='red')
-            else:
-                g.es('creating:  ',g.shortFileName(fn),color='blue')
-        f = open(fn,'w')
-        # Convert s to whatever encoding is in effect.
-        d = c.scanAllDirectives(p)
-        encoding = d.get('encoding',None)
-        if encoding == None:
-            encoding = c.config.default_derived_file_encoding
-        if g.isPython3: # 2010/02/09
-            s = p.b
-        else:
-            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
-        f.write(s)
-        f.flush()
-        f.close()
-        try:
-            time = g.os_path_getmtime(fn)
-            if time and not g.unitTesting:
-                g.es('time: ',time)
-        except:
-            time = None
-
-        # Remove previous entry from app.openWithFiles if it exists.
-        for d in g.app.openWithFiles[:]:
-            if p.v == d.get('v'):
-                if trace: g.trace('removing',d.get('path'))
-                g.app.openWithFiles.remove(d)
-
-        d = {
-            # Used by app.destroyOpenWithFilesForFrame.
-            'c':c,
-            # Used here and by app.destroyOpenWithFileWithDict.
-            'path':fn,
-            # Used by c.testForConflicts.
-            'body':s,
-            'encoding':encoding,
-            'time':time,
-            # Used by the open_with plugin.
-            'p':p.copy(),
-            # Used by c.openWithHelper, and below.
-            'v':p.v,
-        }
-        g.app.openWithFiles.append(d)
-        return fn
-    except:
-        if f: f.close()
-        g.es('exception creating temp file',color='red')
-        g.es_exception()
-        return None
-.. @+node:ekr.20031218072017.2832: *8* c.openWithTempFilePath (may be over-ridden)
-def openWithTempFilePath (self,p,ext):
-
-    '''Return the path to the temp file corresponding to p and ext.
-
-    This is overridden in mod_tempfname plugin
-    '''
-
-    fn = '%s_LeoTemp_%s%s' % (
-        g.sanitize_filename(p.h),
-        str(id(p.v)),ext)
-    if g.isPython3: # 2010/02/07
-        fn = g.toUnicode(fn)
-    td = g.os_path_finalize(tempfile.gettempdir())
-    path = g.os_path_join(td,fn)
-
-    return path
-.. @+node:ekr.20120228111337.10059: *6* Newly changed code
-.. @+node:ekr.20070411101643.2: *7* parseOpenWith & helper
-def parseOpenWith (self,p):
-
-    d = {'command': None}
-        # Old: command is a tuple.
-        # New: d contains args, kind, etc tags.
-
-    for line in g.splitLines(p.b):
-        self.parseOpenWithLine(line,d)
-
-    return d
-.. @+node:ekr.20070411101643.4: *8* parseOpenWithLine
-def parseOpenWithLine (self,line,d):
-    
-    s = line.strip()
-    if not s: return
-
-    i = g.skip_ws(s,0)
-    if g.match(s,i,'#'):
-        return
-    
-    # try:
-        # s = str(s)
-    # except UnicodeError:
-        # pass
-        
-    if 1: # new code
-        j = g.skip_c_id(s,i)
-        tag = s[i:j].strip()
-        if not tag:
-            g.es_print('@openwith lines must start with a tag: %s' % (s))
-            return
-        i = g.skip_ws(s,j)
-        if not g.match(s,i,':'):
-            g.es_print('colon must follow @openwith tag: %s' % (s))
-            return
-        i += 1
-        val = s[i:].strip() or ''
-            # An empty val is valid.
-        if tag == 'arg':
-            aList = d.get('args',[])
-            aList.append(val)
-            d['args'] = aList
-        elif d.get(tag):
-            g.es_print('ignoring duplicate definition of %s %s' % (tag,s))
-        else:
-            d[tag] = val
-    else:
-        d['command'] = s
-.. @+node:ekr.20061031131434.94: *7* k.bindOpenWith
-def bindOpenWith (self,d):
-
-    '''Register an open-with command.'''
-
-    k = self ; c = k.c
-    
-    shortcut = d.get('shortcut')
-    name = d.get('name')
-    
-    # g.trace(d)
-
-    # The first parameter must be event, and it must default to None.
-    def openWithCallback(event=None,c=c,d=d):
-        return c.openWith(d=d)
-
-    # Use k.registerCommand to set the shortcuts in the various binding dicts.
-    commandName = 'open-with-%s' % name.lower()
-    k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
-.. @+node:ekr.20031218072017.4116: *7* createOpenWithMenuFromTable & helpers (leoMenu)
-def createOpenWithMenuFromTable (self,table):
-
-    '''table is a lists of dicts:
-    
-    - d.get('command'):  one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
-    - d.get('shortcut'): the stroke (??)
-    - d.get('name'):     the menu label.
-    
-    Leo executes command(arg+path) where path is the full path to the temp file.
-    If ext is not None, the temp file has the given extension.
-    Otherwise, Leo computes an extension based on the @language directive in effect.
-'''
-
-    trace = False and not g.unitTesting
-    c,k = self.c,self.c.k
-    if not table: return
-
-    #### ?????
-    g.app.openWithTable = table # Override any previous table.
-    
-    # Delete the previous entry.
-    parent = self.getMenu("File")
-    # if trace: g.trace('parent',parent)
-    if not parent:
-        if not g.app.batchMode:
-            g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
-        return
-
-    label = self.getRealMenuName("Open &With...")
-    amp_index = label.find("&")
-    label = label.replace("&","")
-    try:
-        index = parent.index(label)
-        parent.delete(index)
-    except:
-        try:
-            index = parent.index("Open With...")
-            parent.delete(index)
-        except:
-            g.trace('unexpected exception')
-            g.es_exception()
-            return
-    
-    # Create the Open With menu.
-    openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
-    if not openWithMenu:
-        g.trace('openWithMenu returns None')
-        return
-    
-    self.setMenu("Open With...",openWithMenu)
-    
-    # Create the menu items in of the Open With menu.
-    self.createOpenWithMenuItemsFromTable(openWithMenu,table)
-
-    for d in table:
-        k.bindOpenWith(d)
-.. @+node:ekr.20051022043608.1: *8* createOpenWithMenuItemsFromTable & callback (leoMenu)
-def createOpenWithMenuItemsFromTable (self,menu,table):
-
-    '''Create an entry in the Open with Menu from the table.
-
-    Each entry should be a sequence with 2 or 3 elements.'''
-
-    trace = False and not g.unitTesting
-    # if trace: g.trace(g.callers())
-
-    c = self.c ; k = c.k
-    if g.app.unitTesting: return
-
-    for d in table:
-        label = d.get('name')
-        args = d.get('args',[])
-        if trace:
-            print()
-            for key in sorted(list(d.keys())):
-                print('%15s %s' % (key,d.get(key)))
-
-        accel = d.get('shortcut') or ''
-        if label and args:
-            realLabel = self.getRealMenuName(label)
-            underline=realLabel.find("&")
-            realLabel = realLabel.replace("&","")
-            callback = self.defineOpenWithMenuCallback(d)
-            c.add_command(menu,
-                label=realLabel,
-                accelerator=accel,
-                command=callback,
-                underline=underline)
-.. @+node:ekr.20031218072017.4118: *9* defineOpenWithMenuCallback (leoMenu)
-def defineOpenWithMenuCallback(self,d):
-
-    # The first parameter must be event, and it must default to None.
-    def openWithMenuCallback(event=None,self=self,d=d):
-        return self.c.openWith(d=d)
-
-    return openWithMenuCallback
-.. @+node:ekr.20031218072017.2823: *7* c.openWith and helpers
-def openWith(self,event=None,d=None):
-
-    '''This routine handles the items in the Open With... menu.
-
-    The "d" arg is a Python dictionary whose keys and values
-    are set from the body text of @openwith nodes.
-    
-    d.get('ext'):   The temp file's extension.
-    d.get('kind'):  The method used to open the file.  One of:
-        ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
-    d.get('args'):  A list of arguments specified by the arg tag.
-    '''
-    
-    c = self ; p = c.p
-    try:
-        ext = d.get('ext')
-        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
-            ext = c.getOpenWithExt(p,ext)
-            fn = c.openWithHelper(p,ext)
-            if fn:
-                g.enableIdleTimeHook(idleTimeDelay=500)
-                c.openTempFileInExternalEditor(d,fn)
-        g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
-    except Exception:
-        g.es('unexpected exception in c.openWith')
-        g.es_exception()
-.. @+node:ekr.20031218072017.2824: *8* c.getOpenWithExt
-def getOpenWithExt (self,p,ext):
-
-    trace = False and not g.app.unitTesting
-    if trace: g.trace(ext)
-    
-    c = self
-    
-    if ext:
-        for ch in ("'",'"'):
-            if ext.startswith(ch): ext = ext.strip(ch)
-
-    if not ext:
-        # if node is part of @<file> tree, get ext from file name
-        for p2 in p.self_and_parents():
-            if p2.isAnyAtFileNode():
-                fn = p2.h.split(None,1)[1]
-                ext = g.os_path_splitext(fn)[1]
-                if trace: g.trace('found node:',ext,p2.h)
-                break
-
-    if not ext:
-        theDict = c.scanAllDirectives()
-        language = theDict.get('language')
-        ext = g.app.language_extension_dict.get(language)
-        if trace: g.trace('found directive',language,ext)
-
-    if not ext:
-        ext = '.txt'
-        if trace: g.trace('use default (.txt)')
-
-    if ext[0] != '.':
-        ext = '.'+ext
-        
-    if trace: g.trace(ext)
-
-    return ext
-.. @+node:ekr.20031218072017.2829: *8* c.openTempFileInExternalEditor
-def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
-
-    '''Open the closed mkstemp file fn in an external editor.
-    The arg and openType args come from the data arg to c.openWith.
-    '''
-
-    trace = False and not g.unitTesting
-    testing = testing or g.unitTesting
-    
-    def join(s1,s2):
-        return '%s %s' % (s1,s2)
-    
-    if trace:
-        print()
-        g.trace(fn)
-        for key in sorted(list(d.keys())):
-            print('%15s %s' % (key,d.get(key)))
-    
-    arg_tuple = d.get('args',[])
-    arg = ' '.join(arg_tuple)
-    openType = d.get('kind')
-
-    try:
-        command = '<no command>'
-        # if openType == 'os.system':
-            # command = 'os.system(%s)' % join(arg,fn)
-            # if not testing:
-                # os.system(command)
-        # el
-        
-        if openType == 'os.startfile':
-            command = 'os.startfile(%s)' % join(arg,fn)
-            if trace: g.trace(command)
-            if not testing: os.startfile(join(arg,fn))
-        elif openType == 'exec':
-            command = 'exec(%s)' % join(arg,fn)
-            if trace: g.trace(command)
-            if not testing: exec(join(arg,fn),{},{})
-        elif openType == 'os.spawnl':
-            filename = g.os_path_basename(arg)
-            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
-            if trace: g.trace(command)
-            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
-        elif openType == 'os.spawnv':
-            filename = os.path.basename(arg_tuple[0]) 
-            vtuple = arg_tuple[1:]
-            vtuple.insert(0, filename)
-                # add the name of the program as the first argument.
-                # Change suggested by Jim Sizelove.
-            vtuple.append(fn)
-            command = 'os.spawnv(%s)' % (vtuple)
-            if trace: g.trace(command)
-            if not testing:
-                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
-        elif openType == 'subprocess.Popen':
-            use_shell = True
-            c_arg = join(arg,fn)
-            command = 'subprocess.Popen(%s)' % c_arg
-            if trace: g.trace(command)
-            if not testing:
-                try:
-                    subprocess.Popen(c_arg,shell=use_shell)
-                except OSError:
-                    g.es_print('c_arg',repr(c_arg))
-                    g.es_exception()
-        elif g.isCallable(openType):
-            # Invoke openWith like this:
-            # c.openWith(data=[f,None,None])
-            # f will be called with one arg, the filename
-            if trace: g.trace('%s(%s)' % (openType,fn))
-            command = '%s(%s)' % (openType,fn)
-            if not testing: openType(fn)
-        else:
-            command='bad command:'+str(openType)
-            if not testing: g.trace(command)
-        return command # for unit testing.
-    except Exception:
-        g.es('exception executing open-with command:',command)
-        g.es_exception()
-        return 'oops: %s' % command
-.. @+node:ekr.20100203050306.5797: *8* c.openWithHelper
-def openWithHelper (self,p,ext):
-
-    '''create or reopen a temp file for p,
-    testing for conflicting changes.
-    '''
-
-    c = self
-
-    # May be over-ridden by mod_tempfname plugin.
-    searchPath = c.openWithTempFilePath(p,ext)
-    if not searchPath:
-        # Check the mod_tempfname plugin.
-        return g.trace('c.openWithTempFilePath failed',color='red')
-
-    # Set d and path if a temp file already refers to p.v
-    path = None
-    if g.os_path_exists(searchPath):
-        for d in g.app.openWithFiles:
-            if p.v == d.get('v') and searchPath == d.get('path'):
-                path = searchPath ; break
-
-    if path:
-        assert d.get('path') == searchPath
-        fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
-    else:
-        fn = c.createOpenWithTempFile(p,ext)
-
-    return fn # fn may be None.
-.. @+node:ekr.20031218072017.2827: *9* c.createOrRecreateTempFileAsNeeded
-conflict_message = '''
-Conflicting changes in outline and temp file.
-Do you want to use the data in the outline?
-Yes: use the data in the outline.
-No: use the data in the temp file.
-Cancel or Escape or Return: do nothing.
-'''
-
-def createOrRecreateTempFileAsNeeded (self,p,d,ext):
-
-    '''test for changes in both p and the temp file:
-
-    - If only p's body text has changed, we recreate the temp file.
-    - If only the temp file has changed, do nothing here.
-    - If both have changed we must prompt the user to see which code to use.
-
-    Return the file name.
-    '''
-    c = self
-
-    fn = d.get('path')
-    # Get the old & new body text and modification times.
-    encoding = d.get('encoding')
-    old_body = d.get('body')
-    new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
-    old_time = d.get('time')
-    try:
-        new_time = g.os_path_getmtime(fn)
-    except Exception:
-        new_time = None
-    body_changed = old_body != new_body
-    time_changed = old_time != new_time
-
-    if body_changed and time_changed:
-        g.es_print('Conflict in temp file for',p.h,color='red')
-        result = g.app.gui.runAskYesNoCancelDialog(c,
-            'Conflict!', c.conflict_message,
-            yesMessage = 'Outline',
-            noMessage = 'File',
-            defaultButton = 'Cancel')
-        if result is None or result.lower() == 'cancel':
-            return False
-        rewrite = result.lower() == 'yes'
-    else:
-        rewrite = body_changed
-
-    if rewrite:
-        # May be overridden by the mod_tempfname plugin.
-        fn = c.createOpenWithTempFile(p,ext)
-    else:
-        g.es('reopening:',g.shortFileName(fn),color='blue')
-
-    return fn
-.. @+node:ekr.20100203050306.5937: *9* c.createOpenWithTempFile
-def createOpenWithTempFile (self,p,ext):
-
-    trace = False and not g.unitTesting
-    c = self ; f = None
-
-    # May be over-ridden by mod_tempfname plugin.
-    fn = c.openWithTempFilePath(p,ext)
-
-    try:
-        if not g.unitTesting:
-            if g.os_path_exists(fn):
-                g.es('recreating:  ',g.shortFileName(fn),color='red')
-            else:
-                g.es('creating:  ',g.shortFileName(fn),color='blue')
-        f = open(fn,'w')
-        # Convert s to whatever encoding is in effect.
-        d = c.scanAllDirectives(p)
-        encoding = d.get('encoding',None)
-        if encoding == None:
-            encoding = c.config.default_derived_file_encoding
-        if g.isPython3: # 2010/02/09
-            s = p.b
-        else:
-            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
-        f.write(s)
-        f.flush()
-        f.close()
-        try:
-            time = g.os_path_getmtime(fn)
-            if time and not g.unitTesting:
-                g.es('time: ',time)
-        except:
-            time = None
-
-        # Remove previous entry from app.openWithFiles if it exists.
-        for d in g.app.openWithFiles[:]:
-            if p.v == d.get('v'):
-                if trace: g.trace('removing',d.get('path'))
-                g.app.openWithFiles.remove(d)
-
-        d = {
-            # Used by app.destroyOpenWithFilesForFrame.
-            'c':c,
-            # Used here and by app.destroyOpenWithFileWithDict.
-            'path':fn,
-            # Used by c.testForConflicts.
-            'body':s,
-            'encoding':encoding,
-            'time':time,
-            # Used by the open_with plugin.
-            'p':p.copy(),
-            # Used by c.openWithHelper, and below.
-            'v':p.v,
-        }
-        g.app.openWithFiles.append(d)
-        return fn
-    except:
-        if f: f.close()
-        g.es('exception creating temp file',color='red')
-        g.es_exception()
-        return None
-.. @+node:ekr.20031218072017.2832: *8* c.openWithTempFilePath (may be over-ridden)
-def openWithTempFilePath (self,p,ext):
-
-    '''Return the path to the temp file corresponding to p and ext.
-
-    This is overridden in mod_tempfname plugin
-    '''
-
-    fn = '%s_LeoTemp_%s%s' % (
-        g.sanitize_filename(p.h),
-        str(id(p.v)),ext)
-    if g.isPython3: # 2010/02/07
-        fn = g.toUnicode(fn)
-    td = g.os_path_finalize(tempfile.gettempdir())
-    path = g.os_path_join(td,fn)
-
-    return path
 .. @+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
 def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
 
@@ -3239,205 +2243,727 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
         g.es('exception executing open-with command:',command)
         g.es_exception()
         return 'oops: %s' % command
-.. @+node:ekr.20120301053039.15577: *5* check scripts in leoSetting.leo pass
-.. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
-.. @+node:ekr.20111114085925.9932: *5* Why does the unittest/output folder contain empty files?
-.. @+node:ekr.20031218072017.1462: *6* ic.exportHeadlines
-def exportHeadlines (self,fileName):
+.. @+node:ekr.20100203050306.5797: *7* c.openWithHelper
+def openWithHelper (self,p,ext):
 
-    c = self.c ; p = c.p
-    nl = g.u(self.output_newline)
-    
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-
-    try:
-        theFile = open(fileName,'w')
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        c.testManager.fail()
-        return
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel,useVerticalBar=True)
-        s = head + nl
-        if not g.isPython3: # 2010/08/27
-            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-        theFile.write(s)
-    theFile.close()
-.. @+node:ekr.20051104075904.78: *6* TM.makeImportExportSuite
-def makeImportExportSuite(self,parentHeadline,doImport):
-
-    """Create an Import/Export test for every descendant of testParentHeadline.."""
-
-    tm = self
-    c = self.c
-    parent = tm.findNodeAnywhere(parentHeadline)
-    assert parent,'node not found: %s' % (parentHeadline)
-    temp = tm.findNodeInTree(parent,"tempNode")
-    assert temp,'node not found: tempNode'
-
-    # Create the suite and add all test cases.
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    for p in parent.children():
-        if p != temp:
-            # 2009/10/02: avoid copy arg to iter
-            p2 = p.copy()
-            dialog = tm.findNodeInTree(p2,"dialog")
-            assert(dialog)
-            test = importExportTestCase(c,p2,dialog,temp,doImport)
-            suite.addTest(test)
-
-    return suite
-.. @+node:ekr.20051104075904.79: *6* class importExportTestCase
-class importExportTestCase(unittest.TestCase):
-
-    """Data-driven unit tests for Leo's edit body commands."""
-
-    @others
-.. @+node:ekr.20051104075904.80: *7* __init__ (importExportTestCase)
-def __init__ (self,c,p,dialog,temp_p,doImport):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.dialog = dialog
-    self.p = p.copy()
-    self.temp_p = temp_p.copy()
-
-    self.gui = None
-    self.oldGui = None
-    self.wasChanged = c.changed
-    self.fileName = ""
-    self.doImport = doImport
-
-    self.old_p = c.p
-.. @+node:ekr.20051104075904.81: *7*  fail (importExportTestCase)
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-.. @+node:ekr.20051104075904.82: *7* importExport
-def importExport (self):
-
-    c = self.c ; p = self.p
-
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    commandName = p.h
-    command = getattr(c,commandName) # Will fail if command does not exist.
-    command(event=None)
-
-    failedMethod = g.app.unitTestDict.get("fail")
-    self.failIf(failedMethod,failedMethod)
-.. @+node:ekr.20051104075904.83: *7* runTest
-def runTest(self):
-
-    # """Import Export Test Case"""
-
-    self.importExport()
-.. @+node:ekr.20051104075904.84: *7* setUp
-def setUp(self):
-
-    trace = False
-    c = self.c ; temp_p = self.temp_p
-    d = self.dialog
-
-    temp_p.setBodyString('')
-
-    # Create a node under temp_p.
-    child = temp_p.insertAsLastChild()
-    assert(child)
-    c.setHeadString(child,"import/export test: " + self.p.h)
-    c.selectPosition(child)
-
-    assert(d)
-    s = d.bodyString()
-    lines = s.split('\n')
-    name = lines[0]
-    fileName = lines[1]
-
-    # Replace '\\' by os.path.sep in fileName
-    try:
-        # os.path.sep does not exist in Python 2.2.x.
-        sep = os.path.sep
-        fileName = fileName.replace('\\',sep)
-    except AttributeError:
-        fileName = g.os_path_normpath(fileName)
-
-    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
-    if trace: g.trace('(importExportTestCase',fileName)
-
-    if self.doImport:
-        theDict = {name: [fileName]}
-    else:
-        theDict = {name: fileName}
-
-    self.oldGui = g.app.gui
-    self.gui = leoGui.unitTestGui(theDict,trace=False)
-.. @+node:ekr.20051104075904.85: *7* shortDescription
-def shortDescription (self):
-
-    try:
-        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
-    except Exception:
-        return "ImportExportTestCase"
-.. @+node:ekr.20051104075904.86: *7* tearDown
-def tearDown (self):
-
-    c = self.c ; temp_p = self.temp_p
-
-    if self.gui:
-        self.gui.destroySelf()
-        self.gui = None
-
-    temp_p.setBodyString("")
-    temp_p.clearDirty()
-
-    if not self.wasChanged:
-        c.setChanged (False)
-
-    if 1: # Delete all children of temp node.
-        while temp_p.firstChild():
-            temp_p.firstChild().doDelete()
-
-    g.app.gui = self.oldGui
-    c.selectPosition(self.old_p)
-.. @+node:ekr.20031218072017.2850: *6* c.exportHeadlines
-def exportHeadlines (self,event=None):
-
-    '''Export all headlines to an external file.'''
+    '''create or reopen a temp file for p,
+    testing for conflicting changes.
+    '''
 
     c = self
 
-    filetypes = [("Text files", "*.txt"),("All files", "*")]
+    # May be over-ridden by mod_tempfname plugin.
+    searchPath = c.openWithTempFilePath(p,ext)
+    if not searchPath:
+        # Check the mod_tempfname plugin.
+        return g.trace('c.openWithTempFilePath failed',color='red')
 
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile="headlines.txt",
-        title="Export Headlines",
-        filetypes=filetypes,
-        defaultextension=".txt")
-    c.bringToFront()
+    # Set d and path if a temp file already refers to p.v
+    path = None
+    if g.os_path_exists(searchPath):
+        for d in g.app.openWithFiles:
+            if p.v == d.get('v') and searchPath == d.get('path'):
+                path = searchPath ; break
 
-    if fileName and len(fileName) > 0:
-        g.setGlobalOpenDir(fileName)
-        g.chdir(fileName)
-        c.importCommands.exportHeadlines(fileName)
-.. @+node:ekr.20120228164039.11406: *5* Clean up #### in leoKeys
-.. @+node:ekr.20120226131923.10221: *5* Allow abbreviations in minibuffer 
-@nocolor-node
+    if path:
+        assert d.get('path') == searchPath
+        fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
+    else:
+        fn = c.createOpenWithTempFile(p,ext)
 
-cfa=clone-find-all-flattened
-.. @+node:ekr.20111128103520.10245: *5* Finish leoInspect
+    return fn # fn may be None.
+.. @+node:ekr.20031218072017.2827: *8* c.createOrRecreateTempFileAsNeeded
+conflict_message = '''
+Conflicting changes in outline and temp file.
+Do you want to use the data in the outline?
+Yes: use the data in the outline.
+No: use the data in the temp file.
+Cancel or Escape or Return: do nothing.
+'''
+
+def createOrRecreateTempFileAsNeeded (self,p,d,ext):
+
+    '''test for changes in both p and the temp file:
+
+    - If only p's body text has changed, we recreate the temp file.
+    - If only the temp file has changed, do nothing here.
+    - If both have changed we must prompt the user to see which code to use.
+
+    Return the file name.
+    '''
+    c = self
+
+    fn = d.get('path')
+    # Get the old & new body text and modification times.
+    encoding = d.get('encoding')
+    old_body = d.get('body')
+    new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+    old_time = d.get('time')
+    try:
+        new_time = g.os_path_getmtime(fn)
+    except Exception:
+        new_time = None
+    body_changed = old_body != new_body
+    time_changed = old_time != new_time
+
+    if body_changed and time_changed:
+        g.es_print('Conflict in temp file for',p.h,color='red')
+        result = g.app.gui.runAskYesNoCancelDialog(c,
+            'Conflict!', c.conflict_message,
+            yesMessage = 'Outline',
+            noMessage = 'File',
+            defaultButton = 'Cancel')
+        if result is None or result.lower() == 'cancel':
+            return False
+        rewrite = result.lower() == 'yes'
+    else:
+        rewrite = body_changed
+
+    if rewrite:
+        # May be overridden by the mod_tempfname plugin.
+        fn = c.createOpenWithTempFile(p,ext)
+    else:
+        g.es('reopening:',g.shortFileName(fn),color='blue')
+
+    return fn
+.. @+node:ekr.20100203050306.5937: *8* c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if not g.unitTesting:
+            if g.os_path_exists(fn):
+                g.es('recreating:  ',g.shortFileName(fn),color='red')
+            else:
+                g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time and not g.unitTesting:
+                g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+.. @+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (may be over-ridden)
+def openWithTempFilePath (self,p,ext):
+
+    '''Return the path to the temp file corresponding to p and ext.
+
+    This is overridden in mod_tempfname plugin
+    '''
+
+    fn = '%s_LeoTemp_%s%s' % (
+        g.sanitize_filename(p.h),
+        str(id(p.v)),ext)
+    if g.isPython3: # 2010/02/07
+        fn = g.toUnicode(fn)
+    td = g.os_path_finalize(tempfile.gettempdir())
+    path = g.os_path_join(td,fn)
+
+    return path
+.. @+node:ekr.20120228111337.10059: *5* Newly changed code
+.. @+node:ekr.20070411101643.2: *6* parseOpenWith & helper
+def parseOpenWith (self,p):
+
+    d = {'command': None}
+        # Old: command is a tuple.
+        # New: d contains args, kind, etc tags.
+
+    for line in g.splitLines(p.b):
+        self.parseOpenWithLine(line,d)
+
+    return d
+.. @+node:ekr.20070411101643.4: *7* parseOpenWithLine
+def parseOpenWithLine (self,line,d):
+    
+    s = line.strip()
+    if not s: return
+
+    i = g.skip_ws(s,0)
+    if g.match(s,i,'#'):
+        return
+    
+    # try:
+        # s = str(s)
+    # except UnicodeError:
+        # pass
+        
+    if 1: # new code
+        j = g.skip_c_id(s,i)
+        tag = s[i:j].strip()
+        if not tag:
+            g.es_print('@openwith lines must start with a tag: %s' % (s))
+            return
+        i = g.skip_ws(s,j)
+        if not g.match(s,i,':'):
+            g.es_print('colon must follow @openwith tag: %s' % (s))
+            return
+        i += 1
+        val = s[i:].strip() or ''
+            # An empty val is valid.
+        if tag == 'arg':
+            aList = d.get('args',[])
+            aList.append(val)
+            d['args'] = aList
+        elif d.get(tag):
+            g.es_print('ignoring duplicate definition of %s %s' % (tag,s))
+        else:
+            d[tag] = val
+    else:
+        d['command'] = s
+.. @+node:ekr.20061031131434.94: *6* k.bindOpenWith
+def bindOpenWith (self,d):
+
+    '''Register an open-with command.'''
+
+    k = self ; c = k.c
+    
+    shortcut = d.get('shortcut')
+    name = d.get('name')
+    
+    # g.trace(d)
+
+    # The first parameter must be event, and it must default to None.
+    def openWithCallback(event=None,c=c,d=d):
+        return c.openWith(d=d)
+
+    # Use k.registerCommand to set the shortcuts in the various binding dicts.
+    commandName = 'open-with-%s' % name.lower()
+    k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
+.. @+node:ekr.20031218072017.4116: *6* createOpenWithMenuFromTable & helpers (leoMenu)
+def createOpenWithMenuFromTable (self,table):
+
+    '''table is a lists of dicts:
+    
+    - d.get('command'):  one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+    - d.get('shortcut'): the stroke (??)
+    - d.get('name'):     the menu label.
+    
+    Leo executes command(arg+path) where path is the full path to the temp file.
+    If ext is not None, the temp file has the given extension.
+    Otherwise, Leo computes an extension based on the @language directive in effect.
+'''
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+    if not table: return
+
+    #### ?????
+    g.app.openWithTable = table # Override any previous table.
+    
+    # Delete the previous entry.
+    parent = self.getMenu("File")
+    # if trace: g.trace('parent',parent)
+    if not parent:
+        if not g.app.batchMode:
+            g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
+        return
+
+    label = self.getRealMenuName("Open &With...")
+    amp_index = label.find("&")
+    label = label.replace("&","")
+    try:
+        index = parent.index(label)
+        parent.delete(index)
+    except:
+        try:
+            index = parent.index("Open With...")
+            parent.delete(index)
+        except:
+            g.trace('unexpected exception')
+            g.es_exception()
+            return
+    
+    # Create the Open With menu.
+    openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+    if not openWithMenu:
+        g.trace('openWithMenu returns None')
+        return
+    
+    self.setMenu("Open With...",openWithMenu)
+    
+    # Create the menu items in of the Open With menu.
+    self.createOpenWithMenuItemsFromTable(openWithMenu,table)
+
+    for d in table:
+        k.bindOpenWith(d)
+.. @+node:ekr.20051022043608.1: *7* createOpenWithMenuItemsFromTable & callback (leoMenu)
+def createOpenWithMenuItemsFromTable (self,menu,table):
+
+    '''Create an entry in the Open with Menu from the table.
+
+    Each entry should be a sequence with 2 or 3 elements.'''
+
+    trace = False and not g.unitTesting
+    # if trace: g.trace(g.callers())
+
+    c = self.c ; k = c.k
+    if g.app.unitTesting: return
+
+    for d in table:
+        label = d.get('name')
+        args = d.get('args',[])
+        if trace:
+            print()
+            for key in sorted(list(d.keys())):
+                print('%15s %s' % (key,d.get(key)))
+
+        accel = d.get('shortcut') or ''
+        if label and args:
+            realLabel = self.getRealMenuName(label)
+            underline=realLabel.find("&")
+            realLabel = realLabel.replace("&","")
+            callback = self.defineOpenWithMenuCallback(d)
+            c.add_command(menu,
+                label=realLabel,
+                accelerator=accel,
+                command=callback,
+                underline=underline)
+.. @+node:ekr.20031218072017.4118: *8* defineOpenWithMenuCallback (leoMenu)
+def defineOpenWithMenuCallback(self,d):
+
+    # The first parameter must be event, and it must default to None.
+    def openWithMenuCallback(event=None,self=self,d=d):
+        return self.c.openWith(d=d)
+
+    return openWithMenuCallback
+.. @+node:ekr.20031218072017.2823: *6* c.openWith and helpers
+def openWith(self,event=None,d=None):
+
+    '''This routine handles the items in the Open With... menu.
+
+    The "d" arg is a Python dictionary whose keys and values
+    are set from the body text of @openwith nodes.
+    
+    d.get('ext'):   The temp file's extension.
+    d.get('kind'):  The method used to open the file.  One of:
+        ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
+    d.get('args'):  A list of arguments specified by the arg tag.
+    '''
+    
+    c = self ; p = c.p
+    try:
+        ext = d.get('ext')
+        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
+            ext = c.getOpenWithExt(p,ext)
+            fn = c.openWithHelper(p,ext)
+            if fn:
+                g.enableIdleTimeHook(idleTimeDelay=500)
+                c.openTempFileInExternalEditor(d,fn)
+        g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
+    except Exception:
+        g.es('unexpected exception in c.openWith')
+        g.es_exception()
+.. @+node:ekr.20031218072017.2824: *7* c.getOpenWithExt
+def getOpenWithExt (self,p,ext):
+
+    trace = False and not g.app.unitTesting
+    if trace: g.trace(ext)
+    
+    c = self
+    
+    if ext:
+        for ch in ("'",'"'):
+            if ext.startswith(ch): ext = ext.strip(ch)
+
+    if not ext:
+        # if node is part of @<file> tree, get ext from file name
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None,1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                if trace: g.trace('found node:',ext,p2.h)
+                break
+
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+        if trace: g.trace('found directive',language,ext)
+
+    if not ext:
+        ext = '.txt'
+        if trace: g.trace('use default (.txt)')
+
+    if ext[0] != '.':
+        ext = '.'+ext
+        
+    if trace: g.trace(ext)
+
+    return ext
+.. @+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    
+    def join(s1,s2):
+        return '%s %s' % (s1,s2)
+    
+    if trace:
+        print()
+        g.trace(fn)
+        for key in sorted(list(d.keys())):
+            print('%15s %s' % (key,d.get(key)))
+    
+    arg_tuple = d.get('args',[])
+    arg = ' '.join(arg_tuple)
+    openType = d.get('kind')
+
+    try:
+        command = '<no command>'
+        # if openType == 'os.system':
+            # command = 'os.system(%s)' % join(arg,fn)
+            # if not testing:
+                # os.system(command)
+        # el
+        
+        if openType == 'os.startfile':
+            command = 'os.startfile(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(join(arg,fn))
+        elif openType == 'exec':
+            command = 'exec(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: exec(join(arg,fn),{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0]) 
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            c_arg = join(arg,fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg,shell=use_shell)
+                except OSError:
+                    g.es_print('c_arg',repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+.. @+node:ekr.20100203050306.5797: *7* c.openWithHelper
+def openWithHelper (self,p,ext):
+
+    '''create or reopen a temp file for p,
+    testing for conflicting changes.
+    '''
+
+    c = self
+
+    # May be over-ridden by mod_tempfname plugin.
+    searchPath = c.openWithTempFilePath(p,ext)
+    if not searchPath:
+        # Check the mod_tempfname plugin.
+        return g.trace('c.openWithTempFilePath failed',color='red')
+
+    # Set d and path if a temp file already refers to p.v
+    path = None
+    if g.os_path_exists(searchPath):
+        for d in g.app.openWithFiles:
+            if p.v == d.get('v') and searchPath == d.get('path'):
+                path = searchPath ; break
+
+    if path:
+        assert d.get('path') == searchPath
+        fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
+    else:
+        fn = c.createOpenWithTempFile(p,ext)
+
+    return fn # fn may be None.
+.. @+node:ekr.20031218072017.2827: *8* c.createOrRecreateTempFileAsNeeded
+conflict_message = '''
+Conflicting changes in outline and temp file.
+Do you want to use the data in the outline?
+Yes: use the data in the outline.
+No: use the data in the temp file.
+Cancel or Escape or Return: do nothing.
+'''
+
+def createOrRecreateTempFileAsNeeded (self,p,d,ext):
+
+    '''test for changes in both p and the temp file:
+
+    - If only p's body text has changed, we recreate the temp file.
+    - If only the temp file has changed, do nothing here.
+    - If both have changed we must prompt the user to see which code to use.
+
+    Return the file name.
+    '''
+    c = self
+
+    fn = d.get('path')
+    # Get the old & new body text and modification times.
+    encoding = d.get('encoding')
+    old_body = d.get('body')
+    new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+    old_time = d.get('time')
+    try:
+        new_time = g.os_path_getmtime(fn)
+    except Exception:
+        new_time = None
+    body_changed = old_body != new_body
+    time_changed = old_time != new_time
+
+    if body_changed and time_changed:
+        g.es_print('Conflict in temp file for',p.h,color='red')
+        result = g.app.gui.runAskYesNoCancelDialog(c,
+            'Conflict!', c.conflict_message,
+            yesMessage = 'Outline',
+            noMessage = 'File',
+            defaultButton = 'Cancel')
+        if result is None or result.lower() == 'cancel':
+            return False
+        rewrite = result.lower() == 'yes'
+    else:
+        rewrite = body_changed
+
+    if rewrite:
+        # May be overridden by the mod_tempfname plugin.
+        fn = c.createOpenWithTempFile(p,ext)
+    else:
+        g.es('reopening:',g.shortFileName(fn),color='blue')
+
+    return fn
+.. @+node:ekr.20100203050306.5937: *8* c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if not g.unitTesting:
+            if g.os_path_exists(fn):
+                g.es('recreating:  ',g.shortFileName(fn),color='red')
+            else:
+                g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time and not g.unitTesting:
+                g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+.. @+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (may be over-ridden)
+def openWithTempFilePath (self,p,ext):
+
+    '''Return the path to the temp file corresponding to p and ext.
+
+    This is overridden in mod_tempfname plugin
+    '''
+
+    fn = '%s_LeoTemp_%s%s' % (
+        g.sanitize_filename(p.h),
+        str(id(p.v)),ext)
+    if g.isPython3: # 2010/02/07
+        fn = g.toUnicode(fn)
+    td = g.os_path_finalize(tempfile.gettempdir())
+    path = g.os_path_join(td,fn)
+
+    return path
+.. @+node:ekr.20031218072017.2829: *6* c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    
+    def join(s1,s2):
+        return '%s %s' % (s1,s2)
+    
+    if trace:
+        print()
+        g.trace(fn)
+        for key in sorted(list(d.keys())):
+            print('%15s %s' % (key,d.get(key)))
+    
+    arg_tuple = d.get('args',[])
+    arg = ' '.join(arg_tuple)
+    openType = d.get('kind')
+
+    try:
+        command = '<no command>'
+        # if openType == 'os.system':
+            # command = 'os.system(%s)' % join(arg,fn)
+            # if not testing:
+                # os.system(command)
+        # el
+        
+        if openType == 'os.startfile':
+            command = 'os.startfile(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(join(arg,fn))
+        elif openType == 'exec':
+            command = 'exec(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: exec(join(arg,fn),{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0]) 
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            c_arg = join(arg,fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg,shell=use_shell)
+                except OSError:
+                    g.es_print('c_arg',repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+.. @+node:ekr.20111128103520.10245: *4* Finish leoInspect
 @language python
 
 # create o.token_range gette
-.. @+node:ekr.20111128103520.10257: *6* @test leoInspect.token_range (s)
+.. @+node:ekr.20111128103520.10257: *5* @test leoInspect.token_range (s)
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -3486,7 +3012,7 @@ if 0:
             show(d,1)
             for z in d.statements():
                 show(z,1)
-.. @+node:ekr.20111128103520.10258: *7* << define s >>
+.. @+node:ekr.20111128103520.10258: *6* << define s >>
 s = '''
 # x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
 a=b+c
@@ -3501,7 +3027,7 @@ a=b+c
     # def method():
         # pass
     
-.. @+node:ekr.20111129084537.10357: *6* Notes
+.. @+node:ekr.20111129084537.10357: *5* Notes
 @language rest
 
 > All this means that it would likely be too expensive (or just too
@@ -3546,7 +3072,7 @@ token_range will then call ast.walk(N) to discover all of N's nodes,
 sort the list, and return the last element of the list!
 
 In short, token_range is clean and bullet-proof--a happy result.
-.. @+node:ekr.20111116103733.10402: *6* << define class Context >>
+.. @+node:ekr.20111116103733.10402: *5* << define class Context >>
 class Context(object):
 
     '''The base class of all context-related semantic data.
@@ -3559,7 +3085,7 @@ class Context(object):
     __str__ = __repr__
 
     @others
-.. @+node:ekr.20111116103733.10403: *7* cx ctor
+.. @+node:ekr.20111116103733.10403: *6* cx ctor
 def __init__(self,tree,parent_context,sd,kind):
 
     self.is_temp_context = kind in ['comprehension','for','lambda','with']
@@ -3610,11 +3136,11 @@ def __init__(self,tree,parent_context,sd,kind):
         self.module_context = self
     else:
         self.module_context = parent_context.module_context
-.. @+node:ekr.20111116103733.10404: *7* cx.ast_kind
+.. @+node:ekr.20111116103733.10404: *6* cx.ast_kind
 def ast_kind (self,tree):
 
     return tree.__class__.__name__
-.. @+node:ekr.20111116103733.10405: *7* cx.description & name
+.. @+node:ekr.20111116103733.10405: *6* cx.description & name
 def description (self):
     
     '''Return a description of this context and all parent contexts.'''
@@ -3627,7 +3153,7 @@ def description (self):
 
 # All subclasses override name.
 name = description
-.. @+node:ekr.20111116103733.10407: *7* cx.dump
+.. @+node:ekr.20111116103733.10407: *6* cx.dump
 def dump (self,level=0,verbose=False):
 
     if 0: # Just print the context
@@ -3642,7 +3168,7 @@ def dump (self,level=0,verbose=False):
             z.dump(level+1)
         for z in self.temp_contexts:
             z.dump(level+1)
-.. @+node:ekr.20111117031039.10099: *7* cx.format
+.. @+node:ekr.20111117031039.10099: *6* cx.format
 def format(self,brief=True):
     
     cx = self
@@ -3652,240 +3178,6 @@ def format(self,brief=True):
     # return ast.dump(cx._tree,annotate_fields=True,include_attributes=not brief)
     
     return AstFormatter().format(cx._tree)
-.. @+node:ekr.20111116161118.10113: *7* cx.getters & setters
-.. @+node:ekr.20111116161118.10114: *8* cx.assignments & helper
-def assignments (self,all=True):
-    
-    if all:
-        return self.all_assignments(result=None)
-    else:
-        return self.filter_assignments(self._statements)
-
-def all_assignments(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_assignments(self._statements))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_assignments(result)
-    return result
-    
-def filter_assignments(self,aList):
-    '''Return all the assignments in aList.'''
-    return [z for z in aList
-        if z.context_kind in ('assn','aug-assn')]
-.. @+node:ekr.20111116161118.10115: *8* cx.assignments_to
-def assignments_to (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for assn in self.assignments(all=all):
-        tree = assn.tree()
-        kind = self.ast_kind(tree)
-        if kind == 'Assign':
-            for target in tree.targets:
-                lhs = format(target)
-                if s == lhs:
-                    result.append(assn)
-                    break
-        else:
-            assert kind == 'AugAssign',kind
-            lhs = format(tree.target)
-            if s == lhs:
-                result.append(assn)
-
-    return result
-.. @+node:ekr.20111116161118.10116: *8* cx.assignments_using
-def assignments_using (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for assn in self.assignments(all=all):
-        tree = assn.tree()
-        kind = self.ast_kind(tree)
-        assert kind in ('Assign','AugAssign'),kind
-        rhs = format(tree.value)
-        i = rhs.find(s,0)
-        while -1 < i < len(rhs):
-            if g.match_word(rhs,i,s):
-                result.append(assn)
-                break
-            else:
-                i += len(s)
-
-    return result
-.. @+node:ekr.20111126074312.10386: *8* cx.calls & helpers
-def calls (self,all=True):
-    
-    if all:
-        return self.all_calls(result=None)
-    else:
-        return self.filter_calls(self._statements)
-
-def all_calls(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_calls(self._statements))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_calls(result)
-    return result
-    
-def filter_calls(self,aList):
-    '''Return all the calls in aList.'''
-    return [z for z in aList
-        if z.context_kind == 'call']
-.. @+node:ekr.20111126074312.10384: *8* cx.call_to
-def calls_to (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for call in self.calls(all=all):
-        tree = call.tree()
-        func = format(tree.func)
-        if s == func:
-            result.append(call)
-
-    return result
-.. @+node:ekr.20111126074312.10400: *8* cx.call_args_of
-def call_args_of (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for call in self.calls(all=all):
-        tree = call.tree()
-        func = format(tree.func)
-        if s == func:
-            result.append(call)
-
-    return result
-.. @+node:ekr.20111116161118.10163: *8* cx.classes
-def classes (self,all=True):
-    
-    if all:
-        return self.all_classes(result=None)
-    else:
-        return self._classes
-
-def all_classes(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self._classes)
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_classes(result)
-    return result
-.. @+node:ekr.20111116161118.10164: *8* cx.defs
-def defs (self,all=True):
-    
-    if all:
-        return self.all_defs(result=None)
-    else:
-        return self._defs
-
-def all_defs(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self._defs)
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_defs(result)
-    return result
-.. @+node:ekr.20111116161118.10152: *8* cx.functions & helpers
-def functions (self,all=True):
-    
-    if all:
-        return self.all_functions(result=None)
-    else:
-        return self.filter_functions(self._defs)
-
-def all_functions(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_functions(self._defs))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_functions(result)
-    return result
-.. @+node:ekr.20111116161118.10223: *9* cx.filter_functions & is_function
-def filter_functions(self,aList):
-    return [z for z in aList if self.is_function(z)]
-
-def is_function(self,f):
-    '''Return True if f is a function, not a method.'''
-    return True
-.. @+node:ekr.20111126074312.10449: *8* cx.line_number
-def line_number (self):
-    
-    return self._tree.lineno
-.. @+node:ekr.20111116161118.10153: *8* cx.methods & helpers
-def methods (self,all=True):
-    
-    if all:
-        return self.all_methods(result=None)
-    else:
-        return self.filter_methods(self._defs)
-
-def all_methods(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_methods(self._defs))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_methods(result)
-    return result
-.. @+node:ekr.20111116161118.10225: *9* cx.filter_functions & is_function
-def filter_methods(self,aList):
-    return [z for z in aList if self.is_method(z)]
-
-def is_method(self,f):
-    '''Return True if f is a method, not a function.'''
-    return True
-.. @+node:ekr.20111116161118.10165: *8* cx.statements
-def statements (self,all=True):
-    
-    if all:
-        return self.all_statements(result=None)
-    else:
-        return self._statements
-
-def all_statements(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self._statements)
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_statements(result)
-    return result
-.. @+node:ekr.20111128103520.10259: *8* cx.token_range
-def token_range (self):
-    
-    tree = self._tree
-    
-    # return (
-        # g.toUnicode(self.byte_array[:tree.col_offset]),
-        # g.toUnicode(self.byte_array[:tree_end_col_offset]),
-    # )
-    
-    if hasattr(tree,'col_offset') and hasattr(tree,'end_col_offset'):
-        return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
-    else:
-        return -1,-1
-.. @+node:ekr.20111116161118.10166: *8* cx.tree
-def tree(self):
-    
-    '''Return the AST (Abstract Syntax Tree) associated with this query object
-    (Context Class).  This tree can be passed to the format method for printing.
-    '''
-    
-    return self._tree
 .. @+node:ekr.20111116161118.10113: *6* cx.getters & setters
 .. @+node:ekr.20111116161118.10114: *7* cx.assignments & helper
 def assignments (self,all=True):
@@ -4120,6 +3412,218 @@ def tree(self):
     '''
     
     return self._tree
+.. @+node:ekr.20111116161118.10113: *5* cx.getters & setters
+.. @+node:ekr.20111116161118.10114: *6* cx.assignments & helper
+def assignments (self,all=True):
+    
+    if all:
+        return self.all_assignments(result=None)
+    else:
+        return self.filter_assignments(self._statements)
+
+def all_assignments(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_assignments(self._statements))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_assignments(result)
+    return result
+    
+def filter_assignments(self,aList):
+    '''Return all the assignments in aList.'''
+    return [z for z in aList
+        if z.context_kind in ('assn','aug-assn')]
+.. @+node:ekr.20111116161118.10115: *6* cx.assignments_to
+def assignments_to (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for assn in self.assignments(all=all):
+        tree = assn.tree()
+        kind = self.ast_kind(tree)
+        if kind == 'Assign':
+            for target in tree.targets:
+                lhs = format(target)
+                if s == lhs:
+                    result.append(assn)
+                    break
+        else:
+            assert kind == 'AugAssign',kind
+            lhs = format(tree.target)
+            if s == lhs:
+                result.append(assn)
+
+    return result
+.. @+node:ekr.20111116161118.10116: *6* cx.assignments_using
+def assignments_using (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for assn in self.assignments(all=all):
+        tree = assn.tree()
+        kind = self.ast_kind(tree)
+        assert kind in ('Assign','AugAssign'),kind
+        rhs = format(tree.value)
+        i = rhs.find(s,0)
+        while -1 < i < len(rhs):
+            if g.match_word(rhs,i,s):
+                result.append(assn)
+                break
+            else:
+                i += len(s)
+
+    return result
+.. @+node:ekr.20111126074312.10386: *6* cx.calls & helpers
+def calls (self,all=True):
+    
+    if all:
+        return self.all_calls(result=None)
+    else:
+        return self.filter_calls(self._statements)
+
+def all_calls(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_calls(self._statements))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_calls(result)
+    return result
+    
+def filter_calls(self,aList):
+    '''Return all the calls in aList.'''
+    return [z for z in aList
+        if z.context_kind == 'call']
+.. @+node:ekr.20111126074312.10384: *6* cx.call_to
+def calls_to (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for call in self.calls(all=all):
+        tree = call.tree()
+        func = format(tree.func)
+        if s == func:
+            result.append(call)
+
+    return result
+.. @+node:ekr.20111126074312.10400: *6* cx.call_args_of
+def call_args_of (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for call in self.calls(all=all):
+        tree = call.tree()
+        func = format(tree.func)
+        if s == func:
+            result.append(call)
+
+    return result
+.. @+node:ekr.20111116161118.10163: *6* cx.classes
+def classes (self,all=True):
+    
+    if all:
+        return self.all_classes(result=None)
+    else:
+        return self._classes
+
+def all_classes(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self._classes)
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_classes(result)
+    return result
+.. @+node:ekr.20111116161118.10164: *6* cx.defs
+def defs (self,all=True):
+    
+    if all:
+        return self.all_defs(result=None)
+    else:
+        return self._defs
+
+def all_defs(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self._defs)
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_defs(result)
+    return result
+.. @+node:ekr.20111116161118.10152: *6* cx.functions & helpers
+def functions (self,all=True):
+    
+    if all:
+        return self.all_functions(result=None)
+    else:
+        return self.filter_functions(self._defs)
+
+def all_functions(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_functions(self._defs))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_functions(result)
+    return result
+.. @+node:ekr.20111116161118.10223: *7* cx.filter_functions & is_function
+def filter_functions(self,aList):
+    return [z for z in aList if self.is_function(z)]
+
+def is_function(self,f):
+    '''Return True if f is a function, not a method.'''
+    return True
+.. @+node:ekr.20111126074312.10449: *6* cx.line_number
+def line_number (self):
+    
+    return self._tree.lineno
+.. @+node:ekr.20111116161118.10153: *6* cx.methods & helpers
+def methods (self,all=True):
+    
+    if all:
+        return self.all_methods(result=None)
+    else:
+        return self.filter_methods(self._defs)
+
+def all_methods(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_methods(self._defs))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_methods(result)
+    return result
+.. @+node:ekr.20111116161118.10225: *7* cx.filter_functions & is_function
+def filter_methods(self,aList):
+    return [z for z in aList if self.is_method(z)]
+
+def is_method(self,f):
+    '''Return True if f is a method, not a function.'''
+    return True
+.. @+node:ekr.20111116161118.10165: *6* cx.statements
+def statements (self,all=True):
+    
+    if all:
+        return self.all_statements(result=None)
+    else:
+        return self._statements
+
+def all_statements(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self._statements)
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_statements(result)
+    return result
 .. @+node:ekr.20111128103520.10259: *6* cx.token_range
 def token_range (self):
     
@@ -4134,13 +3638,463 @@ def token_range (self):
         return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
     else:
         return -1,-1
+.. @+node:ekr.20111116161118.10166: *6* cx.tree
+def tree(self):
+    
+    '''Return the AST (Abstract Syntax Tree) associated with this query object
+    (Context Class).  This tree can be passed to the format method for printing.
+    '''
+    
+    return self._tree
+.. @+node:ekr.20111128103520.10259: *5* cx.token_range
+def token_range (self):
+    
+    tree = self._tree
+    
+    # return (
+        # g.toUnicode(self.byte_array[:tree.col_offset]),
+        # g.toUnicode(self.byte_array[:tree_end_col_offset]),
+    # )
+    
+    if hasattr(tree,'col_offset') and hasattr(tree,'end_col_offset'):
+        return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
+    else:
+        return -1,-1
+.. @+node:ekr.20120229094652.15177: *4* Finish docs
+.. @+node:ekr.20120303051059.9929: *5* Document bigdash plugin
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
+
+I have now pushed a way to do global search, with one line of context
+(one line before, one line after).
+
+Screenshot here:
+
+https://plus.google.com/103097156557482112329/posts/6qSngscG38Y
+
+Instructions (with current trunk):
+
+- enable bigdash.py plugin
+- alt-x global-search
+- Enter "s somesearch" in the line editor and press enter
+- Browse the hits. Click on link to navigate to the node.
+
+Caveats:
+
+- If the document is not in currently active tab, the navigation is
+done "in the background". Correct implementation would be to activate
+the tab in order to bring attention to it. 
+.. @+node:ekr.20120301053039.15577: *4* check scripts in leoSetting.leo pass
+.. @+node:ekr.20120229094652.15178: *4* Minor (can be moved to b2/final)
+.. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
+.. @+node:ekr.20111114085925.9932: *5* Why does the unittest/output folder contain empty files?
+.. @+node:ekr.20031218072017.1462: *6* ic.exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; p = c.p
+    nl = g.u(self.output_newline)
+    
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    try:
+        theFile = open(fileName,'w')
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        c.testManager.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = head + nl
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+.. @+node:ekr.20051104075904.78: *6* TM.makeImportExportSuite
+def makeImportExportSuite(self,parentHeadline,doImport):
+
+    """Create an Import/Export test for every descendant of testParentHeadline.."""
+
+    tm = self
+    c = self.c
+    parent = tm.findNodeAnywhere(parentHeadline)
+    assert parent,'node not found: %s' % (parentHeadline)
+    temp = tm.findNodeInTree(parent,"tempNode")
+    assert temp,'node not found: tempNode'
+
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
+
+    for p in parent.children():
+        if p != temp:
+            # 2009/10/02: avoid copy arg to iter
+            p2 = p.copy()
+            dialog = tm.findNodeInTree(p2,"dialog")
+            assert(dialog)
+            test = importExportTestCase(c,p2,dialog,temp,doImport)
+            suite.addTest(test)
+
+    return suite
+.. @+node:ekr.20051104075904.79: *6* class importExportTestCase
+class importExportTestCase(unittest.TestCase):
+
+    """Data-driven unit tests for Leo's edit body commands."""
+
+    @others
+.. @+node:ekr.20051104075904.80: *7* __init__ (importExportTestCase)
+def __init__ (self,c,p,dialog,temp_p,doImport):
+
+    # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.dialog = dialog
+    self.p = p.copy()
+    self.temp_p = temp_p.copy()
+
+    self.gui = None
+    self.oldGui = None
+    self.wasChanged = c.changed
+    self.fileName = ""
+    self.doImport = doImport
+
+    self.old_p = c.p
+.. @+node:ekr.20051104075904.81: *7*  fail (importExportTestCase)
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+.. @+node:ekr.20051104075904.82: *7* importExport
+def importExport (self):
+
+    c = self.c ; p = self.p
+
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    commandName = p.h
+    command = getattr(c,commandName) # Will fail if command does not exist.
+    command(event=None)
+
+    failedMethod = g.app.unitTestDict.get("fail")
+    self.failIf(failedMethod,failedMethod)
+.. @+node:ekr.20051104075904.83: *7* runTest
+def runTest(self):
+
+    # """Import Export Test Case"""
+
+    self.importExport()
+.. @+node:ekr.20051104075904.84: *7* setUp
+def setUp(self):
+
+    trace = False
+    c = self.c ; temp_p = self.temp_p
+    d = self.dialog
+
+    temp_p.setBodyString('')
+
+    # Create a node under temp_p.
+    child = temp_p.insertAsLastChild()
+    assert(child)
+    c.setHeadString(child,"import/export test: " + self.p.h)
+    c.selectPosition(child)
+
+    assert(d)
+    s = d.bodyString()
+    lines = s.split('\n')
+    name = lines[0]
+    fileName = lines[1]
+
+    # Replace '\\' by os.path.sep in fileName
+    try:
+        # os.path.sep does not exist in Python 2.2.x.
+        sep = os.path.sep
+        fileName = fileName.replace('\\',sep)
+    except AttributeError:
+        fileName = g.os_path_normpath(fileName)
+
+    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
+    if trace: g.trace('(importExportTestCase',fileName)
+
+    if self.doImport:
+        theDict = {name: [fileName]}
+    else:
+        theDict = {name: fileName}
+
+    self.oldGui = g.app.gui
+    self.gui = leoGui.unitTestGui(theDict,trace=False)
+.. @+node:ekr.20051104075904.85: *7* shortDescription
+def shortDescription (self):
+
+    try:
+        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
+    except Exception:
+        return "ImportExportTestCase"
+.. @+node:ekr.20051104075904.86: *7* tearDown
+def tearDown (self):
+
+    c = self.c ; temp_p = self.temp_p
+
+    if self.gui:
+        self.gui.destroySelf()
+        self.gui = None
+
+    temp_p.setBodyString("")
+    temp_p.clearDirty()
+
+    if not self.wasChanged:
+        c.setChanged (False)
+
+    if 1: # Delete all children of temp node.
+        while temp_p.firstChild():
+            temp_p.firstChild().doDelete()
+
+    g.app.gui = self.oldGui
+    c.selectPosition(self.old_p)
+.. @+node:ekr.20031218072017.2850: *6* c.exportHeadlines
+def exportHeadlines (self,event=None):
+
+    '''Export all headlines to an external file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="headlines.txt",
+        title="Export Headlines",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.exportHeadlines(fileName)
+.. @+node:ekr.20120228164039.11406: *5* Clean up #### in leoKeys
+.. @+node:ekr.20120226131923.10221: *5* Allow abbreviations in minibuffer 
+@nocolor-node
+
+cfa=clone-find-all-flattened
+.. @+node:ekr.20111125072438.10214: *5* (Maybe) Fix bug: Another @shadow bug (test4.leo)
+@nocolor-node
+
+email:
+http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
+
+see attachment, shadow file won't get written correctly, and it won't reread
+correctly too. Using leo-editor-snapshot- 201111090253.
+
+Hopefully I will be able to look on some bugs myself, but don't know when. Needs
+a bit of time, I am not very familiar with python.
+
+===== EKR
+
+Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
+.. @+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "matlab"        : "%", # EKR: 2011/10/21
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+# Used only by c.getOpenWithExt.
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    #"cython"        : "pyd",
+    #"cython"        : "pyi",
+    "cython"        : "pyx", # Only one extension is valid at present.
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "jsp", # EKR: 2011/11/25
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "matlab"        : "m", # EKR: 2011/10/21
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
+    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "m"     : "matlab", # EKR 2011/10/21
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "scala" : "scala",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
 .. @+node:ekr.20120228164039.10048: *3* Before 4.10 final
 
 
 The home page work is essential.  It's a good project to do while waiting.
 
 The programming items are all optional. 
-.. @+node:ekr.20120302043834.9935: *4* mention change to createIconButton
 .. @+node:ekr.20120228164039.11404: *4* Leo's home page (urgent)
 .. @+node:ekr.20110930174206.15470: *5* ** Urgent: Bring screen shots up to date
 > While doing so I noted that on the sourceforge project
@@ -4200,1324 +4154,6 @@ es, choosing Help-->"Open Online Tutorial" tries to go to a page on
 3dTree.com the site for which is no longer held.
 
 Should the Quick Intro be brought back instead? 
-.. @+node:ekr.20111017132257.15891: *4* Get IPython working again (maybe)
-# This may get moved to Leo 4.10.1.
-.. @+node:ekr.20111017132257.15890: *5* Investigate how IPython hijacks event loops
-http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
-.. @+node:ekr.20111009162434.7204: *5* Port ipy_leo.py to latest version of IPython
-.. @+node:ekr.20120208062900.10146: *4* new_modes (maybe)
-@nocolor-node
-
-This may be moved to Leo 4.10.1
-
-
-This will eliminate the hacks for *entry-commands* and *command-prompt keys.
-
-ModeController: a wrapper for g.app.config.modeCommandsDict
-.. @+node:ekr.20120212060348.10374: *5*  << global switches >>
-trace_startup = False
-    # These traces use print instead of g.trace so that
-    # the traces can add class info the method name.
-
-new_modes = False
-    # True: use ModeController and ModeInfo classes.
-if new_modes: print('***** new_modes')
-
-new_keys = False
-    # This project hardly seems urgent.
-    # True: Qt input methods produce a **user setting**, not a stroke.
-if new_keys: print('***** new_keys')
-
-# Traces of scrolling problems.
-trace_scroll = False
-    # Trace calls to get/setYScrollPosition
-trace_see = False
-    # Trace calls to see and setInsertPoint.
-
-# Switches to trace the garbage collector.
-trace_gc = False           
-trace_gc_calls = False    
-trace_gc_calls = False 
-trace_gc_verbose = False
-trace_gc_inited = False
-
-trace_masterCommand = False
-trace_masterKeyHandler = False
-trace_masterKeyHandlerGC = False
-trace_minibuffer = False
-trace_modes = False
-
-enableDB = True
-    # Don't even think about eliminating this constant:
-    # it is needed for debugging.
-    
-# These print statements have been moved to writeWaitingLog.
-# This allows for better --silent operation.
-if 0:
-    print('*** isPython3: %s' % isPython3)
-    if not enableDB:
-        print('** leoGlobals.py: caching disabled')
-.. @+node:ekr.20120208061308.10131: *5* Weird stroke code
-@nocolor-node
-
-isFKey and k.isPlainKey don't seem to know the types of their args.
-.. @+node:ekr.20061031131434.181: *6* k.Shortcuts & bindings
-.. @+node:ekr.20061031131434.176: *7* k.computeInverseBindingDict
-def computeInverseBindingDict (self):
-
-    k = self ; d = {}
-
-    # keys are minibuffer command names, values are shortcuts.
-    for stroke in k.bindingsDict.keys():
-        assert g.isStroke(stroke),repr(stroke)
-        aList = k.bindingsDict.get(stroke,[])
-        for si in aList:
-            assert g.isShortcutInfo(si),si
-            shortcutList = d.get(si.commandName,[])
-            
-            # The shortcutList consists of tuples (pane,stroke).
-            # k.inverseBindingDict has values consisting of these tuples.
-            aList = k.bindingsDict.get(stroke,g.ShortcutInfo(kind='dummy',pane='all'))
-                    # Important: only si.pane is required below.
-            for si in aList:
-                assert g.isShortcutInfo(si),si
-                pane = '%s:' % (si.pane)
-                data = (pane,stroke)
-                if data not in shortcutList:
-                    shortcutList.append(data)
-
-            d [si.commandName] = shortcutList
-
-    return d
-.. @+node:ekr.20061031131434.179: *7* k.getShortcutForCommand/Name
-def getShortcutForCommandName (self,commandName):
-
-    k = self ; c = k.c
-    command = c.commandsDict.get(commandName)
-    if command:
-        for stroke in k.bindingsDict:
-            assert g.isStroke(stroke),repr(stroke)
-            aList = k.bindingsDict.get(stroke,[])
-            for si in aList:
-                assert g.isShortcutInfo(si),si
-                if si.commandName == commandName:
-                    return stroke
-    return None
-
-def getShortcutForCommand (self,command):
-
-    k = self ; c = k.c
-    if command:
-        for stroke in k.bindingsDict:
-            assert g.isStroke(stroke),repr(stroke)
-            aList = k.bindingsDict.get(stroke,[])
-            for si in aList:
-                assert g.isShortcutInfo(si),si
-                if si.commandName == command.__name__:
-                    return stroke
-    return None
-.. @+node:ekr.20090518072506.8494: *7* k.isFKey
-def isFKey (self,stroke):
-
-    k = self
-    if not stroke: return False
-    assert g.isString(stroke) or g.isStroke(stroke)
-    s = stroke.s if g.isStroke(stroke) else stroke
-    s = s.lower()
-    return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-.. @+node:ekr.20061031131434.182: *7* k.isPlainKey
-def isPlainKey (self,stroke):
-
-    '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
-
-    k = self
-    if not stroke: return False
-
-    assert g.isString(stroke) or g.isStroke(stroke)
-    shortcut = stroke.s if g.isStroke(stroke) else stroke
-
-    # altgr combos (Alt+Ctrl) are always plain keys
-    if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
-        return True
-
-    for z in ('Alt','Ctrl','Command','Meta'):
-        if shortcut.find(z) != -1:            
-            return False
-    else:
-        # Careful, allow bare angle brackets for unit tests.
-        if shortcut.startswith('<') and shortcut.endswith('>'):
-            shortcut = shortcut[1:-1]
-
-        isPlain = (
-            len(shortcut) == 1 or
-            len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
-            # A hack: allow Return to be bound to command.
-            shortcut in ('Tab','\t')
-        )
-
-        # g.trace(isPlain,repr(shortcut))
-        return isPlain and not self.isFKey(shortcut)
-.. @+node:ekr.20061031131434.191: *7* k.prettyPrintKey
-def prettyPrintKey (self,stroke,brief=False):
-
-    trace = False and not g.unitTesting
-    k = self
-    if not stroke:
-        s = ''
-    elif g.isStroke(stroke):
-        s = stroke.s
-    else:
-        s = stroke
-
-    if not s: return ''
-
-    shift = s.find("shift") >= 0 or s.find("shft") >= 0
-
-    # Replace all minus signs by plus signs, except a trailing minus:
-    if s.endswith('-'): s = s[:-1].replace('-','+') + '-'
-    else:               s = s.replace('-','+')
-    fields = s.split('+')
-    last = fields and fields[-1]
-    if trace: g.trace('fields',fields)
-    if last and len(last) == 1:
-        prev = s[:-1]
-        if last.isalpha():
-            if last.isupper():
-                if not shift:
-                    s = prev + 'Shift+' + last
-            elif last.islower():
-                if not prev:
-                    s = last.upper()
-                else:
-                    s = prev + last.upper()
-    else:
-        last = k.guiBindNamesInverseDict.get(last,last)
-        if fields and fields[:-1]:
-            s = '%s+%s' % ('+'.join(fields[:-1]),last)
-        else:
-            s = last
-    if s.endswith(' '):
-        s = s[:-1]+'Space' # 2010/11/06
-        
-    return s
-.. @+node:ekr.20061031131434.184: *7* k.strokeFromSetting
-def strokeFromSetting (self,setting,addKey=True):
-
-    k = self
-
-    trace = False and not g.unitTesting # and setting.lower().find('ctrl-x') > -1
-    verbose = False
-    if not setting:
-        return None
-    
-    assert g.isString(setting)
-
-    s = g.stripBrackets(setting.strip())
-    << define cmd, ctrl, alt, shift >>
-    if k.swap_mac_keys and sys.platform == "darwin":
-        << swap cmd and ctrl keys >>
-    << convert minus signs to plus signs >>
-    << compute the last field >>
-    << compute shortcut >>
-
-    if trace and verbose:
-        g.trace('%20s %s' % (setting,shortcut),g.callers())
-    
-    return g.KeyStroke(shortcut) if shortcut else None
-
-canonicalizeShortcut = strokeFromSetting # For compatibility.
-### strokeFromSetting = shortcutFromSetting
-.. @+node:ekr.20061031131434.185: *8* << define cmd, ctrl, alt, shift >>
-s2 = s.lower()
-
-cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
-ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
-alt   = s2.find("alt") >= 0
-shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
-meta  = s2.find("meta") >= 0
-.. @+node:ekr.20061031131434.186: *8* << swap cmd and ctrl keys >>
-if ctrl and not cmd:
-    cmd = True ; ctrl = False
-if alt and not ctrl:
-    ctrl = True ; alt = False
-.. @+node:ekr.20061031131434.187: *8* << convert minus signs to plus signs >>
-# Replace all minus signs by plus signs, except a trailing minus:
-if s.endswith('-'):
-    s = s[:-1].replace('-','+') + '-'
-else:
-    s = s.replace('-','+')
-.. @+node:ekr.20061031131434.188: *8* << compute the last field >>
-if s.endswith('+'):
-    last = '+'
-else:
-    fields = s.split('+') # Don't lower this field.
-    last = fields and fields[-1]
-    if not last:
-        if not g.app.menuWarningsGiven:
-            g.pr("bad shortcut specifier:", repr(s),repr(setting))
-            g.trace(g.callers())
-        return None
-
-if len(last) == 1:
-    last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
-    if last2:
-        last = last2
-    else:
-        if last.isalpha():
-            if shift:
-                last = last.upper()
-                shift = False # It is Ctrl-A, not Ctrl-Shift-A.
-            else:
-                last = last.lower()
-        # New in Leo 4.4.2: Alt-2 is not a key event!
-        if addKey and last.isdigit():
-            last = 'Key-' + last
-else:
-    # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
-    # This is a *one-way* translation, done only here.
-    d = k.settingsNameDict
-    last = d.get(last.lower(),last)
-.. @+node:ekr.20061031131434.189: *8* << compute shortcut >>
-table = (
-    (alt, 'Alt+'),
-    (ctrl,'Ctrl+'),
-    (cmd, 'Command+'),
-    (meta,'Meta+'),
-    (shift,'Shift+'),
-    (True, last),
-)
-
-# new in 4.4b3: convert all characters to unicode first.
-shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
-.. @+node:ekr.20110606004638.16929: *7* k.stroke2char
-def stroke2char (self,stroke):
-    
-    '''Convert a stroke to an (insertable) char.
-    
-    This method allows Leo to use strokes everywhere.'''
-    
-    trace = False and not g.unitTesting
-    k = self
-    
-    if not stroke: return ''
-    s = stroke.s
-    
-    # Allow bare angle brackets for unit tests.
-    if s.startswith('<') and s.endswith('>'):
-        s = s[1:-1]
-        
-    if len(s) == 0: return ''
-    if len(s) == 1: return s
-        
-    for z in ('Alt','Ctrl','Command','Meta'):
-        if s.find(z) != -1:            
-            return ''
-            # This is not accurate: leoQtEventFilter retains
-            # the spelling of Alt-Ctrl keys because of the
-            # @bool enable_alt_ctrl_bindings setting.
-            
-    # Special case the gang of four, plus 'Escape',
-    d = {
-        'BackSpace':'\b',
-        'Escape':'Escape',
-        'Linefeed':'\r',
-        'Return':'\n',
-        'Tab':'\t',
-    }
-    ch = d.get(s)
-    if ch: return ch
-            
-    # First, do the common translations.
-    ch = k.guiBindNamesInverseDict.get(s)
-    if ch:
-        if trace: g.trace(repr(stroke),repr(ch))
-        return ch
-    
-    # A much-simplified form of code in k.strokeFromSetting.
-    shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
-    s = s.replace('Shift+','').replace('Shift-','')
-    
-    last = s #  Everything should have been stripped.
-    
-    if len(s) == 1 and s.isalpha():
-        if shift:
-            s = last.upper()
-        else:
-            s = last.lower()
-    
-    val = g.choose(len(s)==1,s,'')
-
-    if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
-    return val
-.. @+node:ekr.20061031131434.100: *5* k.addModeCommands (enterModeCallback)
-def addModeCommands (self):
-
-    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
-    
-    trace = False and not g.unitTesting
-    
-    if trace: g.trace('(k)')
-
-    k = self ; c = k.c
-    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
-
-    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
-
-        def enterModeCallback (event=None,name=key):
-            k.enterNamedMode(event,name)
-
-        c.commandsDict[key] = f = enterModeCallback
-        k.inverseCommandsDict [f.__name__] = key
-        if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-.. @+node:ekr.20120208064440.10192: *5* From leoConfig...
-.. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
-def doMode(self,p,kind,name,val):
-
-    '''Parse an @mode node and create the enter-<name>-mode command.'''
-
-    trace = False and not g.unitTesting
-    c,k = self.c,self.c.k
-    
-    if g.new_modes:
-        aList = []
-        for line in g.splitLines(p.b):
-            line = line.strip()
-            if line and not g.match(line,0,'#'):
-                name2,si = self.parseShortcutLine('*mode-setting*',line)
-                aList.append((name2,si),)
-        k.modeController.makeMode(name,aList)
-    else:
-        name1 = name
-
-        # g.trace('%20s' % (name),c.fileName())
-        modeName = self.computeModeName(name)
-    
-        d = g.TypedDictOfLists(
-            name='modeDict for %s' % (modeName),
-            keyType=type('commandName'),valType=g.ShortcutInfo)
-    
-        s = p.b
-        lines = g.splitLines(s)
-        for line in lines:
-            line = line.strip()
-            if line and not g.match(line,0,'#'):
-                name,si = self.parseShortcutLine('*mode-setting*',line)
-                assert g.isShortcutInfo(si),si
-                if not name:
-                    # An entry command: put it in the special *entry-commands* key.
-                    d.add('*entry-commands*',si)
-                elif si is not None:
-                    # A regular shortcut.
-                    si.pane = modeName
-                    aList = d.get(name,[])
-                    for z in aList:
-                        assert g.isShortcutInfo(z),z
-                    # Important: use previous bindings if possible.
-                    key2,aList2 = c.config.getShortcut(name)
-                    for z in aList2:
-                        assert g.isShortcutInfo(z),z
-                    aList3 = [z for z in aList2 if z.pane != modeName]
-                    if aList3:
-                        # g.trace('inheriting',[b.val for b in aList3])
-                        aList.extend(aList3)
-                    aList.append(si)
-                    d.replace(name,aList)
-                    
-                    if 0: #### Why would we want to do this????
-                        #### Old code: we have to save/restore self.shortcutsDict.
-                            #### self.set(p,"shortcut",name,aList)
-                        # Set the entry directly.
-                        d2 = self.shortcutsDict
-                        gs = d2.get(key2)
-                        if gs:
-                            assert g.isGeneralSetting(gs)
-                            path = gs.path
-                            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-                                g.es("over-riding setting:",name,"from",path)
-        
-                        # Important: we can't use c here: it may be destroyed!
-                        d2 [key2] = g.GeneralSetting(
-                            kind,path=c.mFileName,val=val,tag='setting')
-    
-            # Restore the global shortcutsDict.
-            ##### self.shortcutsDict = old_d
-            
-            if trace: g.trace(d.dump())
-        
-            # Create the command, but not any bindings to it.
-            self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20041120112043: *6* parseShortcutLine (ParserBaseClass)
-def parseShortcutLine (self,kind,s):
-
-    '''Parse a shortcut line.  Valid forms:
-
-    --> entry-command
-    settingName = shortcut
-    settingName ! paneName = shortcut
-    command-name --> mode-name = binding
-    command-name --> same = binding
-    '''
-
-    trace = False and not g.unitTesting and kind == '*mode-setting*'
-    c,k = self.c,self.c.k
-    assert c
-    name = val = nextMode = None ; nextMode = 'none'
-    i = g.skip_ws(s,0)
-
-    if g.match(s,i,'-->'): # New in 4.4.1 b1: allow mode-entry commands.
-        j = g.skip_ws(s,i+3)
-        i = g.skip_id(s,j,'-')
-        entryCommandName = s[j:i]
-        if trace: g.trace('-->',entryCommandName)
-        return None,g.ShortcutInfo('*entry-command*',commandName=entryCommandName)
-
-    j = i
-    i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
-    name = s[j:i]
-    if not name:
-        if trace: g.trace('no name',repr(s))
-        return None,None
-
-    # New in Leo 4.4b2.
-    i = g.skip_ws(s,i)
-    if g.match(s,i,'->'): # New in 4.4: allow pane-specific shortcuts.
-        j = g.skip_ws(s,i+2)
-        i = g.skip_id(s,j)
-        nextMode = s[j:i]
-
-    i = g.skip_ws(s,i)
-    if g.match(s,i,'!'): # New in 4.4: allow pane-specific shortcuts.
-        j = g.skip_ws(s,i+1)
-        i = g.skip_id(s,j)
-        pane = s[j:i]
-        if not pane.strip(): pane = 'all'
-    else: pane = 'all'
-
-    i = g.skip_ws(s,i)
-    if g.match(s,i,'='):
-        i = g.skip_ws(s,i+1)
-        val = s[i:]
-
-    # New in 4.4: Allow comments after the shortcut.
-    # Comments must be preceded by whitespace.
-    comment = ''
-    if val:
-        i = val.find('#')
-        if i > 0 and val[i-1] in (' ','\t'):
-            # comment = val[i:].strip()
-            val = val[:i].strip()
-
-    stroke = k.strokeFromSetting(val)
-    assert g.isStrokeOrNone(stroke),stroke
-    # g.trace('stroke',stroke)
-    si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
-    if trace: g.trace('%25s %s' % (name,si))
-    return name,si
-.. @+node:ekr.20060102103625: *6* createModeCommand (ParserBaseClass)
-def createModeCommand (self,modeName,name,modeDict):
-
-    modeName = 'enter-' + modeName.replace(' ','-')
-
-    i = name.find('::')
-    if i > -1:
-        # The prompt is everything after the '::'
-        prompt = name[i+2:].strip()
-        modeDict ['*command-prompt*'] = g.ShortcutInfo(kind=prompt)
-
-    # Save the info for k.finishCreate and k.makeAllBindings.
-    d = g.app.config.modeCommandsDict
-
-    # New in 4.4.1 b2: silently allow redefinitions of modes.
-    d [modeName] = modeDict
-    
-.. @+node:ekr.20120208064440.10148: *5* class ModeController
-class ModeController:
-    
-    def __init__ (self,c):
-        self.c = c
-        self.d = {} # Keys are command names, values are modes.
-        self.k = c.k
-        g.trace(self)
-            
-    def __repr__(self):
-        return '<ModeController %s>' % self.c.shortFileName()
-        
-    __str__ = __repr__
-            
-    @others
-.. @+node:ekr.20120208064440.10161: *6* addModeCommands (ModeController)
-def addModeCommands(self):
-    
-    g.trace(self,self.d)
-    
-    for mode in self.d.values():
-        mode.createModeCommand()
-.. @+node:ekr.20120208064440.10163: *6* getMode (ModeController)
-def getMode (self,modeName):
-    
-    g.trace(self)
-    
-    mode = self.d.get(modeName)
-    g.trace(modeName,mode)
-    return mode
-    
-.. @+node:ekr.20120208064440.10164: *6* makeMode (ModeController)
-def makeMode (self,name,aList):
-
-
-    mode = ModeInfo(self.c,name,aList)
-    
-    g.trace(self,mode.name,mode)
-    self.d[mode.name] = mode
-    
-.. @+node:ekr.20120208064440.10150: *5* class ModeInfo
-class ModeInfo:
-    
-    def __repr__(self):
-        return '<ModeInfo %s>' % self.name
-        
-    __str__ = __repr__
-    
-    @others
-    
-.. @+node:ekr.20120208064440.10193: *6*  ctor (ModeInfo)
-def __init__ (self,c,name,aList):
-    
-    g.trace(name,aList)
-    
-    self.c = c
-    self.d = {} # The bindings in effect for this mode.
-        # Keys are names of (valid) command names, values are ShortcutInfo objects.
-    self.entryCommands = []
-        # A list of ShortcutInfo objects.
-    self.k = c.k
-    self.name = self.computeModeName(name)
-    self.prompt = self.computeModePrompt(self.name)
-
-    self.init(name,aList)
-.. @+node:ekr.20120208064440.10152: *6* computeModeName (ModeInfo)
-def computeModeName (self,name):
-
-    s = name.strip().lower()
-    j = s.find(' ')
-    if j > -1: s = s[:j]
-    if s.endswith('mode'):
-        s = s[:-4].strip()
-    if s.endswith('-'):
-        s = s[:-1]
-
-    i = s.find('::')
-    if i > -1:
-        # The actual mode name is everything up to the "::"
-        # The prompt is everything after the prompt.
-        s = s[:i]
-
-    return s + '-mode'
-.. @+node:ekr.20120208064440.10156: *6* computeModePrompt (ModeInfo)
-def computeModePrompt (self,name):
-    
-    assert name == self.name
-    s = 'enter-' + name.replace(' ','-')
-    i = s.find('::')
-    if i > -1:
-        # The prompt is everything after the '::'
-        prompt = s[i+2:].strip()
-    else:
-        prompt = s
-    
-    return prompt
-.. @+node:ekr.20120208064440.10160: *6* createModeBindings (ModeInfo) (NOT USED)
-##### k.createModeBindings is used instead????
-
-def createModeBindings (self,w):
-
-    '''Create mode bindings for w, a text widget.'''
-
-    trace = False and not g.unitTesting
-    c,d,k,modeName = self.c,self.d,self.k,self.name
-    for commandName in d.keys():
-        func = c.commandsDict.get(commandName)
-        if not func:
-            g.es_print('no such command: %s Referenced from %s' % (
-                commandName,modeName))
-            continue
-        aList = d.get(commandName,[])
-        for si in aList:
-            assert g.isShortcutInfo(si),si
-            if trace: g.trace(si)
-            stroke = si.stroke
-            # Important: si.val is canonicalized.
-            if stroke and stroke not in ('None','none',None):
-                if trace:
-                    g.trace(
-                        g.app.gui.widget_name(w), modeName,
-                        '%10s' % (stroke),
-                        '%20s' % (commandName),
-                        si.nextMode)
-                        
-                assert g.isStroke(stroke)
-                k.makeMasterGuiBinding(stroke)
-
-                # Create the entry for the mode in k.masterBindingsDict.
-                # Important: this is similar, but not the same as k.bindKeyToDict.
-                # Thus, we should **not** call k.bindKey here!
-                d2 = k.masterBindingsDict.get(modeName,{})
-                d2 [stroke] = g.ShortcutInfo(
-                    kind = 'mode<%s>' % (modeName), # 2012/01/23
-                    commandName=commandName,
-                    func=func,
-                    nextMode=si.nextMode,
-                    stroke=stroke)
-                k.masterBindingsDict[modeName] = d2
-                if trace: g.trace(modeName,d2)
-.. @+node:ekr.20120208064440.10195: *6* createModeCommand (ModeInfo)
-def createModeCommand (self):
-    
-    g.trace(self)
-
-    c,k = self.c,self.k
-    key = 'enter-' + self.name.replace(' ','-')
-   
-    def enterModeCallback (event=None,self=self):
-        self.enterMode()
-
-    c.commandsDict[key] = f = enterModeCallback
-    k.inverseCommandsDict [f.__name__] = key
-    
-    g.trace('(ModeInfo)',f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-.. @+node:ekr.20120208064440.10180: *6* enterMode (ModeInfo)
-def enterMode (self):
-    
-    g.trace('(ModeInfo)')
-
-    c,k = self.c,self.k
-    c.inCommand = False
-        # Allow inner commands in the mode.
-    event=None ####
-    k.generalModeHandler(event,modeName=self.name)
-.. @+node:ekr.20120208064440.10153: *6* init (ModeInfo) (Can we check command names here??)
-def init (self,name,dataList):
-    
-    '''aList is a list of tuples (commandName,si).'''
-    
-    trace = False and not g.unitTesting
-    c,d,k,modeName = self.c,self.d,self.c.k,self.name
-    for name,si in dataList:
-    
-        assert g.isShortcutInfo(si),si
-        if not name:
-            if trace: g.trace('entry command',si)
-            #### An entry command: put it in the special *entry-commands* key.
-            #### d.add('*entry-commands*',si)
-            self.entryCommands.append(si)
-        elif si is not None:
-            # A regular shortcut.
-            si.pane = modeName
-            aList = d.get(name,[])
-            for z in aList:
-                assert g.isShortcutInfo(z),z
-            # Important: use previous bindings if possible.
-            key2,aList2 = c.config.getShortcut(name)
-            for z in aList2:
-                assert g.isShortcutInfo(z),z
-            aList3 = [z for z in aList2 if z.pane != modeName]
-            if aList3:
-                if trace: g.trace('inheriting',[si.val for si in aList3])
-                aList.extend(aList3)
-            aList.append(si)
-            d[name] = aList
-.. @+node:ekr.20120208064440.10158: *6* initMode (ModeInfo)
-def initMode (self):
-    
-    trace = False and not g.unitTesting
-    c,k = self.c,self.c.k
-    
-    ####
-    # d = g.app.config.modeCommandsDict.get('enter-'+modeName)
-    # if not d:
-        # self.badMode(modeName)
-        # return
-    # else:
-        # k.modeBindingsDict = d
-        # si = d.get('*command-prompt*')
-        # if si:
-            # prompt = si.kind # A kludge.
-        # else:
-            # prompt = modeName
-        # if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
-
-    k.inputModeName = self.name
-    k.silentMode = False
-
-    #### aList = d.get('*entry-commands*',[])
-    for si in self.entryCommands:
-        assert g.isShortcutInfo(si),si
-        commandName = si.commandName
-        if trace: g.trace('entry command:',commandName)
-        k.simulateCommand(commandName)
-        # Careful, the command can kill the commander.
-        if g.app.quitting or not c.exists: return
-        # New in Leo 4.5: a startup command can immediately transfer to another mode.
-        if commandName.startswith('enter-'):
-            if trace: g.trace('redirect to mode',commandName)
-            return
-
-    # Create bindings after we know whether we are in silent mode.
-    # w = g.choose(k.silentMode,k.modeWidget,k.w)
-    w = k.modeWidget if k.silentMode else k.w
-    k.createModeBindings(self.name,self.d,w)
-    #### self.createModeBindings(w)
-    k.showStateAndMode(prompt=self.name)
-.. @+node:ekr.20120208064440.10191: *5* From leoKeys...
-.. @+node:ekr.20061031131434.76: *6* k.__init__
-def __init__ (self,c):
-
-    '''Create a key handler for c.'''
-    
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: print('k.__init__')
-
-    self.c = c
-    self.dispatchEvent = None
-    self.inited = False         # Set at end of finishCreate.
-    self.swap_mac_keys = False  #### How to init this ????
-    self.w = None
-            # Note: will be None for nullGui.
-
-    # Generalize...
-    self.x_hasNumeric = ['sort-lines','sort-fields']
-
-    self.altX_prompt = 'full-command: '
-    
-    # Access to data types defined in leoKeys.py
-    self.KeyStroke = g.KeyStroke
-    
-    # Define all ivars...
-    self.defineExternallyVisibleIvars()
-    self.defineInternalIvars()
-    self.defineSettingsIvars()
-    
-    if g.new_modes:
-        self.modeController = ModeController(c)
-
-    self.defineTkNames()
-    self.defineSpecialKeys()
-    self.defineSingleLineCommands()
-    self.defineMultiLineCommands()
-    self.autoCompleter = AutoCompleterClass(self)
-    self.qcompleter = None # Set by AutoCompleter.start.
-
-    self.setDefaultUnboundKeyAction()
-    self.setDefaultEditingAction() # 2011/02/09
-.. @+node:ekr.20120208064440.10190: *6* k.Modes (no change)
-.. @+node:ekr.20061031131434.100: *7* k.addModeCommands (enterModeCallback)
-def addModeCommands (self):
-
-    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
-    
-    trace = False and not g.unitTesting
-    
-    if trace: g.trace('(k)')
-
-    k = self ; c = k.c
-    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
-
-    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d.keys():
-
-        def enterModeCallback (event=None,name=key):
-            k.enterNamedMode(event,name)
-
-        c.commandsDict[key] = f = enterModeCallback
-        k.inverseCommandsDict [f.__name__] = key
-        if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-.. @+node:ekr.20061031131434.157: *7* k.badMode
-def badMode(self,modeName):
-
-    k = self
-
-    k.clearState()
-    if modeName.endswith('-mode'): modeName = modeName[:-5]
-    k.setLabelGrey('@mode %s is not defined (or is empty)' % modeName)
-.. @+node:ekr.20061031131434.158: *7* k.createModeBindings
-def createModeBindings (self,modeName,d,w):
-
-    '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
-
-    trace = False and not g.unitTesting
-    k = self ; c = k.c
-    assert d.name().endswith('-mode')
-    for commandName in d.keys():
-        if commandName in ('*entry-commands*','*command-prompt*'):
-            # These are special-purpose dictionary entries.
-            continue
-        func = c.commandsDict.get(commandName)
-        if not func:
-            g.es_print('no such command:',commandName,'Referenced from',modeName)
-            continue
-        aList = d.get(commandName,[])
-        for si in aList:
-            assert g.isShortcutInfo(si),si
-            stroke = si.stroke
-            # Important: si.val is canonicalized.
-            if stroke and stroke not in ('None','none',None):
-                if trace:
-                    g.trace(
-                        g.app.gui.widget_name(w), modeName,
-                        '%10s' % (stroke),
-                        '%20s' % (commandName),
-                        si.nextMode)
-                        
-                assert g.isStroke(stroke)
-
-                k.makeMasterGuiBinding(stroke)
-
-                # Create the entry for the mode in k.masterBindingsDict.
-                # Important: this is similar, but not the same as k.bindKeyToDict.
-                # Thus, we should **not** call k.bindKey here!
-                d2 = k.masterBindingsDict.get(modeName,{})
-                d2 [stroke] = g.ShortcutInfo(
-                    kind = 'mode<%s>' % (modeName), # 2012/01/23
-                    commandName=commandName,
-                    func=func,
-                    nextMode=si.nextMode,
-                    stroke=stroke)
-                k.masterBindingsDict [ modeName ] = d2
-.. @+node:ekr.20120208064440.10179: *7* k.endMode
-def endMode(self):
-
-    k = self ; c = k.c
-
-    w = g.app.gui.get_focus(c)
-    if w:
-        c.frame.log.deleteTab('Mode') # Changes focus to the body pane
-
-    k.endCommand(k.stroke)
-    k.inputModeName = None
-    k.clearState()
-    k.resetLabel()
-    k.showStateAndMode() # Restores focus.
-
-    if w:
-        c.widgetWantsFocusNow(w)
-.. @+node:ekr.20061031131434.160: *7* k.enterNamedMode
-def enterNamedMode (self,event,commandName):
-
-    k = self ; c = k.c
-    modeName = commandName[6:]
-    c.inCommand = False # Allow inner commands in the mode.
-    k.generalModeHandler(event,modeName=modeName)
-.. @+node:ekr.20061031131434.161: *7* k.exitNamedMode
-def exitNamedMode (self,event=None):
-    
-    '''Exit an input mode.'''
-
-    k = self
-
-    if k.inState():
-        k.endMode()
-
-    k.showStateAndMode()
-.. @+node:ekr.20061031131434.165: *7* k.modeHelp & helper (revise helper)
-def modeHelp (self,event):
-
-    '''The mode-help command.
-
-    A possible convention would be to bind <Tab> to this command in most modes,
-    by analogy with tab completion.'''
-
-    k = self ; c = k.c
-
-    c.endEditing()
-
-    # g.trace(k.inputModeName)
-
-    if k.inputModeName:
-        d = g.app.config.modeCommandsDict.get('enter-'+k.inputModeName)
-        k.modeHelpHelper(d)
-
-    if not k.silentMode:
-        c.minibufferWantsFocus()
-
-    return
-.. @+node:ekr.20061031131434.166: *8* modeHelpHelper
-def modeHelpHelper (self,d):
-
-    k = self ; c = k.c ; tabName = 'Mode'
-    c.frame.log.clearTab(tabName)
-    data,n = [],0
-    for key in sorted(d.keys()):
-        if key in ('*entry-commands*','*command-prompt*'):
-            pass
-        else:
-            aList = d.get(key)
-            for si in aList:
-                assert g.isShortcutInfo(si),si
-                stroke = si.stroke
-                if stroke not in (None,'None'):
-                    s1 = key
-                    s2 = k.prettyPrintKey(stroke)
-                    n = max(n,len(s1))
-                    data.append((s1,s2),)
-
-    data.sort()
-    modeName = k.inputModeName.replace('-',' ')
-    if modeName.endswith('mode'):
-        modeName = modeName[:-4].strip()
-    g.es('','%s mode\n\n' % modeName,tabName=tabName)
-
-    # This isn't perfect in variable-width fonts.
-    for s1,s2 in data:
-        g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
-.. @+node:ekr.20061031131434.164: *7* k.reinitMode (call k.createModeBindings???)
-def reinitMode (self,modeName):
-
-    k = self ; c = k.c
-
-    d = k.modeBindingsDict
-
-    k.inputModeName = modeName
-    w = g.choose(k.silentMode,k.modeWidget,k.w)
-    k.createModeBindings(modeName,d,w)
-
-    if k.silentMode:
-        k.showStateAndMode()
-    else:
-        # Do not set the status line here.
-        k.setLabelBlue(modeName+': ',protect=True)
-
-.. @+node:ekr.20120208064440.10199: *7* k.generalModeHandler (OLD)
-def generalModeHandler (self,event,
-    commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
-
-    '''Handle a mode defined by an @mode node in leoSettings.leo.'''
-
-    k = self ; c = k.c
-    state = k.getState(modeName)
-    trace = (False or g.trace_modes) and not g.unitTesting
-
-    if trace: g.trace(modeName,'state',state)
-
-    if state == 0:
-        k.inputModeName = modeName
-        k.modePrompt = prompt or modeName
-        k.modeWidget = event and event.widget
-        k.setState(modeName,1,handler=k.generalModeHandler)
-        self.initMode(event,modeName)
-        # Careful: k.initMode can execute commands that will destroy a commander.
-        if g.app.quitting or not c.exists: return # (for Tk) 'break'
-        if not k.silentMode:
-            if c.config.getBool('showHelpWhenEnteringModes'):
-                k.modeHelp(event)
-            else:
-                c.frame.log.hideTab('Mode')
-    elif not func:
-        g.trace('No func: improper key binding')
-    else:
-        if commandName == 'mode-help':
-            func(event)
-        else:
-            savedModeName = k.inputModeName # Remember this: it may be cleared.
-            self.endMode()
-            if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
-            # New in 4.4.1 b1: pass an event describing the original widget.
-            if event:
-                event.w = event.widget = k.modeWidget
-            else:
-                event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
-            if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
-            func(event)
-            if g.app.quitting or not c.exists:
-                return # (for Tk) 'break'
-            if nextMode in (None,'none'):
-                # Do *not* clear k.inputModeName or the focus here.
-                # func may have put us in *another* mode.
-                pass
-            elif nextMode == 'same':
-                silent = k.silentMode
-                k.setState(modeName,1,handler=k.generalModeHandler)
-                self.reinitMode(modeName) # Re-enter this mode.
-                k.silentMode = silent
-            else:
-                k.silentMode = False # All silent modes must do --> set-silent-mode.
-                self.initMode(event,nextMode) # Enter another mode.
-                # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
-.. @+node:ekr.20061031131434.156: *6* k.Modes (changed)
-.. @+node:ekr.20061031131434.163: *7* k.initMode (changed)
-def initMode (self,event,modeName):
-
-    k = self ; c = k.c
-    trace = (False or g.trace_modes) and not g.unitTesting
-
-    if not modeName:
-        g.trace('oops: no modeName')
-        return
-        
-    if g.new_modes:
-        mode = k.modeController.getMode(modeName)
-        if mode:
-            mode.initMode()
-        else:
-            g.trace('***** oops: no mode',modeName)
-    else:
-
-        d = g.app.config.modeCommandsDict.get('enter-'+modeName)
-        if not d:
-            self.badMode(modeName)
-            return
-        else:
-            k.modeBindingsDict = d
-            si = d.get('*command-prompt*')
-            if si:
-                prompt = si.kind # A kludge.
-            else:
-                prompt = modeName
-            if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
-    
-        k.inputModeName = modeName
-        k.silentMode = False
-    
-        aList = d.get('*entry-commands*',[])
-        if aList:
-            for si in aList:
-                assert g.isShortcutInfo(si),si
-                commandName = si.commandName
-                if trace: g.trace('entry command:',commandName)
-                k.simulateCommand(commandName)
-                # Careful, the command can kill the commander.
-                if g.app.quitting or not c.exists: return
-                # New in Leo 4.5: a startup command can immediately transfer to another mode.
-                if commandName.startswith('enter-'):
-                    if trace: g.trace('redirect to mode',commandName)
-                    return
-    
-        # Create bindings after we know whether we are in silent mode.
-        w = g.choose(k.silentMode,k.modeWidget,k.w)
-        k.createModeBindings(modeName,d,w)
-        k.showStateAndMode(prompt=prompt)
-.. @+node:ekr.20120208064440.10201: *7* k.NEWgeneralModeHandler (NEW MODES)
-def NEWgeneralModeHandler (self,event,
-    commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
-
-    '''Handle a mode defined by an @mode node in leoSettings.leo.'''
-
-    k = self ; c = k.c
-    state = k.getState(modeName)
-    trace = (False or g.trace_modes) and not g.unitTesting
-
-    if trace: g.trace(modeName,'state',state)
-
-    if state == 0:
-        k.inputModeName = modeName
-        k.modePrompt = prompt or modeName
-        k.modeWidget = event and event.widget
-        k.setState(modeName,1,handler=k.generalModeHandler)
-        self.initMode(event,modeName)
-        # Careful: k.initMode can execute commands that will destroy a commander.
-        if g.app.quitting or not c.exists: return # (for Tk) 'break'
-        if not k.silentMode:
-            if c.config.getBool('showHelpWhenEnteringModes'):
-                k.modeHelp(event)
-            else:
-                c.frame.log.hideTab('Mode')
-    elif not func:
-        g.trace('No func: improper key binding')
-        return # (for Tk) 'break'
-    else:
-        if commandName == 'mode-help':
-            func(event)
-        else:
-            savedModeName = k.inputModeName # Remember this: it may be cleared.
-            self.endMode()
-            if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
-            # New in 4.4.1 b1: pass an event describing the original widget.
-            if event:
-                event.w = event.widget = k.modeWidget
-            else:
-                event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
-            if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
-            func(event)
-            if g.app.quitting or not c.exists:
-                return # (for Tk) 'break'
-            if nextMode in (None,'none'):
-                # Do *not* clear k.inputModeName or the focus here.
-                # func may have put us in *another* mode.
-                pass
-            elif nextMode == 'same':
-                silent = k.silentMode
-                k.setState(modeName,1,handler=k.generalModeHandler)
-                self.reinitMode(modeName) # Re-enter this mode.
-                k.silentMode = silent
-            else:
-                k.silentMode = False # All silent modes must do --> set-silent-mode.
-                self.initMode(event,nextMode) # Enter another mode.
-                # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
-
-    return # (for Tk) 'break'
-.. @+node:ekr.20120228164039.10047: *5* Initing...
-.. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
-def doMode(self,p,kind,name,val):
-
-    '''Parse an @mode node and create the enter-<name>-mode command.'''
-
-    trace = False and not g.unitTesting
-    c,k = self.c,self.c.k
-    
-    if g.new_modes:
-        aList = []
-        for line in g.splitLines(p.b):
-            line = line.strip()
-            if line and not g.match(line,0,'#'):
-                name2,si = self.parseShortcutLine('*mode-setting*',line)
-                aList.append((name2,si),)
-        k.modeController.makeMode(name,aList)
-    else:
-        name1 = name
-
-        # g.trace('%20s' % (name),c.fileName())
-        modeName = self.computeModeName(name)
-    
-        d = g.TypedDictOfLists(
-            name='modeDict for %s' % (modeName),
-            keyType=type('commandName'),valType=g.ShortcutInfo)
-    
-        s = p.b
-        lines = g.splitLines(s)
-        for line in lines:
-            line = line.strip()
-            if line and not g.match(line,0,'#'):
-                name,si = self.parseShortcutLine('*mode-setting*',line)
-                assert g.isShortcutInfo(si),si
-                if not name:
-                    # An entry command: put it in the special *entry-commands* key.
-                    d.add('*entry-commands*',si)
-                elif si is not None:
-                    # A regular shortcut.
-                    si.pane = modeName
-                    aList = d.get(name,[])
-                    for z in aList:
-                        assert g.isShortcutInfo(z),z
-                    # Important: use previous bindings if possible.
-                    key2,aList2 = c.config.getShortcut(name)
-                    for z in aList2:
-                        assert g.isShortcutInfo(z),z
-                    aList3 = [z for z in aList2 if z.pane != modeName]
-                    if aList3:
-                        # g.trace('inheriting',[b.val for b in aList3])
-                        aList.extend(aList3)
-                    aList.append(si)
-                    d.replace(name,aList)
-                    
-                    if 0: #### Why would we want to do this????
-                        #### Old code: we have to save/restore self.shortcutsDict.
-                            #### self.set(p,"shortcut",name,aList)
-                        # Set the entry directly.
-                        d2 = self.shortcutsDict
-                        gs = d2.get(key2)
-                        if gs:
-                            assert g.isGeneralSetting(gs)
-                            path = gs.path
-                            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-                                g.es("over-riding setting:",name,"from",path)
-        
-                        # Important: we can't use c here: it may be destroyed!
-                        d2 [key2] = g.GeneralSetting(
-                            kind,path=c.mFileName,val=val,tag='setting')
-    
-            # Restore the global shortcutsDict.
-            ##### self.shortcutsDict = old_d
-            
-            if trace: g.trace(d.dump())
-        
-            # Create the command, but not any bindings to it.
-            self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20041120112043: *6* parseShortcutLine (ParserBaseClass)
-def parseShortcutLine (self,kind,s):
-
-    '''Parse a shortcut line.  Valid forms:
-
-    --> entry-command
-    settingName = shortcut
-    settingName ! paneName = shortcut
-    command-name --> mode-name = binding
-    command-name --> same = binding
-    '''
-
-    trace = False and not g.unitTesting and kind == '*mode-setting*'
-    c,k = self.c,self.c.k
-    assert c
-    name = val = nextMode = None ; nextMode = 'none'
-    i = g.skip_ws(s,0)
-
-    if g.match(s,i,'-->'): # New in 4.4.1 b1: allow mode-entry commands.
-        j = g.skip_ws(s,i+3)
-        i = g.skip_id(s,j,'-')
-        entryCommandName = s[j:i]
-        if trace: g.trace('-->',entryCommandName)
-        return None,g.ShortcutInfo('*entry-command*',commandName=entryCommandName)
-
-    j = i
-    i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
-    name = s[j:i]
-    if not name:
-        if trace: g.trace('no name',repr(s))
-        return None,None
-
-    # New in Leo 4.4b2.
-    i = g.skip_ws(s,i)
-    if g.match(s,i,'->'): # New in 4.4: allow pane-specific shortcuts.
-        j = g.skip_ws(s,i+2)
-        i = g.skip_id(s,j)
-        nextMode = s[j:i]
-
-    i = g.skip_ws(s,i)
-    if g.match(s,i,'!'): # New in 4.4: allow pane-specific shortcuts.
-        j = g.skip_ws(s,i+1)
-        i = g.skip_id(s,j)
-        pane = s[j:i]
-        if not pane.strip(): pane = 'all'
-    else: pane = 'all'
-
-    i = g.skip_ws(s,i)
-    if g.match(s,i,'='):
-        i = g.skip_ws(s,i+1)
-        val = s[i:]
-
-    # New in 4.4: Allow comments after the shortcut.
-    # Comments must be preceded by whitespace.
-    comment = ''
-    if val:
-        i = val.find('#')
-        if i > 0 and val[i-1] in (' ','\t'):
-            # comment = val[i:].strip()
-            val = val[:i].strip()
-
-    stroke = k.strokeFromSetting(val)
-    assert g.isStrokeOrNone(stroke),stroke
-    # g.trace('stroke',stroke)
-    si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
-    if trace: g.trace('%25s %s' % (name,si))
-    return name,si
-.. @+node:ekr.20060102103625: *6* createModeCommand (ParserBaseClass)
-def createModeCommand (self,modeName,name,modeDict):
-
-    modeName = 'enter-' + modeName.replace(' ','-')
-
-    i = name.find('::')
-    if i > -1:
-        # The prompt is everything after the '::'
-        prompt = name[i+2:].strip()
-        modeDict ['*command-prompt*'] = g.ShortcutInfo(kind=prompt)
-
-    # Save the info for k.finishCreate and k.makeAllBindings.
-    d = g.app.config.modeCommandsDict
-
-    # New in 4.4.1 b2: silently allow redefinitions of modes.
-    d [modeName] = modeDict
-    
 .. @+node:ekr.20120226183512.10195: *3* Bugs
 @language rest
 
@@ -6432,6 +5068,1320 @@ the Leo windows.  Probably should only block the Leo windows.
 3. Bridges
 
 
+.. @+node:ekr.20111017132257.15891: *3* Urgent: Get IPython working again
+.. @+node:ekr.20111017132257.15890: *4* Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+.. @+node:ekr.20111009162434.7204: *4* Port ipy_leo.py to latest version of IPython
+.. @+node:ekr.20120208062900.10146: *3* Urgent: Complete new_modes
+@nocolor-node
+
+This will eliminate the hacks for *entry-commands* and *command-prompt keys.
+
+ModeController: a wrapper for g.app.config.modeCommandsDict
+.. @+node:ekr.20120212060348.10374: *4*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Traces of scrolling problems.
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+    
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+.. @+node:ekr.20120208061308.10131: *4* Weird stroke code
+@nocolor-node
+
+isFKey and k.isPlainKey don't seem to know the types of their args.
+.. @+node:ekr.20061031131434.181: *5* k.Shortcuts & bindings
+.. @+node:ekr.20061031131434.176: *6* k.computeInverseBindingDict
+def computeInverseBindingDict (self):
+
+    k = self ; d = {}
+
+    # keys are minibuffer command names, values are shortcuts.
+    for stroke in k.bindingsDict.keys():
+        assert g.isStroke(stroke),repr(stroke)
+        aList = k.bindingsDict.get(stroke,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            shortcutList = d.get(si.commandName,[])
+            
+            # The shortcutList consists of tuples (pane,stroke).
+            # k.inverseBindingDict has values consisting of these tuples.
+            aList = k.bindingsDict.get(stroke,g.ShortcutInfo(kind='dummy',pane='all'))
+                    # Important: only si.pane is required below.
+            for si in aList:
+                assert g.isShortcutInfo(si),si
+                pane = '%s:' % (si.pane)
+                data = (pane,stroke)
+                if data not in shortcutList:
+                    shortcutList.append(data)
+
+            d [si.commandName] = shortcutList
+
+    return d
+.. @+node:ekr.20061031131434.179: *6* k.getShortcutForCommand/Name
+def getShortcutForCommandName (self,commandName):
+
+    k = self ; c = k.c
+    command = c.commandsDict.get(commandName)
+    if command:
+        for stroke in k.bindingsDict:
+            assert g.isStroke(stroke),repr(stroke)
+            aList = k.bindingsDict.get(stroke,[])
+            for si in aList:
+                assert g.isShortcutInfo(si),si
+                if si.commandName == commandName:
+                    return stroke
+    return None
+
+def getShortcutForCommand (self,command):
+
+    k = self ; c = k.c
+    if command:
+        for stroke in k.bindingsDict:
+            assert g.isStroke(stroke),repr(stroke)
+            aList = k.bindingsDict.get(stroke,[])
+            for si in aList:
+                assert g.isShortcutInfo(si),si
+                if si.commandName == command.__name__:
+                    return stroke
+    return None
+.. @+node:ekr.20090518072506.8494: *6* k.isFKey
+def isFKey (self,stroke):
+
+    k = self
+    if not stroke: return False
+    assert g.isString(stroke) or g.isStroke(stroke)
+    s = stroke.s if g.isStroke(stroke) else stroke
+    s = s.lower()
+    return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+.. @+node:ekr.20061031131434.182: *6* k.isPlainKey
+def isPlainKey (self,stroke):
+
+    '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
+
+    k = self
+    if not stroke: return False
+
+    assert g.isString(stroke) or g.isStroke(stroke)
+    shortcut = stroke.s if g.isStroke(stroke) else stroke
+
+    # altgr combos (Alt+Ctrl) are always plain keys
+    if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
+        return True
+
+    for z in ('Alt','Ctrl','Command','Meta'):
+        if shortcut.find(z) != -1:            
+            return False
+    else:
+        # Careful, allow bare angle brackets for unit tests.
+        if shortcut.startswith('<') and shortcut.endswith('>'):
+            shortcut = shortcut[1:-1]
+
+        isPlain = (
+            len(shortcut) == 1 or
+            len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
+            # A hack: allow Return to be bound to command.
+            shortcut in ('Tab','\t')
+        )
+
+        # g.trace(isPlain,repr(shortcut))
+        return isPlain and not self.isFKey(shortcut)
+.. @+node:ekr.20061031131434.191: *6* k.prettyPrintKey
+def prettyPrintKey (self,stroke,brief=False):
+
+    trace = False and not g.unitTesting
+    k = self
+    if not stroke:
+        s = ''
+    elif g.isStroke(stroke):
+        s = stroke.s
+    else:
+        s = stroke
+
+    if not s: return ''
+
+    shift = s.find("shift") >= 0 or s.find("shft") >= 0
+
+    # Replace all minus signs by plus signs, except a trailing minus:
+    if s.endswith('-'): s = s[:-1].replace('-','+') + '-'
+    else:               s = s.replace('-','+')
+    fields = s.split('+')
+    last = fields and fields[-1]
+    if trace: g.trace('fields',fields)
+    if last and len(last) == 1:
+        prev = s[:-1]
+        if last.isalpha():
+            if last.isupper():
+                if not shift:
+                    s = prev + 'Shift+' + last
+            elif last.islower():
+                if not prev:
+                    s = last.upper()
+                else:
+                    s = prev + last.upper()
+    else:
+        last = k.guiBindNamesInverseDict.get(last,last)
+        if fields and fields[:-1]:
+            s = '%s+%s' % ('+'.join(fields[:-1]),last)
+        else:
+            s = last
+    if s.endswith(' '):
+        s = s[:-1]+'Space' # 2010/11/06
+        
+    return s
+.. @+node:ekr.20061031131434.184: *6* k.strokeFromSetting
+def strokeFromSetting (self,setting,addKey=True):
+
+    k = self
+
+    trace = False and not g.unitTesting # and setting.lower().find('ctrl-x') > -1
+    verbose = False
+    if not setting:
+        return None
+    
+    assert g.isString(setting)
+
+    s = g.stripBrackets(setting.strip())
+    << define cmd, ctrl, alt, shift >>
+    if k.swap_mac_keys and sys.platform == "darwin":
+        << swap cmd and ctrl keys >>
+    << convert minus signs to plus signs >>
+    << compute the last field >>
+    << compute shortcut >>
+
+    if trace and verbose:
+        g.trace('%20s %s' % (setting,shortcut),g.callers())
+    
+    return g.KeyStroke(shortcut) if shortcut else None
+
+canonicalizeShortcut = strokeFromSetting # For compatibility.
+### strokeFromSetting = shortcutFromSetting
+.. @+node:ekr.20061031131434.185: *7* << define cmd, ctrl, alt, shift >>
+s2 = s.lower()
+
+cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
+ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
+alt   = s2.find("alt") >= 0
+shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
+meta  = s2.find("meta") >= 0
+.. @+node:ekr.20061031131434.186: *7* << swap cmd and ctrl keys >>
+if ctrl and not cmd:
+    cmd = True ; ctrl = False
+if alt and not ctrl:
+    ctrl = True ; alt = False
+.. @+node:ekr.20061031131434.187: *7* << convert minus signs to plus signs >>
+# Replace all minus signs by plus signs, except a trailing minus:
+if s.endswith('-'):
+    s = s[:-1].replace('-','+') + '-'
+else:
+    s = s.replace('-','+')
+.. @+node:ekr.20061031131434.188: *7* << compute the last field >>
+if s.endswith('+'):
+    last = '+'
+else:
+    fields = s.split('+') # Don't lower this field.
+    last = fields and fields[-1]
+    if not last:
+        if not g.app.menuWarningsGiven:
+            g.pr("bad shortcut specifier:", repr(s),repr(setting))
+            g.trace(g.callers())
+        return None
+
+if len(last) == 1:
+    last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
+    if last2:
+        last = last2
+    else:
+        if last.isalpha():
+            if shift:
+                last = last.upper()
+                shift = False # It is Ctrl-A, not Ctrl-Shift-A.
+            else:
+                last = last.lower()
+        # New in Leo 4.4.2: Alt-2 is not a key event!
+        if addKey and last.isdigit():
+            last = 'Key-' + last
+else:
+    # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
+    # This is a *one-way* translation, done only here.
+    d = k.settingsNameDict
+    last = d.get(last.lower(),last)
+.. @+node:ekr.20061031131434.189: *7* << compute shortcut >>
+table = (
+    (alt, 'Alt+'),
+    (ctrl,'Ctrl+'),
+    (cmd, 'Command+'),
+    (meta,'Meta+'),
+    (shift,'Shift+'),
+    (True, last),
+)
+
+# new in 4.4b3: convert all characters to unicode first.
+shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
+.. @+node:ekr.20110606004638.16929: *6* k.stroke2char
+def stroke2char (self,stroke):
+    
+    '''Convert a stroke to an (insertable) char.
+    
+    This method allows Leo to use strokes everywhere.'''
+    
+    trace = False and not g.unitTesting
+    k = self
+    
+    if not stroke: return ''
+    s = stroke.s
+    
+    # Allow bare angle brackets for unit tests.
+    if s.startswith('<') and s.endswith('>'):
+        s = s[1:-1]
+        
+    if len(s) == 0: return ''
+    if len(s) == 1: return s
+        
+    for z in ('Alt','Ctrl','Command','Meta'):
+        if s.find(z) != -1:            
+            return ''
+            # This is not accurate: leoQtEventFilter retains
+            # the spelling of Alt-Ctrl keys because of the
+            # @bool enable_alt_ctrl_bindings setting.
+            
+    # Special case the gang of four, plus 'Escape',
+    d = {
+        'BackSpace':'\b',
+        'Escape':'Escape',
+        'Linefeed':'\r',
+        'Return':'\n',
+        'Tab':'\t',
+    }
+    ch = d.get(s)
+    if ch: return ch
+            
+    # First, do the common translations.
+    ch = k.guiBindNamesInverseDict.get(s)
+    if ch:
+        if trace: g.trace(repr(stroke),repr(ch))
+        return ch
+    
+    # A much-simplified form of code in k.strokeFromSetting.
+    shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
+    s = s.replace('Shift+','').replace('Shift-','')
+    
+    last = s #  Everything should have been stripped.
+    
+    if len(s) == 1 and s.isalpha():
+        if shift:
+            s = last.upper()
+        else:
+            s = last.lower()
+    
+    val = g.choose(len(s)==1,s,'')
+
+    if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
+    return val
+.. @+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
+def addModeCommands (self):
+
+    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
+    
+    trace = False and not g.unitTesting
+    
+    if trace: g.trace('(k)')
+
+    k = self ; c = k.c
+    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+
+    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+    for key in d.keys():
+
+        def enterModeCallback (event=None,name=key):
+            k.enterNamedMode(event,name)
+
+        c.commandsDict[key] = f = enterModeCallback
+        k.inverseCommandsDict [f.__name__] = key
+        if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
+.. @+node:ekr.20120208064440.10192: *4* From leoConfig...
+.. @+node:ekr.20060102103625.1: *5* doMode (ParserBaseClass)
+def doMode(self,p,kind,name,val):
+
+    '''Parse an @mode node and create the enter-<name>-mode command.'''
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+    
+    if g.new_modes:
+        aList = []
+        for line in g.splitLines(p.b):
+            line = line.strip()
+            if line and not g.match(line,0,'#'):
+                name2,si = self.parseShortcutLine('*mode-setting*',line)
+                aList.append((name2,si),)
+        k.modeController.makeMode(name,aList)
+    else:
+        name1 = name
+
+        # g.trace('%20s' % (name),c.fileName())
+        modeName = self.computeModeName(name)
+    
+        d = g.TypedDictOfLists(
+            name='modeDict for %s' % (modeName),
+            keyType=type('commandName'),valType=g.ShortcutInfo)
+    
+        s = p.b
+        lines = g.splitLines(s)
+        for line in lines:
+            line = line.strip()
+            if line and not g.match(line,0,'#'):
+                name,si = self.parseShortcutLine('*mode-setting*',line)
+                assert g.isShortcutInfo(si),si
+                if not name:
+                    # An entry command: put it in the special *entry-commands* key.
+                    d.add('*entry-commands*',si)
+                elif si is not None:
+                    # A regular shortcut.
+                    si.pane = modeName
+                    aList = d.get(name,[])
+                    for z in aList:
+                        assert g.isShortcutInfo(z),z
+                    # Important: use previous bindings if possible.
+                    key2,aList2 = c.config.getShortcut(name)
+                    for z in aList2:
+                        assert g.isShortcutInfo(z),z
+                    aList3 = [z for z in aList2 if z.pane != modeName]
+                    if aList3:
+                        # g.trace('inheriting',[b.val for b in aList3])
+                        aList.extend(aList3)
+                    aList.append(si)
+                    d.replace(name,aList)
+                    
+                    if 0: #### Why would we want to do this????
+                        #### Old code: we have to save/restore self.shortcutsDict.
+                            #### self.set(p,"shortcut",name,aList)
+                        # Set the entry directly.
+                        d2 = self.shortcutsDict
+                        gs = d2.get(key2)
+                        if gs:
+                            assert g.isGeneralSetting(gs)
+                            path = gs.path
+                            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+                                g.es("over-riding setting:",name,"from",path)
+        
+                        # Important: we can't use c here: it may be destroyed!
+                        d2 [key2] = g.GeneralSetting(
+                            kind,path=c.mFileName,val=val,tag='setting')
+    
+            # Restore the global shortcutsDict.
+            ##### self.shortcutsDict = old_d
+            
+            if trace: g.trace(d.dump())
+        
+            # Create the command, but not any bindings to it.
+            self.createModeCommand(modeName,name1,d)
+.. @+node:ekr.20041120112043: *5* parseShortcutLine (ParserBaseClass)
+def parseShortcutLine (self,kind,s):
+
+    '''Parse a shortcut line.  Valid forms:
+
+    --> entry-command
+    settingName = shortcut
+    settingName ! paneName = shortcut
+    command-name --> mode-name = binding
+    command-name --> same = binding
+    '''
+
+    trace = False and not g.unitTesting and kind == '*mode-setting*'
+    c,k = self.c,self.c.k
+    assert c
+    name = val = nextMode = None ; nextMode = 'none'
+    i = g.skip_ws(s,0)
+
+    if g.match(s,i,'-->'): # New in 4.4.1 b1: allow mode-entry commands.
+        j = g.skip_ws(s,i+3)
+        i = g.skip_id(s,j,'-')
+        entryCommandName = s[j:i]
+        if trace: g.trace('-->',entryCommandName)
+        return None,g.ShortcutInfo('*entry-command*',commandName=entryCommandName)
+
+    j = i
+    i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
+    name = s[j:i]
+    if not name:
+        if trace: g.trace('no name',repr(s))
+        return None,None
+
+    # New in Leo 4.4b2.
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'->'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+2)
+        i = g.skip_id(s,j)
+        nextMode = s[j:i]
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'!'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+1)
+        i = g.skip_id(s,j)
+        pane = s[j:i]
+        if not pane.strip(): pane = 'all'
+    else: pane = 'all'
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'='):
+        i = g.skip_ws(s,i+1)
+        val = s[i:]
+
+    # New in 4.4: Allow comments after the shortcut.
+    # Comments must be preceded by whitespace.
+    comment = ''
+    if val:
+        i = val.find('#')
+        if i > 0 and val[i-1] in (' ','\t'):
+            # comment = val[i:].strip()
+            val = val[:i].strip()
+
+    stroke = k.strokeFromSetting(val)
+    assert g.isStrokeOrNone(stroke),stroke
+    # g.trace('stroke',stroke)
+    si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
+    if trace: g.trace('%25s %s' % (name,si))
+    return name,si
+.. @+node:ekr.20060102103625: *5* createModeCommand (ParserBaseClass)
+def createModeCommand (self,modeName,name,modeDict):
+
+    modeName = 'enter-' + modeName.replace(' ','-')
+
+    i = name.find('::')
+    if i > -1:
+        # The prompt is everything after the '::'
+        prompt = name[i+2:].strip()
+        modeDict ['*command-prompt*'] = g.ShortcutInfo(kind=prompt)
+
+    # Save the info for k.finishCreate and k.makeAllBindings.
+    d = g.app.config.modeCommandsDict
+
+    # New in 4.4.1 b2: silently allow redefinitions of modes.
+    d [modeName] = modeDict
+    
+.. @+node:ekr.20120208064440.10148: *4* class ModeController
+class ModeController:
+    
+    def __init__ (self,c):
+        self.c = c
+        self.d = {} # Keys are command names, values are modes.
+        self.k = c.k
+        g.trace(self)
+            
+    def __repr__(self):
+        return '<ModeController %s>' % self.c.shortFileName()
+        
+    __str__ = __repr__
+            
+    @others
+.. @+node:ekr.20120208064440.10161: *5* addModeCommands (ModeController)
+def addModeCommands(self):
+    
+    g.trace(self,self.d)
+    
+    for mode in self.d.values():
+        mode.createModeCommand()
+.. @+node:ekr.20120208064440.10163: *5* getMode (ModeController)
+def getMode (self,modeName):
+    
+    g.trace(self)
+    
+    mode = self.d.get(modeName)
+    g.trace(modeName,mode)
+    return mode
+    
+.. @+node:ekr.20120208064440.10164: *5* makeMode (ModeController)
+def makeMode (self,name,aList):
+
+
+    mode = ModeInfo(self.c,name,aList)
+    
+    g.trace(self,mode.name,mode)
+    self.d[mode.name] = mode
+    
+.. @+node:ekr.20120208064440.10150: *4* class ModeInfo
+class ModeInfo:
+    
+    def __repr__(self):
+        return '<ModeInfo %s>' % self.name
+        
+    __str__ = __repr__
+    
+    @others
+    
+.. @+node:ekr.20120208064440.10193: *5*  ctor (ModeInfo)
+def __init__ (self,c,name,aList):
+    
+    g.trace(name,aList)
+    
+    self.c = c
+    self.d = {} # The bindings in effect for this mode.
+        # Keys are names of (valid) command names, values are ShortcutInfo objects.
+    self.entryCommands = []
+        # A list of ShortcutInfo objects.
+    self.k = c.k
+    self.name = self.computeModeName(name)
+    self.prompt = self.computeModePrompt(self.name)
+
+    self.init(name,aList)
+.. @+node:ekr.20120208064440.10152: *5* computeModeName (ModeInfo)
+def computeModeName (self,name):
+
+    s = name.strip().lower()
+    j = s.find(' ')
+    if j > -1: s = s[:j]
+    if s.endswith('mode'):
+        s = s[:-4].strip()
+    if s.endswith('-'):
+        s = s[:-1]
+
+    i = s.find('::')
+    if i > -1:
+        # The actual mode name is everything up to the "::"
+        # The prompt is everything after the prompt.
+        s = s[:i]
+
+    return s + '-mode'
+.. @+node:ekr.20120208064440.10156: *5* computeModePrompt (ModeInfo)
+def computeModePrompt (self,name):
+    
+    assert name == self.name
+    s = 'enter-' + name.replace(' ','-')
+    i = s.find('::')
+    if i > -1:
+        # The prompt is everything after the '::'
+        prompt = s[i+2:].strip()
+    else:
+        prompt = s
+    
+    return prompt
+.. @+node:ekr.20120208064440.10160: *5* createModeBindings (ModeInfo) (NOT USED)
+##### k.createModeBindings is used instead????
+
+def createModeBindings (self,w):
+
+    '''Create mode bindings for w, a text widget.'''
+
+    trace = False and not g.unitTesting
+    c,d,k,modeName = self.c,self.d,self.k,self.name
+    for commandName in d.keys():
+        func = c.commandsDict.get(commandName)
+        if not func:
+            g.es_print('no such command: %s Referenced from %s' % (
+                commandName,modeName))
+            continue
+        aList = d.get(commandName,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            if trace: g.trace(si)
+            stroke = si.stroke
+            # Important: si.val is canonicalized.
+            if stroke and stroke not in ('None','none',None):
+                if trace:
+                    g.trace(
+                        g.app.gui.widget_name(w), modeName,
+                        '%10s' % (stroke),
+                        '%20s' % (commandName),
+                        si.nextMode)
+                        
+                assert g.isStroke(stroke)
+                k.makeMasterGuiBinding(stroke)
+
+                # Create the entry for the mode in k.masterBindingsDict.
+                # Important: this is similar, but not the same as k.bindKeyToDict.
+                # Thus, we should **not** call k.bindKey here!
+                d2 = k.masterBindingsDict.get(modeName,{})
+                d2 [stroke] = g.ShortcutInfo(
+                    kind = 'mode<%s>' % (modeName), # 2012/01/23
+                    commandName=commandName,
+                    func=func,
+                    nextMode=si.nextMode,
+                    stroke=stroke)
+                k.masterBindingsDict[modeName] = d2
+                if trace: g.trace(modeName,d2)
+.. @+node:ekr.20120208064440.10195: *5* createModeCommand (ModeInfo)
+def createModeCommand (self):
+    
+    g.trace(self)
+
+    c,k = self.c,self.k
+    key = 'enter-' + self.name.replace(' ','-')
+   
+    def enterModeCallback (event=None,self=self):
+        self.enterMode()
+
+    c.commandsDict[key] = f = enterModeCallback
+    k.inverseCommandsDict [f.__name__] = key
+    
+    g.trace('(ModeInfo)',f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
+.. @+node:ekr.20120208064440.10180: *5* enterMode (ModeInfo)
+def enterMode (self):
+    
+    g.trace('(ModeInfo)')
+
+    c,k = self.c,self.k
+    c.inCommand = False
+        # Allow inner commands in the mode.
+    event=None ####
+    k.generalModeHandler(event,modeName=self.name)
+.. @+node:ekr.20120208064440.10153: *5* init (ModeInfo) (Can we check command names here??)
+def init (self,name,dataList):
+    
+    '''aList is a list of tuples (commandName,si).'''
+    
+    trace = False and not g.unitTesting
+    c,d,k,modeName = self.c,self.d,self.c.k,self.name
+    for name,si in dataList:
+    
+        assert g.isShortcutInfo(si),si
+        if not name:
+            if trace: g.trace('entry command',si)
+            #### An entry command: put it in the special *entry-commands* key.
+            #### d.add('*entry-commands*',si)
+            self.entryCommands.append(si)
+        elif si is not None:
+            # A regular shortcut.
+            si.pane = modeName
+            aList = d.get(name,[])
+            for z in aList:
+                assert g.isShortcutInfo(z),z
+            # Important: use previous bindings if possible.
+            key2,aList2 = c.config.getShortcut(name)
+            for z in aList2:
+                assert g.isShortcutInfo(z),z
+            aList3 = [z for z in aList2 if z.pane != modeName]
+            if aList3:
+                if trace: g.trace('inheriting',[si.val for si in aList3])
+                aList.extend(aList3)
+            aList.append(si)
+            d[name] = aList
+.. @+node:ekr.20120208064440.10158: *5* initMode (ModeInfo)
+def initMode (self):
+    
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+    
+    ####
+    # d = g.app.config.modeCommandsDict.get('enter-'+modeName)
+    # if not d:
+        # self.badMode(modeName)
+        # return
+    # else:
+        # k.modeBindingsDict = d
+        # si = d.get('*command-prompt*')
+        # if si:
+            # prompt = si.kind # A kludge.
+        # else:
+            # prompt = modeName
+        # if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
+
+    k.inputModeName = self.name
+    k.silentMode = False
+
+    #### aList = d.get('*entry-commands*',[])
+    for si in self.entryCommands:
+        assert g.isShortcutInfo(si),si
+        commandName = si.commandName
+        if trace: g.trace('entry command:',commandName)
+        k.simulateCommand(commandName)
+        # Careful, the command can kill the commander.
+        if g.app.quitting or not c.exists: return
+        # New in Leo 4.5: a startup command can immediately transfer to another mode.
+        if commandName.startswith('enter-'):
+            if trace: g.trace('redirect to mode',commandName)
+            return
+
+    # Create bindings after we know whether we are in silent mode.
+    # w = g.choose(k.silentMode,k.modeWidget,k.w)
+    w = k.modeWidget if k.silentMode else k.w
+    k.createModeBindings(self.name,self.d,w)
+    #### self.createModeBindings(w)
+    k.showStateAndMode(prompt=self.name)
+.. @+node:ekr.20120208064440.10191: *4* From leoKeys...
+.. @+node:ekr.20061031131434.76: *5* k.__init__
+def __init__ (self,c):
+
+    '''Create a key handler for c.'''
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: print('k.__init__')
+
+    self.c = c
+    self.dispatchEvent = None
+    self.inited = False         # Set at end of finishCreate.
+    self.swap_mac_keys = False  #### How to init this ????
+    self.w = None
+            # Note: will be None for nullGui.
+
+    # Generalize...
+    self.x_hasNumeric = ['sort-lines','sort-fields']
+
+    self.altX_prompt = 'full-command: '
+    
+    # Access to data types defined in leoKeys.py
+    self.KeyStroke = g.KeyStroke
+    
+    # Define all ivars...
+    self.defineExternallyVisibleIvars()
+    self.defineInternalIvars()
+    self.defineSettingsIvars()
+    
+    if g.new_modes:
+        self.modeController = ModeController(c)
+
+    self.defineTkNames()
+    self.defineSpecialKeys()
+    self.defineSingleLineCommands()
+    self.defineMultiLineCommands()
+    self.autoCompleter = AutoCompleterClass(self)
+    self.qcompleter = None # Set by AutoCompleter.start.
+
+    self.setDefaultUnboundKeyAction()
+    self.setDefaultEditingAction() # 2011/02/09
+.. @+node:ekr.20120208064440.10190: *5* k.Modes (no change)
+.. @+node:ekr.20061031131434.100: *6* k.addModeCommands (enterModeCallback)
+def addModeCommands (self):
+
+    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
+    
+    trace = False and not g.unitTesting
+    
+    if trace: g.trace('(k)')
+
+    k = self ; c = k.c
+    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+
+    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+    for key in d.keys():
+
+        def enterModeCallback (event=None,name=key):
+            k.enterNamedMode(event,name)
+
+        c.commandsDict[key] = f = enterModeCallback
+        k.inverseCommandsDict [f.__name__] = key
+        if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
+.. @+node:ekr.20061031131434.157: *6* k.badMode
+def badMode(self,modeName):
+
+    k = self
+
+    k.clearState()
+    if modeName.endswith('-mode'): modeName = modeName[:-5]
+    k.setLabelGrey('@mode %s is not defined (or is empty)' % modeName)
+.. @+node:ekr.20061031131434.158: *6* k.createModeBindings
+def createModeBindings (self,modeName,d,w):
+
+    '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    assert d.name().endswith('-mode')
+    for commandName in d.keys():
+        if commandName in ('*entry-commands*','*command-prompt*'):
+            # These are special-purpose dictionary entries.
+            continue
+        func = c.commandsDict.get(commandName)
+        if not func:
+            g.es_print('no such command:',commandName,'Referenced from',modeName)
+            continue
+        aList = d.get(commandName,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            stroke = si.stroke
+            # Important: si.val is canonicalized.
+            if stroke and stroke not in ('None','none',None):
+                if trace:
+                    g.trace(
+                        g.app.gui.widget_name(w), modeName,
+                        '%10s' % (stroke),
+                        '%20s' % (commandName),
+                        si.nextMode)
+                        
+                assert g.isStroke(stroke)
+
+                k.makeMasterGuiBinding(stroke)
+
+                # Create the entry for the mode in k.masterBindingsDict.
+                # Important: this is similar, but not the same as k.bindKeyToDict.
+                # Thus, we should **not** call k.bindKey here!
+                d2 = k.masterBindingsDict.get(modeName,{})
+                d2 [stroke] = g.ShortcutInfo(
+                    kind = 'mode<%s>' % (modeName), # 2012/01/23
+                    commandName=commandName,
+                    func=func,
+                    nextMode=si.nextMode,
+                    stroke=stroke)
+                k.masterBindingsDict [ modeName ] = d2
+.. @+node:ekr.20120208064440.10179: *6* k.endMode
+def endMode(self):
+
+    k = self ; c = k.c
+
+    w = g.app.gui.get_focus(c)
+    if w:
+        c.frame.log.deleteTab('Mode') # Changes focus to the body pane
+
+    k.endCommand(k.stroke)
+    k.inputModeName = None
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode() # Restores focus.
+
+    if w:
+        c.widgetWantsFocusNow(w)
+.. @+node:ekr.20061031131434.160: *6* k.enterNamedMode
+def enterNamedMode (self,event,commandName):
+
+    k = self ; c = k.c
+    modeName = commandName[6:]
+    c.inCommand = False # Allow inner commands in the mode.
+    k.generalModeHandler(event,modeName=modeName)
+.. @+node:ekr.20061031131434.161: *6* k.exitNamedMode
+def exitNamedMode (self,event=None):
+    
+    '''Exit an input mode.'''
+
+    k = self
+
+    if k.inState():
+        k.endMode()
+
+    k.showStateAndMode()
+.. @+node:ekr.20061031131434.165: *6* k.modeHelp & helper (revise helper)
+def modeHelp (self,event):
+
+    '''The mode-help command.
+
+    A possible convention would be to bind <Tab> to this command in most modes,
+    by analogy with tab completion.'''
+
+    k = self ; c = k.c
+
+    c.endEditing()
+
+    # g.trace(k.inputModeName)
+
+    if k.inputModeName:
+        d = g.app.config.modeCommandsDict.get('enter-'+k.inputModeName)
+        k.modeHelpHelper(d)
+
+    if not k.silentMode:
+        c.minibufferWantsFocus()
+
+    return
+.. @+node:ekr.20061031131434.166: *7* modeHelpHelper
+def modeHelpHelper (self,d):
+
+    k = self ; c = k.c ; tabName = 'Mode'
+    c.frame.log.clearTab(tabName)
+    data,n = [],0
+    for key in sorted(d.keys()):
+        if key in ('*entry-commands*','*command-prompt*'):
+            pass
+        else:
+            aList = d.get(key)
+            for si in aList:
+                assert g.isShortcutInfo(si),si
+                stroke = si.stroke
+                if stroke not in (None,'None'):
+                    s1 = key
+                    s2 = k.prettyPrintKey(stroke)
+                    n = max(n,len(s1))
+                    data.append((s1,s2),)
+
+    data.sort()
+    modeName = k.inputModeName.replace('-',' ')
+    if modeName.endswith('mode'):
+        modeName = modeName[:-4].strip()
+    g.es('','%s mode\n\n' % modeName,tabName=tabName)
+
+    # This isn't perfect in variable-width fonts.
+    for s1,s2 in data:
+        g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
+.. @+node:ekr.20061031131434.164: *6* k.reinitMode (call k.createModeBindings???)
+def reinitMode (self,modeName):
+
+    k = self ; c = k.c
+
+    d = k.modeBindingsDict
+
+    k.inputModeName = modeName
+    w = g.choose(k.silentMode,k.modeWidget,k.w)
+    k.createModeBindings(modeName,d,w)
+
+    if k.silentMode:
+        k.showStateAndMode()
+    else:
+        # Do not set the status line here.
+        k.setLabelBlue(modeName+': ',protect=True)
+
+.. @+node:ekr.20120208064440.10199: *6* k.generalModeHandler (OLD)
+def generalModeHandler (self,event,
+    commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
+
+    '''Handle a mode defined by an @mode node in leoSettings.leo.'''
+
+    k = self ; c = k.c
+    state = k.getState(modeName)
+    trace = (False or g.trace_modes) and not g.unitTesting
+
+    if trace: g.trace(modeName,'state',state)
+
+    if state == 0:
+        k.inputModeName = modeName
+        k.modePrompt = prompt or modeName
+        k.modeWidget = event and event.widget
+        k.setState(modeName,1,handler=k.generalModeHandler)
+        self.initMode(event,modeName)
+        # Careful: k.initMode can execute commands that will destroy a commander.
+        if g.app.quitting or not c.exists: return # (for Tk) 'break'
+        if not k.silentMode:
+            if c.config.getBool('showHelpWhenEnteringModes'):
+                k.modeHelp(event)
+            else:
+                c.frame.log.hideTab('Mode')
+    elif not func:
+        g.trace('No func: improper key binding')
+    else:
+        if commandName == 'mode-help':
+            func(event)
+        else:
+            savedModeName = k.inputModeName # Remember this: it may be cleared.
+            self.endMode()
+            if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
+            # New in 4.4.1 b1: pass an event describing the original widget.
+            if event:
+                event.w = event.widget = k.modeWidget
+            else:
+                event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
+            if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
+            func(event)
+            if g.app.quitting or not c.exists:
+                return # (for Tk) 'break'
+            if nextMode in (None,'none'):
+                # Do *not* clear k.inputModeName or the focus here.
+                # func may have put us in *another* mode.
+                pass
+            elif nextMode == 'same':
+                silent = k.silentMode
+                k.setState(modeName,1,handler=k.generalModeHandler)
+                self.reinitMode(modeName) # Re-enter this mode.
+                k.silentMode = silent
+            else:
+                k.silentMode = False # All silent modes must do --> set-silent-mode.
+                self.initMode(event,nextMode) # Enter another mode.
+                # Careful: k.initMode can execute commands that will destroy a commander.
+                if g.app.quitting or not c.exists: return # (for Tk) 'break'
+.. @+node:ekr.20061031131434.156: *5* k.Modes (changed)
+.. @+node:ekr.20061031131434.163: *6* k.initMode (changed)
+def initMode (self,event,modeName):
+
+    k = self ; c = k.c
+    trace = (False or g.trace_modes) and not g.unitTesting
+
+    if not modeName:
+        g.trace('oops: no modeName')
+        return
+        
+    if g.new_modes:
+        mode = k.modeController.getMode(modeName)
+        if mode:
+            mode.initMode()
+        else:
+            g.trace('***** oops: no mode',modeName)
+    else:
+
+        d = g.app.config.modeCommandsDict.get('enter-'+modeName)
+        if not d:
+            self.badMode(modeName)
+            return
+        else:
+            k.modeBindingsDict = d
+            si = d.get('*command-prompt*')
+            if si:
+                prompt = si.kind # A kludge.
+            else:
+                prompt = modeName
+            if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
+    
+        k.inputModeName = modeName
+        k.silentMode = False
+    
+        aList = d.get('*entry-commands*',[])
+        if aList:
+            for si in aList:
+                assert g.isShortcutInfo(si),si
+                commandName = si.commandName
+                if trace: g.trace('entry command:',commandName)
+                k.simulateCommand(commandName)
+                # Careful, the command can kill the commander.
+                if g.app.quitting or not c.exists: return
+                # New in Leo 4.5: a startup command can immediately transfer to another mode.
+                if commandName.startswith('enter-'):
+                    if trace: g.trace('redirect to mode',commandName)
+                    return
+    
+        # Create bindings after we know whether we are in silent mode.
+        w = g.choose(k.silentMode,k.modeWidget,k.w)
+        k.createModeBindings(modeName,d,w)
+        k.showStateAndMode(prompt=prompt)
+.. @+node:ekr.20120208064440.10201: *6* k.NEWgeneralModeHandler (NEW MODES)
+def NEWgeneralModeHandler (self,event,
+    commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
+
+    '''Handle a mode defined by an @mode node in leoSettings.leo.'''
+
+    k = self ; c = k.c
+    state = k.getState(modeName)
+    trace = (False or g.trace_modes) and not g.unitTesting
+
+    if trace: g.trace(modeName,'state',state)
+
+    if state == 0:
+        k.inputModeName = modeName
+        k.modePrompt = prompt or modeName
+        k.modeWidget = event and event.widget
+        k.setState(modeName,1,handler=k.generalModeHandler)
+        self.initMode(event,modeName)
+        # Careful: k.initMode can execute commands that will destroy a commander.
+        if g.app.quitting or not c.exists: return # (for Tk) 'break'
+        if not k.silentMode:
+            if c.config.getBool('showHelpWhenEnteringModes'):
+                k.modeHelp(event)
+            else:
+                c.frame.log.hideTab('Mode')
+    elif not func:
+        g.trace('No func: improper key binding')
+        return # (for Tk) 'break'
+    else:
+        if commandName == 'mode-help':
+            func(event)
+        else:
+            savedModeName = k.inputModeName # Remember this: it may be cleared.
+            self.endMode()
+            if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
+            # New in 4.4.1 b1: pass an event describing the original widget.
+            if event:
+                event.w = event.widget = k.modeWidget
+            else:
+                event = g.app.gui.create_key_event(c,None,None,k.modeWidget)
+            if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
+            func(event)
+            if g.app.quitting or not c.exists:
+                return # (for Tk) 'break'
+            if nextMode in (None,'none'):
+                # Do *not* clear k.inputModeName or the focus here.
+                # func may have put us in *another* mode.
+                pass
+            elif nextMode == 'same':
+                silent = k.silentMode
+                k.setState(modeName,1,handler=k.generalModeHandler)
+                self.reinitMode(modeName) # Re-enter this mode.
+                k.silentMode = silent
+            else:
+                k.silentMode = False # All silent modes must do --> set-silent-mode.
+                self.initMode(event,nextMode) # Enter another mode.
+                # Careful: k.initMode can execute commands that will destroy a commander.
+                if g.app.quitting or not c.exists: return # (for Tk) 'break'
+
+    return # (for Tk) 'break'
+.. @+node:ekr.20120228164039.10047: *4* Initing...
+.. @+node:ekr.20060102103625.1: *5* doMode (ParserBaseClass)
+def doMode(self,p,kind,name,val):
+
+    '''Parse an @mode node and create the enter-<name>-mode command.'''
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+    
+    if g.new_modes:
+        aList = []
+        for line in g.splitLines(p.b):
+            line = line.strip()
+            if line and not g.match(line,0,'#'):
+                name2,si = self.parseShortcutLine('*mode-setting*',line)
+                aList.append((name2,si),)
+        k.modeController.makeMode(name,aList)
+    else:
+        name1 = name
+
+        # g.trace('%20s' % (name),c.fileName())
+        modeName = self.computeModeName(name)
+    
+        d = g.TypedDictOfLists(
+            name='modeDict for %s' % (modeName),
+            keyType=type('commandName'),valType=g.ShortcutInfo)
+    
+        s = p.b
+        lines = g.splitLines(s)
+        for line in lines:
+            line = line.strip()
+            if line and not g.match(line,0,'#'):
+                name,si = self.parseShortcutLine('*mode-setting*',line)
+                assert g.isShortcutInfo(si),si
+                if not name:
+                    # An entry command: put it in the special *entry-commands* key.
+                    d.add('*entry-commands*',si)
+                elif si is not None:
+                    # A regular shortcut.
+                    si.pane = modeName
+                    aList = d.get(name,[])
+                    for z in aList:
+                        assert g.isShortcutInfo(z),z
+                    # Important: use previous bindings if possible.
+                    key2,aList2 = c.config.getShortcut(name)
+                    for z in aList2:
+                        assert g.isShortcutInfo(z),z
+                    aList3 = [z for z in aList2 if z.pane != modeName]
+                    if aList3:
+                        # g.trace('inheriting',[b.val for b in aList3])
+                        aList.extend(aList3)
+                    aList.append(si)
+                    d.replace(name,aList)
+                    
+                    if 0: #### Why would we want to do this????
+                        #### Old code: we have to save/restore self.shortcutsDict.
+                            #### self.set(p,"shortcut",name,aList)
+                        # Set the entry directly.
+                        d2 = self.shortcutsDict
+                        gs = d2.get(key2)
+                        if gs:
+                            assert g.isGeneralSetting(gs)
+                            path = gs.path
+                            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+                                g.es("over-riding setting:",name,"from",path)
+        
+                        # Important: we can't use c here: it may be destroyed!
+                        d2 [key2] = g.GeneralSetting(
+                            kind,path=c.mFileName,val=val,tag='setting')
+    
+            # Restore the global shortcutsDict.
+            ##### self.shortcutsDict = old_d
+            
+            if trace: g.trace(d.dump())
+        
+            # Create the command, but not any bindings to it.
+            self.createModeCommand(modeName,name1,d)
+.. @+node:ekr.20041120112043: *5* parseShortcutLine (ParserBaseClass)
+def parseShortcutLine (self,kind,s):
+
+    '''Parse a shortcut line.  Valid forms:
+
+    --> entry-command
+    settingName = shortcut
+    settingName ! paneName = shortcut
+    command-name --> mode-name = binding
+    command-name --> same = binding
+    '''
+
+    trace = False and not g.unitTesting and kind == '*mode-setting*'
+    c,k = self.c,self.c.k
+    assert c
+    name = val = nextMode = None ; nextMode = 'none'
+    i = g.skip_ws(s,0)
+
+    if g.match(s,i,'-->'): # New in 4.4.1 b1: allow mode-entry commands.
+        j = g.skip_ws(s,i+3)
+        i = g.skip_id(s,j,'-')
+        entryCommandName = s[j:i]
+        if trace: g.trace('-->',entryCommandName)
+        return None,g.ShortcutInfo('*entry-command*',commandName=entryCommandName)
+
+    j = i
+    i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
+    name = s[j:i]
+    if not name:
+        if trace: g.trace('no name',repr(s))
+        return None,None
+
+    # New in Leo 4.4b2.
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'->'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+2)
+        i = g.skip_id(s,j)
+        nextMode = s[j:i]
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'!'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+1)
+        i = g.skip_id(s,j)
+        pane = s[j:i]
+        if not pane.strip(): pane = 'all'
+    else: pane = 'all'
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'='):
+        i = g.skip_ws(s,i+1)
+        val = s[i:]
+
+    # New in 4.4: Allow comments after the shortcut.
+    # Comments must be preceded by whitespace.
+    comment = ''
+    if val:
+        i = val.find('#')
+        if i > 0 and val[i-1] in (' ','\t'):
+            # comment = val[i:].strip()
+            val = val[:i].strip()
+
+    stroke = k.strokeFromSetting(val)
+    assert g.isStrokeOrNone(stroke),stroke
+    # g.trace('stroke',stroke)
+    si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
+    if trace: g.trace('%25s %s' % (name,si))
+    return name,si
+.. @+node:ekr.20060102103625: *5* createModeCommand (ParserBaseClass)
+def createModeCommand (self,modeName,name,modeDict):
+
+    modeName = 'enter-' + modeName.replace(' ','-')
+
+    i = name.find('::')
+    if i > -1:
+        # The prompt is everything after the '::'
+        prompt = name[i+2:].strip()
+        modeDict ['*command-prompt*'] = g.ShortcutInfo(kind=prompt)
+
+    # Save the info for k.finishCreate and k.makeAllBindings.
+    d = g.app.config.modeCommandsDict
+
+    # New in 4.4.1 b2: silently allow redefinitions of modes.
+    d [modeName] = modeDict
+    
 .. @+node:ekr.20120226183512.10199: *3* Features
 .. @+node:ekr.20111109083738.9796: *4* Next
 .. @+node:ekr.20120226180525.10191: *5* Run unit tests interactively?

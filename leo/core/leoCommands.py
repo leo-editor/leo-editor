@@ -3938,7 +3938,8 @@ class Commands (object):
         '''Paste an outline into the present outline from the clipboard.
         Nodes do *not* retain their original identify.'''
 
-        c = self ; u = c.undoer ; current = c.p
+        trace = True and not g.unitTesting
+        c = self
         s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
         undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
@@ -3956,7 +3957,7 @@ class Commands (object):
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:
-            pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+            pasted = c.importCommands.convertMoreStringToOutlineAfter(s,c.p)
 
         if not pasted: return None
         
@@ -3965,7 +3966,7 @@ class Commands (object):
         else:
             copiedBunchList = []
 
-        undoData = u.beforeInsertNode(current,
+        undoData = c.undoer.beforeInsertNode(c.p,
             pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
 
         c.validateOutline()
@@ -3973,12 +3974,18 @@ class Commands (object):
         pasted.setDirty()
         c.setChanged(True)
 
-        # paste as first child if back is expanded.
-        back = pasted.back()
-        if back and back.hasChildren() and back.isExpanded():
-            # 2011/06/21: fixed hanger: test back.hasChildren().
-            pasted.moveToNthChildOf(back,0)
-        # c.setRootPosition()
+        if 1:
+            # This makes no sense: getLeoOutlineFromClipboard already does this.
+            # ***But**, we can't change anything significant until we demonstrate the problem!
+        
+            # paste as first child if back is expanded.
+            back = pasted.back()
+            #### back = c.p.back()
+        
+            if back and back.hasChildren() and back.isExpanded():
+                # 2011/06/21: fixed hanger: test back.hasChildren().
+                pasted.moveToNthChildOf(back,0)
+            # c.setRootPosition()
 
         if pasteAsClone:
             # Set dirty bits for ancestors of *all* pasted nodes.
@@ -3987,7 +3994,7 @@ class Commands (object):
                 p.setAllAncestorAtFileNodesDirty(
                     setDescendentsDirty=False)
 
-        u.afterInsertNode(pasted,undoType,undoData)
+        c.undoer.afterInsertNode(pasted,undoType,undoData)
         c.redraw(pasted)
         c.recolor()
         

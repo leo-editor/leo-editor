@@ -5130,7 +5130,7 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20110605121601.18314: *5* leoQtLog.__init__
     def __init__ (self,frame,parentFrame):
 
-        # g.trace("leoQtLog")
+        # g.trace('(leoQtLog)',frame,parentFrame)
 
         # Call the base class constructor and calls createControl.
         leoFrame.leoLog.__init__(self,frame,parentFrame)
@@ -5146,9 +5146,11 @@ class leoQtLog (leoFrame.leoLog):
 
         self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
             # The Qt.QTabWidget that holds all the tabs.
-        self.wrap = g.choose(c.config.getBool('log_pane_wraps'),True,False)
+        
+        # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
+        tw.connect(tw,QtCore.SIGNAL('currentChanged(int)'),self.onCurrentChanged)
 
-        # g.trace('qtLog.__init__',self.tabWidget)
+        self.wrap = g.choose(c.config.getBool('log_pane_wraps'),True,False)
 
         if 0: # Not needed to make onActivateEvent work.
             # Works only for .tabWidget, *not* the individual tabs!
@@ -5210,6 +5212,19 @@ class leoQtLog (leoFrame.leoLog):
     def onActivateLog (self,event=None):    pass
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
+    #@+node:ekr.20120304214900.9940: *4* Event handler (leoQtLog)
+    def onCurrentChanged(self,idx):
+        
+        trace = False and not g.unitTesting
+
+        tabw = self.tabWidget
+        w = tabw.widget(idx)
+        
+        # Fixes bug 917814: Switching Log Pane tabs is done incompletely
+        wrapper = hasattr(w,'leo_log_wrapper') and w.leo_log_wrapper
+        if wrapper: self.widget = wrapper
+            
+        if trace: g.trace(idx,tabw.tabText(idx),wrapper)
     #@+node:ekr.20111120124732.10184: *4* isLogWidget (leoQtLog)
     def isLogWidget(self,w):
         
