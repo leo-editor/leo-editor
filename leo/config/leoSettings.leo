@@ -471,11 +471,14 @@
 </v>
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
-<v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
+<v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
+<v t="ekr.20090408091222.1"><vh>@shortcuts duplicate bindings for Qt</vh></v>
+<v t="ekr.20120305084218.11271"><vh>@shortcuts F-Keys</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
 <v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
@@ -485,8 +488,6 @@
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-<v t="ekr.20090408091222.1"><vh>@shortcuts duplicate bindings for Qt</vh></v>
-<v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
 </v>
 </v>
 </v>
@@ -4095,8 +4096,6 @@ write-dirty-at-file-nodes   = Shift+Ctrl+Q
 auto-complete               = period
 debug                       = None
 execute-script              = Ctrl+B
-help-for-command            = F1
-open-spell-tab              = F7
 redo                        = Shift-Ctrl-Z
 
 run-all-unit-tests-externally       = None
@@ -5188,8 +5187,11 @@ For some reason, colors in the text widget do not match the colors in the canvas
 <t tx="ekr.20080512082834.1"># Now that we know what commands are single-line editing commands,
 # Only &lt;return&gt; and arrow keys need per-pane bindings.
 
-do-nothing  = Ctrl-DnArrow  # Causes problems on Ubuntu.
-do-nothing  = Ctrl-UpArrow  # Causes problesm on Ubuntu.
+# These all cause problems on Ubuntu...
+do-nothing  = Ctrl-DnArrow  
+do-nothing  = Ctrl-UpArrow
+do-nothing  = Ctrl-PageUp
+do-nothing  = Ctrl-PageDn
 
 end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
@@ -9485,6 +9487,45 @@ children of the to-be-selected parent.
 When True, bindings that appear to specify the control key actually specify the command (clover) key.</t>
 <t tx="ekr.20120229173025.20627">print('hi from leoSettings.leo')</t>
 <t tx="ekr.20120229173025.20628"></t>
+<t tx="ekr.20120305084218.11271"># Unbound F-Keys cause problems on Ubuntu
+help-for-command= F1
+do-nothing      = F2
+do-nothing      = F3
+do-nothing      = F4
+do-nothing      = F5
+do-nothing      = F6
+open-spell-tab  = F7
+do-nothing      = F8
+do-nothing      = F9
+do-nothing      = F10
+do-nothing      = F11
+do-nothing      = F12
+
+do-nothing = Ctrl-F1
+do-nothing = Ctrl-F2
+do-nothing = Ctrl-F3
+do-nothing = Ctrl-F4
+do-nothing = Ctrl-F5
+do-nothing = Ctrl-F6
+do-nothing = Ctrl-F7
+do-nothing = Ctrl-F8
+do-nothing = Ctrl-F9
+do-nothing = Ctrl-F10
+do-nothing = Ctrl-F11
+do-nothing = Ctrl-F12
+
+do-nothing = Shift-F1
+do-nothing = Shift-F2
+do-nothing = Shift-F3
+do-nothing = Shift-F4
+do-nothing = Shift-F5
+do-nothing = Shift-F6
+do-nothing = Shift-F7
+do-nothing = Shift-F8
+do-nothing = Shift-F9
+do-nothing = Shift-F10
+do-nothing = Shift-F11
+do-nothing = Shift-F12</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
