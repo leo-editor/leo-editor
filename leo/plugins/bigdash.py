@@ -25,6 +25,11 @@ import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
+
+try:
+    import leo.plugins.leofts as leofts
+except ImportError:
+    leofts = None
 #@-<< imports >>
 
 #@+others
@@ -65,6 +70,11 @@ def set_leo(gg):
     g = gg
 
 
+def all_positions_global():
+    for c in g.app.commanders():
+        for p in c.all_unique_positions():
+            yield (c,p)
+
 class LeoConnector(QObject):
     pass
 
@@ -82,51 +92,103 @@ def matchlines(b, miter):
         res.append((li, (m.start()-st, m.end()-st ), (spre, spost)))
     return res
 
+def add_anchor(l,tgt, text):
+    l.append('<a href="%s">%s</a>' % (tgt, text))    
+    
 class GlobalSearch:
     def __init__(self):
         self.bd = BigDash()
         #self.bd.show()
         self.bd.add_cmd_handler(self.do_search)
-        self.bd.set_link_handler(self.do_link)
+        self.bd.add_cmd_handler(self.do_fts)
+        
+        self._fts = None
         self.anchors = {}
         
         
     def show(self):
         self.bd.w.show()
+        
+    def get_fts(self):
+        if self._fts is None:
+            self._fts = leofts.LeoFts("c:/t/leofts")
+        return self._fts
+    def do_fts(self, tgt, qs):
+        ss = unicode(qs)
+        
+        q = None
+        if ss.startswith("f "):
+            q = ss[2:]
+            
+        if not (q or ss.startswith("fts ")):
+            return False
+        if not leofts:
+            g.es("Whoosh not installed (easy_install whoosh)")
+            return False
+        print("Doing fts", qs)
+        fts = self.get_fts()
+        if ss.strip() == "fts init":
+            print("init!")
+            fts.create()
+            for c2 in g.app.commanders():
+                print("Scanning",c2)
+                fts.index_nodes(c2)
+                
+        hits = []
+        if q:
+            res = fts.search(q)
+            for r in res:
+                print("hit", r)
+                hits.append("<p>")
+                add_anchor(hits, r["gnx"], r["h"])
+                hits.append("</p>")
+                hits.append("""<p><small><i>%s</i></small></p>""" % r["parent"])                
+            html = "".join(hits)
+            tgt.web.setHtml(html)
+            self.bd.set_link_handler(self.do_link_jump_gnx)
+    
     def do_search(self,tgt, qs):        
         ss = str(qs)
         hitparas = []
         def em(l):
             hitparas.append(l)
-        if ss.startswith("s "):
-            s = ss[2:]
-            
-            
-            for ndxc,c2 in enumerate(g.app.commanders()):
-                hits = c2.find_b(s)                
-                                
-                for ndxh, h in enumerate(hits):
-                    b = h.b
-                    mlines = matchlines(b, h.matchiter)
-                    key = "c%dh%d" % (ndxc, ndxh)
-                    self.anchors[key] = (c2, h.copy())
-                    em('<p><a href="%s">%s</a></p>' % (key, h.h))
-                    for line, (st, en), (pre, post) in mlines:
-                        em("<pre>")
-                        em(pre)
-                        em("%s<b>%s</b>%s" % (line[:st], line[st:en], line[en:]))
-                        em(post)
-                        em("</pre>")
-                    em("""<p><small><i>%s</i></small></p>""" % h.get_UNL())
+        if not ss.startswith("s "):
+            return False
+
+        s = ss[2:]
+                
+        for ndxc,c2 in enumerate(g.app.commanders()):
+            hits = c2.find_b(s)                
+                            
+            for ndxh, h in enumerate(hits):
+                b = h.b
+                mlines = matchlines(b, h.matchiter)
+                key = "c%dh%d" % (ndxc, ndxh)
+                self.anchors[key] = (c2, h.copy())
+                em('<p><a href="%s">%s</a></p>' % (key, h.h))
+                for line, (st, en), (pre, post) in mlines:
+                    em("<pre>")
+                    em(pre)
+                    em("%s<b>%s</b>%s" % (line[:st], line[st:en], line[en:]))
+                    em(post)
+                    em("</pre>")
+                em("""<p><small><i>%s</i></small></p>""" % h.get_UNL())
                        
         html = "".join(hitparas)
         tgt.web.setHtml(html)     
-    
+        self.bd.set_link_handler(self.do_link)
     def do_link(self,l):
         a = self.anchors[l]
         c, p = a
         c.selectPosition(p)
-        
+    def do_link_jump_gnx(self, l):
+        print ("jumping to", l)
+        for c,p in all_positions_global():
+            if p.gnx == l:
+                print("found!")
+                c.selectPosition(p)
+                return
+        print("Not found in any open document")
 
 class BigDash:
     def docmd(self):
