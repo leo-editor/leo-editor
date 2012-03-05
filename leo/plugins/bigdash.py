@@ -6,6 +6,8 @@
 #@+node:ville.20120302233106.3583: ** << docstring >>
 ''' Global search window
 
+To use full text search, you need to install Whoosh library ('easy_install Whoosh').
+
 '''
 #@-<< docstring >>
 
@@ -111,7 +113,7 @@ class GlobalSearch:
         
     def get_fts(self):
         if self._fts is None:
-            self._fts = leofts.LeoFts("c:/t/leofts")
+            self._fts = leofts.LeoFts( g.app.homeLeoDir + "/fts_index")
         return self._fts
     def do_fts(self, tgt, qs):
         ss = unicode(qs)
