@@ -758,7 +758,6 @@
 </v>
 <v t="ekr.20051007200824"></v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20060122105527.5"><vh>@bool useCmdMenu = True</vh></v>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
@@ -934,7 +933,7 @@
 <v t="ekr.20070925144534.159"><vh>@item *&amp;demote</vh></v>
 </v>
 <v t="ekr.20070925144534.160"><vh>@menu M&amp;ark...</vh>
-<v t="ekr.20090905151712.8546"><vh>@item *clone-marked</vh></v>
+<v t="ekr.20090905151712.8546"><vh>@item *clone-marked-nodes</vh></v>
 <v t="ekr.20070925144534.161"><vh>@item *&amp;mark</vh></v>
 <v t="ekr.20070925144534.162"><vh>@item *mark-&amp;subheads</vh></v>
 <v t="ekr.20070925144534.163"><vh>@item *mark-changed-&amp;items</vh></v>
@@ -967,7 +966,7 @@
 </v>
 </v>
 <v t="ekr.20070925144534.190"><vh>@menu &amp;Plugins</vh>
-<v t="ekr.20090203134354.2"><vh>@item xyzzy</vh></v>
+<v t="ekr.20090203134354.2"><vh>@@item xyzzy</vh></v>
 </v>
 <v t="ekr.20070925144534.191"><vh>@menu &amp;Cmds</vh>
 <v t="ekr.20070925144534.192"><vh>@menu &amp;Abbrev...</vh>
@@ -990,7 +989,6 @@
 <v t="ekr.20070925144534.209"><vh>@item buffer-&amp;append-to</vh></v>
 <v t="ekr.20070925144534.210"><vh>@item buffer-&amp;kill</vh></v>
 <v t="ekr.20070925144534.213"><vh>@item buffer-&amp;prepend-to</vh></v>
-<v t="ekr.20070925144534.214"><vh>@item buffer-&amp;rename</vh></v>
 <v t="ekr.20070925144534.215"><vh>@item buffer-&amp;switch-to</vh></v>
 <v t="ekr.20110607054506.16793"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.211"><vh>@item &amp;buffers-list</vh></v>
@@ -1573,7 +1571,7 @@
 <v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
 <v t="ekr.20041119034357.44"><vh>@bool smart_auto_indent = False</vh></v>
 <v t="ekr.20090213065933.11"><vh>@bool smart_tab = True</vh></v>
-<v t="ekr.20041119034357.53"><vh>@int additional_body_text_border = 0</vh></v>
+<v t="ekr.20041119034357.53"><vh>@@@int additional_body_text_border = 0</vh></v>
 <v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
 </v>
@@ -1602,7 +1600,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
+<v t="ekr.20120305084218.12631"><vh>check-settings output</vh></v>
+<v t="ekr.20111006212449.11850"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2218,9 +2217,9 @@ about-leo                           = None
 add-comments                        = Ctrl-(
 abbrev-add-global                   = None
 abbrev-kill-all                     = None
-advertised-undo                     = Control-underscore
+advertised-undo                     = Ctrl-underscore
 auto-complete                       = None
-back-char                           = Control-b
+back-char                           = Ctrl-b
 back-char-extend-selection          = None
 back-paragraph                      = Alt-braceleft
 back-paragraph-extend-selection     = None
@@ -2228,7 +2227,7 @@ back-sentence                       = Alt-a
 back-sentence-extend-selection      = None
 back-to-indentation                 = Alt-m
 back-word                           = Alt-b          
-back-word                           = Control-Left
+back-word                           = Ctrl-Left
 back-word-extend-selection          = None
 backward-delete-char                = Delete
 backward-delete-char                = Shift-Delete
@@ -2239,12 +2238,11 @@ beginning-of-buffer                 ! text =  Alt-less
 beginning-of-buffer                 ! text = Ctrl-Home
 beginning-of-buffer-extend-selection= None
 beginning-of-line                   = Alt-Up        
-beginning-of-line                   = Control-a
+beginning-of-line                   = Ctrl-a
 beginning-of-line-extend-selection  = None
 buffer-append-to                    = None
 buffer-kill                         = None
 buffer-prepend-to                   = None
-buffer-rename                       = None
 buffer-switch-to                    = None
 buffers-list                        = None
 buffers-list-alphabetically         = None
@@ -2274,10 +2272,10 @@ count-region                        = Alt-equal
 cut-node                            = Shift-Ctrl-X
 cut-text                            = None      # Ctrl-X (possible)
 cycle-focus                         = None
-dabbrev-completion                  = Control-Alt-slash
+dabbrev-completion                  = Alt-Ctrl-slash
 dabbrev-expands                     = Alt-slash
 de-hoist                            = None
-delete-char                         = Control-d
+delete-char                         = Ctrl-d
 delete-comments                     = Ctrl-)
 delete-indentation                  = Alt-asciicircum
 delete-node                         = Shift-Ctrl-BkSp
@@ -2295,13 +2293,13 @@ end-of-buffer                       ! text = Alt-greater
 end-of-buffer                       ! text = Ctrl-End
 end-of-buffer-extend-selection      ! text = Ctrl-Shift-End
 end-of-line                         = Alt-Down      
-end-of-line                         = Control-e
+end-of-line                         = Ctrl-e
 end-of-line-extend-selection        = None
 equal-sized-panes                   = Alt-Shift-E
 escape                              = Escape
 eval-expression                     = Alt-colon
 eval-expression                     = None
-exchange-point-mark                 = None  # Should be Control-X Control-X.
+exchange-point-mark                 = None  # Should be Ctrl-X Ctrl-X.
 execute-script                      = None             # Ctrl-e conflicts with end-of-line
 exit-leo                            = Ctrl-Q
 exit-named-mode                     = None
@@ -2536,7 +2534,6 @@ beginning-of-line-extend-selection  = None
 buffer-append-to                    = None
 buffer-kill                         = None
 buffer-prepend-to                   = None
-buffer-rename                       = None
 buffer-switch-to                    = None
 buffers-list                        = None
 buffers-list-alphabetically         = None
@@ -2567,7 +2564,7 @@ click-icon-box                      = None
 clone-find-all                      = None
 clone-node                          = None
 close-window                        = None
-cm-external-editor                  = None
+# cm-external-editor                  = None
 contract-all                        = None
 contract-node                       = None
 contract-or-go-left                 = None
@@ -2703,14 +2700,14 @@ focus-to-body                       = None
 focus-to-log                        = None
 focus-to-minibuffer                 = None
 focus-to-tree                       = None
-forward-char                        = Control-f
+forward-char                        = Ctrl-f
 forward-char-extend-selection       = None
 forward-paragraph                   = Alt-braceright
 forward-paragraph-extend-selection  = None
 forward-sentence                    = Alt-e
 forward-sentence-extend-selection   = None
 forward-word                        = Alt-f
-forward-word                        = Control-Right
+forward-word                        = Ctrl-Right
 forward-word-extend-selection       = None
 full-command                        = Alt-x
 go-back                             = None
@@ -2737,7 +2734,7 @@ help-for-minibuffer                 = None
 hide-spell-tab                      = None
 hoist                               = None
 how-many                            = None
-iconify-frame                       = Control-z
+iconify-frame                       = Ctrl-z
 import-file                         = None
 # import-at-file                      = None         # Removed Shift-Ctrl-F: not useful enough.
 # import-at-root                      = None
@@ -2745,7 +2742,7 @@ import-file                         = None
 # import-derived-file                 = None
 # import-flattened-outline            = None
 # import-noweb-files                  = None
-indent-region                       = Alt-Control-backslash
+indent-region                       = Alt-Ctrl-backslash
 indent-region                       = Ctrl-]
 indent-relative                     = None
 indent-rigidly                      = None
@@ -2753,21 +2750,21 @@ indent-to-comment-column            = Alt-semicolon
 insert-body-time                    = None         # Removed Shift-Ctrl-G: not useful enough.
 insert-child                        = None
 insert-headline-time                = None         # Removed Shift-Ctrl-H: not useful enough.
-insert-newline                      = Control-o
+insert-newline                      = Ctrl-o
 insert-node                         = Ctrl-I
 insert-node                         = Insert
 insert-node                         = Shift-Insert
 insert-parentheses                  = Alt-parenleft
 abbrev-inverse-add-global           = None
-isearch-backward                    = Control-R
-isearch-backward-regexp             = Control-Alt-r
-isearch-forward                     = Control-S
-isearch-forward-regexp              = Control-Alt-s
+isearch-backward                    = Ctrl-R
+isearch-backward-regexp             = Alt-Ctrl-r
+isearch-forward                     = Ctrl-S
+isearch-forward-regexp              = Alt-Ctrl-s
 keep-lines                          = None
 keyboard-quit                       = Ctrl-g
-kill-line                           = Control-k
+kill-line                           = Ctrl-k
 kill-paragraph                      = None
-kill-region                         = Control-w
+kill-region                         = Ctrl-w
 kill-region-save                    = Alt-w
 kill-sentence                       = Alt-k
 kill-word                           = Alt-d
@@ -2786,8 +2783,8 @@ move-outline-up                 = None         # Ctrl-U confllicts with universa
 move-past-close                 = Alt-parenright
 negative-argument               = Alt-minus
 new                             = None         # Ctrl-n conflicts with next-line.
-newline-and-indent              = Control-j
-next-line                       = Control-n
+newline-and-indent              = Ctrl-j
+next-line                       = Ctrl-n
 next-line-extend-selection      = None
 number-command                  = None
 number-command-0                = Alt-0
@@ -2819,7 +2816,7 @@ paste-retaining-clones          = None
 paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
 pretty-print-all-python-code    = None
 pretty-print-python-code        = None
-previous-line                   = Control-p
+previous-line                   = Ctrl-p
 previous-line-extend-selection  = None
 print-bindings                  = None
 print-commands                  = None
@@ -2856,20 +2853,20 @@ replace-string                  = None
 resize-to-screen                = None
 reverse-region                  = None
 revert                          = None
-save-buffers-kill-leo           = None # Should be Control-x Control-c
+save-buffers-kill-leo           = None # Should be Ctrl-x Ctrl-c
 save-file                       = None         # Ctrl-s conflicts with isearch-forward.
 save-file-as                    = Shift-Ctrl-S
 save-file-to                    = None
 scroll-down-half-page           = None
 scroll-down-line                = None
-scroll-down-page                = Control-v
+scroll-down-page                = Ctrl-v
 scroll-up-half-page             = None
 scroll-up-line                  = None
 scroll-up-page                  = Alt-v
 search-again                    = None
 search-backward                 = None
 search-forward                  = None
-select-all                      = Ctrl-a # Was beginning-of-line.
+# select-all                    = Ctrl-a # Was beginning-of-line.
 set-colors                      = None
 set-comment-column              = None
 set-extend-mode                 = None
@@ -2881,14 +2878,14 @@ set-find-suboutline-only            = None
 set-font                        = None
 set-command-state               = None
 set-insert-state                = None
-# set-mark-command              = Control-Shift-at
+# set-mark-command              = Ctrl-Shift-at
 set-overwrite-state             = None
 settings                        = None  # Ctrl-Y conflicts with yank.
 shell-command                   = Alt-exclam
 shell-command-on-region         = Alt-bar
 show-colors                     = None
 show-fonts                      = None
-show-invisibles                 = Alt-V
+# show-invisibles                 = Alt-V
 show-invisibles                 = None  # Alt-V conflicts with scroll-up-page .
 sort-children                   = None
 sort-columns                    = None
@@ -2899,7 +2896,7 @@ spell-change                    = None
 spell-change-then-find          = None
 spell-find                      = None
 spell-ignore                    = None
-split-line                      = Control-Alt-o
+split-line                      = Alt-Ctrl-o
 suspend                         = None
 tabify                          = None
 tangle                          = None      
@@ -2919,7 +2916,7 @@ toggle-find-regex-option            = None
 toggle-find-word-option             = None
 toggle-find-wrap-around-option      = None
 toggle-split-direction          = None
-transpose-chars                 = Control-t
+transpose-chars                 = Ctrl-t
 transpose-lines                 = None
 transpose-words                 = Alt-t
 undo                            = None         # Ctrl-Z conflicts with suspend.
@@ -2941,7 +2938,7 @@ write-at-file-nodes             = Shift-Ctrl-W
 write-dirty-at-file-nodes       = None
 write-missing-at-file-nodes     = None
 write-outline-only              = None 
-yank                            = Control-y
+yank                            = Ctrl-y
 yank-pop                        = Alt-y
 zap-to-character                = Alt-z
 </t>
@@ -3562,7 +3559,6 @@ The valid values are::
 ignore:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20060122105527.5"></t>
 <t tx="ekr.20060122105527.7">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
 
 If this is False it will be harder to use the arrow keys in the headline.
@@ -4071,7 +4067,7 @@ cut-text                            = Ctrl-x
 delete-char                         = Delete
 delete-char                         = Shift-Delete
 delete-comments                     = Ctrl-parenright
-delete-comments                     = Shift-Ctrl-0
+# delete-comments                   = Shift-Ctrl-0 # Set elsewhere.
 delete-word                         = Ctrl-Delete
 delete-spaces                       = None
 kill-line                           = Ctrl-k
@@ -4600,7 +4596,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.211"></t>
 <t tx="ekr.20070925144534.212"></t>
 <t tx="ekr.20070925144534.213"></t>
-<t tx="ekr.20070925144534.214"></t>
 <t tx="ekr.20070925144534.215"></t>
 <t tx="ekr.20070925144534.216"></t>
 <t tx="ekr.20070925144534.217"></t>
@@ -8373,14 +8368,14 @@ Controller(c).run()</t>
             print('\nmissing %s settings...' % settings_key)
             missing = set()
             for s in munged_config_list:
+                # Ignore plugins settings.
                 if s not in munged_settings_list:
                     missing.add(s)
-            missing = list(missing)
-            missing.sort()
+
             if missing:
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-                for s in missing:
+                for s in sorted(list(missing)):
                     self.print_missing(format,s,
                         config_list,settings_list,
                         munged_config_list,munged_settings_list)
@@ -8403,12 +8398,11 @@ Controller(c).run()</t>
             for s in munged_settings_list:
                 if s not in munged_config_list:
                     missing.add(s)
-            missing = list(missing)
-            missing.sort()
+
             if missing:
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-                for s in missing:
+                for s in sorted(list(missing)):
                     self.print_missing(format,s,
                         settings_list,config_list,
                         munged_settings_list,munged_config_list)</t>
@@ -8457,14 +8451,13 @@ Controller(c).run()</t>
     and add items to d.
     '''
     
-    trace = False
+    trace = True
     
     for p in c.all_positions():
         self.scan_for_configs(p,d)
         
     if trace:
-        keys = list(d.keys())
-        for key in sorted(keys):
+        for key in sorted(list(d.keys())):
             print(key)
             aList = d.get(key)
             for name in sorted(aList):
@@ -8581,7 +8574,7 @@ Controller(c).run()</t>
     return s.replace('-','').replace('_','').lower()</t>
 <t tx="ekr.20111006212449.11862">def run(self):
     
-    # import os ; os.system('cls')
+    import os ; os.system('cls')
     
     self.get_commanders()
     configs = self.get_configs()
@@ -8597,6 +8590,18 @@ Controller(c).run()</t>
     
     assert munged_s in munged_in_list,munged_s
     assert munged_s not in munged_out_list,munged_s
+    
+    if 0: # These should not be necessary.  Something is wrong.
+        
+        # Ignore plugins settings and global switches.
+        for prefix in ('color','datenodes','http','opml','rst3','todo','trace','vim','zodb'):
+            if munged_s.startswith(prefix):
+                return
+                
+    # Ignore color settings.  They are handled differently...
+    for suffix in ('color',):
+        if munged_s.endswith(suffix):
+            return
     
     match_list = [s for s in in_list if self.munge(s) == munged_s]
     
@@ -9489,8 +9494,8 @@ When True, bindings that appear to specify the control key actually specify the 
 <t tx="ekr.20120229173025.20628"></t>
 <t tx="ekr.20120305084218.11271"># Unbound F-Keys cause problems on Ubuntu
 help-for-command= F1
-do-nothing      = F2
-do-nothing      = F3
+# find-prev     = F2    # Set elsewhere
+# find-next     = F3    # Set elsewhere
 do-nothing      = F4
 do-nothing      = F5
 do-nothing      = F6
@@ -9526,6 +9531,275 @@ do-nothing = Shift-F9
 do-nothing = Shift-F10
 do-nothing = Shift-F11
 do-nothing = Shift-F12</t>
+<t tx="ekr.20120305084218.12631">missing @bool settings...
+                               Canonical Actual
+                               ========= ======
+                   checkoutlineafterread ['check_outline_after_read']
+                       graphmanuallayout ['graph-manual-layout']
+                         headlinegmttime ['headline_gmt_time']
+                          ignorecapslock ['ignore_caps_lock']
+               ignoreunboundnonasciikeys ['ignore_unbound_non_ascii_keys']
+              invisibleoutlinenavigation ['invisible_outline_navigation']
+                        leotohtmlnomenus ['leo_to_html_no_menus']
+                           outputdocflag ['output_doc_flag']
+                         shadowinhomedir ['shadow_in_home_dir']
+                  suppressallpluginmenus ['suppress-all-plugin-menus']
+                  suppressdatenodesmenus ['suppress-datenodes-menus']
+                         tanglebatchflag ['tangle_batch_flag']
+                       untanglebatchflag ['untangle_batch_flag']
+                           useheaderflag ['use_header_flag']
+                           useminibuffer ['useMinibuffer']
+                  viewrenderedautocreate ['view-rendered-auto-create']
+                    viewrenderedautohide ['view-rendered-auto-hide']
+                vimpluginpositionscursor ['vim_plugin_positions_cursor']
+                 vimpluginusestabfeature ['vim_plugin_uses_tab_feature']
+
+missing @color settings...
+                               Canonical Actual
+                               ========= ======
+                                    %s%s ['%s_%s']
+                                   black ['black']
+            renderingpanebackgroundcolor ['rendering-pane-background-color']
+
+missing @int settings...
+                               Canonical Actual
+                               ========= ======
+                             httptimeout ['http_timeout']
+
+missing @string settings...
+                               Canonical Actual
+                               ========= ======
+                     defaulteditingstate ['default_editing_state']
+                          externaleditor ['external_editor']
+                         httpbookmarkunl ['http_bookmark_unl']
+                         leoscreenprefix ['leoscreen_prefix']
+                        leoscreentimefmt ['leoscreen_time_fmt']
+                             mimeopencmd ['mime_open_cmd']
+                           qtbuttoncolor ['qt-button-color']
+                   rst2httpattributename ['rst2_http_attributename']
+                          scriptfilepath ['script_file_path']
+                        todoiconlocation ['todo_icon_location']
+                           todoiconorder ['todo_icon_order']
+                        todoproglocation ['todo_prog_location']
+                            todotimename ['todo_time_name']
+                toplevelunboundkeyaction ['top_level_unbound_key_action']
+                 viewrendereddefaultkind ['view-rendered-default-kind']
+                                  vimcmd ['vim_cmd']
+                                  vimexe ['vim_exe']
+                         vimtriggerevent ['vim_trigger_event']
+
+missing config.getBool calls...
+                               Canonical Actual
+                               ========= ======
+                            addedsetting ['added_setting']
+                  allowmiddlebuttonpaste ['allow_middle_button_paste']
+                appendoutputtooutputfile ['append_output_to_output_file']
+              atrootbodiesstartindocmode ['at_root_bodies_start_in_doc_mode']
+                                   batch ['batch']
+                  checkpythoncodeonwrite ['check_python_code_on_write']
+              colorcwebcommentswithlatex ['color_cweb_comments_with_latex']
+              colorcwebdocpartswithlatex ['color_cweb_doc_parts_with_latex']
+              colordirectivesinplaintext ['color_directives_in_plain_text']
+            createnonexistentdirectories ['create_nonexistent_directories']
+         datenodesmonthnodeomitsaturdays ['datenodes_month_node_omit_saturdays']
+           datenodesmonthnodeomitsundays ['datenodes_month_node_omit_sundays']
+          datenodesyearnodeomitsaturdays ['datenodes_year_node_omit_saturdays']
+            datenodesyearnodeomitsundays ['datenodes_year_node_omit_sundays']
+           forcenewlinesinatnosentbodies ['force_newlines_in_at_nosent_bodies']
+                          gcbeforeredraw ['gc_before_redraw']
+                        ignoreblanklines ['ignore_blank_lines']
+                              ignorecase ['ignore_case']
+                  ignorefirstlineoffile1 ['ignore_first_line_of_file_1']
+                  ignorefirstlineoffile2 ['ignore_first_line_of_file_2']
+                ignoreinteriorwhitespace ['ignore_interior_whitespace']
+                 ignoreleadingwhitespace ['ignore_leading_whitespace']
+                     ignoresentinellines ['ignore_sentinel_lines']
+                   makewhitespacevisible ['make_whitespace_visible']
+                             markchanges ['mark_changes']
+                               markfinds ['mark_finds']
+                                nodeonly ['node_only']
+                  opmluseoutlineelements ['opml_use_outline_elements']
+                       opmlwritebodytext ['opml_write_body_text']
+                     opmlwriteleodetails ['opml_write_leo_details']
+           opmlwriteleoglobalsattributes ['opml_write_leo_globals_attributes']
+                            opmlwriteuas ['opml_write_uAs']
+                            patternmatch ['pattern_match']
+                printbothlinesformatches ['print_both_lines_for_matches']
+                      printmatchinglines ['print_matching_lines']
+                   printmismatchinglines ['print_mismatching_lines']
+                      printtrailinglines ['print_trailing_lines']
+                                readonly ['read_only']
+    redirectexecutescriptoutputtologpane ['redirect_execute_script_output_to_log_pane']
+                                 reverse ['reverse']
+                 rst3clearhttpattributes ['rst3_clear_http_attributes']
+                            rst3codemode ['rst3_code_mode']
+                         rst3doconlymode ['rst3_doc_only_mode']
+                         rst3generaterst ['rst3_generate_rst']
+            rst3generaterstheadercomment ['rst3_generate_rst_header_comment']
+                   rst3httpserversupport ['rst3_http_server_support']
+                     rst3numbercodelines ['rst3_number_code_lines']
+            rst3showdocpartsasparagraphs ['rst3_show_doc_parts_as_paragraphs']
+                       rst3showheadlines ['rst3_show_headlines']
+                   rst3showleodirectives ['rst3_show_leo_directives']
+                  rst3showmarkupdocparts ['rst3_show_markup_doc_parts']
+                 rst3showoptionsdocparts ['rst3_show_options_doc_parts']
+                    rst3showoptionsnodes ['rst3_show_options_nodes']
+                  rst3showorganizernodes ['rst3_show_organizer_nodes']
+                 rst3stripatfileprefixes ['rst3_strip_at_file_prefixes']
+                             rst3verbose ['rst3_verbose']
+               rst3writeintermediatefile ['rst3_write_intermediate_file']
+                    saveclearsundobuffer ['save_clears_undo_buffer']
+                            scriptchange ['script_change']
+                            scriptsearch ['script_search']
+                              searchbody ['search_body']
+                          searchheadline ['search_headline']
+       selectalltextwheneditingheadlines ['select_all_text_when_editing_headlines']
+                           showtreestats ['show_tree_stats']
+                          suboutlineonly ['suboutline_only']
+                       testdarwinsetting ['test_darwin_setting']
+                        testwin32setting ['test_win32_setting']
+                  tracebindkeyexceptions ['trace_bind_key_exceptions']
+                        tracecolorparser ['trace_color_parser']
+                                  tracef ['trace_f']
+                                  traceg ['trace_g']
+                                 tracegc ['trace_gc']
+                            tracegccalls ['trace_gc_calls']
+                          tracegcverbose ['trace_gc_verbose']
+                           tracekeyevent ['trace_key_event']
+                      tracemastercommand ['trace_masterCommand']
+                 tracemasterfocushandler ['trace_masterFocusHandler']
+                   tracemasterkeyhandler ['trace_masterKeyHandler']
+                         traceminibuffer ['trace_minibuffer']
+                              tracemodes ['trace_modes']
+                            traceplugins ['trace_plugins']
+                             traceselect ['trace_select']
+                               tracetree ['trace_tree']
+                          tracetreealloc ['trace_tree_alloc']
+                           tracetreeedit ['trace_tree_edit']
+                             tracetreegc ['trace_tree_gc']
+                         tracetreeredraw ['trace_tree_redraw']
+                              usecmdmenu ['useCmdMenu']
+                              useplugins ['use_plugins']
+                 verbosetracecolorparser ['verbose_trace_color_parser']
+               warnwhenpluginsfailtoload ['warn_when_plugins_fail_to_load']
+                               wholeword ['whole_word']
+                                    wrap ['wrap']
+                writerecentfilesasneeded ['write_recent_files_as_needed']
+                   writestripsblanklines ['write_strips_blank_lines']
+
+missing config.getColor calls...
+                               Canonical Actual
+                               ========= ======
+                              blankcolor ['blank_color']
+               bodycursorbackgroundcolor ['body_cursor_background_color']
+               bodycursorforegroundcolor ['body_cursor_foreground_color']
+                bodyinsertioncursorcolor ['body_insertion_cursor_color']
+                           comment1color ['comment1_color']
+                           comment2color ['comment2_color']
+                           comment3color ['comment3_color']
+                           comment4color ['comment4_color']
+                            docpartcolor ['doc_part_color']
+                      forthkeyword3color ['forth_keyword3_color']
+                      forthkeyword4color ['forth_keyword4_color']
+                      forthkeyword5color ['forth_keyword5_color']
+                           keyword1color ['keyword1_color']
+                           keyword2color ['keyword2_color']
+                           keyword3color ['keyword3_color']
+                           keyword4color ['keyword4_color']
+                              labelcolor ['label_color']
+                         leokeywordcolor ['leo_keyword_color']
+                           literal1color ['literal1_color']
+                           literal2color ['literal2_color']
+                           literal3color ['literal3_color']
+                           literal4color ['literal4_color']
+                  logpanebackgroundcolor ['log_pane_background_color']
+           logpanefindtabbackgroundcolor ['log_pane_Find_tab_background_color']
+          logpanespelltabbackgroundcolor ['log_pane_Spell_tab_background_color']
+                  logtextbackgroundcolor ['log_text_background_color']
+                             markupcolor ['markup_color']
+                           operatorcolor ['operator_color']
+                        phpoperatorcolor ['php_operator_color']
+                        sectionnamecolor ['section_name_color']
+                showinvisiblesspacecolor ['show_invisibles_space_color']
+                  showinvisiblestabcolor ['show_invisibles_tab_color']
+                                tabcolor ['tab_color']
+               undefinedsectionnamecolor ['undefined_section_name_color']
+                                urlcolor ['url_color']
+
+missing config.getInt calls...
+                               Canonical Actual
+                               ========= ======
+                additionalbodytextborder ['additional_body_text_border']
+               globalsettingforunittests ['global_setting_for_unit_tests']
+                    iconbarwidgetsperrow ['icon_bar_widgets_per_row']
+                              limitcount ['limit_count']
+
+missing config.getFloat calls...
+
+missing config.getRatio calls...
+
+missing config.getPath calls...
+
+missing config.getString calls...
+                               Canonical Actual
+                               ========= ======
+                              changetext ['change_text']
+                            comparefile1 ['compare_file_1']
+                            comparefile2 ['compare_file_2']
+                       datenodesbodytext ['datenodes_body_text']
+                datenodesdaynodeheadline ['datenodes_day_node_headline']
+           datenodesmonthnodedayheadline ['datenodes_month_node_day_headline']
+         datenodesmonthnodemonthheadline ['datenodes_month_node_month_headline']
+            datenodesyearnodedayheadline ['datenodes_year_node_day_headline']
+          datenodesyearnodemonthheadline ['datenodes_year_node_month_headline']
+           datenodesyearnodeyearheadline ['datenodes_year_node_year_headline']
+                   debuggerdefaulttarget ['debugger_default_target']
+                     debuggerforcetarget ['debugger_force_target']
+               defaultatautofileencoding ['default_at_auto_file_encoding']
+              defaultderivedfileencoding ['default_derived_file_encoding']
+                       editororientation ['editor_orientation']
+                                findtext ['find_text']
+                         headlinegmttime ['headline_gmt_time']
+                             inkscapebin ['inkscape-bin']
+                        inkscapetemplate ['inkscape-template']
+           limitdirectorysearchextension ['limit_directory_search_extension']
+                      newleofileencoding ['new_leo_file_encoding']
+                              outputfile ['output_file']
+                    outputinitialcomment ['output_initial_comment']
+                           outputnewline ['output_newline']
+                       qtdefaultencoding ['qt-default-encoding']
+               relativepathbasedirectory ['relative_path_base_directory']
+                removesentinelsextension ['remove_sentinels_extension']
+                          rst3codeprefix ['rst3_code_prefix']
+                     rst3defaultencoding ['rst3_default_encoding']
+               rst3defaultencodingprefix ['rst3_default_encoding_prefix']
+                         rst3defaultpath ['rst3_default_path']
+                       rst3doconlyprefix ['rst3_doc_only_prefix']
+                   rst3httpattributename ['rst3_http_attributename']
+                rst3ignoreheadlineprefix ['rst3_ignore_headline_prefix']
+               rst3ignoreheadlinesprefix ['rst3_ignore_headlines_prefix']
+                    rst3ignorenodeprefix ['rst3_ignore_node_prefix']
+                        rst3ignoreprefix ['rst3_ignore_prefix']
+                    rst3ignoretreeprefix ['rst3_ignore_tree_prefix']
+                     rst3nodebeginmarker ['rst3_node_begin_marker']
+                        rst3optionprefix ['rst3_option_prefix']
+                       rst3optionsprefix ['rst3_options_prefix']
+                     rst3preformatprefix ['rst3_preformat_prefix']
+    rst3publishargvformissingstylesheets ['rst3_publish_argv_for_missing_stylesheets']
+                           rst3rstprefix ['rst3_rst_prefix']
+                  rst3showheadlineprefix ['rst3_show_headline_prefix']
+                      rst3stylesheetname ['rst3_stylesheet_name']
+                      rst3stylesheetpath ['rst3_stylesheet_path']
+                 rst3underlinecharacters ['rst3_underline_characters']
+                          splitbarrelief ['split_bar_relief']
+                              stylesheet ['stylesheet']
+                          targetlanguage ['target_language']
+                              tkencoding ['tk_encoding']
+                    trailingbodynewlines ['trailing_body_newlines']
+                 underindentescapestring ['underindent-escape-string']
+                         zodbstoragefile ['zodb_storage_file']
+run done
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
@@ -9604,7 +9878,7 @@ where the extra information is the name of the linked node's parent.
 .pdf
 </t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
-cm-external-editor = Alt-v</t>
+# cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
 a single @data contextmenu_commands node. </t>
 <t tx="ville.20091008201813.3911"># Important: the contextmenu.py plugin must be enabled
