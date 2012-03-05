@@ -228,8 +228,11 @@ class BigDash:
         w.setLayout(lay)
         web.setHtml("""
                     <h12>Dashboard</h2>
-                    <table cellspacing="50">
-                    <tr><td> <b>s</b> foobar</td><td>   <i>Search for "foobar" in all open documents</i></td></tr>
+                    <table cellspacing="10">
+                    <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
+                    <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
+                    <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar' (see Whoosh syntax)</i></td></tr>
+                    
                     </table>
                     """)
         #web.load(QUrl("http://google.fi"))

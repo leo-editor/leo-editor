@@ -65,6 +65,7 @@ class LeoFts:
             
     def close(self):
         self.ix.close()
+        
 def main():
     fts = LeoFts("c:/t/ltest")
     fts.create()
