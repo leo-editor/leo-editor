@@ -475,7 +475,7 @@ class Commands (object):
         c.focus_border_color        = getColor('focus_border_color') or 'red'
         c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
         c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
-        c.showMinibuffer            = getBool('useMinibuffer')
+        # c.showMinibuffer            = getBool('useMinibuffer')
             # This option is a bad idea.
         c.page_width                = getInt('page_width') or 132
             # 2012/02/27: this appears to be a fix of an *ancient* bug.

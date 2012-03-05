@@ -3685,7 +3685,6 @@ Caveats:
 - If the document is not in currently active tab, the navigation is
 done "in the background". Correct implementation would be to activate
 the tab in order to bring attention to it. 
-.. @+node:ekr.20120301053039.15577: *4* check scripts in leoSetting.leo pass
 .. @+node:ekr.20120229094652.15178: *4* Minor (can be moved to b2/final)
 .. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
 .. @+node:ekr.20111114085925.9932: *5* Why does the unittest/output folder contain empty files?
