@@ -19,6 +19,51 @@ Top 10:
 @language rest
 
 .. @+node:ekr.20120304065838.14230: *4* Fix URL bugs
+.. @+node:ekr.20120304214900.9938: *4* Bug 917814: Switching Log Pane tabs is done incompletely
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/917814
+
+Switching Log Pane tabs is not done cleanly and completely. To see this do the following:
+
+1) Start Leo-Editor
+2) Shift-Ctrl-F. This brings the Nav tab to the foreground and
+   leaves the focus in the search string field of the Nav pane.
+3) Click on the Log tab of the Log pane.
+4) Ctrl-A. This causes the following messags to be displayed in the Log tab of the Log pane:
+
+exception executing command
+Traceback (most recent call last):
+  File "/home/bob/bzrWork/trunk/leo/core/leoCommands.py", line 419, in doCommand
+    val = command(event)
+  File "/home/bob/bzrWork/trunk/leo/core/leoEditCommands.py", line 5755, in selectAllText
+    return w.selectAllText()
+  File "/home/bob/bzrWork/trunk/leo/core/leoFrame.py", line 168, in selectAllText
+    def selectAllText (self,insert=None): self.widget and self.widget.selectAllText(insert)
+AttributeError: 'LeoQuickSearchWidget' object has no attribute 'selectAllText'
+
+
+That is, it appears that the focus is on the Log tab and the
+intention is to select-all in the log tab, but Leo-Editor
+tries to select-all in the Nav pane.
+
+Strangely, doing a Ctrl-A in the Nav tab of the Log pane
+seems to do nothing---no errors, no select.
+
+-------
+Ubuntu 11.10 with Fluxbox window manager
+Leo Log Window
+Leo 4.9.1 devel, build 4928, 2012-01-14 11:27:18
+Python 2.7.2, qt version 4.7.3
+linux2
+setting leoID from os.getenv('USER'): 'bob'
+load dir: /home/bob/bzrWork/trunk/leo/core
+global config dir: /home/bob/bzrWork/trunk/leo/config
+home dir: /home/bob
+reading settings in /home/bob/bzrWork/trunk/leo/config/leoSettings.leo
+reading settings in /home/bob/.leo/myLeoSettings.leo
+reading settings in /home/bob/.leo/workbook.leo
+reading: /home/bob/.leo/workbook.leo
 .. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
@@ -5532,14 +5577,6 @@ A very complex bug
 https://bugs.launchpad.net/leo-editor/+bug/613153
 .. @+node:ekr.20111222113610.10245: *5* Bug 711158: Warn if same .leo file open in another Leo instance
 https://bugs.launchpad.net/leo-editor/+bug/711158
-.. @+node:ekr.20111026091322.16491: *5* Bug 805288: ctr - tab locks up in log pane
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/805288
-
-if the log tab is active in the log pane ctrl-tab will toggle through the body,
-tree and log panes. If any other tab is active the key combination will freeze
-in the log pane.
 .. @+node:ekr.20111026091322.16499: *5* Bug 824087: Alt+F4 is not the same as Alt+F, c
 @nocolor-node
 

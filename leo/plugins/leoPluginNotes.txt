@@ -285,5 +285,267 @@ def createIconButton (self,text,command,statusLine,bg):
         # Reporting this command is way too annoying.
 
     return b
+#@+node:ekr.20120302043834.9936: *3* Found: .openWith
+#@+node:ville.20090701110830.10215: *4* editnode_rclick
+def editnode_rclick(c,p, menu):
+    """ Provide "edit in EDITOR" context menu item """
+
+    editor = g.guessExternalEditor()
+    if not editor:
+        return
+    action = menu.addAction("Edit in " + editor)
+
+    def editnode_rclick_cb():
+        # c.openWith(data = ('subprocess.Popen', [editor], None))
+        d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
+        c.openWith(d=d)
+
+    action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
+#@+node:ville.20090701224704.9805: *4* << Add commands >>
+# cm is 'contextmenu' prefix
+@g.command('cm-external-editor')
+def cm_external_editor_f(event):    
+    """ Open node in external editor 
+
+    Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
+    """
+    c = event['c']
+    pos = c.currentPosition()
+    editor = g.guessExternalEditor()
+
+    # c.openWith(data = ('subprocess.Popen', editor, None))
+    d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
+    c.openWith(d=d)
+
+
+
+
+
+
+
+
+#@+node:ekr.20040331071919.32: *4* << Open_Tree Plugin >>
+@language python
+@tabwidth-4
+@doc
+@ascskip # Time-stamp: "Tue, Jan 13 10:14 CST 2004  michael@redpriest _OpenTree_Plugin__140660268.py"
+
+This is a module that creates an "Open With" menu item that opens
+Leo outline nodes in the tree below the current Leo node in the
+XEmacs editor.I frequently have a small tree of Leo nodes which
+contain code that is usually edited in the same session.
+
+NOTE: I use the "gnuclient-noshow" selection to load the temporary
+open_with file in the background.Leo calls a command with the
+temporary file name at the end of the command, but the gnuclient
+command needs to receive it enclosed in quotes and parentheses.The
+solution is a small intermediary bash shell script called
+"gnuclient-noshow":
+
+- - -
+#!/bin/bash
+gnuclient- eval "(find-file-noselect \"${1}\")"
+- - -
+
+I would rather have this operate in the background, but Leo ' s
+openWith always operates on the current node, and openWith has much
+good error checking that I want to use.So the fast solution was to
+have OpenTreeInXEmacs visibly traverse the tree.
+
+@ascskip on
+@root "other/xemacs/mod_xemacsopentree.py"
+<< Open_Tree Plugin >>
+@code
+
+def OpenTreeInXEmacs (c):
+    import leo.core.leoCommands as leoCommands
+    #XEmacsCommand = "/usr/bin/gnuclient -q "
+    XEmacsCommand = "/mrc2/linux-bin/gnuclient-noshow "
+    vnode = c.currentVnode() # get the current vnode.
+    stopHere = vnode.nodeAfterTree()
+    v = vnode
+    while v != stopHere:
+        # c.openWith(data=("os.system",XEmacsCommand,None))
+        d = {'kind':'subprocess.Popen','args':[XEmacsCommand],'ext':None}
+        c.openWith(d=d)
+        v = v.threadNext()
+        if (not v) or (v==stopHere):
+            break
+        c.selectVnode(v)
+    c.selectVnode(vnode)
+
+
+def CreateOpenTreeMenu (tag,keywords):
+
+    """Create the 'Xemacs: Open Tree' menu item in the Open With menu."""
+
+
+    if (tag=="menu2" or
+        (tag=="start2") or
+        (tag=="command2" and keywords.get("label")=="new")):
+
+        c = keyword.get('c')
+        exportMenu = c.frame.menu.getMenu('Open With')
+        newEntries = (
+            ("-",None,None),
+            ("XEmacs: Open nodes in sub-tree","None",OpenTreeInXEmacs),
+        )
+        c.frame.menu.createMenuEntries(exportMenu,newEntries,dynamicMenu=True)
+
+if 1:
+    g.registerHandler(("start2","menu2","command2"),CreateOpenTreeMenu)
+
+    __version__ = ".4" # Set version for the plugin handler.
+    g.plugin_signon(__name__)
+@doc
+
+
+@code
+#@+node:EKR.20040517075715.11: *4* open_in_vim
+contextmenu_message_given = False
+
+def open_in_vim (tag,keywords):
+
+    if g.unitTesting: return
+
+    c = keywords.get('c')
+    p2 = keywords.get('old_p')
+    if not c: return
+    
+    # Load contextmenu plugin if required.
+    contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
+    if not contextMenu:
+        if not contextmenu_message_given:
+            contextmenu_message_given = True
+            g.trace('can not load contextmenu.py')
+        return
+    
+    p = c.p
+
+    if tag.startswith('select') and p == p2:
+        return
+
+    if p.h.find('file-ref') == 1: # Must be at 2nd position
+        return
+
+    #URL nodes
+    openURLNodes = c.config.getBool('vim_plugin_opens_url_nodes')
+    if not openURLNodes and p.h.startswith('@url'):
+        return # Avoid conflicts with @url nodes.
+    v = p.v
+
+    vim_cmd = c.config.getString('vim_cmd') or _vim_cmd
+    vim_exe = c.config.getString('vim_exe') or _vim_exe
+
+    global locationMessageGiven
+
+    if not locationMessageGiven:
+        locationMessageGiven = True
+        print('vim_cmd: %s' % vim_cmd)
+        print('vim_exe: %s' % vim_exe)
+
+    #Cursor positioning
+    Lnum = ""
+    if c.config.getBool('vim_plugin_positions_cursor'):    
+        #Line number - start at same line as Leo cursor
+        #  get node's body text
+        bodyCtrl = c.frame.body.bodyCtrl
+        s = bodyCtrl.getAllText()    
+        #  Get cursors row & column number
+        index = bodyCtrl.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,index)
+        #  Build gVim command line parameter for setting cursor row
+        Lnum = "+" + str(row + 1)
+
+    #Vim's tab card stack
+    useTabs = ""
+
+    if c.config.getBool('vim_plugin_uses_tab_feature'):    
+        useTabs = "-tab"
+
+    # Search g.app.openWithFiles for a file corresponding to v.
+    for d in g.app.openWithFiles:
+        if d.get('v') == id(v):
+            path = d.get('path','') ; break
+    else: path = ''
+
+    # if the body has changed we need to open a new 
+    # temp file containing the new body in vim
+    if (
+        not g.os_path_exists(path) or 
+        not hasattr(v,'OpenWithOldBody') or
+        v.b != v.OpenWithOldBody
+    ):
+        # Open a new temp file.
+        if path:
+            # Remove the old file and the entry in g.app.openWithFiles.
+            os.remove(path)
+            g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
+            os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd "+path+"<CR>'")
+
+        v.OpenWithOldBody=v.b # Remember the previous contents.
+    
+        # New code by Jim Sizemore. TL: added support for gVim tabs.
+        args = [vim_exe,"--servername","LEO","--remote"+useTabs+"-silent",Lnum]
+        d = {'kind':'subprocess.Popen','args':args,'ext':None}
+        c.openWith(d=d)
+    else:
+        # Reopen the old temp file.
+        os.system(vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'")
+
+    # return val
+#@+node:ekr.20050313071202: *4* open_in_emacs
+contextmenu_message_given = False
+
+def open_in_emacs (tag,keywords):
+
+    c = keywords.get('c')
+    p = keywords.get('p')
+    if not c or not p: return
+    
+    # Load contextmenu plugin if required.
+    contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
+    if not contextMenu:
+        if not contextmenu_message_given:
+            contextmenu_message_given = True
+            g.trace('can not load contextmenu.py')
+        return
+
+    v = p.v
+
+    # Search g.app.openWithFiles for a file corresponding to v.
+    for d in g.app.openWithFiles:
+        if d.get('v') == id(v):
+            path = d.get('path','') ; break
+    else: path = ''
+
+    # g.trace('config',c.config.getString('xemacs_exe'))
+    emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd # 2010/01/18: found by pylint.
+
+    if (
+        not g.os_path_exists(path) or
+        not hasattr(v,'OpenWithOldBody') or
+        v.b != v.OpenWithOldBody
+    ):
+        # Open a new temp file.
+        if path:
+            # Remove the old file and the entry in g.app.openWithFiles.
+            os.remove(path)
+            g.app.openWithFiles = [d for d in g.app.openWithFiles
+                if d.get('path') != path]
+            os.system(emacs_cmd)
+        v.OpenWithOldBody=v.b # Remember the old contents
+
+        # open the node in emacs (note the space after _emacs_cmd)
+        # data = "os.spawnl", emacs_cmd, None
+        d = {'kind':'os.spawnl','args':[emacs_cmd],'ext':None}
+        c.openWith(d=d)
+    else:
+        # Reopen the old temp file.
+        os.system(emacs_cmd)
+
+def open_in_emacs_return_true(tag,keywords):
+    open_in_emacs(tag,keywords)
+    return True
 #@-all
 #@-leo

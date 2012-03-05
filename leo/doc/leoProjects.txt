@@ -3216,6 +3216,148 @@ Note: ctrl-tab could be bound to several things:
        
 2. Presumably, this bug refers to either cycle-focus or cycle-all-focus.
    Both work at present.
+#@+node:ekr.20120304065838.15587: *4* Fixed bug 823267:when a tab is closed focus may go to a tab other than the visible one
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/823267
+
+When tabs are closed with the close tab 'X' on the tab, focus
+should go to whichever tab becomes visible, but it doesn't,
+it goes to an arbitrary tab which may not be visible. If you
+then hit Alt-X expecting to cut the highlighted node in the
+visible tab, you cut a node you can't see in a different
+commander.
+
+What I did:
+    
+- Refactored part of g.app.closeLeoWindow into g.app.selectLeoWindow.
+- Added the new_c argument to g.app.closeLeoWindow and c.close.
+- Changed several event handlers in TabbedFrameFactor so that they
+  call g.app.selectLeoWindow as appropriate.
+
+@language python
+#@+node:ekr.20031218072017.2833: *5* c.close
+def close (self,event=None,new_c=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame,new_c=new_c)
+#@+node:ekr.20031218072017.2609: *5* app.closeLeoWindow
+def closeLeoWindow (self,frame,new_c=None):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    trace = False and not g.unitTesting
+    c = frame.c
+
+    if trace: g.trace(frame.c,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.recentFilesManager.writeRecentFilesFile(c)
+        # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c)
+        # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        c2 = new_c or g.app.windowList[0].c
+        g.app.selectLeoWindow(c2)
+       
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@+node:ekr.20120304065838.15588: *5* app.selectLeoWindow
+def selectLeoWindow (self,c):
+    
+    trace = False and not g.unitTesting
+    assert c
+    if trace: g.trace(c.frame.title)
+    
+    frame = c.frame
+    frame.deiconify()
+    frame.lift()
+    c.setLog()
+    
+    master = hasattr(frame.top,'leo_master') and frame.top.leo_master
+
+    if master: # 2011/11/21: selecting the new tab ensures focus is set.
+        # frame.top.leo_master is a TabbedTopLevel.
+        master.select(c)
+
+    c.bodyWantsFocus()
+    c.outerUpdate()
+#@+node:ekr.20110605121601.18467: *5* deleteFrame (TabbedFrameFactory)
+def deleteFrame(self, wdg):
+    
+    trace = False and not g.unitTesting
+    if not wdg: return
+
+    if wdg not in self.leoFrames:
+        # probably detached tab
+        self.masterFrame.delete(wdg)
+        return
+        
+    if trace: g.trace('old',wdg.leo_c.frame.title)
+        # wdg is a DynamicWindow.
+    
+    tabw = self.masterFrame
+    idx = tabw.indexOf(wdg)
+    tabw.removeTab(idx)
+    del self.leoFrames[wdg]
+
+    wdg2 = tabw.currentWidget()
+    if wdg2:
+        if trace: g.trace('new',wdg2 and wdg2.leo_c.frame.title)
+        g.app.selectLeoWindow(wdg2.leo_c)
+    
+    tabw.tabBar().setVisible(
+        self.alwaysShowTabs or tabw.count() > 1)
+#@+node:ekr.20110605121601.18470: *5* signal handlers (TabbedFrameFactory)
+def slotCloseRequest(self,idx):
+    
+    trace = False and not g.unitTesting
+    tabw = self.masterFrame
+    w = tabw.widget(idx)
+    f = self.leoFrames[w]
+    c = f.c
+    if trace: g.trace(f.title)
+    c.close(new_c=None)
+        # 2012/03/04: Don't set the frame here.
+        # Wait until the next slotCurrentChanged event.
+        # This keeps the log and the QTabbedWidget in sync.
+
+def slotCurrentChanged(self, idx):
+
+    # Two events are generated, one for the tab losing focus,
+    # and another event for the tab gaining focus.
+    trace = False and not g.unitTesting
+    tabw = self.masterFrame
+    w = tabw.widget(idx)
+    f = self.leoFrames.get(w)
+    if f:
+        if trace: g.trace(f.title)
+        tabw.setWindowTitle(f.title)
+        g.app.selectLeoWindow(f.c)
+            # 2012/03/04: Set the frame now.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
