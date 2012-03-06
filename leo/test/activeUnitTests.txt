@@ -12775,6 +12775,18 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20120306173116.3933: *6* @test xml non-ascii tags
+@first # -*- coding: utf-8 -*-
+
+s = '''\
+<:À.Ç>
+<Ì>
+<_.ÌÑ>
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 s = '''\

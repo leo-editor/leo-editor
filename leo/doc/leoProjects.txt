@@ -2637,6 +2637,444 @@ The unit test "@test syntax of all files" now checks the following files:
 - script files:
     convert_to_shadow.py, leoFindScript.py, LinixInstall.py,
     tangle_done.py, untangle_done.py
+#@+node:ekr.20111026091322.16496: *4* Tried, and failed, to fix bug 844953: copy-clone-pasted node appears in other tab
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/844953
+
+1. Open two empty files with the LEO revision 4451/trunk using the qttabs GUI and save them both.
+2. Create a new node and write "Abc" in its head.
+3. Select "Copy Node" from the outline menu.
+4. Select "Paste Node As Clone" from the outline menu:
+   Node is not inserted as clone, but inserted as a copy in the second file/tab.
+
+Sometimes even a standard Copy-Paste action results in the node being inserted in the other file.
+
+EKR: This a unity menu problem, not a problem with the paste commands per se.
+
+The problem is that only a single unity menu exists, and we must ensure that
+it is the menu for the presently-selected tab.
+
+
+The new code consists of calls to c.enableMenuBar, but the code has no effect, so it will be eliminated.
+#@+node:ekr.20110605121601.18456: *5* select (leoTabbedTopLevel)
+def select (self,c):
+
+    '''Select the tab for c.'''
+    
+    dw = c.frame.top # A DynamicWindow
+    i = self.indexOf(dw)
+    self.setCurrentIndex(i)
+    
+    # Fix bug 844953: tell Unity which menu to use.
+    c.enableMenuBar()
+
+    # g.trace(i,c.frame.title,c.frame.menu.menuBar)
+#@+node:ekr.20120223062418.10405: *5* LM.createMenu
+def createMenu(self,c,fn=None):
+
+    # Create the menu as late as possible so it can use user commands.
+    lm = self
+
+    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+
+        c.frame.menu.createMenuBar(c.frame)
+        g.app.recentFilesManager.updateRecentFiles(fn)
+        g.doHook("menu2",c=c,p=c.p,v=c.p)
+        g.doHook("after-create-leo-frame",c=c)
+        g.doHook("after-create-leo-frame2",c=c)
+
+        # Fix bug 844953: tell Unity which menu to use.
+        c.enableMenuBar()
+#@+node:ekr.20120306130648.9849: *5* c.enableMenuBar
+def enableMenuBar(self):
+    
+    '''A failed attempt to work around Ubuntu Unity memory bugs.'''
+    
+    c = self
+    
+    # g.trace(c.frame.title,g.callers())
+    
+    if 0:
+        if c.frame.menu.isNull:
+            return
+    
+        for frame in g.app.windowList:
+            if frame != c.frame:
+                frame.menu.menuBar.setDisabled(True)
+    
+        c.frame.menu.menuBar.setEnabled(True)
+#@+node:ekr.20120306130648.9850: *4* Fixed bug 501636: Leo's import code should support non-ascii xml tags
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/501636
+
+Leo's present @auto import code for xml files supports only ascii tags.
+
+In particular, xmlScanner.isWordChar should allow non-ascii characters as specified in
+www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+
+NameStartChar ::= ":" | [A-Z] | "_" | [a-z] |
+    [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] |
+    [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] |
+    [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+NameChar ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    [#x0300-#x036F] | [#x203F-#x2040]
+
+The following script, presently in test.leo, may be useful:
+
+import unicodedata as u
+table = ('a','9','_',':','.',)
+table2 = (
+    (0xc0,0xd6),(0xd8,0xf6),(0xf8,0x2ff),(0x370,0x37d),(0x37f,0x1fff),
+    (0x200c,0x200d),(0x2070,0x218f),(0x2c00,0x2fef),(0x3001,0xd7ff),
+    (0xf900,0xfdcf),(0xfdf0,0xfffd),(0x10000,0xeffff),
+    # Valid only after the start of a word.
+    (0xb7,0xb7+1),(0x0300,0x036f),(0x203f,0x2040),
+)
+for ch in table:
+    ch = g.u(ch)
+    g.es(ch,u.category(ch))
+for i,j in table2:
+    g.es('*** range %xd %xd' % (i,j))
+    for n in range(i,min(i+5,j)):
+        if g.isPython3: ch = chr(n)
+        else: ch = unichr(n)
+        g.es(ch,u.category(ch))
+
+Clearly, however, the unicode category of these characters
+is not helpful. Instead, a dictionary lookup would be
+appropriate.
+#@+node:ekr.20071214072924.4: *5* startsHelper & helpers (xmlScanner)
+def startsHelper(self,s,i,kind,tags,tag=None):
+    '''return True if s[i:] starts a class or function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    trace = (False and kind == 'class') # and not g.unitTesting
+    verbose = True
+    self.codeEnd = self.sigEnd = self.sigId = None
+
+    # Underindented lines can happen in any language, not just Python.
+    # The skipBlock method of the base class checks for such lines.
+    self.startSigIndent = self.getLeadingIndent(s,i)
+
+    # Get the tag that starts the class or function.
+    if not g.match(s,i,'<'): return False
+    self.sigStart = i
+    i += 1
+    sigIdStart = j = g.skip_ws_and_nl(s,i)
+    i = self.skipId(s,j)
+    
+    # Fix bug 501636: Leo's import code should support non-ascii xml tags.
+    # The call to g.toUnicode only needed on Python 2.x.
+    self.sigId = theId = g.toUnicode(s[j:i].lower())
+        # Set sigId ivar 'early' for error messages.
+        # Bug fix: html case does not matter.
+    if not theId: return False
+
+    if theId not in tags:
+        if trace and verbose:
+            g.trace('**** %s theId: %s not in tags: %s' % (
+                kind,theId,tags))
+        return False
+
+    if trace and verbose: g.trace(theId)
+    classId = '' 
+    sigId = theId
+
+    # Complete the opening tag.
+    i, ok, complete = self.skipToEndOfTag(s,i,start=sigIdStart)
+    if not ok:
+        if trace and verbose: g.trace('no tail',g.get_line(s,i))
+        return False
+    sigEnd = i
+
+    # Bug fix: 2011/11/05.
+    # For xml/html, make sure the signature includes any trailing whitespace.
+    if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+        # sigEnd = g.skip_line(s,sigEnd)
+        sigEnd = g.skip_ws(s,sigEnd)
+
+    if not complete:
+        i,ok = self.skipToMatchingTag(s,i,theId,tags,start=sigIdStart)
+        if not ok:
+            if trace and verbose: g.trace('no matching tag:',theId)
+            return False
+
+    # Success: set the ivars.
+    # Not used in xml/html.
+    # self.sigStart = self.adjustDefStart(s,self.sigStart)
+    self.codeEnd = i
+    self.sigEnd = sigEnd
+    self.sigId = sigId
+    self.classId = classId
+            
+    # Scan to the start of the next tag.
+    done = False
+    while not done and i < len(s):
+        progress = i
+        if self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif s[i] == '<':
+            start = i
+            i += 1
+            if i < len(s) and s[i] == '/':
+                i += 1
+            j = g.skip_ws_and_nl(s,i)
+            if self.startsId(s,j):
+                i = self.skipId(s,j)
+                word = s[j:i].lower()
+                if word in tags:
+                    self.codeEnd = start
+                    done = True
+                    break
+            else:
+                i = j
+        else:
+            i += 1
+        
+        assert done or progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    if trace: g.trace(repr(s[self.sigStart:self.codeEnd]))
+    return True
+#@+node:ekr.20071214072924.3: *6* skipToEndOfTag (xmlScanner)
+def skipToEndOfTag(self,s,i,start):
+
+    '''Skip to the end of an open tag.
+    
+    return i,ok,complete
+    
+    where complete is True if the tag of the form <name/>
+    '''
+
+    trace = False
+    complete,ok = False,False
+    while i < len(s): 
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'<'):
+            complete,ok = False,False ; break
+        elif g.match(s,i,'/>'):
+            i = g.skip_ws(s,i+2)
+            complete,ok = True,True ; break
+        elif g.match(s,i,'>'):
+            i += 1
+            complete,ok = False,True ; break
+        else:
+            i += 1
+        assert progress < i
+
+    if trace: g.trace('ok',ok,repr(s[start:i]))
+    return i,ok,complete
+#@+node:ekr.20071214075117: *6* skipToMatchingTag (xmlScanner)
+def skipToMatchingTag (self,s,i,tag,tags,start):
+    
+    '''Skip the entire class definition. Return i,ok.
+    '''
+
+    trace = False
+    found,level,target_tag = False,1,tag.lower()
+    while i < len(s): 
+        progress = i
+        if s[i] == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'<!--'):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,'</'):
+            j = i+2
+            i = self.skipId(s,j)
+            tag2 = s[j:i].lower()
+            i,ok,complete = self.skipToEndOfTag(s,i,start=j)
+                # Sets complete if /> terminates the tag.
+            if ok and tag2 == target_tag:
+                level -= 1
+                if level == 0:
+                    found = True ; break
+        elif g.match(s,i,'<'):
+            # An open tag.
+            j = g.skip_ws_and_nl(s,i+1)
+            i = self.skipId(s,j)
+            word = s[j:i].lower()
+            i,ok,complete = self.skipToEndOfTag(s,i,start=j)
+            # **Important**: only bump level for nested *target* tags.
+            # This avoids problems when interior tags are not properly nested.
+            if ok and word == target_tag and not complete:
+                level += 1
+        elif g.match(s,i,'/>'):
+            # This is a syntax error.
+            # This should have been eaten by skipToEndOfTag.
+            i += 2
+            g.trace('syntax error: unmatched "/>"')
+        else:
+            i += 1
+
+        assert progress < i
+        
+    if trace: g.trace('%sfound:%s\n%s\n\n*****end %s\n' % (
+        g.choose(found,'','not '),target_tag,s[start:i],target_tag))
+
+    return i,found
+#@+node:ekr.20091230062012.6238: *5* skipId (override base class) & helper
+@  For characters valid in names see:
+   www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+@c
+
+def skipId (self,s,i):
+
+    if 1:
+        # Fix bug 501636: Leo's import code should support non-ascii xml tags.
+        if i < len(s) and self.isWordChar1(s[i]):
+            i += 1
+        else:
+            return i
+        while i < len(s) and self.isWordChar2(s[i]):
+            i += 1
+        return i
+    else:
+        # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
+        chars = '.-:' # Allow : anywhere.
+        while i < len(s) and (self.isWordChar(s[i]) or s[i] in chars):
+            i += 1
+        return i
+#@+node:ekr.20120306130648.9852: *6* isWordChar (xmlScanner) To be replaced
+def isWordChar (self,ch):
+    
+    '''This allows only ascii tags.'''
+    
+    # Same as g.isWordChar. This is not correct.
+    return ch and (ch.isalnum() or ch == '_')
+#@+node:ekr.20091230062012.6239: *6* isWordChar1 (xmlScanner)
+@ From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+
+NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] |
+    [#xC0-#xD6]     | [#xD8-#xF6]     | [#xF8-#x2FF]    |
+    [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
+    [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+@c
+
+word_char_table1 = (
+    (0xC0,  0xD6),    (0xD8,  0xF6),    (0xF8,  0x2FF),
+    (0x370, 0x37D),   (0x37F, 0x1FFF),  (0x200C,0x200D),
+    (0x2070,0x218F),  (0x2C00,0x2FEF),  (0x3001,0xD7FF),
+    (0xF900,0xFDCF),  (0xFDF0,0xFFFD),  (0x10000,0xEFFFF),
+)
+
+def isWordChar1(self,ch):
+    
+    if not ch: return False
+    
+    if ch.isalnum() or ch in '_:': return True
+    
+    n = ord(ch)
+    for n1,n2 in self.word_char_table1:
+        if n1 <= n <= n2:
+            return True
+
+    return False
+#@+node:ekr.20120306130648.9851: *6* isWordChar2 (xmlScanner)
+@ From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+
+NameChar    ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    [#x0300-#x036F] | [#x203F-#x2040]
+@c
+    
+word_char_table2 = (
+    (0xB7,      0xB7),  # Middle dot.
+    (0x0300,    0x036F),
+    (0x203F,    0x2040),
+)
+
+def isWordChar2(self,ch):
+    
+    if not ch: return False
+    
+    if self.isWordChar1(ch) or ch in "-.0123456789":
+        return True
+    
+    n = ord(ch)
+    for n1,n2 in self.word_char_table2:
+        if n1 <= n <= n2:
+            return True
+
+    return False
+#@+node:ekr.20071018084830: *5* scanHelper (baseScannerClass)
+def scanHelper(self,s,i,end,parent,kind):
+
+    '''Common scanning code used by both scan and putClassHelper.'''
+
+    # g.trace(g.callers())
+    # g.trace('i',i,g.get_line(s,i))
+    assert kind in ('class','outer')
+    start = i ; putRef = False ; bodyIndent = None
+    # Major change: 2011/11/11: prevent scanners from going beyond end.
+    if self.hasNestedClasses and end < len(s):
+        s = s[:end] # Potentially expensive, but unavoidable.
+    # if g.unitTesting: g.pdb()
+    while i < end:
+        progress = i
+        if s[i] in (' ','\t','\n'):
+            i += 1 # Prevent lookahead below, and speed up the scan.
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
+            putRef = True
+            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+            end2 = self.codeEnd # putClass may change codeEnd ivar.
+            self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
+            i = start = end2
+        elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
+            putRef = True
+            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+            self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
+            i = start = self.codeEnd
+        elif self.startsId(s,i):
+            i = self.skipId(s,i)
+        elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
+            i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+            # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
+        else: i += 1
+        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    return start,putRef,bodyIndent
+#@+node:ekr.20111103073536.16595: *5* startsId (xmlScanner)
+def startsId(self,s,i):
+    
+    # Fix bug 501636: Leo's import code should support non-ascii xml tags.
+    return i < len(s) and self.isWordChar1(s[i])
+#@+node:ekr.20120306130648.9853: *5* test
+table1 = (
+    (0xC0,  0xD6),    (0xD8,  0xF6),    (0xF8,  0x2FF),
+    # (0x370, 0x37D),   (0x37F, 0x1FFF),  (0x200C,0x200D),
+    # (0x2070,0x218F),  (0x2C00,0x2FEF),  (0x3001,0xD7FF),
+    # (0xF900,0xFDCF),  (0xFDF0,0xFFFD),  (0x10000,0xEFFFF),
+)
+
+table2 = (
+    (0xB7,  0xB7),
+    (0x0300,0x036F),
+    (0x203F,0x2040),
+)
+
+result = []
+result.append('*****')
+for table in table1,table2:
+    for n1,n2 in table:
+        for n in range(n1,n2+1):
+            result.append(chr(n))
+    result.append('=====')
+        
+# g.es(len(''.join(result)))
+g.es('\n'.join(result))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

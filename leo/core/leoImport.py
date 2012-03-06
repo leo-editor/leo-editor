@@ -2716,6 +2716,7 @@ class baseScannerClass (scanUtility):
         # Major change: 2011/11/11: prevent scanners from going beyond end.
         if self.hasNestedClasses and end < len(s):
             s = s[:end] # Potentially expensive, but unavoidable.
+        # if g.unitTesting: g.pdb()
         while i < end:
             progress = i
             if s[i] in (' ','\t','\n'):
@@ -4774,13 +4775,29 @@ class xmlScanner (baseScannerClass):
 
     def skipId (self,s,i):
 
-        # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
-        chars = '.-:' # Allow : anywhere.
-        n = len(s)
-        while i < n and (self.isWordChar(s[i]) or s[i] in chars):
-            i += 1
-        return i
-    #@+node:ekr.20091230062012.6239: *6* isWordChar
+        if 1:
+            # Fix bug 501636: Leo's import code should support non-ascii xml tags.
+            if i < len(s) and self.isWordChar1(s[i]):
+                i += 1
+            else:
+                return i
+            while i < len(s) and self.isWordChar2(s[i]):
+                i += 1
+            return i
+        else:
+            # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
+            chars = '.-:' # Allow : anywhere.
+            while i < len(s) and (self.isWordChar(s[i]) or s[i] in chars):
+                i += 1
+            return i
+    #@+node:ekr.20120306130648.9852: *6* isWordChar (xmlScanner) To be replaced
+    def isWordChar (self,ch):
+        
+        '''This allows only ascii tags.'''
+        
+        # Same as g.isWordChar. This is not correct.
+        return ch and (ch.isalnum() or ch == '_')
+    #@+node:ekr.20091230062012.6239: *6* isWordChar1 (xmlScanner)
     #@+at From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
     # 
     # NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] |
@@ -4788,16 +4805,53 @@ class xmlScanner (baseScannerClass):
     #     [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
     #     [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
     #     [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    #@@c
+
+    word_char_table1 = (
+        (0xC0,  0xD6),    (0xD8,  0xF6),    (0xF8,  0x2FF),
+        (0x370, 0x37D),   (0x37F, 0x1FFF),  (0x200C,0x200D),
+        (0x2070,0x218F),  (0x2C00,0x2FEF),  (0x3001,0xD7FF),
+        (0xF900,0xFDCF),  (0xFDF0,0xFFFD),  (0x10000,0xEFFFF),
+    )
+
+    def isWordChar1(self,ch):
+        
+        if not ch: return False
+        
+        if ch.isalnum() or ch in '_:': return True
+        
+        n = ord(ch)
+        for n1,n2 in self.word_char_table1:
+            if n1 <= n <= n2:
+                return True
+
+        return False
+    #@+node:ekr.20120306130648.9851: *6* isWordChar2 (xmlScanner)
+    #@+at From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
     # 
     # NameChar    ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
     #     [#x0300-#x036F] | [#x203F-#x2040]
     #@@c
+        
+    word_char_table2 = (
+        (0xB7,      0xB7),  # Middle dot.
+        (0x0300,    0x036F),
+        (0x203F,    0x2040),
+    )
 
-    def isWordChar(self,ch):
+    def isWordChar2(self,ch):
+        
+        if not ch: return False
+        
+        if self.isWordChar1(ch) or ch in "-.0123456789":
+            return True
+        
+        n = ord(ch)
+        for n1,n2 in self.word_char_table2:
+            if n1 <= n <= n2:
+                return True
 
-        # At present, same as g.isWordChar.
-        # This is not correct.
-        return ch and (ch.isalnum() or ch == '_')
+        return False
     #@+node:ekr.20071214072924.4: *5* startsHelper & helpers (xmlScanner)
     def startsHelper(self,s,i,kind,tags,tag=None):
         '''return True if s[i:] starts a class or function.
@@ -4817,7 +4871,10 @@ class xmlScanner (baseScannerClass):
         i += 1
         sigIdStart = j = g.skip_ws_and_nl(s,i)
         i = self.skipId(s,j)
-        self.sigId = theId = s[j:i].lower()
+        
+        # Fix bug 501636: Leo's import code should support non-ascii xml tags.
+        # The call to g.toUnicode only needed on Python 2.x.
+        self.sigId = theId = g.toUnicode(s[j:i].lower())
             # Set sigId ivar 'early' for error messages.
             # Bug fix: html case does not matter.
         if not theId: return False
@@ -4972,14 +5029,8 @@ class xmlScanner (baseScannerClass):
     #@+node:ekr.20111103073536.16595: *5* startsId (xmlScanner)
     def startsId(self,s,i):
         
-        if i < len(s):
-            ch = s[i]
-            # Recent bug fix: 2011/11/04:
-            return self.isWordChar(ch) or ch in '.-:'
-        else:
-            return False
-
-        # return g.is_c_id(s[i:i+1])
+        # Fix bug 501636: Leo's import code should support non-ascii xml tags.
+        return i < len(s) and self.isWordChar1(s[i])
     #@-others
 #@-<< class xmlScanner (baseScannerClass) >>
 

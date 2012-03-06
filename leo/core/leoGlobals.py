@@ -5200,7 +5200,9 @@ class TypedDict:
         
         # These fail on Python 2.x for strings.
         if g.isPython3:
-            assert key.__class__ == self.keyType,self._reportTypeError(key,self.keyType)
+            # assert key.__class__ == self.keyType,self._reportTypeError(key,self.keyType)
+            if key and key.__class__ != self.keyType:
+                self._reportTypeError(key,self.keyType)
 
     def _checkValType(self,val):
 

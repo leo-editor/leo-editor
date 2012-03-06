@@ -231,7 +231,7 @@ recentPluginsList = (
 tables_table = (
     (coreList,'core'),
     (guiPluginsList,'plugins'),
-    (pluginsList,'plugins'),
+    # (pluginsList,'plugins'),
     
     # (onlySupressionsList,'core'),
     # (recentCoreList,'core'),

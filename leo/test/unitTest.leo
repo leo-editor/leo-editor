@@ -148,7 +148,12 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016" a="M"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
+<v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
+<v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -613,6 +618,22 @@ Important: this may cause crashes on some platforms.
 #
 #
 </t>
+<t tx="ekr.20090529141856.4780"></t>
+<t tx="ekr.20090529141856.4781">s = '''\
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class='bodystring'&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>
 <t tx="ekr.20090704085350.5029">def spam():
@@ -857,6 +878,16 @@ writing .leo files.
 The path is **supposed** not to exist.
 </t>
 <t tx="ekr.20110615130436.3318">Child content goes here.</t>
+<t tx="ekr.20111026105935.3966">s = '''\
+&lt;nodeA&gt;
+&lt;nodeB/&gt;
+&lt;/nodeA&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
 html
@@ -1066,6 +1097,18 @@ finally:
 <t tx="ekr.20120229082711.3935"># node 1 text A.
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
+</t>
+<t tx="ekr.20120306173116.3933">@first # -*- coding: utf-8 -*-
+
+s = '''\
+&lt;:À.Ç&gt;
+&lt;Ì&gt;
+&lt;_.ÌÑ&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>
