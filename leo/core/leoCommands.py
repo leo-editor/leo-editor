@@ -636,18 +636,21 @@ class Commands (object):
     #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
     def enableMenuBar(self):
         
+        '''A failed attempt to work around Ubuntu Unity memory bugs.'''
+        
         c = self
         
-        if c.frame.menu.isNull:
-            return
-
         # g.trace(c.frame.title,g.callers())
-
-        for frame in g.app.windowList:
-            if frame != c.frame:
-                frame.menu.menuBar.setDisabled(True)
-
-        c.frame.menu.menuBar.setEnabled(True)
+        
+        if 0:
+            if c.frame.menu.isNull:
+                return
+        
+            for frame in g.app.windowList:
+                if frame != c.frame:
+                    frame.menu.menuBar.setDisabled(True)
+        
+            c.frame.menu.menuBar.setEnabled(True)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
