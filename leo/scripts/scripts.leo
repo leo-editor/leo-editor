@@ -90,6 +90,7 @@ expanded="ekr.20051104082026,ekr.20110301092139.14873,ekr.20051104082151,"><vh>@
 <v t="ekr.20110916103731.2461"><vh>importDir</vh></v>
 <v t="ekr.20110916103731.2460"><vh>importFiles (top-level)</vh></v>
 </v>
+<v t="ekr.20120306090228.10816"><vh>Fix syntax errors in scripts</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -1284,5 +1285,36 @@ Especially:
     else:
         return True
 </t>
+<t tx="ekr.20120306090228.10816">@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/924123
+Some SyntaxError's thrown when compiling the whole source with Python 3
+
+I try to build an RPM with Python3, but it fails when bytecompiling the whole source.
+
+  File "scripts/LinixInstall.py", line 13
+    print "You need to run this install script as root"
+                                                      ^
+SyntaxError: invalid syntax
+
+  File "scripts/convert_to_shadow.py", line 71
+    print "Putting", filename, "into the shadow folder", leoFolder
+                  ^
+SyntaxError: invalid syntax
+
+  File "scripts/leoFindScript.py", line 59
+    print "setting head string: ", result
+                                ^
+SyntaxError: invalid syntax
+
+  File "scripts/tangle_done.py", line 15
+    print "tangle_done roots:"
+                             ^
+SyntaxError: invalid syntax
+
+  File "/usr/lib/python3.2/site-packages/leo/scripts/untangle_done.py", line 10
+    print "untangle_done roots:", root_list
+                               ^
+SyntaxError: invalid syntax</t>
 </tnodes>
 </leo_file>

@@ -12,9 +12,9 @@
 
 def run (root_list):
 
-    print "tangle_done roots:"
+    print("tangle_done roots:")
     for root in root_list:
-        print root
+        print(root)
     
     if 0: # Run code contributed by Paul Paterson.
         convertRSTfilesToHTML(root_list)

@@ -56,7 +56,7 @@ def changeNext ( v, pos, findPat, changePat, bodyFlag = 1 ):
 		# s[pos:pos+n] = changePat
 		s = s[:pos] + changePat + s[pos+n:]
 		v.setHeadStringOrHeadline(s)
-		print "setting head string: ", result
+		print("setting head string: ", result)
 	return v, pos
 #@nonl
 #@-node:EKR.20040502195118.2:changeNext
@@ -221,7 +221,7 @@ def reChangeNext ( v, pos, findPat, changePat, bodyFlag, reFlags = None ):
 		return None, None, 0
 	if bodyFlag:
 		s = v.bodyString()
-		print s, findPat, changePat
+		print(s, findPat, changePat)
 		# s[pos:pos+n] = changePat
 		s = s[:pos] + changePat + s[pos+n:]
 		v.setBodyStringOrPane(s)
@@ -405,7 +405,7 @@ def printFindList( findList, bodyFlag = 1 ):
 				s = v.bodyString()
 			else:
 				s = v.headString()
-			print lineAtPos(s, pos)
+			print(lineAtPos(s, pos))
 #@nonl
 #@-node:EKR.20040502195118.14:printFindList
 #@-others

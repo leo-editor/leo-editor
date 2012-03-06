@@ -7,7 +7,7 @@
 
 def run(root_list):
 
-    print "untangle_done roots:", root_list
+    print("untangle_done roots:", root_list)
 #@nonl
 #@-node:ekr.20051110105027.182:@thin untangle_done.py
 #@-leo

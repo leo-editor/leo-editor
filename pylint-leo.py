@@ -16,11 +16,13 @@ W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
 
 
 #@-<< imports >>
+
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
 
     return (
+
         ('runLeo',          ''),
         ('leoApp',          ''),
         ('leoAtFile',       ''),

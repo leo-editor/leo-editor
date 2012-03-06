@@ -682,9 +682,9 @@ class ironPythonGui(leoGui.leoGui):
             #g.pr("actual_name:",font.cget("family"))
             return font
         except:
-            g.es("exception setting font from " + `family_name`)
+            g.es("exception setting font from " + repr(family_name))
             g.es("family,size,slant,weight:"+
-                `family`+':'+`size`+':'+`slant`+':'+`weight`)
+                repr(family)+':'+repr(size)+':'+repr(slant)+':'+repr(weight))
             g.es_exception()
             return g.app.config.defaultFont
     #@+node:ekr.20081121105001.138: *4* Icons (wxGui) (to do)

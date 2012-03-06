@@ -918,22 +918,11 @@ except SyntaxError:
 #@+node:ekr.20100205235740.5392: *3* @test syntax of all files
 import os
 
-tkPass = (
-    'EditAttributes','Library',
-    'URLloader','UniversalScrolling','UASearch',
-    'autotrees','base64Packager','chapter_hoist','cleo','dump_globals',
-    'expfolder','geotag','graphed','groupOperations',
-    'hoist','import_cisco_config','leoupdate',
-    'maximizeNewWindows', 'mnplugins','mod_labels',
-    'mod_read_dir_outline','mod_tempfname','multifile',
-    'nav_buttons','newButtons','nodeActions','nodebar','nodenavigator',
-    'open_with','pie_menus','pluginsTest',
-    'read_only_nodes','rClick','rClickBasePluginClasses',
-    'scheduler','searchbar','searchbox','shortcut_button',
-    'script_io_to_body','searchbox',
-    'templates','textnode','tkGui','toolbar',
-    'UNL','xcc_nodes',
+# The files in leoGuiPlugins.leo.
+guiPluginsList = (
+    'cursesGui','ironPythonGui','swing_gui','tkGui','wxGui',
 )
+
 passList = (
     '__init__','FileActions',
     'active_path','add_directives','attrib_edit',
@@ -966,15 +955,24 @@ core_files = (
 external_files = (
     'ipy_leo','lproto',
 )
+
 recent = (
     #'leo_interface',
 )
+
+# The files in scripts.leo.
+scriptsList = (
+    'convert_to_shadow','leoFindScript','LinixInstall',
+    'tangle_done','untangle_done',
+)
+
 table = (
     ('plugins',recent),
     ('plugins',passList),
-    # ('plugins',tkPass),
+    ('plugins',guiPluginsList),
     ('core',core_files),
     ('external',external_files),
+    ('scripts',scriptsList),
 )
 files = []
 for theDir,aList in table:

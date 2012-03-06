@@ -3905,6 +3905,36 @@ def computeCopiedBunchList(self,pasted,vnodeInfoDict):
             aList.append(bunch)
     
     return aList
+#@+node:ekr.20120306090228.10818: *4* Fixed bug 924123: Some SyntaxError's thrown when compiling the whole source with Python 3
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/924123
+Some SyntaxError's thrown when compiling the whole source with Python 3
+
+I removed the following files:
+    
+    EKR wrote all these, and EKR can no longer remember why they exist.
+    
+    leo/core/leo_Debugger.py
+    leo/core/leo_FileList.py"
+    leo/core/leo_RemoteDebugger.py
+    leo/core/leo_Shell.py
+    leo/core/leo_run.py
+
+These files no longer exist:
+
+    leosax.py
+    
+Fixed all reported syntax errors.
+
+Added the following to the list of files checked by @test syntax of all files::
+    
+- old gui files:
+    cursesGui.py, ironPythonGui.py, swing_gui.py, tkGui.py, and wxGui.py
+    
+- script files:
+    convert_to_shadow.py, leoFindScript.py, LinixInstall.py,
+    tangle_done.py, untangle_done.py
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

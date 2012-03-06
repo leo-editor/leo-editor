@@ -2570,9 +2570,6 @@ class LeoCoreFiles(object):
         
         skipList = (
             'format-code.py',
-            'leo_Debugger.py','leo_FileList.py',
-            'leo_RemoteDebugger.py','leo_run.py',
-            'leo_Shell.py',
             '__init__.py',
         )
 

@@ -298,7 +298,7 @@ class wxFindFrame (wx.Frame,leoFind.leoFind):
             if data:
                 box,id = data
                 box.SetValue(val)
-                # g.trace(key,`val`)
+                # g.trace(key,repr(val))
 
         self.findPanel.findText.SetValue(c.find_text)
         self.findPanel.changeText.SetValue(c.change_text)
@@ -2830,7 +2830,7 @@ class wxLeoFrame(leoFrame.leoFrame):
     #@+node:ekr.20090126093408.245: *7* showProgressBar
     def showProgressBar (self,count,size,total):
 
-        # g.trace("count,size,total:" + `count` + "," + `size` + "," + `total`)
+        # g.trace("count,size,total:" + count + "," + size + "," + total)
         if self.scale == None:
             #@+<< create the scale widget >>
             #@+node:ekr.20090126093408.246: *8* << create the scale widget >>

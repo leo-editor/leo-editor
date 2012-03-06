@@ -33,7 +33,7 @@ def convert(filename, leoFolder, prefix):
    newname = os.path.join(dir, leoFolder, prefix + name)
    if os.path.exists(newname):
        return
-   print "Putting", filename, "into the shadow folder", leoFolder
+   print("Putting", filename, "into the shadow folder", leoFolder)
    os.rename(filename, newname)
    f = open(filename, "w")
    f.close()
