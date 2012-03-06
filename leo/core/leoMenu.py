@@ -24,6 +24,7 @@ class leoMenu:
         self.c = c = frame.c
         self.enable_dict = {}       # Created by finishCreate.
         self.frame = frame
+        self.isNull = False
         self.menus = {}             # Menu dictionary.
         self.menuShortcuts = {}
             
@@ -1573,6 +1574,8 @@ class nullMenu(leoMenu):
 
         # Init the base class.
         leoMenu.__init__(self,frame)
+        
+        self.isNull = True
     #@+node:ekr.20050104094029: *3* oops
     def oops (self):
 

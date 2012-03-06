@@ -633,6 +633,21 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
+    #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
+    def enableMenuBar(self):
+        
+        c = self
+        
+        if c.frame.menu.isNull:
+            return
+
+        # g.trace(c.frame.title,g.callers())
+
+        for frame in g.app.windowList:
+            if frame != c.frame:
+                frame.menu.menuBar.setDisabled(True)
+
+        c.frame.menu.menuBar.setEnabled(True)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives

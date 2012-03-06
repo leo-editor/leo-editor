@@ -1903,6 +1903,9 @@ class LoadManager:
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory,'setTabForCommander'):
                 factory.setTabForCommander(c)
+                
+        # Fix bug 844953: tell Unity which menu to use.
+        c.enableMenuBar()
 
         # Do the final inits.
         g.app.logInited = True
@@ -2184,6 +2187,9 @@ class LoadManager:
             g.doHook("menu2",c=c,p=c.p,v=c.p)
             g.doHook("after-create-leo-frame",c=c)
             g.doHook("after-create-leo-frame2",c=c)
+
+            # Fix bug 844953: tell Unity which menu to use.
+            c.enableMenuBar()
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
     def findOpenFile(self,fn):
         

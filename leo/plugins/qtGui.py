@@ -936,7 +936,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 class leoQTextEditWidget (leoQtBaseTextWidget):
 
     #@+others
-    #@+node:ekr.20110605121601.18072: *4* Birth
+    #@+node:ekr.20110605121601.18072: *4* Birth (leoQTextEditWidget)
     #@+node:ekr.20110605121601.18073: *5* ctor (leoQTextEditWidget)
     def __init__ (self,widget,name,c=None):
 
@@ -990,7 +990,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
-    #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper & helper (leoTextEditWidget)
+    #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper & helper (leoQTextEditWidget)
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
 
         '''Move the cursor in a QTextEdit.'''
@@ -5222,9 +5222,10 @@ class leoQtLog (leoFrame.leoLog):
         
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely
         wrapper = hasattr(w,'leo_log_wrapper') and w.leo_log_wrapper
-        if wrapper: self.widget = wrapper
-            
-        if trace: g.trace(idx,tabw.tabText(idx),wrapper)
+        if wrapper:
+            self.widget = wrapper
+
+        if trace: g.trace(idx,tabw.tabText(idx),self.c.frame.title) # wrapper and wrapper.widget)
     #@+node:ekr.20111120124732.10184: *4* isLogWidget (leoQtLog)
     def isLogWidget(self,w):
         
@@ -5570,6 +5571,12 @@ class leoQtMenu (leoMenu.leoMenu):
                 'menu_text_font_family', 'menu_text_font_size',
                 'menu_text_font_slant',  'menu_text_font_weight',
                 c.config.defaultMenuFontSize)
+    #@+node:ekr.20120306130648.9848: *4* leoQtMenu.__repr__
+    def __repr__ (self):
+        
+        return '<leoQtMenu: %s>' % self.leo_menu_label
+        
+    __str__ = __repr__
     #@+node:ekr.20110605121601.18342: *4* Tkinter menu bindings
     # See the Tk docs for what these routines are to do
     #@+node:ekr.20110605121601.18343: *5* Methods with Tk spellings
@@ -7202,7 +7209,11 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
-        # g.trace(i,c)
+        
+        # Fix bug 844953: tell Unity which menu to use.
+        c.enableMenuBar()
+
+        # g.trace(i,c.frame.title,c.frame.menu.menuBar)
     #@-others
 #@+node:ekr.20110605121601.18458: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
@@ -7463,6 +7474,7 @@ class TabbedFrameFactory:
     def setTabForCommander (self,c):
         
         tabw = self.masterFrame # a QTabWidget
+
         for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
             if dw.leo_c == c:
                 for i in range(tabw.count()):

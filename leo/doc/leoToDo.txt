@@ -18,6 +18,7 @@ Top 10:
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 @language rest
 
+.. @+node:ekr.20120304065838.14230: *4* Fix all bugs targeted to b1
 .. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
 @language python
@@ -3943,7 +3944,7 @@ def exportHeadlines (self,event=None):
         g.chdir(fileName)
         c.importCommands.exportHeadlines(fileName)
 .. @+node:ekr.20120228164039.11406: *5* Clean up #### in leoKeys
-.. @+node:ekr.20120226131923.10221: *5* Allow abbreviations in minibuffer 
+.. @+node:ekr.20120226131923.10221: *5* Allow abbreviations in minibuffer
 @nocolor-node
 
 cfa=clone-find-all-flattened
