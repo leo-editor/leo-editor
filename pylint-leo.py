@@ -2,8 +2,7 @@
 #@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
 #@@language python
 
-#@+<< imports >>
-#@+node:ekr.20100221142603.5639: ** << imports >>
+import optparse
 import os
 import sys
 from pylint import lint
@@ -13,9 +12,6 @@ F0401,\
 R0201,R0903,\
 W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,\
 W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
-
-
-#@-<< imports >>
 
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
@@ -177,7 +173,7 @@ def run(theDir,fn,suppress,rpython=False):
     assert os.path.exists(rc_fn)
     
     args = ['--rcfile=%s' % (rc_fn)]
-    if suppress and allow_suppressions:
+    if suppress:
         args.append('--disable=%s' % (suppress))
     # if rpython: args.append('--rpython-mode') # Probably does not exist.
 
@@ -194,17 +190,48 @@ def run(theDir,fn,suppress,rpython=False):
         lint.Run(args)
     else:
         print('file not found:',fn)
+#@+node:ekr.20120307142211.9886: ** scanOptions
+def scanOptions():
+
+    '''Handle all options, remove them from sys.argv and set lm.options.'''
+
+    # print('scanOptions 1',sys.argv)
+
+    # This automatically implements the -h (--help) option.
+    parser = optparse.OptionParser()
+    
+    def add(name,help):
+        add = parser.add_option(name,action="store_true",help=help)
+    
+    add('-a', help = 'all')
+    add('-c', help = 'core')
+    add('-e', help = 'external')
+    add('-p', help = 'plugins')
+    add('-r', help = 'recent')
+    add('-s', help = 'suppressions')
+    
+    # Parse the options.
+    options, args = parser.parse_args()
+    # sys.argv = [sys.argv[0]]
+    # sys.argv.extend(args)
+    
+    if   options.a: return 'all'
+    elif options.c: return 'core'
+    elif options.e: return 'external'
+    elif options.p: return 'plugins'
+    elif options.r: return 'recent'
+    elif options.s: return 'suppressions'
+    else:           return 'core'
 #@-others
+
+scope = scanOptions()
 
 coreList = getCoreList()
 externalList = ('ipy_leo','lproto',)
-# onlySupressionsTable = getOnlySupressionsTable()
 passList = getPassList()
 pluginsList = getPluginsList()
 recentCoreList = getRecentCoreList()
 tkPass = getTkPass()
-
-allow_suppressions = True
 
 onlySupressionsList = (z for z in coreList if z[1])
 
@@ -224,34 +251,50 @@ recentPluginsList = (
     # 'trace_gc_plugin',
 )
 
-# rpythonList = (
-#    'leoApp',
-# )
-
-tables_table = (
-    (coreList,'core'),
-    (guiPluginsList,'plugins'),
-    # (pluginsList,'plugins'),
-    
-    # (onlySupressionsList,'core'),
-    # (recentCoreList,'core'),
-    # (recentPluginsList,'plugins'),
-    
-    # Not often used...
-        # (externalList,'external'),
+if scope == 'all':
+    tables_table = (
+        (coreList,'core'),
+        (guiPluginsList,'plugins'),
+        # (pluginsList,'plugins'),
+        (externalList,'external'),
+    )
+elif scope == 'core':
+    tables_table =  (
+        (coreList,'core'),
+        (guiPluginsList,'plugins'),
+    )
+elif scope == 'external':
+    tables_table = (
+        (externalList,'external'),
+    )
+elif scope == 'plugins':
+    tables_table = (
+        (pluginsList,'plugins'),
         # (passList,'plugins'),
-        
-        # (rpythonList,'core'),
-)
+    )
+elif scope == 'recent':
+    tables_table = (
+        (recentCoreList,'core'),
+        (recentPluginsList,'plugins'),
+    )
+elif scope == 'suppressions':
+    # These tests are run *without* suppressions.
+    tables_table = (
+        (onlySupressionsList,'core'),
+    )
+else:
+    print('bad scope',scope)
+    tables_table = ()
 
 for table,theDir in tables_table:
-    #if table in (rpythonList,):
-        # for fn in table:
-            # run(theDir,fn,suppress='',rpython=True) 
-    if table in (coreList,pluginsList,guiPluginsList,onlySupressionsList,recentCoreList):
+    if table in (coreList,pluginsList,guiPluginsList,recentCoreList):
         # These tables have suppressions.
         for fn,suppress in table:
-            run(theDir,fn,suppress) 
+            run(theDir,fn,suppress)
+    elif table == onlySupressionsList:
+        # Run *without suppressions.
+        for fn,suppress in table:
+            run(theDir,fn,suppress='')
     else:
         for fn in table:
             run(theDir,fn,suppress='')
