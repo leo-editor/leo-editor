@@ -1691,88 +1691,84 @@ Please set LEO_EDITOR or EDITOR environment variable,
 or do g.app.db['LEO_EDITOR'] = "gvim"''')
         return None
 #@+node:tbrown.20090219095555.61: *3* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url, c=None, p=None):
+def handleUrlInUrlNode(url,c=None,p=None):
     
     # Note 1: the UNL plugin has its own notion of what a good url is.
 
     # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
     #         node if it exists.
 
-    if g.unitTesting: return
-    
-    #@+<< check the url; return if bad >>
-    #@+node:tbrown.20090219095555.62: *4* << check the url; return if bad >>
-    #@+at A valid url is (according to D.T.Hein):
-    # 
-    # 3 or more lowercase alphas, followed by,
-    # one ':', followed by,
-    # one or more of: (excludes !"#;<>[\]^`|)
-    #   $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-    # followed by one of: (same as above, except no minus sign or comma).
-    #   $%&'()*+/0-9:=?@A-Z_a-z}~
-    #@@c
-
-    # urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
-
-    if not url:
+    if url:
+        if c and not p:
+            p = c.p
+        g.handleUrl(c,p,url)
+    else:
         g.es("no url following @url")
-        return
+#@+node:tbrown.20090219095555.63: *4* g.handleUrl
+#@+at Most browsers should handle the following urls:
+#   ftp://ftp.uu.net/public/whatever.
+#   http://localhost/MySiteUnderDevelopment/index.html
+#   file://home/me/todolist.html
+#@@c
 
-    # Add http:// if required.
-    # if not re.match('^([a-z]{3,}:)',url):
-    #     url = 'http://' + url
-    # if not re.match(urlPattern,url):
-    #     g.es("invalid url:",url)
-    #     return
-    #@-<< check the url; return if bad >>
-    #@+<< pass the url to the web browser >>
-    #@+node:tbrown.20090219095555.63: *4* << pass the url to the web browser >>
-    #@+at Most browsers should handle the following urls:
-    #   ftp://ftp.uu.net/public/whatever.
-    #   http://localhost/MySiteUnderDevelopment/index.html
-    #   file://home/me/todolist.html
-    #@@c
+def handleUrl(c,p,url):
+    
+    trace = False and not g.unitTesting
 
     try:
-        
         parsed = urlparse(url)
-        
-        leo_path = parsed.path
+
         if parsed.netloc:
             leo_path = os.path.join(parsed.netloc, parsed.path)
             # "readme.txt" gets parsed into .netloc...
-        
+        else:
+            leo_path = parsed.path
+            
+        if leo_path.endswith('\\'): leo_path = leo_path[:-1]
+        if leo_path.endswith('/'):  leo_path = leo_path[:-1]
+            
+        if trace:
+            print()
+            g.trace('c.frame.title',c.frame.title)
+            g.trace('leo_path     ',leo_path)
+            g.trace('parsed.netloc',parsed.netloc)
+            g.trace('parsed.path  ',parsed.path)
+            g.trace('parsed.scheme',parsed.scheme)
+
         if c and parsed.scheme in ('', 'file'):
             
-            # local UNLs like "node-->subnode", "-->node", and "#node"
-            if '-->' in parsed.path:
-                g.recursiveUNLSearch(parsed.path.split("-->"), c)
-                return
-            if not parsed.path and parsed.fragment:
-                g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
-                return
-
+            if not leo_path:
+            
+                # local UNLs like "node-->subnode", "-->node", and "#node"
+                if '-->' in parsed.path:
+                    g.recursiveUNLSearch(parsed.path.split("-->"), c)
+                    return
+                if not parsed.path and parsed.fragment:
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                    return
+    
             # leo aware path
             leo_path = os.path.expanduser(leo_path)
             leo_path = g.os_path_expandExpression(leo_path, c=c)
             if p and not os.path.isabs(leo_path):
                 leo_path = os.path.normpath(
                     os.path.join(c.getNodePath(p), leo_path))
-
+    
             # .leo file
             if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-                # 2011/07/28: Immediately end editing, so that
-                # typing in the new window works properly.
+                # Immediately end editing, so that typing in the new window works properly.
                 c.endEditing()
                 c.redraw_now()
-                c2 = g.openWithFileName(leo_path,old_c=c)
-                
-                # with UNL after path
-                if c2 and parsed.fragment:
-                    g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
-                if c2:
-                    c2.bringToFront()
-                    return
+                if g.unitTesting:
+                    g.app.unitTestDict['g.openWithFileName']=leo_path
+                else:
+                    c2 = g.openWithFileName(leo_path,old_c=c)
+                    # with UNL after path
+                    if c2 and parsed.fragment:
+                        g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
+                    if c2:
+                        c2.bringToFront()
+                        return
                     
         if parsed.scheme in ('', 'file'):
             if os.path.exists(leo_path):
@@ -1783,6 +1779,10 @@ def handleUrlInUrlNode(url, c=None, p=None):
                 return
             
         import webbrowser
+
+        if g.unitTesting:
+            g.app.unitTestDict['browser']=url
+            return
         # Mozilla throws a weird exception, then opens the file!
         try: webbrowser.open(url)
         except: pass
@@ -1790,7 +1790,6 @@ def handleUrlInUrlNode(url, c=None, p=None):
     except:
         g.es("exception opening",url)
         g.es_exception()
-    #@-<< pass the url to the web browser >>
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file
 def is_binary_file (f):
 
@@ -2001,9 +2000,13 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how fast we will recurse.  So it should default to 0 (zero).
     """
+    
+    if g.unitTesting:
+        g.app.unitTestDict['g.recursiveUNLSearch']=True
+        return True, maxdepth, maxp
 
     def moveToP(c, p):
-        c.expandAllAncestors(p) # 2009/11/07
+        c.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
         c.frame.bringToFront()
@@ -3204,6 +3207,10 @@ def os_path_splitext(path):
     return head,tail
 #@+node:ekr.20090829140232.6036: *3* os_startfile
 def os_startfile(fname):
+    
+    if g.unitTesting:
+        g.app.unitTestDict['os_startfile']=fname
+        return
     
     if sys.platform.startswith('win'):
         os.startfile(fname)

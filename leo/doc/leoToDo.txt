@@ -19,6 +19,904 @@ Top 10:
 @language rest
 
 .. @+node:ekr.20120307065748.14159: *4* Fix all url-related problesm
+.. @+node:ekr.20120307065748.14158: *5* Found: url
+.. @+node:ekr.20031218072017.2312: *6* tree.OnIconDoubleClick (@url) & helper
+# Several plugins handle url's, especially UNL.py.
+
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"): 
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+        # g.trace(url,g.callers())
+
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return # (for Tk) 'break' # 11/19/06
+.. @+node:tbrown.20090219095555.61: *6* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url,c=None,p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if url:
+        if c and not p:
+            p = c.p
+        g.handleUrl(c,p,url)
+    else:
+        g.es("no url following @url")
+.. @+node:tbrown.20090219095555.63: *7* g.handleUrl
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+def handleUrl(c,p,url):
+    
+    trace = False and not g.unitTesting
+
+    try:
+        parsed = urlparse(url)
+
+        if parsed.netloc:
+            leo_path = os.path.join(parsed.netloc, parsed.path)
+            # "readme.txt" gets parsed into .netloc...
+        else:
+            leo_path = parsed.path
+            
+        if leo_path.endswith('\\'): leo_path = leo_path[:-1]
+        if leo_path.endswith('/'):  leo_path = leo_path[:-1]
+            
+        if trace:
+            print()
+            g.trace('c.frame.title',c.frame.title)
+            g.trace('leo_path     ',leo_path)
+            g.trace('parsed.netloc',parsed.netloc)
+            g.trace('parsed.path  ',parsed.path)
+            g.trace('parsed.scheme',parsed.scheme)
+
+        if c and parsed.scheme in ('', 'file'):
+            
+            if not leo_path:
+            
+                # local UNLs like "node-->subnode", "-->node", and "#node"
+                if '-->' in parsed.path:
+                    g.recursiveUNLSearch(parsed.path.split("-->"), c)
+                    return
+                if not parsed.path and parsed.fragment:
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                    return
+    
+            # leo aware path
+            leo_path = os.path.expanduser(leo_path)
+            leo_path = g.os_path_expandExpression(leo_path, c=c)
+            if p and not os.path.isabs(leo_path):
+                leo_path = os.path.normpath(
+                    os.path.join(c.getNodePath(p), leo_path))
+    
+            # .leo file
+            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                # Immediately end editing, so that typing in the new window works properly.
+                c.endEditing()
+                c.redraw_now()
+                if g.unitTesting:
+                    g.app.unitTestDict['g.openWithFileName']=leo_path
+                else:
+                    c2 = g.openWithFileName(leo_path,old_c=c)
+                    # with UNL after path
+                    if c2 and parsed.fragment:
+                        g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
+                    if c2:
+                        c2.bringToFront()
+                        return
+                    
+        if parsed.scheme in ('', 'file'):
+            if os.path.exists(leo_path):
+                g.os_startfile(leo_path)
+                return
+            if parsed.scheme == 'file':
+                g.es("File '%s' does not exist"%leo_path)
+                return
+            
+        import webbrowser
+
+        if g.unitTesting:
+            g.app.unitTestDict['browser']=url
+            return
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+        
+    except:
+        g.es("exception opening",url)
+        g.es_exception()
+.. @+node:ekr.20110605121601.17897: *6* onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item))
+
+    try:
+        self.selecting = True
+
+        e,wrapper = self.createTreeEditorForItem(item)
+        if e:
+            wrapper.setEditorColors(
+                c.k.insert_mode_bg_color,
+                c.k.insert_mode_fg_color)
+        else:
+            g.trace('*** no e')
+
+        p = self.item2position(item)
+        
+    # 2011/07/28: End the lockout here, not at the end.
+    # This allows g.handleUrlInUrlNode to end editing properly.
+    finally:
+        self.selecting = False
+        
+    if p:
+        event = None
+        if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+        g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+    else:
+        g.trace('*** no p')
+
+    c.outerUpdate()
+.. @+node:ekr.20110605121601.18022: *6* onMouseUp (LeoQTextBrowser)
+def onMouseUp(self,event=None):
+
+    # Open the url on a control-click.
+    if QtCore.Qt.ControlModifier & event.modifiers():
+        event = {'c':self.leo_c}
+        openURL(event)
+.. @+node:ekr.20110605121601.18026: *6* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
+def mouseReleaseEvent (*args,**keys):
+    
+    '''Override QLineEdit.mouseReleaseEvent.
+    
+    Simulate alt-x if we are not in an input state.'''
+    
+    trace = False and not g.unitTesting
+    
+    # Call the base class method.
+    if len(args) == 1:
+        event = args[0]
+        QtGui.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
+    elif len(args) == 2:
+        event = args[1]
+        QtGui.QTextBrowser.mouseReleaseEvent(*args)
+    else:
+        g.trace('can not happen')
+        return
+
+    # Open the url on a control-click.
+    if QtCore.Qt.ControlModifier & event.modifiers():
+        event = {'c':c}
+        openURL(event) # A module-level function.
+        
+    if trace: g.trace()
+        
+    # 2011/05/28: Do *not* change the focus!
+    # This would rip focus away from tab panes.
+    
+    # 2011/10/02: Calling k.keyboardQuit here causes some
+    # unwanted scrolling in rare cases, but seemingly that
+    # can't be helped: removing this call would be confusing.
+    
+    c.k.keyboardQuit(setFocus=False)
+    
+    # Does not work: the layout-request event happens later.
+    # w = self.widget
+    # g.trace('blocking',w)
+    # w.blockSignals(True)
+    # try:
+        # c.k.keyboardQuit(setFocus=False)
+        # c.frame.top.update()
+    # finally:
+        # w.blockSignals(False)
+        # g.trace('unblocking',w)
+.. @+node:ekr.20110605121601.18092: *6* setAllText (leoQTextEditWidget) & helper
+def setAllText(self,s,insert=None,new_p=None):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    if insert is None: i,pos = 0,0
+    else: i,pos = insert,sb.sliderPosition()
+
+    if trace: g.trace(new_p)
+    if trace and verbose: t1 = g.getTime()
+    try:
+        self.changingText = True # Disable onTextChanged
+        colorizer.changingText = True
+        if False and w.htmlFlag and new_p and new_p.h.startswith('@html '):
+            # This is done in the rendering pane.
+            w.setReadOnly(False)
+            w.setHtml(s)
+            w.setReadOnly(True)
+        # elif w.htmlFlag and new_p and new_p.h.startswith('@image'):
+            # # This is now done in the rendering pane.
+            # s2 = self.urlToImageHtml(c,new_p,s)
+            # if s2 != None:
+                # w.setReadOnly(False)
+                # w.setHtml(s2)
+                # w.setReadOnly(True)
+            # else:
+                # w.setPlainText(s)
+        else:
+            w.setReadOnly(False)
+            w.setPlainText(s)
+    finally:
+        self.changingText = False
+        colorizer.changingText = False
+    if trace and verbose: g.trace(g.timeSince(t1))
+
+    self.setSelectionRange(i,i,insert=i)
+    sb.setSliderPosition(pos)
+.. @+node:ekr.20110605121601.18135: *6* openURL()
+@g.command('open-url')
+def openURL(event):
+
+    c = event.get('c')
+    w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if i != j: return # So find doesn't open the url.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+    for match in url_regex.finditer(line):
+        if match.start() <= col < match.end(): # Don't open if we click after the url.
+            url = match.group()
+            if not g.app.unitTesting:
+                try:
+                    import webbrowser
+                    webbrowser.open(url)
+                except:
+                    g.es("exception opening " + url)
+                    g.es_exception()
+            return url
+.. @+node:ekr.20110605121601.18365: *6* dropEvent & helpers
+def dropEvent(self,ev):
+
+    trace = False and not g.unitTesting
+    if not ev: return
+    c = self.c ; tree = c.frame.tree ; u = c.undoer
+
+    # Always clear the dragging flag, no matter what happens.
+    g.app.dragging = False
+    if self.trace: g.trace('clear g.app.dragging')
+
+    # Set p to the target of the drop.
+    item = self.itemAt(ev.pos())
+    if not item: return
+    itemHash = tree.itemHash(item)
+    p = tree.item2positionDict.get(itemHash)
+    if not p:
+        if trace or self.trace: g.trace('no p!')
+        return
+
+    md = ev.mimeData()
+    #print "drop md",mdl
+    if not md:
+        g.trace('no mimeData!') ; return
+
+    #print "t",str(md.text())
+    #print "h", str(md.html())
+    formats = set(str(f) for f in md.formats())
+    #print formats
+
+    ev.setDropAction(QtCore.Qt.IgnoreAction)
+    ev.accept()
+
+    hookres = g.doHook("outlinedrop", c=c, p=p, dropevent = ev, formats = formats)
+
+    if hookres:
+        # True => plugins handled the drop already
+        return
+
+    if trace or self.trace: self.dump(ev,p,'drop ')
+
+    if md.hasUrls():
+        self.urlDrop(ev,p)
+    else:
+        self.outlineDrop(ev,p)
+.. @+node:ekr.20110605121601.18366: *7* outlineDrop & helpers
+def outlineDrop (self,ev,p):
+
+    trace = False and not g.unitTesting
+    c = self.c ; tree = c.frame.tree
+    mods = ev.keyboardModifiers()
+    md = ev.mimeData()
+
+    fn,s = self.parseText(md)
+    if not s or not fn:
+        if trace or self.trace: g.trace('no fn or no s')
+        return
+
+    if fn == self.fileName():
+        if p and p == c.p:
+            if trace or self.trace: g.trace('same node')
+        else:
+            cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
+            self.intraFileDrop(cloneDrag,fn,c.p,p)
+    else:
+        # Clone dragging between files is not allowed.
+        self.interFileDrop(fn,p,s)
+.. @+node:ekr.20110605121601.18367: *8* interFileDrop
+def interFileDrop (self,fn,p,s):
+
+    '''Paste the mime data after (or as the first child of) p.'''
+
+    c = self.c ; tree = c.frame.tree
+    u = c.undoer ; undoType = 'Drag Outline'
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    if not isLeo: return
+
+    c.selectPosition(p)
+    pasted = c.fileCommands.getLeoOutlineFromClipboard(
+        s,reassignIndices=True)
+    if not pasted: return
+    
+    if c.config.getBool('inter_outline_drag_moves'):
+        src_c, src_p = g.app.drag_source
+        if src_p.hasVisNext(src_c):
+            nxt = src_p.getVisNext(src_c).v
+        elif src_p.hasVisBack(src_c):
+            nxt = src_p.getVisBack(src_c).v
+        else:
+            nxt = None
+            
+        if nxt is not None:
+            src_p.doDelete()
+            src_c.selectPosition(src_c.vnode2position(nxt))
+            src_c.setChanged(True)
+            src_c.redraw()
+        else:
+            g.es("Can't move last node out of outline")
+
+    undoData = u.beforeInsertNode(p,
+        pasteAsClone=False,copiedBunchList=[])
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    pasted.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+    c.setChanged(True)
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    # c.setRootPosition(c.findRootPosition(pasted))
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw_now(pasted)
+    c.recolor()
+.. @+node:ekr.20110605121601.18368: *8* intraFileDrop
+def intraFileDrop (self,cloneDrag,fn,p1,p2):
+
+    '''Move p1 after (or as the first child of) p2.'''
+
+    c = self.c ; u = c.undoer
+    c.selectPosition(p1)
+
+    if p2.hasChildren() and p2.isExpanded():
+        # Attempt to move p1 to the first child of p2.
+        parent = p2
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveToNthChildOf(p2,0)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+    else:
+        # Attempt to move p1 after p2.
+        parent = p2.parent()
+        def move(p1,p2):
+            if cloneDrag: p1 = p1.clone()
+            p1.moveAfter(p2)
+            p1.setDirty()
+            p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
+            return p1
+
+    ok = (
+        # 2011/10/03: Major bug fix.
+        c.checkDrag(p1,p2) and
+        c.checkMoveWithParentWithWarning(p1,p2,True))
+    # g.trace(ok,cloneDrag)
+    if ok:
+        undoData = u.beforeMoveNode(p1)
+        dirtyVnodeList = p1.setAllAncestorAtFileNodesDirty()
+        p1 = move(p1,p2)
+        if cloneDrag:
+            # Set dirty bits for ancestors of *all* cloned nodes.
+            # Note: the setDescendentsDirty flag does not do what we want.
+            for z in p1.self_and_subtree():
+                z.setAllAncestorAtFileNodesDirty(
+                    setDescendentsDirty=False)
+        c.setChanged(True)
+        u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
+        c.redraw_now(p1)
+    else:
+        if not g.unitTesting:
+            g.trace('** move failed')
+.. @+node:ekr.20110605121601.18369: *7* urlDrop & helpers
+def urlDrop (self,ev,p):
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
+    md = ev.mimeData()
+    urls = md.urls()
+    if not urls: return
+
+    c.undoer.beforeChangeGroup(c.p,undoType)
+
+    changed = False
+    for z in urls:
+        url = QtCore.QUrl(z)
+        scheme = url.scheme()
+        if scheme == 'file':
+            changed |= self.doFileUrl(p,url)
+        elif scheme in ('http',): # 'ftp','mailto',
+            changed |= self.doHttpUrl(p,url)
+        # else: g.trace(url.scheme(),url)
+
+    if changed:
+        c.setChanged(True)
+        u.afterChangeGroup(c.p,undoType,reportFlag=False,dirtyVnodeList=[])
+        c.redraw_now()
+.. @+node:ekr.20110605121601.18370: *8* doFileUrl & helper
+def doFileUrl (self,p,url):
+
+    fn = str(url.path())
+    if sys.platform.lower().startswith('win'):
+        if fn.startswith('/'):
+            fn = fn[1:]
+
+    changed = False
+    if os.path.isdir(fn):
+        self.doPathUrlHelper(fn,p)
+        return True
+
+    if g.os_path_exists(fn):
+        try:
+            f = open(fn,'r')
+        except IOError:
+            f = None
+        if f:
+            s = f.read()
+            f.close()
+            self.doFileUrlHelper(fn,p,s)
+            return True
+
+    g.es_print('not found: %s' % (fn))
+    return False
+.. @+node:ekr.20110605121601.18371: *9* doFileUrlHelper & helper
+def doFileUrlHelper (self,fn,p,s):
+
+    '''Insert s in an @file, @auto or @edit node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag File'
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    self.createAtFileNode(fn,p2,s)
+
+    u.afterInsertNode(p2,undoType,undoData)
+
+    c.selectPosition(p2)
+.. @+node:ekr.20110605121601.18372: *10* createAtFileNode & helpers
+def createAtFileNode (self,fn,p,s):
+
+    '''Set p's headline, body text and possibly descendants
+    based on the file's name fn and contents s.
+
+    If the file is an thin file, create an @file tree.
+    Othewise, create an @auto tree.
+    If all else fails, create an @auto node.
+
+    Give a warning if a node with the same headline already exists.
+    '''
+
+    c = self.c ; d = c.importCommands.importDispatchDict
+    
+    c.init_error_dialogs()
+    if self.isThinFile(fn,s):
+        self.createAtFileTree(fn,p,s)
+    elif self.isAutoFile(fn,s):
+        self.createAtAutoTree(fn,p,s)
+    else:
+        self.createAtEditNode(fn,p,s)
+    self.warnIfNodeExists(p)
+    c.raise_error_dialogs(kind='read')
+.. @+node:ekr.20110605121601.18373: *11* createAtAutoTree
+def createAtAutoTree (self,fn,p,s):
+
+    '''Make p an @auto node and create the tree using
+    s, the file's contents.
+    '''
+
+    c = self.c ; at = c.atFileCommands
+
+    p.h = '@auto %s' % (fn)
+
+    at.readOneAtAutoNode(fn,p)
+
+    # No error recovery should be needed here.
+
+    p.clearDirty() # Don't automatically rewrite this node.
+.. @+node:ekr.20110605121601.18374: *11* createAtEditNode
+def createAtEditNode(self,fn,p,s):
+
+    c = self.c ; at = c.atFileCommands
+
+    # Use the full @edit logic, so dragging will be
+    # exactly the same as reading.
+    at.readOneAtEditNode(fn,p)
+    p.h = '@edit %s' % (fn)
+    p.clearDirty() # Don't automatically rewrite this node.
+.. @+node:ekr.20110605121601.18375: *11* createAtFileTree
+def createAtFileTree (self,fn,p,s):
+
+    '''Make p an @file node and create the tree using
+    s, the file's contents.
+    '''
+
+    c = self.c ; at = c.atFileCommands
+
+    p.h = '@file %s' % (fn)
+
+    # Read the file into p.
+    ok = at.read(root=p.copy(),
+        importFileName=None,
+        fromString=s,
+        atShadow=False,
+        force=True) # Disable caching.
+
+    if not ok:
+        g.es_print('Error reading',fn,color='red')
+        p.b = '' # Safe: will not cause a write later.
+        p.clearDirty() # Don't automatically rewrite this node.
+.. @+node:ekr.20110605121601.18376: *11* isThinFile
+def isThinFile (self,fn,s):
+
+    '''Return true if the file whose contents is s
+    was created from an @thin or @file tree.'''
+
+    c = self. c ; at = c.atFileCommands
+
+    # Skip lines before the @+leo line.
+    i = s.find('@+leo')
+    if i == -1:
+        return False
+    else:
+        # Like at.isFileLike.
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = at.parseLeoSentinel(line)
+        # g.trace('valid',valid,'new_df',new_df,'isThin',isThin)
+        return valid and new_df and isThin
+.. @+node:ekr.20110605121601.18377: *11* isAutoFile
+def isAutoFile (self,fn,unused_s):
+
+    '''Return true if the file whose name is fn
+    can be parsed with an @auto parser.
+    '''
+
+    c = self.c
+    d = c.importCommands.importDispatchDict
+    junk,ext = g.os_path_splitext(fn)
+    return d.get(ext)
+.. @+node:ekr.20110605121601.18378: *11* warnIfNodeExists
+def warnIfNodeExists (self,p):
+
+    c = self.c ; h = p.h
+    for p2 in c.all_unique_positions():
+        if p2.h == h and p2 != p:
+            g.es('Warning: duplicate node:',h,color='blue')
+            break
+.. @+node:ekr.20110605121601.18379: *9* doPathUrlHelper
+def doPathUrlHelper (self,fn,p):
+
+    '''Insert s in an @file, @auto or @edit node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag File'
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    p2.h = '@path ' + fn
+
+    u.afterInsertNode(p2,undoType,undoData)
+
+    c.selectPosition(p2)
+.. @+node:ekr.20110605121601.18380: *8* doHttpUrl
+def doHttpUrl (self,p,url):
+
+    '''Insert the url in an @url node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag Url'
+
+    s = str(url.toString()).strip()
+    if not s: return False
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    # p2.h,p2.b = '@url %s' % (s),''
+    p2.h = '@url'
+    p2.b = s
+    p2.clearDirty() # Don't automatically rewrite this node.
+
+    u.afterInsertNode(p2,undoType,undoData)
+    return True
+.. @+node:ekr.20110605121601.18369: *6* urlDrop & helpers
+def urlDrop (self,ev,p):
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
+    md = ev.mimeData()
+    urls = md.urls()
+    if not urls: return
+
+    c.undoer.beforeChangeGroup(c.p,undoType)
+
+    changed = False
+    for z in urls:
+        url = QtCore.QUrl(z)
+        scheme = url.scheme()
+        if scheme == 'file':
+            changed |= self.doFileUrl(p,url)
+        elif scheme in ('http',): # 'ftp','mailto',
+            changed |= self.doHttpUrl(p,url)
+        # else: g.trace(url.scheme(),url)
+
+    if changed:
+        c.setChanged(True)
+        u.afterChangeGroup(c.p,undoType,reportFlag=False,dirtyVnodeList=[])
+        c.redraw_now()
+.. @+node:ekr.20110605121601.18370: *7* doFileUrl & helper
+def doFileUrl (self,p,url):
+
+    fn = str(url.path())
+    if sys.platform.lower().startswith('win'):
+        if fn.startswith('/'):
+            fn = fn[1:]
+
+    changed = False
+    if os.path.isdir(fn):
+        self.doPathUrlHelper(fn,p)
+        return True
+
+    if g.os_path_exists(fn):
+        try:
+            f = open(fn,'r')
+        except IOError:
+            f = None
+        if f:
+            s = f.read()
+            f.close()
+            self.doFileUrlHelper(fn,p,s)
+            return True
+
+    g.es_print('not found: %s' % (fn))
+    return False
+.. @+node:ekr.20110605121601.18371: *8* doFileUrlHelper & helper
+def doFileUrlHelper (self,fn,p,s):
+
+    '''Insert s in an @file, @auto or @edit node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag File'
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    self.createAtFileNode(fn,p2,s)
+
+    u.afterInsertNode(p2,undoType,undoData)
+
+    c.selectPosition(p2)
+.. @+node:ekr.20110605121601.18372: *9* createAtFileNode & helpers
+def createAtFileNode (self,fn,p,s):
+
+    '''Set p's headline, body text and possibly descendants
+    based on the file's name fn and contents s.
+
+    If the file is an thin file, create an @file tree.
+    Othewise, create an @auto tree.
+    If all else fails, create an @auto node.
+
+    Give a warning if a node with the same headline already exists.
+    '''
+
+    c = self.c ; d = c.importCommands.importDispatchDict
+    
+    c.init_error_dialogs()
+    if self.isThinFile(fn,s):
+        self.createAtFileTree(fn,p,s)
+    elif self.isAutoFile(fn,s):
+        self.createAtAutoTree(fn,p,s)
+    else:
+        self.createAtEditNode(fn,p,s)
+    self.warnIfNodeExists(p)
+    c.raise_error_dialogs(kind='read')
+.. @+node:ekr.20110605121601.18373: *10* createAtAutoTree
+def createAtAutoTree (self,fn,p,s):
+
+    '''Make p an @auto node and create the tree using
+    s, the file's contents.
+    '''
+
+    c = self.c ; at = c.atFileCommands
+
+    p.h = '@auto %s' % (fn)
+
+    at.readOneAtAutoNode(fn,p)
+
+    # No error recovery should be needed here.
+
+    p.clearDirty() # Don't automatically rewrite this node.
+.. @+node:ekr.20110605121601.18374: *10* createAtEditNode
+def createAtEditNode(self,fn,p,s):
+
+    c = self.c ; at = c.atFileCommands
+
+    # Use the full @edit logic, so dragging will be
+    # exactly the same as reading.
+    at.readOneAtEditNode(fn,p)
+    p.h = '@edit %s' % (fn)
+    p.clearDirty() # Don't automatically rewrite this node.
+.. @+node:ekr.20110605121601.18375: *10* createAtFileTree
+def createAtFileTree (self,fn,p,s):
+
+    '''Make p an @file node and create the tree using
+    s, the file's contents.
+    '''
+
+    c = self.c ; at = c.atFileCommands
+
+    p.h = '@file %s' % (fn)
+
+    # Read the file into p.
+    ok = at.read(root=p.copy(),
+        importFileName=None,
+        fromString=s,
+        atShadow=False,
+        force=True) # Disable caching.
+
+    if not ok:
+        g.es_print('Error reading',fn,color='red')
+        p.b = '' # Safe: will not cause a write later.
+        p.clearDirty() # Don't automatically rewrite this node.
+.. @+node:ekr.20110605121601.18376: *10* isThinFile
+def isThinFile (self,fn,s):
+
+    '''Return true if the file whose contents is s
+    was created from an @thin or @file tree.'''
+
+    c = self. c ; at = c.atFileCommands
+
+    # Skip lines before the @+leo line.
+    i = s.find('@+leo')
+    if i == -1:
+        return False
+    else:
+        # Like at.isFileLike.
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = at.parseLeoSentinel(line)
+        # g.trace('valid',valid,'new_df',new_df,'isThin',isThin)
+        return valid and new_df and isThin
+.. @+node:ekr.20110605121601.18377: *10* isAutoFile
+def isAutoFile (self,fn,unused_s):
+
+    '''Return true if the file whose name is fn
+    can be parsed with an @auto parser.
+    '''
+
+    c = self.c
+    d = c.importCommands.importDispatchDict
+    junk,ext = g.os_path_splitext(fn)
+    return d.get(ext)
+.. @+node:ekr.20110605121601.18378: *10* warnIfNodeExists
+def warnIfNodeExists (self,p):
+
+    c = self.c ; h = p.h
+    for p2 in c.all_unique_positions():
+        if p2.h == h and p2 != p:
+            g.es('Warning: duplicate node:',h,color='blue')
+            break
+.. @+node:ekr.20110605121601.18379: *8* doPathUrlHelper
+def doPathUrlHelper (self,fn,p):
+
+    '''Insert s in an @file, @auto or @edit node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag File'
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    p2.h = '@path ' + fn
+
+    u.afterInsertNode(p2,undoType,undoData)
+
+    c.selectPosition(p2)
+.. @+node:ekr.20110605121601.18380: *7* doHttpUrl
+def doHttpUrl (self,p,url):
+
+    '''Insert the url in an @url node after p.'''
+
+    c = self.c ; u = c.undoer ; undoType = 'Drag Url'
+
+    s = str(url.toString()).strip()
+    if not s: return False
+
+    undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
+
+    if p.hasChildren() and p.isExpanded():
+        p2 = p.insertAsNthChild(0)
+    else:
+        p2 = p.insertAfter()
+
+    # p2.h,p2.b = '@url %s' % (s),''
+    p2.h = '@url'
+    p2.b = s
+    p2.clearDirty() # Don't automatically rewrite this node.
+
+    u.afterInsertNode(p2,undoType,undoData)
+    return True
 .. @+node:ekr.20120304065838.14230: *4* Fix all bugs targeted to b1
 .. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
@@ -7190,6 +8088,10 @@ def os_path_splitext(path):
 .. @+node:ekr.20090829140232.6036: *8* os_startfile
 def os_startfile(fname):
     
+    if g.unitTesting:
+        g.app.unitTestDict['os_startfile']=fname
+        return
+    
     if sys.platform.startswith('win'):
         os.startfile(fname)
     elif sys.platform == 'darwin':
@@ -7996,104 +8898,105 @@ def OnIconDoubleClick (self,p):
 
     return # (for Tk) 'break' # 11/19/06
 .. @+node:tbrown.20090219095555.61: *6* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url, c=None, p=None):
+def handleUrlInUrlNode(url,c=None,p=None):
     
     # Note 1: the UNL plugin has its own notion of what a good url is.
 
     # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
     #         node if it exists.
 
-    if g.unitTesting: return
-    
-    << check the url; return if bad >>
-    << pass the url to the web browser >>
-.. @+node:tbrown.20090219095555.62: *7* << check the url; return if bad >>
-@ A valid url is (according to D.T.Hein):
-
-3 or more lowercase alphas, followed by,
-one ':', followed by,
-one or more of: (excludes !"#;<>[\]^`|)
-  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-followed by one of: (same as above, except no minus sign or comma).
-  $%&'()*+/0-9:=?@A-Z_a-z}~
-@c
-
-# urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
-
-if not url:
-    g.es("no url following @url")
-    return
-
-# Add http:// if required.
-# if not re.match('^([a-z]{3,}:)',url):
-#     url = 'http://' + url
-# if not re.match(urlPattern,url):
-#     g.es("invalid url:",url)
-#     return
-.. @+node:tbrown.20090219095555.63: *7* << pass the url to the web browser >>
+    if url:
+        if c and not p:
+            p = c.p
+        g.handleUrl(c,p,url)
+    else:
+        g.es("no url following @url")
+.. @+node:tbrown.20090219095555.63: *7* g.handleUrl
 @ Most browsers should handle the following urls:
   ftp://ftp.uu.net/public/whatever.
   http://localhost/MySiteUnderDevelopment/index.html
   file://home/me/todolist.html
 @c
 
-try:
+def handleUrl(c,p,url):
     
-    parsed = urlparse(url)
-    
-    leo_path = parsed.path
-    if parsed.netloc:
-        leo_path = os.path.join(parsed.netloc, parsed.path)
-        # "readme.txt" gets parsed into .netloc...
-    
-    if c and parsed.scheme in ('', 'file'):
-        
-        # local UNLs like "node-->subnode", "-->node", and "#node"
-        if '-->' in parsed.path:
-            g.recursiveUNLSearch(parsed.path.split("-->"), c)
-            return
-        if not parsed.path and parsed.fragment:
-            g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
-            return
+    trace = False and not g.unitTesting
 
-        # leo aware path
-        leo_path = os.path.expanduser(leo_path)
-        leo_path = g.os_path_expandExpression(leo_path, c=c)
-        if p and not os.path.isabs(leo_path):
-            leo_path = os.path.normpath(
-                os.path.join(c.getNodePath(p), leo_path))
+    try:
+        parsed = urlparse(url)
 
-        # .leo file
-        if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-            # 2011/07/28: Immediately end editing, so that
-            # typing in the new window works properly.
-            c.endEditing()
-            c.redraw_now()
-            c2 = g.openWithFileName(leo_path,old_c=c)
+        if parsed.netloc:
+            leo_path = os.path.join(parsed.netloc, parsed.path)
+            # "readme.txt" gets parsed into .netloc...
+        else:
+            leo_path = parsed.path
             
-            # with UNL after path
-            if c2 and parsed.fragment:
-                g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
-            if c2:
-                c2.bringToFront()
-                return
-                
-    if parsed.scheme in ('', 'file'):
-        if os.path.exists(leo_path):
-            g.os_startfile(leo_path)
-            return
-        if parsed.scheme == 'file':
-            g.es("File '%s' does not exist"%leo_path)
-            return
-        
-    import webbrowser
-    # Mozilla throws a weird exception, then opens the file!
-    try: webbrowser.open(url)
-    except: pass
+        if leo_path.endswith('\\'): leo_path = leo_path[:-1]
+        if leo_path.endswith('/'):  leo_path = leo_path[:-1]
+            
+        if trace:
+            print()
+            g.trace('c.frame.title',c.frame.title)
+            g.trace('leo_path     ',leo_path)
+            g.trace('parsed.netloc',parsed.netloc)
+            g.trace('parsed.path  ',parsed.path)
+            g.trace('parsed.scheme',parsed.scheme)
+
+        if c and parsed.scheme in ('', 'file'):
+            
+            if not leo_path:
+            
+                # local UNLs like "node-->subnode", "-->node", and "#node"
+                if '-->' in parsed.path:
+                    g.recursiveUNLSearch(parsed.path.split("-->"), c)
+                    return
+                if not parsed.path and parsed.fragment:
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                    return
     
-except:
-    g.es("exception opening",url)
-    g.es_exception()
+            # leo aware path
+            leo_path = os.path.expanduser(leo_path)
+            leo_path = g.os_path_expandExpression(leo_path, c=c)
+            if p and not os.path.isabs(leo_path):
+                leo_path = os.path.normpath(
+                    os.path.join(c.getNodePath(p), leo_path))
+    
+            # .leo file
+            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                # Immediately end editing, so that typing in the new window works properly.
+                c.endEditing()
+                c.redraw_now()
+                if g.unitTesting:
+                    g.app.unitTestDict['g.openWithFileName']=leo_path
+                else:
+                    c2 = g.openWithFileName(leo_path,old_c=c)
+                    # with UNL after path
+                    if c2 and parsed.fragment:
+                        g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
+                    if c2:
+                        c2.bringToFront()
+                        return
+                    
+        if parsed.scheme in ('', 'file'):
+            if os.path.exists(leo_path):
+                g.os_startfile(leo_path)
+                return
+            if parsed.scheme == 'file':
+                g.es("File '%s' does not exist"%leo_path)
+                return
+            
+        import webbrowser
+
+        if g.unitTesting:
+            g.app.unitTestDict['browser']=url
+            return
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+        
+    except:
+        g.es("exception opening",url)
+        g.es_exception()
 .. @+node:ekr.20111026075003.16481: *5* Support ~/.leo_config.py
 @language rest
 

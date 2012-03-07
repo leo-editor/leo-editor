@@ -6410,5 +6410,28 @@ def download_image(self,url):
     f.close() 
 
     return localName
+#@+node:tbrown.20090219095555.62: *3* g.checkUrl (Does nothing)
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+def checkUrl(url):
+
+    # urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+        
+    if False: g.trace('valid',url)
+    
+    # Add http:// if required.
+    # if not re.match('^([a-z]{3,}:)',url):
+    #     url = 'http://' + url
+    # if not re.match(urlPattern,url):
+    #     g.es("invalid url:",url)
+    #     return
 #@-all
 #@-leo
