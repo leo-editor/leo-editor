@@ -1744,8 +1744,13 @@ class rstCommands:
             if s and isHtml:
                 self.stringOutput = s = self.addTitleToHtml(s)
             if not s: return
-
-            if not toString:
+            
+            if toString:
+                if not g.isUnicode(s):
+                    s = g.toUnicode(s,'utf-8')
+            else:
+                s = g.toEncodedString(s,'utf-8')
+                    # Fixes bug 923301: Unicode error when executing 'rst3' command
                 f = open(fn,'w')
                 f.write(s)
                 f.close()
