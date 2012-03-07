@@ -9850,8 +9850,14 @@ class jEditColorizer:
             ('@',  self.match_at_nocolor,  True),
             ('@',  self.match_at_nocolor_node,True),
             ('@',  self.match_doc_part,    True),
-            ('f',  self.match_url_f,        True),
+            ('f',  self.match_url_f,       True),
+            ('g',  self.match_url_g,       True),
             ('h',  self.match_url_h,       True),
+            ('m',  self.match_url_m,       True),
+            ('n',  self.match_url_n,       True),
+            ('p',  self.match_url_p,       True),
+            ('t',  self.match_url_t,       True),
+            ('w',  self.match_url_w,       True),
             ('<',  self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
             (' ',  self.match_blanks,      False),
@@ -10599,24 +10605,47 @@ class jEditColorizer:
         else:
             return 0
     #@+node:ekr.20110605121601.18608: *6* match_url_any/f/h  (new)
-    url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
+    # Fix bug 893230: URL coloring does not work for many Internet protocols.
+    # Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
+    url_regex_f = re.compile(  r"""(file|ftp)://[^\s'"]+[\w=/]""")
+    url_regex_g = re.compile(      r"""gopher://[^\s'"]+[\w=/]""")
     url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
-    url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+    url_regex_m = re.compile(      r"""mailto://[^\s'"]+[\w=/]""")
+    url_regex_n = re.compile( r"""(news|nntp)://[^\s'"]+[\w=/]""")
+    url_regex_p = re.compile(    r"""prospero://[^\s'"]+[\w=/]""")
+    url_regex_t = re.compile(      r"""telnet://[^\s'"]+[\w=/]""")
+    url_regex_w = re.compile(        r"""wais://[^\s'"]+[\w=/]""")
+
+    kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
+    # url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+    url_regex   = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 
     def match_any_url(self,s,i):
-        
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex)
-            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
 
     def match_url_f(self,s,i):
-        
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_f)
-            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
         
+    def match_url_g(self,s,i):
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_g)
+
     def match_url_h(self,s,i):
-        
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_h)
-            # at_line_start=False,at_whitespace_end=False,at_word_start=False,delegate=''):
+        
+    def match_url_m(self,s,i):
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_m)
+        
+    def match_url_n(self,s,i):
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_n)
+        
+    def match_url_p(self,s,i):
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_p)
+        
+    def match_url_t(self,s,i):
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_t)
+
+    def match_url_w(self,s,i):
+        return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_w)
     #@+node:ekr.20110605121601.18609: *5* match_compiled_regexp (new)
     def match_compiled_regexp (self,s,i,kind,regexp,delegate=''):
 

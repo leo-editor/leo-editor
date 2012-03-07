@@ -3095,6 +3095,421 @@ https://bugs.launchpad.net/leo-editor/+bug/824087
 The fix was to bind Ctrl-F4 to close-window, instead of Alt-F4.
 
 I instantly like this new binding.
+#@+node:ekr.20120306201510.9854: *4* Fixed(?) bug 923301: Unicode error when executing 'rst3' command
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/923301
+
+I am opening a bug for this, since I think that a Leo-Newbie might not be
+able to find a work around for this issue.
+
+The 'rst3' command just fails silently - and - does not create any output
+file at all. - It took me a while to find the offending section in the body
+of a large outline node, so that the 'rst3' command was able to create
+an output file again.
+
+<log>
+
+D:\Users\Viktor Ransmayr\Documents>leo ./BR-2012-01-28.leo
+
+** isPython3: True
+Leo 4.9.1 devel, build 4950, 2012-01-28 10:16:45
+Python 3.2.2, qt version 4.8.0
+Windows 6, 1, 7601, 2, Service Pack 1
+reading settings in D:\Branches\leo-editor\leo\config\leoSettings.leo
+reading settings in D:\Users\Viktor Ransmayr\.leo\myLeoSettings.leo
+reading settings in D:\Users\Viktor Ransmayr\Documents\BR-2012-01-28.leo
+wrote recent file: D:\Users\Viktor Ransmayr\.leo\.leoRecentFiles.txt
+<string>:179: (WARNING/2) Literal block expected; none found.
+Traceback (most recent call last):
+  File "D:\Branches\leo-editor\leo\plugins\qtGui.py", line 8689, in eventFilter
+    ret = k.masterKeyHandler(event)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2897, in masterKeyHandler
+    done,val = k.doMode(event,state,stroke)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2973, in doMode
+    val = k.callStateFunction(event) # Calls end-command.
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2947, in callStateFunction
+    val = k.state.handler(event)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2010, in fullCommand
+    k.callAltXFunction(k.mb_event)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2056, in callAltXFunction
+    func(event)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 472, in rst3
+    self.processTopTree(self.c.p)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 482, in processTopTree
+
+self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 510, in processTree
+
+self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 560, in write_rst_tree
+
+self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 1749, in write_files
+    f.write(s)
+  File "C:\Python32\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u0142' in position
+19816: character maps to <undefined>
+
+</log>
+
+This has been re-produced with the latest revision of leo-trunk. - If wanted,
+I can send a minimal outline that consistently produces this tracedback.
+#@+node:ekr.20100813041139.5919: *5* write_files & helpers
+def write_files (self,ext,fn,callDocutils,toString,writeIntermediateFile):
+
+    isHtml = ext in ('.html','.htm')
+    fn = self.computeOutputFileName(fn)
+    if not toString:
+        if not self.createDirectoryForFile(fn):
+            return
+
+    if writeIntermediateFile:
+        if not toString:
+            self.createIntermediateFile(fn,self.source)
+
+    if callDocutils and ext in ('.htm','.html','.tex','.pdf','.s5','.odt'):
+        self.stringOutput = s = self.writeToDocutils(self.source,ext)
+        if s and isHtml:
+            self.stringOutput = s = self.addTitleToHtml(s)
+        if not s: return
+        
+        if toString:
+            if not g.isUnicode(s):
+                s = g.toUnicode(s,'utf-8')
+        else:
+            s = g.toEncodedString(s,'utf-8')
+                # Fixes bug 923301: Unicode error when executing 'rst3' command
+            f = open(fn,'w')
+            f.write(s)
+            f.close()
+            self.report(fn)
+            # self.http_endTree(fn,p,justOneFile=justOneFile)
+#@+node:ekr.20100813041139.5913: *6* addTitleToHtml
+def addTitleToHtml(self,s):
+
+    '''Replace an empty <title> element by the contents of
+    the first <h1> element.'''
+
+    i = s.find('<title></title>')
+    if i == -1: return s
+
+    m = re.search('<h1>([^<]*)</h1>', s)
+    if not m:
+        m = re.search('<h1><[^>]+>([^<]*)</a></h1>', s)
+    if m:
+        s = s.replace('<title></title>',
+            '<title>%s</title>' % m.group(1))
+
+    return s
+#@+node:ekr.20100813041139.5914: *6* createDirectoryForFile
+def createDirectoryForFile(self, fn):
+
+    '''Create the directory for fn if
+    a) it doesn't exist and
+    b) the user options allow it.
+
+    Return True if the directory existed or was made.'''
+
+    c = self.c
+
+    # Create the directory if it doesn't exist.
+    theDir, junk = g.os_path_split(fn)
+    theDir = c.os_path_finalize(theDir)
+
+    if g.os_path_exists(theDir):
+        return True
+    else:
+        ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+        if not ok:
+            g.es_print('did not create:',theDir,color='red')
+        return ok
+#@+node:ekr.20100813041139.5912: *6* createIntermediateFile (changed)
+def createIntermediateFile(self,fn,s):
+
+    '''Write s to to the file whose name is fn.'''
+
+    ext = self.getOption('write_intermediate_extension')
+    ext = ext or '.txt' # .txt by default.
+    if not ext.startswith('.'): ext = '.' + ext
+
+    fn = fn + ext
+
+    # g.trace('intermediate file',fn)
+    if g.isPython3:
+        f = open(fn,'w',encoding=self.encoding)
+    else:
+        f = open(fn,'w')
+    if not g.isPython3: # 2010/08/27
+        s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+    f.write(s)
+    f.close()
+    self.report(fn)
+#@+node:ekr.20090502071837.65: *6* writeToDocutils (sets argv) & helper
+def writeToDocutils (self,s,ext):
+
+    '''Send s to docutils using the writer implied by ext and return the result.'''
+
+    trace = False and not g.unitTesting
+
+    if not docutils:
+        g.trace('docutils not present',color='red')
+        return None
+
+    openDirectory = self.c.frame.openDirectory
+    overrides = {'output_encoding': self.encoding }
+
+    # Compute the args list if the stylesheet path does not exist.
+    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+    
+    if ext == '.pdf':
+        module = g.importFromPath(
+            name = 'leo_pdf.py',
+            path = g.os_path_finalize_join(g.app.loadDir,'..','plugins'),
+            pluginName = 'leo_pdf',
+            verbose = False)
+        if not module:
+            return None
+        writer = module.Writer() # Get an instance.
+        writer_name = None
+    else:
+        writer = None
+        for ext2,writer_name in (
+            ('.html','html'),
+            ('.htm','html'),
+            ('.tex','latex'),
+            ('.pdf','leo.plugins.leo_pdf'), # 2011/11/03
+            ('.s5','s5'), # 2011/03/27
+            ('.odt','odt'), # 2011/03/27
+        ):
+            if ext2 == ext:
+                break
+        else:
+            g.es_print('unknown docutils extension: %s' % (ext),color='red')
+            return None
+    
+    if ext in ('.html','.htm') and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            if not g.unitTesting:
+                g.es('SilverCity not present so no syntax highlighting')
+
+    # Make the stylesheet path relative to the directory containing the output file.
+    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
+
+    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+    stylesheet_path = g.os_path_finalize_join(
+        self.c.frame.openDirectory,rel_stylesheet_path)
+
+    path = g.os_path_finalize_join(
+        stylesheet_path,self.getOption('stylesheet_name'))
+
+    res = ""
+    if self.getOption('stylesheet_embed') == False:
+        rel_path = g.os_path_join(
+            rel_stylesheet_path,self.getOption('stylesheet_name'))
+        rel_path = rel_path.replace('\\','/') # 2010/01/28
+        overrides['stylesheet'] = rel_path
+        overrides['stylesheet_path'] = None
+        overrides['embed_stylesheet'] = None
+    elif g.os_path_exists(path):
+        if ext != '.pdf':
+            overrides['stylesheet'] = path
+            overrides['stylesheet_path'] = None
+    elif styleSheetArgsDict:
+        g.es_print('using publish_argv_for_missing_stylesheets',
+            styleSheetArgsDict)
+        overrides.update(styleSheetArgsDict)
+            # MWC add args to settings
+    elif rel_stylesheet_path == stylesheet_path:
+        g.es_print('stylesheet not found: %s' % (path),color='red')
+    else:
+        g.es_print('stylesheet not found\n',path,color='red')
+        if self.path:g.es_print('@path:', self.path)
+        g.es_print('open path:',self.c.frame.openDirectory)
+        if rel_stylesheet_path:
+            g.es_print('relative path:', rel_stylesheet_path)
+    try:
+        # All paths now come through here.
+        if trace: g.trace('overrides',overrides)
+        result = None # Ensure that result is defined.
+        result = docutils.core.publish_string(source=s,
+                reader_name='standalone',
+                parser_name='restructuredtext',
+                writer=writer,
+                writer_name=writer_name,
+                settings_overrides=overrides)
+        if g.isBytes(result):
+            result = g.toUnicode(result)
+    except docutils.ApplicationError as error:
+        # g.es_print('Docutils error (%s):' % (
+            # error.__class__.__name__),color='red')
+        g.es_print('Docutils error:',color='red')
+        g.es_print(error,color='blue')
+    except Exception:
+        g.es_print('Unexpected docutils exception')
+        g.es_exception()
+    return result
+#@+node:ekr.20090502071837.66: *7* handleMissingStyleSheetArgs
+def handleMissingStyleSheetArgs (self,s=None):
+
+    '''Parse the publish_argv_for_missing_stylesheets option,
+    returning a dict containing the parsed args.'''
+
+    force = False
+    if force:
+        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
+        return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
+
+    if not s:
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+    if not s: return {}
+
+    # Handle argument lists such as this:
+    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
+    d = {}
+    while s:
+        s = s.strip()
+        if not s.startswith('--'): break
+        s = s[2:].strip()
+        eq = s.find('=')
+        cm = s.find(',')
+        if eq == -1 or (-1 < cm < eq): # key[nl] or key,
+            val = ''
+            cm = s.find(',')
+            if cm == -1:
+                key = s.strip()
+                s = ''
+            else:
+                key = s[:cm].strip()
+                s = s[cm+1:].strip()
+        else: # key = val
+            key = s[:eq].strip()
+            s = s[eq+1:].strip()
+            if s.startswith('['): # [...]
+                rb = s.find(']')
+                if rb == -1: break # Bad argument.
+                val = s[:rb+1]
+                s = s[rb+1:].strip()
+                if s.startswith(','):
+                    s = s[1:].strip()
+            else: # val[nl] or val,
+                cm = s.find(',')
+                if cm == -1:
+                    val = s
+                    s = ''
+                else:
+                    val = s[:cm].strip()
+                    s = s[cm+1:].strip()
+
+        # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
+        if not key: break
+        if not val.strip(): val = '1'
+        d[str(key)] = str(val)
+
+    return d
+#@+node:ekr.20120307065748.14157: *4* Fixed bug 893230: URL coloring does not work for many Internet protocols
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/893230
+
+Added support for colorizing the following schemes:
+gopher,mailto,news,nntp,prospero,telnet,wais
+
+No new unit tests, but the new code does pass a hand test (which found a bug).
+
+Changed match_ural_any, etc, and addLeoRules.
+#@+node:ekr.20110605121601.18608: *5* match_url_any/f/h  (new)
+# Fix bug 893230: URL coloring does not work for many Internet protocols.
+# Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
+url_regex_f = re.compile(  r"""(file|ftp)://[^\s'"]+[\w=/]""")
+url_regex_g = re.compile(      r"""gopher://[^\s'"]+[\w=/]""")
+url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
+url_regex_m = re.compile(      r"""mailto://[^\s'"]+[\w=/]""")
+url_regex_n = re.compile( r"""(news|nntp)://[^\s'"]+[\w=/]""")
+url_regex_p = re.compile(    r"""prospero://[^\s'"]+[\w=/]""")
+url_regex_t = re.compile(      r"""telnet://[^\s'"]+[\w=/]""")
+url_regex_w = re.compile(        r"""wais://[^\s'"]+[\w=/]""")
+
+kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
+# url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
+url_regex   = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
+
+def match_any_url(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex)
+
+def match_url_f(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_f)
+    
+def match_url_g(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_g)
+
+def match_url_h(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_h)
+    
+def match_url_m(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_m)
+    
+def match_url_n(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_n)
+    
+def match_url_p(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_p)
+    
+def match_url_t(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_t)
+
+def match_url_w(self,s,i):
+    return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_w)
+#@+node:ekr.20110605121601.18577: *5* addLeoRules
+def addLeoRules (self,theDict):
+
+    '''Put Leo-specific rules to theList.'''
+
+    table = (
+        # Rules added at front are added in **reverse** order.
+        ('@',  self.match_leo_keywords,True), # Called after all other Leo matchers.
+            # Debatable: Leo keywords override langauge keywords.
+        ('@',  self.match_at_color,    True),
+        ('@',  self.match_at_killcolor,True),
+        ('@',  self.match_at_language, True), # 2011/01/17
+        ('@',  self.match_at_nocolor,  True),
+        ('@',  self.match_at_nocolor_node,True),
+        ('@',  self.match_doc_part,    True),
+        ('f',  self.match_url_f,       True),
+        ('g',  self.match_url_g,       True),
+        ('h',  self.match_url_h,       True),
+        ('m',  self.match_url_m,       True),
+        ('n',  self.match_url_n,       True),
+        ('p',  self.match_url_p,       True),
+        ('t',  self.match_url_t,       True),
+        ('w',  self.match_url_w,       True),
+        ('<',  self.match_section_ref, True), # Called **first**.
+        # Rules added at back are added in normal order.
+        (' ',  self.match_blanks,      False),
+        ('\t', self.match_tabs,        False),
+    )
+
+    for ch, rule, atFront, in table:
+
+        # Replace the bound method by an unbound method.
+
+        if g.isPython3:
+            rule = rule.__func__
+        else:
+            rule = rule.im_func
+        # g.trace(rule)
+
+        theList = theDict.get(ch,[])
+        if rule not in theList:
+            if atFront:
+                theList.insert(0,rule)
+            else:
+                theList.append(rule)
+            theDict [ch] = theList
+
+    # g.trace(g.listToString(theDict.get('@')))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
