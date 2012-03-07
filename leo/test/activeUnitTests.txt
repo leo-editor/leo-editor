@@ -10709,6 +10709,25 @@ assert s[i:j] == 'xy_z5','got %s' % s[i:j]
 #@+node:ekr.20110612064437.3310: *4* @test g.guessExternalEditor
 val = g.guessExternalEditor(c)
 assert val,'no val' # This can be different on different platforms.
+#@+node:ekr.20120307133953.3947: *4* @test g.handleUrl
+fn1 = r'file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes'
+
+table = (
+    (r'file://C:/prog/test.sh',             ['os_startfile']),
+    (r'file://C:/prog',                     ['os_startfile']),
+    (r'http://writemonkey.com/index.php',   ['browser']),
+    (fn1,                                   ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
+    (r'#-->Before 4.10 b1',                 ['g.recursiveUNLSearch']),
+)
+
+for url,aList in table:
+    
+    g.handleUrl(c=c,p=c.p,url=url)
+    for kind in aList:
+        assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
+            kind,url)
+    
+    
 #@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
 '''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
 

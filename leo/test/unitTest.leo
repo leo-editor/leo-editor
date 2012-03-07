@@ -150,7 +150,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3671017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -566,7 +565,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1069,23 +1068,5 @@ finally:
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
 </t>
-<t tx="ekr.20120307133953.3947">fn1 = r'file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes'
-
-table = (
-    (r'file://C:/prog/test.sh',             ['os_startfile']),
-    (r'file://C:/prog',                     ['os_startfile']),
-    (r'http://writemonkey.com/index.php',   ['browser']),
-    (fn1,                                   ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
-    (r'#--&gt;Before 4.10 b1',                 ['g.recursiveUNLSearch']),
-)
-
-for url,aList in table:
-    
-    g.handleUrl(c=c,p=c.p,url=url)
-    for kind in aList:
-        assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
-            kind,url)
-    
-    </t>
 </tnodes>
 </leo_file>
