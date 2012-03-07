@@ -9214,6 +9214,7 @@ class leoQtColorizer:
         self.enabled = c.config.getBool('use_syntax_coloring')
         self.error = False # Set if there is an error in jeditColorizer.recolor
         self.flag = True # Per-node enable/disable flag.
+        self.full_recolor_count = 0 # For unit testing.
         self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
         self.languageList = [] # List of color directives in the node the determines it.
@@ -9238,6 +9239,8 @@ class leoQtColorizer:
         trace = False and not g.unitTesting ; verbose = False
 
         self.count += 1 # For unit testing.
+        if not incremental:
+            self.full_recolor_count += 1
 
         if len(p.b) > self.max_chars_to_colorize > 0:
             self.flag = False

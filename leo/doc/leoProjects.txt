@@ -3075,6 +3075,12 @@ for table in table1,table2:
         
 # g.es(len(''.join(result)))
 g.es('\n'.join(result))
+#@+node:ekr.20120306201510.9853: *4* Fixed bug 799695: colorizer bug after move-lines-up into a docstring
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/799695
+
+# The fix was simply to call c.recolor_now(incremental=False)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

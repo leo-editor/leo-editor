@@ -7181,7 +7181,7 @@ class Commands (object):
         if p is None:
             p = c.p
 
-        # g.trace('incremental',incremental,p and p.h,g.callers(4))
+        # g.trace('incremental',incremental,p and p.h,g.callers())
 
         c.frame.body.colorizer.colorize(p,
             incremental=incremental,interruptable=interruptable)

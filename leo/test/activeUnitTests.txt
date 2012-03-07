@@ -7824,6 +7824,51 @@ first line
         line b
 line c
 last line
+#@+node:ekr.20120306201833.3942: *5* @test move-lines-up (into docstring)
+# Test of bug 799695: colorizer bug after move-lines-up into a docstring
+
+# import os ; os.system('cls')
+
+n = c.frame.body.colorizer.full_recolor_count
+
+c.testManager.runEditCommandTest(p)
+
+# Not an effective test, even though the bug fix was to call
+# c.recolor_now(incremental=False)
+
+# g.trace(n,c.frame.body.colorizer.full_recolor_count)
+
+# assert c.frame.body.colorizer.full_recolor_count > n
+#@+node:ekr.20120306201833.3943: *6* work
+@language python
+def test():
+    """ a
+    b
+    c
+    print 1
+    """
+    
+    print 2
+#@+node:ekr.20120306201833.3944: *6* before sel=7.1,7.1
+@language python
+def test():
+    """ a
+    b
+    c
+    """
+    print 1
+    
+    print 2
+#@+node:ekr.20120306201833.3945: *6* after sel=6.1,6.1
+@language python
+def test():
+    """ a
+    b
+    c
+    print 1
+    """
+    
+    print 2
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
 if not g.app.isExternalUnitTest:
 
