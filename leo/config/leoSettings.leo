@@ -1600,8 +1600,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20120305084218.12631"><vh>check-settings output</vh></v>
-<v t="ekr.20111006212449.11850"></v>
+<v t="ekr.20051007200824"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2257,8 +2256,8 @@ clear-extend-mode                   = None
 clear-kill-ring                     = None
 clear-recent-files                  = None
 clone-node                          = Ctrl-`
-close-window                        = Alt-F4
-contract-all                        = None             # Alt-- conflicts with negative-arg.
+close-window                        = Ctrl-F4   # (was Alt-F4) Fixes bug 824087: Alt+F4 is not the same as Alt+F, c
+contract-all                        = None      # Alt-- conflicts with negative-arg.
 contract-node                       = Alt-[
 contract-or-go-left                 = Alt-LtArrow
 contract-parent                     = None
@@ -4080,7 +4079,7 @@ unindent-region                     = Shift-tab
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
 zap-to-character                    = Alt-z</t>
-<t tx="ekr.20060925061845">close-window                = Alt-F4
+<t tx="ekr.20060925061845">close-window                = Ctrl-F4   # (was Alt-F4) Fixes bug 824087: Alt+F4 is not the same as Alt+F, c
 exit-leo                    = Ctrl-q
 new                         = Ctrl-n    # Ctrl-n conflicts with next-line.
 open-outline                = Ctrl-o
@@ -9509,7 +9508,7 @@ do-nothing      = F12
 do-nothing = Ctrl-F1
 do-nothing = Ctrl-F2
 do-nothing = Ctrl-F3
-do-nothing = Ctrl-F4
+# close-window = Ctrl-F4  # Set elsewhere.
 do-nothing = Ctrl-F5
 do-nothing = Ctrl-F6
 do-nothing = Ctrl-F7
@@ -9531,275 +9530,6 @@ do-nothing = Shift-F9
 do-nothing = Shift-F10
 do-nothing = Shift-F11
 do-nothing = Shift-F12</t>
-<t tx="ekr.20120305084218.12631">missing @bool settings...
-                               Canonical Actual
-                               ========= ======
-                   checkoutlineafterread ['check_outline_after_read']
-                       graphmanuallayout ['graph-manual-layout']
-                         headlinegmttime ['headline_gmt_time']
-                          ignorecapslock ['ignore_caps_lock']
-               ignoreunboundnonasciikeys ['ignore_unbound_non_ascii_keys']
-              invisibleoutlinenavigation ['invisible_outline_navigation']
-                        leotohtmlnomenus ['leo_to_html_no_menus']
-                           outputdocflag ['output_doc_flag']
-                         shadowinhomedir ['shadow_in_home_dir']
-                  suppressallpluginmenus ['suppress-all-plugin-menus']
-                  suppressdatenodesmenus ['suppress-datenodes-menus']
-                         tanglebatchflag ['tangle_batch_flag']
-                       untanglebatchflag ['untangle_batch_flag']
-                           useheaderflag ['use_header_flag']
-                           useminibuffer ['useMinibuffer']
-                  viewrenderedautocreate ['view-rendered-auto-create']
-                    viewrenderedautohide ['view-rendered-auto-hide']
-                vimpluginpositionscursor ['vim_plugin_positions_cursor']
-                 vimpluginusestabfeature ['vim_plugin_uses_tab_feature']
-
-missing @color settings...
-                               Canonical Actual
-                               ========= ======
-                                    %s%s ['%s_%s']
-                                   black ['black']
-            renderingpanebackgroundcolor ['rendering-pane-background-color']
-
-missing @int settings...
-                               Canonical Actual
-                               ========= ======
-                             httptimeout ['http_timeout']
-
-missing @string settings...
-                               Canonical Actual
-                               ========= ======
-                     defaulteditingstate ['default_editing_state']
-                          externaleditor ['external_editor']
-                         httpbookmarkunl ['http_bookmark_unl']
-                         leoscreenprefix ['leoscreen_prefix']
-                        leoscreentimefmt ['leoscreen_time_fmt']
-                             mimeopencmd ['mime_open_cmd']
-                           qtbuttoncolor ['qt-button-color']
-                   rst2httpattributename ['rst2_http_attributename']
-                          scriptfilepath ['script_file_path']
-                        todoiconlocation ['todo_icon_location']
-                           todoiconorder ['todo_icon_order']
-                        todoproglocation ['todo_prog_location']
-                            todotimename ['todo_time_name']
-                toplevelunboundkeyaction ['top_level_unbound_key_action']
-                 viewrendereddefaultkind ['view-rendered-default-kind']
-                                  vimcmd ['vim_cmd']
-                                  vimexe ['vim_exe']
-                         vimtriggerevent ['vim_trigger_event']
-
-missing config.getBool calls...
-                               Canonical Actual
-                               ========= ======
-                            addedsetting ['added_setting']
-                  allowmiddlebuttonpaste ['allow_middle_button_paste']
-                appendoutputtooutputfile ['append_output_to_output_file']
-              atrootbodiesstartindocmode ['at_root_bodies_start_in_doc_mode']
-                                   batch ['batch']
-                  checkpythoncodeonwrite ['check_python_code_on_write']
-              colorcwebcommentswithlatex ['color_cweb_comments_with_latex']
-              colorcwebdocpartswithlatex ['color_cweb_doc_parts_with_latex']
-              colordirectivesinplaintext ['color_directives_in_plain_text']
-            createnonexistentdirectories ['create_nonexistent_directories']
-         datenodesmonthnodeomitsaturdays ['datenodes_month_node_omit_saturdays']
-           datenodesmonthnodeomitsundays ['datenodes_month_node_omit_sundays']
-          datenodesyearnodeomitsaturdays ['datenodes_year_node_omit_saturdays']
-            datenodesyearnodeomitsundays ['datenodes_year_node_omit_sundays']
-           forcenewlinesinatnosentbodies ['force_newlines_in_at_nosent_bodies']
-                          gcbeforeredraw ['gc_before_redraw']
-                        ignoreblanklines ['ignore_blank_lines']
-                              ignorecase ['ignore_case']
-                  ignorefirstlineoffile1 ['ignore_first_line_of_file_1']
-                  ignorefirstlineoffile2 ['ignore_first_line_of_file_2']
-                ignoreinteriorwhitespace ['ignore_interior_whitespace']
-                 ignoreleadingwhitespace ['ignore_leading_whitespace']
-                     ignoresentinellines ['ignore_sentinel_lines']
-                   makewhitespacevisible ['make_whitespace_visible']
-                             markchanges ['mark_changes']
-                               markfinds ['mark_finds']
-                                nodeonly ['node_only']
-                  opmluseoutlineelements ['opml_use_outline_elements']
-                       opmlwritebodytext ['opml_write_body_text']
-                     opmlwriteleodetails ['opml_write_leo_details']
-           opmlwriteleoglobalsattributes ['opml_write_leo_globals_attributes']
-                            opmlwriteuas ['opml_write_uAs']
-                            patternmatch ['pattern_match']
-                printbothlinesformatches ['print_both_lines_for_matches']
-                      printmatchinglines ['print_matching_lines']
-                   printmismatchinglines ['print_mismatching_lines']
-                      printtrailinglines ['print_trailing_lines']
-                                readonly ['read_only']
-    redirectexecutescriptoutputtologpane ['redirect_execute_script_output_to_log_pane']
-                                 reverse ['reverse']
-                 rst3clearhttpattributes ['rst3_clear_http_attributes']
-                            rst3codemode ['rst3_code_mode']
-                         rst3doconlymode ['rst3_doc_only_mode']
-                         rst3generaterst ['rst3_generate_rst']
-            rst3generaterstheadercomment ['rst3_generate_rst_header_comment']
-                   rst3httpserversupport ['rst3_http_server_support']
-                     rst3numbercodelines ['rst3_number_code_lines']
-            rst3showdocpartsasparagraphs ['rst3_show_doc_parts_as_paragraphs']
-                       rst3showheadlines ['rst3_show_headlines']
-                   rst3showleodirectives ['rst3_show_leo_directives']
-                  rst3showmarkupdocparts ['rst3_show_markup_doc_parts']
-                 rst3showoptionsdocparts ['rst3_show_options_doc_parts']
-                    rst3showoptionsnodes ['rst3_show_options_nodes']
-                  rst3showorganizernodes ['rst3_show_organizer_nodes']
-                 rst3stripatfileprefixes ['rst3_strip_at_file_prefixes']
-                             rst3verbose ['rst3_verbose']
-               rst3writeintermediatefile ['rst3_write_intermediate_file']
-                    saveclearsundobuffer ['save_clears_undo_buffer']
-                            scriptchange ['script_change']
-                            scriptsearch ['script_search']
-                              searchbody ['search_body']
-                          searchheadline ['search_headline']
-       selectalltextwheneditingheadlines ['select_all_text_when_editing_headlines']
-                           showtreestats ['show_tree_stats']
-                          suboutlineonly ['suboutline_only']
-                       testdarwinsetting ['test_darwin_setting']
-                        testwin32setting ['test_win32_setting']
-                  tracebindkeyexceptions ['trace_bind_key_exceptions']
-                        tracecolorparser ['trace_color_parser']
-                                  tracef ['trace_f']
-                                  traceg ['trace_g']
-                                 tracegc ['trace_gc']
-                            tracegccalls ['trace_gc_calls']
-                          tracegcverbose ['trace_gc_verbose']
-                           tracekeyevent ['trace_key_event']
-                      tracemastercommand ['trace_masterCommand']
-                 tracemasterfocushandler ['trace_masterFocusHandler']
-                   tracemasterkeyhandler ['trace_masterKeyHandler']
-                         traceminibuffer ['trace_minibuffer']
-                              tracemodes ['trace_modes']
-                            traceplugins ['trace_plugins']
-                             traceselect ['trace_select']
-                               tracetree ['trace_tree']
-                          tracetreealloc ['trace_tree_alloc']
-                           tracetreeedit ['trace_tree_edit']
-                             tracetreegc ['trace_tree_gc']
-                         tracetreeredraw ['trace_tree_redraw']
-                              usecmdmenu ['useCmdMenu']
-                              useplugins ['use_plugins']
-                 verbosetracecolorparser ['verbose_trace_color_parser']
-               warnwhenpluginsfailtoload ['warn_when_plugins_fail_to_load']
-                               wholeword ['whole_word']
-                                    wrap ['wrap']
-                writerecentfilesasneeded ['write_recent_files_as_needed']
-                   writestripsblanklines ['write_strips_blank_lines']
-
-missing config.getColor calls...
-                               Canonical Actual
-                               ========= ======
-                              blankcolor ['blank_color']
-               bodycursorbackgroundcolor ['body_cursor_background_color']
-               bodycursorforegroundcolor ['body_cursor_foreground_color']
-                bodyinsertioncursorcolor ['body_insertion_cursor_color']
-                           comment1color ['comment1_color']
-                           comment2color ['comment2_color']
-                           comment3color ['comment3_color']
-                           comment4color ['comment4_color']
-                            docpartcolor ['doc_part_color']
-                      forthkeyword3color ['forth_keyword3_color']
-                      forthkeyword4color ['forth_keyword4_color']
-                      forthkeyword5color ['forth_keyword5_color']
-                           keyword1color ['keyword1_color']
-                           keyword2color ['keyword2_color']
-                           keyword3color ['keyword3_color']
-                           keyword4color ['keyword4_color']
-                              labelcolor ['label_color']
-                         leokeywordcolor ['leo_keyword_color']
-                           literal1color ['literal1_color']
-                           literal2color ['literal2_color']
-                           literal3color ['literal3_color']
-                           literal4color ['literal4_color']
-                  logpanebackgroundcolor ['log_pane_background_color']
-           logpanefindtabbackgroundcolor ['log_pane_Find_tab_background_color']
-          logpanespelltabbackgroundcolor ['log_pane_Spell_tab_background_color']
-                  logtextbackgroundcolor ['log_text_background_color']
-                             markupcolor ['markup_color']
-                           operatorcolor ['operator_color']
-                        phpoperatorcolor ['php_operator_color']
-                        sectionnamecolor ['section_name_color']
-                showinvisiblesspacecolor ['show_invisibles_space_color']
-                  showinvisiblestabcolor ['show_invisibles_tab_color']
-                                tabcolor ['tab_color']
-               undefinedsectionnamecolor ['undefined_section_name_color']
-                                urlcolor ['url_color']
-
-missing config.getInt calls...
-                               Canonical Actual
-                               ========= ======
-                additionalbodytextborder ['additional_body_text_border']
-               globalsettingforunittests ['global_setting_for_unit_tests']
-                    iconbarwidgetsperrow ['icon_bar_widgets_per_row']
-                              limitcount ['limit_count']
-
-missing config.getFloat calls...
-
-missing config.getRatio calls...
-
-missing config.getPath calls...
-
-missing config.getString calls...
-                               Canonical Actual
-                               ========= ======
-                              changetext ['change_text']
-                            comparefile1 ['compare_file_1']
-                            comparefile2 ['compare_file_2']
-                       datenodesbodytext ['datenodes_body_text']
-                datenodesdaynodeheadline ['datenodes_day_node_headline']
-           datenodesmonthnodedayheadline ['datenodes_month_node_day_headline']
-         datenodesmonthnodemonthheadline ['datenodes_month_node_month_headline']
-            datenodesyearnodedayheadline ['datenodes_year_node_day_headline']
-          datenodesyearnodemonthheadline ['datenodes_year_node_month_headline']
-           datenodesyearnodeyearheadline ['datenodes_year_node_year_headline']
-                   debuggerdefaulttarget ['debugger_default_target']
-                     debuggerforcetarget ['debugger_force_target']
-               defaultatautofileencoding ['default_at_auto_file_encoding']
-              defaultderivedfileencoding ['default_derived_file_encoding']
-                       editororientation ['editor_orientation']
-                                findtext ['find_text']
-                         headlinegmttime ['headline_gmt_time']
-                             inkscapebin ['inkscape-bin']
-                        inkscapetemplate ['inkscape-template']
-           limitdirectorysearchextension ['limit_directory_search_extension']
-                      newleofileencoding ['new_leo_file_encoding']
-                              outputfile ['output_file']
-                    outputinitialcomment ['output_initial_comment']
-                           outputnewline ['output_newline']
-                       qtdefaultencoding ['qt-default-encoding']
-               relativepathbasedirectory ['relative_path_base_directory']
-                removesentinelsextension ['remove_sentinels_extension']
-                          rst3codeprefix ['rst3_code_prefix']
-                     rst3defaultencoding ['rst3_default_encoding']
-               rst3defaultencodingprefix ['rst3_default_encoding_prefix']
-                         rst3defaultpath ['rst3_default_path']
-                       rst3doconlyprefix ['rst3_doc_only_prefix']
-                   rst3httpattributename ['rst3_http_attributename']
-                rst3ignoreheadlineprefix ['rst3_ignore_headline_prefix']
-               rst3ignoreheadlinesprefix ['rst3_ignore_headlines_prefix']
-                    rst3ignorenodeprefix ['rst3_ignore_node_prefix']
-                        rst3ignoreprefix ['rst3_ignore_prefix']
-                    rst3ignoretreeprefix ['rst3_ignore_tree_prefix']
-                     rst3nodebeginmarker ['rst3_node_begin_marker']
-                        rst3optionprefix ['rst3_option_prefix']
-                       rst3optionsprefix ['rst3_options_prefix']
-                     rst3preformatprefix ['rst3_preformat_prefix']
-    rst3publishargvformissingstylesheets ['rst3_publish_argv_for_missing_stylesheets']
-                           rst3rstprefix ['rst3_rst_prefix']
-                  rst3showheadlineprefix ['rst3_show_headline_prefix']
-                      rst3stylesheetname ['rst3_stylesheet_name']
-                      rst3stylesheetpath ['rst3_stylesheet_path']
-                 rst3underlinecharacters ['rst3_underline_characters']
-                          splitbarrelief ['split_bar_relief']
-                              stylesheet ['stylesheet']
-                          targetlanguage ['target_language']
-                              tkencoding ['tk_encoding']
-                    trailingbodynewlines ['trailing_body_newlines']
-                 underindentescapestring ['underindent-escape-string']
-                         zodbstoragefile ['zodb_storage_file']
-run done
-</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

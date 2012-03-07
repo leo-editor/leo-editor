@@ -2421,6 +2421,7 @@ class nullColorizer:
         self.c = c
         self.count = 0
         self.enabled = False
+        self.full_recolor_count = 0
 
     #@+node:ekr.20031218072017.2220: *3* entry points
     def colorize(self,p,incremental=False,interruptable=True):

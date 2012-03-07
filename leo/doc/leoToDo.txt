@@ -4158,916 +4158,6 @@ self.extra_extension_dict = {
 
 self.global_commands_dict = {}
 .. @+node:ekr.20120305084218.9915: *5* Show all commands after <alt-x><tab>
-.. @+node:ekr.20120226183512.10195: *3* Bugs
-@language rest
-
-Most of these will be moved to the Leo 4.10.1 list.
-.. @+node:ekr.20120226183512.10197: *4* Numbered bugs
-.. @+node:ekr.20111026091322.16504: *5* Bug 501636: Leo's import code should support non-ascii xml tags
-https://bugs.launchpad.net/leo-editor/+bug/501636
-
-@language rest
-
-Leo's present @auto import code for xml files supports only ascii tags.
-
-In particular, xmlScanner.isWordChar should allow non-ascii characters as specified in
-www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
-
-@language python
-
-NameStartChar ::= ":" | [A-Z] | "_" | [a-z] |
-    [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] |
-    [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] |
-    [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
-    [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-
-NameChar ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
-    [#x0300-#x036F] | [#x203F-#x2040]
-
-The following script, presently in test.leo, may be useful:
-
-import unicodedata as u
-table = ('a','9','_',':','.',)
-table2 = (
-    (0xc0,0xd6),(0xd8,0xf6),(0xf8,0x2ff),(0x370,0x37d),(0x37f,0x1fff),
-    (0x200c,0x200d),(0x2070,0x218f),(0x2c00,0x2fef),(0x3001,0xd7ff),
-    (0xf900,0xfdcf),(0xfdf0,0xfffd),(0x10000,0xeffff),
-    # Valid only after the start of a word.
-    (0xb7,0xb7+1),(0x0300,0x036f),(0x203f,0x2040),
-)
-for ch in table:
-    ch = g.u(ch)
-    g.es(ch,u.category(ch))
-for i,j in table2:
-    g.es('*** range %xd %xd' % (i,j))
-    for n in range(i,min(i+5,j)):
-        if g.isPython3: ch = chr(n)
-        else: ch = unichr(n)
-        g.es(ch,u.category(ch))
-
-@language rest
-
-Clearly, however, the unicode category of these characters is not helpful.
-Instead, a dictionary lookup would be appropriate.
-.. @+node:ekr.20111222113610.10244: *5* Bug 613153: unable to describe root directory on thumb drive
-@nocolor-node
-
-A very complex bug
-
-https://bugs.launchpad.net/leo-editor/+bug/613153
-.. @+node:ekr.20111222113610.10245: *5* Bug 711158: Warn if same .leo file open in another Leo instance
-https://bugs.launchpad.net/leo-editor/+bug/711158
-.. @+node:ekr.20111026091322.16499: *5* Bug 824087: Alt+F4 is not the same as Alt+F, c
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/824087
-
-The file menu has an entry with label "Close Alt+F4" with the "C" in "Close"
-underlined indicating it is the shortcut.
-
-Command print-bindings shows:
-S Alt+F4 close-window
-
-That is, the binding is set in leoSettings.leo
-
-Left clicking this "File - Close" menu entry (or Alt+F, c) is NOT the same as Alt+F4.
-
-Left clicking this "File - Close" menu entry (or Alt+F, c) closes the current tab only.
-
-Alt+F4 closes the Leo-Editor application window (and of course, closes all the tabs).
-
-Is this a bug in the implementation or a bug in the documentation? Either way, the menu entry is misleading and the print-bindings information appears to be correct.
-.. @+node:ekr.20111026091322.16498: *5* Bug 869098: Context menu settings lost if save as used
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/869098
-
-I I have a Leo file with settings for context menu:
-    
-@settings
-   @data contextmenu_commands
-       edit-headline Edit headline
-          copy-node Copy Node
-          cut-node Cut Node
-          paste-node Paste Node
-
-then these settings are lost if I save the leo file to a new name using
-File - Save as
-If I reload the leo file, they do return
-.. @+node:ekr.20111025141618.16484: *5* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/879338
-
-Having the colorizer colorize a language properly gives the false illusion that Leo "understands" the language.
-
-Supporting the language in the global tables in leoApp.py makes the illusion a reality.
-.. @+node:ekr.20111125072438.10204: *5* Bug 882243: (Wishlist) Clones sometimes not saved: change how @others works
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/882243
-
-In Leo, I made this file:
-
-@file test.txt
-@others
-.....test1
-     test: these are clones
-.....test2
-     @others
-
-      what is going on...?
-..........test1 <--- this is cloned
-          test: these are clones
-
-The output file does not have the cloned node:
-
-#@+leo-ver=5-thin
-#@+node:bill.20111025150533.3528: * @thin test.txt
-#@+others
-#@+node:bill.20111025150533.3527: ** test1
-test: these are clones
-#@+node:bill.20111025150533.3529: ** test2
-#@+others
-#@-others
-
-what is going on...?
-#@-others
-#@-leo
-
-I don't think it is a conflict with @others; it is just that some files do not retain the clones that are displayed.
-
-Here is the copied node:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-<?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2"/>
-<vnodes>
-<v t="bill.20111025150533.3528" a="E"><vh>@thin test.txt</vh>
-<v t="bill.20111025150533.3527"><vh>test1</vh></v>
-<v t="bill.20111025150533.3529" a="E"><vh>test2</vh>
-<v t="bill.20111025150533.3527"></v>
-</v>
-</v>
-</vnodes>
-<tnodes>
-<t tx="bill.20111025150533.3527">test: these are clones
-</t>
-<t tx="bill.20111025150533.3528">@others
-</t>
-<t tx="bill.20111025150533.3529">@others
-
-what is going on...?</t>
-</tnodes>
-</leo_file>
-
-Here is the copied leo file:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-<?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
- <global_window_position top="50" left="50" height="500" width="700"/>
- <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="bill.20111025150533.3528" a="E"
-expanded="bill.20111025150533.3529,"><vh>@thin test.txt</vh></v>
-</vnodes>
-<tnodes>
-</tnodes>
-</leo_file>
-.. @+node:ekr.20111216105907.10218: *6* My response: this is a wishlist item
-@nocolor-node
-
-Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
-About bug 882243: clones sometimes not saved
-
-I'd like to discuss this bug here, because I would like us all to be aware of the situation, and possible changes.
-
-The surprise
-=========
-
-To paraphrase the original bug report, suppose we have the following @file tree:
-
-+ @file test.txt
-@others
-  + node 1 (cloned)
-    node 1 text.
-  + node 2
-     @others
-    + node 1 (cloned)
-       node 1 text.
-
-As usual, lines preceded by "+" denote headlines: all other lines are body text.
-
-The surprise is that the cloned node1 node is written to the external file only once (as a child of the root node) and hence does not appear as a (cloned) child of the node2 node when Leo next loads the @file tree.
-
-History
-=====
-
-I would like to call this a wishlist item because the
-present code quite intentionally writes *any* node
-(including cloned nodes) only once. That is, the write code
-sets a bit when writing a node, and @others ignores any
-nodes with that bit set.
-
-You could call this a bug in the @others write logic, but at
-one time it was done explicitly and on purpose.
-
-I don't remember why this was so, but I do remember it *was*
-so. It may have been an artifact of Leo's old representation
-of clones that used both vnodes and tnodes. tnodes no longer
-exist in the one-node world that we have been living in for
-several years, and it may well be time to revisit the
-original design, but I would rather not do that just now
-because there are several "real" bugs that need attention
-asap.
-
-Workaround
-=========
-
-Because this is an issue involving @others, you might assume
-that a workaround involving sections would be possible. You
-would be correct. The following file works as expected::
-
-+ @file test.txt
-<< node 1 >>
-<< node 2 >>
-  + << node 1>> (cloned)
-     node 1 text.
-  + << node 2 >>
-     << node 1 >>
-    + << node 1 >>(cloned)
-       node 1 text.
-.. @+node:ekr.20111122080923.10186: *5* Bug 893223: Unpredictable slow operation state cured by writing
-@nocolor-node
-
-Leo-editor unpredictably gets into a state where Ctrl-V fails to paste
-and every Leo-editor operation takes much longer than usual.  This
-resulted in the following red message in the log pane:
-
-ignoring command: already executing a command.
-
-This bad state was ended by writing the .leo file so it was no longer
-dirty.  I've noticed this problem off and on for at least several weeks.
-
-Test Conditions:
-
-Leo-Editor Rev 4832
-Leo Log Window
-Leo 4.9.1 devel, build 4669, 4Q/2011
-Python 2.7.2, qt version 4.7.3
-linux2
-setting leoID from os.getenv('USER'): 'bob'
-load dir: /home/bob/bzrWork/pluginPath/leo/core
-global config dir: /home/bob/bzrWork/pluginPath/leo/config
-home dir: /home/bob
-reading settings in /home/bob/bzrWork/pluginPath/leo/config/leoSettings.leo
-reading settings in /home/bob/.leo/myLeoSettings.leo
-reading settings in /media/sda1/BobH/1/Leo/Leo.leo
-reading: /media/sda1/BobH/1/Leo/Leo.leo
-reading: @auto /home/bob/.leo/.leoRecentFiles.txt
-
-EKR =======================
-
-There is a blunder in c.executeScript.  It jams False into c.inCommand
-without saving and restoring the previous value.  This has to be
-wrong.  I'm not sure that this is the entire fix.  I'll put it on the
-urgent list.
-.. @+node:ekr.20111122080923.10188: *6* Found: inCommand
-.. @+node:ekr.20031218072017.2140: *7* c.executeScript & helpers
-def executeScript(self,event=None,args=None,p=None,script=None,
-    useSelectedText=True,define_g=True,define_name='__main__',silent=False,
-    namespace=None):
-
-    """This executes body text as a Python script.
-
-    We execute the selected text, or the entire body text if no text is selected."""
-
-    c = self ; script1 = script
-    if not script:
-        script = g.getScript(c,p,useSelectedText=useSelectedText)
-    self.redirectScriptOutput()
-    try:
-        oldLog = g.app.log # 2011/01/19
-        log = c.frame.log
-        g.app.log = log
-        if script.strip():
-            sys.path.insert(0,c.frame.openDirectory)
-            script += '\n' # Make sure we end the script properly.
-            try:
-                p = c.p
-                if p: c.setCurrentDirectoryFromContext(p)
-                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
-                if define_name: d['__name__'] = define_name
-                d['script_args'] = args or []
-                if namespace: d.update(namespace)
-                # if args: sys.argv = args
-                # A kludge: reset c.inCommand here to handle the case where we *never* return.
-                # (This can happen when there are multiple event loops.)
-                # This does not prevent zombie windows if the script puts up a dialog...
-                c.inCommand = False
-                if c.write_script_file:
-                    scriptFile = self.writeScriptFile(script)
-                    
-                    # 2011/10/31: make g.inScript a synonym for g.app.inScript.
-                    g.inScript = g.app.inScript = True
-                    try:
-                        if g.isPython3:
-                            exec(compile(script,scriptFile,'exec'),d)
-                        else:
-                            execfile(scriptFile,d)
-                    finally:
-                        g.inScript = g.app.inScript = False
-                else:
-                    g.app.inScript = True
-                    try:
-                        exec(script,d)
-                    finally:
-                        g.app.inScript = False
-                if 0: # This message switches panes, and can be disruptive.
-                    if not script1 and not silent:
-                        # Careful: the script may have changed the log tab.
-                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
-                        g.es("end of script",color="purple",tabName=tabName)
-            except Exception:
-                g.handleScriptException(c,p,script,script1)
-            del sys.path[0]
-        else:
-            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
-            g.es("no script selected",color="blue",tabName=tabName)
-    finally:
-        g.app.log = oldLog # 2011/01/19
-        self.unredirectScriptOutput()
-.. @+node:ekr.20031218072017.2143: *8* redirectScriptOutput
-def redirectScriptOutput (self):
-
-    c = self
-
-    # g.trace('original')
-
-    if c.config.redirect_execute_script_output_to_log_pane:
-
-        g.redirectStdout() # Redirect stdout
-        g.redirectStderr() # Redirect stderr
-.. @+node:ekr.20110522121957.18230: *8* setCurrentDirectoryFromContext
-def setCurrentDirectoryFromContext(self,p):
-    
-    trace = False and not g.unitTesting
-    c = self
-    
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    
-    curDir = g.os_path_abspath(os.getcwd())
-
-    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
-    
-    if path and path != curDir:
-        if trace: g.trace('calling os.chdir(%s)' % (path))
-        try:
-            os.chdir(path)
-        except Exception:
-            pass
-.. @+node:EKR.20040627100424: *8* unredirectScriptOutput
-def unredirectScriptOutput (self):
-
-    c = self
-
-    # g.trace('original')
-
-    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
-
-        g.restoreStderr()
-        g.restoreStdout()
-.. @+node:ekr.20031218072017.2817: *7*  c.doCommand
-command_count = 0
-
-def doCommand (self,command,label,event=None):
-
-    """Execute the given command, invoking hooks and catching exceptions.
-
-    The code assumes that the "command1" hook has completely handled the command if
-    g.doHook("command1") returns False.
-    This provides a simple mechanism for overriding commands."""
-
-    c = self ; p = c.p
-    commandName = command and command.__name__
-    c.setLog()
-
-    self.command_count += 1
-    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
-        g.trace(commandName)
-
-    # The presence of this message disables all commands.
-    if c.disableCommandsMessage:
-        g.es(c.disableCommandsMessage,color='blue')
-        return # (for Tk) 'break' # Inhibit all other handlers.
-
-    if c.exists and c.inCommand and not g.unitTesting:
-        # g.trace('inCommand',c)
-        g.app.commandInterruptFlag = True
-        g.es('ignoring command: already executing a command.',color='red')
-        return # (for Tk) 'break'
-
-    g.app.commandInterruptFlag = False
-
-    if label and event is None: # Do this only for legacy commands.
-        if label == "cantredo": label = "redo"
-        if label == "cantundo": label = "undo"
-        g.app.commandName = label
-
-    if not g.doHook("command1",c=c,p=p,v=p,label=label):
-        try:
-            c.inCommand = True
-            val = command(event)
-            if c and c.exists: # Be careful: the command could destroy c.
-                c.inCommand = False
-                c.k.funcReturn = val
-            # else: g.pr('c no longer exists',c)
-        except Exception:
-            c.inCommand = False
-            if g.app.unitTesting:
-                raise
-            else:
-                g.es_print("exception executing command")
-                g.es_exception(c=c)
-
-        if c and c.exists:
-            if c.requestCloseWindow:
-                g.trace('Closing window after command')
-                c.requestCloseWindow = False
-                g.app.closeLeoWindow(c.frame)
-            else:
-                c.outerUpdate()
-
-    # Be careful: the command could destroy c.
-    if c and c.exists:
-        p = c.p
-        g.doHook("command2",c=c,p=p,v=p,label=label)
-
-    return # (for Tk) "break" # Inhibit all other handlers.
-.. @+node:ekr.20061031131434.160: *7* k.enterNamedMode
-def enterNamedMode (self,event,commandName):
-
-    k = self ; c = k.c
-    modeName = commandName[6:]
-    c.inCommand = False # Allow inner commands in the mode.
-    k.generalModeHandler(event,modeName=modeName)
-.. @+node:ekr.20110605121601.18140: *7* closeEvent (DynanicWindow)
-def closeEvent (self,event):
-
-    trace = False and not g.unitTesting
-    c = self.leo_c
-
-    if not c.exists:
-        # Fixes double-prompt bug on Linux.
-        if trace: g.trace('destroyed')
-        event.accept()
-        return
-
-    if c.inCommand:
-        if trace: g.trace('in command')
-        c.requestCloseWindow = True
-    else:
-        if trace: g.trace('closing')
-        ok = g.app.closeLeoWindow(c.frame)
-        if ok:
-            event.accept()
-        else:
-            event.ignore()
-.. @+node:ekr.20110605121601.18286: *7* frame.OnCloseLeoEvent
-# Called from quit logic and when user closes the window.
-# Returns True if the close happened.
-
-def OnCloseLeoEvent(self):
-
-    f = self ; c = f.c
-
-    if c.inCommand:
-        # g.trace('requesting window close')
-        c.requestCloseWindow = True
-    else:
-        g.app.closeLeoWindow(self)
-.. @+node:ekr.20111123043847.9981: *6* Found: set_trace
-.. @+node:ekr.20110310093050.14293: *7* pdb (codewise)
-def pdb (message=''):
-
-    """Fall into pdb."""
-
-    import pdb # Required: we have just defined pdb as a function!
-
-    if message:
-        print(message)
-    pdb.set_trace()
-.. @+node:ekr.20041105091148: *7* g.pdb
-def pdb (message=''):
-
-    """Fall into pdb."""
-
-    import pdb # Required: we have just defined pdb as a function!
-
-    if message:
-        print(message)
-    pdb.set_trace()
-.. @+node:ekr.20110605121601.18134: *7* init (qtGui.py top level)
-def init():
-    
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace and g.trace_startup: print('qtGui.__init__')
-
-    if g.app.unitTesting: # Not Ok for unit testing!
-        return False
-
-    if not QtCore:
-        return False
-
-    if g.app.gui:
-        return g.app.gui.guiName() == 'qt'
-    else:
-        g.app.gui = leoQtGui()
-
-        # Override g.pdb
-        def qtPdb(message=''):
-            if message: print(message)
-            import pdb
-            if not g.app.useIpython:
-                QtCore.pyqtRemoveInputHook()
-            pdb.set_trace()
-        g.pdb = qtPdb
-
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-        return True
-.. @+node:ekr.20120229094652.15181: *5* Bug 903470: print-bindings no longer properly terminates each line
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/903470
-print-bindings no longer properly terminates each line
-
-This is not a print-binding bug per se, but a bug
-in bindings in the "Bindings" tab:
-
-Everything works on windows, but there are several problems on Ubuntu:
-
-1. The contextmenu plugin doesn't show many options.
-2. As you say, cutting and pasting does not preserve newlines.
-.. @+node:ekr.20111026091322.16503: *4* Other Bugs
-.. @+node:ekr.20111026091322.16495: *5* Fix bug: A nest of bugs involving log, focus, chapters, quickmove
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/820019
-Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
-
-https://bugs.launchpad.net/leo-editor/+bug/823267
-when a tab is closed focus may go to a tab other than the visible one
-
-https://bugs.launchpad.net/leo-editor/+bug/831658
-@url doesn't leave Chapter
-
-https://bugs.launchpad.net/leo-editor/+bug/844940
-Different behavior when clicking on @url statement written either in headline or body of a node
-
-https://bugs.launchpad.net/leo-editor/+bug/869385
-Chapters make the nav_qt.py plugin useless.
-
-https://bugs.launchpad.net/leo-editor/+bug/875323
-Hoist an @chapter node leaves a non-visible node selected.
-
-https://bugs.launchpad.net/leo-editor/+bug/875327
-Positioning outside of hoisted outline" usually causes problems
-
-https://bugs.launchpad.net/leo-editor/+bug/875463
-Enabling quickmove.py sends to error messages to console on every outline open 
-.. @+node:ekr.20111123095018.13632: *5* Fix bug: expand Find tab as needed for bigger fonts
-.. @+node:ekr.20110605121601.18326: *6* createTab (leoQtLog)
-def createTab (self,tabName,widget=None,wrap='none'):
-    """ Create a new tab in tab widget
-
-    if widget is None, Create a QTextBrowser,
-    suitable for log functionality.
-    """
-
-    trace = False and not g.unitTesting
-    c = self.c
-    
-    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
-
-    if widget is None:
-
-        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
-            # widget is subclass of QTextBrowser.
-        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
-            # contents a wrapper.
-        widget.leo_log_wrapper = contents
-            # Inject an ivar into the QTextBrowser that points to the wrapper.
-            
-        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-        
-        widget.setWordWrapMode(
-            g.choose(self.wrap,
-                QtGui.QTextOption.WordWrap,
-                QtGui.QTextOption.NoWrap))
-
-        widget.setReadOnly(False) # Allow edits.
-        self.logDict[tabName] = widget
-        if tabName == 'Log':
-            self.widget = contents # widget is an alias for logCtrl.
-            widget.setObjectName('log-widget')
-
-        if True: # 2011/05/28.
-            # Set binding on all text widgets.
-            theFilter = leoQtEventFilter(c,w=self,tag='log')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-            
-        if True and tabName == 'Log':
-    
-            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
-            find_widget = c.frame.top.leo_find_widget
-            
-            # 2011/11/21: A hack: add an event filter.
-            find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
-            find_widget.installEventFilter(find_widget.leo_event_filter)
-            if trace: g.trace('** Adding event filter for Find',find_widget)
-            
-            # 2011/11/21: A hack: make the find_widget an official log widget.
-            self.contentsDict['Find']=find_widget
-    
-        self.contentsDict[tabName] = widget
-        self.tabWidget.addTab(widget,tabName)
-    else:
-        contents = widget
-            # Unlike text widgets, contents is the actual widget.
-        widget.leo_log_wrapper = contents
-            # The leo_log_wrapper is the widget itself.
-        if trace: g.trace('** using',tabName,widget)
-        
-        if 1: # Now seems to work.
-            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-    
-        self.contentsDict[tabName] = contents
-        self.tabWidget.addTab(contents,tabName)
-
-    return contents
-.. @+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
-def createFindTab (self,parent,tab_widget):
-
-    c,dw = self.leo_c,self
-    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
-    grid.setColumnStretch(0,100)
-    grid.setColumnStretch(1,100)
-    
-    # Row 0: heading.
-    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-    grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-    
-    # Rows 1, 2: the find/change boxes, now disabled.
-    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
-    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
-    lab2 = self.createLabel(parent,'findLabel','Find:')
-    lab3 = self.createLabel(parent,'changeLabel','Change:')
-    grid.addWidget(lab2,1,0)
-    grid.addWidget(lab3,2,0)
-    grid.addWidget(findPattern,1,1)
-    grid.addWidget(findChange,2,1)
-        
-    # Check boxes and radio buttons.
-    # Radio buttons are mutually exclusive because they have the same parent.
-    def mungeName(name):
-        # The value returned here is significant: it creates an ivar.
-        return 'checkBox%s' % label.replace(' ','').replace('&','')
-
-    # Rows 3 through 8...
-    table = (
-        ('box', 'Whole &Word',      2,0),
-        ('rb',  '&Entire Outline',  2,1),
-        ('box', '&Ignore Case',     3,0),
-        ('rb',  '&Suboutline Only', 3,1),
-        ('box', 'Wrap &Around',     4,0),
-        ('rb',  '&Node Only',       4,1),
-        # ('box', '&Reverse',       5,0),
-        ('box', 'Search &Headline', 5,1),
-        ('box', 'Rege&xp',          5,0), # was 6,0
-        ('box', 'Search &Body',     6,1),
-        ('box', 'Mark &Finds',      6,0), # was 7,0
-        ('box', 'Mark &Changes',    7,0)) # was 7,1
-        # a,b,c,e,f,h,i,n,rs,w
-
-    for kind,label,row,col in table:
-        name = mungeName(label)
-        func = g.choose(kind=='box',
-            self.createCheckBox,self.createRadioButton)
-        w = func(parent,name,label)
-        grid.addWidget(w,row+1,col)
-        setattr(self,name,w)
-
-    # Row 9: Widgets that take all additional vertical space.
-    w = QtGui.QWidget()
-    grid.addWidget(w,9,0)
-    grid.addWidget(w,9,1)
-    grid.setRowStretch(9,100)
-
-    # Official ivars (in addition to setattr ivars).
-    self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
-    self.findPattern = findPattern
-    self.findChange = findChange
-    # self.findLab = lab2
-    # self.changeLab = lab3
-.. @+node:ekr.20110605121601.18156: *6* createGrid (DynamicWindow)
-def createGrid (self,parent,name,margin=0,spacing=0):
-
-    w = QtGui.QGridLayout(parent)
-    w.setMargin(margin)
-    w.setSpacing(spacing)
-    self.setName(w,name)
-    return w
-.. @+node:ekr.20110605121601.18145: *6* createLogPane
-def createLogPane (self,parent):
-
-    # Create widgets.
-    logFrame = self.createFrame(parent,'logFrame',
-        vPolicy = QtGui.QSizePolicy.Minimum)
-    innerFrame = self.createFrame(logFrame,'logInnerFrame',
-        hPolicy=QtGui.QSizePolicy.Preferred,
-        vPolicy=QtGui.QSizePolicy.Expanding)
-    tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
-
-    # Pack.
-    innerGrid = self.createGrid(innerFrame,'logInnerGrid')
-    innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-    outerGrid = self.createGrid(logFrame,'logGrid')
-    outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-    
-    # 2011/10/01: Embed the Find tab in a QScrollArea.
-    findScrollArea = QtGui.QScrollArea()
-    findScrollArea.setObjectName('findScrollArea')
-    findTab = QtGui.QWidget()
-    findTab.setObjectName('findTab')
-    tabWidget.addTab(findScrollArea,'Find')
-    self.createFindTab(findTab,findScrollArea)
-    findScrollArea.setWidget(findTab)
-
-    spellTab = QtGui.QWidget()
-    spellTab.setObjectName('spellTab')
-    tabWidget.addTab(spellTab,'Spell')
-    self.createSpellTab(spellTab)
-
-    tabWidget.setCurrentIndex(1)
-
-    # Official ivars
-    self.tabWidget = tabWidget # Used by leoQtLog.
-.. @+node:ekr.20111010162047.15678: *5* Fix bug: Imports to @file should put @first/@last directives in root node
-@nocolor-node
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
-    
-- @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10288: *6* @test imported shbang line
-def setup(p):
-    while p.hasChildren():
-        p.firstChild().doDelete()
-        
-setup(p)
-child = p.insertAsNthChild(0)
-child.h = 'import'
-child = p.firstChild()
-assert child
-assert child.h == 'import'
-child.b = ''
-c.selectPosition(child)
-
-fn = g.os_path_finalize_join(g.app.loadDir,'..','test','at-auto-at-first-test.py')
-assert g.os_path_exists(fn),fn
-
-try:
-    c.importCommands.createOutline(fn,parent=child.copy(),atAuto=False,ext='.py')
-    s = '#!/usr/bin/env python\n# -*- coding: utf-8 -*-'
-    root = child.firstChild()
-    assert root
-    assert root.h.startswith('@file'),root.h
-    assert root.h.endswith('at-auto-at-first-test.py')
-    assert root.b.startswith(s),'root.b:...\n\n%s' % (root.b)
-finally:
-    if not g.app.isExternalUnitTest:
-        setup(p)
-.. @+node:ekr.20111221102703.10289: *6* @@@nosent ../test/at-auto-at-first-test.py
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-def spam():
-    pass
-    
-# This is the last line.
-.. @+node:ekr.20110621085435.6531: *5* Fix bug: Improve the find panel and find menu
-@nocolor-node
-
-Recently, perhaps it was today, there was a remark made about Leo's
-Find panel being confusing for newbies.  I have some sympathy for the
-remarks.
-
-1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
-a search/replace operation.  I'll fix this soon after 4.9 final.
-
-2.  The Find tab should make it clearer that it is a summary/status
-tab only--not a way of actually initiating or continuing searches.
-Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
-for the find/change patterns would help a bit.
-.. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
-
-g.openWithFileName needs
-
-   fileName = g.os_path_realpath(fileName)
-
-at the start of it, otherwise
-
-g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
-instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
-because it doesn't recognize them as being the same.
-
-It would be nice if the original attempt to open
-"/home/tbrown/.leo/.todo.leo" was not converted to
-"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
-spec. insists on giving CPython the real path form, so this is hard to
-avoid.  You see this when selecting a file using a file dialog, in the
-dialog you choose /home/me/myfile.txt, but the return
-is /mnt/usr1/usr1/home/me/myfile.txt.
-
-Anyway, let me know if and when I can push that to trunk, impacts seem
-to be limited to (a) not failing to detect an already opened file in
-g.openWithFileName, which is a bug, and (b) sometimes less attractive
-apparent paths, which is annoying, but I think better than the bug.
-
-(this of course trips up UNLs
-if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
-UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
-.. @+node:ekr.20120219152142.34262: *5* Fix bug: Revert moves the reverted tab to the right
-.. @+node:ekr.20110530063322.18333: *5* Fix bug: scala not colored properly
-.. @+node:ekr.20111125072438.10217: *5* Fix bug: shell interprets characters in at-mime headings
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/07efd66847ac4a64
-
-on linux, parenthesis or angled brackets in @mime headings prevent the file from
-being opened, probably because they are interpreted specially by the shell, e.g.
-they need to be escaped. Such characters should be escaped before passing the
-filename to the shell.
-
-.. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
-http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20111014074810.15652: *5* Fix bug: viewrendered should work better when docutils does not exist
-.. @+node:ekr.20110620083705.14901: *5* Fix or disable curses gui
-leoBridge.py requires the nullGui.
-.. @+node:ekr.20110620065017.14900: *4* Bugs/Can't/Won't fix
-.. @+node:ekr.20111011062533.15693: *5* Make headline widgets scrollable, if possible
-# It doesn't seem easy.
-.. @+node:ekr.20110605121601.18422: *6* editLabelHelper (leoQtTree)
-def editLabelHelper (self,item,selectAll=False,selection=None):
-
-    '''Called by nativeTree.editLabel to do
-    gui-specific stuff.'''
-
-    trace = False and not g.unitTesting
-    w = self.treeWidget
-    w.setCurrentItem(item) # Must do this first.
-    w.editItem(item)
-        # Generates focus-in event that tree doesn't report.
-    e = w.itemWidget(item,0) # A QLineEdit.
-
-    if e:
-        s = e.text() ; len_s = len(s)
-        if s == 'newHeadline': selectAll=True
-        if selection:
-            i,j,ins = selection
-            start,n = i,abs(i-j)
-                # Not right for backward searches.
-        elif selectAll: start,n,ins = 0,len_s,len_s
-        else:           start,n,ins = len_s,0,len_s
-        e.setObjectName('headline')
-        e.setSelection(start,n)
-        # e.setCursorPosition(ins) # Does not work.
-        e.setFocus()
-        wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
-
-    if trace: g.trace(e,wrapper)
-    return e,wrapper # 2011/02/11
-.. @+node:ekr.20110619173515.14896: *5* Fix bug: wrong modality level on autocompleter
-Just noticed the autocompleter pop-up is modal globally, not just for
-the Leo windows.  Probably should only block the Leo windows.
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 3. Bridges
 
@@ -6386,6 +5476,848 @@ def createModeCommand (self,modeName,name,modeDict):
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
     
+.. @+node:ekr.20120226183512.10195: *3* Bugs
+@language rest
+
+Most of these will be moved to the Leo 4.10.1 list.
+.. @+node:ekr.20120226183512.10197: *4* Numbered bugs
+.. @+node:ekr.20111222113610.10244: *5* Bug 613153: unable to describe root directory on thumb drive
+@nocolor-node
+
+A very complex bug
+
+https://bugs.launchpad.net/leo-editor/+bug/613153
+.. @+node:ekr.20111222113610.10245: *5* Bug 711158: Warn if same .leo file open in another Leo instance
+https://bugs.launchpad.net/leo-editor/+bug/711158
+.. @+node:ekr.20111026091322.16498: *5* Bug 869098: Context menu settings lost if save as used
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/869098
+
+I I have a Leo file with settings for context menu:
+    
+@settings
+   @data contextmenu_commands
+       edit-headline Edit headline
+          copy-node Copy Node
+          cut-node Cut Node
+          paste-node Paste Node
+
+then these settings are lost if I save the leo file to a new name using
+File - Save as
+If I reload the leo file, they do return
+.. @+node:ekr.20111025141618.16484: *5* Bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/879338
+
+Having the colorizer colorize a language properly gives the false illusion that Leo "understands" the language.
+
+Supporting the language in the global tables in leoApp.py makes the illusion a reality.
+.. @+node:ekr.20111125072438.10204: *5* Bug 882243: (Wishlist) Clones sometimes not saved: change how @others works
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/882243
+
+In Leo, I made this file:
+
+@file test.txt
+@others
+.....test1
+     test: these are clones
+.....test2
+     @others
+
+      what is going on...?
+..........test1 <--- this is cloned
+          test: these are clones
+
+The output file does not have the cloned node:
+
+#@+leo-ver=5-thin
+#@+node:bill.20111025150533.3528: * @thin test.txt
+#@+others
+#@+node:bill.20111025150533.3527: ** test1
+test: these are clones
+#@+node:bill.20111025150533.3529: ** test2
+#@+others
+#@-others
+
+what is going on...?
+#@-others
+#@-leo
+
+I don't think it is a conflict with @others; it is just that some files do not retain the clones that are displayed.
+
+Here is the copied node:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2"/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"><vh>@thin test.txt</vh>
+<v t="bill.20111025150533.3527"><vh>test1</vh></v>
+<v t="bill.20111025150533.3529" a="E"><vh>test2</vh>
+<v t="bill.20111025150533.3527"></v>
+</v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="bill.20111025150533.3527">test: these are clones
+</t>
+<t tx="bill.20111025150533.3528">@others
+</t>
+<t tx="bill.20111025150533.3529">@others
+
+what is going on...?</t>
+</tnodes>
+</leo_file>
+
+Here is the copied leo file:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+ <global_window_position top="50" left="50" height="500" width="700"/>
+ <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"
+expanded="bill.20111025150533.3529,"><vh>@thin test.txt</vh></v>
+</vnodes>
+<tnodes>
+</tnodes>
+</leo_file>
+.. @+node:ekr.20111216105907.10218: *6* My response: this is a wishlist item
+@nocolor-node
+
+Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
+About bug 882243: clones sometimes not saved
+
+I'd like to discuss this bug here, because I would like us all to be aware of the situation, and possible changes.
+
+The surprise
+=========
+
+To paraphrase the original bug report, suppose we have the following @file tree:
+
++ @file test.txt
+@others
+  + node 1 (cloned)
+    node 1 text.
+  + node 2
+     @others
+    + node 1 (cloned)
+       node 1 text.
+
+As usual, lines preceded by "+" denote headlines: all other lines are body text.
+
+The surprise is that the cloned node1 node is written to the external file only once (as a child of the root node) and hence does not appear as a (cloned) child of the node2 node when Leo next loads the @file tree.
+
+History
+=====
+
+I would like to call this a wishlist item because the
+present code quite intentionally writes *any* node
+(including cloned nodes) only once. That is, the write code
+sets a bit when writing a node, and @others ignores any
+nodes with that bit set.
+
+You could call this a bug in the @others write logic, but at
+one time it was done explicitly and on purpose.
+
+I don't remember why this was so, but I do remember it *was*
+so. It may have been an artifact of Leo's old representation
+of clones that used both vnodes and tnodes. tnodes no longer
+exist in the one-node world that we have been living in for
+several years, and it may well be time to revisit the
+original design, but I would rather not do that just now
+because there are several "real" bugs that need attention
+asap.
+
+Workaround
+=========
+
+Because this is an issue involving @others, you might assume
+that a workaround involving sections would be possible. You
+would be correct. The following file works as expected::
+
++ @file test.txt
+<< node 1 >>
+<< node 2 >>
+  + << node 1>> (cloned)
+     node 1 text.
+  + << node 2 >>
+     << node 1 >>
+    + << node 1 >>(cloned)
+       node 1 text.
+.. @+node:ekr.20111122080923.10186: *5* Bug 893223: Unpredictable slow operation state cured by writing
+@nocolor-node
+
+Leo-editor unpredictably gets into a state where Ctrl-V fails to paste
+and every Leo-editor operation takes much longer than usual.  This
+resulted in the following red message in the log pane:
+
+ignoring command: already executing a command.
+
+This bad state was ended by writing the .leo file so it was no longer
+dirty.  I've noticed this problem off and on for at least several weeks.
+
+Test Conditions:
+
+Leo-Editor Rev 4832
+Leo Log Window
+Leo 4.9.1 devel, build 4669, 4Q/2011
+Python 2.7.2, qt version 4.7.3
+linux2
+setting leoID from os.getenv('USER'): 'bob'
+load dir: /home/bob/bzrWork/pluginPath/leo/core
+global config dir: /home/bob/bzrWork/pluginPath/leo/config
+home dir: /home/bob
+reading settings in /home/bob/bzrWork/pluginPath/leo/config/leoSettings.leo
+reading settings in /home/bob/.leo/myLeoSettings.leo
+reading settings in /media/sda1/BobH/1/Leo/Leo.leo
+reading: /media/sda1/BobH/1/Leo/Leo.leo
+reading: @auto /home/bob/.leo/.leoRecentFiles.txt
+
+EKR =======================
+
+There is a blunder in c.executeScript.  It jams False into c.inCommand
+without saving and restoring the previous value.  This has to be
+wrong.  I'm not sure that this is the entire fix.  I'll put it on the
+urgent list.
+.. @+node:ekr.20111122080923.10188: *6* Found: inCommand
+.. @+node:ekr.20031218072017.2140: *7* c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False,
+    namespace=None):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+    if not script:
+        script = g.getScript(c,p,useSelectedText=useSelectedText)
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log # 2011/01/19
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0,c.frame.openDirectory)
+            script += '\n' # Make sure we end the script properly.
+            try:
+                p = c.p
+                if p: c.setCurrentDirectoryFromContext(p)
+                d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+                if define_name: d['__name__'] = define_name
+                d['script_args'] = args or []
+                if namespace: d.update(namespace)
+                # if args: sys.argv = args
+                # A kludge: reset c.inCommand here to handle the case where we *never* return.
+                # (This can happen when there are multiple event loops.)
+                # This does not prevent zombie windows if the script puts up a dialog...
+                c.inCommand = False
+                if c.write_script_file:
+                    scriptFile = self.writeScriptFile(script)
+                    
+                    # 2011/10/31: make g.inScript a synonym for g.app.inScript.
+                    g.inScript = g.app.inScript = True
+                    try:
+                        if g.isPython3:
+                            exec(compile(script,scriptFile,'exec'),d)
+                        else:
+                            execfile(scriptFile,d)
+                    finally:
+                        g.inScript = g.app.inScript = False
+                else:
+                    g.app.inScript = True
+                    try:
+                        exec(script,d)
+                    finally:
+                        g.app.inScript = False
+                if 0: # This message switches panes, and can be disruptive.
+                    if not script1 and not silent:
+                        # Careful: the script may have changed the log tab.
+                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                        g.es("end of script",color="purple",tabName=tabName)
+            except Exception:
+                g.handleScriptException(c,p,script,script1)
+            del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.es("no script selected",color="blue",tabName=tabName)
+    finally:
+        g.app.log = oldLog # 2011/01/19
+        self.unredirectScriptOutput()
+.. @+node:ekr.20031218072017.2143: *8* redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+.. @+node:ekr.20110522121957.18230: *8* setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self,p):
+    
+    trace = False and not g.unitTesting
+    c = self
+    
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    
+    curDir = g.os_path_abspath(os.getcwd())
+
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+    
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+.. @+node:EKR.20040627100424: *8* unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+.. @+node:ekr.20031218072017.2817: *7*  c.doCommand
+command_count = 0
+
+def doCommand (self,command,label,event=None):
+
+    """Execute the given command, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
+
+    c = self ; p = c.p
+    commandName = command and command.__name__
+    c.setLog()
+
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return # (for Tk) 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.app.commandInterruptFlag = True
+        g.es('ignoring command: already executing a command.',color='red')
+        return # (for Tk) 'break'
+
+    g.app.commandInterruptFlag = False
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: g.pr('c no longer exists',c)
+        except Exception:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            else:
+                g.es_print("exception executing command")
+                g.es_exception(c=c)
+
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2",c=c,p=p,v=p,label=label)
+
+    return # (for Tk) "break" # Inhibit all other handlers.
+.. @+node:ekr.20061031131434.160: *7* k.enterNamedMode
+def enterNamedMode (self,event,commandName):
+
+    k = self ; c = k.c
+    modeName = commandName[6:]
+    c.inCommand = False # Allow inner commands in the mode.
+    k.generalModeHandler(event,modeName=modeName)
+.. @+node:ekr.20110605121601.18140: *7* closeEvent (DynanicWindow)
+def closeEvent (self,event):
+
+    trace = False and not g.unitTesting
+    c = self.leo_c
+
+    if not c.exists:
+        # Fixes double-prompt bug on Linux.
+        if trace: g.trace('destroyed')
+        event.accept()
+        return
+
+    if c.inCommand:
+        if trace: g.trace('in command')
+        c.requestCloseWindow = True
+    else:
+        if trace: g.trace('closing')
+        ok = g.app.closeLeoWindow(c.frame)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+.. @+node:ekr.20110605121601.18286: *7* frame.OnCloseLeoEvent
+# Called from quit logic and when user closes the window.
+# Returns True if the close happened.
+
+def OnCloseLeoEvent(self):
+
+    f = self ; c = f.c
+
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
+    else:
+        g.app.closeLeoWindow(self)
+.. @+node:ekr.20111123043847.9981: *6* Found: set_trace
+.. @+node:ekr.20110310093050.14293: *7* pdb (codewise)
+def pdb (message=''):
+
+    """Fall into pdb."""
+
+    import pdb # Required: we have just defined pdb as a function!
+
+    if message:
+        print(message)
+    pdb.set_trace()
+.. @+node:ekr.20041105091148: *7* g.pdb
+def pdb (message=''):
+
+    """Fall into pdb."""
+
+    import pdb # Required: we have just defined pdb as a function!
+
+    if message:
+        print(message)
+    pdb.set_trace()
+.. @+node:ekr.20110605121601.18134: *7* init (qtGui.py top level)
+def init():
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace and g.trace_startup: print('qtGui.__init__')
+
+    if g.app.unitTesting: # Not Ok for unit testing!
+        return False
+
+    if not QtCore:
+        return False
+
+    if g.app.gui:
+        return g.app.gui.guiName() == 'qt'
+    else:
+        g.app.gui = leoQtGui()
+
+        # Override g.pdb
+        def qtPdb(message=''):
+            if message: print(message)
+            import pdb
+            if not g.app.useIpython:
+                QtCore.pyqtRemoveInputHook()
+            pdb.set_trace()
+        g.pdb = qtPdb
+
+        g.app.gui.finishCreate()
+        g.plugin_signon(__name__)
+        return True
+.. @+node:ekr.20120229094652.15181: *5* Bug 903470: print-bindings no longer properly terminates each line
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/903470
+print-bindings no longer properly terminates each line
+
+This is not a print-binding bug per se, but a bug
+in bindings in the "Bindings" tab:
+
+Everything works on windows, but there are several problems on Ubuntu:
+
+1. The contextmenu plugin doesn't show many options.
+2. As you say, cutting and pasting does not preserve newlines.
+.. @+node:ekr.20111026091322.16495: *5* Fix bug: A nest of bugs involving log, focus, chapters, quickmove
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/820019
+Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
+
+
+https://bugs.launchpad.net/leo-editor/+bug/831658
+@url doesn't leave Chapter
+
+https://bugs.launchpad.net/leo-editor/+bug/844940
+Different behavior when clicking on @url statement written either in headline or body of a node
+
+https://bugs.launchpad.net/leo-editor/+bug/869385
+Chapters make the nav_qt.py plugin useless.
+
+https://bugs.launchpad.net/leo-editor/+bug/875323
+Hoist an @chapter node leaves a non-visible node selected.
+
+https://bugs.launchpad.net/leo-editor/+bug/875327
+Positioning outside of hoisted outline" usually causes problems
+
+https://bugs.launchpad.net/leo-editor/+bug/875463
+Enabling quickmove.py sends to error messages to console on every outline open 
+.. @+node:ekr.20111026091322.16503: *4* Other Bugs
+.. @+node:ekr.20111123095018.13632: *5* Fix bug: expand Find tab as needed for bigger fonts
+.. @+node:ekr.20110605121601.18326: *6* createTab (leoQtLog)
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+
+    trace = False and not g.unitTesting
+    c = self.c
+    
+    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
+
+    if widget is None:
+
+        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+            # widget is subclass of QTextBrowser.
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+            # contents a wrapper.
+        widget.leo_log_wrapper = contents
+            # Inject an ivar into the QTextBrowser that points to the wrapper.
+            
+        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
+        
+        widget.setWordWrapMode(
+            g.choose(self.wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.widget = contents # widget is an alias for logCtrl.
+            widget.setObjectName('log-widget')
+
+        if True: # 2011/05/28.
+            # Set binding on all text widgets.
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+            
+        if True and tabName == 'Log':
+    
+            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
+            find_widget = c.frame.top.leo_find_widget
+            
+            # 2011/11/21: A hack: add an event filter.
+            find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
+            find_widget.installEventFilter(find_widget.leo_event_filter)
+            if trace: g.trace('** Adding event filter for Find',find_widget)
+            
+            # 2011/11/21: A hack: make the find_widget an official log widget.
+            self.contentsDict['Find']=find_widget
+    
+        self.contentsDict[tabName] = widget
+        self.tabWidget.addTab(widget,tabName)
+    else:
+        contents = widget
+            # Unlike text widgets, contents is the actual widget.
+        widget.leo_log_wrapper = contents
+            # The leo_log_wrapper is the widget itself.
+        if trace: g.trace('** using',tabName,widget)
+        
+        if 1: # Now seems to work.
+            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+    
+        self.contentsDict[tabName] = contents
+        self.tabWidget.addTab(contents,tabName)
+
+    return contents
+.. @+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
+def createFindTab (self,parent,tab_widget):
+
+    c,dw = self.leo_c,self
+    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
+    grid.setColumnStretch(0,100)
+    grid.setColumnStretch(1,100)
+    
+    # Row 0: heading.
+    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+    grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
+    
+    # Rows 1, 2: the find/change boxes, now disabled.
+    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
+    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+    lab2 = self.createLabel(parent,'findLabel','Find:')
+    lab3 = self.createLabel(parent,'changeLabel','Change:')
+    grid.addWidget(lab2,1,0)
+    grid.addWidget(lab3,2,0)
+    grid.addWidget(findPattern,1,1)
+    grid.addWidget(findChange,2,1)
+        
+    # Check boxes and radio buttons.
+    # Radio buttons are mutually exclusive because they have the same parent.
+    def mungeName(name):
+        # The value returned here is significant: it creates an ivar.
+        return 'checkBox%s' % label.replace(' ','').replace('&','')
+
+    # Rows 3 through 8...
+    table = (
+        ('box', 'Whole &Word',      2,0),
+        ('rb',  '&Entire Outline',  2,1),
+        ('box', '&Ignore Case',     3,0),
+        ('rb',  '&Suboutline Only', 3,1),
+        ('box', 'Wrap &Around',     4,0),
+        ('rb',  '&Node Only',       4,1),
+        # ('box', '&Reverse',       5,0),
+        ('box', 'Search &Headline', 5,1),
+        ('box', 'Rege&xp',          5,0), # was 6,0
+        ('box', 'Search &Body',     6,1),
+        ('box', 'Mark &Finds',      6,0), # was 7,0
+        ('box', 'Mark &Changes',    7,0)) # was 7,1
+        # a,b,c,e,f,h,i,n,rs,w
+
+    for kind,label,row,col in table:
+        name = mungeName(label)
+        func = g.choose(kind=='box',
+            self.createCheckBox,self.createRadioButton)
+        w = func(parent,name,label)
+        grid.addWidget(w,row+1,col)
+        setattr(self,name,w)
+
+    # Row 9: Widgets that take all additional vertical space.
+    w = QtGui.QWidget()
+    grid.addWidget(w,9,0)
+    grid.addWidget(w,9,1)
+    grid.setRowStretch(9,100)
+
+    # Official ivars (in addition to setattr ivars).
+    self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
+    self.findPattern = findPattern
+    self.findChange = findChange
+    # self.findLab = lab2
+    # self.changeLab = lab3
+.. @+node:ekr.20110605121601.18156: *6* createGrid (DynamicWindow)
+def createGrid (self,parent,name,margin=0,spacing=0):
+
+    w = QtGui.QGridLayout(parent)
+    w.setMargin(margin)
+    w.setSpacing(spacing)
+    self.setName(w,name)
+    return w
+.. @+node:ekr.20110605121601.18145: *6* createLogPane
+def createLogPane (self,parent):
+
+    # Create widgets.
+    logFrame = self.createFrame(parent,'logFrame',
+        vPolicy = QtGui.QSizePolicy.Minimum)
+    innerFrame = self.createFrame(logFrame,'logInnerFrame',
+        hPolicy=QtGui.QSizePolicy.Preferred,
+        vPolicy=QtGui.QSizePolicy.Expanding)
+    tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
+
+    # Pack.
+    innerGrid = self.createGrid(innerFrame,'logInnerGrid')
+    innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+    outerGrid = self.createGrid(logFrame,'logGrid')
+    outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+    
+    # 2011/10/01: Embed the Find tab in a QScrollArea.
+    findScrollArea = QtGui.QScrollArea()
+    findScrollArea.setObjectName('findScrollArea')
+    findTab = QtGui.QWidget()
+    findTab.setObjectName('findTab')
+    tabWidget.addTab(findScrollArea,'Find')
+    self.createFindTab(findTab,findScrollArea)
+    findScrollArea.setWidget(findTab)
+
+    spellTab = QtGui.QWidget()
+    spellTab.setObjectName('spellTab')
+    tabWidget.addTab(spellTab,'Spell')
+    self.createSpellTab(spellTab)
+
+    tabWidget.setCurrentIndex(1)
+
+    # Official ivars
+    self.tabWidget = tabWidget # Used by leoQtLog.
+.. @+node:ekr.20111010162047.15678: *5* Fix bug: Imports to @file should put @first/@last directives in root node
+@nocolor-node
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+    
+- @auto correctly works for all Python files.
+.. @+node:ekr.20111221102703.10288: *6* @test imported shbang line
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+        
+setup(p)
+child = p.insertAsNthChild(0)
+child.h = 'import'
+child = p.firstChild()
+assert child
+assert child.h == 'import'
+child.b = ''
+c.selectPosition(child)
+
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','at-auto-at-first-test.py')
+assert g.os_path_exists(fn),fn
+
+try:
+    c.importCommands.createOutline(fn,parent=child.copy(),atAuto=False,ext='.py')
+    s = '#!/usr/bin/env python\n# -*- coding: utf-8 -*-'
+    root = child.firstChild()
+    assert root
+    assert root.h.startswith('@file'),root.h
+    assert root.h.endswith('at-auto-at-first-test.py')
+    assert root.b.startswith(s),'root.b:...\n\n%s' % (root.b)
+finally:
+    if not g.app.isExternalUnitTest:
+        setup(p)
+.. @+node:ekr.20111221102703.10289: *6* @@@nosent ../test/at-auto-at-first-test.py
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+def spam():
+    pass
+    
+# This is the last line.
+.. @+node:ekr.20110621085435.6531: *5* Fix bug: Improve the find panel and find menu
+@nocolor-node
+
+Recently, perhaps it was today, there was a remark made about Leo's
+Find panel being confusing for newbies.  I have some sympathy for the
+remarks.
+
+1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
+a search/replace operation.  I'll fix this soon after 4.9 final.
+
+2.  The Find tab should make it clearer that it is a summary/status
+tab only--not a way of actually initiating or continuing searches.
+Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
+for the find/change patterns would help a bit.
+.. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
+
+g.openWithFileName needs
+
+   fileName = g.os_path_realpath(fileName)
+
+at the start of it, otherwise
+
+g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
+instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
+because it doesn't recognize them as being the same.
+
+It would be nice if the original attempt to open
+"/home/tbrown/.leo/.todo.leo" was not converted to
+"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
+spec. insists on giving CPython the real path form, so this is hard to
+avoid.  You see this when selecting a file using a file dialog, in the
+dialog you choose /home/me/myfile.txt, but the return
+is /mnt/usr1/usr1/home/me/myfile.txt.
+
+Anyway, let me know if and when I can push that to trunk, impacts seem
+to be limited to (a) not failing to detect an already opened file in
+g.openWithFileName, which is a bug, and (b) sometimes less attractive
+apparent paths, which is annoying, but I think better than the bug.
+
+(this of course trips up UNLs
+if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
+UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
+.. @+node:ekr.20120219152142.34262: *5* Fix bug: Revert moves the reverted tab to the right
+.. @+node:ekr.20110530063322.18333: *5* Fix bug: scala not colored properly
+.. @+node:ekr.20111125072438.10217: *5* Fix bug: shell interprets characters in at-mime headings
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/07efd66847ac4a64
+
+on linux, parenthesis or angled brackets in @mime headings prevent the file from
+being opened, probably because they are interpreted specially by the shell, e.g.
+they need to be escaped. Such characters should be escaped before passing the
+filename to the shell.
+
+.. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
+http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
+.. @+node:ekr.20111014074810.15652: *5* Fix bug: viewrendered should work better when docutils does not exist
+.. @+node:ekr.20110620083705.14901: *5* Fix or disable curses gui
+leoBridge.py requires the nullGui.
+.. @+node:ekr.20110620065017.14900: *4* Bugs/Can't/Won't fix
+.. @+node:ekr.20111011062533.15693: *5* Make headline widgets scrollable, if possible
+# It doesn't seem easy.
+.. @+node:ekr.20110605121601.18422: *6* editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    trace = False and not g.unitTesting
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit.
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if s == 'newHeadline': selectAll=True
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
+
+    if trace: g.trace(e,wrapper)
+    return e,wrapper # 2011/02/11
+.. @+node:ekr.20110619173515.14896: *5* Fix bug: wrong modality level on autocompleter
+Just noticed the autocompleter pop-up is modal globally, not just for
+the Leo windows.  Probably should only block the Leo windows.
 .. @+node:ekr.20120226183512.10199: *3* Features
 .. @+node:ekr.20111109083738.9796: *4* Next
 .. @+node:ekr.20120226180525.10191: *5* Run unit tests interactively?
