@@ -1656,7 +1656,8 @@ class keyHandlerClass:
                 k.bindKeyToDict(pane,shortcut,si)
             if not modeFlag:
                 if shortcut:
-                    k.remove_conflicting_definitions(aList,pane,shortcut)
+                    alist = k.remove_conflicting_definitions(
+                        aList,commandName,pane,shortcut)
             aList.append(si)
             if shortcut:
                 assert stroke
@@ -1721,21 +1722,20 @@ class keyHandlerClass:
         
         c.config.shortcutsDict = lm.uninvert(inv_d)
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
-    def remove_conflicting_definitions (self,aList,pane,shortcut):
+    def remove_conflicting_definitions (self,aList,commandName,pane,shortcut):
         
-        trace = False and not g.unitTesting
         k = self
         result = []
         for si in aList:
             assert g.isShortcutInfo(si),si
             if pane in ('button','all',si.pane):
-                if trace: g.trace('removing %s' % (si.dump()))
+                g.es_print('removing previous definition for %s in %s' % (
+                    si.stroke,k.c.shortFileName()))
+                g.es_print('previous: %s new: %s' % (si.commandName,commandName))
                 k.kill_one_shortcut(shortcut)
             else:
                 result.append(si)
-        aList = result
-        
-        # aList = [si for si in aList if pane not in ('button','all',si.pane)]
+        return result
     #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
     def bindKeyToDict (self,pane,stroke,si):
         

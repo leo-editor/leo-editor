@@ -1584,6 +1584,12 @@ def addAbbrevHelper (self,s,tag=''):
         d [name] = val,tag
     except ValueError:
         g.es_print('bad abbreviation: %s' % s)
+#@+node:ekr.20120307052613.11954: *4* Reinstated warnings for conflicting definitions
+@nocolor-node
+
+k.remove_conflicting_definitions always gives the warning, not just when tracing.
+
+The warning isn't the best, and it is usually duplicated, but it is much better than nothing.
 #@+node:ekr.20120304065838.15591: *3* Bugs
 #@+node:ekr.20120229094652.15179: *4* Made sure global @command & @button nodes work
 #@+node:ekr.20070925144337: *5* doButtons
@@ -3081,6 +3087,14 @@ g.es('\n'.join(result))
 https://bugs.launchpad.net/leo-editor/+bug/799695
 
 # The fix was simply to call c.recolor_now(incremental=False)
+#@+node:ekr.20120306201510.9855: *4* Fixed bug 824087: Alt+F4 is not the same as Alt+F, c
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/824087
+
+The fix was to bind Ctrl-F4 to close-window, instead of Alt-F4.
+
+I instantly like this new binding.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
