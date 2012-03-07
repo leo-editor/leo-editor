@@ -2247,12 +2247,6 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
 
     try:
         command = '<no command>'
-        # if openType == 'os.system':
-            # command = 'os.system(%s)' % join(arg,fn)
-            # if not testing:
-                # os.system(command)
-        # el
-        
         if openType == 'os.startfile':
             command = 'os.startfile(%s)' % join(arg,fn)
             if trace: g.trace(command)
@@ -2475,7 +2469,7 @@ def createOpenWithMenuFromTable (self,table):
 
     '''table is a lists of dicts:
     
-    - d.get('command'):  one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+    - d.get('command'):  one of "os.startfile", "os.spawnl", "os.spawnv" or "exec".
     - d.get('shortcut'): the stroke (??)
     - d.get('name'):     the menu label.
     
@@ -2727,12 +2721,6 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
 
     try:
         command = '<no command>'
-        # if openType == 'os.system':
-            # command = 'os.system(%s)' % join(arg,fn)
-            # if not testing:
-                # os.system(command)
-        # el
-        
         if openType == 'os.startfile':
             command = 'os.startfile(%s)' % join(arg,fn)
             if trace: g.trace(command)
@@ -3019,7 +3007,7 @@ def createOpenWithMenuFromTable (self,table):
 
     '''table is a lists of dicts:
     
-    - d.get('command'):  one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+    - d.get('command'):  one of "os.startfile", "os.spawnl", "os.spawnv" or "exec".
     - d.get('shortcut'): the stroke (??)
     - d.get('name'):     the menu label.
     
@@ -3200,12 +3188,6 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
 
     try:
         command = '<no command>'
-        # if openType == 'os.system':
-            # command = 'os.system(%s)' % join(arg,fn)
-            # if not testing:
-                # os.system(command)
-        # el
-        
         if openType == 'os.startfile':
             command = 'os.startfile(%s)' % join(arg,fn)
             if trace: g.trace(command)
@@ -3443,12 +3425,6 @@ def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,te
 
     try:
         command = '<no command>'
-        # if openType == 'os.system':
-            # command = 'os.system(%s)' % join(arg,fn)
-            # if not testing:
-                # os.system(command)
-        # el
-        
         if openType == 'os.startfile':
             command = 'os.startfile(%s)' % join(arg,fn)
             if trace: g.trace(command)
@@ -9410,6 +9386,7 @@ def os_path_splitext(path):
     return head,tail
 .. @+node:ekr.20090829140232.6036: *8* os_startfile
 def os_startfile(fname):
+    
     if sys.platform.startswith('win'):
         os.startfile(fname)
     elif sys.platform == 'darwin':

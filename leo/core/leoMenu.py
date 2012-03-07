@@ -1304,7 +1304,7 @@ class leoMenu:
 
         '''table is a lists of dicts:
         
-        - d.get('command'):  one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+        - d.get('command'):  one of "os.startfile", "os.spawnl", "os.spawnv" or "exec".
         - d.get('shortcut'): the stroke (??)
         - d.get('name'):     the menu label.
         

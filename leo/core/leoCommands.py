@@ -1394,12 +1394,6 @@ class Commands (object):
 
         try:
             command = '<no command>'
-            # if openType == 'os.system':
-                # command = 'os.system(%s)' % join(arg,fn)
-                # if not testing:
-                    # os.system(command)
-            # el
-            
             if openType == 'os.startfile':
                 command = 'os.startfile(%s)' % join(arg,fn)
                 if trace: g.trace(command)

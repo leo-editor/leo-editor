@@ -3204,6 +3204,7 @@ def os_path_splitext(path):
     return head,tail
 #@+node:ekr.20090829140232.6036: *3* os_startfile
 def os_startfile(fname):
+    
     if sys.platform.startswith('win'):
         os.startfile(fname)
     elif sys.platform == 'darwin':
@@ -3937,36 +3938,25 @@ def executeFile(filename, options= ''):
 
     if not os.access(filename, os.R_OK): return
 
-    subprocess = g.importExtension('subprocess',None,verbose=False)
-
     cwd = os.getcwdu()
     fdir, fname = g.os_path_split(filename)
+    
+    # New in Leo 4.10: alway use subprocess.
+    def subprocess_wrapper(cmdlst):
 
-    if subprocess: # Only exists in Python 2.4.
-        #@+<< define subprocess_wrapper >>
-        #@+node:ekr.20050503112513.8: *4* << define subprocess_wrapper >>
-        def subprocess_wrapper(cmdlst):
-
-            # g.trace(cmdlst, fdir)
-            # g.trace(subprocess.list2cmdline([cmdlst]))
-
-            p = subprocess.Popen(cmdlst, cwd=fdir,
-                universal_newlines=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            stdo, stde = p.communicate()
-            return p.wait(), stdo, stde
-        #@-<< define subprocess_wrapper >>
-        rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
-        if rc:
-            g.pr('return code', rc)
-        g.pr(so, se)
-    else:
-        if fdir: os.chdir(fdir)
-        d = {'__name__': '__main__'}
-        # execfile(fname, d)
-        os.system('%s %s' % (sys.executable, fname))
-        if fdir: os.chdir(cwd)
+        # g.trace(cmdlst, fdir)
+        # g.trace(subprocess.list2cmdline([cmdlst]))
+        p = subprocess.Popen(cmdlst, cwd=fdir,
+            universal_newlines=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+        stdo, stde = p.communicate()
+        return p.wait(), stdo, stde
+    
+    rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
+    if rc:
+        g.pr('return code', rc)
+    g.pr(so, se)
 #@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
 def findNodeInChildren(c,p,headline):
 
