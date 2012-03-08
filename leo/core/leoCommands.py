@@ -1370,7 +1370,7 @@ class Commands (object):
 
         return ext
     #@+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
-    def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
+    def openTempFileInExternalEditor(self,d,fn,testing=False):
 
         '''Open the closed mkstemp file fn in an external editor.
         The arg and openType args come from the data arg to c.openWith.

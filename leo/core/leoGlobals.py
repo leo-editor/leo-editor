@@ -3211,9 +3211,10 @@ def os_startfile(fname):
     if g.unitTesting:
         g.app.unitTestDict['os_startfile']=fname
         return
-    
+
     if sys.platform.startswith('win'):
         os.startfile(fname)
+            # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
@@ -3223,7 +3224,14 @@ def os_startfile(fname):
         except ImportError:
             os.system("open '%s'" % (fname,))
     else:
-        os.system('xdg-open "%s"'%fname)
+        # os.system('xdg-open "%s"' % (fname))
+        try:
+            val = subprocess.call('xdg-open %s' % (fname),shell=True)
+            if val < 0:
+                g.es_print('xdg-open %s failed' % (fname))
+        except Exception:
+            g.es_print('error opening %s' % fname)
+            g.es_exception()
 #@+node:ekr.20031218072017.2160: *3* toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
 

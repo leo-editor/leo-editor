@@ -3510,7 +3510,7 @@ def addLeoRules (self,theDict):
             theDict [ch] = theList
 
     # g.trace(g.listToString(theDict.get('@')))
-#@+node:ekr.20120307065748.14160: *4* Fixed bug 944551: @url URL Open Hangs Leo... 
+#@+node:ekr.20120307065748.14160: *4* Fixed bug 944551: @url URL Open Hangs Leo...
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/944551
@@ -3531,9 +3531,10 @@ def os_startfile(fname):
     if g.unitTesting:
         g.app.unitTestDict['os_startfile']=fname
         return
-    
+
     if sys.platform.startswith('win'):
         os.startfile(fname)
+            # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
@@ -3543,7 +3544,14 @@ def os_startfile(fname):
         except ImportError:
             os.system("open '%s'" % (fname,))
     else:
-        os.system('xdg-open "%s"'%fname)
+        # os.system('xdg-open "%s"' % (fname))
+        try:
+            val = subprocess.call('xdg-open %s' % (fname),shell=True)
+            if val < 0:
+                g.es_print('xdg-open %s failed' % (fname))
+        except Exception:
+            g.es_print('error opening %s' % fname)
+            g.es_exception()
 #@+node:tbrown.20110219154422.37469: *5* g.recursiveUNLSearch
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     """try and move to unl in the commander c
@@ -3690,6 +3698,34 @@ def handleUrl(c,p,url):
     except:
         g.es("exception opening",url)
         g.es_exception()
+#@+node:ekr.20120308034220.14156: *4* Fixed g.os_startfile on Linux
+#@+node:ekr.20090829140232.6036: *5* os_startfile
+def os_startfile(fname):
+    
+    if g.unitTesting:
+        g.app.unitTestDict['os_startfile']=fname
+        return
+
+    if sys.platform.startswith('win'):
+        os.startfile(fname)
+            # Exists only on Windows.
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system("open '%s'" % (fname,))
+    else:
+        # os.system('xdg-open "%s"' % (fname))
+        try:
+            val = subprocess.call('xdg-open %s' % (fname),shell=True)
+            if val < 0:
+                g.es_print('xdg-open %s failed' % (fname))
+        except Exception:
+            g.es_print('error opening %s' % fname)
+            g.es_exception()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

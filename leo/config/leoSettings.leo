@@ -1600,6 +1600,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20081018053140.12"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5538,7 +5539,7 @@ If there are more than this number, a new row is created.</t>
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
 
 /*
-    Important: this stylesheets is responsible for most, but *not* all, of Leo's appearance.
+    Important: this stylesheets is responsible for most, but *not* all, of Leos appearance.
     See also settings in "Colorizer and colors" 
 */
 

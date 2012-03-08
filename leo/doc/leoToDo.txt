@@ -25,7 +25,7 @@ Top 10:
 
 - test other open-handlers besides subprocess.Popen.
 .. @+node:ekr.20031218072017.2829: *5* c.openTempFileInExternalEditor
-def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
+def openTempFileInExternalEditor(self,d,fn,testing=False):
 
     '''Open the closed mkstemp file fn in an external editor.
     The arg and openType args come from the data arg to c.openWith.
@@ -499,7 +499,7 @@ def getOpenWithExt (self,p,ext):
 
     return ext
 .. @+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
-def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
+def openTempFileInExternalEditor(self,d,fn,testing=False):
 
     '''Open the closed mkstemp file fn in an external editor.
     The arg and openType args come from the data arg to c.openWith.
@@ -966,7 +966,7 @@ def getOpenWithExt (self,p,ext):
 
     return ext
 .. @+node:ekr.20031218072017.2829: *7* c.openTempFileInExternalEditor
-def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
+def openTempFileInExternalEditor(self,d,fn,testing=False):
 
     '''Open the closed mkstemp file fn in an external editor.
     The arg and openType args come from the data arg to c.openWith.
@@ -1203,7 +1203,7 @@ def openWithTempFilePath (self,p,ext):
 
     return path
 .. @+node:ekr.20031218072017.2829: *6* c.openTempFileInExternalEditor
-def openTempFileInExternalEditor(self,d,fn,testing=False): ###arg,fn,openType,testing=False):
+def openTempFileInExternalEditor(self,d,fn,testing=False):
 
     '''Open the closed mkstemp file fn in an external editor.
     The arg and openType args come from the data arg to c.openWith.
@@ -7188,9 +7188,10 @@ def os_startfile(fname):
     if g.unitTesting:
         g.app.unitTestDict['os_startfile']=fname
         return
-    
+
     if sys.platform.startswith('win'):
         os.startfile(fname)
+            # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
@@ -7200,7 +7201,14 @@ def os_startfile(fname):
         except ImportError:
             os.system("open '%s'" % (fname,))
     else:
-        os.system('xdg-open "%s"'%fname)
+        # os.system('xdg-open "%s"' % (fname))
+        try:
+            val = subprocess.call('xdg-open %s' % (fname),shell=True)
+            if val < 0:
+                g.es_print('xdg-open %s failed' % (fname))
+        except Exception:
+            g.es_print('error opening %s' % fname)
+            g.es_exception()
 .. @+node:ekr.20031218072017.2160: *8* toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
 
