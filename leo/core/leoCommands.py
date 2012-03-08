@@ -8181,8 +8181,19 @@ class Commands (object):
         c = self ; cc = c.chapterController
 
         if cc:
-            if trace: g.trace('cc.selectChapterForPosition(%s)' % p.h)
             cc.selectChapterForPosition(p)
+            if trace:
+                g.trace(cc.selectedChapter,p.h)
+            
+        # 2012/03/08: De-hoist as necessary to make p visible.
+        if c.hoistStack:
+            while c.hoistStack:
+                bunch = c.hoistStack[len(c.hoistStack)-1]
+                if c.positionExists(p,bunch.p):
+                    break
+                else:
+                    bunch = c.hoistStack.pop()
+                    if trace: g.trace('unhoist',bunch.p.h)
 
         c.frame.tree.select(p)
 
