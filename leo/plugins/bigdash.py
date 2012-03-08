@@ -183,12 +183,14 @@ class GlobalSearch:
         a = self.anchors[l]
         c, p = a
         c.selectPosition(p)
+        c.bringToFront()
     def do_link_jump_gnx(self, l):
         print ("jumping to", l)
         for c,p in all_positions_global():
             if p.gnx == l:
                 print("found!")
                 c.selectPosition(p)
+                c.bringToFront()
                 return
         print("Not found in any open document")
 
