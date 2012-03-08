@@ -3727,6 +3727,339 @@ def os_startfile(fname):
         except Exception:
             g.es_print('error opening %s' % fname)
             g.es_exception()
+#@+node:ekr.20120308061112.9862: *4* Fixed bug 875323: Hoist an @chapter node leaves a non-visible node selected
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/875323
+Hoist an @chapter node leaves a non-visible node selected
+
+- Selecting the main chapter now ends all hoists.
+#@+node:ekr.20031218072017.2991: *5* c.redrawAndEdit
+# Sets the focus to p and edits p.
+
+def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
+
+    '''Redraw the screen and start editing the headline at position p.'''
+
+    c = self ; k = c.k
+
+    c.redraw(p)
+
+    if p:
+        # This should request focus.
+        c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
+
+        if k and not keepMinibuffer:
+            # Setting the input state has no effect on focus.
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            # This *does* affect focus.
+            k.showStateAndMode()
+
+    # Update the focus immediately.
+    if not keepMinibuffer:
+        c.outerUpdate()
+#@+node:ekr.20090110073010.1: *5* c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+    if not p: p = c.p or c.rootPosition()
+
+    c.expandAllAncestors(p)
+    c.frame.tree.redraw(p)
+    c.selectPosition(p)
+
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@+node:ekr.20110605121601.17873: *5* full_redraw & helpers
+# forceDraw not used. It is used in the Tk code.
+
+def full_redraw (self,p=None,scroll=True,forceDraw=False):
+
+    '''Redraw all visible nodes of the tree.
+
+    Preserve the vertical scrolling unless scroll is True.'''
+
+    trace = False and not g.app.unitTesting
+    verbose = False
+    c = self.c
+
+    if self.busy():
+        return g.trace('*** full_redraw: busy!',g.callers(5))
+
+    if p is None:
+        p = c.currentPosition()
+    elif c.hoistStack and len(c.hoistStack) == 1 and p.h.startswith('@chapter') and p.hasChildren():
+        # Make sure the current position is visible.
+        # Partial fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
+        c.setCurrentPosition(p.firstChild())
+    else:
+        c.setCurrentPosition(p)
+
+    # if trace: g.trace('root',c.rootPosition())
+
+    self.redrawCount += 1
+    if trace: t1 = g.getTime()
+    self.initData()
+    self.nodeDrawCount = 0
+    try:
+        self.redrawing = True
+        self.drawTopTree(p)
+    finally:
+        self.redrawing = False
+
+    self.setItemForCurrentPosition(scroll=scroll)
+    c.requestRedrawFlag= False
+
+    if trace:
+        theTime = g.timeSince(t1)
+        g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
+            self.redrawCount,scroll,self.nodeDrawCount,theTime)) # ,g.callers(3))
+
+# Compatibility
+redraw = full_redraw 
+redraw_now = full_redraw
+#@+node:ekr.20110605121601.17874: *6* drawChildren
+def drawChildren (self,p,parent_item):
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('children? %5s expanded? %5s %s' % (
+        p.hasChildren(),p.isExpanded(),p.h))
+
+    if not p:
+        return g.trace('can not happen: no p')
+
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+#@+node:ekr.20110605121601.17875: *6* drawNode
+def drawNode (self,p,parent_item):
+
+    trace = False
+    c = self.c 
+    self.nodeDrawCount += 1
+
+    # Allocate the item.
+    item = self.createTreeItem(p,parent_item) 
+
+    # Do this now, so self.isValidItem will be true in setItemIcon.
+    self.rememberItem(p,item)
+
+    # Set the headline and maybe the icon.
+    self.setItemText(item,p.h)
+    if p:
+        self.drawItemIcon(p,item)
+
+    if trace: g.trace(self.traceItem(item))
+
+    return item
+#@+node:ekr.20110605121601.17876: *6* drawTopTree
+def drawTopTree (self,p):
+    
+    trace = False and not g.unitTesting
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.h
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        if trace: g.trace(p)
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+
+    # This method always retains previous scroll position.
+    self.setHScroll(hPos)
+    self.setVScroll(vPos)
+
+    self.repaint()
+#@+node:ekr.20110605121601.17877: *6* drawTree
+def drawTree (self,p,parent_item=None):
+
+    # Draw the (visible) parent node.
+    item = self.drawNode(p,parent_item)
+
+    # Draw all the visible children.
+    self.drawChildren(p,parent_item=item)
+#@+node:ekr.20110605121601.17878: *6* initData
+def initData (self):
+
+    # g.trace('*****')
+
+    self.item2positionDict = {}
+    self.item2vnodeDict = {}
+    self.position2itemDict = {}
+    self.vnode2itemsDict = {}
+    self.editWidgetsDict = {}
+#@+node:ekr.20110605121601.17879: *6* rememberItem
+def rememberItem (self,p,item):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('id',id(item),p)
+
+    v = p.v
+
+    # Update position dicts.
+    itemHash = self.itemHash(item)
+    self.position2itemDict[p.key()] = item
+    self.item2positionDict[itemHash] = p.copy() # was item
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[itemHash] = v # was item
+
+    # Update vnode2itemsDict.
+    d = self.vnode2itemsDict
+    aList = d.get(v,[])
+    if item in aList:
+        g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+    else:
+        aList.append(item)
+    d[v] = aList
+#@+node:ekr.20031218072017.2028: *5* c.Hoist
+#@+node:ekr.20120308061112.9865: *6* c.deHoist
+def dehoist (self,event=None):
+
+    '''Undo a previous hoist of an outline.'''
+
+    c = self
+    p = c.p
+
+    if p and c.canDehoist():
+        bunch = c.hoistStack.pop()
+        if bunch.expanded: p.expand()
+        else:              p.contract()
+        c.redraw()
+
+        c.frame.clearStatusLine()
+        if c.hoistStack:
+            bunch = c.hoistStack[-1]
+            c.frame.putStatusLine("Hoist: " + bunch.p.h)
+        else:
+            c.frame.putStatusLine("No hoist")
+        c.undoer.afterDehoist(p,'DeHoist')
+        g.doHook('hoist-changed',c=c)
+
+#@+node:ekr.20120308061112.9866: *6* c.clearAllHoists
+def clearAllHoists(self):
+    
+    '''Undo a previous hoist of an outline.'''
+
+    c = self
+
+    c.hoistStack = []
+    c.frame.putStatusLine("Hoists cleared")
+    
+    g.doHook('hoist-changed',c=c)
+#@+node:ekr.20120308061112.9867: *6* c.hoist
+def hoist (self,event=None):
+
+    '''Make only the selected outline visible.'''
+
+    c = self
+    p = c.p
+    
+    if p and c.canHoist():
+        # Remember the expansion state.
+        bunch = g.Bunch(p=p.copy(),expanded=p.isExpanded())
+        c.hoistStack.append(bunch)
+        p.expand()
+        c.redraw(p)
+
+        c.frame.clearStatusLine()
+        c.frame.putStatusLine("Hoist: " + p.h)
+        c.undoer.afterHoist(p,'Hoist')
+        g.doHook('hoist-changed',c=c)
+#@+node:ekr.20070317130250: *5* cc.selectChapterByName & helper
+def selectChapterByName (self,name,collapse=True):
+
+    '''Select a chapter.  Return True if a redraw is needed.'''
+
+    cc = self ; c = cc.c
+
+    chapter = cc.chaptersDict.get(name)
+
+    if chapter:
+        cc.selectChapterByNameHelper(chapter,collapse=collapse)
+    else:
+        if 1: # Best for production: do nothing if the user mis-types.
+            cc.note('no such chapter: %s' % name)
+            chapter = cc.chaptersDict.get('main')
+            if chapter:
+                self.selectChapterByNameHelper(chapter,collapse=collapse)
+            else:
+                g.trace(g.callers())
+                cc.error('no main chapter!')
+        else: # Best for testing.
+            g.trace('*** creating',name)
+            cc.createChapterByName(name,p=c.p,undoType='Create Chapter')
+#@+node:ekr.20090306060344.2: *6* selectChapterByNameHelper
+def selectChapterByNameHelper (self,chapter,collapse=True):
+
+    trace = False and not g.unitTesting
+    cc = self ; c = cc.c
+    
+    if trace:
+        g.trace('old: %s, new: %s' % (
+            cc.selectedChapter and cc.selectedChapter.name,
+            chapter and chapter.name))
+        
+    if chapter == cc.selectedChapter:
+        return
+
+    if cc.selectedChapter:
+        cc.selectedChapter.unselect()
+        
+    p = chapter.p
+    if p and not c.positionExists(p):
+        if not g.unitTesting:
+            g.trace('*** switching to root')
+        p = c.rootPosition()
+
+    chapter.select()
+
+    c.setCurrentPosition(chapter.p)
+    cc.selectedChapter = chapter
+
+    # Clean up, but not initially.
+    if collapse and chapter.name == 'main':
+        for p in c.all_unique_positions():
+            # Compare vnodes, not positions.
+            if p.v != c.p.v:
+                p.contract()
+
+    # New in Leo 4.6 b2: *do* call c.redraw.
+    c.redraw()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

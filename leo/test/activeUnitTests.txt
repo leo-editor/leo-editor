@@ -2290,7 +2290,7 @@ if cc and not g.app.isExternalUnitTest:
         p2.b = '# %s' % h
     
     try:
-        cc.selectChapterByName('aaa',chaptersNode)
+        cc.selectChapterByName('aaa')
         for h,f in table:
             p2 = g.findNodeInTree(c,p,h)
             assert p2,'fail 1'
@@ -13677,10 +13677,10 @@ child.doDelete()
 assert not c.positionExists(child)
 #@+node:ekr.20120212130242.4704: *5* newHeadline
 #@+node:ekr.20090102062037.2: *4* @test c.positionExists for all nodes
-root = c.rootPosition()
-
 for p in c.all_positions():
-    assert c.positionExists(p,root)
+    assert c.positionExists(p)
+        # 2012/03/08: If a root is given, the search is confined to that root only.
+
 #@+node:ekr.20040712101754.204: *4* @test consistency of back/next links
 for p in c.all_positions():
 

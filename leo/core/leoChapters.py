@@ -316,7 +316,7 @@ class chapterController:
 
         cc = self ; c = cc.c ; p = c.p ; u = c.undoer
         undoType = 'Move Node To Chapter'
-        
+
         if g.match_word(p.h,0,'@chapter'):
             return cc.note('can not move @chapter node to another chapter')
         
@@ -492,6 +492,7 @@ class chapterController:
                 if chapter:
                     self.selectChapterByNameHelper(chapter,collapse=collapse)
                 else:
+                    g.trace(g.callers())
                     cc.error('no main chapter!')
             else: # Best for testing.
                 g.trace('*** creating',name)
@@ -502,19 +503,12 @@ class chapterController:
         trace = False and not g.unitTesting
         cc = self ; c = cc.c
         
-        # Explicitly selecting any chapter ends all hoists.
-        redraw_flag = bool(c.hoistStack)
-        if c.hoistStack:
-            c.clearAllHoists()
-
         if trace:
             g.trace('old: %s, new: %s' % (
                 cc.selectedChapter and cc.selectedChapter.name,
                 chapter and chapter.name))
             
         if chapter == cc.selectedChapter:
-            if redraw_flag:
-                c.redraw()
             return
 
         if cc.selectedChapter:
@@ -720,34 +714,41 @@ class chapterController:
         Do nothing if p if p does not exist or is in the presently selected chapter.
         '''
 
-        # trace = False and not g.unitTesting
+        trace = False and not g.unitTesting
         cc = self ; c = cc.c
 
-        if not p or not c.positionExists(p):
+        if not p:
+            if trace: g.trace('no p')
+            return
+            
+        if not c.positionExists(p):
+            if trace: g.trace('does not exist',p.h) 
             return
 
         theChapter = cc.getSelectedChapter()
         if not theChapter:
-            # if trace: g.trace('no chapter')
             return
 
-        # if trace: g.trace('selected:',theChapter.name)
+        if trace: g.trace('selected:',theChapter.name,'node',p.h)
 
         # First, try the presently selected chapter.
         firstName = theChapter.name
-        if firstName == 'main' or theChapter.positionIsInChapter(p):
-            # if trace: g.trace('in chapter:',theChapter.name)
+        if firstName == 'main':
+            if trace: g.trace('no search: main chapter:',p.h)
+            return
+        if theChapter.positionIsInChapter(p):
+            if trace: g.trace('position found in chapter:',theChapter.name,p.h)
             return
 
         for name in cc.chaptersDict:
             if name not in (firstName,'main'):
                 theChapter = cc.chaptersDict.get(name)
                 if theChapter.positionIsInChapter(p):
-                    # if trace: g.trace('select:',theChapter.name)
+                    if trace: g.trace('select:',theChapter.name)
                     cc.selectChapterByName(name)
                     return
         else:
-            # if trace: g.trace('select main')
+            if trace: g.trace('select main')
             cc.selectChapterByName('main')
     #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
     def findChapterNameForPosition (self,p):
@@ -925,8 +926,12 @@ class chapter:
         self.cc.error(s)
     #@+node:ekr.20110607182447.16464: *3* chapter.root
     def root (self):
-
-        return self.cc.findChapterNode(self.name)
+        
+        # 2012/03/08.
+        if self.name == 'main':
+            return self.c.rootPosition()
+        else:
+            return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
     def select (self,w=None,selectEditor=True):
 

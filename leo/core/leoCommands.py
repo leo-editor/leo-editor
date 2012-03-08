@@ -7759,6 +7759,7 @@ class Commands (object):
                         children[i] and children[i].h,v.h)) # ,g.callers(12))
 
         # This code must be fast.
+        root1 = root
         if not root:
             root = c.rootPosition()
 
@@ -7774,6 +7775,9 @@ class Commands (object):
                 report(i,children,old_v)
                 if i < 0 or i >= len(children) or children[i] != old_v:
                     return False
+            elif root1:
+                # Major bug fix: 2012/03/08: Do *not* expand the search!
+                return False
             else:
                 # A top-level position, check from hidden root vnode.
                 i = p._childIndex
@@ -8171,13 +8175,14 @@ class Commands (object):
     def selectPosition(self,p):
 
         """Select a new position."""
+        
+        trace = False and not g.unitTesting
 
         c = self ; cc = c.chapterController
 
         if cc:
+            if trace: g.trace('cc.selectChapterForPosition(%s)' % p.h)
             cc.selectChapterForPosition(p)
-
-        # g.trace(p.h,g.callers())
 
         c.frame.tree.select(p)
 
