@@ -1600,7 +1600,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.12"></v>
+<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9505,19 +9505,18 @@ do-nothing      = F10
 do-nothing      = F11
 do-nothing      = F12
 
-do-nothing = Ctrl-F1
-do-nothing = Ctrl-F2
-do-nothing = Ctrl-F3
-# close-window = Ctrl-F4  # Set elsewhere.
-# do-nothing = Ctrl-F4 # Testing only.
-do-nothing = Ctrl-F5
-do-nothing = Ctrl-F6
-do-nothing = Ctrl-F7
-do-nothing = Ctrl-F8
-do-nothing = Ctrl-F9
-do-nothing = Ctrl-F10
-do-nothing = Ctrl-F11
-do-nothing = Ctrl-F12
+do-nothing              = Ctrl-F1
+do-nothing              = Ctrl-F2
+double-click-icon-box   = Ctrl-F3
+# close-window          = Ctrl-F4 # Set in File Commands.
+do-nothing              = Ctrl-F5
+do-nothing              = Ctrl-F6
+do-nothing              = Ctrl-F7
+do-nothing              = Ctrl-F8
+do-nothing              = Ctrl-F9
+do-nothing              = Ctrl-F10
+do-nothing              = Ctrl-F11
+do-nothing              = Ctrl-F12
 
 do-nothing = Shift-F1
 do-nothing = Shift-F2
