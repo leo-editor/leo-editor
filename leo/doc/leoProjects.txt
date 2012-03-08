@@ -3732,8 +3732,6 @@ def os_startfile(fname):
 
 https://bugs.launchpad.net/leo-editor/+bug/875323
 Hoist an @chapter node leaves a non-visible node selected
-
-- Selecting the main chapter now ends all hoists.
 #@+node:ekr.20031218072017.2991: *5* c.redrawAndEdit
 # Sets the focus to p and edits p.
 
@@ -4060,6 +4058,206 @@ def selectChapterByNameHelper (self,chapter,collapse=True):
 
     # New in Leo 4.6 b2: *do* call c.redraw.
     c.redraw()
+#@+node:ekr.20120308061112.9868: *4* Fixed bug 831658: @url doesn't leave Chapter
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/831658
+@url doesn't leave Chapter
+
+If in Chapter mode I double-click @url UNL node that is in a
+different @Chapter, the body text is correct but the outline
+tree does not move outside of the current @Chapter. Works
+fine if I'm not in Chapter mode.
+#@+node:ekr.20070317130250: *5* cc.selectChapterByName & helper
+def selectChapterByName (self,name,collapse=True):
+
+    '''Select a chapter.  Return True if a redraw is needed.'''
+
+    cc = self ; c = cc.c
+
+    chapter = cc.chaptersDict.get(name)
+
+    if chapter:
+        cc.selectChapterByNameHelper(chapter,collapse=collapse)
+    else:
+        if 1: # Best for production: do nothing if the user mis-types.
+            cc.note('no such chapter: %s' % name)
+            chapter = cc.chaptersDict.get('main')
+            if chapter:
+                self.selectChapterByNameHelper(chapter,collapse=collapse)
+            else:
+                g.trace(g.callers())
+                cc.error('no main chapter!')
+        else: # Best for testing.
+            g.trace('*** creating',name)
+            cc.createChapterByName(name,p=c.p,undoType='Create Chapter')
+#@+node:ekr.20090306060344.2: *6* selectChapterByNameHelper
+def selectChapterByNameHelper (self,chapter,collapse=True):
+
+    trace = False and not g.unitTesting
+    cc = self ; c = cc.c
+    
+    if trace:
+        g.trace('old: %s, new: %s' % (
+            cc.selectedChapter and cc.selectedChapter.name,
+            chapter and chapter.name))
+        
+    if chapter == cc.selectedChapter:
+        return
+
+    if cc.selectedChapter:
+        cc.selectedChapter.unselect()
+        
+    p = chapter.p
+    if p and not c.positionExists(p):
+        if not g.unitTesting:
+            g.trace('*** switching to root')
+        p = c.rootPosition()
+
+    chapter.select()
+
+    c.setCurrentPosition(chapter.p)
+    cc.selectedChapter = chapter
+
+    # Clean up, but not initially.
+    if collapse and chapter.name == 'main':
+        for p in c.all_unique_positions():
+            # Compare vnodes, not positions.
+            if p.v != c.p.v:
+                p.contract()
+
+    # New in Leo 4.6 b2: *do* call c.redraw.
+    c.redraw()
+#@+node:ekr.20031218072017.2997: *5* c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+    
+    trace = False and not g.unitTesting
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+        if trace:
+            g.trace(cc.selectedChapter,p.h)
+        
+    # 2012/03/08: De-hoist as necessary to make p visible.
+    if c.hoistStack:
+        while c.hoistStack:
+            bunch = c.hoistStack[len(c.hoistStack)-1]
+            if c.positionExists(p,bunch.p):
+                break
+            else:
+                bunch = c.hoistStack.pop()
+                if trace: g.trace('unhoist',bunch.p.h)
+
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@+node:ekr.20070615075643: *5* cc.selectChapterForPosition
+def selectChapterForPosition (self,p):
+
+    '''
+    Select a chapter containing position p.
+    Do nothing if p if p does not exist or is in the presently selected chapter.
+    '''
+
+    trace = False and not g.unitTesting
+    cc = self ; c = cc.c
+
+    if not p:
+        if trace: g.trace('no p')
+        return
+        
+    if not c.positionExists(p):
+        if trace: g.trace('does not exist',p.h) 
+        return
+
+    theChapter = cc.getSelectedChapter()
+    if not theChapter:
+        return
+
+    if trace: g.trace('selected:',theChapter.name,'node',p.h)
+
+    # First, try the presently selected chapter.
+    firstName = theChapter.name
+    if firstName == 'main':
+        if trace: g.trace('no search: main chapter:',p.h)
+        return
+    if theChapter.positionIsInChapter(p):
+        if trace: g.trace('position found in chapter:',theChapter.name,p.h)
+        return
+
+    for name in cc.chaptersDict:
+        if name not in (firstName,'main'):
+            theChapter = cc.chaptersDict.get(name)
+            if theChapter.positionIsInChapter(p):
+                if trace: g.trace('select:',theChapter.name)
+                cc.selectChapterByName(name)
+                return
+    else:
+        if trace: g.trace('select main')
+        cc.selectChapterByName('main')
+#@+node:ekr.20040307104131.3: *5* c.positionExists
+def positionExists(self,p,root=None):
+
+    """Return True if a position exists in c's tree"""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self ; p = p.copy()
+    
+    def report(i,children,v,tag=''):
+        if trace and verbose:
+            if i < 0 or i >= len(children):
+                g.trace('bad i: %s, children: %s' % (
+                    i,len(children))) # ,g.callers(12))
+            elif children[i] != v:
+                g.trace('v mismatch: children[i]: %s, v: %s' % (
+                    children[i] and children[i].h,v.h)) # ,g.callers(12))
+
+    # This code must be fast.
+    root1 = root
+    if not root:
+        root = c.rootPosition()
+
+    while p:
+        if p == root:
+            return True
+        if p.hasParent():
+            old_v = p.v
+            i = p._childIndex
+            p.moveToParent()
+            children = p.v.children
+            # Major bug fix: 2009/1/2 and 2009/1/5
+            report(i,children,old_v)
+            if i < 0 or i >= len(children) or children[i] != old_v:
+                return False
+        elif root1:
+            # Major bug fix: 2012/03/08: Do *not* expand the search!
+            return False
+        else:
+            # A top-level position, check from hidden root vnode.
+            i = p._childIndex
+            children = c.hiddenRootNode.children
+            report(i,children,p.v)
+            return 0 <= i < len(children) and children[i] == p.v
+
+    if trace: g.trace('no v found')
+    return False
+#@+node:ekr.20120308112021.9881: *4* Fixed bug 875327: Positioning outside of hoisted outline" usually causes problems
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/875327
+Positioning outside of hoisted outline" usually causes problems
+
+The fix was to c.selectPosition.  This has a chance of being a general solution.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -5968,6 +5968,48 @@ Positioning outside of hoisted outline" usually causes problems
 
 https://bugs.launchpad.net/leo-editor/+bug/875463
 Enabling quickmove.py sends to error messages to console on every outline open 
+.. @+node:ekr.20120308120323.9864: *5* Fix (wishlist?) bug 903640: Import of Python files containing the strings "<<" and ">>" does not work
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/903640
+Import of Python files containing the strings "<<" and ">>" does not work
+
+When I tried to import a Python file using @auto, the importer didn't
+like the following statement:
+
+    self.cprint("<<" + ret + ">>\n")
+
+The respective error message reads:
+
+undefined section: <<" + ret + ">>
+referenced from: @file [...]
+
+=====
+
+If you can't change the external file, you won't be able to use @auto,
+at least until Leo's @auto import mechanism supports other delimiters
+for section references.
+
+As discussed in a recent thread, there is no way to allow escape
+conventions for section references: the approach used by noweb will
+not work in Leo.
+
+I'll leave this bug open as an important wish-list item reminding me
+that it would be good to allow *different* delimiters for section
+references on an external-file-by-external-file basis.
+
+=====
+
+Import (and @auto) are a separate matter from the main read code used
+for @file. The @file read code knows *nothing* about syntax, except
+for comment delimiters. That makes the @file read code simple and
+robust.
+
+It *would* be possible to have a Leo directive change (or disable)
+delimiters for section references. The code would be straightforward,
+similar to the code for the @delims directive. This is what I intend
+to do.
+
 .. @+node:ekr.20111026091322.16503: *4* Other Bugs
 .. @+node:ekr.20111123095018.13632: *5* Fix bug: expand Find tab as needed for bigger fonts
 .. @+node:ekr.20110605121601.18326: *6* createTab (leoQtLog)
