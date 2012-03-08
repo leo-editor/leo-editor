@@ -154,6 +154,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if p is None:
             p = c.currentPosition()
+        elif c.hoistStack and len(c.hoistStack) == 1 and p.h.startswith('@chapter') and p.hasChildren():
+            # Make sure the current position is visible.
+            # Partial fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
+            c.setCurrentPosition(p.firstChild())
         else:
             c.setCurrentPosition(p)
 

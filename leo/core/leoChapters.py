@@ -501,12 +501,21 @@ class chapterController:
 
         trace = False and not g.unitTesting
         cc = self ; c = cc.c
+        
+        # Explicitly selecting any chapter ends all hoists.
+        redraw_flag = bool(c.hoistStack)
+        if c.hoistStack:
+            c.clearAllHoists()
 
-        if chapter == cc.selectedChapter:
-            return
+        if trace:
+            g.trace('old: %s, new: %s' % (
+                cc.selectedChapter and cc.selectedChapter.name,
+                chapter and chapter.name))
             
-        if trace: g.trace('old: %s, new: %s' % (
-            cc.selectedChapter,chapter),g.callers())
+        if chapter == cc.selectedChapter:
+            if redraw_flag:
+                c.redraw()
+            return
 
         if cc.selectedChapter:
             cc.selectedChapter.unselect()

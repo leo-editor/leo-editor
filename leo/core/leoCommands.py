@@ -4059,12 +4059,15 @@ class Commands (object):
         c = self
 
         return c.pasteOutline(reassignIndices=False)
-    #@+node:ekr.20031218072017.2028: *6* Hoist & dehoist
+    #@+node:ekr.20031218072017.2028: *6* c.Hoist
+    #@+node:ekr.20120308061112.9865: *7* c.deHoist
     def dehoist (self,event=None):
 
         '''Undo a previous hoist of an outline.'''
 
-        c = self ; p = c.p
+        c = self
+        p = c.p
+
         if p and c.canDehoist():
             bunch = c.hoistStack.pop()
             if bunch.expanded: p.expand()
@@ -4080,11 +4083,25 @@ class Commands (object):
             c.undoer.afterDehoist(p,'DeHoist')
             g.doHook('hoist-changed',c=c)
 
+    #@+node:ekr.20120308061112.9866: *7* c.clearAllHoists
+    def clearAllHoists(self):
+        
+        '''Undo a previous hoist of an outline.'''
+
+        c = self
+
+        c.hoistStack = []
+        c.frame.putStatusLine("Hoists cleared")
+        
+        g.doHook('hoist-changed',c=c)
+    #@+node:ekr.20120308061112.9867: *7* c.hoist
     def hoist (self,event=None):
 
         '''Make only the selected outline visible.'''
 
-        c = self ; p = c.p
+        c = self
+        p = c.p
+        
         if p and c.canHoist():
             # Remember the expansion state.
             bunch = g.Bunch(p=p.copy(),expanded=p.isExpanded())
