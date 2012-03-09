@@ -18,7 +18,10 @@ Top 10:
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 @language rest
 
-.. @+node:ekr.20120304065838.14230: *4* Fix all bugs targeted to b1
+.. @+node:ekr.20120309061336.9871: *4* Make sure all use g.handleUrlInUrlNode
+@nocolor-node
+
+ctrl-left-clock, bookmark & contextmenu
 .. @+node:ekr.20120308061112.9864: *4* Ask Qt people about Unity menu problems
 .. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
