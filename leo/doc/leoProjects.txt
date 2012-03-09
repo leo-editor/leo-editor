@@ -1401,6 +1401,7 @@ plugins_menu.py
 free_layout.py # needs to be early
 viewrendered.py
 mod_scripting.py
+bigdash.py
 #@+node:ekr.20111031081007.9985: *5* @shortcuts
 run-selected-unit-tests-externally = Alt-4 # Standard binding, unchanged.
 run-marked-unit-tests-externally = Alt-5

@@ -22,6 +22,12 @@ Top 10:
 @nocolor-node
 
 ctrl-left-clock, bookmark & contextmenu
+.. @+node:ekr.20120308051922.11950: *5* URL's
+.. @+node:ekr.20120307101527.9887: *6* @url file://C:/prog/test.sh
+.. @+node:ekr.20120307101527.9893: *6* @url file://C:/prog
+.. @+node:ekr.20120307101527.9898: *6* @url http://writemonkey.com/index.php
+.. @+node:ekr.20120307101527.14201: *6* @url file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes
+.. @+node:ekr.20120307130611.11249: *6* @url #-->Before 4.10 b1
 .. @+node:ekr.20120308061112.9864: *4* Ask Qt people about Unity menu problems
 .. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
