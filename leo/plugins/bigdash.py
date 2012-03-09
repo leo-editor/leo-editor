@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20120302233106.3578: * @file bigdash.py
+#@+node:ekr.20120309073748.9872: * @file bigdash.py
 #@@language python
 
 #@+<< docstring >>
@@ -116,7 +116,8 @@ class GlobalSearch:
             self._fts = leofts.LeoFts( g.app.homeLeoDir + "/fts_index")
         return self._fts
     def do_fts(self, tgt, qs):
-        ss = unicode(qs)
+        ## ss = unicode(qs)
+        ss = g.toUnicode(qs)
         
         q = None
         if ss.startswith("f "):
