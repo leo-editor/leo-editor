@@ -311,7 +311,7 @@ def findReference(c,name,root):
 
 g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
 
-def get_directives_dict(p,root=None):
+def get_directives_dict(p,root=None,scanToCursor=False):
 
     """Scan p for @directives found in globalDirectiveList.
 
@@ -335,7 +335,11 @@ def get_directives_dict(p,root=None):
         for m in anIter:
             word = m.group(0)[1:] # Omit the @
             i = m.start(0)
-            if word.strip() not in d:
+            if (
+                # 2012/03/9: Special case @language directive in the body.
+                (kind == 'body' and scanToCursor and word.strip() == 'language')
+                or word.strip() not in d
+            ):
                 j = i + 1 + len(word)
                 k = g.skip_line(s,j)
                 val = s[j:k].strip()
@@ -345,9 +349,25 @@ def get_directives_dict(p,root=None):
                     pass # Not a valid directive: just ignore it.
                 else:
                     directive_word = word.strip()
-                    if directive_word in ('root-doc', 'root-code'):
-                        d['root'] = val # in addition to optioned version
-                    d[directive_word] = val
+                    if directive_word == 'language':
+                        if kind == 'body' and scanToCursor:
+                            # 2012/03/09:Only add preceding @language directives.
+                            c = p.v.context
+                            w = c.frame.body.bodyCtrl
+                            ins = w.getInsertPoint()
+                            i1,i2 = g.getLine(s,i)
+                            if trace: g.trace(kind,directive_word,val)
+                            if ins >= i2:
+                                d[directive_word] = val
+                        else:
+                            d[directive_word] = val
+                    else:
+                        if directive_word in ('root-doc', 'root-code'):
+                            d['root'] = val # in addition to optioned version
+                        d[directive_word] = val
+                        
+                    # g.trace(kind,directive_word,val)
+
                     if trace: g.trace(word.strip(),kind,repr(val))
                     # A special case for @path in the body text of @<file> nodes.
                     # Don't give an actual warning: just set some flags.
@@ -386,7 +406,7 @@ def compute_directives_re ():
 
     return '|'.join(aList)
 #@+node:ekr.20080827175609.1: *4* g.get_directives_dict_list (must be fast)
-def get_directives_dict_list(p):
+def get_directives_dict_list(p,scanToCursor=False):
 
     """Scans p and all its ancestors for directives.
 
@@ -399,10 +419,13 @@ def get_directives_dict_list(p):
 
     result = []
     p1 = p.copy()
+
     for p in p1.self_and_parents():
         if p.hasParent(): root = None
         else:             root = [p.copy()]
-        result.append(g.get_directives_dict(p,root=root))
+        result.append(g.get_directives_dict(p,
+            root=root,
+            scanToCursor=scanToCursor and p == p1))
 
     # if trace:
         # n = len(p1.h) + len(p1.b)

@@ -654,7 +654,7 @@ class Commands (object):
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
-    def scanAllDirectives(self,p=None):
+    def scanAllDirectives(self,p=None,scanToCursor=False):
 
         '''Scan p and ancestors for directives.
 
@@ -670,7 +670,7 @@ class Commands (object):
             'delims':g.set_delims_from_language(language),
         }
         wrap = c.config.getBool("body_pane_wraps")
-
+        
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
@@ -682,7 +682,7 @@ class Commands (object):
         )
         
         # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
+        aList = g.get_directives_dict_list(p,scanToCursor=scanToCursor)
         d = {}
         for key,default,func in table:
             val = func(aList)
@@ -3440,7 +3440,7 @@ class Commands (object):
         #@-<< addComments docstring >>
 
         c = self ; p = c.p
-        d = c.scanAllDirectives(p)
+        d = c.scanAllDirectives(p,scanToCursor=True)
         d1,d2,d3 = d.get('delims') # d1 is the line delim.
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines:
@@ -3487,7 +3487,7 @@ class Commands (object):
         #@-<< deleteComments docstring >>
 
         c = self ; p = c.p
-        d = c.scanAllDirectives(p)
+        d = c.scanAllDirectives(p,scanToCursor=True)
         # d1 is the line delim.
         d1,d2,d3 = d.get('delims')
 

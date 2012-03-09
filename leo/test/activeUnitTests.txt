@@ -4456,6 +4456,48 @@ def spam():
     pass
 
 # after
+#@+node:ekr.20120309155126.3949: *4* @test add/delete comments with multiple @language directives
+# Can't be run externally.
+w = c.frame.body.bodyCtrl
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'no test node'
+s = p.b
+indent = c.config.getBool('indent_added_comments',default=True)
+
+try:
+    i = p.b.find('pass')
+    assert i > -1,'fail1: %s' % (repr(p.b))
+    c.selectPosition(p)
+    w.setSelectionRange(i,i+4)
+    c.addComments()
+    if indent:
+        i = p.b.find('# pass')
+    else:
+        i = p.b.find('#     pass')
+    assert i > -1,'fail2: %s' % (repr(p.b))
+    c.deleteComments()
+    assert p.b == s,'fail3: %s' % (repr(p.b))
+    # Add a comment delim without a blank.
+    c.addComments()
+    p.b = p.b.replace('# pass','#pass')
+    i = p.b.find('#')
+    w.setSelectionRange(i,i+4)
+    c.deleteComments()
+    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
+finally:
+    # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
+    p.b = s
+#@+node:ekr.20120309155126.3950: *5* rest and python
+@language rest
+
+This is rest text.
+
+@language python
+
+def spam():
+    pass
+
+# after
 #@+node:ekr.20110510054817.3475: *4* @test c.alert
 c.alert('test of c.alert')
 #@+node:ekr.20050512084850: *4* @test c.checkOutline
