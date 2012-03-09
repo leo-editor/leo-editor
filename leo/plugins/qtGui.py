@@ -9117,7 +9117,7 @@ class leoQtColorizer:
         # Step 3: finish enabling.
         if self.enabled:
             self.enabled = hasattr(self.highlighter,'currentBlock')
-    #@+node:ekr.20110605121601.18553: *4* colorize (leoQtColorizer)
+    #@+node:ekr.20110605121601.18553: *4* colorize (leoQtColorizer) & helper
     def colorize(self,p,incremental=False,interruptable=True):
 
         '''The main colorizer entry point.'''
@@ -9137,17 +9137,49 @@ class leoQtColorizer:
             if trace and verbose:
                 g.trace('old: %s, new: %s, %s' % (
                     self.oldLanguageList,self.languageList,repr(p.h)))
-            if (oldFlag != self.flag or
+                    
+            # fullRecolor is True if we can not do an incremental recolor.
+            fullRecolor = (
+                oldFlag != self.flag or
                 self.oldV != p.v or
                 self.oldLanguageList != self.languageList or
                 not incremental
-            ):
-                if trace: g.trace('** calling rehighlight **')
+            )
+                    
+            # 2012/03/09: Determine the present language from the insertion
+            # point if there are more than one @language directives in effect
+            # and we are about to do an incremental recolor.
+            if len(self.languageList) > 0 and not fullRecolor:
+                language = self.scanColorByPosition(p) # May reset self.language
+                if language != self.colorer.language_name:
+                    if trace: g.trace('** must rescan',self.c.frame.title,language)
+                    fullRecolor = True
+                    self.language = language
+               
+            if fullRecolor:
+                if trace: g.trace('** calling rehighlight')
                 self.oldLanguageList = self.languageList[:]
                 self.oldV = p.v
                 self.highlighter.rehighlight(p)
 
         return "ok" # For unit testing.
+    #@+node:ekr.20120309075544.9888: *5* scanColorByPosition (leoQtColorizer)
+    def scanColorByPosition(self,p):
+
+        c = self.c
+        w = c.frame.body.bodyCtrl
+        i = w.getInsertPoint()
+        s = w.getAllText()
+        
+        i1,i2 = g.getLine(s,i)
+        tag = '@language'
+        language = self.language
+        for s in g.splitLines(s[:i1]):
+            if s.startswith(tag):
+                language = s[len(tag):].strip()
+
+        return language
+                
     #@+node:ekr.20110605121601.18554: *4* enable/disable
     def disable (self,p):
 
@@ -9225,7 +9257,7 @@ class leoQtColorizer:
             
         # 2011/05/28: If no language, get the language from any @<file> node.
         if self.language:
-            if trace: g.trace('found @language %s' % (self.language))
+            if trace: g.trace('found @language %s %s' % (self.language,self.languageList))
             return self.language
             
         #  Attempt to get the language from the nearest enclosing @<file> node.
@@ -10263,7 +10295,7 @@ class jEditColorizer:
             k = g.skip_c_id(s,j)
             name = s[j:k]
             ok = self.init_mode(name)
-            if trace: g.trace(ok,name)
+            if trace: g.trace(ok,name,self.language_name)
             if ok:
                 self.colorRangeWithTag(s,i,k,'leokeyword')
             self.clearState()
@@ -11231,6 +11263,7 @@ class jEditColorizer:
         verbose = False
         
         if trace:
+            g.trace(self.language_name)
             if traceState:
                 g.trace('%-30s' % ('** start: %s' % self.showState(n)),repr(s))
             else:

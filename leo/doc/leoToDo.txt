@@ -18,18 +18,6 @@ Top 10:
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 @language rest
 
-.. @+node:ekr.20120309075544.9884: *4* Bug: multiple @language directive not colored correctly.
-@language rest
-
-Example: typing in this rest section recolors as *Python*.
-The correct coloring is restored when the entire text is recolored.
-
-https://bugs.launchpad.net/leo-editor/+bug/944555
-Ctrl-left-click URL handling not as sophisticated as @url URL handling
-
-**Also**: Make sure bookmarks and contextmenu plguins use Make sure all use g.handleUrl.
-
-@language python
 .. @+node:ekr.20120308061112.9864: *4* Ask Qt people about Unity menu problems
 .. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
