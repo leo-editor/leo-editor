@@ -168,6 +168,9 @@
 expanded="ekr.20060328125248.6,ekr.20061014075212,"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
+<v t="ekr.20120309073937.9878"><vh>Searching</vh>
+<v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
+</v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
 <v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
@@ -532,6 +535,7 @@ else:
 </t>
 <t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.</t>
 <t tx="ekr.20101110150056.9457"></t>
+<t tx="ekr.20120309073937.9878"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
