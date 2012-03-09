@@ -7471,6 +7471,311 @@ def restart (self,n,s,traceMatch):
         i = 0
 
     return i
+#@+node:ekr.20120309075544.9887: *4* Fixed Bug: multiple @language directives mess up add-comments command
+@nocolor-node
+
+- Added scanToCursor argument to c.scanAllDirectives in c.insert/removedComments.
+
+- Added scanToCursor argument to get_directives_dict_list in c.scanAllDirectives.
+
+- get_directives_dict_list sets scanToCursor only for the initial (root) node.
+
+- g.get_directives_dict scans to cursor for @language directives is scanToCursor is True.
+#@+node:ekr.20050312114529: *5* c.insert/removeComments
+#@+node:ekr.20050312114529.1: *6* addComments
+def addComments (self,event=None):
+    
+    << addComments docstring >>
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p,scanToCursor=True)
+    d1,d2,d3 = d.get('delims') # d1 is the line delim.
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    d2 = d2 or '' ; d3 = d3 or ''
+    if d1: openDelim,closeDelim = d1+' ',''
+    else:  openDelim,closeDelim = d2+' ',' '+d3
+
+    # Comment out non-blank lines.
+    indent = c.config.getBool('indent_added_comments',default=True)
+    result = []
+    for line in lines:
+        if line.strip():
+            i = g.skip_ws(line,0)
+            if indent:
+                result.append(line[0:i]+openDelim+line[i:].replace('\n','')+closeDelim+'\n')
+            else:
+                result.append(openDelim+line.replace('\n','')+closeDelim+'\n')
+        else:
+            result.append(line)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9789: *7* << addComments docstring >>
+@pagewidth 50
+
+'''
+Converts all selected lines to comment lines using
+the comment delimiters given by the applicable
+ @language directive.
+
+Inserts single-line comments if possible; inserts
+block comments for languages like html that lack
+single-line comments.
+
+ @bool indent_added_comments
+
+If True (the default), inserts opening comment
+delimiters just before the first non-whitespace
+character of each line. Otherwise, inserts opening
+comment delimiters at the start of each line.
+
+*See also*: delete-comments.
+'''
+#@+node:ekr.20050312114529.2: *6* deleteComments
+def deleteComments (self,event=None):
+    
+    << deleteComments docstring >>
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p,scanToCursor=True)
+    # d1 is the line delim.
+    d1,d2,d3 = d.get('delims')
+
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    result = []
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        d1b = d1 + ' '
+        n1,n1b = len(d1),len(d1b)
+        for s in lines:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,d1b):
+                result.append(s[:i] + s[i+n1b:])
+            elif g.match(s,i,d1):
+                result.append(s[:i] + s[i+n1:])
+            else:
+                result.append(s)
+    else:
+        # Remove the block comment delimiters from each line.
+        n2,n3 = len(d2),len(d3)
+        for s in lines:
+            i = g.skip_ws(s,0)
+            j = s.find(d3,i+n2)
+            if g.match(s,i,d2) and j > -1:
+                first = i + n2
+                if g.match(s,first,' '): first += 1
+                last = j
+                if g.match(s,last-1,' '): last -= 1
+                result.append(s[:i] + s[first:last] + s[j+n3:])
+            else:
+                result.append(s)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
+#@+node:ekr.20111115111842.9790: *7* << deleteComments docstring >>
+@pagewidth 50
+
+'''
+Removes one level of comment delimiters from all
+selected lines.  The applicable @language directive
+determines the comment delimiters to be removed.
+
+Removes single-line comments if possible; removes
+block comments for languages like html that lack
+single-line comments.
+
+*See also*: add-comments.
+'''
+#@+node:ekr.20080827175609.39: *5* c.scanAllDirectives
+def scanAllDirectives(self,p=None,scanToCursor=False):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    trace = False and not g.unitTesting
+    c = self ; p = p or c.p
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+    
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+    
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p,scanToCursor=scanToCursor)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+
+    d = {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path'), # Redundant: or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
+        "pluginsList"   : [], # No longer used.
+        "wrap"          : d.get('wrap'),
+    }
+
+    if trace: g.trace(lang_dict.get('language'),g.callers())
+    
+    # g.trace(d.get('tabwidth'))
+
+    return d
+#@+node:ekr.20080827175609.1: *5* g.get_directives_dict_list (must be fast)
+def get_directives_dict_list(p,scanToCursor=False):
+
+    """Scans p and all its ancestors for directives.
+
+    Returns a list of dicts containing pointers to
+    the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    # if trace: time1 = g.getTime()
+
+    result = []
+    p1 = p.copy()
+
+    for p in p1.self_and_parents():
+        if p.hasParent(): root = None
+        else:             root = [p.copy()]
+        result.append(g.get_directives_dict(p,
+            root=root,
+            scanToCursor=scanToCursor and p == p1))
+
+    # if trace:
+        # n = len(p1.h) + len(p1.b)
+        # g.trace('%4d %s' % (n,g.timeSince(time1)))
+
+    return result
+#@+node:ekr.20090214075058.9: *5* g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None,scanToCursor=False):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing the stripped remainder of the line
+    following the first occurrence of each recognized directive"""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    if trace: g.trace('*'*20,p.h)
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('head',p.h),('body',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if (
+                # 2012/03/9: Special case @language directive in the body.
+                (kind == 'body' and scanToCursor and word.strip() == 'language')
+                or word.strip() not in d
+            ):
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if j < len(s) and s[j] not in (' ','\t','\n'):
+                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1],color='red')
+                    # if trace:g.trace(word,repr(val),s[i:i+20])
+                    pass # Not a valid directive: just ignore it.
+                else:
+                    directive_word = word.strip()
+                    if directive_word == 'language':
+                        if kind == 'body' and scanToCursor:
+                            # 2012/03/09:Only add preceding @language directives.
+                            c = p.v.context
+                            w = c.frame.body.bodyCtrl
+                            ins = w.getInsertPoint()
+                            i1,i2 = g.getLine(s,i)
+                            if trace: g.trace(kind,directive_word,val)
+                            if ins >= i2:
+                                d[directive_word] = val
+                        else:
+                            d[directive_word] = val
+                    else:
+                        if directive_word in ('root-doc', 'root-code'):
+                            d['root'] = val # in addition to optioned version
+                        d[directive_word] = val
+                        
+                    # g.trace(kind,directive_word,val)
+
+                    if trace: g.trace(word.strip(),kind,repr(val))
+                    # A special case for @path in the body text of @<file> nodes.
+                    # Don't give an actual warning: just set some flags.
+                    if kind == 'body' and word.strip() == 'path' and p.isAnyAtFileNode():
+                        g.app.atPathInBodyWarning = p.h
+                        d['@path_in_body'] = p.h
+                        if trace: g.trace('@path in body',p.h)
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= may only occur in a topmost node (i.e., without a parent)' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace and verbose: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10: *6* compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    if 0: # 2010/02/01
+        # The code never uses this, and this regex is broken
+        # because it can confuse g.get_directives_dict.
+        # @others can have leading whitespace.
+        aList.append(r'^\s@others\s')
+
+    return '|'.join(aList)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
