@@ -6083,7 +6083,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             val = False
         elif ext.startswith('~'):
             val = False
-        elif ext in ('.css','.html','.leo','.txt'):
+        elif ext in ('.css','.htm','.html','.leo','.txt'):
             val = False
         # elif ext in ('.bmp','gif','ico',):
             # val = True

@@ -1708,7 +1708,7 @@ def handleUrlInUrlNode(url,c=None,p=None):
 #@+at Most browsers should handle the following urls:
 #   ftp://ftp.uu.net/public/whatever.
 #   http://localhost/MySiteUnderDevelopment/index.html
-#   file://home/me/todolist.html
+#   file:///home/me/todolist.html
 #@@c
 
 def handleUrl(c,p,url):
@@ -1716,35 +1716,46 @@ def handleUrl(c,p,url):
     trace = False and not g.unitTesting
 
     try:
+        # Expand '~' *before* parsing the url.
+        if url.startswith('file://'):
+            i = url.find('~')
+            if i > -1:
+                url = url[:i] + g.os_path_expanduser(url[i:])
+    
         parsed = urlparse(url)
+        fragment = parsed.fragment
+        netloc   = parsed.netloc
+        path     = parsed.path
+        scheme   = parsed.scheme
 
-        if parsed.netloc:
-            leo_path = os.path.join(parsed.netloc, parsed.path)
+        if netloc:
+            leo_path = os.path.join(netloc, path)
             # "readme.txt" gets parsed into .netloc...
         else:
-            leo_path = parsed.path
+            leo_path = path
             
         if leo_path.endswith('\\'): leo_path = leo_path[:-1]
         if leo_path.endswith('/'):  leo_path = leo_path[:-1]
             
         if trace:
             print()
+            g.trace('url          ',url)
             g.trace('c.frame.title',c.frame.title)
             g.trace('leo_path     ',leo_path)
-            g.trace('parsed.netloc',parsed.netloc)
-            g.trace('parsed.path  ',parsed.path)
-            g.trace('parsed.scheme',parsed.scheme)
+            g.trace('parsed.netloc',netloc)
+            g.trace('parsed.path  ',path)
+            g.trace('parsed.scheme',scheme)
 
-        if c and parsed.scheme in ('', 'file'):
+        if c and scheme in ('', 'file'):
             
             if not leo_path:
             
                 # local UNLs like "node-->subnode", "-->node", and "#node"
-                if '-->' in parsed.path:
-                    g.recursiveUNLSearch(parsed.path.split("-->"), c)
+                if '-->' in path:
+                    g.recursiveUNLSearch(path.split("-->"), c)
                     return
-                if not parsed.path and parsed.fragment:
-                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                if not path and fragment:
+                    g.recursiveUNLSearch(fragment.split("-->"), c)
                     return
     
             # leo aware path
@@ -1764,17 +1775,17 @@ def handleUrl(c,p,url):
                 else:
                     c2 = g.openWithFileName(leo_path,old_c=c)
                     # with UNL after path
-                    if c2 and parsed.fragment:
-                        g.recursiveUNLSearch(parsed.fragment.split("-->"),c2)
+                    if c2 and fragment:
+                        g.recursiveUNLSearch(fragment.split("-->"),c2)
                     if c2:
                         c2.bringToFront()
                         return
                     
-        if parsed.scheme in ('', 'file'):
+        if scheme in ('', 'file'):
             if os.path.exists(leo_path):
                 g.os_startfile(leo_path)
                 return
-            if parsed.scheme == 'file':
+            if scheme == 'file':
                 g.es("File '%s' does not exist"%leo_path)
                 return
             
