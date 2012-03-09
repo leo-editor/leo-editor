@@ -206,6 +206,7 @@ def scanOptions():
     add('-a', help = 'all')
     add('-c', help = 'core')
     add('-e', help = 'external')
+    add('-g', help = 'gui plugins')
     add('-p', help = 'plugins')
     add('-r', help = 'recent')
     add('-s', help = 'suppressions')
@@ -218,6 +219,7 @@ def scanOptions():
     if   options.a: return 'all'
     elif options.c: return 'core'
     elif options.e: return 'external'
+    elif options.g: return 'gui'
     elif options.p: return 'plugins'
     elif options.r: return 'recent'
     elif options.s: return 'suppressions'
@@ -236,6 +238,8 @@ tkPass = getTkPass()
 onlySupressionsList = (z for z in coreList if z[1])
 
 guiPluginsList = (
+    ('baseNativeTree',  ''),
+    # ('nested_splitter', ''),
     ('qtGui','E0611,E1101,R0923,W0221,W0233'),
         # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
         # E0611: No name 'xxx' in module 'urllib'
@@ -267,6 +271,10 @@ elif scope == 'external':
     tables_table = (
         (externalList,'external'),
     )
+elif scope == 'gui':
+    tables_table = (
+        (guiPluginsList,'plugins'),
+)
 elif scope == 'plugins':
     tables_table = (
         (pluginsList,'plugins'),

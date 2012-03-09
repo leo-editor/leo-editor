@@ -5953,11 +5953,12 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         if g.os_path_exists(fn):
             try:
-                f = open(fn,'r')
+                f = open(fn,'rb') # 2012/03/09: use 'rb'
             except IOError:
                 f = None
             if f:
                 s = f.read()
+                s = g.toUnicode(s)
                 f.close()
                 self.doFileUrlHelper(fn,p,s)
                 return True
@@ -6001,14 +6002,16 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c.init_error_dialogs()
         if self.isThinFile(fn,s):
             self.createAtFileTree(fn,p,s)
-        elif self.isAutoFile(fn,s):
-            self.createAtAutoTree(fn,p,s)
+        elif self.isAutoFile(fn):
+            self.createAtAutoTree(fn,p)
+        elif self.isBinaryFile(fn):
+            self.createUrlForBinaryFile(fn,p)
         else:
-            self.createAtEditNode(fn,p,s)
+            self.createAtEditNode(fn,p)
         self.warnIfNodeExists(p)
         c.raise_error_dialogs(kind='read')
     #@+node:ekr.20110605121601.18373: *10* createAtAutoTree
-    def createAtAutoTree (self,fn,p,s):
+    def createAtAutoTree (self,fn,p):
 
         '''Make p an @auto node and create the tree using
         s, the file's contents.
@@ -6024,7 +6027,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         p.clearDirty() # Don't automatically rewrite this node.
     #@+node:ekr.20110605121601.18374: *10* createAtEditNode
-    def createAtEditNode(self,fn,p,s):
+    def createAtEditNode(self,fn,p):
 
         c = self.c ; at = c.atFileCommands
 
@@ -6055,6 +6058,41 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             g.es_print('Error reading',fn,color='red')
             p.b = '' # Safe: will not cause a write later.
             p.clearDirty() # Don't automatically rewrite this node.
+    #@+node:ekr.20120309075544.9882: *10* createUrlForBinaryFile
+    def createUrlForBinaryFile(self,fn,p):
+        
+        p.h = '@url file://%s' % fn
+    #@+node:ekr.20110605121601.18377: *10* isAutoFile
+    def isAutoFile (self,fn):
+
+        '''Return true if the file whose name is fn
+        can be parsed with an @auto parser.
+        '''
+
+        c = self.c
+        d = c.importCommands.importDispatchDict
+        junk,ext = g.os_path_splitext(fn)
+        return d.get(ext)
+    #@+node:ekr.20120309075544.9881: *10* isBinaryFile
+    def isBinaryFile(self,fn):
+        
+        # The default for unknown files is True. Not great, but safe.
+        junk,ext = g.os_path_splitext(fn)
+        ext = ext.lower()
+        if not ext:
+            val = False
+        elif ext.startswith('~'):
+            val = False
+        elif ext in ('.css','.html','.leo','.txt'):
+            val = False
+        # elif ext in ('.bmp','gif','ico',):
+            # val = True
+        else:
+            keys = (z.lower() for z in g.app.extension_dict.keys())
+            val = ext not in keys
+        
+        # g.trace('binary',ext,val)
+        return val
     #@+node:ekr.20110605121601.18376: *10* isThinFile
     def isThinFile (self,fn,s):
 
@@ -6074,17 +6112,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             valid,new_df,start,end,isThin = at.parseLeoSentinel(line)
             # g.trace('valid',valid,'new_df',new_df,'isThin',isThin)
             return valid and new_df and isThin
-    #@+node:ekr.20110605121601.18377: *10* isAutoFile
-    def isAutoFile (self,fn,unused_s):
-
-        '''Return true if the file whose name is fn
-        can be parsed with an @auto parser.
-        '''
-
-        c = self.c
-        d = c.importCommands.importDispatchDict
-        junk,ext = g.os_path_splitext(fn)
-        return d.get(ext)
     #@+node:ekr.20110605121601.18378: *10* warnIfNodeExists
     def warnIfNodeExists (self,p):
 
