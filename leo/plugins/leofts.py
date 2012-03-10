@@ -33,17 +33,22 @@ class GnxCache:
     """ map gnx => vnode """
     def __init__(self):
         self.ps = {}
+        self.cs = set()
+    def update_new_cs(self):
+        for c in g.app.commanders():
+            if c.hash() not in self.cs:
+                for p in c.all_unique_positions():
+                    k = p.gnx
+                    self.ps[k] = c, p.v
+                self.cs.add(c.hash())
+        
     def get(self, gnx):
         if not self.ps:
-            print("Populating gnx cache")
-            for c,p in all_positions_global():
-                k = p.gnx
-                self.ps[k] = c,p.v
-        res = self.ps.get(gnx, None)
+            self.update_new_cs()
+        res = self.ps.get(gnx, None)                               
         return res
     def clear(self):
         self.ps = {}
-
 
 class LeoFts:    
     def __init__(self, idx_dir):
@@ -55,7 +60,7 @@ class LeoFts:
             self.ix = open_dir(idx_dir)
     
     def schema(self):
-        my_analyzer = RegexTokenizer("[a-zA-Z]+") | LowercaseFilter() | StopFilter()
+        my_analyzer = RegexTokenizer("[a-zA-Z_]+") | LowercaseFilter() | StopFilter()
         schema = Schema(h=TEXT(stored=True, analyzer=my_analyzer), gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer), parent=ID(stored=True))
         return schema
         
@@ -83,9 +88,10 @@ class LeoFts:
     def search(self, searchstring):        
                 
         res = []
+        g._gnxcache.update_new_cs()
         with self.ix.searcher() as searcher:
-            query = MultifieldParser(["h", "b"], schema=self.ix.schema).parse(searchstring)
-            results = searcher.search(query)
+            query = MultifieldParser(["h", "b"], schema=self.schema()).parse(searchstring)
+            results = searcher.search(query, limit=50)
             print (results)
             for r in results:
                 rr = r.fields()
@@ -95,7 +101,6 @@ class LeoFts:
                 if tup:
                     cont = tup[1].b
                     
-                    print("Have cont", cont)
                     hl = r.highlights("b", text = cont)
                     rr["highlight"] = hl
                 res.append(rr)

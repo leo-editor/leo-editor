@@ -144,7 +144,7 @@ class GlobalSearch:
         if q:
             res = fts.search(q)
             for r in res:
-                print("hit", r)
+                #print("hit", r)
                 hits.append("<p>")
                 add_anchor(hits, r["gnx"], r["h"])
                 hits.append("</p>")
@@ -242,7 +242,9 @@ class BigDash:
                     <table cellspacing="10">
                     <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
                     <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
-                    <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar' (see Whoosh syntax)</i></td></tr>
+                    <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
+                    <tr><td> <b>f</b> h:foo b:bar</td><td>   <i>Search for foo in heading and bar in body</i></td></tr>
+                    
                     
                     </table>
                     """)
