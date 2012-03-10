@@ -18,8 +18,30 @@ def init ():
     set_leo(g)
     ok = g.app.gui.guiName() == "qt"
     g._fts = None
+    g._gnxcache = GnxCache()
     
     return ok
+
+
+def all_positions_global():
+    for c in g.app.commanders():
+        for p in c.all_unique_positions():
+            yield (c,p)
+
+class GnxCache:
+    """ map gnx => vnode """
+    def __init__(self):
+        self.ps = {}
+    def get(self, gnx):
+        if not self.ps:
+            print("Populating gnx cache")
+            for c,p in all_positions_global():
+                k = p.gnx
+                self.ps[k] = c,p.v
+        res = self.ps.get(gnx, None)
+        return res
+    def clear(self):
+        self.ps = {}
 
 
 class LeoFts:    
@@ -51,16 +73,28 @@ class LeoFts:
             writer.add_document(h=p.h, b=p.b, gnx=unicode(p.gnx), parent=par)
             
         writer.commit()
+        g._gnxcache.clear()
 
     def search(self, searchstring):        
-        
+                
         res = []
         with self.ix.searcher() as searcher:
             query = MultifieldParser(["h", "b"], schema=self.ix.schema).parse(searchstring)
             results = searcher.search(query)
             print (results)
             for r in results:
-                res.append(r.fields())
+                rr = r.fields()
+                
+                gnx = rr["gnx"]
+                tup = g._gnxcache.get(gnx)
+                if tup:
+                    cont = tup[1].b
+                    
+                    print("Have cont", cont)
+                    hl = r.highlights("b", text = cont)
+                    rr["highlight"] = hl
+                res.append(rr)
+                
         return res
             
     def close(self):

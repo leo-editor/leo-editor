@@ -29,7 +29,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 
 try:
-    import leo.plugins.leofts as leofts
+    import leo.plugins.leofts as leofts    
 except ImportError:
     leofts = None
 #@-<< imports >>
@@ -57,6 +57,8 @@ def init ():
             else:
                 g._global_search = gs = GlobalSearch()
                 set_leo(g)
+                leofts.init()
+                        
                         
         g.plugin_signon(__name__)
 
@@ -76,6 +78,7 @@ def all_positions_global():
     for c in g.app.commanders():
         for p in c.all_unique_positions():
             yield (c,p)
+
 
 class LeoConnector(QObject):
     pass
@@ -105,8 +108,7 @@ class GlobalSearch:
         self.bd.add_cmd_handler(self.do_fts)
         
         self._fts = None
-        self.anchors = {}
-        
+        self.anchors = {}        
         
     def show(self):
         self.bd.w.show()
@@ -114,6 +116,7 @@ class GlobalSearch:
     def get_fts(self):
         if self._fts is None:
             self._fts = leofts.LeoFts( g.app.homeLeoDir + "/fts_index")
+             
         return self._fts
     def do_fts(self, tgt, qs):
         ## ss = unicode(qs)
@@ -145,6 +148,9 @@ class GlobalSearch:
                 hits.append("<p>")
                 add_anchor(hits, r["gnx"], r["h"])
                 hits.append("</p>")
+                hl = r.get("highlight")
+                if hl:
+                    hits.append("<pre>%s</pre>" % hl)
                 hits.append("""<p><small><i>%s</i></small></p>""" % r["parent"])                
             html = "".join(hits)
             tgt.web.setHtml(html)
