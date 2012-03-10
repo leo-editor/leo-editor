@@ -2,6 +2,7 @@ import whoosh
 from whoosh.index import create_in, open_dir
 from whoosh.fields import *
 from whoosh.qparser import MultifieldParser
+from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 import os
 
 g = None
@@ -53,10 +54,14 @@ class LeoFts:
         else:
             self.ix = open_dir(idx_dir)
     
+    def schema(self):
+        my_analyzer = RegexTokenizer("[a-zA-Z]+") | LowercaseFilter() | StopFilter()
+        schema = Schema(h=TEXT(stored=True, analyzer=my_analyzer), gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer), parent=ID(stored=True))
+        return schema
+        
     def create(self):
         
-        schema = Schema(h=TEXT(stored=True), gnx=ID(stored=True), b=TEXT, parent=ID(stored=True))
-        
+        schema = self.schema()
         self.ix = ix = create_in(self.idx_dir, schema)
         
         
