@@ -4059,7 +4059,7 @@ class Commands (object):
         c = self
 
         return c.pasteOutline(reassignIndices=False)
-    #@+node:ekr.20031218072017.2028: *6* c.Hoist
+    #@+node:ekr.20031218072017.2028: *6* c.hoist/dehoist/clearAllHoists
     #@+node:ekr.20120308061112.9865: *7* c.deHoist
     def dehoist (self,event=None):
 
@@ -7112,8 +7112,12 @@ class Commands (object):
         if not p: p = c.p or c.rootPosition()
 
         c.expandAllAncestors(p)
-        c.frame.tree.redraw(p)
-        c.selectPosition(p)
+
+        # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
+        p2 = c.frame.tree.redraw(p)
+        
+        # Be careful.  nullTree.redraw return None.
+        c.selectPosition(p2 or p)
 
         if setFocus: c.treeFocusHelper()
 
@@ -8177,7 +8181,6 @@ class Commands (object):
         """Select a new position."""
         
         trace = False and not g.unitTesting
-
         c = self ; cc = c.chapterController
 
         if cc:
@@ -8194,6 +8197,9 @@ class Commands (object):
                 else:
                     bunch = c.hoistStack.pop()
                     if trace: g.trace('unhoist',bunch.p.h)
+
+        if trace and not c.positionExists(p):
+            g.trace('** does not exist: %s' % (p and p.h))
 
         c.frame.tree.select(p)
 

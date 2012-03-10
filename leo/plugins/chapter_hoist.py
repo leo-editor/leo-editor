@@ -65,7 +65,6 @@ class chapterHoist:
         def saveHoistCallback(event=None,self=self,sc=sc,c=c):
             self.createChapterHoistButton(sc,c,c.p)
             c.hoist()
-            return 'break'
 
         b = sc.createIconButton(
             text='save-hoist',

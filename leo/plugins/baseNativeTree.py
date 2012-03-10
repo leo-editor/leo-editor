@@ -156,8 +156,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             p = c.currentPosition()
         elif c.hoistStack and len(c.hoistStack) == 1 and p.h.startswith('@chapter') and p.hasChildren():
             # Make sure the current position is visible.
-            # Partial fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
-            c.setCurrentPosition(p.firstChild())
+            # Part of fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
+            p = p.firstChild()
+            if trace: g.trace('selecting',p.h)
+            c.frame.tree.select(p)
+            c.setCurrentPosition(p)
         else:
             c.setCurrentPosition(p)
 
@@ -180,6 +183,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             theTime = g.timeSince(t1)
             g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
                 self.redrawCount,scroll,self.nodeDrawCount,theTime)) # ,g.callers(3))
+                
+        return p # Return the position, which may have changed.
 
     # Compatibility
     redraw = full_redraw 

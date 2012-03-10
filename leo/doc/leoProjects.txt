@@ -3746,6 +3746,26 @@ def os_startfile(fname):
 
 https://bugs.launchpad.net/leo-editor/+bug/875323
 Hoist an @chapter node leaves a non-visible node selected
+#@+node:ekr.20090110073010.1: *5* c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+    if not p: p = c.p or c.rootPosition()
+
+    c.expandAllAncestors(p)
+
+    # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
+    p2 = c.frame.tree.redraw(p)
+    
+    # Be careful.  nullTree.redraw return None.
+    c.selectPosition(p2 or p)
+
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
 #@+node:ekr.20031218072017.2991: *5* c.redrawAndEdit
 # Sets the focus to p and edits p.
 
@@ -3774,22 +3794,6 @@ def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
     # Update the focus immediately.
     if not keepMinibuffer:
         c.outerUpdate()
-#@+node:ekr.20090110073010.1: *5* c.redraw
-def redraw (self,p=None,setFocus=False):
-    '''Redraw the screen immediately.'''
-
-    c = self
-    if not p: p = c.p or c.rootPosition()
-
-    c.expandAllAncestors(p)
-    c.frame.tree.redraw(p)
-    c.selectPosition(p)
-
-    if setFocus: c.treeFocusHelper()
-
-# Compatibility with old scripts
-force_redraw = redraw
-redraw_now = redraw
 #@+node:ekr.20110605121601.17873: *5* full_redraw & helpers
 # forceDraw not used. It is used in the Tk code.
 
@@ -3810,8 +3814,11 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
         p = c.currentPosition()
     elif c.hoistStack and len(c.hoistStack) == 1 and p.h.startswith('@chapter') and p.hasChildren():
         # Make sure the current position is visible.
-        # Partial fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
-        c.setCurrentPosition(p.firstChild())
+        # Part of fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
+        p = p.firstChild()
+        if trace: g.trace('selecting',p.h)
+        c.frame.tree.select(p)
+        c.setCurrentPosition(p)
     else:
         c.setCurrentPosition(p)
 
@@ -3834,6 +3841,8 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
         theTime = g.timeSince(t1)
         g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
             self.redrawCount,scroll,self.nodeDrawCount,theTime)) # ,g.callers(3))
+            
+    return p # Return the position, which may have changed.
 
 # Compatibility
 redraw = full_redraw 
@@ -3958,7 +3967,7 @@ def rememberItem (self,p,item):
     else:
         aList.append(item)
     d[v] = aList
-#@+node:ekr.20031218072017.2028: *5* c.Hoist
+#@+node:ekr.20031218072017.2028: *5* c.hoist/dehoist/clearAllHoists
 #@+node:ekr.20120308061112.9865: *6* c.deHoist
 def dehoist (self,event=None):
 
@@ -4072,6 +4081,194 @@ def selectChapterByNameHelper (self,chapter,collapse=True):
 
     # New in Leo 4.6 b2: *do* call c.redraw.
     c.redraw()
+#@+node:ekr.20031218072017.2997: *5* c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+    
+    trace = False and not g.unitTesting
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+        if trace:
+            g.trace(cc.selectedChapter,p.h)
+        
+    # 2012/03/08: De-hoist as necessary to make p visible.
+    if c.hoistStack:
+        while c.hoistStack:
+            bunch = c.hoistStack[len(c.hoistStack)-1]
+            if c.positionExists(p,bunch.p):
+                break
+            else:
+                bunch = c.hoistStack.pop()
+                if trace: g.trace('unhoist',bunch.p.h)
+
+    if trace and not c.positionExists(p):
+        g.trace('** does not exist: %s' % (p and p.h))
+
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@+node:ekr.20040803072955.128: *5* leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by the gui to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911: *6* selectHelper (leoTree)
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+    
+    call_event_handlers = p != old_p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace and (verbose or call_event_handlers):
+        g.trace(p and p.h,g.callers())
+            
+    if call_event_handlers:
+        unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    else:
+        unselect = True
+
+    if unselect:
+        << unselect the old node >>
+        
+    if call_event_handlers:
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+    if call_event_handlers:
+        if call_event_handlers:
+            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            select = True
+        if select:
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+    else:
+        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+        
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace('**** after old: %s new %s' % (
+            # old_p and len(old_p.b),len(p.b)))
+
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine(p.get_UNL())
+
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return # (for Tk) 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129: *7* << unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+    
+    # g.trace('set insert spot',insertSpot)
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p and old_p != p:
+    # 2010/02/11: Don't change the *new* node's insert point!
+    old_p.v.scrollBarSpot = yview
+    old_p.v.insertSpot = insertSpot
+    if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+        yview,insertSpot))
+#@+node:ekr.20040803072955.130: *7* << select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@+node:ekr.20040803072955.133: *7* << set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+# Was in ctor.
+use_chapters = c.config.getBool('use_chapters')
+
+if use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+c.treeFocusHelper() # 2010/12/14
+c.undoer.onSelect(old_p,p)
+#@+node:ekr.20090608081524.6109: *6* setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = p.v.b # Guaranteed to be unicode.
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        w.setAllText(s,new_p=p)
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        self.frame.body.recolor(p)
+
+    p.restoreCursorAndScroll(w)
 #@+node:ekr.20120308061112.9868: *4* Fixed bug 831658: @url doesn't leave Chapter
 @nocolor-node
 
@@ -4148,7 +4345,6 @@ def selectPosition(self,p):
     """Select a new position."""
     
     trace = False and not g.unitTesting
-
     c = self ; cc = c.chapterController
 
     if cc:
@@ -4165,6 +4361,9 @@ def selectPosition(self,p):
             else:
                 bunch = c.hoistStack.pop()
                 if trace: g.trace('unhoist',bunch.p.h)
+
+    if trace and not c.positionExists(p):
+        g.trace('** does not exist: %s' % (p and p.h))
 
     c.frame.tree.select(p)
 
