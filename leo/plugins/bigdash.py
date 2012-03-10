@@ -36,6 +36,7 @@ except ImportError:
 
 #@+others
 #@+node:ville.20120302233106.3580: ** init
+
 def init ():
 
     print ("bigdash init")
@@ -79,6 +80,13 @@ def all_positions_global():
         for p in c.all_unique_positions():
             yield (c,p)
 
+
+def open_unl(unl):
+    parts = unl.split("#",1)
+    
+    g.openWithFileName(parts[0])
+    
+    
 
 class LeoConnector(QObject):
     pass
@@ -148,7 +156,10 @@ class GlobalSearch:
                 hl = r.get("highlight")
                 if hl:
                     hits.append("<pre>%s</pre>" % hl)
-                hits.append("""<p><small><i>%s</i></small></p>""" % r["parent"])                
+                    opener = ""
+                else:
+                    opener = '<a href="unl!%s"> &gt; </a>' % r["parent"]
+                hits.append("""<p><small><i>%s</i>%s</small></p>""" % (r["parent"], opener))                
             html = "".join(hits)
             tgt.web.setHtml(html)
             self.bd.set_link_handler(self.do_link_jump_gnx)
@@ -190,6 +201,11 @@ class GlobalSearch:
         c.bringToFront()
     def do_link_jump_gnx(self, l):
         print ("jumping to", l)
+        
+        if l.startswith("unl!"):
+            l = l[4:]
+            open_unl(l)
+            return
         gc = g._gnxcache
         gc.update_new_cs()
         hit = gc.get_p(l)
@@ -199,7 +215,8 @@ class GlobalSearch:
             c.selectPosition(p)
             c.bringToFront()
             return
-        print("Not found in any open document")
+        
+        print("Not found in any open document")        
 
 class BigDash:
     def docmd(self):
@@ -243,7 +260,7 @@ class BigDash:
                     <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
                     <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
                     <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
-                    <tr><td> <b>f</b> h:foo b:bar</td><td>   <i>Search for foo in heading and bar in body</i></td></tr>
+                    <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body</i></td></tr>
                     
                     
                     </table>
