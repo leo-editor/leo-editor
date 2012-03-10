@@ -10,6 +10,7 @@ g = None
 def set_leo(gg):
     global g
     g = gg
+    g._fts = None
 
 def init ():
 
@@ -23,6 +24,10 @@ def init ():
     
     return ok
 
+def get_fts():
+    if g._fts is None:
+        g._fts = LeoFts( g.app.homeLeoDir + "/fts_index")
+    return g._fts
 
 def all_positions_global():
     for c in g.app.commanders():
@@ -47,6 +52,24 @@ class GnxCache:
             self.update_new_cs()
         res = self.ps.get(gnx, None)                               
         return res
+    def get_p(self,gnx):
+        r = self.get(gnx)
+        if r:
+            c,v = r
+            for p in c.all_unique_positions():
+                if p.v is v:
+                    return c,p.copy()
+        
+        print("Not in gnx cache, slow!")
+        
+        for c,p in all_positions_global():
+            
+            if p.gnx == gnx:
+                return c,p.copy()
+        return None
+                    
+            
+        
     def clear(self):
         self.ps = {}
 
@@ -90,8 +113,9 @@ class LeoFts:
         res = []
         g._gnxcache.update_new_cs()
         with self.ix.searcher() as searcher:
+            #print (list(searcher.lexicon("b")))
             query = MultifieldParser(["h", "b"], schema=self.schema()).parse(searchstring)
-            results = searcher.search(query, limit=50)
+            results = searcher.search(query, limit=30)
             print (results)
             for r in results:
                 rr = r.fields()

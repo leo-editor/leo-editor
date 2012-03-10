@@ -107,17 +107,14 @@ class GlobalSearch:
         self.bd.add_cmd_handler(self.do_search)
         self.bd.add_cmd_handler(self.do_fts)
         
-        self._fts = None
         self.anchors = {}        
         
     def show(self):
         self.bd.w.show()
         
     def get_fts(self):
-        if self._fts is None:
-            self._fts = leofts.LeoFts( g.app.homeLeoDir + "/fts_index")
-             
-        return self._fts
+        return leofts.get_fts()
+
     def do_fts(self, tgt, qs):
         ## ss = unicode(qs)
         ss = g.toUnicode(qs)
@@ -193,12 +190,15 @@ class GlobalSearch:
         c.bringToFront()
     def do_link_jump_gnx(self, l):
         print ("jumping to", l)
-        for c,p in all_positions_global():
-            if p.gnx == l:
-                print("found!")
-                c.selectPosition(p)
-                c.bringToFront()
-                return
+        gc = g._gnxcache
+        gc.update_new_cs()
+        hit = gc.get_p(l)
+        if hit:
+            c,p = hit
+            print("found!")
+            c.selectPosition(p)
+            c.bringToFront()
+            return
         print("Not found in any open document")
 
 class BigDash:
