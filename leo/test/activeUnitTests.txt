@@ -655,7 +655,7 @@ for ivar,setting in table:
     assert hasattr(k,ivar),ivar
     val = getattr(k,ivar)
     assert val == setting,'%s k.%s setting: %s' % (
-        ivar,ivar,valO)
+        ivar,ivar,val)
 #@+node:ekr.20111118183928.3881: *4* @test logCtrl property
 # Test that changing c.frame.log.logCtrl also changes c.frame.log.widget.
 log = c.frame.log
@@ -4934,6 +4934,27 @@ def spam:
 #@+node:ekr.20071113105654.1: *4* @test c.hoist with no children
 c.hoist()
 c.dehoist()
+#@+node:ekr.20120310121839.3949: *4* @test c.hoist @chapter node
+# Not valid when run externally: the chapter node will not exist.
+if not g.app.isExternalUnitTest:
+
+    p1 = g.findNodeAnywhere(c,'@chapter aaa')
+    assert p1
+    p2 = g.findNodeAnywhere(c,'aaa node 1')
+    assert p2
+    
+    try:
+        assert not c.hoistStack
+        c.selectPosition(p1)
+        assert c.p == p1
+        c.hoist()
+        assert c.p == p2
+        c.dehoist()
+        assert c.p == p2
+        assert not c.hoistStack
+    finally:
+        c.selectPosition(p)
+        c.redraw()
 #@+node:ekr.20061106112522: *4* @test c.insertBodyTime
 w = c.frame.body.bodyCtrl
 s = w.getAllText()

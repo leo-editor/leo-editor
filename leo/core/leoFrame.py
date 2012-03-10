@@ -2130,75 +2130,42 @@ class leoTree:
             return None # Not an error.
 
         if trace and (verbose or call_event_handlers):
-            g.trace(p and p.h)
-            # if old_p:
-                # g.trace('old: %s %s new: %s %s' % (
-                    # len(old_p.b),old_p.h,len(p.b),p.h))
-            # else:
-                # g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+            g.trace(p and p.h,g.callers())
                 
+        if call_event_handlers:
+            unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            unselect = True
+
+        if unselect:
+            #@+<< unselect the old node >>
+            #@+node:ekr.20040803072955.129: *5* << unselect the old node >>
+            # Remember the position of the scrollbar before making any changes.
+            if body:
+                yview = body.getYScrollPosition()
+                insertSpot = c.frame.body.getInsertPoint()
                 
-        if 1: # 2011/11/06
-            if call_event_handlers:
-                unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+                # g.trace('set insert spot',insertSpot)
             else:
-                unselect = True
-            if unselect:
-                #@+<< unselect the old node >>
-                #@+node:ekr.20040803072955.129: *5* << unselect the old node >>
-                # Remember the position of the scrollbar before making any changes.
-                if body:
-                    yview = body.getYScrollPosition()
-                    insertSpot = c.frame.body.getInsertPoint()
-                    
-                    # g.trace('set insert spot',insertSpot)
-                else:
-                    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-                    yview,insertSpot = None,0
+                g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+                yview,insertSpot = None,0
 
-                if old_p != p:
-                    self.endEditLabel() # sets editPosition = None
-                    self.setUnselectedLabelState(old_p)
+            if old_p != p:
+                self.endEditLabel() # sets editPosition = None
+                self.setUnselectedLabelState(old_p)
 
-                if old_p and old_p != p:
-                    # 2010/02/11: Don't change the *new* node's insert point!
-                    old_p.v.scrollBarSpot = yview
-                    old_p.v.insertSpot = insertSpot
-                    if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
-                        yview,insertSpot))
-                #@-<< unselect the old node >>
+            if old_p and old_p != p:
+                # 2010/02/11: Don't change the *new* node's insert point!
+                old_p.v.scrollBarSpot = yview
+                old_p.v.insertSpot = insertSpot
+                if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
+                    yview,insertSpot))
+            #@-<< unselect the old node >>
             
-        else: # Old code
-            if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-                if old_p:
-                    #@+<< unselect the old node >>
-                    #@+node:ekr.20040803072955.129: *5* << unselect the old node >>
-                    # Remember the position of the scrollbar before making any changes.
-                    if body:
-                        yview = body.getYScrollPosition()
-                        insertSpot = c.frame.body.getInsertPoint()
-                        
-                        # g.trace('set insert spot',insertSpot)
-                    else:
-                        g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-                        yview,insertSpot = None,0
-
-                    if old_p != p:
-                        self.endEditLabel() # sets editPosition = None
-                        self.setUnselectedLabelState(old_p)
-
-                    if old_p and old_p != p:
-                        # 2010/02/11: Don't change the *new* node's insert point!
-                        old_p.v.scrollBarSpot = yview
-                        old_p.v.insertSpot = insertSpot
-                        if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
-                            yview,insertSpot))
-                    #@-<< unselect the old node >>
-        
-        if call_event_handlers: # 2011/11/06
+        if call_event_handlers:
             g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             
-        if call_event_handlers: # 2011/11/06
+        if call_event_handlers:
             if call_event_handlers:
                 select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             else:
@@ -2212,7 +2179,7 @@ class leoTree:
                 self.setBodyTextAfterSelect(p,old_p)
                 #@-<< select the new node >>
                 c.nodeHistory.update(p) # Remember this position.
-        else: # old code
+        else:
             if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
                 #@+<< select the new node >>
                 #@+node:ekr.20040803072955.130: *5* << select the new node >>
