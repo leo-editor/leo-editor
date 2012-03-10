@@ -123,10 +123,14 @@ class LeoFts:
                 gnx = rr["gnx"]
                 tup = g._gnxcache.get(gnx)
                 if tup:
+                    rr['f'] = True
                     cont = tup[1].b
                     
                     hl = r.highlights("b", text = cont)
                     rr["highlight"] = hl
+                    
+                else:
+                    rr['f'] = False
                 res.append(rr)
                 
         return res

@@ -153,12 +153,16 @@ class GlobalSearch:
                 hits.append("<p>")
                 add_anchor(hits, r["gnx"], r["h"])
                 hits.append("</p>")
-                hl = r.get("highlight")
-                if hl:
-                    hits.append("<pre>%s</pre>" % hl)
+                if r['f']:
                     opener = ""
                 else:
                     opener = '<a href="unl!%s"> &gt; </a>' % r["parent"]
+                    
+                hl = r.get("highlight")
+                
+                if hl:
+                    hits.append("<pre>%s</pre>" % hl)
+                    
                 hits.append("""<p><small><i>%s</i>%s</small></p>""" % (r["parent"], opener))                
             html = "".join(hits)
             tgt.web.setHtml(html)
