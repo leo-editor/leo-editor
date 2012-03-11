@@ -37,8 +37,7 @@ def all_positions_global():
 class GnxCache:
     """ map gnx => vnode """
     def __init__(self):
-        self.ps = {}
-        self.cs = set()
+        self.clear()
     def update_new_cs(self):
         for c in g.app.commanders():
             if c.hash() not in self.cs:
@@ -67,11 +66,10 @@ class GnxCache:
             if p.gnx == gnx:
                 return c,p.copy()
         return None
-                    
-            
         
     def clear(self):
         self.ps = {}
+        self.cs = set()
 
 class LeoFts:    
     def __init__(self, idx_dir):
@@ -84,7 +82,8 @@ class LeoFts:
     
     def schema(self):
         my_analyzer = RegexTokenizer("[a-zA-Z_]+") | LowercaseFilter() | StopFilter()
-        schema = Schema(h=TEXT(stored=True, analyzer=my_analyzer), gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer), parent=ID(stored=True))
+        schema = Schema(h=TEXT(stored=True, analyzer=my_analyzer), gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer), parent=ID(stored=True),
+                        doc=ID(stored=True))
         return schema
         
     def create(self):
@@ -95,7 +94,7 @@ class LeoFts:
         
     def index_nodes(self, c):
         writer = self.ix.writer()
-        
+        doc = c.mFileName
         for p in c.all_unique_positions():
             #print "pushing",p
             if p.hasParent():
@@ -103,11 +102,25 @@ class LeoFts:
             else:
                 par = c.mFileName
             
-            writer.add_document(h=p.h, b=p.b, gnx=unicode(p.gnx), parent=par)
+            writer.add_document(h=p.h, b=p.b, gnx=unicode(p.gnx), parent=par, doc=doc)
             
         writer.commit()
         g._gnxcache.clear()
 
+    def drop_document(self, docfile):
+        writer = self.ix.writer()
+        print("Drop index", docfile)
+        writer.delete_by_term("doc", docfile)
+        writer.commit()
+        
+    def statistics(self):
+        r = {}
+        with self.ix.searcher() as s:
+            r['documents'] = list(s.lexicon("doc"))
+        print("stats",r)
+        return r
+        
+        
     def search(self, searchstring):        
                 
         res = []
