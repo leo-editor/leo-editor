@@ -11564,6 +11564,149 @@ def selectPosition(self,p):
         c.redraw()
 
 selectVnode = selectPosition
+#@+node:ekr.20120311070142.9901: *4* Fixed bug 952365: Leo-Editor can't write a file created from the command line
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/952365
+Leo-Editor can't write a file created from the command line
+
+Test procedure:
+    
+On a command line start Leo-Editor with one command line
+parameter which specifies a valid pathname for a
+non-existent outline file. Ctrl+s causes error messages to
+the Log pane and to the console.
+
+
+Traceback (most recent call last):
+
+  File "/home/bob/bzr/LeoLatest/leo/core/leoFileCommands.py", line 2061, in writeToFileHelper
+    theActualFile.write(s)
+
+AttributeError: 'NoneType' object has no attribute 'write'
+
+handleWriteLeoFileException backup file does not exist! None
+
+===== What I did
+
+Improved error reporting and checking, but the file won't be created if
+createActualFile takes an IOError.
+
+#@+node:ekr.20100119145629.6111: *5* writeToFileHelper & helpers
+def writeToFileHelper (self,fileName,toOPML):
+
+    c = self.c ; toZip = c.isZipped
+    ok,backupName = self.createBackupFile(fileName)
+    if not ok: return False
+    fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
+    if not theActualFile: return False
+    self.mFileName = fileName
+    self.outputFile = StringIO() # Always write to a string.
+
+    try:
+        if toOPML:
+            self.putToOPML()
+        else:
+            self.putLeoFile()
+        s = self.outputFile.getvalue()
+        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
+        if toZip:
+            self.writeZipFile(s)
+        else:
+            if g.isPython3:
+                s = bytes(s,self.leo_file_encoding,'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # raise AttributeError # To test handleWriteLeoFileException.
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName,'backup')
+        return True
+    except Exception:
+        self.handleWriteLeoFileException(
+            fileName,backupName,theActualFile)
+        return False
+#@+node:ekr.20100119145629.6106: *6* createActualFile
+def createActualFile (self,fileName,toOPML,toZip):
+
+    c = self.c
+
+    if toOPML and not self.mFileName.endswith('opml'):
+        fileName = self.mFileName + '.opml'
+
+    if toZip:
+        self.toString = True
+        theActualFile = None
+    else:
+        try:
+            # 2010/01/21: always write in binary mode.
+            theActualFile = open(fileName,'wb')
+        except IOError:
+            g.es('can not open %s' % fileName)
+            g.es_exception()
+            theActualFile = None
+
+    return fileName,theActualFile
+#@+node:ekr.20031218072017.3047: *6* createBackupFile
+def createBackupFile (self,fileName):
+
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+
+    c = self.c
+
+    if g.os_path_exists(fileName):
+        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+
+        fd,backupName = tempfile.mkstemp(text=False)
+        f = open(fileName,'rb') # rb is essential.
+        s = f.read()
+        f.close()
+
+        try:
+            try:
+                os.write(fd,s)
+            finally:
+                os.close(fd)
+            ok = True
+        except Exception:
+            g.es('exception creating backup file',color='red')
+            g.es_exception()
+            ok,backupName = False,None
+
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+    else:
+        ok,backupName = True,None
+
+    return ok,backupName
+#@+node:ekr.20100119145629.6108: *6* handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+
+        # No need to create directories when restoring.
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.trace('backup file does not exist!',
+            repr(backupName),color='red')
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

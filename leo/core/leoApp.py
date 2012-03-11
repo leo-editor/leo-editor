@@ -1255,7 +1255,7 @@ class LoadManager:
             settings_d.update(settings_d2)
             
         if shortcuts_d2:
-            shortcuts_d = lm.mergeShortcutsDicts(shortcuts_d,shortcuts_d2)
+            shortcuts_d = lm.mergeShortcutsDicts(c,shortcuts_d,shortcuts_d2)
 
         return settings_d,shortcuts_d
     #@+node:ekr.20120214165710.10726: *4* lm.createSettingsDicts
@@ -1300,7 +1300,7 @@ class LoadManager:
 
         return PreviousSettings(d1,d2)
     #@+node:ekr.20120214132927.10723: *4* lm.mergeShortcutsDicts & helpers
-    def mergeShortcutsDicts (self,old_d,new_d):
+    def mergeShortcutsDicts (self,c,old_d,new_d):
         
         '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
         
@@ -1319,10 +1319,40 @@ class LoadManager:
 
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
+        
+        # Fix bug 951921: check for duplicate shortcuts only in the new file.
+        lm.checkForDuplicateShortcuts(c,inverted_new_d)
+        
         inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
         result = lm.uninvert(inverted_old_d)
 
         return result
+    #@+node:ekr.20120311070142.9904: *5* lm.checkForDuplicateShortcuts
+    def checkForDuplicateShortcuts (self,c,d):
+        
+        '''Check for duplicates in an "inverted" dictionary d
+        whose keys are strokes and whose values are lists of ShortcutInfo nodes.
+        
+        Duplicates happen only if panes conflict.
+        '''
+        
+        lm = self
+        
+        # Fix bug 951921: check for duplicate shortcuts only in the new file.
+        for ks in sorted(list(d.keys())):
+            conflict,panes = False,['all']
+            aList = d.get(ks)
+            aList2 = [si for si in aList if not si.pane.startswith('mode')]
+            if len(aList) > 1:
+                for si in aList2:
+                    if si.pane in panes:
+                        conflict = True ; break
+                    else:
+                        panes.append(si.pane)
+            if conflict:
+                g.es_print('conflicting key bindings in %s' % (c.shortFileName()))
+                for si in aList2:
+                    g.es_print('%6s %s %s' % (si.pane,si.stroke.s,si.commandName))
     #@+node:ekr.20120214132927.10724: *5* lm.invert
     def invert (self,d):
         

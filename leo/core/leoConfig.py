@@ -762,26 +762,26 @@ class ParserBaseClass:
         for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line,0,'#'):
-                name,si = self.parseShortcutLine(fn,line)
+                commandName,si = self.parseShortcutLine(fn,line)
                 assert g.isShortcutInfo(si),si
                 if si and si.stroke not in (None,'none','None'):
-                    self.doOneShortcut(si,name,p)
+                    self.doOneShortcut(si,commandName,p)
                         
         if trace:
             g.trace('%4d' % (len(list(self.shortcutsDict.keys()))),c.shortFileName(),p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
-    def doOneShortcut(self,si,name,p):
+    def doOneShortcut(self,si,commandName,p):
         
-        '''Handle a regular shortcut: name is a command name..'''
+        '''Handle a regular shortcut.'''
         
         trace = False and not g.unitTesting
       
         d = self.shortcutsDict
-        aList = d.get(name,[])
+        aList = d.get(commandName,[])
         aList.append(si)
-        d [name] = aList
+        d [commandName] = aList
         
-        if trace: g.trace(name,si)
+        if trace: g.trace(commandName,si)
     #@+node:ekr.20041217132028: *4* doString
     def doString (self,p,kind,name,val):
 
