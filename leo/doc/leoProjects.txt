@@ -11707,6 +11707,279 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     else:
         g.trace('backup file does not exist!',
             repr(backupName),color='red')
+#@+node:ekr.20120311070142.9903: *4* Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages 
+@nocolor-node
+
+Opening myLeoSettings.leo can clutter the console unworthwhile messages 
+https://bugs.launchpad.net/leo-editor/+bug/951921
+
+It's clumsy to report conflicts in k.remove_conflicting_definitions.
+Instead, doOneShortcut should only report conflicts *in the same file*.
+#@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
+def remove_conflicting_definitions (self,aList,commandName,pane,shortcut):
+    
+    trace = False and not g.unitTesting
+    k = self
+    result = []
+    for si in aList:
+        assert g.isShortcutInfo(si),si
+        if pane in ('button','all',si.pane):
+            if trace:
+                # This is too annoying to report here. See bug 951921.
+                g.es_print('c for %s in %s' % (
+                    si.stroke,k.c.shortFileName()))
+                g.es_print('previous: %s new: %s' % (si.commandName,commandName))
+            k.kill_one_shortcut(shortcut)
+        else:
+            result.append(si)
+    return result
+#@+node:ekr.20041120112043: *5* parseShortcutLine (ParserBaseClass)
+def parseShortcutLine (self,kind,s):
+
+    '''Parse a shortcut line.  Valid forms:
+
+    --> entry-command
+    settingName = shortcut
+    settingName ! paneName = shortcut
+    command-name --> mode-name = binding
+    command-name --> same = binding
+    '''
+
+    trace = False and not g.unitTesting and kind == '*mode-setting*'
+    c,k = self.c,self.c.k
+    assert c
+    name = val = nextMode = None ; nextMode = 'none'
+    i = g.skip_ws(s,0)
+
+    if g.match(s,i,'-->'): # New in 4.4.1 b1: allow mode-entry commands.
+        j = g.skip_ws(s,i+3)
+        i = g.skip_id(s,j,'-')
+        entryCommandName = s[j:i]
+        if trace: g.trace('-->',entryCommandName)
+        return None,g.ShortcutInfo('*entry-command*',commandName=entryCommandName)
+
+    j = i
+    i = g.skip_id(s,j,'-') # New in 4.4: allow Emacs-style shortcut names.
+    name = s[j:i]
+    if not name:
+        if trace: g.trace('no name',repr(s))
+        return None,None
+
+    # New in Leo 4.4b2.
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'->'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+2)
+        i = g.skip_id(s,j)
+        nextMode = s[j:i]
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'!'): # New in 4.4: allow pane-specific shortcuts.
+        j = g.skip_ws(s,i+1)
+        i = g.skip_id(s,j)
+        pane = s[j:i]
+        if not pane.strip(): pane = 'all'
+    else: pane = 'all'
+
+    i = g.skip_ws(s,i)
+    if g.match(s,i,'='):
+        i = g.skip_ws(s,i+1)
+        val = s[i:]
+
+    # New in 4.4: Allow comments after the shortcut.
+    # Comments must be preceded by whitespace.
+    comment = ''
+    if val:
+        i = val.find('#')
+        if i > 0 and val[i-1] in (' ','\t'):
+            # comment = val[i:].strip()
+            val = val[:i].strip()
+
+    stroke = k.strokeFromSetting(val)
+    assert g.isStrokeOrNone(stroke),stroke
+    # g.trace('stroke',stroke)
+    si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
+    if trace: g.trace('%25s %s' % (name,si))
+    return name,si
+#@+node:ekr.20041120105609: *5* doShortcuts (ParserBaseClass)
+def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
+    
+    '''Handle an @shortcut or @shortcuts node.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = c.k
+    d = self.shortcutsDict
+    if s is None: s = p.b
+    
+    fn = d.name()
+    for line in g.splitLines(s):
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            commandName,si = self.parseShortcutLine(fn,line)
+            assert g.isShortcutInfo(si),si
+            if si and si.stroke not in (None,'none','None'):
+                self.doOneShortcut(si,commandName,p)
+                    
+    if trace:
+        g.trace('%4d' % (len(list(self.shortcutsDict.keys()))),c.shortFileName(),p.h)
+#@+node:ekr.20111020144401.9585: *6* doOneShortcut (ParserBaseClass)
+def doOneShortcut(self,si,commandName,p):
+    
+    '''Handle a regular shortcut.'''
+    
+    trace = False and not g.unitTesting
+  
+    d = self.shortcutsDict
+    aList = d.get(commandName,[])
+    aList.append(si)
+    d [commandName] = aList
+    
+    if trace: g.trace(commandName,si)
+#@+node:ekr.20041119204700.1: *5* traverse (ParserBaseClass)
+def traverse (self):
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+
+    self.settingsDict = g.TypedDict(
+        name='settingsDict for %s' % (c.shortFileName()),
+        keyType=type('settingName'),valType=g.GeneralSetting)
+    
+    self.shortcutsDict = g.TypedDictOfLists(
+        name='shortcutsDict for %s' % (c.shortFileName()),
+        keyType=type('s'), valType=g.ShortcutInfo)
+        
+    # This must be called after the outline has been inited.
+    p = c.config.settingsRoot()
+    if not p:
+        # c.rootPosition() doesn't exist yet.
+        # This is not an error.
+        if trace:
+            print('****************'
+                'ParserBaseClass.traverse: no settings tree for %s' % (
+                    c.shortFileName()))
+        return self.shortcutsDict,self.settingsDict
+        
+    after = p.nodeAfterTree()
+    while p and p != after:
+        result = self.visitNode(p)
+        if result == "skip":
+            # g.es_print('skipping settings in',p.h,color='blue')
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+            
+    # Return the raw dict, unmerged.
+    return self.shortcutsDict,self.settingsDict
+#@+node:ekr.20120214132927.10723: *5* lm.mergeShortcutsDicts & helpers
+def mergeShortcutsDicts (self,c,old_d,new_d):
+    
+    '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
+    
+    Both old_d and new_d remain unchanged.'''
+    
+    trace = False and not g.unitTesting
+    lm = self
+    
+    if not old_d: return new_d
+    if not new_d: return old_d
+    
+    if trace:
+        new_n,old_n = len(list(new_d.keys())),len(list(old_d.keys()))
+        g.trace('new %4s %s %s' % (new_n,id(new_d),new_d.name()))
+        g.trace('old %4s %s %s' % (old_n,id(old_d),old_d.name()))
+
+    inverted_old_d = lm.invert(old_d)
+    inverted_new_d = lm.invert(new_d)
+    
+    # Fix bug 951921: check for duplicate shortcuts only in the new file.
+    lm.checkForDuplicateShortcuts(c,inverted_new_d)
+    
+    inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
+    result = lm.uninvert(inverted_old_d)
+
+    return result
+#@+node:ekr.20120311070142.9904: *6* lm.checkForDuplicateShortcuts
+def checkForDuplicateShortcuts (self,c,d):
+    
+    '''Check for duplicates in an "inverted" dictionary d
+    whose keys are strokes and whose values are lists of ShortcutInfo nodes.
+    
+    Duplicates happen only if panes conflict.
+    '''
+    
+    lm = self
+    
+    # Fix bug 951921: check for duplicate shortcuts only in the new file.
+    for ks in sorted(list(d.keys())):
+        conflict,panes = False,['all']
+        aList = d.get(ks)
+        aList2 = [si for si in aList if not si.pane.startswith('mode')]
+        if len(aList) > 1:
+            for si in aList2:
+                if si.pane in panes:
+                    conflict = True ; break
+                else:
+                    panes.append(si.pane)
+        if conflict:
+            g.es_print('conflicting key bindings in %s' % (c.shortFileName()))
+            for si in aList2:
+                g.es_print('%6s %s %s' % (si.pane,si.stroke.s,si.commandName))
+#@+node:ekr.20120214132927.10724: *6* lm.invert
+def invert (self,d):
+    
+    '''Invert a shortcut dict whose keys are command names,
+    returning a dict whose keys are strokes.'''
+    
+    trace = False and not g.unitTesting ; verbose = True
+    if trace: g.trace('*'*40,d.name())
+    
+    result = g.TypedDictOfLists(
+        name='inverted %s' % d.name(),
+        keyType = g.KeyStroke,
+        valType = g.ShortcutInfo)
+
+    for commandName in d.keys():
+        for si in d.get(commandName,[]):
+            # This assert can fail if there is an exception in the ShortcutInfo ctor.
+            assert isinstance(si,g.ShortcutInfo),si
+
+            stroke = si.stroke # This is canonicalized.
+            si.commandName = commandName # Add info.
+            assert stroke
+            if trace and verbose:
+                g.trace('%40s %s' % (commandName,stroke))
+            result.add(stroke,si)
+
+    if trace: g.trace('returns  %4s %s %s' % (
+        len(list(result.keys())),id(d),result.name()))
+    return result
+#@+node:ekr.20120214132927.10725: *6* lm.uninvert
+def uninvert (self,d):
+    
+    '''Uninvert an inverted shortcut dict whose keys are strokes,
+    returning a dict whose keys are command names.'''
+    
+    trace = False and not g.unitTesting ; verbose = True
+    if trace and verbose: g.trace('*'*40)
+
+    assert d.keyType == g.KeyStroke,d.keyType
+    result = g.TypedDictOfLists(
+        name='uninverted %s' % d.name(),
+        keyType = type('commandName'),
+        valType = g.ShortcutInfo)
+    
+    for stroke in d.keys():
+        for si in d.get(stroke,[]):
+            assert isinstance(si,g.ShortcutInfo),si
+            commandName = si.commandName
+            if trace and verbose:
+                g.trace('uninvert %20s %s' % (stroke,commandName))
+            assert commandName
+            result.add(commandName,si)
+
+    if trace: g.trace('returns %4s %s %s' % (
+        len(list(result.keys())),id(d),result.name()))
+    return result
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
