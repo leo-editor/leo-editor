@@ -712,6 +712,8 @@ class chapterController:
         '''
         Select a chapter containing position p.
         Do nothing if p if p does not exist or is in the presently selected chapter.
+        
+        Note: this code calls c.redraw() if the chapter changes.
         '''
 
         trace = False and not g.unitTesting
@@ -736,6 +738,7 @@ class chapterController:
         if firstName == 'main':
             if trace: g.trace('no search: main chapter:',p.h)
             return
+
         if theChapter.positionIsInChapter(p):
             if trace: g.trace('position found in chapter:',theChapter.name,p.h)
             return

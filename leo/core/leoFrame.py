@@ -2224,8 +2224,6 @@ class leoTree:
         if call_event_handlers: # 2011/11/06
             g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-        return # (for Tk) 'break' # Supresses unwanted selection.
     #@+node:ekr.20090608081524.6109: *4* setBodyTextAfterSelect
     def setBodyTextAfterSelect (self,p,old_p):
 

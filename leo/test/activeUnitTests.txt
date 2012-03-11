@@ -4955,6 +4955,21 @@ if not g.app.isExternalUnitTest:
     finally:
         c.selectPosition(p)
         c.redraw()
+#@+node:ekr.20120311124038.3951: *4* @test c.hoist followed by goto-first-node
+p1 = p.copy()
+try:
+    assert not c.hoistStack
+    c.selectPosition(p1)
+    assert c.p == p1
+    c.hoist()
+    c.goToFirstNode()
+    assert not c.hoistStack
+        # The hoist stack must be cleared to show the first node.
+    assert c.p == c.rootPosition()
+    assert c.p.isVisible(c)
+finally:
+    c.selectPosition(p1)
+    c.redraw()
 #@+node:ekr.20061106112522: *4* @test c.insertBodyTime
 w = c.frame.body.bodyCtrl
 s = w.getAllText()

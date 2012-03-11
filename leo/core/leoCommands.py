@@ -3950,7 +3950,7 @@ class Commands (object):
         '''Paste an outline into the present outline from the clipboard.
         Nodes do *not* retain their original identify.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self
         s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
@@ -6314,8 +6314,9 @@ class Commands (object):
 
         '''Select the first node of the entire outline.'''
 
-        c = self ; p = c.rootPosition()
+        c = self
 
+        p = c.rootPosition()
         c.treeSelectHelper(p)
     #@+node:ekr.20051012092453: *6* goToFirstSibling
     def goToFirstSibling (self,event=None):
@@ -8185,10 +8186,12 @@ class Commands (object):
 
         if cc:
             cc.selectChapterForPosition(p)
-            if trace:
-                g.trace(cc.selectedChapter,p.h)
+                # Important: selectChapterForPosition calls c.redraw
+                # if the chapter changes.
+            if trace: g.trace(cc.selectedChapter,p.h)
             
         # 2012/03/08: De-hoist as necessary to make p visible.
+        redraw_flag = False
         if c.hoistStack:
             while c.hoistStack:
                 bunch = c.hoistStack[len(c.hoistStack)-1]
@@ -8196,6 +8199,7 @@ class Commands (object):
                     break
                 else:
                     bunch = c.hoistStack.pop()
+                    redraw_flag = True
                     if trace: g.trace('unhoist',bunch.p.h)
 
         if trace and not c.positionExists(p):
@@ -8207,6 +8211,9 @@ class Commands (object):
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
+            
+        if redraw_flag:
+            c.redraw()
 
     selectVnode = selectPosition
     #@+node:ekr.20060923202156: *4* c.onCanvasKey

@@ -376,7 +376,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.updateVisibleIcons(p)
         finally:
             self.redrawing = False
-    #@+node:ekr.20110605121601.17884: *3* redraw_after_select
+    #@+node:ekr.20110605121601.17884: *3* redraw_after_select (nativeTree)
     # Important: this can not replace before/afterSelectHint.
 
     def redraw_after_select (self,p=None):

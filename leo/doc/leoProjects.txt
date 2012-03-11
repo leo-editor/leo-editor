@@ -4105,10 +4105,12 @@ def selectPosition(self,p):
 
     if cc:
         cc.selectChapterForPosition(p)
-        if trace:
-            g.trace(cc.selectedChapter,p.h)
+            # Important: selectChapterForPosition calls c.redraw
+            # if the chapter changes.
+        if trace: g.trace(cc.selectedChapter,p.h)
         
     # 2012/03/08: De-hoist as necessary to make p visible.
+    redraw_flag = False
     if c.hoistStack:
         while c.hoistStack:
             bunch = c.hoistStack[len(c.hoistStack)-1]
@@ -4116,6 +4118,7 @@ def selectPosition(self,p):
                 break
             else:
                 bunch = c.hoistStack.pop()
+                redraw_flag = True
                 if trace: g.trace('unhoist',bunch.p.h)
 
     if trace and not c.positionExists(p):
@@ -4127,6 +4130,9 @@ def selectPosition(self,p):
     c.setCurrentPosition(p)
         # Do *not* test whether the position exists!
         # We may be in the midst of an undo.
+        
+    if redraw_flag:
+        c.redraw()
 
 selectVnode = selectPosition
 #@+node:ekr.20040803072955.128: *5* leoTree.select & helpers
@@ -4219,8 +4225,6 @@ def selectHelper (self,p,scroll):
     if call_event_handlers: # 2011/11/06
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-    return # (for Tk) 'break' # Supresses unwanted selection.
 #@+node:ekr.20040803072955.129: *7* << unselect the old node >>
 # Remember the position of the scrollbar before making any changes.
 if body:
@@ -4283,6 +4287,28 @@ def setBodyTextAfterSelect (self,p,old_p):
         self.frame.body.recolor(p)
 
     p.restoreCursorAndScroll(w)
+#@+node:ekr.20031218072017.2914: *5* goToFirstNode
+def goToFirstNode (self,event=None):
+
+    '''Select the first node of the entire outline.'''
+
+    c = self
+
+    p = c.rootPosition()
+    c.treeSelectHelper(p)
+#@+node:ekr.20070226113916: *5*  c.treeSelectHelper
+def treeSelectHelper (self,p):
+
+    c = self
+
+    if not p: p = c.p
+
+    if p:
+        # Do not call expandAllAncestors here.
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeFocusHelper()
 #@+node:ekr.20120308061112.9868: *4* Fixed bug 831658: @url doesn't leave Chapter
 @nocolor-node
 
@@ -4363,10 +4389,12 @@ def selectPosition(self,p):
 
     if cc:
         cc.selectChapterForPosition(p)
-        if trace:
-            g.trace(cc.selectedChapter,p.h)
+            # Important: selectChapterForPosition calls c.redraw
+            # if the chapter changes.
+        if trace: g.trace(cc.selectedChapter,p.h)
         
     # 2012/03/08: De-hoist as necessary to make p visible.
+    redraw_flag = False
     if c.hoistStack:
         while c.hoistStack:
             bunch = c.hoistStack[len(c.hoistStack)-1]
@@ -4374,6 +4402,7 @@ def selectPosition(self,p):
                 break
             else:
                 bunch = c.hoistStack.pop()
+                redraw_flag = True
                 if trace: g.trace('unhoist',bunch.p.h)
 
     if trace and not c.positionExists(p):
@@ -4385,6 +4414,9 @@ def selectPosition(self,p):
     c.setCurrentPosition(p)
         # Do *not* test whether the position exists!
         # We may be in the midst of an undo.
+        
+    if redraw_flag:
+        c.redraw()
 
 selectVnode = selectPosition
 #@+node:ekr.20070615075643: *5* cc.selectChapterForPosition
@@ -4393,6 +4425,8 @@ def selectChapterForPosition (self,p):
     '''
     Select a chapter containing position p.
     Do nothing if p if p does not exist or is in the presently selected chapter.
+    
+    Note: this code calls c.redraw() if the chapter changes.
     '''
 
     trace = False and not g.unitTesting
@@ -4417,6 +4451,7 @@ def selectChapterForPosition (self,p):
     if firstName == 'main':
         if trace: g.trace('no search: main chapter:',p.h)
         return
+
     if theChapter.positionIsInChapter(p):
         if trace: g.trace('position found in chapter:',theChapter.name,p.h)
         return
