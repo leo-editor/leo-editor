@@ -12153,6 +12153,206 @@ def os_startfile(fname):
         except Exception:
             g.es_print('error opening %s' % fname)
             g.es_exception()
+#@+node:ekr.20120311151914.9914: *4* Fixed bug 951721: @url with URL in headline
+@nocolor-node
+
+@url with URL in headline
+https://bugs.launchpad.net/leo-editor/+bug/951721
+
+The fix follows the suggestions in the bug report:
+
+1. Use the headline's url if the g.isValidUrl says it is valid.
+
+2. Otherwise, scan down the lines of the body text looking for a valid url.
+
+**Important**: g.isValidUrl is pretty lenient about what it considers valid. Here it is::
+
+    def isValidUrl(url):
+
+        '''Return true if url *looks* like a valid url.'''
+
+        if url.startswith('#-->'):
+            # Allow Leo UNL's.
+            return True
+        else:
+            parsed = urlparse(url)
+            return bool(parsed.scheme
+#@+node:ekr.20031218072017.2312: *5* tree.OnIconDoubleClick (@url) & helper
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"):
+        url = g.getUrlFromNode(p)
+        if url:
+            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+                g.handleUrlInUrlNode(url, c=c, p=p)
+            g.doHook("@url2",c=c,p=p,v=p)
+#@+node:ekr.20120311151914.9916: *5* Urls... (leoGlobals.py)
+#@+node:ekr.20120311151914.9917: *6* g.getUrlFromNode
+def getUrlFromNode(p):
+    
+    '''Get an url from node p:
+        
+    1. Use the headline if it contains a valid url.
+    2. Otherwise, do a bit of AI in the body.
+    '''
+    
+    if 1: # New code.
+        if g.match_word(p.h,0,'@url'):
+            url = p.h[4:].strip()
+            if g.isValidUrl(url):
+                return url
+        for s in g.splitLines(p.b):
+            url = s.strip()
+            if g.isValidUrl(url):
+                return url
+        return None
+    
+    else: # old code.
+        if p.b.strip():
+            lines = p.b.split('\n',1)
+            url = lines and lines[0].strip() or ''
+        else:
+            url = s[4:].strip()
+
+    return url
+#@+node:tbrown.20090219095555.61: *6* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url,c=None,p=None):
+    
+    # Note 1: the UNL plugin has its own notion of what a good url is.
+
+    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
+    #         node if it exists.
+
+    if url:
+        if c and not p:
+            p = c.p
+        g.handleUrl(c,p,url)
+    else:
+        g.es("no url following @url")
+#@+node:tbrown.20090219095555.63: *7* g.handleUrl
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file:///home/me/todolist.html
+@c
+
+def handleUrl(c,p,url):
+    
+    trace = False and not g.unitTesting
+
+    try:
+        tag = 'file://'
+        if url.startswith(tag):
+            i = url.find('~')
+            if i > -1:
+                # Expand '~' and finalize *before* parsing the url.
+                path = url[i:]
+                path = g.os_path_expanduser(path)
+                path = g.os_path_finalize(path)
+                url = url[:i] + path
+            else:
+                # Finalize the path *before* parsing the url.
+                path = url[len(tag):].lstrip()
+                if c and c.openDirectory:
+                    path = g.os_path_finalize_join(c.openDirectory,path)
+                else:
+                    path = g.os_path_finalize(path)
+                url = '%s%s' % (tag,path)
+    
+        parsed = urlparse(url)
+        fragment = parsed.fragment
+        netloc   = parsed.netloc
+        path     = parsed.path
+        scheme   = parsed.scheme
+
+        if netloc:
+            leo_path = os.path.join(netloc, path)
+            # "readme.txt" gets parsed into .netloc...
+        else:
+            leo_path = path
+            
+        if leo_path.endswith('\\'): leo_path = leo_path[:-1]
+        if leo_path.endswith('/'):  leo_path = leo_path[:-1]
+            
+        if trace:
+            print()
+            g.trace('url          ',url)
+            g.trace('c.frame.title',c.frame.title)
+            g.trace('leo_path     ',leo_path)
+            g.trace('parsed.netloc',netloc)
+            g.trace('parsed.path  ',path)
+            g.trace('parsed.scheme',scheme)
+
+        if c and scheme in ('', 'file'):
+            
+            if not leo_path:
+            
+                # local UNLs like "node-->subnode", "-->node", and "#node"
+                if '-->' in path:
+                    g.recursiveUNLSearch(path.split("-->"), c)
+                    return
+                if not path and fragment:
+                    g.recursiveUNLSearch(fragment.split("-->"), c)
+                    return
+    
+            # leo aware path
+            leo_path = os.path.expanduser(leo_path)
+            leo_path = g.os_path_expandExpression(leo_path, c=c)
+            if p and not os.path.isabs(leo_path):
+                leo_path = os.path.normpath(
+                    os.path.join(c.getNodePath(p), leo_path))
+    
+            # .leo file
+            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                # Immediately end editing, so that typing in the new window works properly.
+                c.endEditing()
+                c.redraw_now()
+                if g.unitTesting:
+                    g.app.unitTestDict['g.openWithFileName']=leo_path
+                else:
+                    c2 = g.openWithFileName(leo_path,old_c=c)
+                    # with UNL after path
+                    if c2 and fragment:
+                        g.recursiveUNLSearch(fragment.split("-->"),c2)
+                    if c2:
+                        c2.bringToFront()
+                        return
+                    
+        if scheme in ('', 'file'):
+            if os.path.exists(leo_path):
+                g.os_startfile(leo_path)
+                return
+            if scheme == 'file':
+                g.es("File '%s' does not exist"%leo_path)
+                return
+            
+        import webbrowser
+
+        if g.unitTesting:
+            g.app.unitTestDict['browser']=url
+            return
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+        
+    except:
+        g.es("exception opening",url)
+        g.es_exception()
+#@+node:ekr.20120311151914.9918: *6* g.isValidUrl
+def isValidUrl(url):
+    
+    '''Return true if url *looks* like a valid url.'''
+    
+    if url.startswith('#-->'):
+        # All Leo UNL's.
+        return True
+    else:
+        parsed = urlparse(url)
+        # g.trace(parsed.scheme,url)
+        return bool(parsed.scheme)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

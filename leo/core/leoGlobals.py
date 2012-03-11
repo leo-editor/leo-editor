@@ -4510,7 +4510,7 @@ def isValidUrl(url):
         return True
     else:
         parsed = urlparse(url)
-        g.trace(parsed.scheme,url)
+        # g.trace(parsed.scheme,url)
         return bool(parsed.scheme)
 #@+node:EKR.20040612114220: ** Utility classes, functions & objects...
 #@+node:ekr.20050315073003: *3*  Index utilities... (leoGlobals)
