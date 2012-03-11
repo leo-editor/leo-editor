@@ -2043,6 +2043,7 @@ class baseFileCommands:
         ok,backupName = self.createBackupFile(fileName)
         if not ok: return False
         fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
+        if not theActualFile: return False
         self.mFileName = fileName
         self.outputFile = StringIO() # Always write to a string.
 
@@ -2086,6 +2087,8 @@ class baseFileCommands:
                 # 2010/01/21: always write in binary mode.
                 theActualFile = open(fileName,'wb')
             except IOError:
+                g.es('can not open %s' % fileName)
+                g.es_exception()
                 theActualFile = None
 
         return fileName,theActualFile

@@ -2253,9 +2253,9 @@ class LoadManager:
             # Resize the _new_ frame.
 
         if not g.os_path_exists(fn):
-            # 2011/10/12: Create an empty @edit node.
             p = c.rootPosition()
-            p.setHeadString('@edit %s' % fn)
+            # Create an empty @edit node unless fn is an .leo file.
+            p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
             c.selectPosition(p)
         elif c.looksLikeDerivedFile(fn):
             # 2011/10/10: Create an @file node.
