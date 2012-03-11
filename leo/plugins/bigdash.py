@@ -58,7 +58,8 @@ def init ():
             else:
                 g._global_search = gs = GlobalSearch()
                 set_leo(g)
-                leofts.init()
+                if leofts:
+                    leofts.init()
                         
                         
         g.plugin_signon(__name__)
@@ -117,6 +118,7 @@ class GlobalSearch:
         #self.bd.show()
         self.bd.add_cmd_handler(self.do_search)
         self.bd.add_cmd_handler(self.do_fts)
+        self.bd.add_cmd_handler(self.do_stats)
         
         
         self.anchors = {}        
@@ -124,6 +126,13 @@ class GlobalSearch:
     def show(self):
         self.bd.w.show()
         
+    def do_stats(self, tgt, qs):
+        if qs != "stats":
+            return False
+        s = self.get_fts().statistics()
+        docs = s['documents']
+        tgt.web.setHtml("<p>Indexed documents:</p><ul>" + "".join("<li>%s</li>" % doc for doc in docs) + "</ul>" )
+            
     def get_fts(self):
         return leofts.get_fts()
 
@@ -148,6 +157,26 @@ class GlobalSearch:
             for c2 in g.app.commanders():
                 print("Scanning",c2)
                 fts.index_nodes(c2)
+        if ss.strip() == "fts add":
+            print("Add new docs")
+            docs = set(fts.statistics()["documents"])
+            print("Have docs", docs )
+            for c2 in g.app.commanders():
+                fn = c2.mFileName
+                if fn in docs:
+                    continue
+                print("Adding document to index:",fn)
+                fts.index_nodes(c2)
+        if ss.strip() == "fts refresh":
+            for c2 in g.app.commanders():
+                fn = c2.mFileName
+                print("Refreshing", fn)
+                fts.drop_document(fn)
+                fts.index_nodes(c2)
+            gc = g._gnxcache            
+            gc.clear()
+            gc.update_new_cs()
+            
                 
         hits = []
         if q:
@@ -251,12 +280,13 @@ class BigDash:
                     <table cellspacing="10">
                     <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
                     <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
+                    <tr><td> <b>fts add</b></td><td>   <i>Add currently open, still unindexed leo files to index</i></td></tr>                    
                     <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
                     <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
                     <tr><td> <b>help</b></td><td>   <i>Show this help</i></td></tr>
-                    
-                    
                     </table>
+                    
+                    <p>Other commands: fts refresh, stats</p> 
                     """)
         
     def create_ui(self):
