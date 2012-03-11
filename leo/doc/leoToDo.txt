@@ -18,160 +18,6 @@ Top 10:
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 @language rest
 
-.. @+node:ekr.20120309075544.9883: *4* Fix bug 944555: Ctrl-left-click URL handling not as sophisticated as @url URL handling
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/944555
-Ctrl-left-click URL handling not as sophisticated as @url URL handling
-
-**Also**: Make sure bookmarks and contextmenu plguins use Make sure all use g.handleUrl.
-
-**Also**: Make sure ~ works in file url's.
-
-@language python
-.. @+node:ekr.20120308051922.11950: *5* URL's
-.. @+node:ekr.20120307101527.9887: *6* @url file://C:/prog/test.sh
-.. @+node:ekr.20120307101527.9893: *6* @url file://C:/prog
-.. @+node:ekr.20120307101527.9898: *6* @url http://writemonkey.com/index.php
-.. @+node:ekr.20120307101527.14201: *6* @url file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes
-.. @+node:ekr.20120311070142.9894: *6* @url file://../doc/LeoDocs.leo#Leo 4.10 Release notes
-.. @+node:ekr.20120307130611.11249: *6* @url #-->Before 4.10 b1
-.. @+node:ekr.20120311070142.9895: *6* @url file://~/ekr.leo
-.. @+node:ekr.20120309075544.9885: *6* @url file://~/ekr.html
-.. @+node:ekr.20120309075544.9886: *6* @url file://c:/users/edreamleo/ekr.html
-.. @+node:ekr.20080921060401.13: *5* os_path_expanduser
-def os_path_expanduser(path):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    result = os.path.normpath(os.path.expanduser(path))
-
-    return result
-.. @+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url,c=None,p=None):
-    
-    # Note 1: the UNL plugin has its own notion of what a good url is.
-
-    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
-    #         node if it exists.
-
-    if url:
-        if c and not p:
-            p = c.p
-        g.handleUrl(c,p,url)
-    else:
-        g.es("no url following @url")
-.. @+node:tbrown.20090219095555.63: *6* g.handleUrl
-@ Most browsers should handle the following urls:
-  ftp://ftp.uu.net/public/whatever.
-  http://localhost/MySiteUnderDevelopment/index.html
-  file:///home/me/todolist.html
-@c
-
-def handleUrl(c,p,url):
-    
-    trace = False and not g.unitTesting
-
-    try:
-        tag = 'file://'
-        if url.startswith(tag):
-            i = url.find('~')
-            if i > -1:
-                # Expand '~' and finalize *before* parsing the url.
-                path = url[i:]
-                path = g.os_path_expanduser(path)
-                path = g.os_path_finalize(path)
-                url = url[:i] + path
-            else:
-                # Finalize the path *before* parsing the url.
-                path = url[len(tag):].lstrip()
-                if c and c.openDirectory:
-                    path = g.os_path_finalize_join(c.openDirectory,path)
-                else:
-                    path = g.os_path_finalize(path)
-                url = '%s%s' % (tag,path)
-    
-        parsed = urlparse(url)
-        fragment = parsed.fragment
-        netloc   = parsed.netloc
-        path     = parsed.path
-        scheme   = parsed.scheme
-
-        if netloc:
-            leo_path = os.path.join(netloc, path)
-            # "readme.txt" gets parsed into .netloc...
-        else:
-            leo_path = path
-            
-        if leo_path.endswith('\\'): leo_path = leo_path[:-1]
-        if leo_path.endswith('/'):  leo_path = leo_path[:-1]
-            
-        if trace:
-            print()
-            g.trace('url          ',url)
-            g.trace('c.frame.title',c.frame.title)
-            g.trace('leo_path     ',leo_path)
-            g.trace('parsed.netloc',netloc)
-            g.trace('parsed.path  ',path)
-            g.trace('parsed.scheme',scheme)
-
-        if c and scheme in ('', 'file'):
-            
-            if not leo_path:
-            
-                # local UNLs like "node-->subnode", "-->node", and "#node"
-                if '-->' in path:
-                    g.recursiveUNLSearch(path.split("-->"), c)
-                    return
-                if not path and fragment:
-                    g.recursiveUNLSearch(fragment.split("-->"), c)
-                    return
-    
-            # leo aware path
-            leo_path = os.path.expanduser(leo_path)
-            leo_path = g.os_path_expandExpression(leo_path, c=c)
-            if p and not os.path.isabs(leo_path):
-                leo_path = os.path.normpath(
-                    os.path.join(c.getNodePath(p), leo_path))
-    
-            # .leo file
-            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-                # Immediately end editing, so that typing in the new window works properly.
-                c.endEditing()
-                c.redraw_now()
-                if g.unitTesting:
-                    g.app.unitTestDict['g.openWithFileName']=leo_path
-                else:
-                    c2 = g.openWithFileName(leo_path,old_c=c)
-                    # with UNL after path
-                    if c2 and fragment:
-                        g.recursiveUNLSearch(fragment.split("-->"),c2)
-                    if c2:
-                        c2.bringToFront()
-                        return
-                    
-        if scheme in ('', 'file'):
-            if os.path.exists(leo_path):
-                g.os_startfile(leo_path)
-                return
-            if scheme == 'file':
-                g.es("File '%s' does not exist"%leo_path)
-                return
-            
-        import webbrowser
-
-        if g.unitTesting:
-            g.app.unitTestDict['browser']=url
-            return
-        # Mozilla throws a weird exception, then opens the file!
-        try: webbrowser.open(url)
-        except: pass
-        
-    except:
-        g.es("exception opening",url)
-        g.es_exception()
 .. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
 @language python
@@ -7383,22 +7229,27 @@ def os_startfile(fname):
     if g.unitTesting:
         g.app.unitTestDict['os_startfile']=fname
         return
+        
+    if fname.find('"') > -1:
+        quoted_fname = "'%s'" % fname
+    else:
+        quoted_fname = '"%s"' % fname
 
     if sys.platform.startswith('win'):
-        os.startfile(fname)
+        os.startfile(quoted_fname)
             # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
-            subprocess.call(['open', fname])
+            subprocess.call(['open', quoted_fname])
         except OSError:
             pass # There may be a spurious "Interrupted system call"
         except ImportError:
-            os.system("open '%s'" % (fname,))
+            os.system('open %s' % (quoted_fname))
     else:
         # os.system('xdg-open "%s"' % (fname))
         try:
-            val = subprocess.call('xdg-open %s' % (fname),shell=True)
+            val = subprocess.call('xdg-open %s' % (quoted_fname),shell=True)
             if val < 0:
                 g.es_print('xdg-open %s failed' % (fname))
         except Exception:

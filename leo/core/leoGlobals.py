@@ -3257,22 +3257,27 @@ def os_startfile(fname):
     if g.unitTesting:
         g.app.unitTestDict['os_startfile']=fname
         return
+        
+    if fname.find('"') > -1:
+        quoted_fname = "'%s'" % fname
+    else:
+        quoted_fname = '"%s"' % fname
 
     if sys.platform.startswith('win'):
-        os.startfile(fname)
+        os.startfile(quoted_fname)
             # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
-            subprocess.call(['open', fname])
+            subprocess.call(['open', quoted_fname])
         except OSError:
             pass # There may be a spurious "Interrupted system call"
         except ImportError:
-            os.system("open '%s'" % (fname,))
+            os.system('open %s' % (quoted_fname))
     else:
         # os.system('xdg-open "%s"' % (fname))
         try:
-            val = subprocess.call('xdg-open %s' % (fname),shell=True)
+            val = subprocess.call('xdg-open %s' % (quoted_fname),shell=True)
             if val < 0:
                 g.es_print('xdg-open %s failed' % (fname))
         except Exception:
