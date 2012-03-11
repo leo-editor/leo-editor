@@ -83,8 +83,11 @@ def all_positions_global():
 
 def open_unl(unl):
     parts = unl.split("#",1)
-    
-    g.openWithFileName(parts[0])
+        
+    c = g.openWithFileName(parts[0])
+    if len(parts) > 1:
+        segs = parts[1].split("-->")
+        g.recursiveUNLSearch(segs, c)
     
     
 
@@ -114,6 +117,7 @@ class GlobalSearch:
         #self.bd.show()
         self.bd.add_cmd_handler(self.do_search)
         self.bd.add_cmd_handler(self.do_fts)
+        
         
         self.anchors = {}        
         
@@ -240,6 +244,21 @@ class BigDash:
     def _lnk_handler(self, url):
         self.link_handler(str(url.toString()))
         
+    def show_help(self):
+        
+        self.web.setHtml("""\
+                    <h12>Dashboard</h2>
+                    <table cellspacing="10">
+                    <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
+                    <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
+                    <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
+                    <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
+                    <tr><td> <b>help</b></td><td>   <i>Show this help</i></td></tr>
+                    
+                    
+                    </table>
+                    """)
+        
     def create_ui(self):
         self.w = w = QWidget()
         w.setWindowTitle("Leo search")
@@ -258,24 +277,21 @@ class BigDash:
                                                        lc);
         web.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         w.setLayout(lay)
-        web.setHtml("""
-                    <h12>Dashboard</h2>
-                    <table cellspacing="10">
-                    <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
-                    <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
-                    <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
-                    <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body</i></td></tr>
-                    
-                    
-                    </table>
-                    """)
         #web.load(QUrl("http://google.fi"))
+        self.show_help()
         w.show()
+        def help_handler(tgt,qs):
+            if qs == "help":
+                self.show_help()
+                return True
+            return False
+        self.add_cmd_handler(help_handler)
         
     def __init__(self):
-        self.create_ui()
+        
         self.handlers = []
         self.link_handler = lambda x : 1
+        self.create_ui()
 
 
 
