@@ -1739,11 +1739,23 @@ def handleUrl(c,p,url):
     trace = False and not g.unitTesting
 
     try:
-        # Expand '~' *before* parsing the url.
-        if url.startswith('file://'):
+        tag = 'file://'
+        if url.startswith(tag):
             i = url.find('~')
             if i > -1:
-                url = url[:i] + g.os_path_expanduser(url[i:])
+                # Expand '~' and finalize *before* parsing the url.
+                path = url[i:]
+                path = g.os_path_expanduser(path)
+                path = g.os_path_finalize(path)
+                url = url[:i] + path
+            else:
+                # Finalize the path *before* parsing the url.
+                path = url[len(tag):].lstrip()
+                if c and c.openDirectory:
+                    path = g.os_path_finalize_join(c.openDirectory,path)
+                else:
+                    path = g.os_path_finalize(path)
+                url = '%s%s' % (tag,path)
     
         parsed = urlparse(url)
         fragment = parsed.fragment

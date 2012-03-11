@@ -3526,7 +3526,9 @@ Both unit tests and hand tests pass.
 #@+node:ekr.20120307101527.9893: *6* @url file://C:/prog
 #@+node:ekr.20120307101527.9898: *6* @url http://writemonkey.com/index.php
 #@+node:ekr.20120307101527.14201: *6* @url file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes
+#@+node:ekr.20120311070142.9894: *6* @url file://../doc/LeoDocs.leo#Leo 4.10 Release notes
 #@+node:ekr.20120307130611.11249: *6* @url #-->Before 4.10 b1
+#@+node:ekr.20120311070142.9895: *6* @url file://~/ekr.leo
 #@+node:ekr.20120309075544.9885: *6* @url file://~/ekr.html
 #@+node:ekr.20120309075544.9886: *6* @url file://c:/users/edreamleo/ekr.html
 #@+node:ekr.20090829140232.6036: *5* os_startfile
@@ -3628,11 +3630,23 @@ def handleUrl(c,p,url):
     trace = False and not g.unitTesting
 
     try:
-        # Expand '~' *before* parsing the url.
-        if url.startswith('file://'):
+        tag = 'file://'
+        if url.startswith(tag):
             i = url.find('~')
             if i > -1:
-                url = url[:i] + g.os_path_expanduser(url[i:])
+                # Expand '~' and finalize *before* parsing the url.
+                path = url[i:]
+                path = g.os_path_expanduser(path)
+                path = g.os_path_finalize(path)
+                url = url[:i] + path
+            else:
+                # Finalize the path *before* parsing the url.
+                path = url[len(tag):].lstrip()
+                if c and c.openDirectory:
+                    path = g.os_path_finalize_join(c.openDirectory,path)
+                else:
+                    path = g.os_path_finalize(path)
+                url = '%s%s' % (tag,path)
     
         parsed = urlparse(url)
         fragment = parsed.fragment
