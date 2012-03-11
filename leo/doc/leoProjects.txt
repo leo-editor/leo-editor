@@ -11990,6 +11990,169 @@ def uninvert (self,d):
     if trace: g.trace('returns %4s %s %s' % (
         len(list(result.keys())),id(d),result.name()))
     return result
+#@+node:ekr.20120311151914.9915: *4* Fixed bug 951739: xdg-open of a file-scheme URL containing blanks 
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/951739
+xdg-open of a file-scheme URL containing blanks
+
+The major problem is that currently blanks are not allowed in file-scheme URL's.
+The minor problem is that error messages are printed on the console.
+
+When an attempt is made to open a file-scheme URL that
+contains blanks (making it an invalid URL), an error message
+like the following is printed on the console:
+
+xdg-open: unexpected argument 'Dodge'
+Try 'xdg-open --help' for more information.
+--- Error message end ----
+
+The URL that caused the above message:
+file:///media/datw1/BobH/0/2002 Dodge Neon SXT/Dodge Dealers.txt
+
+Fix to both problems:
+Either single or double quotations are needed around the pathname that is passed to xdg-open.
+#@+node:tbrown.20090219095555.63: *5* g.handleUrl
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file:///home/me/todolist.html
+@c
+
+def handleUrl(c,p,url):
+    
+    trace = False and not g.unitTesting
+
+    try:
+        tag = 'file://'
+        if url.startswith(tag):
+            i = url.find('~')
+            if i > -1:
+                # Expand '~' and finalize *before* parsing the url.
+                path = url[i:]
+                path = g.os_path_expanduser(path)
+                path = g.os_path_finalize(path)
+                url = url[:i] + path
+            else:
+                # Finalize the path *before* parsing the url.
+                path = url[len(tag):].lstrip()
+                if c and c.openDirectory:
+                    path = g.os_path_finalize_join(c.openDirectory,path)
+                else:
+                    path = g.os_path_finalize(path)
+                url = '%s%s' % (tag,path)
+    
+        parsed = urlparse(url)
+        fragment = parsed.fragment
+        netloc   = parsed.netloc
+        path     = parsed.path
+        scheme   = parsed.scheme
+
+        if netloc:
+            leo_path = os.path.join(netloc, path)
+            # "readme.txt" gets parsed into .netloc...
+        else:
+            leo_path = path
+            
+        if leo_path.endswith('\\'): leo_path = leo_path[:-1]
+        if leo_path.endswith('/'):  leo_path = leo_path[:-1]
+            
+        if trace:
+            print()
+            g.trace('url          ',url)
+            g.trace('c.frame.title',c.frame.title)
+            g.trace('leo_path     ',leo_path)
+            g.trace('parsed.netloc',netloc)
+            g.trace('parsed.path  ',path)
+            g.trace('parsed.scheme',scheme)
+
+        if c and scheme in ('', 'file'):
+            
+            if not leo_path:
+            
+                # local UNLs like "node-->subnode", "-->node", and "#node"
+                if '-->' in path:
+                    g.recursiveUNLSearch(path.split("-->"), c)
+                    return
+                if not path and fragment:
+                    g.recursiveUNLSearch(fragment.split("-->"), c)
+                    return
+    
+            # leo aware path
+            leo_path = os.path.expanduser(leo_path)
+            leo_path = g.os_path_expandExpression(leo_path, c=c)
+            if p and not os.path.isabs(leo_path):
+                leo_path = os.path.normpath(
+                    os.path.join(c.getNodePath(p), leo_path))
+    
+            # .leo file
+            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                # Immediately end editing, so that typing in the new window works properly.
+                c.endEditing()
+                c.redraw_now()
+                if g.unitTesting:
+                    g.app.unitTestDict['g.openWithFileName']=leo_path
+                else:
+                    c2 = g.openWithFileName(leo_path,old_c=c)
+                    # with UNL after path
+                    if c2 and fragment:
+                        g.recursiveUNLSearch(fragment.split("-->"),c2)
+                    if c2:
+                        c2.bringToFront()
+                        return
+                    
+        if scheme in ('', 'file'):
+            if os.path.exists(leo_path):
+                g.os_startfile(leo_path)
+                return
+            if scheme == 'file':
+                g.es("File '%s' does not exist"%leo_path)
+                return
+            
+        import webbrowser
+
+        if g.unitTesting:
+            g.app.unitTestDict['browser']=url
+            return
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+        
+    except:
+        g.es("exception opening",url)
+        g.es_exception()
+#@+node:ekr.20090829140232.6036: *5* os_startfile
+def os_startfile(fname):
+    
+    if g.unitTesting:
+        g.app.unitTestDict['os_startfile']=fname
+        return
+        
+    if fname.find('"') > -1:
+        quoted_fname = "'%s'" % fname
+    else:
+        quoted_fname = '"%s"' % fname
+
+    if sys.platform.startswith('win'):
+        os.startfile(quoted_fname)
+            # Exists only on Windows.
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', quoted_fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system('open %s' % (quoted_fname))
+    else:
+        # os.system('xdg-open "%s"' % (fname))
+        try:
+            val = subprocess.call('xdg-open %s' % (quoted_fname),shell=True)
+            if val < 0:
+                g.es_print('xdg-open %s failed' % (fname))
+        except Exception:
+            g.es_print('error opening %s' % fname)
+            g.es_exception()
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

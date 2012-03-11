@@ -26,9 +26,8 @@ order in @enabled-plugins matters. For example: if vim.py is enabled before
 mime.py, double-clicking on an @mime node will both open the body text in [g]vim
 AND call the mime_open_cmd.
 
-This plugin is complementary to the UNL.py plugin's @url nodes. Use @url for
-opening either URLs or Uniform Node Locators in "\*.leo" files and use @mime
-nodes for opening files on the local file system. It also replaces the
+Use @url for opening either URLs or Uniform Node Locators in "\*.leo" files and
+use @mime nodes for opening files on the local file system. It also replaces the
 startfile.py plugin, where here the headline must start with @mime to activate
 this plugin.
 
