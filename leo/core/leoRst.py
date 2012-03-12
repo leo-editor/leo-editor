@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20090502071837.3: * @file leoRst.py
+#@@first
+
 #@+<< docstring >>
 #@+node:ekr.20090502071837.4: ** << docstring >>
 '''Support for restructured text (rST), adapted from rst3 plugin.
@@ -1749,9 +1752,10 @@ class rstCommands:
                 if not g.isUnicode(s):
                     s = g.toUnicode(s,'utf-8')
             else:
-                s = g.toEncodedString(s,'utf-8')
-                    # Fixes bug 923301: Unicode error when executing 'rst3' command
-                f = open(fn,'w')
+                # Fixes bug 923301: Unicode error when executing 'rst3' command
+                if g.isPython3:
+                    s = g.toEncodedString(s,'utf-8')
+                f = open(fn,'wb') # Bug fix: use 'wb'
                 f.write(s)
                 f.close()
                 self.report(fn)
