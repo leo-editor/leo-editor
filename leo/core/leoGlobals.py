@@ -4495,12 +4495,12 @@ def handleUrl(url,c=None,p=None):
             
         import webbrowser
 
-        if trace: g.trace('webbrowser.open(%s)' % (leo_path))
+        if trace: g.trace('webbrowser.open(%s)' % (url))
         if g.unitTesting:
-            g.app.unitTestDict['browser']=leo_path
+            g.app.unitTestDict['browser']=url
         else:
             # Mozilla throws a weird exception, then opens the file!
-            try: webbrowser.open(leo_path)
+            try: webbrowser.open(url)
             except: pass
         
     except:
