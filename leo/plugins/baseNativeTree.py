@@ -590,7 +590,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             p = self.item2position(item)
             
         # 2011/07/28: End the lockout here, not at the end.
-        # This allows g.handleUrlInUrlNode to end editing properly.
         finally:
             self.selecting = False
             

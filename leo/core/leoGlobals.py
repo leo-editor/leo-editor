@@ -2956,7 +2956,7 @@ def os_path_expandExpression (s,**keys):
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
-                if trace: g.trace(s1,s)
+                if trace: g.trace('returns',s)
             except Exception:
                 g.trace(g.callers())
                 g.es_exception(full=True, c=c, color='red')
@@ -4379,47 +4379,47 @@ def getUrlFromNode(p):
             url = s[4:].strip()
 
     return url
-#@+node:tbrown.20090219095555.61: *3* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url,c=None,p=None):
-    
-    # Called from tree.OnIconDoubleClick.
-
-    if url:
-        if c and not p:
-            p = c.p
-        g.handleUrl(c,p,url)
-    else:
-        g.es("no url following @url")
-#@+node:tbrown.20090219095555.63: *4* g.handleUrl
+#@+node:tbrown.20090219095555.63: *3* g.handleUrl
 #@+at Most browsers should handle the following urls:
 #   ftp://ftp.uu.net/public/whatever.
 #   http://localhost/MySiteUnderDevelopment/index.html
 #   file:///home/me/todolist.html
 #@@c
 
-def handleUrl(c,p,url):
+def handleUrl(url,c=None,p=None):
     
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting ; verbose = False
+    
+    if c and not p:
+        p = c.p
+        
+    if url.startswith('@url'):
+        url = url[4:].lstrip()
 
     try:
         tag = 'file://'
         if url.startswith(tag):
+            # Finalize the path *before* parsing the url.
             i = url.find('~')
             if i > -1:
-                # Expand '~' and finalize *before* parsing the url.
+                # Expand '~' and handle Leo expressions.
                 path = url[i:]
                 path = g.os_path_expanduser(path)
+                path = g.os_path_expandExpression(path,c=c)
                 path = g.os_path_finalize(path)
                 url = url[:i] + path
             else:
-                # Finalize the path *before* parsing the url.
+                # Handle Leo expressions.
                 path = url[len(tag):].lstrip()
+                path = g.os_path_expandExpression(path,c=c)
+                # Handle ancestor @path directives.
                 if c and c.openDirectory:
-                    path = g.os_path_finalize_join(c.openDirectory,path)
+                    base = c.getNodePath(p)
+                    path = g.os_path_finalize_join(c.openDirectory,base,path)
                 else:
                     path = g.os_path_finalize(path)
                 url = '%s%s' % (tag,path)
-    
+                
         parsed = urlparse(url)
         fragment = parsed.fragment
         netloc   = parsed.netloc
@@ -4435,7 +4435,7 @@ def handleUrl(c,p,url):
         if leo_path.endswith('\\'): leo_path = leo_path[:-1]
         if leo_path.endswith('/'):  leo_path = leo_path[:-1]
             
-        if trace:
+        if trace and verbose:
             print()
             g.trace('url          ',url)
             g.trace('c.frame.title',c.frame.title)
@@ -4447,7 +4447,6 @@ def handleUrl(c,p,url):
         if c and scheme in ('', 'file'):
             
             if not leo_path:
-            
                 # local UNLs like "node-->subnode", "-->node", and "#node"
                 if '-->' in path:
                     g.recursiveUNLSearch(path.split("-->"), c)
@@ -4455,13 +4454,6 @@ def handleUrl(c,p,url):
                 if not path and fragment:
                     g.recursiveUNLSearch(fragment.split("-->"), c)
                     return
-    
-            # leo aware path
-            leo_path = os.path.expanduser(leo_path)
-            leo_path = g.os_path_expandExpression(leo_path, c=c)
-            if p and not os.path.isabs(leo_path):
-                leo_path = os.path.normpath(
-                    os.path.join(c.getNodePath(p), leo_path))
     
             # .leo file
             if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
@@ -4479,8 +4471,11 @@ def handleUrl(c,p,url):
                         c2.bringToFront()
                         return
                     
-        if scheme in ('', 'file'):
+        isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
+
+        if not isHtml and scheme in ('', 'file'):
             if os.path.exists(leo_path):
+                if trace: g.trace('g.os_startfile(%s)' % (leo_path))
                 g.os_startfile(leo_path)
                 return
             if scheme == 'file':
@@ -4489,15 +4484,16 @@ def handleUrl(c,p,url):
             
         import webbrowser
 
+        if trace: g.trace('webbrowser.open(%s)' % (leo_path))
         if g.unitTesting:
-            g.app.unitTestDict['browser']=url
-            return
-        # Mozilla throws a weird exception, then opens the file!
-        try: webbrowser.open(url)
-        except: pass
+            g.app.unitTestDict['browser']=leo_path
+        else:
+            # Mozilla throws a weird exception, then opens the file!
+            try: webbrowser.open(leo_path)
+            except: pass
         
     except:
-        g.es("exception opening",url)
+        g.es("exception opening",leo_path)
         g.es_exception()
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url):

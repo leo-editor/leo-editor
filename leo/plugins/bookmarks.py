@@ -82,7 +82,7 @@ def onDClick1 (tag,keywords):
         url = g.getUrlFromNode(p)
         if url:
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                g.handleUrlInUrlNode(url,c=c,p=p)
+                g.handleUrl(url,c=c,p=p)
             g.doHook("@url2",c=c,p=p,v=p)
 #@+node:tbrown.20110712100955.39215: ** command bookmarks_show
 @g.command('bookmarks_show')
@@ -174,7 +174,7 @@ class BookMarkDisplay:
             if QtCore.Qt.ShiftModifier & te.modifiers:
                 sep = '\\' if '\\' in url else '/'
                 url = sep.join(url.split(sep)[:-1])
-            g.handleUrlInUrlNode(url, c=c, p=p)
+            g.handleUrl(url,c=c,p=p)
         
         te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)
         

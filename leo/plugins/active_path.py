@@ -385,7 +385,7 @@ def openFile(c,parent,d, autoload=False):
                     
         if binary_open:
             g.es('Treating file as binary')
-            g.handleUrlInUrlNode(path)
+            g.handleUrl('file://' + path,c=c)
             # if not query(c, "File may be binary, continue?"):
             #     return
             return

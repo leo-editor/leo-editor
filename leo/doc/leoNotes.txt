@@ -6433,5 +6433,16 @@ def checkUrl(url):
     # if not re.match(urlPattern,url):
     #     g.es("invalid url:",url)
     #     return
+#@+node:tbrown.20090219095555.61: *3* g.handleUrlInUrlNode
+def handleUrlInUrlNode(url,c=None,p=None):
+    
+    # Called from tree.OnIconDoubleClick.
+
+    if url:
+        if c and not p:
+            p = c.p
+        g.handleUrl(url,c=c,p=p)
+    else:
+        g.es("no url following @url")
 #@-all
 #@-leo

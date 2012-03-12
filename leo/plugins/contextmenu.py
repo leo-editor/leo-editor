@@ -269,7 +269,7 @@ def openurl_rclick(c,p, menu):
 
     def openurl_rclick_cb():
         if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrlInUrlNode(url, c=c, p=p)
+            g.handleUrl(url,c=c,p=p)
         g.doHook("@url2",c=c,p=p,v=p)
 
     a = menu.addAction("Open URL")

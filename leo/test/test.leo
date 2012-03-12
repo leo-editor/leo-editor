@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.52">
+<globals body_outline_ratio="0.67" body_secondary_ratio="0.52">
 	<global_window_position top="74" left="285" height="837" width="1352"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -642,6 +642,7 @@
 <v t="ekr.20091230081322.1919"></v>
 <v t="ekr.20120311072228.2716"><vh>@url file://../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
 <v t="ekr.20120311074029.2727"><vh>URL's</vh>
+<v t="ekr.20120312075951.2740"><vh>@url file://{{c.openDirectory}}/../doc/LeoDocs.leo</vh></v>
 <v t="ekr.20120311074029.2728"><vh>@url file://C:/prog/test.sh</vh></v>
 <v t="ekr.20120311074029.2729"><vh>@url file://C:/prog</vh></v>
 <v t="ekr.20120311074029.2730"><vh>@url http://writemonkey.com/index.php</vh></v>
@@ -652,6 +653,7 @@
 <v t="ekr.20120311074029.2735"><vh>@url file://~/ekr.html</vh></v>
 <v t="ekr.20120311074029.2736"><vh>@url file://c:/users/edreamleo/ekr.html</vh></v>
 </v>
+<v t="ekr.20120312064707.2737"><vh>test </vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -952,7 +954,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8547,5 +8549,8 @@ timer.start(0)
 <t tx="ekr.20120311074029.2734"></t>
 <t tx="ekr.20120311074029.2735"></t>
 <t tx="ekr.20120311074029.2736"></t>
+<t tx="ekr.20120312064707.2737">url=r'file://../doc/LeoDocs.leo#Leo 4.10 Release notes'
+g.handleUrl(c,p,url)</t>
+<t tx="ekr.20120312075951.2740">print(c.openDirectory)</t>
 </tnodes>
 </leo_file>
