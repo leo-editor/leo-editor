@@ -2,7 +2,7 @@
 #@+node:ekr.20040910070811.1: * @file run_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912181956: ** << docstring >>
-r''' Runs a program and interface Leos through its input/output/error streams.
+r''' Runs a program and interface Leo through its input/output/error streams.
 
 Double clicking the icon box whose headlines are @run 'cmd args' will execute
 the command. There are several other features, including @arg and @input nodes.
@@ -39,7 +39,8 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 #@@language python
 #@@tabwidth -4
 
-__version__ = "0.15"
+__version__ = "0.16"
+    # At present, this plugin is experimental, that is, broken.
 
 #@+<< version history >>
 #@+node:ekr.20040910070811.3: ** << version history >>
@@ -59,13 +60,19 @@ __version__ = "0.15"
 # - Added init function.
 # 0.15 EKR: Corrected the call to os.popen3 in OpenProcess per
 # http://sourceforge.net/forum/message.php?msg_id=3761385
+# 0.16 EKR:
+# - replaced os.popen3 by calls to subprocess.Popen.
+#   This probably altered the intension of this plugin.
+# - Fixed several other crashers.
+# 
+# Important: at present, this plugin must be considered broken.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040910070811.4: ** << imports >>
 import leo.core.leoGlobals as g
 
 import os
-import string
+# import string
 
 if g.isPython3:
     import threading
@@ -73,6 +80,7 @@ else:
     import thread
     import threading
 
+import subprocess
 import time
 #@-<< imports >>
 #@+<< globals >>
@@ -90,7 +98,7 @@ RunList = None
 WorkDir = None
 ExitCode = None
 
-# files and thread...
+# files and threads...
 In = None
 OutThread = None
 ErrThread = None
@@ -141,6 +149,8 @@ def OnIconDoubleClick(tag,keywords):
     c=keywords.get('c')
     if not c or not c.exists: return
     p = c.p
+    
+    # g.trace(c.shortFileName())
 
     h = p.h
     if g.match_word(h,0,"@run"):
@@ -153,7 +163,7 @@ def OnIconDoubleClick(tag,keywords):
 
             for p2 in p.self_and_subtree():
                 if g.match_word(p2.h,0,"@run"):
-                    # g.trace(p2)
+                    # g.trace(p2.h)
                     # 2009/10/30: don't use iter copy arg.
                     RunList.append(p2.copy())	
 
@@ -185,6 +195,8 @@ def OnIdle(tag,keywords):
     if not c or not c.exists: return
 
     if not OwnIdleHook: return
+    
+    # g.trace(c.shortFileName())
 
     if RunNode:
         o = UpdateText(OutThread)
@@ -214,17 +226,25 @@ def OnQuit(tag,keywords=None):
 class readingThread(threading.Thread):
 
     File = None
+
     if g.isPython3:
-        TextLock = threading.Lock().acquire()
+        TextLock = threading.Lock()
+        TextLock.acquire()
     else:
         TextLock = thread.allocate_lock()
+
     Text = ""
 
     #@+others
     #@+node:ekr.20040910070811.7: *3* run
     def run(self):
+        
+        '''Called automatically when the thread is created.'''
 
         global Encoding
+
+        if not self.File:
+            return
 
         s=self.File.readline()
         while s:
@@ -333,21 +353,32 @@ def OpenProcess(p):
     g.es("@run %s>%s" % (os.getcwd(),command),color="blue")
     for arg in args:
         g.es("@arg %s" % arg,color="blue")
-    command += ' ' + string.join(args,' ')
+    command += ' ' + ' '.join(args)
 
     # Start the threads and open the pipe.
     OutThread = readingThread()
-    ErrThread = readingThread()						
+    ErrThread = readingThread()		
+				
     # In,OutThread.File,ErrThread.File	= os.popen3(command,"t")
-    OutThread.File,In,ErrThread.File = os.popen3(command,"t") 		
+    #### OutThread.File,In,ErrThread.File = os.popen3(command,"t")
+    
+    PIPE = subprocess.PIPE
+    proc = subprocess.Popen(command, shell=True) # , # bufsize=bufsize,
+    #     stdin=PIPE,stdout=PIPE,stderr=PIPE) # ,close_fds=True)
+        
+    In             = proc.stdin
+    OutThread.File = proc.stdout
+    ErrThread.File = proc.stderr
+    	
     OutThread.start()
     ErrThread.start()	
 
     # Mark and select the node.
-    RunNode.setMarked()	
-    RunNode.c.selectVnode(RunNode)
+    RunNode.setMarked()
+    c = RunNode.v.context
+    c.selectPosition(RunNode)
     if os.name in ("nt","dos"):
-        RunNode.c.redraw()
+        c.redraw()
 #@+node:ekr.20040910070811.11: ** UpdateText
 def UpdateText(t,wcolor="black"):
 
