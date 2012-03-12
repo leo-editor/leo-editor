@@ -83,38 +83,48 @@ try:
 except ImportError: # does not exist in jython.
     gettext = None
 
-# Do NOT import pdb here!  We shall define pdb as a _function_ below.
-# import pdb
-
 if isPython3:
     from functools import reduce
 
 if isPython3:
     import io
     StringIO = io.StringIO
-    from urllib.parse import urlparse
 else:
     import cStringIO
     StringIO = cStringIO.StringIO
-    from urlparse import urlparse
 
 import imp
 import inspect
 import operator
+import os
+
+# Do NOT import pdb here!  We shall define pdb as a _function_ below.
+# import pdb
+
 import re
 import shutil
+import string
 import subprocess
 # import sys
+import tempfile
 import time
+import traceback
+import types
+
+if isPython3:
+    import urllib.parse as urlparse
+else:
+    import urlparse
+
 # import zipfile
 
 # These do not exist in IronPython.
 # However, it *is* valid for IronPython to use the Python 2.4 libs!
-import os
-import string
-import tempfile
-import traceback
-import types
+    # import os
+    # import string
+    # import tempfile
+    # import traceback
+    # import types
 #@-<< imports >>
 #@+<< define globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define globalDirectiveList >>
@@ -2883,7 +2893,7 @@ def windows():
 #@+node:ekr.20031218072017.2145: ** os.path wrappers (leoGlobals.py)
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
-#@+node:ekr.20031218072017.2146: *3* os_path_abspath
+#@+node:ekr.20031218072017.2146: *3* g.os_path_abspath
 def os_path_abspath(path):
 
     """Convert a path to an absolute path."""
@@ -2895,7 +2905,7 @@ def os_path_abspath(path):
     path = g.toUnicodeFileEncoding(path)
 
     return path
-#@+node:ekr.20031218072017.2147: *3* os_path_basename
+#@+node:ekr.20031218072017.2147: *3* g.os_path_basename
 def os_path_basename(path):
 
     """Return the second half of the pair returned by split(path)."""
@@ -2907,7 +2917,7 @@ def os_path_basename(path):
     path = g.toUnicodeFileEncoding(path)
 
     return path
-#@+node:ekr.20031218072017.2148: *3* os_path_dirname
+#@+node:ekr.20031218072017.2148: *3* g.os_path_dirname
 def os_path_dirname(path):
 
     """Return the first half of the pair returned by split(path)."""
@@ -2919,7 +2929,7 @@ def os_path_dirname(path):
     path = g.toUnicodeFileEncoding(path)
 
     return path
-#@+node:ekr.20031218072017.2149: *3* os_path_exists
+#@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path):
 
     """Return True if path exists."""
@@ -2927,7 +2937,7 @@ def os_path_exists(path):
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.exists(path)
-#@+node:ekr.20080922124033.6: *3* os_path_expandExpression
+#@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression
 def os_path_expandExpression (s,**keys):
 
     '''Expand {{anExpression}} in c's context.'''
@@ -2962,7 +2972,7 @@ def os_path_expandExpression (s,**keys):
                 g.es_exception(full=True, c=c, color='red')
 
     return s
-#@+node:ekr.20080921060401.13: *3* os_path_expanduser
+#@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
 
     """wrap os.path.expanduser"""
@@ -3001,7 +3011,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@+node:ekr.20031218072017.2150: *3* os_path_getmtime
+#@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
 def os_path_getmtime(path):
 
     """Return the modification time of path."""
@@ -3009,7 +3019,7 @@ def os_path_getmtime(path):
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.getmtime(path)
-#@+node:ekr.20080729142651.2: *3* os_path_getsize
+#@+node:ekr.20080729142651.2: *3* g.os_path_getsize
 def os_path_getsize (path):
 
     '''Return the size of path.'''
@@ -3017,7 +3027,7 @@ def os_path_getsize (path):
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.getsize(path)
-#@+node:ekr.20031218072017.2151: *3* os_path_isabs
+#@+node:ekr.20031218072017.2151: *3* g.os_path_isabs
 def os_path_isabs(path):
 
     """Return True if path is an absolute path."""
@@ -3025,7 +3035,7 @@ def os_path_isabs(path):
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.isabs(path)
-#@+node:ekr.20031218072017.2152: *3* os_path_isdir
+#@+node:ekr.20031218072017.2152: *3* g.os_path_isdir
 def os_path_isdir(path):
 
     """Return True if the path is a directory."""
@@ -3033,7 +3043,7 @@ def os_path_isdir(path):
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.isdir(path)
-#@+node:ekr.20031218072017.2153: *3* os_path_isfile
+#@+node:ekr.20031218072017.2153: *3* g.os_path_isfile
 def os_path_isfile(path):
 
     """Return True if path is a file."""
@@ -3041,7 +3051,7 @@ def os_path_isfile(path):
     path = g.toUnicodeFileEncoding(path)
 
     return os.path.isfile(path)
-#@+node:ekr.20031218072017.2154: *3* os_path_join
+#@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args,**keys):
 
     trace = False and not g.unitTesting
@@ -3071,7 +3081,7 @@ def os_path_join(*args,**keys):
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
     return path
-#@+node:ekr.20031218072017.2156: *3* os_path_normcase
+#@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path):
 
     """Normalize the path's case."""
@@ -3083,7 +3093,7 @@ def os_path_normcase(path):
     path = g.toUnicodeFileEncoding(path)
 
     return path
-#@+node:ekr.20031218072017.2157: *3* os_path_normpath
+#@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
 def os_path_normpath(path):
 
     """Normalize the path."""
@@ -3095,7 +3105,7 @@ def os_path_normpath(path):
     path = g.toUnicodeFileEncoding(path)
 
     return path
-#@+node:ekr.20080605064555.2: *3* os_path_realpath
+#@+node:ekr.20080605064555.2: *3* g.os_path_realpath
 def os_path_realpath(path):
 
 
@@ -3106,7 +3116,7 @@ def os_path_realpath(path):
     path = g.toUnicodeFileEncoding(path)
 
     return path
-#@+node:ekr.20031218072017.2158: *3* os_path_split
+#@+node:ekr.20031218072017.2158: *3* g.os_path_split
 def os_path_split(path):
 
     path = g.toUnicodeFileEncoding(path)
@@ -3117,7 +3127,7 @@ def os_path_split(path):
     tail = g.toUnicodeFileEncoding(tail)
 
     return head,tail
-#@+node:ekr.20031218072017.2159: *3* os_path_splitext
+#@+node:ekr.20031218072017.2159: *3* g.os_path_splitext
 def os_path_splitext(path):
 
     path = g.toUnicodeFileEncoding(path)
@@ -3128,7 +3138,7 @@ def os_path_splitext(path):
     tail = g.toUnicodeFileEncoding(tail)
 
     return head,tail
-#@+node:ekr.20090829140232.6036: *3* os_startfile
+#@+node:ekr.20090829140232.6036: *3* g.os_startfile
 def os_startfile(fname):
     
     if g.unitTesting:
@@ -3160,7 +3170,7 @@ def os_startfile(fname):
         except Exception:
             g.es_print('error opening %s' % fname)
             g.es_exception()
-#@+node:ekr.20031218072017.2160: *3* toUnicodeFileEncoding
+#@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
 
     if path: path = path.replace('\\', os.sep)
@@ -4388,7 +4398,7 @@ def getUrlFromNode(p):
 
 def handleUrl(url,c=None,p=None):
     
-    trace = True and not g.unitTesting ; verbose = False
+    trace = False and not g.unitTesting ; verbose = False
     
     if c and not p:
         p = c.p
@@ -4420,7 +4430,7 @@ def handleUrl(url,c=None,p=None):
                     path = g.os_path_finalize(path)
                 url = '%s%s' % (tag,path)
                 
-        parsed = urlparse(url)
+        parsed   = urlparse.urlparse(url)
         fragment = parsed.fragment
         netloc   = parsed.netloc
         path     = parsed.path
@@ -4470,12 +4480,13 @@ def handleUrl(url,c=None,p=None):
                     if c2:
                         c2.bringToFront()
                         return
-                    
+
         isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
 
         if not isHtml and scheme in ('', 'file'):
             if os.path.exists(leo_path):
                 if trace: g.trace('g.os_startfile(%s)' % (leo_path))
+                leo_path = urlparse.unquote(leo_path)
                 g.os_startfile(leo_path)
                 return
             if scheme == 'file':
@@ -4512,7 +4523,7 @@ def isValidUrl(url):
     elif url.startswith('@'):
         return False
     else:
-        parsed = urlparse(url)
+        parsed = urlparse.urlparse(url)
         scheme = parsed.scheme
         # g.trace(scheme)
         for s in table:

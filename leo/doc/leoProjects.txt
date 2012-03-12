@@ -3531,7 +3531,7 @@ Both unit tests and hand tests pass.
 #@+node:ekr.20120311070142.9895: *6* @url file://~/ekr.leo
 #@+node:ekr.20120309075544.9885: *6* @url file://~/ekr.html
 #@+node:ekr.20120309075544.9886: *6* @url file://c:/users/edreamleo/ekr.html
-#@+node:ekr.20090829140232.6036: *5* os_startfile
+#@+node:ekr.20090829140232.6036: *5* g.os_startfile
 def os_startfile(fname):
     
     if g.unitTesting:
@@ -3610,7 +3610,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
 
     return False, maxdepth, maxp
 #@+node:ekr.20120308034220.14156: *4* Fixed g.os_startfile on Linux
-#@+node:ekr.20090829140232.6036: *5* os_startfile
+#@+node:ekr.20090829140232.6036: *5* g.os_startfile
 def os_startfile(fname):
     
     if g.unitTesting:
@@ -11898,7 +11898,7 @@ Either single or double quotations are needed around the pathname that is passed
 
 def handleUrl(url,c=None,p=None):
     
-    trace = True and not g.unitTesting ; verbose = False
+    trace = False and not g.unitTesting ; verbose = False
     
     if c and not p:
         p = c.p
@@ -11930,7 +11930,7 @@ def handleUrl(url,c=None,p=None):
                     path = g.os_path_finalize(path)
                 url = '%s%s' % (tag,path)
                 
-        parsed = urlparse(url)
+        parsed   = urlparse.urlparse(url)
         fragment = parsed.fragment
         netloc   = parsed.netloc
         path     = parsed.path
@@ -11980,12 +11980,13 @@ def handleUrl(url,c=None,p=None):
                     if c2:
                         c2.bringToFront()
                         return
-                    
+
         isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
 
         if not isHtml and scheme in ('', 'file'):
             if os.path.exists(leo_path):
                 if trace: g.trace('g.os_startfile(%s)' % (leo_path))
+                leo_path = urlparse.unquote(leo_path)
                 g.os_startfile(leo_path)
                 return
             if scheme == 'file':
@@ -12005,7 +12006,7 @@ def handleUrl(url,c=None,p=None):
     except:
         g.es("exception opening",leo_path)
         g.es_exception()
-#@+node:ekr.20090829140232.6036: *5* os_startfile
+#@+node:ekr.20090829140232.6036: *5* g.os_startfile
 def os_startfile(fname):
     
     if g.unitTesting:
@@ -12112,7 +12113,7 @@ def getUrlFromNode(p):
 
 def handleUrl(url,c=None,p=None):
     
-    trace = True and not g.unitTesting ; verbose = False
+    trace = False and not g.unitTesting ; verbose = False
     
     if c and not p:
         p = c.p
@@ -12144,7 +12145,7 @@ def handleUrl(url,c=None,p=None):
                     path = g.os_path_finalize(path)
                 url = '%s%s' % (tag,path)
                 
-        parsed = urlparse(url)
+        parsed   = urlparse.urlparse(url)
         fragment = parsed.fragment
         netloc   = parsed.netloc
         path     = parsed.path
@@ -12194,12 +12195,13 @@ def handleUrl(url,c=None,p=None):
                     if c2:
                         c2.bringToFront()
                         return
-                    
+
         isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
 
         if not isHtml and scheme in ('', 'file'):
             if os.path.exists(leo_path):
                 if trace: g.trace('g.os_startfile(%s)' % (leo_path))
+                leo_path = urlparse.unquote(leo_path)
                 g.os_startfile(leo_path)
                 return
             if scheme == 'file':
@@ -12236,7 +12238,7 @@ def isValidUrl(url):
     elif url.startswith('@'):
         return False
     else:
-        parsed = urlparse(url)
+        parsed = urlparse.urlparse(url)
         scheme = parsed.scheme
         # g.trace(scheme)
         for s in table:
@@ -12302,7 +12304,7 @@ def getUrlFromNode(p):
 
 def handleUrl(url,c=None,p=None):
     
-    trace = True and not g.unitTesting ; verbose = False
+    trace = False and not g.unitTesting ; verbose = False
     
     if c and not p:
         p = c.p
@@ -12334,7 +12336,7 @@ def handleUrl(url,c=None,p=None):
                     path = g.os_path_finalize(path)
                 url = '%s%s' % (tag,path)
                 
-        parsed = urlparse(url)
+        parsed   = urlparse.urlparse(url)
         fragment = parsed.fragment
         netloc   = parsed.netloc
         path     = parsed.path
@@ -12384,12 +12386,13 @@ def handleUrl(url,c=None,p=None):
                     if c2:
                         c2.bringToFront()
                         return
-                    
+
         isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
 
         if not isHtml and scheme in ('', 'file'):
             if os.path.exists(leo_path):
                 if trace: g.trace('g.os_startfile(%s)' % (leo_path))
+                leo_path = urlparse.unquote(leo_path)
                 g.os_startfile(leo_path)
                 return
             if scheme == 'file':
@@ -12426,7 +12429,7 @@ def isValidUrl(url):
     elif url.startswith('@'):
         return False
     else:
-        parsed = urlparse(url)
+        parsed = urlparse.urlparse(url)
         scheme = parsed.scheme
         # g.trace(scheme)
         for s in table:
