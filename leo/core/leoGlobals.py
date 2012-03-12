@@ -4359,6 +4359,8 @@ def findTestScript(c,h,where=None,warn=True):
         if warn: g.trace('Not found',h)
         return None
 #@+node:ekr.20120311151914.9916: ** Urls... (leoGlobals.py)
+kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
+url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p):
     

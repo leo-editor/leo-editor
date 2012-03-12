@@ -1885,11 +1885,12 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
-#@+node:ekr.20110605121601.18135: *3* openURL()
+#@+node:ekr.20110605121601.18135: *3* openURL() (qtGui top level)
 @g.command('open-url')
 def openURL(event):
 
     c = event.get('c')
+    if not c: return
     w = c.frame.body.bodyCtrl
     s = w.getAllText()
     ins = w.getInsertPoint()
@@ -1898,18 +1899,16 @@ def openURL(event):
     row,col = g.convertPythonIndexToRowCol(s,ins)
     i,j = g.getLine(s,ins)
     line = s[i:j]
-    url_regex = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
-    for match in url_regex.finditer(line):
+    for match in g.url_regex.finditer(line):
         if match.start() <= col < match.end(): # Don't open if we click after the url.
             url = match.group()
-            if not g.app.unitTesting:
-                try:
-                    import webbrowser
-                    webbrowser.open(url)
-                except:
-                    g.es("exception opening " + url)
-                    g.es_exception()
-            return url
+            if g.isValidUrl(url):
+                p = c.p
+                if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+                    g.handleUrl(url,c=c,p=p)
+                g.doHook("@url2",c=c,p=p,v=p)
+                return url
+    return None
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
 #@+node:ekr.20110605121601.18137: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic

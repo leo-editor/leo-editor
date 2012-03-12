@@ -12074,6 +12074,8 @@ def OnIconDoubleClick (self,p):
             g.handleUrl(url,c=c,p=p)
         g.doHook("@url2",c=c,p=p,v=p)
 #@+node:ekr.20120311151914.9916: *5* Urls... (leoGlobals.py)
+kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
+url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 #@+node:ekr.20120311151914.9917: *6* g.getUrlFromNode
 def getUrlFromNode(p):
     
@@ -12265,6 +12267,8 @@ def OnIconDoubleClick (self,p):
             g.handleUrl(url,c=c,p=p)
         g.doHook("@url2",c=c,p=p,v=p)
 #@+node:ekr.20120311151914.9916: *5* Urls... (leoGlobals.py)
+kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
+url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 #@+node:ekr.20120311151914.9917: *6* g.getUrlFromNode
 def getUrlFromNode(p):
     
