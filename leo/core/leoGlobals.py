@@ -4518,7 +4518,7 @@ def isValidUrl(url):
     else:
         parsed = urlparse(url)
         scheme = parsed.scheme
-        g.trace(scheme)
+        # g.trace(scheme)
         for s in table:
             if scheme.startswith(s):
                 return True
