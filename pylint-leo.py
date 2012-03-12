@@ -111,14 +111,14 @@ def getRecentCoreList():
         # ('leoBridge',       ''),
         # ('leoCache',          ''),
         # ('leoChapters',       ''),
-        ('leoCommands',       ''),
+        # ('leoCommands',       ''),
         # ('leoConfig',           ''),
         # ('leoEditCommands',   ''),
         # ('leoFind',           ''),
         # ('leoFrame',          'R0923'),
             # R0923: Interface not implemented.
 
-        # ('leoGlobals',          'E0611,E1103'),
+        ('leoGlobals',          'E0611,E1103'),
             # E0611: no name 'parse' in urllib.
             # E1103: Instance of 'ParseResult' has no 'xxx' member
             # (but some types could not be inferred)
