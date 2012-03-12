@@ -74,14 +74,16 @@ def onDClick1 (tag,keywords):
             break
     if bookmark:
         # Get the url from the first body line.
-        lines = p.b.split('\n')
-        url = lines and lines[0] or ''
-        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrlInUrlNode(url,c=c,p=p)
-        g.doHook("@url2",c=c,p=p,v=p)
-        return 'break'
-    else:
-        return None
+        # lines = p.b.split('\n')
+        # url = lines and lines[0] or ''
+        
+        # Get the url from the headline or body.
+        # This is exactly the same code as in tree.
+        url = g.getUrlFromNode(p)
+        if url:
+            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+                g.handleUrlInUrlNode(url,c=c,p=p)
+            g.doHook("@url2",c=c,p=p,v=p)
 #@+node:tbrown.20110712100955.39215: ** command bookmarks_show
 @g.command('bookmarks_show')
 def bookmarks_show(event):

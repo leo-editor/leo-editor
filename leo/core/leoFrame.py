@@ -2042,13 +2042,12 @@ class leoTree:
 
         # Note: "icondclick" hooks handled by vnode callback routine.
         c = self.c
-        s = p.h.strip()
-        if g.match_word(s,0,"@url"):
-            url = g.getUrlFromNode(p)
-            if url:
-                if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                    g.handleUrlInUrlNode(url, c=c, p=p)
-                g.doHook("@url2",c=c,p=p,v=p)
+
+        url = g.getUrlFromNode(p)
+        if url:
+            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+                g.handleUrlInUrlNode(url, c=c, p=p)
+            g.doHook("@url2",c=c,p=p,v=p)
     #@+node:ekr.20081005065934.8: *3* May be defined in subclasses
     # These are new in Leo 4.6.
 

@@ -3612,10 +3612,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
 #@+node:tbrown.20090219095555.61: *5* g.handleUrlInUrlNode
 def handleUrlInUrlNode(url,c=None,p=None):
     
-    # Note 1: the UNL plugin has its own notion of what a good url is.
-
-    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
-    #         node if it exists.
+    # Called from tree.OnIconDoubleClick.
 
     if url:
         if c and not p:
@@ -11717,7 +11714,7 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     else:
         g.trace('backup file does not exist!',
             repr(backupName),color='red')
-#@+node:ekr.20120311070142.9903: *4* Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages 
+#@+node:ekr.20120311070142.9903: *4* Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages
 @nocolor-node
 
 Opening myLeoSettings.leo can clutter the console unworthwhile messages 
@@ -11990,7 +11987,7 @@ def uninvert (self,d):
     if trace: g.trace('returns %4s %s %s' % (
         len(list(result.keys())),id(d),result.name()))
     return result
-#@+node:ekr.20120311151914.9915: *4* Fixed bug 951739: xdg-open of a file-scheme URL containing blanks 
+#@+node:ekr.20120311151914.9915: *4* Fixed bug 951739: xdg-open of a file-scheme URL containing blanks
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/951739
@@ -12182,13 +12179,12 @@ def OnIconDoubleClick (self,p):
 
     # Note: "icondclick" hooks handled by vnode callback routine.
     c = self.c
-    s = p.h.strip()
-    if g.match_word(s,0,"@url"):
-        url = g.getUrlFromNode(p)
-        if url:
-            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                g.handleUrlInUrlNode(url, c=c, p=p)
-            g.doHook("@url2",c=c,p=p,v=p)
+
+    url = g.getUrlFromNode(p)
+    if url:
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
 #@+node:ekr.20120311151914.9916: *5* Urls... (leoGlobals.py)
 #@+node:ekr.20120311151914.9917: *6* g.getUrlFromNode
 def getUrlFromNode(p):
@@ -12204,6 +12200,8 @@ def getUrlFromNode(p):
             url = p.h[4:].strip()
             if g.isValidUrl(url):
                 return url
+        elif g.isValidUrl(p.h.strip()):
+            return p.h.strip()
         for s in g.splitLines(p.b):
             url = s.strip()
             if g.isValidUrl(url):
@@ -12221,10 +12219,7 @@ def getUrlFromNode(p):
 #@+node:tbrown.20090219095555.61: *6* g.handleUrlInUrlNode
 def handleUrlInUrlNode(url,c=None,p=None):
     
-    # Note 1: the UNL plugin has its own notion of what a good url is.
-
-    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
-    #         node if it exists.
+    # Called from tree.OnIconDoubleClick.
 
     if url:
         if c and not p:
@@ -12346,13 +12341,25 @@ def isValidUrl(url):
     
     '''Return true if url *looks* like a valid url.'''
     
+    table = (
+        'file','ftp','gopher','hdl','http','https','imap',
+        'mailto','mms','news','nntp','prospero','rsync','rtsp','rtspu',
+        'sftp','shttp','sip','sips','snews','svn','svn+ssh','telnet','wais',
+    )
+
     if url.startswith('#-->'):
         # All Leo UNL's.
         return True
+    elif url.startswith('@'):
+        return False
     else:
         parsed = urlparse(url)
-        # g.trace(parsed.scheme,url)
-        return bool(parsed.scheme)
+        scheme = parsed.scheme
+        g.trace(scheme)
+        for s in table:
+            if scheme.startswith(s):
+                return True
+        return False
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

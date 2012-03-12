@@ -4363,6 +4363,8 @@ def getUrlFromNode(p):
             url = p.h[4:].strip()
             if g.isValidUrl(url):
                 return url
+        elif g.isValidUrl(p.h.strip()):
+            return p.h.strip()
         for s in g.splitLines(p.b):
             url = s.strip()
             if g.isValidUrl(url):
@@ -4380,10 +4382,7 @@ def getUrlFromNode(p):
 #@+node:tbrown.20090219095555.61: *3* g.handleUrlInUrlNode
 def handleUrlInUrlNode(url,c=None,p=None):
     
-    # Note 1: the UNL plugin has its own notion of what a good url is.
-
-    # Note 2: tree.OnIconDoubleClick now uses the body text of an @url
-    #         node if it exists.
+    # Called from tree.OnIconDoubleClick.
 
     if url:
         if c and not p:
@@ -4505,13 +4504,25 @@ def isValidUrl(url):
     
     '''Return true if url *looks* like a valid url.'''
     
+    table = (
+        'file','ftp','gopher','hdl','http','https','imap',
+        'mailto','mms','news','nntp','prospero','rsync','rtsp','rtspu',
+        'sftp','shttp','sip','sips','snews','svn','svn+ssh','telnet','wais',
+    )
+
     if url.startswith('#-->'):
         # All Leo UNL's.
         return True
+    elif url.startswith('@'):
+        return False
     else:
         parsed = urlparse(url)
-        # g.trace(parsed.scheme,url)
-        return bool(parsed.scheme)
+        scheme = parsed.scheme
+        g.trace(scheme)
+        for s in table:
+            if scheme.startswith(s):
+                return True
+        return False
 #@+node:EKR.20040612114220: ** Utility classes, functions & objects...
 #@+node:ekr.20050315073003: *3*  Index utilities... (leoGlobals)
 #@+node:ekr.20050314140957: *4* g.convertPythonIndexToRowCol

@@ -260,10 +260,20 @@ def marknodes_rclick(c,p, menu):
     if have_unmark:
         unmarkaction = menu.addAction("Unmark")
         unmarkaction.connect(unmarkaction, QtCore.SIGNAL("triggered()"), unmarknodes_rclick_cb)
+#@+node:ekr.20120311191905.9900: ** openurl_rclick
+def openurl_rclick(c,p, menu):
+    """ open an url """
+    
+    url = g.getUrlFromNode(p)
+    if not url: return
 
+    def openurl_rclick_cb():
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url, c=c, p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
 
-
-
+    a = menu.addAction("Open URL")
+    a.connect(a,QtCore.SIGNAL("triggered()"),openurl_rclick_cb)
 #@+node:tbrown.20091203121808.15818: ** deletenodes_rclick
 def deletenodes_rclick(c,p, menu):
     """ Delete selected nodes """
@@ -350,9 +360,13 @@ def configuredcommands_rclick(c,p, menu):
 #@+node:ville.20090630210947.10189: ** install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [openwith_rclick, refresh_rclick, editnode_rclick,
+
+    hnd = [
+        openwith_rclick, refresh_rclick, editnode_rclick,
         nextclone_rclick, marknodes_rclick,
-        configuredcommands_rclick, deletenodes_rclick]
+        configuredcommands_rclick, deletenodes_rclick,
+        openurl_rclick]
+
     g.tree_popup_handlers.extend(hnd)
     g.registerHandler("idle", editnode_on_idle)
 
