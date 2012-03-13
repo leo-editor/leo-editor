@@ -12831,6 +12831,275 @@ def openURL(event):
                 g.doHook("@url2",c=c,p=p,v=p)
                 return url
     return None
+#@+node:ekr.20120312160238.9893: *4* Fixed rst3 crasher
+@nocolor-node
+
+Python 3.2.2
+
+self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
+ File "D:\Branches\leo-editor\leo\core\leoRst.py", line 511, in processTree
+
+self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
+ File "D:\Branches\leo-editor\leo\core\leoRst.py", line 561, in write_rst_tree
+
+self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
+ File "D:\Branches\leo-editor\leo\core\leoRst.py", line 1755, in write_files
+   f.write(s)
+TypeError: must be str, not bytes
+#@+node:ekr.20100813041139.5919: *5* write_files & helpers
+def write_files (self,ext,fn,callDocutils,toString,writeIntermediateFile):
+
+    isHtml = ext in ('.html','.htm')
+    fn = self.computeOutputFileName(fn)
+    if not toString:
+        if not self.createDirectoryForFile(fn):
+            return
+
+    if writeIntermediateFile:
+        if not toString:
+            self.createIntermediateFile(fn,self.source)
+
+    if callDocutils and ext in ('.htm','.html','.tex','.pdf','.s5','.odt'):
+        self.stringOutput = s = self.writeToDocutils(self.source,ext)
+        if s and isHtml:
+            self.stringOutput = s = self.addTitleToHtml(s)
+        if not s: return
+        
+        if toString:
+            if not g.isUnicode(s):
+                s = g.toUnicode(s,'utf-8')
+        else:
+            # Fixes bug 923301: Unicode error when executing 'rst3' command
+            if g.isPython3:
+                s = g.toEncodedString(s,'utf-8')
+            f = open(fn,'wb') # Bug fix: use 'wb'
+            f.write(s)
+            f.close()
+            self.report(fn)
+            # self.http_endTree(fn,p,justOneFile=justOneFile)
+#@+node:ekr.20100813041139.5913: *6* addTitleToHtml
+def addTitleToHtml(self,s):
+
+    '''Replace an empty <title> element by the contents of
+    the first <h1> element.'''
+
+    i = s.find('<title></title>')
+    if i == -1: return s
+
+    m = re.search('<h1>([^<]*)</h1>', s)
+    if not m:
+        m = re.search('<h1><[^>]+>([^<]*)</a></h1>', s)
+    if m:
+        s = s.replace('<title></title>',
+            '<title>%s</title>' % m.group(1))
+
+    return s
+#@+node:ekr.20100813041139.5914: *6* createDirectoryForFile
+def createDirectoryForFile(self, fn):
+
+    '''Create the directory for fn if
+    a) it doesn't exist and
+    b) the user options allow it.
+
+    Return True if the directory existed or was made.'''
+
+    c = self.c
+
+    # Create the directory if it doesn't exist.
+    theDir, junk = g.os_path_split(fn)
+    theDir = c.os_path_finalize(theDir)
+
+    if g.os_path_exists(theDir):
+        return True
+    else:
+        ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+        if not ok:
+            g.es_print('did not create:',theDir,color='red')
+        return ok
+#@+node:ekr.20100813041139.5912: *6* createIntermediateFile (changed)
+def createIntermediateFile(self,fn,s):
+
+    '''Write s to to the file whose name is fn.'''
+
+    ext = self.getOption('write_intermediate_extension')
+    ext = ext or '.txt' # .txt by default.
+    if not ext.startswith('.'): ext = '.' + ext
+
+    fn = fn + ext
+
+    # g.trace('intermediate file',fn)
+    if g.isPython3:
+        f = open(fn,'w',encoding=self.encoding)
+    else:
+        f = open(fn,'w')
+    if not g.isPython3: # 2010/08/27
+        s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+    f.write(s)
+    f.close()
+    self.report(fn)
+#@+node:ekr.20090502071837.65: *6* writeToDocutils (sets argv) & helper
+def writeToDocutils (self,s,ext):
+
+    '''Send s to docutils using the writer implied by ext and return the result.'''
+
+    trace = False and not g.unitTesting
+
+    if not docutils:
+        g.trace('docutils not present',color='red')
+        return None
+
+    openDirectory = self.c.frame.openDirectory
+    overrides = {'output_encoding': self.encoding }
+
+    # Compute the args list if the stylesheet path does not exist.
+    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+    
+    if ext == '.pdf':
+        module = g.importFromPath(
+            name = 'leo_pdf.py',
+            path = g.os_path_finalize_join(g.app.loadDir,'..','plugins'),
+            pluginName = 'leo_pdf',
+            verbose = False)
+        if not module:
+            return None
+        writer = module.Writer() # Get an instance.
+        writer_name = None
+    else:
+        writer = None
+        for ext2,writer_name in (
+            ('.html','html'),
+            ('.htm','html'),
+            ('.tex','latex'),
+            ('.pdf','leo.plugins.leo_pdf'), # 2011/11/03
+            ('.s5','s5'), # 2011/03/27
+            ('.odt','odt'), # 2011/03/27
+        ):
+            if ext2 == ext:
+                break
+        else:
+            g.es_print('unknown docutils extension: %s' % (ext),color='red')
+            return None
+    
+    if ext in ('.html','.htm') and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            if not g.unitTesting:
+                g.es('SilverCity not present so no syntax highlighting')
+
+    # Make the stylesheet path relative to the directory containing the output file.
+    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
+
+    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+    stylesheet_path = g.os_path_finalize_join(
+        self.c.frame.openDirectory,rel_stylesheet_path)
+
+    path = g.os_path_finalize_join(
+        stylesheet_path,self.getOption('stylesheet_name'))
+
+    res = ""
+    if self.getOption('stylesheet_embed') == False:
+        rel_path = g.os_path_join(
+            rel_stylesheet_path,self.getOption('stylesheet_name'))
+        rel_path = rel_path.replace('\\','/') # 2010/01/28
+        overrides['stylesheet'] = rel_path
+        overrides['stylesheet_path'] = None
+        overrides['embed_stylesheet'] = None
+    elif g.os_path_exists(path):
+        if ext != '.pdf':
+            overrides['stylesheet'] = path
+            overrides['stylesheet_path'] = None
+    elif styleSheetArgsDict:
+        g.es_print('using publish_argv_for_missing_stylesheets',
+            styleSheetArgsDict)
+        overrides.update(styleSheetArgsDict)
+            # MWC add args to settings
+    elif rel_stylesheet_path == stylesheet_path:
+        g.es_print('stylesheet not found: %s' % (path),color='red')
+    else:
+        g.es_print('stylesheet not found\n',path,color='red')
+        if self.path:g.es_print('@path:', self.path)
+        g.es_print('open path:',self.c.frame.openDirectory)
+        if rel_stylesheet_path:
+            g.es_print('relative path:', rel_stylesheet_path)
+    try:
+        # All paths now come through here.
+        if trace: g.trace('overrides',overrides)
+        result = None # Ensure that result is defined.
+        result = docutils.core.publish_string(source=s,
+                reader_name='standalone',
+                parser_name='restructuredtext',
+                writer=writer,
+                writer_name=writer_name,
+                settings_overrides=overrides)
+        if g.isBytes(result):
+            result = g.toUnicode(result)
+    except docutils.ApplicationError as error:
+        # g.es_print('Docutils error (%s):' % (
+            # error.__class__.__name__),color='red')
+        g.es_print('Docutils error:',color='red')
+        g.es_print(error,color='blue')
+    except Exception:
+        g.es_print('Unexpected docutils exception')
+        g.es_exception()
+    return result
+#@+node:ekr.20090502071837.66: *7* handleMissingStyleSheetArgs
+def handleMissingStyleSheetArgs (self,s=None):
+
+    '''Parse the publish_argv_for_missing_stylesheets option,
+    returning a dict containing the parsed args.'''
+
+    force = False
+    if force:
+        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
+        return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
+
+    if not s:
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+    if not s: return {}
+
+    # Handle argument lists such as this:
+    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
+    d = {}
+    while s:
+        s = s.strip()
+        if not s.startswith('--'): break
+        s = s[2:].strip()
+        eq = s.find('=')
+        cm = s.find(',')
+        if eq == -1 or (-1 < cm < eq): # key[nl] or key,
+            val = ''
+            cm = s.find(',')
+            if cm == -1:
+                key = s.strip()
+                s = ''
+            else:
+                key = s[:cm].strip()
+                s = s[cm+1:].strip()
+        else: # key = val
+            key = s[:eq].strip()
+            s = s[eq+1:].strip()
+            if s.startswith('['): # [...]
+                rb = s.find(']')
+                if rb == -1: break # Bad argument.
+                val = s[:rb+1]
+                s = s[rb+1:].strip()
+                if s.startswith(','):
+                    s = s[1:].strip()
+            else: # val[nl] or val,
+                cm = s.find(',')
+                if cm == -1:
+                    val = s
+                    s = ''
+                else:
+                    val = s[:cm].strip()
+                    s = s[cm+1:].strip()
+
+        # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
+        if not key: break
+        if not val.strip(): val = '1'
+        d[str(key)] = str(val)
+
+    return d
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
