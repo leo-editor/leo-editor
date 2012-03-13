@@ -291,6 +291,33 @@
 <v t="ekr.20120229094652.14520"><vh>Removed unused color tags</vh></v>
 <v t="ekr.20120229094652.15147"><vh>Fixed bug: End only goes to physical line</vh></v>
 <v t="ekr.20120229094652.15146"><vh>rev 4952 fixes bug 87933 with major key reorg</vh></v>
+<v t="ekr.20120313074006.14648"><vh>Fixed Bug 930726:expandNodeAndGoToFirstChild only expands or only goes to first child</vh></v>
+<v t="ekr.20120313074006.14650"><vh>Fixed Bug 869429 (undo &amp; redo when deleting nodes from contextmenu)</vh></v>
+<v t="ekr.20120313074006.14655"><vh>vim and xemacs plugins now work smoothly with contextmenu plugin.</vh></v>
+<v t="ekr.20120313074006.14657"><vh>Fixed bug 823267:when a tab is closed focus may go to a tab other than the visible one</vh></v>
+<v t="ekr.20120313074006.14663"><vh>Fixed bug 917814: Switching Log Pane tabs is done incompletely</vh></v>
+<v t="ekr.20120313074006.14697"><vh>Fixed bug 924123: Some SyntaxError's thrown when compiling the whole source with Python 3</vh></v>
+<v t="ekr.20120313074006.14698"><vh>Tried, and failed, to fix bug 844953: copy-clone-pasted node appears in other tab</vh></v>
+<v t="ekr.20120313074006.14702"><vh>Fixed bug 501636: Leo's import code should support non-ascii xml tags</vh></v>
+<v t="ekr.20120313074006.14713"><vh>Fixed bug 799695: colorizer bug after move-lines-up into a docstring</vh></v>
+<v t="ekr.20120313074006.14714"><vh>Fixed bug 824087: Alt+F4 is not the same as Alt+F, c</vh></v>
+<v t="ekr.20120313074006.14715"><vh>Fixed bug 923301: Unicode error when executing 'rst3' command</vh></v>
+<v t="ekr.20120313074006.14722"><vh>Fixed bug 893230: URL coloring does not work for many Internet protocols</vh></v>
+<v t="ekr.20120313074006.14725"><vh>Fixed bug 944551: @url URL Open Hangs Leo...</vh></v>
+<v t="ekr.20120313074006.14738"><vh>Fixed g.os_startfile on Linux</vh></v>
+<v t="ekr.20120313074006.14740"><vh>Fixed bug 875323: Hoist an @chapter node leaves a non-visible node selected</vh></v>
+<v t="ekr.20120313074006.14765"><vh>Fixed bug 831658: @url doesn't leave Chapter</vh></v>
+<v t="ekr.20120313074006.14771"><vh>Fixed bug 875327: Positioning outside of hoisted outline" usually causes problems</vh></v>
+<v t="ekr.20120313074006.14772"><vh>Fixed bug 807561: dragging a binary to Leo should create @url, not @edit</vh></v>
+<v t="ekr.20120313074006.14800"><vh>Fixed Bug: multiple @language directive not colored correctly</vh></v>
+<v t="ekr.20120313074006.14906"><vh>Fixed Bug: multiple @language directives mess up add-comments command</vh></v>
+<v t="ekr.20120313074006.14916"><vh>Fixed second bug re bug #875327: Positioning outside of hoisted outline usually causes problems</vh></v>
+<v t="ekr.20120313074006.15120"><vh>Fixed bug 952365: Leo-Editor can't write a file created from the command line</vh></v>
+<v t="ekr.20120313074006.15125"><vh>Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages</vh></v>
+<v t="ekr.20120313074006.15135"><vh>Fixed bug 951739: xdg-open of a file-scheme URL containing blanks</vh></v>
+<v t="ekr.20120313074006.15138"><vh>Fixed bug 951721: @url with URL in headline</vh></v>
+<v t="ekr.20120313074006.15144"><vh>Fixed bug 944555: Ctrl-left-click URL handling not as sophisticated as @url URL handling</vh></v>
+<v t="ekr.20120313074006.15151"><vh>Improved g.handleUrl and eliminated g.handleUrlInUrlNode</vh></v>
 </v>
 <v t="ekr.20120229094652.14518"><vh>Code improvements</vh>
 <v t="ekr.20120229094652.15175"><vh>Major</vh>
@@ -335,6 +362,8 @@
 <v t="ekr.20120229094652.14618"><vh>Improved print-bindings &amp; print-commands</vh></v>
 <v t="ekr.20120229094652.14580"><vh>Open now shows all files</vh></v>
 <v t="ekr.20120229094652.14617"><vh>Selected @test node always run</vh></v>
+<v t="ekr.20120313074006.14640"><vh>Instant abbreviations (~a)</vh></v>
+<v t="ekr.20120313074006.14643"><vh>Reinstated warnings for conflicting definitions</vh></v>
 </v>
 <v t="ekr.20120229094652.15164"><vh>Commands: new</vh>
 <v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
@@ -404,6 +433,7 @@
 <v t="ekr.20120229094652.14582"><vh>Improved create @auto nodes script</vh></v>
 <v t="ekr.20120229094652.14566"><vh>removed scrolledmessage plugin</vh></v>
 <v t="ekr.20120229094652.15091"><vh>Improved quicksearch plugin</vh></v>
+<v t="ekr.20120313074006.16135"><vh>New bigdash plugin</vh></v>
 </v>
 <v t="ekr.20120229094652.15166"><vh>Scripts</vh>
 <v t="ekr.20120229094652.14567"><vh>Added import-org-mode script</vh>
@@ -1442,8 +1472,7 @@ run-all-unit-tests-externally = Alt-5
 
 Leo 4.10 b1              March 7, 2012
 
-Leo 4.10 b1 is now available at:
-http://sourceforge.net/projects/leo/files/
+Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
 See: http://webpages.charter.net/edreamleo/intro.html
@@ -1595,7 +1624,7 @@ c.fileCommands.openLeoFile to create the outline.
 - Moved printSettings to LocalConfigManager.
 </t>
 <t tx="ekr.20120229094652.14535"></t>
-<t tx="ekr.20120229094652.14536"># see: http://www.diveintopython.org/xml_processing/unicode.html
+<t tx="ekr.20120229094652.14536">See: http://www.diveintopython.org/xml_processing/unicode.html
 
 pr_warning_given = False
 
@@ -1642,7 +1671,7 @@ def pr(*args,**keys): # (codewise!)
         # Good for debugging: prints messages immediately.
         print(s2)
 </t>
-<t tx="ekr.20120229094652.14537"># see: http://www.diveintopython.org/xml_processing/unicode.html
+<t tx="ekr.20120229094652.14537">See: http://www.diveintopython.org/xml_processing/unicode.html
 
 pr_warning_given = False
 
@@ -1985,7 +2014,7 @@ However, there are two problems with using Leo as a replacement for SciTe:
 2. Screen real estate: Leo is not at its best when presenting only a single
    @edit node: everything but the body pane is wasted space.
 </t>
-<t tx="ekr.20120229094652.14586">https://bugs.launchpad.net/leo-editor/+bug/381527
+<t tx="ekr.20120229094652.14586">See: https://bugs.launchpad.net/leo-editor/+bug/381527
 
 Opens a new nameless leo file and adds somefile.foo as an @edit node.
 
@@ -2070,7 +2099,7 @@ it is unlikely to have any impact whatsoever to existing @button nodes.
 
 The intended use is for searches of the form @button [some tag].
 </t>
-<t tx="ekr.20120229094652.14593">http://groups.google.com/group/leo-editor/browse_thread/thread/bd6ed96c88fabb4e
+<t tx="ekr.20120229094652.14593">See: http://groups.google.com/group/leo-editor/browse_thread/thread/bd6ed96c88fabb4e
 
 The prefix "DingDing" signifies that this post is an answer to the
 lament:
@@ -2124,7 +2153,7 @@ This Aha takes full advantage of Leo's organization strengths and
 material in one place.  This allows for easy reorganization:  changing
 command-name prefixes, for instance, would be straightforward. 
 </t>
-<t tx="ekr.20120229094652.14594">http://groups.google.com/group/leo-editor/browse_thread/thread/9ebd0dd748f3011f
+<t tx="ekr.20120229094652.14594">See: http://groups.google.com/group/leo-editor/browse_thread/thread/9ebd0dd748f3011f
 
 1. Today's work promises to *end* my confusion about scripts:
 
@@ -2207,7 +2236,7 @@ A great day for Leo.
 
 test.leo illustrates the new organization.
 </t>
-<t tx="ekr.20120229094652.14597">http://ethanschoonover.com/solarized
+<t tx="ekr.20120229094652.14597">See: http://ethanschoonover.com/solarized
 
 
 - 
@@ -2341,7 +2370,7 @@ TM.makeTestSuite.
 all nodes in the tree are considered to be marked.
 </t>
 <t tx="ekr.20120229094652.14606"></t>
-<t tx="ekr.20120229094652.14607">http://groups.google.com/group/leo-editor/browse_thread/thread/e2980a2b86af913e
+<t tx="ekr.20120229094652.14607">See: http://groups.google.com/group/leo-editor/browse_thread/thread/e2980a2b86af913e
 
 Isee the following
 - when a file is opened
@@ -2682,7 +2711,7 @@ def searchWithPresentOptions (self,event):
     return found
 </t>
 <t tx="ekr.20120229094652.14757"></t>
-<t tx="ekr.20120229094652.14758">https://bugs.launchpad.net/leo-editor/+bug/800157
+<t tx="ekr.20120229094652.14758">See: https://bugs.launchpad.net/leo-editor/+bug/800157
 
 In a new file containing only a "NewHeadline" and that being selected, execute:
 
@@ -2713,7 +2742,7 @@ p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
 <t tx="ekr.20120229094652.14760"></t>
 <t tx="ekr.20120229094652.14761">CAUTION: new double click handling code
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
 
 The problem isn't single/double, but double click not stopping the
 event processing.  It has the correct form:
@@ -2803,7 +2832,7 @@ This allows us to put example nodes in leoSettings.leo.
 always set at.inCode = True
 </t>
 <t tx="ekr.20120229094652.14781">Fixed several encoding problems related to this thread: @shadow - @encoding windows-1250 - problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/a4ba80559447218a/9a37a4ed6c44d452
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/a4ba80559447218a/9a37a4ed6c44d452
 
 There were several real problems fixed.  The summary: @encoding directives were always required.
 
@@ -2828,7 +2857,7 @@ All unit tests pass with both Python 2.x and 3.x.
 </t>
 <t tx="ekr.20120229094652.14782">Added configure_hard_tab_width method.
 </t>
-<t tx="ekr.20120229094652.14783">https://bugs.launchpad.net/leo-editor/+bug/800311
+<t tx="ekr.20120229094652.14783">See: https://bugs.launchpad.net/leo-editor/+bug/800311
 
 Having set undo to word granularity, I often change something, move to a
 different line and continue editing there. When I want to undo my last change,
@@ -2856,9 +2885,9 @@ Something else about the undo code:
 - The "We have just inserted a line." section is not only entered on a new line
   (see other attached patch)
 </t>
-<t tx="ekr.20120229094652.14784">https://bugs.launchpad.net/leo-editor/+bug/800312
+<t tx="ekr.20120229094652.14784">See: https://bugs.launchpad.net/leo-editor/+bug/800312
 </t>
-<t tx="ekr.20120229094652.14785">https://bugs.launchpad.net/leo-editor/+bug/880975
+<t tx="ekr.20120229094652.14785">See: https://bugs.launchpad.net/leo-editor/+bug/880975
 
 Bug: The Meta+Ctrl section [of print-bindings] is always empty and this makes it
 misleading.
@@ -2916,7 +2945,7 @@ total stylesheet as follows::
    w.setStyleSheet(s)
 </t>
 <t tx="ekr.20120229094652.14789">An attempt at fixing the scrolling bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f/7f6aa691002f1fca
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f/7f6aa691002f1fca
 
 Private email from Viktor
 test-leo-rev-4506.leo
@@ -2983,7 +3012,7 @@ WindowsError: [Error 3] The system cannot find the path specified: ''
 <t tx="ekr.20120229094652.14824"># The code didn't work for c == None.
 </t>
 <t tx="ekr.20120229094652.14825"></t>
-<t tx="ekr.20120229094652.14826">http://groups.google.com/group/leo-editor/browse_thread/thread/3c319daba37cd0ef
+<t tx="ekr.20120229094652.14826">See: http://groups.google.com/group/leo-editor/browse_thread/thread/3c319daba37cd0ef
 
 - Created a separate html importer, a very simple subclass of the xml scanner
   whose only difference is that it uses @data import_html_tags instead of @data
@@ -3065,7 +3094,7 @@ Solved "between element" problem by extending classes up to the next class.
 data.html imports "correctly", but not perfectly due to tag mismatches in
 skipToMatchingTag.
 </t>
-<t tx="ekr.20120229094652.14831">http://groups.google.com/group/leo-editor/browse_thread/thread/421ebf4c3f2d5f59
+<t tx="ekr.20120229094652.14831">See: http://groups.google.com/group/leo-editor/browse_thread/thread/421ebf4c3f2d5f59
 
 Adding/deleting body editor 3 times hard-crashed Python
 
@@ -3132,7 +3161,7 @@ The fix was to set self.widget = contents in leoQtLog.selectTab.
    buttons or commands.
 </t>
 <t tx="ekr.20120229094652.14841"></t>
-<t tx="ekr.20120229094652.14842">https://bugs.launchpad.net/leo-editor/+bug/804960
+<t tx="ekr.20120229094652.14842">See: https://bugs.launchpad.net/leo-editor/+bug/804960
 
 When we clone a node inside an @shadow (containing @others) node and then
 refresh the @shadow node from file, the clone is unlinked and marked as changed.
@@ -3155,7 +3184,7 @@ for me). Otherwise, the user can easily lose data.
 <t tx="ekr.20120229094652.14850">The fix was to at.putBody.
 </t>
 <t tx="ekr.20120229094652.14855">has been modified outside of Leo. Overwrite this file?
-http://groups.google.com/group/leo-editor/browse_thread/thread/daf581ace0de871e
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/daf581ace0de871e
 
 Steps to reproduce:
 
@@ -3212,7 +3241,7 @@ Added a comment to this effect in leoSettings.leo.
 </t>
 <t tx="ekr.20120229094652.14893">Bug 879331: Redefining a key binding breaks menu items with same binding
 
-https://bugs.launchpad.net/leo-editor/+bug/879331
+See: https://bugs.launchpad.net/leo-editor/+bug/879331
 
 &gt; Now I understand.  If I override the shortcut associated with the menu
 &gt; item, in this case Alt-A, the menu breaks.
@@ -3222,14 +3251,14 @@ to Alt-A!  Very bad.
 
 =========
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/762e832909c3c530/d99d48eed45d1061
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/762e832909c3c530/d99d48eed45d1061
 
-http://mail.google.com/mail/#inbox/1331909dd653f3c9
+See: http://mail.google.com/mail/#inbox/1331909dd653f3c9
 
 Redefining a binding, say for Alt-a, in x.leo will cause the sort-siblings menu
 (bound to alt-a) to execute the command specified by the command bound to Alt-a!
 
-https://bugs.launchpad.net/leo-editor/+bug/815564
+See: https://bugs.launchpad.net/leo-editor/+bug/815564
 
 This anomaly only occurs when all of the following conditions are true:
 
@@ -3256,7 +3285,7 @@ Leo 4.9 final, build 4411, June 21, 2011
 Python 2.7.1, qt version 4.7.2
 linux2
 </t>
-<t tx="ekr.20120229094652.14894">https://bugs.launchpad.net/leo-editor/+bug/815564
+<t tx="ekr.20120229094652.14894">See: https://bugs.launchpad.net/leo-editor/+bug/815564
 
 ===== Probably the same as bug 879331 =====
 
@@ -3338,7 +3367,7 @@ leoEditCommands:
     updateAutoIndent
         ***** calls w.seeInsertPoint
 </t>
-<t tx="ekr.20120229094652.14976">http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f
+<t tx="ekr.20120229094652.14976">See: http://groups.google.com/group/leo-editor/browse_thread/thread/de76f22b16ebc8f
 
 As explained in detail in the thread, "dangerous" code is no longer executed immediately,
 but instead executed at idle time using g.app.gui.runAtIdle.
@@ -3358,7 +3387,7 @@ The fix was the following lines in c.initConfigSettings:
 <t tx="ekr.20120229094652.15013">The fix was easy: moveWithinLineHelper does *not* call
 leoMoveCursorHelper for the case spot == 'end-line'
 </t>
-<t tx="ekr.20120229094652.15087">http://mail.google.com/mail/#inbox/1330f306b947656c
+<t tx="ekr.20120229094652.15087">See: http://mail.google.com/mail/#inbox/1330f306b947656c
 
 &gt; Maybe I'm missing something here, probably because I've always
 &gt; dismissed scripting because I don't have the foggiest notion of how to
@@ -3412,7 +3441,7 @@ x.node()
 n.h, n.d
 
 </t>
-<t tx="ekr.20120229094652.15089">http://groups.google.com/group/leo-editor/browse_thread/thread/b17d140b7ceb8fc9
+<t tx="ekr.20120229094652.15089">See: http://groups.google.com/group/leo-editor/browse_thread/thread/b17d140b7ceb8fc9
 
 I've added web page bookmarking from your browser to Leo.
 
@@ -3463,7 +3492,7 @@ If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
 in ``about:config`` in Firefox. 
 </t>
-<t tx="ekr.20120229094652.15090">http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
+<t tx="ekr.20120229094652.15090">See: http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
 </t>
 <t tx="ekr.20120229094652.15091">- Selecting any node using arrow keys shows the node in the outline immediately.
 
@@ -3654,7 +3683,7 @@ consult leoTest.py.
 
 It has been fun tracking this down.  I'll fix the documentation immediately. 
 </t>
-<t tx="ekr.20120229094652.15098">http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
+<t tx="ekr.20120229094652.15098">See: http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
 I bear good tidings of great joy!
 
@@ -4399,8 +4428,7 @@ os.path.join
 <t tx="ekr.20120229094652.15121">Creating codewise/ctags data
 ============================
 
-This is adapted from the thread:
-http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/ca01e7a803d2b546
+This is adapted from the thread: http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/ca01e7a803d2b546
 "HOWTO: make Ville's autocompleter work.
 
 1. Make sure you have exuberant ctags (not just regular ctags) installed.  It's an Ubuntu package, so it's easy to install if you're using Ubuntu.
@@ -4629,7 +4657,7 @@ P.S. One of the requirements of the recent bug fix was that doing Alt-
 tab twice would put the focus in the body pane.  If you think that was
 easy, you are sadly mistaken :-) 
 </t>
-<t tx="ekr.20120229094652.15125">http://groups.google.com/group/leo-editor/browse_thread/thread/b560a3b84e7ec7a8
+<t tx="ekr.20120229094652.15125">See: http://groups.google.com/group/leo-editor/browse_thread/thread/b560a3b84e7ec7a8
 
 Good news (mostly): you can set up dynamic unit tests exactly the way you want.
 
@@ -4739,7 +4767,7 @@ dialog.................(more info about MORE spec)
 I would say most/all of this has been deprecated as there's only one
 Import command.
 </t>
-<t tx="ekr.20120229094652.15128">http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
+<t tx="ekr.20120229094652.15128">See: http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
 I bear good tidings of great joy! 
 
@@ -4865,7 +4893,7 @@ headlines.
 @language python
 @others
 
-# see http://docs.python.org/library/trace.html for documentation
+# See: http://docs.python.org/library/trace.html for documentation
 # on the trace module
 tracer = trace.Trace(countcallers=1)
 
@@ -4937,14 +4965,14 @@ c.redraw()
        levels = levels[0:-1]
 </t>
 <t tx="ekr.20120229094652.15134"></t>
-<t tx="ekr.20120229094652.15135">http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
+<t tx="ekr.20120229094652.15135">See: http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
 leoInspect: a hobby with a future?
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
 leoInspect: remarkable collapse in complexity and attempted assessment
 
 </t>
-<t tx="ekr.20120229094652.15137">http://groups.google.com/group/leo-editor/browse_thread/thread/61019e45d75a6f18/71ee770ee4421222
+<t tx="ekr.20120229094652.15137">See: http://groups.google.com/group/leo-editor/browse_thread/thread/61019e45d75a6f18/71ee770ee4421222
 
 
 Once you have the 4.9 "official release" working, then further updates are simply:
@@ -4958,7 +4986,7 @@ files, .leo and otherwise.)
 3. unzip it into the same place
 4. enjoy your up-to-date Leo code. . .
 </t>
-<t tx="ekr.20120229094652.15138">http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
+<t tx="ekr.20120229094652.15138">See: http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
 
 Leo now reports bzr version numbers and dates more accurately.
 </t>
@@ -4968,7 +4996,7 @@ Note: in rev 4990, the g.app.newCommander method (formerly called
 g.app.newLeoCommanderAndFrame) also returns a single value (a
 Commander) rather than the tuple (c,c.frame). 
 </t>
-<t tx="ekr.20120229094652.15140">http://groups.google.com/group/leo-editor/browse_thread/thread/dd5907529208ee98
+<t tx="ekr.20120229094652.15140">See: http://groups.google.com/group/leo-editor/browse_thread/thread/dd5907529208ee98
 
 Revs 5037/8 contain fixes that allow the open-with command to start to
 work, at least in 'subprocess.Popen' mode.
@@ -5047,7 +5075,7 @@ redundant.
 The present scheme is wonky, confusing, inflexible and extremely
 difficult to implement. It should be replaced immediately.
 </t>
-<t tx="ekr.20120229094652.15141">http://groups.google.com/group/leo-editor/browse_thread/thread/28e544d052aeac2b
+<t tx="ekr.20120229094652.15141">See: http://groups.google.com/group/leo-editor/browse_thread/thread/28e544d052aeac2b
 
 The original beautiful plan to read each local .leo file once has
 fallen prey to an ugly fact :-)  Indeed, it doesn't seem possible to
@@ -5166,7 +5194,7 @@ Finally, g.openWithFileName will do nothing but call a corresponding
 LoadManager method. The details of loading do not belong in
 leoGlobals.py! 
 </t>
-<t tx="ekr.20120229094652.15142">http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
+<t tx="ekr.20120229094652.15142">See: http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
 
 For almost 15 years Leo has been written using a limited set of
 classes.  These were "big" classes, implementing major modules of
@@ -5320,7 +5348,7 @@ myLeoSettings.leo:
         join(g.app.globalConfigDir, settings_fn),
     )
 </t>
-<t tx="ekr.20120229094652.15145">http://groups.google.com/group/leo-editor/browse_thread/thread/86593fb9543afb66
+<t tx="ekr.20120229094652.15145">See: http://groups.google.com/group/leo-editor/browse_thread/thread/86593fb9543afb66
 
 Rev 4972 demonstrates that the KeyStroke class can indeed distinguish
 between "raw" user settings and the "canonicalized" form used
@@ -5497,7 +5525,7 @@ being as ill-advised as g.Bunches.
 Leo's key dictionaries will always be complex, but basing them on the
 TypedDict class is a major improvement. 
 </t>
-<t tx="ekr.20120229094652.15146">http://groups.google.com/group/leo-editor/browse_thread/thread/c933b28c27d3b9a7
+<t tx="ekr.20120229094652.15146">See: http://groups.google.com/group/leo-editor/browse_thread/thread/c933b28c27d3b9a7
 
 Ref 4952 of the trunk fixes bug 87933:
 "Redefining a key binding breaks menu items with same binding"
@@ -5595,7 +5623,7 @@ complexities are fresh in my mind.
 </t>
 <t tx="ekr.20120229094652.15147">End going to only physical line and not to the logical (wrapped) one)... 
 </t>
-<t tx="ekr.20120229094652.15148">http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786
+<t tx="ekr.20120229094652.15148">See: http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786
 
 Currently I am using Leo as an outliner for the elaboration of
 documents with LaTeX. For this, I work with @rst nodes and Sphinx. It
@@ -5629,7 +5657,7 @@ Any hints?
 &gt; How to convince Leo/Sphinx/RsT to generate the inline raw latex
 &gt; syntax?
 
-http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data...
+See: http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data...
 
 ?
 
@@ -5660,7 +5688,7 @@ describe this citation with plenty of details.
 
 It worked really fine! 
 </t>
-<t tx="ekr.20120229094652.15149">http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
+<t tx="ekr.20120229094652.15149">See: http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
 
 &gt; Here's a one line @button node you can add to myLeoSettings.leo
 &gt;
@@ -5678,7 +5706,7 @@ As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
 set the stylesheet for that widget only: the top-level stylesheet (the
 stylesheet for c.frame.top.leo_ui) remains unchanged.
 </t>
-<t tx="ekr.20120229094652.15151">http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
+<t tx="ekr.20120229094652.15151">See: http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
 
 &gt; In short, I am now willing, on an experimental basis, to have Leo put
 &gt; up a dialog when inserting an @ignore, and also when writing an
@@ -5772,9 +5800,7 @@ means it's now possible to reattach just one outline, rather than
 having to use the 'reattach all' option. 
 </t>
 <t tx="ekr.20120229094652.15157"></t>
-<t tx="ekr.20120229094652.15158">@nocolor-node
-
-After so many years of confusion the problem is now apparent:
+<t tx="ekr.20120229094652.15158">After so many years of confusion the problem is now apparent:
 the Windows console uses code page 437: which is just extended ascii.
 
 chcp 65001 is equivalent to utf-8, and it would be good to use,
@@ -5782,12 +5808,10 @@ but at present bzr goes nuts and changes to another code page!
 
 So for the moment I'll have to live with what is, in effect, plain ascii.
 </t>
-<t tx="ekr.20120229094652.15159">@nocolor-node
-
-On Ubuntu only, the auto complete popup is system-wide modal, it should only be modal over Leo windows.
+<t tx="ekr.20120229094652.15159">On Ubuntu only, the auto complete popup is system-wide modal, it should only be modal over Leo windows.
 
 However, there does not seem to be any fix:
-http://groups.google.com/group/leo-editor/browse_thread/thread/171aaf79e0bea256
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/171aaf79e0bea256
 
 All works well on Windows 7.  I do see the "system-wide" model
 behavior on Ubuntu.
@@ -5830,7 +5854,7 @@ nothing more I can do.
 <t tx="ekr.20120229094652.15174"></t>
 <t tx="ekr.20120229094652.15175"></t>
 <t tx="ekr.20120229094652.15176"></t>
-<t tx="ekr.20120229094652.19496">https://bugs.launchpad.net/leo-editor/+bug/905276
+<t tx="ekr.20120229094652.19496">See: https://bugs.launchpad.net/leo-editor/+bug/905276
 
 The documentation should explain how to clone multiple nodes at once.
 
@@ -5842,10 +5866,26 @@ I would suggest that right up at the top of that page be a statement
 
 somewhat along these lines (Edward do get rid of the blah blah! 8-) :
 
-----
-The core Leo code is always being improved and developed, using a rigorous unit-testing blah-blah that ensures that the daily commits are as bug-free as possible. In fact (insert #% or qualifier) of the time, downloading the most recent "nightly snapshot" of the development code from our version control system Bazaar (link to here http://www.greygreen.org/leo/) is going to give you code that is just as stable and much more up-to-date than the most recent "release" available here (link to http://sourceforge.net/projects/leo/files/OldFiles/), which most Leonistas would at this point consider already outdated. If you are just checking Leo out, feel free to download and use the release version if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent snapshot:
+---- The core Leo code is always being improved and
+developed, using a rigorous unit-testing blah-blah that
+ensures that the daily commits are as bug-free as possible.
+In fact (insert #% or qualifier) of the time, downloading
+the most recent "nightly snapshot" of the development code
+from our version control system Bazaar (link to here
+http://www.greygreen.org/leo/) is going to give you code
+that is just as stable and much more up-to-date than the
+most recent "release" available here (link to
+http://sourceforge.net/projects/leo/files/OldFiles/), which
+most Leonistas would at this point consider already
+outdated. If you are just checking Leo out, feel free to
+download and use the release version if it makes you feel
+more secure, but once you've decided to work with Leo on a
+regular basis, we highly recommend regularly keeping your
+installation up to date with the most recent snapshot:
 
-(assuming you keep the folder containing your leo code separate from your .mySettings.leo and any data files, including of course your .leo files)
+(assuming you keep the folder containing your leo code
+separate from your .mySettings.leo and any data files,
+including of course your .leo files)
 
   1. archive and remove that app folder
   2. download the nightly snapshot zip file
@@ -5883,18 +5923,18 @@ keyboard shortcuts docs in leoSettings have a lot of references to Tk
 --------------------
 
 I'll post new ones as I find them, but here's a summary of
-https://bugs.launchpad.net/leo-editor/+bug/896809
+See: https://bugs.launchpad.net/leo-editor/+bug/896809
 
 so that can get closed, as it got sidetracked with the bzr memory problem
 
 --------------------
 The link cited here:
-http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-display-graphics-in-leo
+See: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-display-graphics-in-leo
 
 is broken I would suggest embedding a short summary howto on the procedure rather than relying on links to forum/maillist postings.
 
 --------------------
-http://webpages.charter.net/edreamleo/installing.html#required-and-optional-packages
+See: http://webpages.charter.net/edreamleo/installing.html#required-and-optional-packages
 "Leo also requires --either-- the Qt widget set."
 
 I have since figured out that this probably used to say "or TK" - " --either--" needs removing</t>
@@ -5903,7 +5943,7 @@ I have since figured out that this probably used to say "or TK" - " --either--" 
 dictionary whose keys are all the tags specified by the user
 in the body of the @open-with node.
 </t>
-<t tx="ekr.20120229173025.20633">http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
+<t tx="ekr.20120229173025.20633">See: http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
 
 Ever find that you have a whole lot of:
 
@@ -6026,7 +6066,7 @@ sc.createIconButton(
     statusLine = 'Make filter button',
     bg = "LightBlue"
 )</t>
-<t tx="ekr.20120229173025.20636">http://groups.google.com/group/leo-editor/browse_thread/thread/86593fb9543afb66/b888d149d75a9c77
+<t tx="ekr.20120229173025.20636">See: http://groups.google.com/group/leo-editor/browse_thread/thread/86593fb9543afb66/b888d149d75a9c77
 
 The following are mostly notes to myself (and to future maintainers).
 Feel free to ignore.
@@ -6261,6 +6301,572 @@ being as ill-advised as g.Bunches.
 
 Leo's key dictionaries will always be complex, but basing them on the
 TypedDict class is a major improvement. </t>
+<t tx="ekr.20120313074006.14640">Rev 5051 contains a *major* improvement in Leo's abbreviation code.
+It is simpler, and more general than before.
+
+The downside is that you will likely have to revise your
+abbreviations.  I believe the extra work will be well worthwhile.
+
+Here are the changes:
+
+1. Abbreviations may consist of *any* sequence of characters,
+including whitespace or "special" characters. You may include
+whitespace characters in definitions using the '\t' and '\n' escapes.
+However, whitespace may only appear at the *end* of definitions.
+
+2. You must take care to disambiguate abbreviations if one is a prefix
+of another.
+
+Here is an example of both points.  As always, you define
+abbreviations in the body of an @global-abbreviation node or
+@abbreviation node::
+
+    nc =@nocolor\n
+    nc\n=@nocolor\n
+    nc\t=@nocolor\n
+
+    ncn=@nocolor-node\n
+
+As you can see, the definitions uses whitespace at the end
+of the definition of "nc" to prevent it from being expanded
+when typing "ncn".
+
+3. The reason I call these abbreviations "instant" is that they can be
+triggered on *any* keystroke, not just the end of a "word".  This
+allows you to define::
+
+    teh=the
+
+Hurray!
+
+4. Two rules limit scans.  They are useful and shouldn't cause
+hardships.
+
+A.  The backspace and delete characters *never* trigger substitutions.
+
+B. The scan for definitions ends at the first newline
+character. Therefore, whitespace will have effect only at
+the *end* of a definition.
+
+**Important**: these rules can cause problems when *defining*
+abbreviations:  it's easy to trigger an unwanted definition.  The
+solution is to use rule 4B:
+
+I want to type::
+
+    ncn=@nocolor-node\n
+
+But I **cant** type this directly if nc is already defined!  The trick
+is to type::
+
+   nxcn=@nocolor-node\n
+
+and then delete the leading x with a backspace character.
+
+Of course, you could also turn abbrevions off while defining abbreviations...
+
+Instant abbreviations solve the problems with Brazilian
+keyboards. Just define::
+
+    ~a=ã
+    ~A=Ã
+    etc.
+
+This works regardless of keyboard, regardless of OS, etc.
+You might want to define::
+
+    ~\a=~a
+    ~\A=~A
+
+in the somewhat unlikely event that you want to type ~a rather than,
+say, ~+a.  Of course, you don't need these, provided you remember to
+type ~xa &lt;Right&gt;&lt;Delete&gt; :-)
+</t>
+<t tx="ekr.20120313074006.14643">k.remove_conflicting_definitions always gives the warning, not just when tracing.
+
+The warning isn't the best, and it is usually duplicated, but it is much better than nothing.
+</t>
+<t tx="ekr.20120313074006.14648">See: https://bugs.launchpad.net/leo-editor/+bug/930726
+
+Bug: If the node is not expanded already, then the position
+is left on the parent, not the first child.
+
+Function expandNodeAndGoToFirstChild() is referenced only
+once in LeoPyRef.leo. This reference is in table of public
+Leo commands.
+
+The node in which expandNodeAndGoToFirstChild() is defined
+also contains the definition of function
+expandNodeOrGoToFirstChild(). At present these two functions
+are equivalent. The comments including the header for the
+node imply that they should not be equivalent and that
+expandNodeAndGoToFirstChild() is not correctly implemented.
+</t>
+<t tx="ekr.20120313074006.14650">See: https://bugs.launchpad.net/leo-editor/+bug/869429
+Undo and Redo delete from context menu does not redo properly
+
+The fix was to deletenodes_rclick in contextmenu.py.
+The fallback position should be c.rootPosition()
+
+===== Original report.
+
+Delete (node) in context_menu (right click on headline) has unexpected undo /
+redo effects.
+
+Redo after Undo often fails, but you can Undo again, without the
+ReDo taking effect, which mans an extra node is created.
+
+In essence: -1 delete,
++1 Undo (restore node),
+0 ReDo (should redelete but does nothing),
++1 Undo
+
+(again) = 1 Should = 0 (delete, undelete, redelete, undo redelete) Deleting a
+node through Outline menu works differently and properly. The undo code in the
+two delete methods must be different
+
+===== Terry
+
+The undo code in the two delete methods must be different
+
+It's different because the context menu delete can delete multiple
+nodes at once.
+
+I wrote the context menu delete, but I don't understand the undo system
+that well - it's possible it just doesn't support a redo of something
+like this.
+</t>
+<t tx="ekr.20120313074006.14655">- Open contextmenu plugin at first use (not at startup).
+
+- Disable contextmenu dialog for temp files.
+
+Here is the checkin log for rev 5066:
+
+Several changes so that the vim and xemacs plugins work well with contextmenu plugin.
+
+- vim.py and xemacs.py load contextmenu.py if necessary the first time they open a temp file.
+
+- contextmenu.py (edit_node_on_idle) suppresses the "conflicts dialog" if the file's path is in
+  [z.get('path') for z in g.app.openWithFiles]
+
+All expected unit tests pass, as do hand tests of the vim and xemacs plugins.
+
+</t>
+<t tx="ekr.20120313074006.14657">See: https://bugs.launchpad.net/leo-editor/+bug/823267
+
+When tabs are closed with the close tab 'X' on the tab, focus
+should go to whichever tab becomes visible, but it doesn't,
+it goes to an arbitrary tab which may not be visible. If you
+then hit Alt-X expecting to cut the highlighted node in the
+visible tab, you cut a node you can't see in a different
+commander.
+
+What I did:
+    
+- Refactored part of g.app.closeLeoWindow into g.app.selectLeoWindow.
+- Added the new_c argument to g.app.closeLeoWindow and c.close.
+- Changed several event handlers in TabbedFrameFactor so that they
+  call g.app.selectLeoWindow as appropriate.
+
+@language python
+</t>
+<t tx="ekr.20120313074006.14663">See: https://bugs.launchpad.net/leo-editor/+bug/917814
+
+Switching Log Pane tabs is not done cleanly and completely. To see this do the following:
+
+1) Start Leo-Editor
+2) Shift-Ctrl-F. This brings the Nav tab to the foreground and
+   leaves the focus in the search string field of the Nav pane.
+3) Click on the Log tab of the Log pane.
+4) Ctrl-A. This causes the following messags to be displayed in the Log tab of the Log pane:
+
+exception executing command
+Traceback (most recent call last):
+  File "/home/bob/bzrWork/trunk/leo/core/leoCommands.py", line 419, in doCommand
+    val = command(event)
+  File "/home/bob/bzrWork/trunk/leo/core/leoEditCommands.py", line 5755, in selectAllText
+    return w.selectAllText()
+  File "/home/bob/bzrWork/trunk/leo/core/leoFrame.py", line 168, in selectAllText
+    def selectAllText (self,insert=None): self.widget and self.widget.selectAllText(insert)
+AttributeError: 'LeoQuickSearchWidget' object has no attribute 'selectAllText'
+
+
+That is, it appears that the focus is on the Log tab and the
+intention is to select-all in the log tab, but Leo-Editor
+tries to select-all in the Nav pane.
+
+Strangely, doing a Ctrl-A in the Nav tab of the Log pane
+seems to do nothing---no errors, no select.
+
+-------
+Ubuntu 11.10 with Fluxbox window manager
+Leo Log Window
+Leo 4.9.1 devel, build 4928, 2012-01-14 11:27:18
+Python 2.7.2, qt version 4.7.3
+linux2
+setting leoID from os.getenv('USER'): 'bob'
+load dir: /home/bob/bzrWork/trunk/leo/core
+global config dir: /home/bob/bzrWork/trunk/leo/config
+home dir: /home/bob
+reading settings in /home/bob/bzrWork/trunk/leo/config/leoSettings.leo
+reading settings in /home/bob/.leo/myLeoSettings.leo
+reading settings in /home/bob/.leo/workbook.leo
+reading: /home/bob/.leo/workbook.leo
+</t>
+<t tx="ekr.20120313074006.14697">Rev 5076 fixes bug 924123:
+Some SyntaxError's thrown when compiling the whole source with Python 3
+See: https://bugs.launchpad.net/leo-editor/+bug/924123
+
+These syntax errors were minor in the sense that they had no
+effect on Leo's users, but they were a significant
+distribution issue because Linux packages are not to have
+such errors.
+
+Notes:
+
+I removed the following files. Apparently, they are used nowhere in Leo. 
+    
+    leo/core/leo_Debugger.py
+    leo/core/leo_FileList.py"
+    leo/core/leo_RemoteDebugger.py
+    leo/core/leo_Shell.py
+    leo/core/leo_run.py
+
+This files no longer exists:
+
+    leosax.py
+    
+Fixed all reported syntax errors.
+
+The unit test "@test syntax of all files" now checks the following files:
+    
+- old gui files:
+    cursesGui.py, ironPythonGui.py, swing_gui.py, tkGui.py, and wxGui.py
+    
+- script files:
+    convert_to_shadow.py, leoFindScript.py, LinixInstall.py,
+    tangle_done.py, untangle_done.py
+</t>
+<t tx="ekr.20120313074006.14698">See: https://bugs.launchpad.net/leo-editor/+bug/844953
+
+1. Open two empty files with the LEO revision 4451/trunk using the qttabs GUI and save them both.
+2. Create a new node and write "Abc" in its head.
+3. Select "Copy Node" from the outline menu.
+4. Select "Paste Node As Clone" from the outline menu:
+   Node is not inserted as clone, but inserted as a copy in the second file/tab.
+
+Sometimes even a standard Copy-Paste action results in the node being inserted in the other file.
+
+EKR: This a unity menu problem, not a problem with the paste commands per se.
+
+See: http://qt-project.org/forums/viewthread/15366/
+
+</t>
+<t tx="ekr.20120313074006.14702">See: https://bugs.launchpad.net/leo-editor/+bug/501636
+
+Leo's present @auto import code for xml files supports only ascii tags.
+
+In particular, xmlScanner.isWordChar should allow non-ascii characters as specified in
+www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+
+NameStartChar ::= ":" | [A-Z] | "_" | [a-z] |
+    [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] |
+    [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] |
+    [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+NameChar ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    [#x0300-#x036F] | [#x203F-#x2040]
+
+The following script, presently in test.leo, may be useful:
+
+import unicodedata as u
+table = ('a','9','_',':','.',)
+table2 = (
+    (0xc0,0xd6),(0xd8,0xf6),(0xf8,0x2ff),(0x370,0x37d),(0x37f,0x1fff),
+    (0x200c,0x200d),(0x2070,0x218f),(0x2c00,0x2fef),(0x3001,0xd7ff),
+    (0xf900,0xfdcf),(0xfdf0,0xfffd),(0x10000,0xeffff),
+    # Valid only after the start of a word.
+    (0xb7,0xb7+1),(0x0300,0x036f),(0x203f,0x2040),
+)
+for ch in table:
+    ch = g.u(ch)
+    g.es(ch,u.category(ch))
+for i,j in table2:
+    g.es('*** range %xd %xd' % (i,j))
+    for n in range(i,min(i+5,j)):
+        if g.isPython3: ch = chr(n)
+        else: ch = unichr(n)
+        g.es(ch,u.category(ch))
+
+Clearly, however, the unicode category of these characters
+is not helpful. Instead, a dictionary lookup would be
+appropriate.
+</t>
+<t tx="ekr.20120313074006.14713">See: https://bugs.launchpad.net/leo-editor/+bug/799695
+
+# The fix was simply to call c.recolor_now(incremental=False)
+</t>
+<t tx="ekr.20120313074006.14714">See: https://bugs.launchpad.net/leo-editor/+bug/824087
+
+The fix was to bind Ctrl-F4 to close-window, instead of Alt-F4.
+
+I instantly like this new binding.
+</t>
+<t tx="ekr.20120313074006.14715">See: https://bugs.launchpad.net/leo-editor/+bug/923301
+
+I am opening a bug for this, since I think that a Leo-Newbie might not be
+able to find a work around for this issue.
+
+The 'rst3' command just fails silently - and - does not create any output
+file at all. - It took me a while to find the offending section in the body
+of a large outline node, so that the 'rst3' command was able to create
+an output file again.
+
+&lt;log&gt;
+
+D:\Users\Viktor Ransmayr\Documents&gt;leo ./BR-2012-01-28.leo
+
+** isPython3: True
+Leo 4.9.1 devel, build 4950, 2012-01-28 10:16:45
+Python 3.2.2, qt version 4.8.0
+Windows 6, 1, 7601, 2, Service Pack 1
+reading settings in D:\Branches\leo-editor\leo\config\leoSettings.leo
+reading settings in D:\Users\Viktor Ransmayr\.leo\myLeoSettings.leo
+reading settings in D:\Users\Viktor Ransmayr\Documents\BR-2012-01-28.leo
+wrote recent file: D:\Users\Viktor Ransmayr\.leo\.leoRecentFiles.txt
+&lt;string&gt;:179: (WARNING/2) Literal block expected; none found.
+Traceback (most recent call last):
+  File "D:\Branches\leo-editor\leo\plugins\qtGui.py", line 8689, in eventFilter
+    ret = k.masterKeyHandler(event)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2897, in masterKeyHandler
+    done,val = k.doMode(event,state,stroke)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2973, in doMode
+    val = k.callStateFunction(event) # Calls end-command.
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2947, in callStateFunction
+    val = k.state.handler(event)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2010, in fullCommand
+    k.callAltXFunction(k.mb_event)
+  File "D:\Branches\leo-editor\leo\core\leoKeys.py", line 2056, in callAltXFunction
+    func(event)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 472, in rst3
+    self.processTopTree(self.c.p)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 482, in processTopTree
+
+self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 510, in processTree
+
+self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 560, in write_rst_tree
+
+self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
+  File "D:\Branches\leo-editor\leo\core\leoRst.py", line 1749, in write_files
+    f.write(s)
+  File "C:\Python32\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u0142' in position
+19816: character maps to &lt;undefined&gt;
+
+&lt;/log&gt;
+
+This has been re-produced with the latest revision of leo-trunk. - If wanted,
+I can send a minimal outline that consistently produces this tracedback.
+</t>
+<t tx="ekr.20120313074006.14722">See: https://bugs.launchpad.net/leo-editor/+bug/893230
+
+Added support for colorizing the following schemes:
+gopher,mailto,news,nntp,prospero,telnet,wais
+
+No new unit tests, but the new code does pass a hand test (which found a bug).
+
+Changed match_ural_any, etc, and addLeoRules.
+</t>
+<t tx="ekr.20120313074006.14725">See: https://bugs.launchpad.net/leo-editor/+bug/944551
+@url URL Open Hangs Leo-Editor for duration (and lesser URL problems)
+
+- Removed "significant" calls to os.system. (It's alright to call os.system('cls'))
+- Added support for unit testing to g.os_startfile, g.recursiveUNLSearch &amp; g.handleUrl
+
+Both unit tests and hand tests pass.
+</t>
+<t tx="ekr.20120313074006.14738"></t>
+<t tx="ekr.20120313074006.14740">See: https://bugs.launchpad.net/leo-editor/+bug/875323
+Hoist an @chapter node leaves a non-visible node selected
+</t>
+<t tx="ekr.20120313074006.14765">See: https://bugs.launchpad.net/leo-editor/+bug/831658
+@url doesn't leave Chapter
+
+If in Chapter mode I double-click @url UNL node that is in a
+different @Chapter, the body text is correct but the outline
+tree does not move outside of the current @Chapter. Works
+fine if I'm not in Chapter mode.
+</t>
+<t tx="ekr.20120313074006.14771">See: https://bugs.launchpad.net/leo-editor/+bug/875327
+Positioning outside of hoisted outline" usually causes problems
+
+The fix was to c.selectPosition.  This has a chance of being a general solution.
+</t>
+<t tx="ekr.20120313074006.14772">See: https://bugs.launchpad.net/leo-editor/+bug/807561
+dragging a binary to Leo should create @url, not @edit
+
+Changed helpers of dropEvent and createAtFileNode.
+
+The isBinaryFile helper returns True if the file's extension is not known.
+This isn't great, but it's safe.
+
+The list of known text types includes:
+    
+1. '.css','.html','.leo','.txt'
+2. All extensions in g.app.extension_dict.keys().
+</t>
+<t tx="ekr.20120313074006.14800">Example: typing in this rest section recolors as *Python*.
+The correct coloring is restored when the entire text is recolored.
+
+In this case, a workaround, and a performance improvement, would be to put
+the ``@language python`` directive before the ``language rest``.
+
+@language python
+
+
+</t>
+<t tx="ekr.20120313074006.14906">- Added scanToCursor argument to c.scanAllDirectives in c.insert/removedComments.
+
+- Added scanToCursor argument to get_directives_dict_list in c.scanAllDirectives.
+
+- get_directives_dict_list sets scanToCursor only for the initial (root) node.
+
+- g.get_directives_dict scans to cursor for @language directives is scanToCursor is True.
+</t>
+<t tx="ekr.20120313074006.14916">Make sure all Outline:Go To... commands work with hoists
+
+Test procedure:
+Open outline headline-body-mismatch.leo (which is attached here).
+Select the node with headline 0101-01-H.
+Click on Outline --- Hoist.
+Alt-x, goto-first-node.
+
+A bug had occurred. There is now a mismatch between the selected node shown in the outline pane and the body shown in the body pane.
+The body pane shows "01-01-B". This is the body of the first node in the outline.
+The body pane should show "0101-01-B".
+
+There are additional problems now:
+1) Outline --- De-Hoist is grayed out. There is no way to de-hoist.
+2) Ctrl-h does not work. It just causes the following message on the console:
+error *** no item for &lt;pos 162306060 childIndex: 0 lvl: 0 key: 172612012:0 0101-01-H&gt; load,runMainLoop,eventFilter,masterKeyHandler,masterCommand,doCommand,editHeadline,editLabel
+--- end error message ---
+ Headline "0101-01-H" can be opened for editing by double-left-clicking it.
+</t>
+<t tx="ekr.20120313074006.15120">See: https://bugs.launchpad.net/leo-editor/+bug/952365
+Leo-Editor can't write a file created from the command line
+
+Test procedure:
+    
+On a command line start Leo-Editor with one command line
+parameter which specifies a valid pathname for a
+non-existent outline file. Ctrl+s causes error messages to
+the Log pane and to the console.
+
+
+Traceback (most recent call last):
+
+  File "/home/bob/bzr/LeoLatest/leo/core/leoFileCommands.py", line 2061, in writeToFileHelper
+    theActualFile.write(s)
+
+AttributeError: 'NoneType' object has no attribute 'write'
+
+handleWriteLeoFileException backup file does not exist! None
+
+===== What I did
+
+Improved error reporting and checking, but the file won't be created if
+createActualFile takes an IOError.
+
+</t>
+<t tx="ekr.20120313074006.15125">Opening myLeoSettings.leo can clutter the console unworthwhile messages 
+See: https://bugs.launchpad.net/leo-editor/+bug/951921
+
+It's clumsy to report conflicts in k.remove_conflicting_definitions.
+Instead, doOneShortcut should only report conflicts *in the same file*.
+</t>
+<t tx="ekr.20120313074006.15135">See: https://bugs.launchpad.net/leo-editor/+bug/951739
+xdg-open of a file-scheme URL containing blanks
+
+The major problem is that currently blanks are not allowed in file-scheme URL's.
+The minor problem is that error messages are printed on the console.
+
+When an attempt is made to open a file-scheme URL that
+contains blanks (making it an invalid URL), an error message
+like the following is printed on the console:
+
+xdg-open: unexpected argument 'Dodge'
+Try 'xdg-open --help' for more information.
+--- Error message end ----
+
+The URL that caused the above message:
+file:///media/datw1/BobH/0/2002 Dodge Neon SXT/Dodge Dealers.txt
+
+Fix to both problems:
+Either single or double quotations are needed around the pathname that is passed to xdg-open.
+</t>
+<t tx="ekr.20120313074006.15138">@url with URL in headline
+See: https://bugs.launchpad.net/leo-editor/+bug/951721
+
+The fix follows the suggestions in the bug report:
+
+1. Use the headline's url if the g.isValidUrl says it is valid.
+
+2. Otherwise, scan down the lines of the body text looking for a valid url.
+
+**Important**: g.isValidUrl is pretty lenient about what it considers valid. Here it is::
+
+    def isValidUrl(url):
+
+        '''Return true if url *looks* like a valid url.'''
+
+        if url.startswith('#--&gt;'):
+            # Allow Leo UNL's.
+            return True
+        else:
+            parsed = urlparse(url)
+            return bool(parsed.scheme
+</t>
+<t tx="ekr.20120313074006.15144">@language python
+@language rest
+
+Reference: See: https://bugs.launchpad.net/leo-editor/+bug/944555
+Ctrl-left-click URL handling not as sophisticated as @url URL handling
+
+Also, make sure bookmarks and contextmenu plguins use g.handleUrl.
+</t>
+<t tx="ekr.20120313074006.15151">Improved g.handleUrl as follows:
+    
+- Automatically strip leading "@url".
+- set p if possible.
+- Handle {{expresssions}} in file urls.
+- Always use webbrowser to open .html and .htm files.
+</t>
+<t tx="ekr.20120313074006.16135">See: http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
+
+I have now pushed a way to do global search, with one line of context
+(one line before, one line after).
+
+Screenshot here:
+
+See: https://plus.google.com/103097156557482112329/posts/6qSngscG38Y
+
+Instructions (with current trunk):
+
+- enable bigdash.py plugin
+- alt-x global-search
+- Enter "s somesearch" in the line editor and press enter
+- Browse the hits. Click on link to navigate to the node.
+
+Caveats:
+
+- If the document is not in currently active tab, the navigation is
+done "in the background". Correct implementation would be to activate
+the tab in order to bring attention to it. 
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

@@ -18,6 +18,7 @@ Top 10:
 .. @+node:ekr.20120226183512.10196: *3* Before 4.10 b1
 @language rest
 
+.. @+node:ekr.20120229094652.15177: *4* Finish docs
 .. @+node:ekr.20120203053243.10111: *4* Complete OpenWith menu
 @nocolor-node
 @language python
@@ -1977,31 +1978,6 @@ def token_range (self):
         return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
     else:
         return -1,-1
-.. @+node:ekr.20120229094652.15177: *4* Finish docs
-.. @+node:ekr.20120303051059.9929: *5* Document bigdash plugin
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
-
-I have now pushed a way to do global search, with one line of context
-(one line before, one line after).
-
-Screenshot here:
-
-https://plus.google.com/103097156557482112329/posts/6qSngscG38Y
-
-Instructions (with current trunk):
-
-- enable bigdash.py plugin
-- alt-x global-search
-- Enter "s somesearch" in the line editor and press enter
-- Browse the hits. Click on link to navigate to the node.
-
-Caveats:
-
-- If the document is not in currently active tab, the navigation is
-done "in the background". Correct implementation would be to activate
-the tab in order to bring attention to it. 
 .. @+node:ekr.20110929165422.15449: *4* Test bug fix: noweb expansions in rst3 command
 @nocolor-node
 
