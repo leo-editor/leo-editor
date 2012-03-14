@@ -46,7 +46,7 @@ if g.app.gui.guiName() == 'qt':
 #@+node:ekr.20100128073941.5371: ** init
 def init():
 
-    g.registerHandler("icondclick1", onDClick1)
+    # g.registerHandler("icondclick1", onDClick1)
     
     if use_qt:
         g.registerHandler('after-create-leo-frame', onCreate)
@@ -62,7 +62,7 @@ def onCreate(tag, keys):
         BookMarkDisplayProvider(c)
     
     return
-#@+node:tbrown.20070322113635.4: ** onDClick1
+#@+node:tbrown.20070322113635.4: ** onDClick1 (no longer used)
 def onDClick1 (tag,keywords):
 
     c = keywords.get("c")
@@ -73,12 +73,6 @@ def onDClick1 (tag,keywords):
             bookmark = True
             break
     if bookmark:
-        # Get the url from the first body line.
-        # lines = p.b.split('\n')
-        # url = lines and lines[0] or ''
-        
-        # Get the url from the headline or body.
-        # This is exactly the same code as in tree.
         url = g.getUrlFromNode(p)
         if url:
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):

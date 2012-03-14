@@ -2037,12 +2037,16 @@ class leoTree:
         for f in (OnHyperLinkControlClick,OnHyperLinkEnter,OnHyperLinkLeave):
 
             g.funcToMethod(f,leoNodes.position)
-    #@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick (@url) & helper
+    #@+node:ekr.20031218072017.2312: *4* tree.OnIconDoubleClick
     def OnIconDoubleClick (self,p):
+        
+        if 0: g.trace(p and p.h)
+    #@+node:ekr.20120314064059.9739: *4* tree.OnIconCtrlClick (@url)
+    def OnIconCtrlClick (self,p):
+        
+        # g.trace(p and p.h)
 
-        # Note: "icondclick" hooks handled by vnode callback routine.
         c = self.c
-
         url = g.getUrlFromNode(p)
         if url:
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):

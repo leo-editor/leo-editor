@@ -8828,9 +8828,9 @@ def isValidUrl(url):
             if scheme.startswith(s):
                 return True
         return False
-#@+node:ekr.20110605121601.18135: *4* openURL() (qtGui top level)
-@g.command('open-url')
-def openURL(event):
+#@+node:ekr.20110605121601.18135: *4* openUrlOnClick() (qtGui top level)
+@g.command('open-url-under-cursor')
+def openUrlOnClick(event):
 
     c = event.get('c')
     if not c: return
@@ -8842,6 +8842,8 @@ def openURL(event):
     row,col = g.convertPythonIndexToRowCol(s,ins)
     i,j = g.getLine(s,ins)
     line = s[i:j]
+    # if line.startswith('@url'):
+        # line=line[4:].strip()
     for match in g.url_regex.finditer(line):
         if match.start() <= col < match.end(): # Don't open if we click after the url.
             url = match.group()
