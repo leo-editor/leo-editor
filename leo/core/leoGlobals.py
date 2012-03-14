@@ -4411,6 +4411,8 @@ def handleUrl(url,c=None,p=None):
     try:
         tag = 'file://'
         if url.startswith(tag):
+            # First, replace special characters (especially %20, by their equivalent).
+            url = urlparse.unquote(url)
             # Finalize the path *before* parsing the url.
             i = url.find('~')
             if i > -1:

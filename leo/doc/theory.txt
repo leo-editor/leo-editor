@@ -236,9 +236,7 @@ Here are the dictionaries that k.masterKeyHandler uses:
   This is *not* an ivar; it is computed by k.computeInverseBindingDict().
   Keys are emacs command names; values are *lists* of shortcuts.
 .. @+node:ekr.20110609120520.16494: *4* Handling key events
-All events are key events
-=========================
-
+.. @+node:ekr.20120313134250.15733: *5* All events are key events
 All event objects passed around Leo are *key* event objects. Taking a look at
 the eventFilter method, we see clearly see that *only* key events ever get
 passed to Leo's core. All other events are handled by Qt-specific event
@@ -252,10 +250,7 @@ eventFilter.
 There are other calls to k.masterKeyHandler in Leo's core, but we can prove (by
 induction, if you will), that all events passed to k.masterKeyHandler are proper
 leoKeyEvent objects.
-
-c.check_event
-=============
-
+.. @+node:ekr.20120313134250.15734: *5* c.check_event
 The essential invariant is that the events passed to Leo's core methods really
 are leoKeyEvent objects created by qtGui.py.  Rather than asserting this
 invariant, the code will contains calls to c.check_event in essential places. 

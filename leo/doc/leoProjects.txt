@@ -1407,6 +1407,9 @@ run-selected-unit-tests-externally = Alt-4 # Standard binding, unchanged.
 run-marked-unit-tests-externally = Alt-5
 run-marked-unit-tests-locally = Alt-6
 #@+node:ekr.20120313074006.16133: ** Keep for now
+@nocolor-node
+
+All these are already copied to leoDocs.leo
 #@+node:ekr.20120304214900.9938: *3* Fixed bug 917814: Switching Log Pane tabs is done incompletely
 @nocolor-node
 
@@ -8712,6 +8715,8 @@ def handleUrl(url,c=None,p=None):
     try:
         tag = 'file://'
         if url.startswith(tag):
+            # First, replace special characters (especially %20, by their equivalent).
+            url = urlparse.unquote(url)
             # Finalize the path *before* parsing the url.
             i = url.find('~')
             if i > -1:
@@ -8857,6 +8862,2918 @@ def openURL(event):
                 g.doHook("@url2",c=c,p=p,v=p)
                 return url
     return None
+#@+node:ekr.20120203053243.10111: *3* Completed OpenWith menu
+#@+node:ekr.20031218072017.2829: *4* c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,d,fn,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    
+    def join(s1,s2):
+        return '%s %s' % (s1,s2)
+    
+    if trace:
+        print()
+        g.trace(fn)
+        for key in sorted(list(d.keys())):
+            print('%15s %s' % (key,d.get(key)))
+    
+    arg_tuple = d.get('args',[])
+    arg = ' '.join(arg_tuple)
+    openType = d.get('kind')
+
+    try:
+        command = '<no command>'
+        if openType == 'os.startfile':
+            command = 'os.startfile(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(join(arg,fn))
+        elif openType == 'exec':
+            command = 'exec(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: exec(join(arg,fn),{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0]) 
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            c_arg = join(arg,fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg,shell=use_shell)
+                except OSError:
+                    g.es_print('c_arg',repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+#@+node:ekr.20120227073551.11666: *4* @test c.openTempFileInExternalEditor
+arg1 = 'arg1'
+arg2 = 'arg2'
+fn = 'fn'
+
+table1 = (
+    # ('os.system',       'os.system(arg1 fn)'),
+    ('os.startfile',    'os.startfile(arg1 fn)'),
+    ('exec',            'exec(arg1 fn)'),
+    ('os.spawnl',       'os.spawnl(arg1,arg1,fn)'),
+    ('subprocess.Popen','subprocess.Popen(arg1 fn)'),
+    ('huh?',            'bad command:huh?'),
+)
+
+for kind,result in table1:
+    d = {'kind':kind,'args':[arg1]}
+    result2 = c.openTempFileInExternalEditor(d,fn,testing=True)
+    assert result==result2,'kind %s expected %s, got %s' % (
+        d.get('kind'),result,result2)
+        
+table2 = (
+    ('os.spawnv',"os.spawnv(['arg1', 'arg2', 'fn'])"),
+)
+        
+for kind,result in table2:
+    d = {'kind':kind,'args':[arg1,arg2]}
+    result2 = c.openTempFileInExternalEditor(d,fn,testing=True)
+    assert result==result2,'kind %s expected %s, got %s' % (
+        d.get('kind'),result,result2)
+#@+node:ekr.20120205022040.17745: *4* @openwith docs (copy)
+@language rest
+
+@openwith nodes in @settings trees create menu items. The openWith
+plugin must be active for these settings to have any effect.
+
+The headline of an @openwith node has the form::
+
+    @openwith name = shortcut
+    
+name is name of the menu item. shortcut specifies the shortcut used to invoke
+the menu item. shortcut may be None.
+
+The body text @openwith nodes should contain a single line contain a tuple of the form::
+
+    command,arg,ext
+
+For example::
+    
+    'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+    
+When the user selects this menu item Leo executes command(arg+path) where path
+is the full path to the temp file. The ext argument specifies the extension of
+the temp file. Notes:
+
+- command is a string.  Valid values are::
+    
+  'subprocess.Popen'
+  'os.system'
+  'os.startfile'
+  'os.spawnl'
+  'os.spawnv'
+  'exec'
+  
+- arg is either a single string or a list of strings.
+
+- ext is a string or None. If None, Leo computes a file extension base on what
+  \@language directive is in effect.
+  
+- If the .leo file being loaded contains @openwith nodes, the File:Open With
+menu contains only the items created by those nodes. Similarly, @openwith nodes
+in myLeoSettings.leo override entries in leoSettings.leo.
+
+- If no @openwith nodes are found anywhere the openWith plugin uses hard-coded
+tables in the plugin itself.
+#@+node:ekr.20120228111337.10057: *4* Creating the open-with menu
+#@+node:ekr.20070926135612: *5* createMenusFromConfigList & helpers (leoMenu)
+def createMenusFromConfigList (self,aList):
+
+    '''Create menus from aList instead of 'hard coded' menus.
+    The 'top' menu has already been created.'''
+
+    c = self.c
+    tag = '@menu'
+    for z in aList:
+        kind,val,val2 = z
+        if kind.startswith(tag):
+            name = kind[len(tag):].strip()
+            if not self.handleSpecialMenus(name,parentName=None):
+                self.createNewMenu(name) # Create top-level menu.
+                self.createMenuFromConfigList(name,val,level=0)
+        else:
+            self.error('%s %s not valid outside @menu tree' % (kind,val))
+
+    aList = c.config.getOpenWith()
+    if aList:
+        # a list of dicts.
+        self.createOpenWithMenuFromTable(aList)
+#@+node:ekr.20070927082205: *6* createMenuFromConfigList
+def createMenuFromConfigList (self,parentName,aList,level=0):
+
+    table = [] ; parentMenu = self.getMenu(parentName)
+
+    for z in aList:
+        kind,val,val2 = z
+        if kind.startswith('@menu'):
+            # Menu names can be unicode without any problem.
+            name = kind[5:].strip()
+            if table:
+                self.createMenuEntries(parentMenu,table)
+            if not self.handleSpecialMenus(name,parentName,table):
+                self.createNewMenu(name,parentName) # Create submenu of parent menu.
+                self.createMenuFromConfigList(name,val,level+1)
+            table = []
+        elif kind == '@item':
+            name = str(val) # Item names must always be ascii.
+            if val2:
+                # Translated names can be unicode.
+                table.append((val2,name),)
+            else:
+                table.append(name)
+        else:
+            g.trace('can not happen: bad kind:',kind)
+
+    if table:
+        self.createMenuEntries(parentMenu,table)
+#@+node:ekr.20070927172712: *6* handleSpecialMenus
+def handleSpecialMenus (self,name,parentName,table=None):
+
+    '''Handle a special menu if name is the name of a special menu.
+    return True if this method handles the menu.'''
+
+    c = self.c
+    if table is None: table = []
+    name2 = name.replace('&','').replace(' ','').lower()
+
+    if name2 == 'plugins':
+        # Create the plugins menu using a hook.
+        g.doHook("create-optional-menus",c=c)
+        return True
+    elif name2.startswith('recentfiles'):
+        # Just create the menu.
+        # createRecentFilesMenuItems will create the contents later.
+        self.createNewMenu(name,parentName)
+        return True
+    elif name2 == 'help' and sys.platform == 'darwin':
+        helpMenu = self.getMacHelpMenu(table)
+        return helpMenu is not None
+    else:
+        return False
+#@+node:ekr.20110605121601.18357: *5* createOpenWithMenu (QtMenu)
+def createOpenWithMenu(self,parent,label,index,amp_index):
+
+    '''Create the File:Open With submenu.
+
+    This is called from leoMenu.createOpenWithMenuFromTable.'''
+
+    # Use the existing Open With menu if possible.
+    # g.trace(parent,label,index)
+
+    menu = self.getMenu('openwith')
+
+    if not menu:
+        menu = self.new_menu(parent,tearoff=False,label=label)
+        menu.insert_cascade(parent,index,
+            label,menu,underline=amp_index)
+
+    return menu
+#@+node:ekr.20031218072017.4116: *5* createOpenWithMenuFromTable & helpers (leoMenu)
+def createOpenWithMenuFromTable (self,table):
+
+    '''table is a lists of dicts:
+    
+    - d.get('command'):  one of "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+    - d.get('shortcut'): the stroke (??)
+    - d.get('name'):     the menu label.
+    
+    Leo executes command(arg+path) where path is the full path to the temp file.
+    If ext is not None, the temp file has the given extension.
+    Otherwise, Leo computes an extension based on the @language directive in effect.
+'''
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+    if not table: return
+
+    #### ?????
+    g.app.openWithTable = table # Override any previous table.
+    
+    # Delete the previous entry.
+    parent = self.getMenu("File")
+    # if trace: g.trace('parent',parent)
+    if not parent:
+        if not g.app.batchMode:
+            g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
+        return
+
+    label = self.getRealMenuName("Open &With...")
+    amp_index = label.find("&")
+    label = label.replace("&","")
+    try:
+        index = parent.index(label)
+        parent.delete(index)
+    except:
+        try:
+            index = parent.index("Open With...")
+            parent.delete(index)
+        except:
+            g.trace('unexpected exception')
+            g.es_exception()
+            return
+    
+    # Create the Open With menu.
+    openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+    if not openWithMenu:
+        g.trace('openWithMenu returns None')
+        return
+    
+    self.setMenu("Open With...",openWithMenu)
+    
+    # Create the menu items in of the Open With menu.
+    self.createOpenWithMenuItemsFromTable(openWithMenu,table)
+
+    for d in table:
+        k.bindOpenWith(d)
+#@+node:ekr.20051022043608.1: *6* createOpenWithMenuItemsFromTable & callback (leoMenu)
+def createOpenWithMenuItemsFromTable (self,menu,table):
+
+    '''Create an entry in the Open with Menu from the table.
+
+    Each entry should be a sequence with 2 or 3 elements.'''
+
+    trace = False and not g.unitTesting
+    # if trace: g.trace(g.callers())
+
+    c = self.c ; k = c.k
+    if g.app.unitTesting: return
+
+    for d in table:
+        label = d.get('name')
+        args = d.get('args',[])
+        if trace:
+            print()
+            for key in sorted(list(d.keys())):
+                print('%15s %s' % (key,d.get(key)))
+
+        accel = d.get('shortcut') or ''
+        if label and args:
+            realLabel = self.getRealMenuName(label)
+            underline=realLabel.find("&")
+            realLabel = realLabel.replace("&","")
+            callback = self.defineOpenWithMenuCallback(d)
+            c.add_command(menu,
+                label=realLabel,
+                accelerator=accel,
+                command=callback,
+                underline=underline)
+#@+node:ekr.20031218072017.4118: *7* defineOpenWithMenuCallback (leoMenu)
+def defineOpenWithMenuCallback(self,d):
+
+    # The first parameter must be event, and it must default to None.
+    def openWithMenuCallback(event=None,self=self,d=d):
+        return self.c.openWith(d=d)
+
+    return openWithMenuCallback
+#@+node:ekr.20120227073551.10919: *4* Parsing open-with data
+#@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
+def getOpenWith (self):
+
+    '''Return a list of dictionaries corresponding to @openwith nodes.'''
+
+    val = self.get('openwithtable','openwithtable')
+
+    return val
+#@+node:ekr.20070411101643.1: *5* doOpenWith (ParserBaseClass)
+def doOpenWith (self,p,kind,name,val):
+
+    # g.trace(self.c.shortFileName(),'kind',kind,'name',name,'val',val)
+
+    d = self.parseOpenWith(p)
+    d['name']=name
+    d['shortcut']=val
+    # g.trace('command',d.get('command'))
+    name = kind = 'openwithtable'
+    self.openWithList.append(d)
+    self.set(p,kind,name,self.openWithList)
+#@+node:ekr.20070411101643.2: *5* parseOpenWith & helper
+def parseOpenWith (self,p):
+
+    d = {'command': None}
+        # Old: command is a tuple.
+        # New: d contains args, kind, etc tags.
+
+    for line in g.splitLines(p.b):
+        self.parseOpenWithLine(line,d)
+
+    return d
+#@+node:ekr.20070411101643.4: *6* parseOpenWithLine
+def parseOpenWithLine (self,line,d):
+    
+    s = line.strip()
+    if not s: return
+
+    i = g.skip_ws(s,0)
+    if g.match(s,i,'#'):
+        return
+    
+    # try:
+        # s = str(s)
+    # except UnicodeError:
+        # pass
+        
+    if 1: # new code
+        j = g.skip_c_id(s,i)
+        tag = s[i:j].strip()
+        if not tag:
+            g.es_print('@openwith lines must start with a tag: %s' % (s))
+            return
+        i = g.skip_ws(s,j)
+        if not g.match(s,i,':'):
+            g.es_print('colon must follow @openwith tag: %s' % (s))
+            return
+        i += 1
+        val = s[i:].strip() or ''
+            # An empty val is valid.
+        if tag == 'arg':
+            aList = d.get('args',[])
+            aList.append(val)
+            d['args'] = aList
+        elif d.get(tag):
+            g.es_print('ignoring duplicate definition of %s %s' % (tag,s))
+        else:
+            d[tag] = val
+    else:
+        d['command'] = s
+#@+node:ekr.20120228111337.10058: *4* Handling the open-with data
+#@+node:ekr.20031218072017.2823: *5* c.openWith and helpers
+def openWith(self,event=None,d=None):
+
+    '''This routine handles the items in the Open With... menu.
+
+    The "d" arg is a Python dictionary whose keys and values
+    are set from the body text of @openwith nodes.
+    
+    d.get('ext'):   The temp file's extension.
+    d.get('kind'):  The method used to open the file.  One of:
+        ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
+    d.get('args'):  A list of arguments specified by the arg tag.
+    '''
+    
+    c = self ; p = c.p
+    try:
+        ext = d.get('ext')
+        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
+            ext = c.getOpenWithExt(p,ext)
+            fn = c.openWithHelper(p,ext)
+            if fn:
+                g.enableIdleTimeHook(idleTimeDelay=500)
+                c.openTempFileInExternalEditor(d,fn)
+        g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
+    except Exception:
+        g.es('unexpected exception in c.openWith')
+        g.es_exception()
+#@+node:ekr.20031218072017.2824: *6* c.getOpenWithExt
+def getOpenWithExt (self,p,ext):
+
+    trace = False and not g.app.unitTesting
+    if trace: g.trace(ext)
+    
+    c = self
+    
+    if ext:
+        for ch in ("'",'"'):
+            if ext.startswith(ch): ext = ext.strip(ch)
+
+    if not ext:
+        # if node is part of @<file> tree, get ext from file name
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None,1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                if trace: g.trace('found node:',ext,p2.h)
+                break
+
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+        if trace: g.trace('found directive',language,ext)
+
+    if not ext:
+        ext = '.txt'
+        if trace: g.trace('use default (.txt)')
+
+    if ext[0] != '.':
+        ext = '.'+ext
+        
+    if trace: g.trace(ext)
+
+    return ext
+#@+node:ekr.20031218072017.2829: *6* c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,d,fn,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    
+    def join(s1,s2):
+        return '%s %s' % (s1,s2)
+    
+    if trace:
+        print()
+        g.trace(fn)
+        for key in sorted(list(d.keys())):
+            print('%15s %s' % (key,d.get(key)))
+    
+    arg_tuple = d.get('args',[])
+    arg = ' '.join(arg_tuple)
+    openType = d.get('kind')
+
+    try:
+        command = '<no command>'
+        if openType == 'os.startfile':
+            command = 'os.startfile(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(join(arg,fn))
+        elif openType == 'exec':
+            command = 'exec(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: exec(join(arg,fn),{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0]) 
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            c_arg = join(arg,fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg,shell=use_shell)
+                except OSError:
+                    g.es_print('c_arg',repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+#@+node:ekr.20100203050306.5797: *6* c.openWithHelper
+def openWithHelper (self,p,ext):
+
+    '''create or reopen a temp file for p,
+    testing for conflicting changes.
+    '''
+
+    c = self
+
+    # May be over-ridden by mod_tempfname plugin.
+    searchPath = c.openWithTempFilePath(p,ext)
+    if not searchPath:
+        # Check the mod_tempfname plugin.
+        return g.trace('c.openWithTempFilePath failed',color='red')
+
+    # Set d and path if a temp file already refers to p.v
+    path = None
+    if g.os_path_exists(searchPath):
+        for d in g.app.openWithFiles:
+            if p.v == d.get('v') and searchPath == d.get('path'):
+                path = searchPath ; break
+
+    if path:
+        assert d.get('path') == searchPath
+        fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
+    else:
+        fn = c.createOpenWithTempFile(p,ext)
+
+    return fn # fn may be None.
+#@+node:ekr.20031218072017.2827: *7* c.createOrRecreateTempFileAsNeeded
+conflict_message = '''
+Conflicting changes in outline and temp file.
+Do you want to use the data in the outline?
+Yes: use the data in the outline.
+No: use the data in the temp file.
+Cancel or Escape or Return: do nothing.
+'''
+
+def createOrRecreateTempFileAsNeeded (self,p,d,ext):
+
+    '''test for changes in both p and the temp file:
+
+    - If only p's body text has changed, we recreate the temp file.
+    - If only the temp file has changed, do nothing here.
+    - If both have changed we must prompt the user to see which code to use.
+
+    Return the file name.
+    '''
+    c = self
+
+    fn = d.get('path')
+    # Get the old & new body text and modification times.
+    encoding = d.get('encoding')
+    old_body = d.get('body')
+    new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+    old_time = d.get('time')
+    try:
+        new_time = g.os_path_getmtime(fn)
+    except Exception:
+        new_time = None
+    body_changed = old_body != new_body
+    time_changed = old_time != new_time
+
+    if body_changed and time_changed:
+        g.es_print('Conflict in temp file for',p.h,color='red')
+        result = g.app.gui.runAskYesNoCancelDialog(c,
+            'Conflict!', c.conflict_message,
+            yesMessage = 'Outline',
+            noMessage = 'File',
+            defaultButton = 'Cancel')
+        if result is None or result.lower() == 'cancel':
+            return False
+        rewrite = result.lower() == 'yes'
+    else:
+        rewrite = body_changed
+
+    if rewrite:
+        # May be overridden by the mod_tempfname plugin.
+        fn = c.createOpenWithTempFile(p,ext)
+    else:
+        g.es('reopening:',g.shortFileName(fn),color='blue')
+
+    return fn
+#@+node:ekr.20100203050306.5937: *7* c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if not g.unitTesting:
+            if g.os_path_exists(fn):
+                g.es('recreating:  ',g.shortFileName(fn),color='red')
+            else:
+                g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time and not g.unitTesting:
+                g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2832: *6* c.openWithTempFilePath (may be over-ridden)
+def openWithTempFilePath (self,p,ext):
+
+    '''Return the path to the temp file corresponding to p and ext.
+
+    This is overridden in mod_tempfname plugin
+    '''
+
+    fn = '%s_LeoTemp_%s%s' % (
+        g.sanitize_filename(p.h),
+        str(id(p.v)),ext)
+    if g.isPython3: # 2010/02/07
+        fn = g.toUnicode(fn)
+    td = g.os_path_finalize(tempfile.gettempdir())
+    path = g.os_path_join(td,fn)
+
+    return path
+#@+node:ekr.20120228111337.10059: *4* Newly changed code
+#@+node:ekr.20070411101643.2: *5* parseOpenWith & helper
+def parseOpenWith (self,p):
+
+    d = {'command': None}
+        # Old: command is a tuple.
+        # New: d contains args, kind, etc tags.
+
+    for line in g.splitLines(p.b):
+        self.parseOpenWithLine(line,d)
+
+    return d
+#@+node:ekr.20070411101643.4: *6* parseOpenWithLine
+def parseOpenWithLine (self,line,d):
+    
+    s = line.strip()
+    if not s: return
+
+    i = g.skip_ws(s,0)
+    if g.match(s,i,'#'):
+        return
+    
+    # try:
+        # s = str(s)
+    # except UnicodeError:
+        # pass
+        
+    if 1: # new code
+        j = g.skip_c_id(s,i)
+        tag = s[i:j].strip()
+        if not tag:
+            g.es_print('@openwith lines must start with a tag: %s' % (s))
+            return
+        i = g.skip_ws(s,j)
+        if not g.match(s,i,':'):
+            g.es_print('colon must follow @openwith tag: %s' % (s))
+            return
+        i += 1
+        val = s[i:].strip() or ''
+            # An empty val is valid.
+        if tag == 'arg':
+            aList = d.get('args',[])
+            aList.append(val)
+            d['args'] = aList
+        elif d.get(tag):
+            g.es_print('ignoring duplicate definition of %s %s' % (tag,s))
+        else:
+            d[tag] = val
+    else:
+        d['command'] = s
+#@+node:ekr.20061031131434.94: *5* k.bindOpenWith
+def bindOpenWith (self,d):
+
+    '''Register an open-with command.'''
+
+    k = self ; c = k.c
+    
+    shortcut = d.get('shortcut')
+    name = d.get('name')
+    
+    # g.trace(d)
+
+    # The first parameter must be event, and it must default to None.
+    def openWithCallback(event=None,c=c,d=d):
+        return c.openWith(d=d)
+
+    # Use k.registerCommand to set the shortcuts in the various binding dicts.
+    commandName = 'open-with-%s' % name.lower()
+    k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
+#@+node:ekr.20031218072017.4116: *5* createOpenWithMenuFromTable & helpers (leoMenu)
+def createOpenWithMenuFromTable (self,table):
+
+    '''table is a lists of dicts:
+    
+    - d.get('command'):  one of "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+    - d.get('shortcut'): the stroke (??)
+    - d.get('name'):     the menu label.
+    
+    Leo executes command(arg+path) where path is the full path to the temp file.
+    If ext is not None, the temp file has the given extension.
+    Otherwise, Leo computes an extension based on the @language directive in effect.
+'''
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.c.k
+    if not table: return
+
+    #### ?????
+    g.app.openWithTable = table # Override any previous table.
+    
+    # Delete the previous entry.
+    parent = self.getMenu("File")
+    # if trace: g.trace('parent',parent)
+    if not parent:
+        if not g.app.batchMode:
+            g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
+        return
+
+    label = self.getRealMenuName("Open &With...")
+    amp_index = label.find("&")
+    label = label.replace("&","")
+    try:
+        index = parent.index(label)
+        parent.delete(index)
+    except:
+        try:
+            index = parent.index("Open With...")
+            parent.delete(index)
+        except:
+            g.trace('unexpected exception')
+            g.es_exception()
+            return
+    
+    # Create the Open With menu.
+    openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+    if not openWithMenu:
+        g.trace('openWithMenu returns None')
+        return
+    
+    self.setMenu("Open With...",openWithMenu)
+    
+    # Create the menu items in of the Open With menu.
+    self.createOpenWithMenuItemsFromTable(openWithMenu,table)
+
+    for d in table:
+        k.bindOpenWith(d)
+#@+node:ekr.20051022043608.1: *6* createOpenWithMenuItemsFromTable & callback (leoMenu)
+def createOpenWithMenuItemsFromTable (self,menu,table):
+
+    '''Create an entry in the Open with Menu from the table.
+
+    Each entry should be a sequence with 2 or 3 elements.'''
+
+    trace = False and not g.unitTesting
+    # if trace: g.trace(g.callers())
+
+    c = self.c ; k = c.k
+    if g.app.unitTesting: return
+
+    for d in table:
+        label = d.get('name')
+        args = d.get('args',[])
+        if trace:
+            print()
+            for key in sorted(list(d.keys())):
+                print('%15s %s' % (key,d.get(key)))
+
+        accel = d.get('shortcut') or ''
+        if label and args:
+            realLabel = self.getRealMenuName(label)
+            underline=realLabel.find("&")
+            realLabel = realLabel.replace("&","")
+            callback = self.defineOpenWithMenuCallback(d)
+            c.add_command(menu,
+                label=realLabel,
+                accelerator=accel,
+                command=callback,
+                underline=underline)
+#@+node:ekr.20031218072017.4118: *7* defineOpenWithMenuCallback (leoMenu)
+def defineOpenWithMenuCallback(self,d):
+
+    # The first parameter must be event, and it must default to None.
+    def openWithMenuCallback(event=None,self=self,d=d):
+        return self.c.openWith(d=d)
+
+    return openWithMenuCallback
+#@+node:ekr.20031218072017.2823: *5* c.openWith and helpers
+def openWith(self,event=None,d=None):
+
+    '''This routine handles the items in the Open With... menu.
+
+    The "d" arg is a Python dictionary whose keys and values
+    are set from the body text of @openwith nodes.
+    
+    d.get('ext'):   The temp file's extension.
+    d.get('kind'):  The method used to open the file.  One of:
+        ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
+    d.get('args'):  A list of arguments specified by the arg tag.
+    '''
+    
+    c = self ; p = c.p
+    try:
+        ext = d.get('ext')
+        if not g.doHook('openwith1',c=c,p=p,v=p.v,d=d):
+            ext = c.getOpenWithExt(p,ext)
+            fn = c.openWithHelper(p,ext)
+            if fn:
+                g.enableIdleTimeHook(idleTimeDelay=500)
+                c.openTempFileInExternalEditor(d,fn)
+        g.doHook('openwith2',c=c,p=p,v=p.v,d=d)
+    except Exception:
+        g.es('unexpected exception in c.openWith')
+        g.es_exception()
+#@+node:ekr.20031218072017.2824: *6* c.getOpenWithExt
+def getOpenWithExt (self,p,ext):
+
+    trace = False and not g.app.unitTesting
+    if trace: g.trace(ext)
+    
+    c = self
+    
+    if ext:
+        for ch in ("'",'"'):
+            if ext.startswith(ch): ext = ext.strip(ch)
+
+    if not ext:
+        # if node is part of @<file> tree, get ext from file name
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None,1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                if trace: g.trace('found node:',ext,p2.h)
+                break
+
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+        if trace: g.trace('found directive',language,ext)
+
+    if not ext:
+        ext = '.txt'
+        if trace: g.trace('use default (.txt)')
+
+    if ext[0] != '.':
+        ext = '.'+ext
+        
+    if trace: g.trace(ext)
+
+    return ext
+#@+node:ekr.20031218072017.2829: *6* c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,d,fn,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    
+    def join(s1,s2):
+        return '%s %s' % (s1,s2)
+    
+    if trace:
+        print()
+        g.trace(fn)
+        for key in sorted(list(d.keys())):
+            print('%15s %s' % (key,d.get(key)))
+    
+    arg_tuple = d.get('args',[])
+    arg = ' '.join(arg_tuple)
+    openType = d.get('kind')
+
+    try:
+        command = '<no command>'
+        if openType == 'os.startfile':
+            command = 'os.startfile(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(join(arg,fn))
+        elif openType == 'exec':
+            command = 'exec(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: exec(join(arg,fn),{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0]) 
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            c_arg = join(arg,fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg,shell=use_shell)
+                except OSError:
+                    g.es_print('c_arg',repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+#@+node:ekr.20100203050306.5797: *6* c.openWithHelper
+def openWithHelper (self,p,ext):
+
+    '''create or reopen a temp file for p,
+    testing for conflicting changes.
+    '''
+
+    c = self
+
+    # May be over-ridden by mod_tempfname plugin.
+    searchPath = c.openWithTempFilePath(p,ext)
+    if not searchPath:
+        # Check the mod_tempfname plugin.
+        return g.trace('c.openWithTempFilePath failed',color='red')
+
+    # Set d and path if a temp file already refers to p.v
+    path = None
+    if g.os_path_exists(searchPath):
+        for d in g.app.openWithFiles:
+            if p.v == d.get('v') and searchPath == d.get('path'):
+                path = searchPath ; break
+
+    if path:
+        assert d.get('path') == searchPath
+        fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
+    else:
+        fn = c.createOpenWithTempFile(p,ext)
+
+    return fn # fn may be None.
+#@+node:ekr.20031218072017.2827: *7* c.createOrRecreateTempFileAsNeeded
+conflict_message = '''
+Conflicting changes in outline and temp file.
+Do you want to use the data in the outline?
+Yes: use the data in the outline.
+No: use the data in the temp file.
+Cancel or Escape or Return: do nothing.
+'''
+
+def createOrRecreateTempFileAsNeeded (self,p,d,ext):
+
+    '''test for changes in both p and the temp file:
+
+    - If only p's body text has changed, we recreate the temp file.
+    - If only the temp file has changed, do nothing here.
+    - If both have changed we must prompt the user to see which code to use.
+
+    Return the file name.
+    '''
+    c = self
+
+    fn = d.get('path')
+    # Get the old & new body text and modification times.
+    encoding = d.get('encoding')
+    old_body = d.get('body')
+    new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+    old_time = d.get('time')
+    try:
+        new_time = g.os_path_getmtime(fn)
+    except Exception:
+        new_time = None
+    body_changed = old_body != new_body
+    time_changed = old_time != new_time
+
+    if body_changed and time_changed:
+        g.es_print('Conflict in temp file for',p.h,color='red')
+        result = g.app.gui.runAskYesNoCancelDialog(c,
+            'Conflict!', c.conflict_message,
+            yesMessage = 'Outline',
+            noMessage = 'File',
+            defaultButton = 'Cancel')
+        if result is None or result.lower() == 'cancel':
+            return False
+        rewrite = result.lower() == 'yes'
+    else:
+        rewrite = body_changed
+
+    if rewrite:
+        # May be overridden by the mod_tempfname plugin.
+        fn = c.createOpenWithTempFile(p,ext)
+    else:
+        g.es('reopening:',g.shortFileName(fn),color='blue')
+
+    return fn
+#@+node:ekr.20100203050306.5937: *7* c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if not g.unitTesting:
+            if g.os_path_exists(fn):
+                g.es('recreating:  ',g.shortFileName(fn),color='red')
+            else:
+                g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time and not g.unitTesting:
+                g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2832: *6* c.openWithTempFilePath (may be over-ridden)
+def openWithTempFilePath (self,p,ext):
+
+    '''Return the path to the temp file corresponding to p and ext.
+
+    This is overridden in mod_tempfname plugin
+    '''
+
+    fn = '%s_LeoTemp_%s%s' % (
+        g.sanitize_filename(p.h),
+        str(id(p.v)),ext)
+    if g.isPython3: # 2010/02/07
+        fn = g.toUnicode(fn)
+    td = g.os_path_finalize(tempfile.gettempdir())
+    path = g.os_path_join(td,fn)
+
+    return path
+#@+node:ekr.20031218072017.2829: *5* c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,d,fn,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    
+    def join(s1,s2):
+        return '%s %s' % (s1,s2)
+    
+    if trace:
+        print()
+        g.trace(fn)
+        for key in sorted(list(d.keys())):
+            print('%15s %s' % (key,d.get(key)))
+    
+    arg_tuple = d.get('args',[])
+    arg = ' '.join(arg_tuple)
+    openType = d.get('kind')
+
+    try:
+        command = '<no command>'
+        if openType == 'os.startfile':
+            command = 'os.startfile(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(join(arg,fn))
+        elif openType == 'exec':
+            command = 'exec(%s)' % join(arg,fn)
+            if trace: g.trace(command)
+            if not testing: exec(join(arg,fn),{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg_tuple[0]) 
+            vtuple = arg_tuple[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s)' % (vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                os.spawnv(os.P_NOWAIT,arg[0],vtuple) #???
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            c_arg = join(arg,fn)
+            command = 'subprocess.Popen(%s)' % c_arg
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(c_arg,shell=use_shell)
+                except OSError:
+                    g.es_print('c_arg',repr(c_arg))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+#@+node:ekr.20110929165422.15449: *3* tested section reference fix
+@nocolor-node
+
+*** Important *** This was all done in Leo 4.9
+
+See: http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references:  default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@+node:ekr.20111018104244.15918: *4* Report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/15239f5f504cee6f
+
+I tried it out with:
+
+Test
+.....@rst test.html
+      which contains:
+      This is a test (underlined)
+      then the reference:
+      <<test>>
+...............<<test>>
+                which contains: Here is some text.
+
+In the top node Test I have:
+@ @rst-options
+expand_noweb_references=True
+expand_noweb_recursively=True
+show_headlines=False  (without this, the <<test>> headline becomes a section
+heading)
+@c
+
+It sort of works:
+--------------------------------------------
+This is a test
+
+<<test>>Here is some text.
+
+Here is some text.
+--------------------------------------------
+
+The reference <<test>> does not get erased, even if the definition actually
+gets inserted beside it. On the other hand, though I can suppress the
+headline of the definition with the rst option, the body of the definition
+gets inserted as a section anyway; definitions are not ignored by rst.
+
+But now I can go see what happens in the code for debugging, since the
+option gives a pointer into the code.
+
+Thanks!
+#@+node:ekr.20100813041139.5920: *4* Entry points
+#@+node:ekr.20100812082517.5945: *5* code_to_rst_command & helpers
+def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
+
+    '''Format the presently selected node as computer code.
+
+    Settings from scriptSettingsDict override normal settings.
+
+    On exit:
+        self.source contains rst sources
+        self.stringOutput contains docutils output if docutils called.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    if p: p = p.copy()
+    else: p = c.p
+    self.topNode = p.copy()
+    self.topLevel = p.level()
+
+    # **Important**: This command works as much like the rst3 command as possible.
+    # Difference arise because there is no @rst node to specify a filename.
+    # Instead we get the filename from scriptSettingsDict, or use 'code_to_rst.html'
+
+    # Capture the settings, munging all settings.
+    self.scriptSettingsDict = {}
+    d = scriptSettingsDict
+    if d:
+        for key in d.keys():
+            self.scriptSettingsDict[self.munge(key)] = d.get(key)
+
+    # Init options...
+    self.preprocessTree(p)
+    self.init_write(p) # scanAllDirectives sets self.path and self.encoding.
+    self.scanAllOptions(p) # Settings for p are valid after this call.
+    callDocutils = self.getOption('call_docutils')
+    writeIntermediateFile = self.getOption('write_intermediate_file')
+    fn = self.getOption('output-file-name') or 'code_to_rst.html'
+    junk,ext = g.os_path_splitext(fn)
+
+    # Write the rst sources to self.sources...
+    self.outputFile = StringIO()
+    self.write_code_tree(p,fn)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if callDocutils or writeIntermediateFile:
+        self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
+#@+node:ekr.20100812082517.5963: *6* write_code_body & helpers
+def write_code_body (self,p):
+
+    trace = False
+    self.p = p.copy() # for traces.
+    if not p.b.strip():
+        return # No need to write any more newlines.
+
+    showDocsAsParagraphs = self.getOption('show_doc_parts_as_paragraphs')
+    lines = g.splitLines(p.b)
+    parts = self.split_parts(lines,showDocsAsParagraphs)
+    result = []
+    for kind,lines in parts:
+        if trace: g.trace(kind,len(lines),p.h)
+        if kind == '@rst-option': # Also handles '@rst-options'
+            pass # The prepass has already handled the options.
+        elif kind == '@rst-markup':
+            lines.extend('\n')
+            result.extend(lines)
+        elif kind == '@doc':
+            if showDocsAsParagraphs:
+                result.extend(lines)
+                result.append('\n')
+            else:
+                result.extend(self.write_code_block(lines))
+        elif kind == 'code':
+            result.extend(self.write_code_block(lines))
+        else:
+            g.trace('Can not happen',kind)
+
+    # Write the lines with exactly two trailing newlines.
+    s = ''.join(result).rstrip() + '\n\n'
+    self.write(s)
+#@+node:ekr.20100812082517.5964: *7* split_parts
+def split_parts (self,lines,showDocsAsParagraphs):
+
+    '''Split a list of body lines into a list of tuples (kind,lines).'''
+
+    kind,parts,part_lines = 'code',[],[]
+    for s in lines:
+        if g.match_word(s,0,'@ @rst-markup'):
+            if part_lines: parts.append((kind,part_lines[:]),)
+            kind = '@rst-markup'
+            n = len('@ @rst-markup')
+            after = s[n:].strip()
+            part_lines = g.choose(after,[after],[])
+        elif s.startswith('@ @rst-option'):
+            if part_lines: parts.append((kind,part_lines[:]),)
+            kind,part_lines = '@rst-option',[s] # part_lines will be ignored.
+        elif s.startswith('@ ') or s.startswith('@\n') or s.startswith('@doc'):
+            if showDocsAsParagraphs:
+                if part_lines: parts.append((kind,part_lines[:]),)
+                kind = '@doc'
+                # Put only what follows @ or @doc
+                n = g.choose(s.startswith('@doc'),4,1)
+                after = s[n:].lstrip()
+                part_lines = g.choose(after,[after],[])
+            else:
+                part_lines.append(s) # still in code mode.
+        elif g.match_word(s,0,'@c') and kind != 'code':
+            if kind == '@doc' and not showDocsAsParagraphs:
+                part_lines.append(s) # Show the @c as code.
+            parts.append((kind,part_lines[:]),)
+            kind,part_lines = 'code',[]
+        else:
+            part_lines.append(s)
+
+    if part_lines:
+        parts.append((kind,part_lines[:]),)
+
+    return parts
+#@+node:ekr.20100812082517.5965: *7* write_code_block
+def write_code_block (self,lines):
+
+    result = ['::\n\n'] # ['[**code block**]\n\n']
+
+    if self.getOption('number-code-lines'):
+        i = 1
+        for s in lines:
+            result.append('    %d: %s' % (i,s))
+            i += 1
+    else:
+        result.extend(['    %s' % (z) for z in lines])
+
+    s = ''.join(result).rstrip()+'\n\n'
+    return g.splitLines(s)
+#@+node:ekr.20100812082517.5966: *6* write_code_headline & helper
+def write_code_headline (self,p):
+
+    '''Generate an rST section if options permit it.
+    Remove headline commands from the headline first,
+    and never generate an rST section for @rst-option and @rst-options.'''
+
+
+    docOnly             = self.getOption('doc_only_mode')
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    if (
+        p == self.topNode or
+        ignore or
+        docOnly or # handleDocOnlyMode handles this.
+        not showHeadlines and not showThisHeadline or
+        # docOnly and not showOrganizers and not thisHeadline or
+        not p.h.strip() and not showOrganizers or
+        not p.b.strip() and not showOrganizers
+    ):
+        return
+
+    self.write_code_headline_helper(p)
+#@+node:ekr.20100812082517.5967: *7* write_code_headline_helper
+def write_code_headline_helper (self,p):
+
+    h = p.h.strip()
+
+    # Remove any headline command before writing the headline.
+    i = g.skip_ws(h,0)
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i].strip()
+    if word:
+        # Never generate a section for @rst-option or @rst-options or @rst-no-head.
+        if word in ('@rst-option','@rst-options','@rst-no-head','@rst-no-headlines'):
+            return
+
+        for prefix in ('@rst-ignore-node','@rst-ignore-tree','@rst-ignore'):
+            if word == prefix:
+                h = h [len(word):].strip()
+                break
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        self.write(self.underline(h,p))
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+#@+node:ekr.20100812082517.5968: *6* write_code_node
+def write_code_node (self,p):
+
+    '''Format a node according to the options presently in effect.
+
+    Side effect: advance p'''
+
+    h = p.h.strip()
+    self.scanAllOptions(p)
+
+    if self.getOption('ignore_this_tree'):
+        p.moveToNodeAfterTree()
+    elif self.getOption('ignore_this_node'):
+        p.moveToThreadNext()
+    elif g.match_word(h,0,'@rst-options') and not self.getOption('show_options_nodes'):
+        p.moveToThreadNext()
+    else:
+        self.http_addNodeMarker(p)
+        self.write_code_headline(p)
+        self.write_code_body(p)
+        p.moveToThreadNext()
+#@+node:ekr.20100812082517.5939: *6* write_code_tree
+def write_code_tree (self,p,fn):
+
+    '''Write p's tree as code to self.outputFile.'''
+
+    self.scanAllOptions(p) # So we can get the next option.
+
+    if self.getOption('generate_rst_header_comment'):
+        self.write('.. rst3: filename: %s\n\n' % fn)
+
+    # We can't use an iterator because we may skip parts of the tree.
+    p = p.copy() # Only one copy is needed for traversal.
+    self.topNode = p.copy() # Indicate the top of this tree.
+    after = p.nodeAfterTree()
+    while p and p != after:
+        self.write_code_node(p) # Side effect: advances p.
+#@+node:ekr.20090511055302.5793: *5* rst3 command & helpers
+def rst3 (self,event=None):
+
+    '''Write all @rst nodes.'''
+
+    self.processTopTree(self.c.p)
+#@+node:ekr.20090502071837.62: *6* processTopTree
+def processTopTree (self,p,justOneFile=False):
+
+    c = self.c ; current = p.copy()
+
+    # This strange looking code looks up and down the tree for @rst nodes.
+    for p in current.self_and_parents():
+        h = p.h
+        if h.startswith('@rst') and not h.startswith('@rst-'):
+            self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
+            break
+        elif h.startswith('@slides'):
+            self.processTree(p,ext=None,toString=False,justOneFile=False)
+            break
+    else:
+        self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
+
+    g.es_print('done',color='blue')
+#@+node:ekr.20090502071837.63: *6* processTree
+def processTree(self,p,ext=None,toString=False,justOneFile=False):
+
+    '''Process all @rst nodes in a tree.
+    ext is the docutils extention: it's useful for scripts and unit tests.
+    '''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(p.h)
+    self.preprocessTree(p)
+    found = False ; self.stringOutput = ''
+    p = p.copy() ; after= p.nodeAfterTree()
+    while p and p != after:
+        h = p.h.strip()
+        if g.match_word(h,0,"@rst"):
+            fn = h[4:].strip()
+            if ((fn and fn[0] != '-') or (toString and not fn)):
+                if trace: g.trace('found: %s',p.h)
+                found = True
+                self.write_rst_tree(p,ext,fn,toString=toString,justOneFile=justOneFile)
+                self.scanAllOptions(p) # Restore the top-level verbose setting.
+                if toString:
+                    return p.copy(),self.stringOutput
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        elif g.match(h,0,"@slides"):
+            self.write_slides(p)
+            found = True
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    if not found:
+        g.es('No @rst or @slides nodes in selected tree',color='blue')
+    return None,None
+#@+node:ekr.20090502071837.64: *6* write_rst_tree
+def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
+
+    '''Convert p's tree to rst sources.
+    Optionally call docutils to convert rst to output.
+
+    On exit:
+        self.source contains rst sources
+        self.stringOutput contains docutils output if docutils called.
+    '''
+
+    c = self.c
+    self.topNode = p.copy()
+    self.topLevel = p.level()
+    if toString:
+        ext = ext or '.html' # 2010/08/12: Unit test found this.
+    else:
+        junk,ext = g.os_path_splitext(fn)
+    ext = ext.lower()
+    if not ext.startswith('.'): ext = '.' + ext
+
+    # Init options...
+    self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
+    self.scanAllOptions(p) # Settings for p are valid after this call.
+    callDocutils = self.getOption('call_docutils')
+    writeIntermediateFile = self.getOption('write_intermediate_file')
+
+    # Write the rst sources to self.source.
+    self.outputFile = StringIO()
+    self.writeTree(p,fn)
+    self.source = self.outputFile.getvalue() # the rST sources.
+    self.outputFile = None
+    self.stringOutput = None
+
+    if callDocutils or writeIntermediateFile:
+        self.write_files(ext,fn,callDocutils,toString,writeIntermediateFile)
+#@+node:ekr.20100822092546.5835: *6* write_slides & helper
+def write_slides (self,p,toString=False):
+
+    '''Convert p's children to slides.'''
+
+    c = self.c ; p = p.copy() ; h = p.h
+    i = g.skip_id(h,1) # Skip the '@'
+    kind,fn = h[:i].strip(),h[i:].strip()
+    if not fn: return g.es('%s requires file name' % (kind),color='red')
+    title = p and p.firstChild().h or '<no slide>'
+    title = title.strip().capitalize()
+    n_tot = p.numberOfChildren()
+
+    n = 1
+    for child in p.children():
+        self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
+        self.scanAllOptions(child) # Settings for child are valid after this call.
+        # Compute the slide's file name.
+        fn2,ext = g.os_path_splitext(fn)
+        fn2 = '%s-%03d%s' % (fn2,n,ext) # Use leading zeros for :glob:.
+        n += 1
+        # Write the rst sources to self.source.
+        self.outputFile = StringIO()
+        self.writeSlideTitle(title,n-1,n_tot)
+        self.writeBody(child)
+        self.source = self.outputFile.getvalue() # the rST sources.
+        self.outputFile,self.stringOutput = None,None
+        self.write_files(ext,fn2,
+            callDocutils=self.getOption('call_docutils'),
+            toString=toString,
+            writeIntermediateFile=self.getOption('write_intermediate_file'))
+#@+node:ekr.20100822174725.5836: *7* writeSlideTitle
+def writeSlideTitle (self,title,n,n_tot):
+
+    '''Write the title, underlined with the '#' character.'''
+
+    if n != 1:
+        title = '%s (%s of %s)' % (title,n,n_tot)
+
+    width = max(4,len(g.toEncodedString(title,
+        encoding=self.encoding,reportErrors=False)))
+
+    self.write('%s\n%s \n\n' % (title,('#'*width)))
+#@+node:ekr.20090502071837.58: *6* write methods (rst3 command)
+#@+node:ekr.20090502071837.68: *7* getDocPart
+def getDocPart (self,lines,n):
+
+    # g.trace('n',n,repr(''.join(lines)))
+
+    result = []
+    << Append whatever follows @doc or @space to result >>
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if g.match_word(s,0,'@code') or g.match_word(s,0,'@c'):
+            break
+        result.append(s)
+    return n, result
+#@+node:ekr.20090502071837.69: *8* << Append whatever follows @doc or @space to result >>
+if n > 0:
+    line = lines[n-1]
+    if line.startswith('@doc'):
+        s = line[4:].lstrip()
+    elif line.startswith('@'):
+        s = line[1:].lstrip()
+    else:
+        s = ''
+
+    # New in Leo 4.4.4: remove these special tags.
+    for tag in ('@rst-options','@rst-option','@rst-markup'):
+        if g.match_word(s,0,tag):
+            s = s[len(tag):].strip()
+
+    if s.strip():
+        result.append(s)
+#@+node:ekr.20090502071837.81: *7* handleSpecialDocParts
+def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
+
+    # g.trace(kind,g.listToString(lines))
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif self.isSpecialDocPart(s,kind):
+            n, lines2 = self.getDocPart(lines,n)
+            if retainContents:
+                result.extend([''])
+                if asClass:
+                    result.extend(['.. container:: '+asClass, ''])
+                    if 'literal' in asClass.split():
+                        result.extend(['  ::', ''])
+                    for l2 in lines2: result.append('    '+l2)
+                else:
+                    result.extend(lines2)
+                result.extend([''])
+        else:
+            result.append(s)
+
+    return result
+#@+node:ekr.20090502071837.77: *7* isAnyDocPart
+def isAnyDocPart (self,s):
+
+    if s.startswith('@doc'):
+        return True
+    elif not s.startswith('@'):
+        return False
+    else:
+        return len(s) == 1 or s[1].isspace()
+#@+node:ekr.20090502071837.79: *7* isAnySpecialDocPart
+def isAnySpecialDocPart (self,s):
+
+    for kind in (
+        '@rst-markup',
+        '@rst-option',
+        '@rst-options',
+    ):
+        if self.isSpecialDocPart(s,kind):
+            return True
+
+    return False
+#@+node:ekr.20090502071837.78: *7* isSpecialDocPart
+def isSpecialDocPart (self,s,kind):
+
+    '''Return True if s is a special doc part of the indicated kind.
+
+    If kind is None, return True if s is any doc part.'''
+
+    if s.startswith('@') and len(s) > 1 and s[1].isspace():
+        if kind:
+            i = g.skip_ws(s,1)
+            result = g.match_word(s,i,kind)
+        else:
+            result = True
+    elif not kind:
+        result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
+    else:
+        result = False
+
+    # g.trace('kind %s, result %s, s %s' % (
+        # repr(kind),result,repr(s)))
+
+    return result
+#@+node:ekr.20090502071837.80: *7* removeLeoDirectives
+def removeLeoDirectives (self,lines):
+
+    '''Remove all Leo directives, except within literal blocks.'''
+
+    n = 0 ; result = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
+            for key in self.leoDirectivesList:
+                if g.match_word(s,1,key):
+                    # g.trace('removing %s' % s)
+                    break
+            else:
+                result.append(s)
+        else:
+            result.append(s)
+
+    return result
+#@+node:ekr.20090502071837.82: *7* replaceCodeBlockDirectives
+def replaceCodeBlockDirectives (self,lines):
+
+    '''Replace code-block directive, but not in literal blocks.'''
+
+    n = 0 ; result = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        else:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,'..'):
+                i = g.skip_ws(s,i+2)
+                if g.match_word(s,i,'code-block'):
+                    if 1: # Create a literal block to hold the code.
+                        result.append('::\n')
+                    else: # This 'annotated' literal block is confusing.
+                        result.append('%s code::\n' % s[i+len('code-block'):])
+                else:
+                    result.append(s)
+            else:
+                result.append(s)
+
+    return result
+#@+node:ekr.20090502071837.70: *7* skip_literal_block
+def skip_literal_block (self,lines,n):
+
+    s = lines[n] ; result = [s] ; n += 1
+    indent = g.skip_ws(s,0)
+
+    # Skip lines until a non-blank line is found with same or less indent.
+    while n < len(lines):
+        s = lines[n]
+        indent2 = g.skip_ws(s,0)
+        if s and not s.isspace() and indent2 <= indent:
+            break # We will rescan lines [n]
+        n += 1
+        result.append(s)
+
+    # g.printList(result,tag='literal block')
+    return n, result
+#@+node:ekr.20090502071837.71: *7* writeBody & helpers
+def writeBody (self,p):
+
+    trace = False and not g.unitTesting
+   
+    if self.getOption('ignore_noweb_definitions'):
+        # 2011/06/10: Ignore section definition nodes.
+        name = self.isSectionDef(p)
+        if name:
+            if trace: g.trace('section def: %s' % (repr(name)))
+            return
+
+    # remove trailing cruft and split into lines.
+    lines = g.splitLines(p.b)
+
+    if self.getOption('code_mode'):
+        # Important: code mode is no longer documented!
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('expand_noweb_references'):
+            # 2011/06/10.
+            lines = self.expandSectionRefs(lines,p,seen=[])
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
+
+    # Write the lines.
+    s = ''.join(lines)
+
+    # We no longer add newlines to the start of nodes because
+    # we write a blank line after all sections.
+    # s = g.ensureLeadingNewlines(s,1)
+    s = g.ensureTrailingNewlines(s,2)
+    self.write(s)
+#@+node:ekr.20110610144305.6749: *8* isSectionDef/Ref
+def isSectionDef (self,p):
+    
+    return self.isSectionRef(p.h)
+    
+def isSectionRef (self,s):
+
+    n1 = s.find("<<",0)
+    n2 = s.find(">>",0)
+    return -1 < n1 < n2 and s[n1+2:n2].strip()
+#@+node:ekr.20110610144305.6750: *8* expandSectionRefs
+def expandSectionRefs (self,lines,p,seen):
+    
+    trace = False and not g.unitTesting
+    
+    if trace: g.trace(p.h,g.callers())
+
+    result = []
+    for s in lines:
+        name = self.isSectionRef(s)
+        if name:
+            p2 = self.findSectionDef(name,p)
+            if p2:
+                g.trace('expanding: %s from %s' % (name,p2.h))
+                result.append(s) # Append the section reference line.
+                lines2 = g.splitLines(p2.b)
+                if self.getOption('expand_noweb_recursively'):
+                    if name in seen:
+                        pass # Prevent unbounded recursion
+                    else:
+                        seen.append(name)
+                        result.extend(self.expandSectionRefs(lines2,p,seen))
+                else:
+                    result.extend(lines2)
+            else:
+                # Undefined reference.
+                result.append(s)
+        else:
+            result.append(s)
+
+    return result
+#@+node:ekr.20110610144305.6751: *8* findSectionDef
+def findSectionDef (self,name,p):
+    
+    for p2 in p.subtree():
+        name2 = self.isSectionDef(p2)
+        if name2:
+            return p2
+    
+    return None
+#@+node:ekr.20090502071837.72: *8* handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    trace = False and not g.unitTesting
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        else:
+            if not code: # Start the code block.
+                result.append('')
+                result.append(self.code_block_string)
+
+            if trace: g.trace('code line: %s' % repr(s))
+            code.append(s)
+       
+        # elif not code: # Start the code block.
+            # result.append('')
+            # result.append(self.code_block_string)
+            # if trace: g.trace('code line: %s' % repr(s))
+            # code.append(s)
+        # else: # Continue the code block.
+            # if trace: g.trace('code line: %s' % repr(s))
+            # code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        # 2010/08/27: Fix bug 618482.
+        # elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73: *9* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@+node:ekr.20090502071837.74: *9* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    # 2010/08/27: fix bug 618482.
+    s = ''.join(theList).rstrip()
+    return s.split('\n')
+#@+node:ekr.20090502071837.75: *9* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+#@+node:ekr.20090502071837.76: *8* handleDocOnlyMode
+def handleDocOnlyMode (self,p,lines):
+
+    '''Handle the preprocessed body text in doc_only mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - All doc parts get copied.
+    - All code parts are ignored.'''
+
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if self.isSpecialDocPart(s,'@rst-options'):
+            n, lines2 = self.getDocPart(lines,n) # ignore.
+        elif self.isAnyDocPart(s):
+            # Handle any other doc part, including @rst-markup.
+            n, lines2 = self.getDocPart(lines,n)
+            if lines2: result.extend(lines2)
+    if not result: result = []
+    if showHeadlines:
+        if result or showThisHeadline or showOrganizers or p == self.topNode:
+            # g.trace(len(result),p.h)
+            self.writeHeadlineHelper(p)
+    return result
+#@+node:ekr.20090502071837.83: *7* writeHeadline & helper
+def writeHeadline (self,p):
+
+    '''Generate an rST section if options permit it.
+    Remove headline commands from the headline first,
+    and never generate an rST section for @rst-option and @rst-options.'''
+
+    docOnly             = self.getOption('doc_only_mode')
+    ignore              = self.getOption('ignore_this_headline')
+    ignoreNowebDefs     = self.getOption('ignore_noweb_definitions')
+    showHeadlines       = self.getOption('show_headlines')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+    showThisHeadline    = self.getOption('show_this_headline')
+
+    if (
+        p == self.topNode or
+        ignore or
+        docOnly or # handleDocOnlyMode handles this.
+        not showHeadlines and not showThisHeadline or
+        # docOnly and not showOrganizers and not thisHeadline or
+        not p.h.strip() and not showOrganizers or
+        not p.b.strip() and not showOrganizers or
+        ignoreNowebDefs and self.isSectionDef(p) # 2011/06/10.
+    ):
+        return
+
+    self.writeHeadlineHelper(p)
+#@+node:ekr.20090502071837.84: *8* writeHeadlineHelper
+def writeHeadlineHelper (self,p):
+
+    h = p.h
+    if not self.atAutoWrite:
+        h = h.strip()
+
+    # Remove any headline command before writing the headline.
+    i = g.skip_ws(h,0)
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i].strip()
+    if word:
+        # Never generate a section for these...
+        if word in (
+            '@rst-option','@rst-options',
+            '@rst-no-head','@rst-no-headlines'
+        ):
+            return
+
+        # Remove all other headline commands from the headline.
+        for command in self.headlineCommands:
+            if word == command:
+                h = h [len(word):].strip()
+                break
+
+        # New in Leo 4.4.4.
+        if word.startswith('@'):
+            if self.getOption('strip_at_file_prefixes'):
+                for s in ('@auto','@file','@nosent','@thin',):
+                    if g.match_word(word,0,s):
+                        h = h [len(s):].strip()
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        if self.getOption('generate_rst'):
+            self.write(self.underline(h,p)) # Used by @auto-rst.
+        else:
+            self.write('\n%s\n\n' % h)
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+#@+node:ekr.20090502071837.85: *7* writeNode (leoRst)
+def writeNode (self,p):
+
+    '''Format a node according to the options presently in effect.'''
+
+    self.initCodeBlockString(p)
+    self.scanAllOptions(p)
+
+    if 0:
+        g.trace('%24s code_mode %s' % (p.h,self.getOption('code_mode')))
+
+    h = p.h.strip()
+
+    if self.getOption('preformat_this_node'):
+        self.http_addNodeMarker(p)
+        self.writePreformat(p)
+        p.moveToThreadNext()
+    elif self.getOption('ignore_this_tree'):
+        p.moveToNodeAfterTree()
+    elif self.getOption('ignore_this_node'):
+        p.moveToThreadNext()
+    elif g.match_word(h,0,'@rst-options') and not self.getOption('show_options_nodes'):
+        p.moveToThreadNext()
+    else:
+        self.http_addNodeMarker(p)
+        self.writeHeadline(p)
+        self.writeBody(p)
+        p.moveToThreadNext()
+#@+node:ekr.20090502071837.86: *7* writePreformat
+def writePreformat (self,p):
+
+    '''Write p's body text lines as if preformatted.
+
+     ::
+
+        line 1
+        line 2 etc.
+    '''
+
+    # g.trace(p.h,g.callers())
+
+    lines = p.b.split('\n')
+    lines = [' '*4 + z for z in lines]
+    lines.insert(0,'::\n')
+
+    s = '\n'.join(lines)
+    if s.strip():
+        self.write('%s\n\n' % s)
+#@+node:ekr.20090502071837.87: *7* writeTree
+def writeTree(self,p,fn):
+
+    '''Write p's tree to self.outputFile.'''
+
+    self.scanAllOptions(p)
+
+    if self.getOption('generate_rst'):
+        if self.getOption('generate_rst_header_comment'):
+            self.write(self.rstComment(
+                'rst3: filename: %s\n\n' % fn))
+
+    # We can't use an iterator because we may skip parts of the tree.
+    p = p.copy() # Only one copy is needed for traversal.
+    after = p.nodeAfterTree()
+    while p and p != after:
+        self.writeNode(p) # Side effect: advances p.
+#@+node:ekr.20090502071837.67: *5* writeNodeToString
+def writeNodeToString (self,p=None,ext=None):
+
+    '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
+    Convert the first node found to an ouput of the type specified by ext.
+
+    The @rst may or may not be followed by a filename; the filename is *ignored*,
+    and its type does not affect ext or the output generated in any way.
+
+    ext should start with a period: .html, .tex or None (specifies rst output).
+
+    Returns (p, s), where p is the position of the @rst node and s is the converted text.'''
+
+    c = self.c ; current = p or c.p
+
+    for p in current.self_and_parents():
+        if p.h.startswith('@rst'):
+            return self.processTree(p,ext=ext,toString=True,justOneFile=True)
+    else:
+        return self.processTree(current,ext=ext,toString=True,justOneFile=True)
+#@+node:ekr.20090512153903.5803: *5* writeAtAutoFile
+def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
+
+    '''Write an @auto tree containing imported rST code.
+    The caller will close the output file.'''
+
+    try:
+        self.trialWrite = trialWrite
+        self.atAutoWrite = True
+        self.initAtAutoWrite(p,fileName,outputFile)
+        self.topNode = p.copy() # Indicate the top of this tree.
+        self.topLevel = p.level()
+        after = p.nodeAfterTree()
+        ok = self.isSafeWrite(p)
+        if ok:
+            p = p.firstChild() # A hack: ignore the root node.
+            while p and p != after:
+                self.writeNode(p) # side effect: advances p
+    finally:
+        self.atAutoWrite = False
+    return ok
+#@+node:ekr.20090513073632.5733: *6* initAtAutoWrite (rstCommands)
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.nodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.init_write(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+    # Do the overrides.
+    self.outputFile = outputFile
+    # Set underlining characters.
+    # It makes no sense to use user-defined
+    # underlining characters in @auto-rst.
+    d = p.v.u.get('rst-import',{})
+    underlines2 = d.get('underlines2','')
+        # Do *not* set a default for overlining characters.
+    if len(underlines2) > 1:
+        underlines2 = underlines2[0]
+        g.trace('too many top-level underlines, using %s' % (
+            underlines2),color='blue')
+    underlines1 = d.get('underlines1','')
+    # Bug fix:  2010/05/26: pad underlines with default characters.
+    default_underlines = '=+*^~"\'`-:><_'
+    if underlines1:
+        for ch in default_underlines[1:]:
+            if ch not in underlines1:
+                underlines1 = underlines1 + ch
+    else:
+        underlines1 = default_underlines
+    self.atAutoWriteUnderlines   = underlines2 + underlines1
+    self.underlines1 = underlines1
+    self.underlines2 = underlines2
+#@+node:ekr.20091228080620.6499: *6* isSafeWrite
+def isSafeWrite (self,p):
+
+    '''Return True if node p contributes nothing but
+    rst-options to the write.'''
+
+    if self.trialWrite or not p.isAtAutoRstNode():
+        return True # Trial writes are always safe.
+
+    lines = g.splitLines(p.b)
+    for z in lines:
+        if z.strip() and not z.startswith('@') and not z.startswith('.. '):
+            # A real line that will not be written.
+            g.es('unsafe @auto-rst',color='red')
+            g.es('body text will be ignored in\n',p.h)
+            return False
+    else:
+        return True
+#@+node:ekr.20090502071837.41: *4* Options
+#@+node:ekr.20090502071837.42: *5* createDefaultOptionsDict
+def createDefaultOptionsDict(self):
+
+    # Important: these must be munged names.
+    self.defaultOptionsDict = {
+        # Http options...
+        'clear_http_attributes':   False,
+        'http_server_support':     False,
+        'http_attributename':      'rst_http_attribute',
+        'node_begin_marker':       'http-node-marker-',
+        # Path options...
+        'default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
+        'stylesheet_name': 'default.css',
+        'stylesheet_path': None, # Bug fix: must be None, not ''.
+        'stylesheet_embed': True,
+        'publish_argv_for_missing_stylesheets': None,
+        # Global options...
+        'call_docutils': True, # 2010/08/05
+        'code_block_string': '',
+        'number_code_lines': True,
+        'underline_characters': '''#=+*^~"'`-:><_''',
+        'verbose':True,
+        'write_intermediate_file': False, # Used only if generate_rst is True.
+        'write_intermediate_extension': '.txt',
+        # Mode options...
+        'code_mode': False, # True: generate rst markup from @code and @doc parts.
+        'doc_only_mode': False, # True: generate only from @doc parts.
+        'generate_rst': True, # True: generate rst markup.  False: generate plain text.
+        'generate_rst_header_comment': True,
+            # True generate header comment (requires generate_rst option)
+        # Formatting options that apply to both code and rst modes....
+        'expand_noweb_references': False,
+        'ignore_noweb_definitions': False,
+        'expand_noweb_recursively': True,
+        'show_headlines': True,  # Can be set by @rst-no-head headlines.
+        'show_organizer_nodes': True,
+        'show_options_nodes': False,
+        'show_sections': True,
+        'strip_at_file_prefixes': True,
+        'show_doc_parts_in_rst_mode': True,
+        # Formatting options that apply only to code mode.
+        'show_doc_parts_as_paragraphs': False,
+        'show_leo_directives': True,
+        'show_markup_doc_parts': False,
+        'show_options_doc_parts': False,
+    }
+#@+node:ekr.20090502071837.43: *5* dumpSettings (debugging)
+def dumpSettings (self):
+
+    d = self.optionsDict
+    keys = sorted(d)
+
+    g.pr('present settings...')
+    for key in keys:
+        g.pr('%20s %s' % (key,d.get(key)))
+#@+node:ekr.20090502071837.44: *5* getOption & setOption
+def getOption (self,name):
+
+    # 2010/08/12: munging names here is safe because setOption munges.
+    # g.trace(name,self.optionsDict.get(self.munge(name)))
+    return self.optionsDict.get(self.munge(name))
+
+def setOption (self,name,val,tag=None):
+
+    self.optionsDict [self.munge(name)] = val
+#@+node:ekr.20090502071837.45: *5* initCodeBlockString
+def initCodeBlockString(self,p):
+
+    trace = False and not g.unitTesting
+    c = self.c
+    # if trace: os.system('cls')
+    d = c.scanAllDirectives(p)
+    language = d.get('language')
+    if language is None: language = 'python'
+    else: language = language.lower()
+    syntax = SilverCity is not None
+
+    if trace: g.trace('language',language,'language.title()',language.title(),p.h)
+
+    # Note: lines that end with '\n\n' are a signal to handleCodeMode.
+    s = self.getOption('code_block_string')
+    if s:
+        self.code_block_string = s.replace('\\n','\n')
+    elif syntax and language in ('python','ruby','perl','c'):
+        self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % (
+            language.title())
+    else:
+        self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
+#@+node:ekr.20090502071837.46: *5* preprocessTree & helpers
+def preprocessTree (self,root):
+
+    self.nodeOptionDict = {}
+
+    # Bug fix 12/4/05: must preprocess parents too.
+    for p in root.parents():
+        self.preprocessNode(p)
+
+    for p in root.self_and_subtree():
+        self.preprocessNode(p)
+
+    if 0:
+        g.trace(root.h)
+        for key in self.nodeOptionDict.keys():
+            g.trace(key)
+            g.printDict(self.nodeOptionDict.get(key))
+#@+node:ekr.20090502071837.47: *6* preprocessNode
+def preprocessNode (self,p):
+
+    d = self.nodeOptionDict.get(p.v)
+    if d is None:
+        d = self.scanNodeForOptions(p)
+        self.nodeOptionDict [p.v] = d
+#@+node:ekr.20090502071837.48: *6* parseOptionLine
+def parseOptionLine (self,s):
+
+    '''Parse a line containing name=val and return (name,value) or None.
+
+    If no value is found, default to True.'''
+
+    s = s.strip()
+    if s.endswith(','): s = s[:-1]
+    # Get name.  Names may contain '-' and '_'.
+    i = g.skip_id(s,0,chars='-_')
+    name = s [:i]
+    if not name: return None
+    j = g.skip_ws(s,i)
+    if g.match(s,j,'='):
+        val = s [j+1:].strip()
+        # g.trace(val)
+        return name,val
+    else:
+        # g.trace('*True')
+        return name,'True'
+#@+node:ekr.20090502071837.49: *6* scanForOptionDocParts
+def scanForOptionDocParts (self,p,s):
+
+    '''Return a dictionary containing all options from @rst-options doc parts in p.
+    Multiple @rst-options doc parts are allowed: this code aggregates all options.
+    '''
+
+    d = {} ; n = 0 ; lines = g.splitLines(s)
+    while n < len(lines):
+        line = lines[n] ; n += 1
+        if line.startswith('@'):
+            i = g.skip_ws(line,1)
+            for kind in ('@rst-options','@rst-option'):
+                if g.match_word(line,i,kind):
+                    # Allow options on the same line.
+                    line = line[i+len(kind):]
+                    d.update(self.scanOption(p,line))
+                    # Add options until the end of the doc part.
+                    while n < len(lines):
+                        line = lines[n] ; n += 1 ; found = False
+                        for stop in ('@c','@code', '@'):
+                            if g.match_word(line,0,stop):
+                                found = True ; break
+                        if found:
+                            break
+                        else:
+                            d.update(self.scanOption(p,line))
+                    break
+    return d
+#@+node:ekr.20090502071837.50: *6* scanHeadlineForOptions
+def scanHeadlineForOptions (self,p):
+
+    '''Return a dictionary containing the options implied by p's headline.'''
+
+    h = p.h.strip()
+
+    if p == self.topNode:
+        return {} # Don't mess with the root node.
+    elif g.match_word(h,0,'@rst-option'):
+        s = h [len('@rst-option'):]
+        return self.scanOption(p,s)
+    elif g.match_word(h,0,'@rst-options'):
+        return self.scanOptions(p,p.b)
+    else:
+        # Careful: can't use g.match_word because options may have '-' chars.
+        i = g.skip_id(h,0,chars='@-')
+        word = h[0:i]
+
+        for option,ivar,val in (
+            ('@rst',                'code_mode',False),
+            ('@rst-code',           'code_mode',True),
+            ('@rst-default-path',   'default_prefix',''),
+            ('@rst-doc-only',       'doc_only_mode',True),
+            ('@rst-head',           'show_this_headline',True),
+            # ('@rst-head' ,        'show_headlines',False),
+            ('@rst-ignore',         'ignore_this_tree',True),
+            ('@rst-ignore-node',    'ignore_this_node',True),
+            ('@rst-ignore-tree',    'ignore_this_tree',True),
+            ('@rst-no-head',        'ignore_this_headline',True),
+            ('@rst-preformat',      'preformat_this_node',True),
+        ):
+            if word == option:
+                d = { ivar: val }
+                # Special case: code mode and doc-only modes are linked.
+                if ivar == 'code_mode':
+                    d ['doc_only_mode'] = False
+                elif ivar == 'doc_only_mode':
+                    d ['code_mode'] = False
+                # Special case: Treat a bare @rst like @rst-no-head
+                if h == '@rst':
+                    d ['ignore_this_headline'] = True
+                # g.trace(repr(h),d)
+                return d
+
+        if h.startswith('@rst'):
+            g.trace('unknown kind of @rst headline',p.h,g.callers(4))
+
+        return {}
+#@+node:ekr.20090502071837.51: *6* scanNodeForOptions
+def scanNodeForOptions (self,p):
+
+    '''Return a dictionary containing all the option-name:value entries in p.
+
+    Such entries may arise from @rst-option or @rst-options in the headline,
+    or from @ @rst-options doc parts.'''
+    
+    trace = False and not g.unitTesting
+
+    h = p.h
+
+    d = self.scanHeadlineForOptions(p)
+
+    d2 = self.scanForOptionDocParts(p,p.b)
+
+    # A fine point: body options over-ride headline options.
+    d.update(d2)
+    
+    if trace and d:
+        g.trace(h)
+        for z in sorted(d):
+            print('    %s: %s' % (z,d.get(z)))
+
+    return d
+#@+node:ekr.20090502071837.52: *6* scanOption
+def scanOption (self,p,s):
+
+    '''Return { name:val } if s is a line of the form name=val.
+    Otherwise return {}'''
+
+    if not s.strip() or s.strip().startswith('..'): return {}
+
+    data = self.parseOptionLine(s)
+
+    if data:
+        name,val = data
+        if self.munge(name) in list(self.defaultOptionsDict.keys()):
+            if   val.lower() == 'true': val = True
+            elif val.lower() == 'false': val = False
+            # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
+            return { self.munge(name): val }
+        else:
+            g.es_print('ignoring unknown option: %s' % (name),color='red')
+            return {}
+    else:
+        g.trace(repr(s))
+        s2 = 'bad rst3 option in %s: %s' % (p.h,s)
+        g.es_print(s2,color='red')
+        return {}
+#@+node:ekr.20090502071837.53: *6* scanOptions
+def scanOptions (self,p,s):
+
+    '''Return a dictionary containing all the options in s.'''
+
+    d = {}
+
+    for line in g.splitLines(s):
+        d2 = self.scanOption(p,line)
+        if d2: d.update(d2)
+
+    return d
+#@+node:ekr.20090502071837.54: *5* scanAllOptions & helpers
+# Once an option is seen, no other related options in ancestor nodes have any effect.
+
+def scanAllOptions(self,p):
+
+    '''Scan position p and p's ancestors looking for options,
+    setting corresponding ivars.
+    '''
+
+    self.initOptionsFromSettings() # Must be done on every node.
+    self.handleSingleNodeOptions(p)
+    seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
+
+    # g.trace('-'*20)
+    for p in p.self_and_parents():
+        d = self.nodeOptionDict.get(p.v,{})
+        # g.trace(p.h,d)
+        for key in d.keys():
+            ivar = self.munge(key)
+            if not ivar in seen:
+                seen.append(ivar)
+                val = d.get(key)
+                self.setOption(key,val,p.h)
+
+    if self.rst3_all:
+        self.setOption("generate_rst", True, "rst3_all")
+        self.setOption("generate_rst_header_comment",True, "rst3_all")
+        self.setOption("http_server_support", True, "rst3_all")
+        self.setOption("write_intermediate_file", True, "rst3_all")
+#@+node:ekr.20090502071837.55: *6* initOptionsFromSettings
+def initOptionsFromSettings (self):
+
+    c = self.c
+
+    d = self.defaultOptionsDict
+    keys = sorted(d)
+
+    for key in keys:
+        for getter,kind in (
+            (c.config.getBool,'@bool'),
+            (c.config.getString,'@string'),
+            (d.get,'default'),
+        ):
+            val = getter(key)
+            if kind == 'default' or val is not None:
+                self.setOption(key,val,'initOptionsFromSettings')
+                break
+
+    # 2010/08/12: Script settings override everything else.
+    d2 = self.scriptSettingsDict or {}
+    for key in d2.keys():
+        val = d2.get(key)
+        # g.trace(key,val)
+        self.setOption(key,val,'initOptionsFromSettings')
+
+    # Special case.
+    if self.getOption('http_server_support') and not mod_http:
+        g.es('No http_server_support: can not import mod_http plugin',color='red')
+        self.setOption('http_server_support',False)
+#@+node:ekr.20090502071837.56: *6* handleSingleNodeOptions
+def handleSingleNodeOptions (self,p):
+
+    '''Init the settings of single-node options from the tnodeOptionsDict.
+
+    All such options default to False.'''
+
+    d = self.nodeOptionDict.get(p.v, {} )
+
+    for ivar in self.singleNodeOptions:
+        val = d.get(ivar,False)
+        #g.trace('%24s %8s %s' % (ivar,val,p.h))
+        self.setOption(ivar,val,p.h)
+
+#@+node:ekr.20090502071837.42: *4* createDefaultOptionsDict
+def createDefaultOptionsDict(self):
+
+    # Important: these must be munged names.
+    self.defaultOptionsDict = {
+        # Http options...
+        'clear_http_attributes':   False,
+        'http_server_support':     False,
+        'http_attributename':      'rst_http_attribute',
+        'node_begin_marker':       'http-node-marker-',
+        # Path options...
+        'default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
+        'stylesheet_name': 'default.css',
+        'stylesheet_path': None, # Bug fix: must be None, not ''.
+        'stylesheet_embed': True,
+        'publish_argv_for_missing_stylesheets': None,
+        # Global options...
+        'call_docutils': True, # 2010/08/05
+        'code_block_string': '',
+        'number_code_lines': True,
+        'underline_characters': '''#=+*^~"'`-:><_''',
+        'verbose':True,
+        'write_intermediate_file': False, # Used only if generate_rst is True.
+        'write_intermediate_extension': '.txt',
+        # Mode options...
+        'code_mode': False, # True: generate rst markup from @code and @doc parts.
+        'doc_only_mode': False, # True: generate only from @doc parts.
+        'generate_rst': True, # True: generate rst markup.  False: generate plain text.
+        'generate_rst_header_comment': True,
+            # True generate header comment (requires generate_rst option)
+        # Formatting options that apply to both code and rst modes....
+        'expand_noweb_references': False,
+        'ignore_noweb_definitions': False,
+        'expand_noweb_recursively': True,
+        'show_headlines': True,  # Can be set by @rst-no-head headlines.
+        'show_organizer_nodes': True,
+        'show_options_nodes': False,
+        'show_sections': True,
+        'strip_at_file_prefixes': True,
+        'show_doc_parts_in_rst_mode': True,
+        # Formatting options that apply only to code mode.
+        'show_doc_parts_as_paragraphs': False,
+        'show_leo_directives': True,
+        'show_markup_doc_parts': False,
+        'show_options_doc_parts': False,
+    }
+#@+node:ekr.20090502071837.71: *4* writeBody & helpers
+def writeBody (self,p):
+
+    trace = False and not g.unitTesting
+   
+    if self.getOption('ignore_noweb_definitions'):
+        # 2011/06/10: Ignore section definition nodes.
+        name = self.isSectionDef(p)
+        if name:
+            if trace: g.trace('section def: %s' % (repr(name)))
+            return
+
+    # remove trailing cruft and split into lines.
+    lines = g.splitLines(p.b)
+
+    if self.getOption('code_mode'):
+        # Important: code mode is no longer documented!
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('expand_noweb_references'):
+            # 2011/06/10.
+            lines = self.expandSectionRefs(lines,p,seen=[])
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
+
+    # Write the lines.
+    s = ''.join(lines)
+
+    # We no longer add newlines to the start of nodes because
+    # we write a blank line after all sections.
+    # s = g.ensureLeadingNewlines(s,1)
+    s = g.ensureTrailingNewlines(s,2)
+    self.write(s)
+#@+node:ekr.20110610144305.6749: *5* isSectionDef/Ref
+def isSectionDef (self,p):
+    
+    return self.isSectionRef(p.h)
+    
+def isSectionRef (self,s):
+
+    n1 = s.find("<<",0)
+    n2 = s.find(">>",0)
+    return -1 < n1 < n2 and s[n1+2:n2].strip()
+#@+node:ekr.20110610144305.6750: *5* expandSectionRefs
+def expandSectionRefs (self,lines,p,seen):
+    
+    trace = False and not g.unitTesting
+    
+    if trace: g.trace(p.h,g.callers())
+
+    result = []
+    for s in lines:
+        name = self.isSectionRef(s)
+        if name:
+            p2 = self.findSectionDef(name,p)
+            if p2:
+                g.trace('expanding: %s from %s' % (name,p2.h))
+                result.append(s) # Append the section reference line.
+                lines2 = g.splitLines(p2.b)
+                if self.getOption('expand_noweb_recursively'):
+                    if name in seen:
+                        pass # Prevent unbounded recursion
+                    else:
+                        seen.append(name)
+                        result.extend(self.expandSectionRefs(lines2,p,seen))
+                else:
+                    result.extend(lines2)
+            else:
+                # Undefined reference.
+                result.append(s)
+        else:
+            result.append(s)
+
+    return result
+#@+node:ekr.20110610144305.6751: *5* findSectionDef
+def findSectionDef (self,name,p):
+    
+    for p2 in p.subtree():
+        name2 = self.isSectionDef(p2)
+        if name2:
+            return p2
+    
+    return None
+#@+node:ekr.20090502071837.72: *5* handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    trace = False and not g.unitTesting
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        else:
+            if not code: # Start the code block.
+                result.append('')
+                result.append(self.code_block_string)
+
+            if trace: g.trace('code line: %s' % repr(s))
+            code.append(s)
+       
+        # elif not code: # Start the code block.
+            # result.append('')
+            # result.append(self.code_block_string)
+            # if trace: g.trace('code line: %s' % repr(s))
+            # code.append(s)
+        # else: # Continue the code block.
+            # if trace: g.trace('code line: %s' % repr(s))
+            # code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        # 2010/08/27: Fix bug 618482.
+        # elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73: *6* formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@+node:ekr.20090502071837.74: *6* rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    # 2010/08/27: fix bug 618482.
+    s = ''.join(theList).rstrip()
+    return s.split('\n')
+#@+node:ekr.20090502071837.75: *6* finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+#@+node:ekr.20090502071837.76: *5* handleDocOnlyMode
+def handleDocOnlyMode (self,p,lines):
+
+    '''Handle the preprocessed body text in doc_only mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - All doc parts get copied.
+    - All code parts are ignored.'''
+
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if self.isSpecialDocPart(s,'@rst-options'):
+            n, lines2 = self.getDocPart(lines,n) # ignore.
+        elif self.isAnyDocPart(s):
+            # Handle any other doc part, including @rst-markup.
+            n, lines2 = self.getDocPart(lines,n)
+            if lines2: result.extend(lines2)
+    if not result: result = []
+    if showHeadlines:
+        if result or showThisHeadline or showOrganizers or p == self.topNode:
+            # g.trace(len(result),p.h)
+            self.writeHeadlineHelper(p)
+    return result
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

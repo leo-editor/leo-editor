@@ -40,7 +40,6 @@ please ask for help on `Leo's help forum`_.
 
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-.. _`Leo's help forum`:     http://groups.google.com/group/leo-editor-users
 .. _`Pmw`:                  http://pmw.sourceforge.net/
 .. _`PyEnchant`:            https://sourceforge.net/projects/pyenchant/
 .. _`Python`:               http://www.python.org

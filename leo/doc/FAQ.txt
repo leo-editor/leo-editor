@@ -668,24 +668,31 @@ using the node in leoSettings.leo called::
 
 As usual, you will probably want to put this node in your myLeoSettings.leo file.
 .. @+node:ekr.20110531155858.20564: *4* How do I set selection colors?
-You set selection colors in the following settings node::
+You set most colors in the following settings node::
 
     @data qt-gui-plugin-style-sheet
     
-.. @+node:ekr.20110531155858.20565: *5* Response
-@nocolor-node
+However, settings for colors that can change during Leo's execution
+are found in the node::
 
-After further reflection, there does not seem to be much that can be done.
+    Body pane colors
+    
+These settings are as follows, with the defaults as shown::
+    
 
-Suppose, for example, that Leo converts an @setting node to a mini
-stylesheet.  (In fact, Leo sometimes does do this, in other contexts.)
- We now have a conundrum: which should take precedence: the @data
-qt-gui-plugin-style-sheet setting or the @color
-body_text_selection_foreground_color setting?
-
-Rather than open that can of worms, the best solution seems to be to
-declare that yes, some settings *are* gui dependent.  Use @data
-qt-gui-plugin-style-sheet to set those settings.
+    \@color body_cursor_background_color = None
+    \@color body_cursor_foreground_color = None
+    \@color body_insertion_cursor_color = None
+    \@color body_text_background_color = None
+    \@color body_text_foreground_color = None
+    \@color command_mode_bg_color = #f2fdff</vh></v>
+    \@color command_mode_fg_color = None</vh></v>
+    \@color insert_mode_bg_color = #fdf5f5</vh></v>
+    \@color insert_mode_fg_color = black</vh></v>
+    \@color overwrite_mode_bg_color = azure2</vh></v>
+    \@color overwrite_mode_fg_color = black</vh></v>
+    \@color unselected_body_bg_color = #ffffef</vh></v>
+    \@color unselected_body_fg_color = black</vh></v>
 .. @+node:ekr.20050830115714.118: *3* Tips and techniques
 .. @+node:ekr.20080527063511.1: *4* What is an easy way to profile code?
 I had a need to figure out why a part of some python code I had written
