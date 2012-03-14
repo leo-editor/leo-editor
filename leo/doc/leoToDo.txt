@@ -12,7 +12,8 @@
 
 Finish docs.
 
-Ctrl-click in body allows spaces in url's.
+- Only look at first line of the body in @url nodes.
+- (Done) Ctrl-click in body allows spaces in url's.
 
 Double-click *only* edits headline.
 .. @+node:ekr.20120311151914.9916: *4* Urls... (leoGlobals.py)
@@ -24,30 +25,20 @@ def getUrlFromNode(p):
     '''Get an url from node p:
         
     1. Use the headline if it contains a valid url.
-    2. Otherwise, do a bit of AI in the body.
+    2. Otherwise, look *only* at the first line of the body.
     '''
     
-    if 1: # New code.
-        if g.match_word(p.h,0,'@url'):
-            url = p.h[4:].strip()
-            if g.isValidUrl(url):
-                return url
-        elif g.isValidUrl(p.h.strip()):
-            return p.h.strip()
-        for s in g.splitLines(p.b):
-            url = s.strip()
-            if g.isValidUrl(url):
-                return url
-        return None
+    line1 = g.splitLines(p.b)[0] if p.b else ''
     
-    else: # old code.
-        if p.b.strip():
-            lines = p.b.split('\n',1)
-            url = lines and lines[0].strip() or ''
-        else:
+    for s in (p.h,line1):
+        if g.match_word(s,0,'@url'):
             url = s[4:].strip()
-
-    return url
+        else:
+            url = s.strip()
+        if g.isValidUrl(url):
+            return url
+    
+    return None
 .. @+node:tbrown.20090219095555.63: *5* g.handleUrl
 @ Most browsers should handle the following urls:
   ftp://ftp.uu.net/public/whatever.
