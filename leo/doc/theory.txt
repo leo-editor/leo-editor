@@ -260,6 +260,104 @@ particular, running the unit tests calls c.check_event many times.
 c.check_event is a happy "accident".  It turns out to be the essential
 consistency check that continually verifies that the Qt event methods are
 delivering the expected keys to k.masterKeyHandler. 
+.. @+node:ekr.20120315101404.14218: *4* About the KeyStroke class
+The KeyStroke class distinguish between "raw" user settings
+and the "canonicalized" form used throughout Leo. Indeed,
+the ability to explicitly distinguish between the two, using
+type checking, substantially clarifies and simplifies the
+code.
+
+The KeyStroke class makes possible vital type-related
+assertions. Knowing *for sure* exactly what crucial data is
+and what it means is a huge step forward.
+
+Objects of the KeyStroke class can be used *exactly* as a
+strings may be used:
+
+A. KeyStroke objects may be used as dictionary keys, because
+they have __hash__ methods and all the so-called rich
+comparison methods: __eq__, __ne__, __ge__, __gt__, __le__
+and __lt__. Note that KeyStroke objects may be compared with
+other KeyStroke objects, strings and None.
+
+B. At present, KeyStroke objects supports the find, lower
+and startswith methods. This simplifies the code
+substantially: we can apply these methods to either strings
+or KeyStroke objects, so there is no need to create
+different versions of the code depending on the value of
+g.new_strokes.
+
+However, having the KeyStroke class support string methods
+is bad design. Indeed, it is a symptom that the client code
+that uses KeyStroke objects knows too much about the
+internals of KeyStroke objects. Instead, the KeyStroke class
+should have higher-level methods that use s.find, s.lower
+and s.startswith internally.
+
+You could say that the fact that code in leoKeys.py calls
+s.find, s.lower and s.startswith is a symptom of non OO
+programming. The internal details of settings and strokes
+"pollutes" the code. This must be fixed. This will likely
+create opportunities for further simplifications.
+
+> Why not just have .s attribute in KeyStroke, that contains
+the string version?
+
+It is truly impossible to understand the key code without
+knowing whether an object is a string representing a user
+setting or the canonicalized version used in Leo's core,
+that is, a KeyStroke object. Using ks.s instead of ks
+destroys precisely the information needed to understand the
+code.
+
+Again, this is not a theoretical concern. The key code now
+contains assertions of the form::
+
+    assert g.isStroke(stroke)
+or
+    assert g.isStrokeOrNone(stroke)
+
+Getting these assertions to pass in *all* situations
+required several important revisions of the code. The code
+that makes the assertions pass is "innocuous", that is,
+almost invisible in the mass of code, but obviously, these
+small pieces of code are vital.
+
+This is in no way a violation of OO principles. The code is
+not dispatching on the type of objects, it is merely
+enforcing vital consistency checks. This code is complex:
+confusion about the types of objects is intolerable.
+Happily, the resulting clarity allows the code to be
+substantially simpler than it would otherwise be, which in
+turn clarifies the code further, and so on...
+.. @+node:ekr.20120315101404.14219: *4* Simplifying the Qt input code
+The Qt key input code can be greatly simplified by calling a
+new k.makeKeyStrokeFromData factory method. At present, the
+Qt key input code knows *all* the details of the format of
+*canonicalized* settings. This is absolutely wretched
+design.
+
+Instead, the Qt input key code should simply pass the key
+modifiers and other key information to
+k.makeKeyStrokeFromData, in a some kind of "easy" format.
+For example, the Qt input key code would represent the
+internal Qt modifiers as lists of strings like "alt",
+"ctrl", "meta", "shift". k.makeKeyStrokeFromData would then
+create a *user* setting from the components, and then call
+k.strokeFromSetting to complete the transformation.
+.. @+node:ekr.20120315101404.14220: *4* Typed dicts
+Leo's key dictionaries will always be complex, but basing
+them on the TypedDict class is a major improvement.
+
+The g.TypedDict and g.TypedDictOfLists classes are useful
+for more than type checking: they have unique names and a
+dump method that dumps the dict in an easy-to-read format
+that includes the name, and valid types for keys and values.
+
+Plain dicts do have their uses, but for "long-lived" dicts,
+and dicts passed around between methods, plain dicts are as
+ill-advised as g.Bunches.
+
 .. @+node:EKR.20040524104904.263: *3* Nodes
 The vnode class is Leo's fundamental model class. A **vnode** represents the
 data represented by headlines. As of Leo 4.7, all clones of a node are in fact
@@ -373,5 +471,34 @@ create a new bead. The list of beads does not branch; all undoable operations
 (except the Undo and Redo commands themselves) delete any beads following the
 newly created bead. I did not invent this model of unlimited undo.
 I first came across it in the documentation for Apple's Yellow Box classes.
+.. @+node:ekr.20120229094652.15141: *3* Leo's load process
+Leo reads local files twice. The first load discovers the
+settings to be used in the second load. This ensures that
+proper settings are *available* during the second load.
+
+Ctors init settings "early", before calling the ctors for
+subsidiary objects. This ensures that proper settings are
+*in effect* for the subsidiary ctors.
+
+After creating all subsidiary objects, c.__init__ simply
+calls c.finishCreate! Creating Commands objects is now
+completely self-contained. In particular, c.__init__ now
+creates the fully-inited gui frame. This is a revolution in
+Leo's startup code! c.__init__ no longer needs a frame
+argument, a surprisingly important conceptual
+simplification.
+
+The old code inited Leo windows in several *places*
+(c.__init__, the end of g.app.newLeoCommanderAndFrame and
+the end of g.openWithFileName) and in several *phases*,
+(g.app.newCommanderAndFrame, g.openWithFileName and
+c.finishCreate.)
+
+The new code has c.__init__ do *all* the work, in one place,
+and in one phase. This is supremely important for future
+maintainers. The old code was difficult for me to understand
+yesterday, even after a full week of study. The new code is
+a simple as could possibly be imagined. This is a gigantic
+step forward for Leo.
 .. @-all
 .. @-leo

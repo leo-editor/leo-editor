@@ -535,27 +535,7 @@
 </v>
 </v>
 <v t="ekr.20120229094652.15173"><vh>Update docs</vh>
-<v t="ekr.20120314095341.15571"><vh>Installation</vh>
-<v t="ekr.20120313134250.14219"><vh>Improve installation notes</vh></v>
-<v t="ekr.20120229094652.15137"><vh>How to upgrade properly</vh></v>
-<v t="ekr.20120229094652.15095"><vh>Review bzr instructions</vh></v>
-<v t="ekr.20120229094652.15098"><vh>Rewrite MacOs instructions using Ludvig's homebrew instructions</vh></v>
-</v>
-<v t="ekr.20120314095341.15572"><vh>Scripting</vh>
-<v t="ekr.20120229094652.15130"><vh>Add to scripting chapter</vh>
-<v t="ekr.20120229094652.15087"><vh>Add short intro to scripting</vh>
-<v t="ekr.20120229094652.15088"><vh>Easier scripting</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20120314095341.15573"><vh>Testing</vh>
-<v t="ekr.20120229094652.15097"><vh>Document @mark-for-unit-test trees!</vh></v>
-<v t="ekr.20120229094652.15125"><vh>Document loading plugins when running unit tests externally</vh></v>
-</v>
-<v t="ekr.20120314095341.15574"><vh>Theory of operation</vh>
-<v t="ekr.20120229094652.15141"><vh>Theory of operations: Understanding Leo's load process</vh></v>
-<v t="ekr.20120229094652.15145"><vh>Theory of operation: About key handling</vh></v>
-</v>
+<v t="ekr.20120315101404.14221"><vh>New chapter: leoInspect</vh></v>
 <v t="ekr.20120314095341.15575"><vh>Features</vh>
 <v t="ekr.20120314095341.14215"><vh>Discuss url's, bookmarks and ctrl-clicks</vh></v>
 <v t="ekr.20120229094652.15096"><vh>Document new organization for @command and @button nodes</vh></v>
@@ -594,8 +574,22 @@
 <v t="ekr.20120229094652.19496"><vh>Bug 905276: explain how to clone multiple nodes at once</vh></v>
 <v t="ekr.20120313134250.14220"><vh>Improve docs for @nosent</vh></v>
 </v>
-<v t="ekr.20120314095341.15576"><vh>FAQ</vh>
-<v t="ekr.20120229094652.15124"><vh>Add tip: How to restore focus without the mouse</vh></v>
+<v t="ekr.20120314095341.15571"><vh>Installation</vh>
+<v t="ekr.20120313134250.14219"><vh>Improve installation notes</vh></v>
+<v t="ekr.20120229094652.15137"><vh>How to upgrade properly</vh></v>
+<v t="ekr.20120229094652.15095"><vh>Review bzr instructions</vh></v>
+<v t="ekr.20120229094652.15098"><vh>Rewrite MacOs instructions using Ludvig's homebrew instructions</vh></v>
+</v>
+<v t="ekr.20120314095341.15572"><vh>Scripting</vh>
+<v t="ekr.20120229094652.15130"><vh>Add to scripting chapter</vh>
+<v t="ekr.20120229094652.15087"><vh>Add short intro to scripting</vh>
+<v t="ekr.20120229094652.15088"><vh>Easier scripting</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20120314095341.15573"><vh>Testing</vh>
+<v t="ekr.20120229094652.15097"><vh>Document @mark-for-unit-test trees!</vh></v>
+<v t="ekr.20120229094652.15125"><vh>Document loading plugins when running unit tests externally</vh></v>
 </v>
 </v>
 </vnodes>
@@ -852,6 +846,8 @@ http://webpages.charter.net/edreamleo/intro.html
 
 The highlights of Leo 4.10:
 --------------------------
+
+- leoInspect
 
 
 - *Many* small improvements and bug fixes.
@@ -4002,23 +3998,6 @@ For example, to print a list of all commands type Alt-X print-commands &lt;Retur
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
 </t>
-<t tx="ekr.20120229094652.15124">It sometimes happens that the focus gets left in a Leo in a widget
-that doesn't support Leo's key bindings.  You would think that you
-would have to use the mouse to click in, say, the body pane so that
-you can use Leo's key bindings again.
-
-But you don't have to do that.  Instead, use Alt-tab once to change
-away from Leo, and then use Alt-tab again to change back to Leo.  When
-you do this, Leo puts focus in the body pane and you are all set. This
-will work either on Windows or Ubuntu.  A similar trick works on
-MacOS.
-
-Edward
-
-P.S. One of the requirements of the recent bug fix was that doing Alt-
-tab twice would put the focus in the body pane.  If you think that was
-easy, you are sadly mistaken :-) 
-</t>
 <t tx="ekr.20120229094652.15125">http://groups.google.com/group/leo-editor/browse_thread/thread/b560a3b84e7ec7a8
 
 Good news (mostly): you can set up dynamic unit tests exactly the way you want.
@@ -4436,125 +4415,6 @@ redundant.
 The present scheme is wonky, confusing, inflexible and extremely
 difficult to implement. It should be replaced immediately.
 </t>
-<t tx="ekr.20120229094652.15141">http://groups.google.com/group/leo-editor/browse_thread/thread/28e544d052aeac2b
-
-The original beautiful plan to read each local .leo file once has
-fallen prey to an ugly fact :-)  Indeed, it doesn't seem possible to
-call event handlers like open0, open1 and open2 without having inited
-settings.  As a result, the 5-Phase load process in g.openWithFileName
-is dead.  I won't morn it's loss.
-
-Today's work has been valuable.  I've refactored the code in ways that
-will survive the failure of the first plan.
-
-The second plan will simplify code using another strategy, as
-follows::
-
-1. Leo will, as at present, read local files twice.  The first load
-will discover the settings to be used in the second load.  This will
-ensure that proper settings are *available* during the second load.
-
-2. Instead of initing settings "late" in the finishCreate methods, all
-ctors will init settings "early", before calling the ctors for
-subsidiary objects.  This will ensure that proper settings are *in
-effect* for the subsidiary ctors.
-
-3. There is a clever way of using the fact that c.__init__ creates
-*all* subsidiary objects (directly or indirectly).  After creating all
-such objects, c.__init__ can simply call c.finishCreate!  It's
-beautiful, and it should work. "Internalizing" the call to
-c.finishCreate will help eliminate newLeoCommanderAndFrame, something
-that I very much want to do.
-
-At least one difficult puzzle remains, namely how to communicate the
-settings discovered in the first load to the c.config object created
-in the second load. Trust me, this is much harder than you might
-expect.  But such problems *can* be solved cleanly.  It just takes
-lots of work. 
-
-=====
-
-Hurray! The new plan is a *spectacular* success!
-
-===== The unification of Leo's startup code
-
-Creating Commands objects is now completely self-contained.  In
-particular, c.__init__ now creates the fully-inited gui frame.  This
-is a revolution in Leo's startup code!
-
-Indeed, the old code inited Leo windows in several places, and in
-several phases:
-
-Places: c.__init__, the end of g.app.newLeoCommanderAndFrame and the
-end of g.openWithFileName.
-
-Phases: g.app.newCommanderAndFrame, g.openWithFileName and
-c.finishCreate.
-
-The new code has c.__init__ do *all* the work, in one place, and in
-one phase.
-
-This will be supremely important for future maintainers.  The old code
-was difficult for me to understand yesterday, even after a full week
-of study.  The new code is a simple as could possibly be imagined.
-This is a gigantic step forward for Leo.
-
-This spectacular collapse in complexity will have all sorts of
-excellent consequences...
-
-===== More cleanups
-
-A number of possibilities for cleaner code now present themselves:
-
-- c.__init__ no longer needs a frame argument, a surprisingly
-important conceptual simplification.
-
-- All calls to g.app.openWithFileName will be replaced by a call to
-Commands(...), that is, c.__init__.  Because this code happens at
-startup, it may still be useful to wrap this in a method that imports
-the leo.core.leoCommands module, but this is a nit.  It will now be
-perfectly clear that c.__init__ does all the work.
-
-- I now see that having g.openWithFileName "fail" causes needless
-complications.  It should simply create a new Leo window if it is
-given no fileName argument, or if the file does not exist.  This will
-eliminate a lot of "if" statements ;-)
-
-Note: I have already removed the switches that enabled the new code.
-This makes the code much easier to read.
-
-I'll be upping these simplification later today.
-
-===== The final phases
-
-Once the code base has been cleaned, I'll turn my attention to the
-"new_load" and "new_config" schemes.
-
-new_load: simplifies the infamous readSettingsFiles methods into
-several cleaner methods.
-
-new_config: uses a much simpler per-commander c.config.get method
-instead of delegating to the horribly complex g.app.config.get method.
-
-There is significant coordination between these two schemes.  In fact,
-they are really two aspects of the same problem.  I'll probably merge
-these two switches into one.
-
-Developmental unit testing has already proven both schemes.  It should
-be relatively straightforward to fold the new code into the new code
-base, but that is not guaranteed--there are still hidden complexities
-to be dealt with.  Still, I expect the code to be fully tested in a
-day or three.
-
-Once all the new code is complete, it will be time to repackage all
-the recent work as methods of the LoadManager class.  This promises to
-eliminate significant code duplication in the leoBridge module.  We'll
-see about that...
-
-Finally, g.openWithFileName will do nothing but call a corresponding
-LoadManager method. The details of loading do not belong in
-leoGlobals.py! 
-</t>
 <t tx="ekr.20120229094652.15142">http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
 
 For almost 15 years Leo has been written using a limited set of
@@ -4708,183 +4568,6 @@ myLeoSettings.leo:
         # Last, leoSettings.leo in leo/config directory.
         join(g.app.globalConfigDir, settings_fn),
     )
-</t>
-<t tx="ekr.20120229094652.15145">http://groups.google.com/group/leo-editor/browse_thread/thread/86593fb9543afb66
-
-Rev 4972 demonstrates that the KeyStroke class can indeed distinguish
-between "raw" user settings and the "canonicalized" form used
-throughout Leo.  Indeed, the ability to explicitly distinguish between
-the two, using type checking, has already substantially clarified and
-simplified the code.
-
-BTW, this is in no way a violation of OO principles.  The code is not
-dispatching on the type of objects, it is merely enforcing vital
-consistency checks.  This code is complex: confusion about the types
-of objects is intolerable.  Happily, the resulting clarity allows the
-code to be substantially simpler than it would otherwise be, which in
-turn clarifies the code further, and so on...
-
-Part 1: This work is vital
-
-As described below, the forthcoming work will lead to a cascade of
-other simplification.  These simplifications are important for at
-least three, reasons:
-
-1. The code must be simplified so that future maintainers (including
-me) will have an easier time of it.
-
-2. The present code provides no real help in creating unit tests that
-test how Leo handles keystrokes.
-
-3. Simplifying the code will provide a more solid foundation for vim-
-related bindings.
-
-Part 2: Notes about the KeyStroke class
-
-Objects of the KeyStroke class can be used *exactly* as a strings may
-be used:
-
-A.  KeyStroke objects may be used as dictionary keys, because they
-have __hash__ methods and all the so-called rich comparison methods:
-__eq__, __ne__, __ge__, __gt__, __le__ and __lt__.  Note that
-KeyStroke objects may be compared with other KeyStroke objects,
-strings and None.
-
-B. At present, KeyStroke objects supports the find, lower and
-startswith methods.  This simplifies the code substantially: we can
-apply these methods to either strings or KeyStroke objects, so there
-is no need to create different versions of the code depending on the
-value of g.new_strokes.
-
-However, having the KeyStroke class support string methods is bad
-design.  Indeed, it is a symptom that the client code that uses
-KeyStroke objects knows too much about the internals of KeyStroke
-objects.  Instead, the KeyStroke class should have higher-level
-methods that use s.find, s.lower and s.startswith internally.
-
-You could say that the fact that code in leoKeys.py calls s.find,
-s.lower and s.startswith is a symptom of non OO programming.  The
-internal details of settings and strokes "pollutes" the code.  This
-must be fixed.  This will likely create opportunities for further
-simplifications.
-
-Part 3: Other design changes
-
-The present work, enabled and disabled with g.new_strokes, has been a
-resounding success.  The next steps will be as follows:
-
-Better packaging.
-
-g.new_strokes, g.isStroke and g.isStrokeOrNone should be defined in
-leoKeys.py, not leoGlobals.py.
-I knew from the start that such global names were only a temporary
-expedient.
-
-Now I know where they should go. leoKeys.py, not leoConfig.py, is the
-proper place to handle all the details about key bindings.  Indeed the
-code in leoConfig.py simply parses user key settings into *strings*.
-These raw strings must be converted to KeyStroke objects by
-leoKeys.py.
-
-As a result, the KeyStroke class (and the ShortcutInfo class?) should
-be defined in leoKeys.py, not leoConfig.py.  To make this work, we'll
-want to create several factory methods: k.makeKeyStroke and
-k.makeShortcutInfo.
-
-Better separation of concerns.
-
-The Qt key input code can be hugely simplified by calling a new
-k.makeKeyStrokeFromData factory method.  At present, the Qt key input
-code knows *all* the details of  the format of *canonicalized*
-settings. This is absolutely wretched design.
-
-Instead, the Qt input key code should simply pass the key modifiers
-and other key information to k.makeKeyStrokeFromData, in a some kind
-of "easy" format.  For example, the Qt input key code would represent
-the internal Qt modifiers as lists of strings like "alt", "ctrl",
-"meta", "shift".  k.makeKeyStrokeFromData would then create a *user*
-setting from the components, and then call k.strokeFromSetting to
-complete the transformation.
-
-As I said in another thread, the present Qt input key code is
-entangled with other code.  I'll have to disentangle the code before
-putting this scheme into effect.
-
-Other classes
-
-The easiest next step will be to integrate the presently unused
-ShortcutsDict class into the code. This will eliminate the wretched
-special cases for the _hash key.
-
-Part 4: Conclusions
-
-I have high hopes that we will see wave after wave of
-simplifications.  Much of the difficult work presently scattered in a
-non-OO fashion throughout leoKeys.py, leoConfig.py and leoQtGui.py
-will migrate to become KeyStroke methods (or methods of other
-classes).
-
-The KeyStroke class has already made possible vital type-related
-assertions.  Knowing *for sure* exactly what crucial data is and what
-it means is a huge step forward.   More steps are coming. 
-
-=====
-
-&gt; &gt; Why not just have .s attribute in KeyStroke, that contains the string
-&gt; &gt; version?
-
-&gt; A good question.  Indeed, all Keystroke objects ks do have an s ivar.
-
-I forgot the most important reason in my reply.  The reasons I gave
-all were code-level responses, but the most important reason is that
-is truly impossible to understand the key code without knowing whether
-an object is a string representing a user setting or the canonicalized
-version used in Leo's core, that is, a KeyStroke object.  Using ks.s
-instead of ks destroys precisely the information needed to understand
-the code.
-
-Again, this is not a theoretical concern.  The key code now contains
-assertions of the form::
-
-    assert g.isStroke(stroke)
-or
-    assert g.isStrokeOrNone(stroke)
-
-Getting these assertions to pass in *all* situations required several
-important revisions of the code.  The code that makes the assertions
-pass is "innocuous", that is, almost invisible in the mass of code,
-but obviously, these small pieces of code are vital.
-
-The present code highlights these changes: look for g.new_strokes,
-especially lines marked with ####.  These markers will be cleaned away
-eventually, but the asserts will remain forever.
-
-Furthermore, the asserts suggested further simplifications.  It was a
-tricky process, and it will be ongoing as I simplify the code further. 
-
-=====
-
-&gt; I am about to convert many of Leo's key-handling dictionaries to
-&gt; g.TypedDict objects.  Using TypedDicts will make it impossible to make
-&gt; invalid assignments to Leo's crucial key dictionaries.
-
-This has been a great success.  I also defined the g.TypedDictOfLists
-class, where the values are lists of a known type.  These classes are
-useful for more than type checking:  they have unique names and a dump
-method that dumps the dict in an easy-to-read format that includes the
-name, and valid types for keys and values.
-
-At present, these dicts are *not* subclasses of {}, which has its
-pluses and minuses.  These are quite simple classes, so at present
-only the "for key in d.keys()" idiom is supported, the "for key in d"
-idiom is not supported.
-
-Plain dicts do have their uses, but for "long-lived" dicts, and dicts
-passed around between methods, I am beginning to regard plain dicts as
-being as ill-advised as g.Bunches.
-
-Leo's key dictionaries will always be complex, but basing them on the
-TypedDict class is a major improvement. 
 </t>
 <t tx="ekr.20120229094652.15146">http://groups.google.com/group/leo-editor/browse_thread/thread/c933b28c27d3b9a7
 
@@ -7628,9 +7311,14 @@ or \@@command.
 <t tx="ekr.20120314095341.15571"></t>
 <t tx="ekr.20120314095341.15572"></t>
 <t tx="ekr.20120314095341.15573"></t>
-<t tx="ekr.20120314095341.15574"></t>
 <t tx="ekr.20120314095341.15575"></t>
-<t tx="ekr.20120314095341.15576"></t>
+<t tx="ekr.20120315101404.14221">http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
+leoInspect: a hobby with a future?
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
+leoInspect: remarkable collapse in complexity and attempted assessment
+
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

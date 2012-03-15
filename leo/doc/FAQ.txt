@@ -929,6 +929,15 @@ Open a new Leo file.
 4) Press [Script Button] to create the new script button.
 
 It's easier to *do* this than to *explain* it!
+.. @+node:ekr.20120229094652.15124: *4* How can I restore focus without using the mouse
+It sometimes happens that the focus gets left in a Leo
+widget that doesn't support Leo's key bindings. You would
+think that you would have to use the mouse to click in, say,
+the body pane so that you can use Leo's key bindings again.
+
+But you don't have to do that.  Instead, use Alt-tab once to change
+away from Leo, and then use Alt-tab again to change back to Leo.  When
+you do this, Leo puts focus in the body pane and you are all set.
 .. @+node:ekr.20050830115714.76: *3* Trouble shooting
 .. @+node:ekr.20090130144433.1: *4* How do I get help?
 All questions are welcome at http://groups.google.com/group/leo-editor

@@ -86,14 +86,14 @@ def getPassList():
 def getPluginsList():
 
     return (
-        # ('mod_http', ''),
-
+        ('bookmarks',   ''),
+        # ('mod_http',  ''),
         ('mod_scripting','E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
             
-        ('vim.py',''),
-        ('xemacs.py',''),
+        ('vim.py',      ''),
+        ('xemacs.py',   ''),
 
         # ('toolbar','E1101,W0221,W0511'),
             # Dangerous: many erroneous E1101 errors

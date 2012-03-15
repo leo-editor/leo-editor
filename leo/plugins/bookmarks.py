@@ -88,7 +88,7 @@ class BookMarkDisplay:
         self.v = v if v is not None else c.p.v
         
         if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
-            # FIXME, second hasattr temporary until free_layout merges with trunk
+            # Second hasattr temporary until free_layout merges with trunk
             self.w = QtGui.QWidget()
             
             # stuff for pane persistence
@@ -208,7 +208,7 @@ class BookMarkDisplayProvider:
         self.c = c
         
         if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
-            # FIXME, second hasattr temporary until free_layout merges with trunk
+            # Second hasattr temporary until free_layout merges with trunk
             splitter = c.free_layout.get_top_splitter()
             # Careful: we could be unit testing.
             if splitter:
