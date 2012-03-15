@@ -7335,13 +7335,7 @@ or \@@command.
 <t tx="ekr.20120314095341.15571"></t>
 <t tx="ekr.20120314095341.15573"></t>
 <t tx="ekr.20120314095341.15575"></t>
-<t tx="ekr.20120315101404.14221">http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
-leoInspect: a hobby with a future?
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
-leoInspect: remarkable collapse in complexity and attempted assessment
-
-</t>
+<t tx="ekr.20120315101404.14221"></t>
 <t tx="ekr.20120315101404.14222">@language rest
 </t>
 <t tx="ekr.20120315101404.14223">@language rest
