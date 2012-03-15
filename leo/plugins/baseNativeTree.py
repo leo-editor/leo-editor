@@ -461,7 +461,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c.outerUpdate()
     #@+node:ekr.20110605121601.17891: *3* Icon Box... (nativeTree)
     # For Qt, there seems to be no way to trigger these events.
-    #@+node:ekr.20110605121601.17892: *4* onIconBoxClick
+    #@+node:ekr.20110605121601.17892: *4* onIconBoxClick (nativeTree)
     def onIconBoxClick (self,event,p=None):
 
         if self.busy(): return
@@ -472,7 +472,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook("iconclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
-    #@+node:ekr.20110605121601.17893: *4* onIconBoxRightClick
+    #@+node:ekr.20110605121601.17893: *4* onIconBoxRightClick (nativeTree)
     def onIconBoxRightClick (self,event,p=None):
 
         """Handle a right click in any outline widget."""
@@ -485,7 +485,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
-    #@+node:ekr.20110605121601.17894: *4* onIconBoxDoubleClick
+    #@+node:ekr.20110605121601.17894: *4* onIconBoxDoubleClick (nativeTree)
     def onIconBoxDoubleClick (self,event,p=None):
 
         if self.busy(): return

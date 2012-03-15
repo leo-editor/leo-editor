@@ -574,16 +574,6 @@
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh>
 <v t="ekr.20111016210000.15952"><vh>@ignore</vh>
-<v t="ekr.20111017085134.16213"><vh>@command clones-tab</vh>
-<v t="ekr.20111017085134.16214"><vh>class cloneNavigator</vh>
-<v t="ekr.20111017085134.16215"><vh>init</vh></v>
-<v t="ekr.20111017085134.16216"><vh>getAllClones</vh></v>
-<v t="ekr.20111017085134.16217"><vh>displayClones</vh>
-<v t="ekr.20111017085134.16218"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
-<v t="ekr.20111017085134.16219"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20111016210000.16011"><vh>@command redefine g.findReference</vh>
 <v t="ekr.20111016210000.16012"><vh>myFindReference</vh></v>
 </v>
@@ -1550,7 +1540,6 @@
 <v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
-<v t="ekr.20041119042929.11"><vh>@string tk_encoding = None</vh></v>
 </v>
 <v t="ekr.20050203090810"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
@@ -1810,7 +1799,7 @@ always uses this ratio when opening a file that is being split vertically.</t>
 
 </t>
 <t tx="ekr.20041119034357.67">The color of the split bar. gray90 also looks good.</t>
-<t tx="ekr.20041119034357.68">The Tk -relief option for the split bar.</t>
+<t tx="ekr.20041119034357.68">The -relief option for the split bar.</t>
 <t tx="ekr.20041119034357.69">The width of the split bar, in pixels (must be an integer).</t>
 <t tx="ekr.20041119034357.7"></t>
 <t tx="ekr.20041119034357.70">@nocolor-node
@@ -1955,15 +1944,6 @@ The recommended value is UTF-8 (upper case for compatibility for old versions of
 iso-8859-1 would be a popular alternative.
 
 Important: Once a .leo file is created the &lt;?xml..."&gt; line can only be changed by hand.  Alas, changing the &lt;?xml..."&gt; line by hand may cause unicode errors the next time the .leo file is loaded.  Therefore, you should change the &lt;?xml..."&gt; line by hand only when first creating a .leo file.</t>
-<t tx="ekr.20041119042929.11">The encoding that Tk text widgets are assumed for non-ascii character strings.
-
-You would typically use this setting only in an emergency.
-
-Leo assumes that Tk text widgets return:
-
-1. The value specified by the tk_encoding parameter, if it exists.
-2. locale.getdefaultlocale()[1] if it is exists.
-3. sys.getdefaultencoding()</t>
 <t tx="ekr.20041119042929.2">Same as @directory.</t>
 <t tx="ekr.20041119042929.3"></t>
 <t tx="ekr.20041119042929.4"></t>
@@ -2390,7 +2370,7 @@ strings in the menu items:
 
 For example, "Ctrl-uparrow"  will appear as "Ctrl+UpArrow" in the menu.
 
-Leo passes all other mult-character names verbatim to Tk, so on some platforms
+Leo passes all other mult-character names verbatim to Qt, so on some platforms
 you may be able to use any of the following. Most appear on the numeric keypad.
 For example, the following may work on some systems:
     
@@ -4304,8 +4284,6 @@ viewrendered.py
 # geotag.py
 # gitarchive.py
 # graphcanvas.py
-# gtkDialogs.py
-# gtkGui.py
 # import_cisco_config.py
 # initinclass.py
 # interact.py
@@ -4372,7 +4350,6 @@ viewrendered.py
 # systray.py
 # testRegisterCommand.py
 # textnode.py
-# tkGui.py
 # todo.py
 # tomboy_import.py
 # trace_gc_plugin.py
@@ -9113,92 +9090,6 @@ main()
     g.es('Check Bindings done')
 </t>
 <t tx="ekr.20111017082630.16086"></t>
-<t tx="ekr.20111017085134.16213">@
-Ever have a clone that is difficult to understand outside the context of its
-original parent? Here's some code to help. It displays the headline of the
-current node plus the headlines of all the parents of all the clones of the
-current node. Selecting a displayed parent headline moves the current node to
-the corresponding clone in the outline.
-
-The idea is to be able to quickly see the context of all the clones of the
-current node and to be able to easily navigate from one clone instance to the
-next.
-@c
-
-@others
-c.cn = cloneNavigator(c)
-c.cn.displayClones(c)
-</t>
-<t tx="ekr.20111017085134.16214">class cloneNavigator:
-    '''
-       Displays the headline of the current node plus the headlines of
-       all the parents of all the clones of the current node.  Selecting
-       a displayed parent headline moves the current node to the
-       corresponding clone in the outline.
-
-       The idea is to be able to quickly see the context of all the clones
-       of the current node and to be able to easily navigate from one clone
-       instance to the next.
-    '''
-    @others
-</t>
-<t tx="ekr.20111017085134.16215">def __init__ (self,c):
-    self.c = c
-    import Tkinter as Tk
-    if 0:
-        f = Tk.Toplevel()
-    else:
-        log = c.frame.log
-        log.selectTab('Clones')
-        f = log.tabFrame
-        for w in f.winfo_children():
-            w.destroy()
-
-    # Create and pack empty label and listbox
-    self.title = Tk.Label(f)
-    self.title.pack(anchor="nw")
-    self.lb = Tk.Listbox(f)
-    self.lb.pack(expand=1,fill="both")
-</t>
-<t tx="ekr.20111017085134.16216">def getAllClones(self,p):
-    c = self.c
-    def clonesOf(p,p1=p):
-        return p.v.t == p1.v.t
-    return filter(clonesOf, c.allNodes_iter(copy=True))</t>
-<t tx="ekr.20111017085134.16217">def displayClones(self,c):
-    '''Displays the parent headline for all the clones of the current position'''
-    cp = c.p
-
-    # "Title" is the headline of the current node
-    self.title.configure(text=cp.h)
-
-    # Initialize listbox and clone list
-    clones = self.getAllClones(cp)
-    self.lb.delete(0,self.lb.size()-1)
-
-    &lt;&lt;Fill listbox with clone parent headlines&gt;&gt;    
-    &lt;&lt;Goto selected position when listbox selection changes&gt;&gt;
-</t>
-<t tx="ekr.20111017085134.16218"># Add the headlines of all the clone parents to the listbox
-for p in clones:
-    if p.parent():
-        text = p.parent().h
-    else:
-        text = "&lt;root&gt;"
-    self.lb.insert(self.lb.size(),text)
-
-    # Initial listbox selection corresponds to current position
-    if p.v == cp.v:
-        self.lb.selection_set(self.lb.size()-1)
-</t>
-<t tx="ekr.20111017085134.16219"># Callback for when a listbox entry is selected            
-def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
-    idx = int(lb.curselection()[0])
-    p = positions[idx]
-    c.frame.tree.expandAllAncestors(p)
-    c.selectPosition(p)
-    return
-self.lb.bind(g.angleBrackets("ListboxSelect"), gotoSelectedPosition)</t>
 <t tx="ekr.20111018162222.15853"></t>
 <t tx="ekr.20111018162222.15855">'''Print all commands that lack a docstring.'''
 

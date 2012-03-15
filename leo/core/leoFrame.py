@@ -2044,14 +2044,7 @@ class leoTree:
     #@+node:ekr.20120314064059.9739: *4* tree.OnIconCtrlClick (@url)
     def OnIconCtrlClick (self,p):
         
-        # g.trace(p and p.h)
-
-        c = self.c
-        url = g.getUrlFromNode(p)
-        if url:
-            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                g.handleUrl(url,c=c,p=p)
-            g.doHook("@url2",c=c,p=p,v=p)
+        g.openUrl(p)
     #@+node:ekr.20081005065934.8: *3* May be defined in subclasses
     # These are new in Leo 4.6.
 

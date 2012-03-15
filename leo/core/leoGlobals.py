@@ -4391,7 +4391,6 @@ def getUrlFromNode(p):
 def handleUrl(url,c=None,p=None):
     
     trace = False and not g.unitTesting ; verbose = False
-    
     if c and not p:
         p = c.p
         
@@ -4524,6 +4523,45 @@ def isValidUrl(url):
             if scheme.startswith(s):
                 return True
         return False
+#@+node:ekr.20120315062642.9744: *3* g.openUrl
+def openUrl(p):
+    
+    if not p:
+        return
+    
+    url = g.getUrlFromNode(p)
+    if url:
+        c = p.v.context
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrl(url,c=c,p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
+#@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
+@g.command('open-url-under-cursor')
+def openUrlUnderCursor(event):
+    return openUrlOnClick(event)
+    
+def openUrlOnClick(event):
+    '''Open the URL under the cursor.  Return it for unit testing.'''
+    c = event.get('c')
+    if not c: return None
+    w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if i != j: return None # So find doesn't open the url.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    for match in g.url_regex.finditer(line):
+        if match.start() <= col < match.end(): # Don't open if we click after the url.
+            url = match.group()
+            if g.isValidUrl(url):
+                p = c.p
+                if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+                    g.handleUrl(url,c=c,p=p)
+                g.doHook("@url2",c=c,p=p,v=p)
+                return url
+    return None
 #@+node:EKR.20040612114220: ** Utility classes, functions & objects...
 #@+node:ekr.20050315073003: *3*  Index utilities... (leoGlobals)
 #@+node:ekr.20050314140957: *4* g.convertPythonIndexToRowCol

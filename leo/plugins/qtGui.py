@@ -388,7 +388,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         # Open the url on a control-click.
         if QtCore.Qt.ControlModifier & event.modifiers():
             event = {'c':self.leo_c}
-            openUrlOnClick(event)
+            g.openUrlOnClick(event)
     #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser)
     def getYScrollPosition(self):
         
@@ -481,7 +481,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # Open the url on a control-click.
                 if QtCore.Qt.ControlModifier & event.modifiers():
                     event = {'c':c}
-                    openUrlOnClick(event) # A module-level function.
+                    g.openUrlOnClick(event)
                     
                 if trace: g.trace()
                     
@@ -1885,32 +1885,6 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
-#@+node:ekr.20110605121601.18135: *3* openUrlOnClick() (qtGui top level)
-@g.command('open-url-under-cursor')
-def openUrlOnClick(event):
-
-    c = event.get('c')
-    if not c: return
-    w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i,j = w.getSelectionRange()
-    if i != j: return # So find doesn't open the url.
-    row,col = g.convertPythonIndexToRowCol(s,ins)
-    i,j = g.getLine(s,ins)
-    line = s[i:j]
-    # if line.startswith('@url'):
-        # line=line[4:].strip()
-    for match in g.url_regex.finditer(line):
-        if match.start() <= col < match.end(): # Don't open if we click after the url.
-            url = match.group()
-            if g.isValidUrl(url):
-                p = c.p
-                if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                    g.handleUrl(url,c=c,p=p)
-                g.doHook("@url2",c=c,p=p,v=p)
-                return url
-    return None
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
 #@+node:ekr.20110605121601.18137: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic
@@ -4580,8 +4554,6 @@ class leoQtFrame (leoFrame.leoFrame):
     # Not called
 
     def OnBodyDoubleClick (self,event=None):
-        
-        g.trace()
 
         try:
             c = self.c ; p = c.currentPosition()

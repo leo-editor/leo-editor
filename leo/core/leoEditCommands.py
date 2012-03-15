@@ -218,6 +218,22 @@ class baseEditCommandsClass:
 #@-<< define class baseEditCommandsClass >>
 
 #@+others
+#@+node:ekr.20120315062642.9746: ** Module-level commands
+#@+node:ekr.20120315062642.9743: *3* URL's (leoEditCommands)
+#@+node:ekr.20120315062642.9742: *4* openUrl (open-url)
+@g.command('open-url')
+def openUrl(event):
+    c = event.get('c')
+    if c:
+        g.openUrl(c.p)
+        
+
+#@+node:ekr.20120315062642.9745: *4* ctrlClickAtCursor (ctrl-click-at-cursor)
+@g.command('ctrl-click-at-cursor')
+def ctrlClickAtCursor(event):
+    c = event.get('c')
+    if c:
+        g.openUrlOnClick(event)
 #@+node:ekr.20120211121736.10817: ** class EditCommandsManager
 class EditCommandsManager:
     
@@ -1520,6 +1536,7 @@ class editCommandsClass (baseEditCommandsClass):
             'contract-outline-pane':                c.frame.contractOutlinePane,
             'contract-pane':                        c.frame.contractPane,
             'count-region':                         self.countRegion,
+            'ctrl-click-icon':                      self.ctrlClickIconBox,
             'cycle-focus':                          self.cycleFocus,
             'cycle-all-focus':                      self.cycleAllFocus,
             'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
@@ -3084,9 +3101,14 @@ class editCommandsClass (baseEditCommandsClass):
         '''Simulate a right click in the headline of the presently selected node.'''
         c = self.c
         c.frame.tree.onHeadlineRightClick(event,c.p)
-    #@+node:ekr.20060211055455: *4* clicks in the icon box
+    #@+node:ekr.20060211055455: *4* clicks in the icon box (leoEditCommands)
     # These call the actual event handlers so as to trigger hooks.
 
+    def ctrlClickIconBox(self,event=None):
+        c = self.c
+        c.frame.tree.OnIconCtrlClick(c.p)
+            # Calls the base leoTree method.
+        
     def clickIconBox (self,event=None):
         '''Simulate a click in the icon box of the presently selected node.'''
         c = self.c ; p = c.p
