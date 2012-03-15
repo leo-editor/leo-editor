@@ -88,18 +88,18 @@ def getPluginsList():
     return (
         # ('mod_http', ''),
 
-        ('mod_scripting',''), # 'E0611'),
+        ('mod_scripting','E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
+            
+        ('vim.py',''),
+        ('xemacs.py',''),
 
         # ('toolbar','E1101,W0221,W0511'),
             # Dangerous: many erroneous E1101 errors
             # Harmless: W0221: Arguments number differs from overridden method
             # Harmless: W0511: Fixme and to-do.
             
-        # UNL.py no longer exists.
-        # ('UNL','E0611'),
-            # Dangerous: one E0611 error: 94: No name 'parse' in module 'urllib'
     )
 #@+node:ekr.20120225032124.17089: ** getRecentCoreList
 def getRecentCoreList():

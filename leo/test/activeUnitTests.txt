@@ -20135,7 +20135,7 @@ def removeLeadingWs (code):
 
     result = ''.join(result)
     return result
-#@+node:ekr.20100131171342.5497: *3* @test detect_urls.py
+#@+node:ekr.20100131171342.5497: *3* @@test detect_urls.py
 import leo.plugins.detect_urls as detect_urls
 
 # print(c.frame.body.bodyCtrl)

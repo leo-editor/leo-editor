@@ -4,47 +4,26 @@
 #@+node:ekr.20050226184411: ** << docstring >>
 ''' Enables two-way communication with VIM.
 
-It's recommended that you have gvim installed--the basic console vim is not recommended.
+This plugin provides the vim-open-node command, which opens the selected node in vim.
 
-When properly installed, this plugin does the following:
+Settings
+--------
 
-- By default, the plugin opens nodes on icondclick2 events.
-  (double click in the icon box)
-
-- The setting::
-
-    @string vim_trigger_event = icondclick2
-
-  controls when nodes are opened in vim.  The default, shown above,
-  opens a node in vim on double clicks in Leo's icon box.
-  A typical alternative would be::
-
-      @string vim_trigger_event = iconclick2
-
-  to open nodes on single clicks in the icon box.
-  You could also set::
-
-      @string vim_trigger_event = select2
-
-  to open a node in vim whenever the selected node changes for any reason.
-  
-  To disable this setting, set::
-      
-      @string vim_trigger_event = disable   
-
-- Leo will put Vim cursor at same location as Leo cursor in file if 'vim_plugin_positions_cursor' set to True.
+- Leo will put Vim cursor at same location as Leo cursor in
+  file if 'vim_plugin_positions_cursor' set to True.
 
 - Leo will put node in a Vim tab card if 'vim_plugin_uses_tab_feature' set to True.
 
 - Leo will update the node in the outline when you save the file in VIM.
 
-To install this plugin do the following:
+Installation
+------------
 
-1. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim
-   as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is
-   on your PATH.
+To install this plugin set the vim_cmd and vim_exe settings to the path to vim or gvim
+as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is
+on your PATH.
 
-That's all you need to do. This plugin will start vim automatically.
+gvim is recommended--the basic console vim is not recommended.
 
 '''
 #@-<< docstring >>
@@ -52,7 +31,7 @@ That's all you need to do. This plugin will start vim automatically.
 #@@language python
 #@@tabwidth -4
 
-__version__ = "1.17"
+__version__ = "2.0" # EKR
 #@+<< version history >>
 #@+node:ekr.20050226184411.1: ** << version history >>
 #@@killcolor
@@ -97,6 +76,7 @@ __version__ = "1.17"
 # 1.18 VMV:
 #     - Use gvim on Linux too, emergency default on Windows doesn't have explicit path
 #     - Works when subprocess.Popen(shell=True)
+# 2.0 EKR: Use *only* the vim-open-node command.  Do not pollute click handlers.
 #@-<< version history >>
 #@+<< documentation from Jim Sizelove >>
 #@+node:ekr.20050909102921: ** << documentation from Jim Sizelove >>
@@ -164,7 +144,6 @@ __version__ = "1.17"
 import leo.core.leoGlobals as g
 
 import os
-import subprocess
 import sys
 #@-<< imports >>
 
@@ -198,60 +177,67 @@ def init ():
         # print ('vim.py enabled')
         # Register the handlers...
 
-        event = 'open2'
-        g.registerHandler(event,on_open_window)
+        # event = 'open2'
+        # g.registerHandler(event,on_open_window)
 
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
         if 0:
             os.system(_vim_cmd)
 
-        @g.command('vim-open')
-        def vim_open_f(event):
-            """ Open current node in (g)vim
-
-            Provied by vim.py plugin
-            """
-            c = event['c']
-            kw = { 'c': c , 'p': c.p }
-            open_in_vim('dummy', kw)
-
         g.plugin_signon(__name__)
 
     return ok
-#@+node:ekr.20090815160535.5176: ** on_open_window
-def on_open_window (tag,keywords):
+#@+node:ekr.20090815160535.5176: ** on_open_window (not used)
+# def on_open_window (tag,keywords):
 
-    c = keywords.get('c')
+    # c = keywords.get('c')
 
-    event = c.config.getString('vim_trigger_event') or 'icondclick1'
+    # event = c.config.getString('vim_trigger_event') or 'icondclick1'
+
+    # if event.lower() != 'disable':
+        # g.registerHandler(event,open_in_vim)
+#@+node:EKR.20040517075715.11: ** open_in_vim (not used)
+# def open_in_vim (tag,keywords):
+
+    # if g.unitTesting: return
     
-    # g.trace('trigger event:',event)
+    # g.trace(keywords)
 
-    if event.lower() != 'disable':
-        g.registerHandler(event,open_in_vim)
-#@+node:EKR.20040517075715.11: ** open_in_vim
+    # c = keywords.get('c')
+    # p = keywords.get('p')
+    # p2 = keywords.get('old_p')
+    
+    # if tag.startswith('select') and p and p2 and p == p2:
+        # return
+
+    # if c:
+        # open_in_vim_helper(c)
+#@+node:ekr.20120315101404.9745: ** g.command('vim-open-node')
+@g.command('vim-open-node')
+def open_in_vim_command(event):
+
+    """ Open current node in (g)vim
+
+        Provied by vim.py plugin
+        """
+    c = event.get('c')
+    if c:
+        open_in_vim_helper(c)
+#@+node:ekr.20120315101404.9746: *3* open_in_vim_helper
 contextmenu_message_given = False
 
-def open_in_vim (tag,keywords):
-
-    if g.unitTesting: return
-
-    c = keywords.get('c')
-    p2 = keywords.get('old_p')
-    if not c: return
+def open_in_vim_helper (c):
     
+    p = c.p
+    v = p.v
+
     # Load contextmenu plugin if required.
     contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
     if not contextMenu:
         if not contextmenu_message_given:
             contextmenu_message_given = True
             g.trace('can not load contextmenu.py')
-        return
-    
-    p = c.p
-
-    if tag.startswith('select') and p == p2:
         return
 
     if p.h.find('file-ref') == 1: # Must be at 2nd position
@@ -261,7 +247,6 @@ def open_in_vim (tag,keywords):
     openURLNodes = c.config.getBool('vim_plugin_opens_url_nodes')
     if not openURLNodes and p.h.startswith('@url'):
         return # Avoid conflicts with @url nodes.
-    v = p.v
 
     vim_cmd = c.config.getString('vim_cmd') or _vim_cmd
     vim_exe = c.config.getString('vim_exe') or _vim_exe
@@ -321,7 +306,5 @@ def open_in_vim (tag,keywords):
     else:
         # Reopen the old temp file.
         os.system(vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'")
-
-    # return val
 #@-others
 #@-leo

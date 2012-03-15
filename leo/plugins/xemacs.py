@@ -4,9 +4,11 @@
 #@+node:ekr.20101112195628.5434: ** << docstring >>
 ''' Allows you to edit nodes in emacs/xemacs.
 
-Depending on your preference, selecting or double-clicking a node will pass the
-body text of that node to emacs. You may edit the node in the emacs buffer and
-changes will appear in Leo.
+Provides the emacs-open-node command which passes the body
+text of the node to emacs.
+
+You may edit the node in the emacs buffer and changes will
+appear in Leo.
 
 '''
 #@-<< docstring >>
@@ -21,7 +23,7 @@ import leo.core.leoGlobals as g
 import os
 import sys
 #@-<< imports >>
-__version__ = "1.11"
+__version__ = "2.0"
 #@+<< version history >>
 #@+node:ekr.20050218024153.1: ** << version history >>
 #@@killcolor
@@ -30,26 +32,28 @@ __version__ = "1.11"
 # Initial version: http://www.cs.mu.oz.au/~markn/leo/external_editors.leo
 # 
 # 1.5 EKR:
-#     - Added commander-specific callback in onCreate.
-#     - Added init method.
+# - Added commander-specific callback in onCreate.
+# - Added init method.
 # 1.6 MCM
-#     - Added sections from Vim mode and some clean-up.
+# - Added sections from Vim mode and some clean-up.
 # 1.7 EKR:
-#     - Select _emacs_cmd using sys.platform.
+# - Select _emacs_cmd using sys.platform.
 # 1.8 EKR:
-#     - Get c from keywords, not g.top().
-#     - Simplified the search of g.app.openWithFiles.
-#     - Fixed bug in open_in_emacs: hanged v.bodyString to v.bodyString()
+# - Get c from keywords, not g.top().
+# - Simplified the search of g.app.openWithFiles.
+# - Fixed bug in open_in_emacs: hanged v.bodyString to v.bodyString()
 # 1.9 EKR:
-#     - Installed patch from mackal to find client on Linux.
-#       See http://sourceforge.net/forum/message.php?msg_id=3219471
+# - Installed patch from mackal to find client on Linux.
+#   See http://sourceforge.net/forum/message.php?msg_id=3219471
 # 1.10 EKR:
-#     - Corrected the call to openWith.  It must now use data=data due to a new event param.
+# - Corrected the call to openWith.  It must now use data=data due to a new event param.
 # 1.11 EKR:
-#     - The docstring now states that the open_with plugin must be enabled for this to work.
+# - The docstring now states that the open_with plugin must be enabled for this to work.
+# 2.0 EKR:
+# - Use only the emacs-open-node command.  Don't pollute clicks.
 #@-<< version history >>
 
-useDoubleClick = True
+# useDoubleClick = True
 
 # Full path of emacsclient executable. We need the full path as spawnlp
 # is not yet implemented in leoCommands.py
@@ -74,23 +78,10 @@ else:
 #@+others
 #@+node:ekr.20050218023308: ** init
 def init ():
-
-    ok = True
-
-    if g.app.unitTesting:
-        # g.pr("\nEmacs plugin installed: double clicking will start...")
-        return False
-
-    if useDoubleClick: # Open on double click
-        g.registerHandler("icondclick2", open_in_emacs)
-    else: # Open on single click: interferes with dragging.
-        g.registerHandler("iconclick2", open_in_emacs_return_true)
-
-    if g.app.unitTesting:
-        os.system(_emacs_cmd)
-
-    g.plugin_signon(__name__)
-
+    ok = not g.unitTesting
+    if ok:
+        # g.registerHandler("icondclick2", open_in_emacs)
+        g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20050313071202: ** open_in_emacs
 contextmenu_message_given = False
@@ -99,7 +90,13 @@ def open_in_emacs (tag,keywords):
 
     c = keywords.get('c')
     p = keywords.get('p')
-    if not c or not p: return
+    if c:
+        return open_in_emacs_helper(c,p or c.p)
+    
+#@+node:ekr.20120315101404.9748: ** open_in_emacs_helper
+def open_in_emacs_helper(c,p):
+    
+    v = p.v
     
     # Load contextmenu plugin if required.
     contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
@@ -108,8 +105,6 @@ def open_in_emacs (tag,keywords):
             contextmenu_message_given = True
             g.trace('can not load contextmenu.py')
         return
-
-    v = p.v
 
     # Search g.app.openWithFiles for a file corresponding to v.
     for d in g.app.openWithFiles:
@@ -141,9 +136,16 @@ def open_in_emacs (tag,keywords):
     else:
         # Reopen the old temp file.
         os.system(emacs_cmd)
+#@+node:ekr.20120315101404.9747: ** g.command('emacs-open-node')
+@g.command('emacs-open-node')
+def open_in_emacs_command(event):
 
-def open_in_emacs_return_true(tag,keywords):
-    open_in_emacs(tag,keywords)
-    return True
+    """ Open current node in (x)emacs
+
+    Provied by xemacs.py plugin
+    """
+    c = event.get('c')
+    if c:
+        open_in_emacs_helper(c,c.p)
 #@-others
 #@-leo
