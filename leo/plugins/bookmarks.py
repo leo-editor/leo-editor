@@ -43,6 +43,9 @@ if g.app.gui.guiName() == 'qt':
 #@+others
 #@+node:ekr.20100128073941.5371: ** init
 def init():
+    
+    if g.unitTesting:
+        return False
 
     ok = bool(use_qt)
     
@@ -59,19 +62,20 @@ def onCreate(tag, keys):
     
     c = keys.get('c')
     if c:
+        m = g.loadOnePlugin('free_layout.py',verbose=True)
+        assert m
+        m.FreeLayoutController(c)
+        assert c.free_layout
+        assert hasattr(c.free_layout,'get_top_splitter')
+        
         BookMarkDisplayProvider(c)
-    
-    return
 #@+node:tbrown.20110712100955.39215: ** g.command('bookmarks-show')
 @g.command('bookmarks_show')
 def bookmarks_show(event):
     
     if not use_qt: return 
-   
-    bmd = BookMarkDisplay(event['c'])
     
-    free_layout = g.loadOnePlugin('free_layout.py',verbose=True)
-    assert(free_layout)
+    bmd = BookMarkDisplay(event['c'])
     
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
@@ -87,18 +91,19 @@ class BookMarkDisplay:
         self.c = c
         self.v = v if v is not None else c.p.v
         
-        if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
+        # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
             # Second hasattr temporary until free_layout merges with trunk
-            self.w = QtGui.QWidget()
             
-            # stuff for pane persistence
-            self.w._ns_id = '_leo_bookmarks_show:'
-            c.db['_leo_bookmarks_show'] = str(self.v.gnx)
+        self.w = QtGui.QWidget()
+        
+        # stuff for pane persistence
+        self.w._ns_id = '_leo_bookmarks_show:'
+        c.db['_leo_bookmarks_show'] = str(self.v.gnx)
             
-        else:
-            c.frame.log.createTab(c.p.h[:10])
-            tabWidget = c.frame.log.tabWidget
-            self.w = tabWidget.widget(tabWidget.count()-1)
+        # else:
+            # c.frame.log.createTab(c.p.h[:10])
+            # tabWidget = c.frame.log.tabWidget
+            # self.w = tabWidget.widget(tabWidget.count()-1)
         
         self.w.setObjectName('show_bookmarks')
         self.w.setMinimumSize(10, 10)
@@ -207,12 +212,13 @@ class BookMarkDisplayProvider:
     def __init__(self, c):
         self.c = c
         
-        if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
+        # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
             # Second hasattr temporary until free_layout merges with trunk
-            splitter = c.free_layout.get_top_splitter()
-            # Careful: we could be unit testing.
-            if splitter:
-                splitter.register_provider(self)
+            
+        splitter = c.free_layout.get_top_splitter()
+        # Careful: we could be unit testing.
+        if splitter:
+            splitter.register_provider(self)
     #@+node:tbrown.20110712121053.19748: *3* ns_provides
     def ns_provides(self):
         return[('Bookmarks', '_leo_bookmarks_show')]
