@@ -535,11 +535,21 @@
 </v>
 </v>
 <v t="ekr.20120229094652.15173"><vh>Update docs</vh>
-<v t="ekr.20120315101404.14221"><vh>New chapter: leoInspect</vh></v>
+<v t="ekr.20120229094652.15099"><vh>FAQ entry: @commands Aha</vh></v>
+<v t="ekr.20120229094652.15130"><vh>Add to scripting chapter</vh>
+<v t="ekr.20120229094652.15087"><vh>Add short intro to scripting</vh>
+<v t="ekr.20120229094652.15088"><vh>Easier scripting</vh></v>
+</v>
+</v>
+<v t="ekr.20120314095341.15571"><vh>Installation</vh>
+<v t="ekr.20120313134250.14219"><vh>Improve installation notes</vh></v>
+<v t="ekr.20120229094652.15137"><vh>How to upgrade properly</vh></v>
+<v t="ekr.20120229094652.15095"><vh>Review bzr instructions</vh></v>
+<v t="ekr.20120229094652.15098"><vh>Rewrite MacOs instructions using Ludvig's homebrew instructions</vh></v>
+</v>
 <v t="ekr.20120314095341.15575"><vh>Features</vh>
 <v t="ekr.20120314095341.14215"><vh>Discuss url's, bookmarks and ctrl-clicks</vh></v>
 <v t="ekr.20120229094652.15096"><vh>Document new organization for @command and @button nodes</vh></v>
-<v t="ekr.20120229094652.15099"><vh>FAQ entry: @commands Aha</vh></v>
 <v t="ekr.20120229094652.15100"><vh>revise autocompletion docs based on recent posts</vh>
 <v t="ekr.20120229094652.15102"><vh>Creating ctags data</vh></v>
 <v t="ekr.20120229094652.15103"><vh>Using Leo's autocompleter (outline form)</vh>
@@ -574,22 +584,45 @@
 <v t="ekr.20120229094652.19496"><vh>Bug 905276: explain how to clone multiple nodes at once</vh></v>
 <v t="ekr.20120313134250.14220"><vh>Improve docs for @nosent</vh></v>
 </v>
-<v t="ekr.20120314095341.15571"><vh>Installation</vh>
-<v t="ekr.20120313134250.14219"><vh>Improve installation notes</vh></v>
-<v t="ekr.20120229094652.15137"><vh>How to upgrade properly</vh></v>
-<v t="ekr.20120229094652.15095"><vh>Review bzr instructions</vh></v>
-<v t="ekr.20120229094652.15098"><vh>Rewrite MacOs instructions using Ludvig's homebrew instructions</vh></v>
-</v>
-<v t="ekr.20120314095341.15572"><vh>Scripting</vh>
-<v t="ekr.20120229094652.15130"><vh>Add to scripting chapter</vh>
-<v t="ekr.20120229094652.15087"><vh>Add short intro to scripting</vh>
-<v t="ekr.20120229094652.15088"><vh>Easier scripting</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20120314095341.15573"><vh>Testing</vh>
 <v t="ekr.20120229094652.15097"><vh>Document @mark-for-unit-test trees!</vh></v>
 <v t="ekr.20120229094652.15125"><vh>Document loading plugins when running unit tests externally</vh></v>
+</v>
+</v>
+<v t="ekr.20120315101404.14221"><vh>New chapter: leoInspect</vh>
+<v t="ekr.20120315101404.14224"><vh>The leoInspect Module</vh>
+<v t="ekr.20120315101404.14225"><vh>@file leoInspect.txt</vh></v>
+</v>
+<v t="ekr.20120315101404.14222"><vh>leoInspect: a hobbie with a future?</vh>
+<v t="ekr.20120315101404.14242"><vh>Post 1: a query language</vh></v>
+<v t="ekr.20120315101404.14243"><vh>Post 2: python *is* the query language</vh></v>
+<v t="ekr.20120315101404.14244"><vh>Kent: figleaf</vh></v>
+<v t="ekr.20120315101404.14245"><vh>Post 3: assignments</vh></v>
+<v t="ekr.20120315101404.14247"><vh>Post 4: query objects are Context objects</vh></v>
+<v t="ekr.20120315101404.14248"><vh>Post 5: A working prototype</vh></v>
+<v t="ekr.20120315101404.14249"><vh>Post 6: Success!</vh>
+<v t="ekr.20120315101404.14250"><vh>A huge change in perspective</vh></v>
+</v>
+<v t="ekr.20120315101404.14251"><vh>Post 7: AstFormatter class</vh></v>
+<v t="ekr.20120315101404.14252"><vh>Post 8: The fool's objections</vh></v>
+<v t="ekr.20120315101404.14253"><vh>Summary</vh></v>
+</v>
+<v t="ekr.20120315101404.14223"><vh>remarkable collapse in complexity and attempted assessment</vh>
+<v t="ekr.20120315101404.14257"><vh>Intro</vh></v>
+<v t="ekr.20120315101404.14254"><vh>Part 1: Traversals</vh></v>
+<v t="ekr.20120315101404.14255"><vh>Part 2: Getters</vh></v>
+<v t="ekr.20120315101404.14256"><vh>Part 3: How the AstFormatter works</vh></v>
+<v t="ekr.20120315101404.14258"><vh>Part 4: What does it all mean?</vh></v>
+<v t="ekr.20120315101404.14259"><vh>Reply 1</vh></v>
+<v t="ekr.20120315101404.14260"><vh>Reply 2</vh></v>
+<v t="ekr.20120315101404.14261"><vh>Reply 3: refactoring</vh></v>
+<v t="ekr.20120315101404.14262"><vh>Reply 4: 2to3</vh></v>
+<v t="ekr.20120315101404.14263"><vh>Reply 5: o.replace</vh></v>
+<v t="ekr.20120315101404.14264"><vh>Tokens</vh>
+<v t="ekr.20120315101404.14265"><vh>Token-info prepass</vh></v>
+<v t="ekr.20120315101404.14266"><vh>token_range</vh></v>
+<v t="ekr.20120315101404.14267"><vh>2to3</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -3121,33 +3154,24 @@ I haven't looked at it yet.
 
 Ludwig
 </t>
-<t tx="ekr.20120229094652.15099">The prefix "DingDing" signifies that this post is an answer to the
-lament:
+<t tx="ekr.20120229094652.15099">Wouldn't it be great if we all could remember what we, and others, have already done?
 
-    "Wouldn't it be great if we all could remember what we,
-    and others, have already done :-)"
+Leo's @command nodes makes this easy: just create @command nodes in myLeoSettings.leo for
+all your common programming tasks.  This organization is perfect:
 
-Last night I had a forehead-slapping moment: the place to put @button
-nodes is in myLeoSettings.leo.
+- You always know where your scripts are.
 
-This morning, I realized that using @command rather than @button
-completes the Aha.
+- There is no need for duplicates.
 
-This organization has all benefits, and no drawbacks:
-
-- I always know here scripts are.
-
-- No need for duplicates.
-
-- I can organize the scripts within myLeoSettings.leo as usual using
+- You can organize the scripts within myLeoSettings.leo as usual using
 organizer nodes.  This organization can change as needed.
 
-- Using @command rather than @button means that I never have to
-disable scripts.  No more @@button.
+- Using @command rather than @button means that there is never any need
+  to disable scripts.  No more @@button.
 
-- Using @command saves screen real estate.  In my experience, having
-buttons be visible doesn't prevent them from being hidden in full
-view.
+- Using @command saves screen real estate. Having buttons be
+  visible doesn't prevent them from being hidden in full
+  view.
 
 - If I use common prefixes, like c_ (for command) or edit_ (for edit-
 related scripts) or ekr_ (for personal scripts), the *typing
@@ -7309,7 +7333,6 @@ def isSectionRef (self,s):
 or \@@command.
 </t>
 <t tx="ekr.20120314095341.15571"></t>
-<t tx="ekr.20120314095341.15572"></t>
 <t tx="ekr.20120314095341.15573"></t>
 <t tx="ekr.20120314095341.15575"></t>
 <t tx="ekr.20120315101404.14221">http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
@@ -7319,6 +7342,1210 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/
 leoInspect: remarkable collapse in complexity and attempted assessment
 
 </t>
+<t tx="ekr.20120315101404.14222">@language rest
+</t>
+<t tx="ekr.20120315101404.14223">@language rest
+
+
+
+</t>
+<t tx="ekr.20120315101404.14224"></t>
+<t tx="ekr.20120315101404.14242">I'd like a module, call it leoInspect, which would, in effect, provide
+answers to questions about Leo's source code such as:
+
+- Where are all assignments to 'w' in leoEditCommands.py?
+
+- Which of those assignments are "unusual" or "suspect" (in ways to be
+specified)?
+
+This is, in essence, a re-imagining of the new-pylint project, which
+has been a "hobby" project of mine for several years. Rather than
+attempting global "proofs" of difficult propositions, as in new-
+pylint, the leoInspect module answer specific pattern-oriented
+questions about specific files.  We could use such answers while
+debugging, or as documentation, or especially as the foundation for
+*fast* unit tests.
+
+My first thought was that the simplest thing that could possibly work
+would be a souped-up search command. As a quick prototype, yesterday I
+wrote a short script, based on a simple Python tokenizer, that would
+find non-comment, non-string lines containing assignments.
+
+Suppose we are interested, for whatever reason, in assignments to "i".
+Such a script, when run on itself, yields assignments to "i" like::
+
+    result,i,line_number=[],0,0
+    kind,i= "S",i+1
+    i+= 1
+    kind,i= "S",g.skip_to_end_of_line(s,i)
+
+This illustrates the pitfalls of text-based approaches.  Finding the
+"real" assignments to "i" will be ugly.  In retrospect, this is hardly
+surprising. An approach based on AST trees will be cleaner and more
+flexible in the long run.
+
+The AST traversal code in new-pylint will form the foundation of
+leoInspect.  Traversals creates semantic data (symbol tables, etc.)
+that will also be useful in leoInspect.
+
+As I write this, I see that the problem is to create a "query
+language" that can be translated into specific AST traversals.  By
+"query language" I mean any mechanism that could produce specific
+searches.  API might be a better word for what I imagine.  In any
+case, creating queries of AST trees creates a new world of
+invention...
+
+Happily, speed is *not* a big problem.  The kind of queries I envisage
+can certainly be done in time proportional to O(N) where N is the size
+of the code being examined.  More sophisticated queries might require
+multiple passes over the tree (or data structures built from the tree)
+but that's still O(N).  I expect most queries to take less than a
+second, even on Leo's largest source files.  For example, new-lint
+takes 1.5 seconds to create AST trees for *all* of Leo's sources, and
+another 2 seconds to traverse all the trees.</t>
+<t tx="ekr.20120315101404.14243">&gt; As I write this, I see that the problem is to create a "query
+&gt; language" that can be translated into specific AST traversals.  By
+&gt; "query language" I mean any mechanism that could produce specific
+&gt; searches.  API might be a better word for what I imagine.  In any
+&gt; case, creating queries of AST trees creates a new world of
+&gt; invention...
+
+Here is the first draft of a design.  Feel free to skip, but if you
+are interested, don't miss the last line of this post.
+
+The inspiration will be Mathematica's language: simple and task
+oriented. All details in the background. In fact, there won't be any
+special query language, just a simple api.
+
+AST trees are part of the plumbing.  Queries will be made against the
+**query objects** representing the semantic data created when parsing
+AST trees. The present new-lint code is already pretty much what we
+need.
+
+Getter functions return query objects, o, or lists of query objects::
+
+    o = module(file_name) # Parses the file into a query object, o.
+    aList = o.assignments()
+    aList = o.classes()
+    aList = o.defs()
+    aList = o.statements(o)
+    ast_tree = o.tree()
+
+Assignments are especially important.  Two more getters deliver the
+right-hand-side and left-hand-side of an assignment a::
+
+    o = a.lhs()
+    o = a.rhs()
+
+The "assignments" getter will split composite assignments a,b = x,y
+into separate assignments.
+
+Finally, we'll need a way to view query objects, that is, the
+underlying AST.  We'll want a rich set of options so that we can
+customize the view::
+
+    aString = format(o,options)
+
+Other bells and whistles may become useful or necessary, but this is a
+good start, imo.
+
+Aha!  With these getters, *Python* becomes the query language!  So
+simple.  So powerful.
+</t>
+<t tx="ekr.20120315101404.14244">I'm reminded of my reaction to lots of testing tools,
+especially the coverage stuff which produces listings of
+execution paths. The intent of the listing is to determine
+which lines of code are tested, but that's not what I see.
+
+When I see that, I don't think of testing, I think "what a
+wonderful, automatically generated, explanation of how the
+pieces of the app work together, and what the control flow
+looks like"
+
+I think the one I've seen is Figleaf, found here
+http://pycheesecake.org/wiki/PythonTestingToolsTaxonomy
+
+
+On Wed, Nov 16, 2011 at 9:43 AM, Kent Tenney &lt;kten...@gmail.com&gt; wrote:
+&gt; Just the kind of stuff I like, looking forward to being able
+&gt; to try it without having to understand how it works :-]
+
+That's why I am excited about it as well.  This simple, high-level
+description provides the best possible road map for how the code
+should work.  There is no need for lower-level specs!
+
+&gt; Probably off topic, but I'm reminded of my reaction to lots
+&gt; of testing tools, especially the coverage stuff which produces
+&gt; listings of execution paths. The intent of the listing is to determine
+&gt; which lines of code are tested, but that's not what I see.
+
+&gt; When I see that, I don't think of testing, I think "what a wonderful,
+&gt; automatically generated, explanation of how the pieces of the
+&gt; app work together, and what the control flow looks like"
+
+&gt; I think the one I've seen is Figleaf, found here
+&gt; http://pycheesecake.org/wiki/PythonTestingToolsTaxonomy
+
+Thanks for these remarks and the link.
+
+I myself basically never think in terms of execution paths.  They are
+irrelevant to design, or rather, the *only* robust designs are designs
+that work for *all* execution paths.</t>
+<t tx="ekr.20120315101404.14245">&gt; Assignments are especially important.  Two more getters deliver the
+&gt; right-hand-side and left-hand-side of an assignment a::
+
+&gt;    o = lhs(a)
+&gt;    o = rhs(a)
+
+Instead of this, or in addition, there will be the following getters::
+
+    aList = assignments_to(arg)
+    aList = assignments_using(arg)
+
+Here arg can be either a query object or name (string).
+
+With this in place, the script to discover all assignments to 'w' in
+leoEditCommands.py is::
+
+    import leo.core.leoInspect as inspect
+
+    m = inspect.module('leoEditCommands')
+    for z in m.assignments_to('w'):
+        print(inspect.format(z))
+
+This is simple enough to be exciting!  Some notes:
+
+1. Yes, it really will be possible to use just 'leoEditCommands' as
+the argument to module.  leoInspect will know about Leo's files.
+
+2. By default, format will delete leading whitespace, line numbers,
+file names, etc, but there will be keyword options to enable all that
+and more.
+
+3. The script prints all assignments to 'w' anywhere in
+leoEditCommands.py.  But it would be trivial to "zero in" on
+particular classes or methods with one or two more lines of code.</t>
+<t tx="ekr.20120315101404.14247">The clarity makes everything simple.  I see now that a query object is
+simply a new-lint Context object.  The getters will be members of the
+base Context object, and will be very simple iterators.</t>
+<t tx="ekr.20120315101404.14248">Rev 4813 contains the first successful demo of leoInspect!
+
+Here is the Leo script::
+
+    import leo.core.leoInspect as inspect
+    dump_modules = False
+
+    m = inspect.module(c,'leoEditCommands.py',print_stats=True,print_times=True)
+    for o in m.classes:
+        if dump_modules:
+            o.dump(verbose=False)
+        else:
+            print(o)
+            for f in o.functions:
+                print('  %s' % f)
+
+And here is the output::
+
+QQQQQ
+    Dump of statistics...
+
+               errors: 0
+             contexts: 732
+              modules: 1
+          assignments: 2476
+                calls: 3241
+              classes: 22
+                 defs: 602
+                 fors: 85
+              globals: 5
+              imports: 18
+              lambdas: 2
+           list_comps: 20
+                withs: 0
+           attributes: 4493
+                ivars: 0
+                names: 5012
+            del_names: 0
+           load_names: 5747
+          param_names: 2
+          store_names: 2512
+
+    parse_time: 0.13
+    pass1_time: 0.26
+    total_time: 0.39
+
+    class(baseEditCommandsClass)
+      def(__init__)
+      def(finishCreate)
+      def(init)
+      def(beginCommand)
+      def(beginCommandWithEvent)
+      def(beginCommandHelper)
+      def(endCommand)
+      def(editWidget)
+      def(getPublicCommands)
+      def(getWSString)
+      def(oops)
+      def(_chckSel)
+      def(_checkIfRectangle)
+      def(getRectanglePoints)
+      def(keyboardQuit)
+    class(abbrevCommandsClass)
+      def(__init__)
+      def(finishCreate)
+      def(getPublicCommands)
+      def(expandAbbrev)
+      def(dynamicCompletion)
+      def(dynamicExpansion)
+      def(dynamicExpandHelper)
+      def(getDynamicList)
+      def(addAbbrevHelper)
+      def(addAbbreviation)
+      def(addInverseAbbreviation)
+      def(killAllAbbrevs)
+      def(listAbbrevs)
+      def(readAbbreviations)
+      def(readAbbreviationsFromFile)
+      def(toggleAbbrevMode)
+      def(writeAbbreviations)
+
+[big snip]
+    .
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.642s
+
+    OK
+    leoDynamicUnittest.py: 1.55sec
+QQQQQ
+
+Important:  the "class" and "def" entries are not just strings.  They
+are representations of real Context classes, which means that they
+already support, or soon will support, the getters I have been talking
+about.
+
+In short, we are *very* close to having a fully functional leoInspect module.
+</t>
+<t tx="ekr.20120315101404.14249">&gt; In short, we are *very* close to having a fully functional leoInspect module.
+
+Rev 4815 demonstrates that the project is *already* a complete
+success.  I never would have dreamed that one day would have seen so
+much progress.
+
+This is a longish post, but it will be worth reading if you are at all
+interested in the leoInspect project.
+
+Here is a unit test that demonstrates that the assignments() getter
+works::
+
+    import leo.core.leoInspect as inspect
+    m = inspect.module(c,'leoEditCommands.py')
+    for z in m.assignments():
+        print(z)
+        print(z.tree())
+        print(z.sd.dump_ast(z.tree()))
+        break
+
+And here is the output::
+
+    statement(assn)
+    &lt;_ast.Assign object at 0x04395E10&gt;
+    Assign
+        targets=[...
+            Name
+                id='enchant'
+                ctx=Store
+        value=Name
+            id='None'
+            ctx=Load
+
+\----------------------------------------------------------------------
+    Ran 1 test in 0.539s
+
+This demonstrates *all* the essentials of the leoInspect module.  In
+particular, this trace shows that the still-unwritten format method
+will have the proper AST to work with.  In other words, all the data
+exists!
+
+When the format method is written, we would replace::
+
+    print(z.sd.dump_ast(z.tree()))
+
+by:
+
+    print(z.format())
+
+but that is just "syntactic sugar".  And rather than printing the
+"raw" AST tree shown above, format will print it as it would look in
+the actual source file.  It will take a bit of work tomorrow...
+
+Imo, this one day's work has justified the work I have done on the
+various lint over the last several years.
+
+</t>
+<t tx="ekr.20120315101404.14250">Besides the actual code, something even more important has happened
+today.  Actually, two, no *three* somethings.
+
+1. The leoInspect module has suddenly become completely easy to
+understand.  It's has become an utterly vanilla AST traversal,
+combined with straightforward data classes.
+
+2. More importantly, I now see the leoInspect module in a whole new
+light.  Indeed, leoInspect is the *static, passive* component of the
+inspection process.  The Leo scripts that use the leoInspect module
+are the *active, creative, dynamic* part of the inspection process.
+It is this separation between active and passive components that has
+utterly collapsed the complexity of leoInspect.
+
+3. Finally, the separation of active and passive parts means that
+leoInspect now becomes an *excellent* foundation for yet another
+version of LeoLint.  What an irony: by giving up the attempt to do a
+full-fledged lint we have suddenly been "gifted" with a superb
+platform for further lint work.  Astounding.
+
+Edward
+
+P.S.  Let me brag just a bit more.  All the getters now take an "all"
+keyword argument.  If True, the getters recursively discover the
+desired information in the given object and all subsidiary objects.
+
+All the getters have a simple pattern.  Here is the assignments()
+getter: the others are virtually the same code, with straightforward
+modifications:::
+
+    def assignments (self,all=True):
+        if all:
+            return self.all_assignments(result=None)
+        else:
+            return self.filter_assignments(self._statements)
+
+    def all_assignments(self,result):
+        if result is None:
+            result = []
+        result.extend(self.filter_assignments(self._statements))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_assignments(result)
+        return result
+
+    def filter_assignments(self,aList):
+        return [z for z in aList
+            if z.kind in ('assn','aug-assn')]
+            
+I should emphasize that these methods are part of the base Context
+class, and are inherited completely unchanged by all subclasses.  It's
+totally elegant.
+
+
+Quite a day's work.  It started about 3:30 a.m, and now it's about
+8:30 p.m.
+</t>
+<t tx="ekr.20120315101404.14251">&gt; The clarity makes everything simple.  I see now that a query object is
+&gt; simply a new-lint Context object.
+
+&gt; When the format method is written, we would replace::
+
+&gt;     print(z.sd.dump_ast(z.tree()))
+
+&gt; by:
+
+&gt;     print(z.format())
+
+&gt; but that is just "syntactic sugar".  And rather than printing the
+&gt; "raw" AST tree shown above, format will print it as it would look in
+&gt; the actual source file.  It will take a bit of work tomorrow...
+
+The first draft of Context.format was::
+
+    def format(self,brief=True):
+        cx = self
+        return ast.dump(
+            cx._tree,annotate_fields=True,
+            include_attributes=not brief)
+
+This produces output such as::
+
+Assign(targets=[Attribute(value=Name(id='self', ctx=Load()), attr='c',
+ctx=Store())], value=Name(id='c', ctx=Load()))
+
+Call(func=Attribute(value=Name(id='self', ctx=Load()),
+attr='beginCommandHelper', ctx=Load()), args=[],
+keywords=[keyword(arg='ch', value=Str(s='')), keyword(arg='undoType',
+value=Name(id='undoType', ctx=Load())), keyword(arg='w',
+value=Attribute(value=Name(id='self', ctx=Load()), attr='w',
+ctx=Load()))], starargs=None, kwargs=None)
+
+This is just a squished version of the ast tree.  Alas, ast.dump has
+no option to reproduce the tree's source. It's a big hole in the ast
+class, imo.
+
+But there is no use complaining.  Early this morning I started work on
+the AstFormatter class, yet another AST traversal class. It's coming
+along nicely.  Here is format's present output corresponding to the
+dumps above::
+
+    self.c = c
+    self.beginCommandHelper(ch='',undoType=undoType ,w=self.w)
+
+In other words, format is nearing completion. There are a lot of picky
+details to handle, however: the formatter must generate code for
+virtually all AST nodes.  In addition, the present code adds spaces
+around all identifiers, so that constructions such as "a or b" don't
+get turned into "aorb".  This can lead to too many spaces, as you can
+see above. Eventually, format will beautify its result, perhaps using
+Leo's token-oriented beautify-python code.
+
+I expect to spend at least the rest of today on format and the
+AstFormatter class.</t>
+<t tx="ekr.20120315101404.14252">It was an "interesting" day, not least because the Fool (capitalized,
+the skeptical part of me) kept screaming at me. leoInspect is so
+elegant, I started doubting it!
+
+As an antidote, and as a way to honor the skeptical part of me, here
+is a dialog between the Fool  and the excited part of me:
+
+Fool: Why all the excitement?  All you've done is made a trivial front
+end for ASTs!
+
+Me: The front end is important, for several reasons.  First, it
+provides a way to examine *dead* code more easily than Python's
+inspect module allows you to examine *live* code.  It is also a
+spectacular collapse in code complexity.
+
+Fool:  Of *course* it's a collapse in complexity, you've *given up*
+trying to do a proper lint!  What did you expect?
+
+Me: Actually, almost all the code is unchanged!  Only my
+*understanding* has changed.  "Giving up" just means that a few
+algorithms are no longer part of leoInspect itself.
+
+Fool: Let's get back to the interface. The getters just deliver ASTs.
+That's no big deal.
+
+Me:  Getters deliver Context objects, not ASTs.
+
+User query code quite naturally starts with a call to the module
+getter::
+
+    m = leoInspect.module(fn=&lt;path to a file&gt;) # For users.
+    m = leoInspect.module(s=s) # For testing leoInspect itself.
+
+The module getter preprocesses all the code, creating semantic
+information (Context objects) that speed up and enrich all future
+getters.  **leoInspect adds rich data structures to ASTs**.
+
+Fool:  How useful can these data structures be? They cost almost
+nothing to make: there is no such thing as a free lunch.
+
+Me:  That's my second point.
+
+As far as the users of leoInspect are concerned, Context classes *are*
+query objects.  The leoInspect API shows that this change in point of
+view is a huge advance for users.
+
+Fool: Well, what about you?  You wasted all day yesterday writing the
+AstFormatter class, yet another AST-to-Python converter.  You haven't
+done your homework: 2to3lib already has such a thing.
+
+Me: Yes, 2to3lib already has something similar.  But it doesn't fit in
+with leoInspect's Context or AstTraverser classes.  AstFormatter is
+essential.
+
+Fool: AstFormatter is always going to be buggy.
+
+Me: Writing unit tests for AstFormatter will be easy.  AstFormatter
+doesn't need to preserve whitespace exactly. The only requirement is
+that the *tokenized* version of the input must be equivalent to the
+*tokenized* version of leoInspect.module(s=s).format().  The new
+g.python_tokenizer function will suffice as a tokenizer.
+
+Fool: Well, writing AstFormatter was a big distraction.
+
+Me: Not really.  It has given me a chance to look again at the old
+LintTraverser class, now called InspectTraverser. I used
+InspectTraverser as a reference while writing AstFormatter.  In the
+process I found some horrible code, namely
+InspectTraverser.attribute_to_string.  This is a wretched hack,
+supposedly for the benefit of the symbol table classes.  It can't
+possibly be correct.  The new code will simply use the AST to
+represent itself.
+
+Fool: Using ASTs to represent themselves?  That's a step backwards!
+It makes the code harder to use.
+
+Me: No, it doesn't, because the getters don't get more complex.  Yes,
+the assign_to and assign_using getters must do some work, but that
+work hides all the AST-related blah-blah-blah from the user.  If other
+getters are needed to hide AST details, I'll put them in.
+
+Fool:  Maybe the getters will be useful for the "naive" user, but they
+will never be good enough to implement a real lint.
+
+Me:  Wrong, on two counts.  First, *I* will be a "naive" user when it
+comes to writing unit tests based on leoInspect.  I want a dead-simple
+interface in which to build up significant assertions about Leo's own
+code base.
+
+Second, the o.tree() getter provides a fast trap door to any part of
+the AST.  The leoInspect API *can* be used as the basis for a new
+lint.  Actually, the old "sudoku-like" (data-driven) lint algorithm
+could use the underlying Context classes as before.  The new
+leoInspect API doesn't hide the old API.
+
+Fool: But you are going to gut attribute_to_string.  Isn't that going
+to ruin some old code?
+
+Me: Now you're nit-picking.  InspectTraverser.attribute_to_string will
+be sound, which is kinda important for a lint!
+
+Fool: But you are going to waste even more time revising
+InspectTraverser.
+
+Me:  It's never a waste of time to put code on sound foundation.  And
+the big collapse in complexity creates further opportunities for
+simplifications.  Don't even *think* about complaining about that.
+
+Furthermore, the run-marked-unit-tests-externally command has
+amplified the Stupendous Aha.  As a result, I seem to have gotten
+smarter--I find even more ways to collapse complexity.  This happened
+several times yesterday, and I expect to simplify InspectTraverser
+even more today.
+
+All the great mathematicians revisit their old proofs, seeking deeper
+understanding and greater clarity.  And great authors like Joyce Carol
+Oates rewrite their novels many times before they publish.  I'm doing
+the same thing.
+
+Fool:  Anyway, this is keeping you from fixing bugs.
+
+Me: You do have a point.  However, leoInspect is part of Leo's test
+plan.  I'd like to wrap up the leoInspect work asap.  Otoh, I'm not
+going to rush: this is way too good a project to leave in a half-
+finished state.
+
+Fool:  Well, we'll have to see how it turns out.
+
+Me:  Yes, we will.  Time to get back to work on leoInspect!
+
+</t>
+<t tx="ekr.20120315101404.14253">&gt; leoInspect is so elegant, I started doubting it!
+
+The quick summary of leoInspect:
+
+1. leoInspect inspects text; Python's inspect module inspects live objects.
+
+2. leoInspect is much easier to use than inspect, and more scriptable.
+
+3. Most importantly, leoInspect is a view of **symbol tables**, not
+ASTs.  These symbol tables are designed to answer important, practical
+questions about source code, including Leo's sources.
+</t>
+<t tx="ekr.20120315101404.14254">The InspectTraverser (it) class is now so simple that it's literally
+hard to see that it is doing anything at all!  Most of the "it" class
+methods are simple variants of the base AstTraverser class.
+
+In fact, only three methods are worth our attention:  do_Name and
+do_Attribute (headlines it.Name and it.Attribute) and the general-
+purpose method format_tree.
+
+The do_Name method is essentially unchanged from previous versions:
+it adds a name to the context's symbol table.  I've retained this
+symbol-table code for now, but it might disappear.
+
+The do_Attribute methods used to be extremely complex.  It was also
+bogus.  Now, it is dead simple.  Here it is, slightly edited::
+
+    cx = self.get_context()
+    name = tree.attr
+    expr = self.formatter.visit(tree.value,'attribute value')
+    s = '%s.%s' % (expr,name)
+    self.formatter.append(s)
+    cx.st.add_chain(tree,s)
+
+Again, I might delete the last line.
+
+So in essence, the spectacular collapse in complexity replaces complex
+AST-traversal code with::
+
+    expr = self.formatter.visit(tree.value,'attribute value')
+
+To make this work, the InspectTraverser class must use the
+AstFormatter class for all "operands" except Name and Attribute.  This
+is done as follows::
+
+    def format_tree(self,tree,tag=''):
+        return self.formatter.visit(tree)
+
+    # do_Attribute
+    do_bool         = format_tree
+    do_Call         = format_tree
+    do_comprehension= format_tree
+    do_Dict         = format_tree
+    do_Ellipsis     = format_tree
+    do_ExtSlice     = format_tree
+    do_Index        = format_tree
+    do_int          = format_tree
+    do_Keyword      = format_tree
+    do_List         = format_tree
+    do_ListComp     = format_tree
+    # do_Name
+    do_Num          = format_tree
+    do_Slice        = format_tree
+    do_str          = format_tree
+    do_Str          = format_tree
+    do_Subscript    = format_tree
+    do_Tuple        = format_tree
+
+I considered making InspectTraverser class a subclass of AstFormatter,
+but that would be bad style.  We want the InspectTraverser class to
+*have* a formatter, not *be* a formatter.
+
+Let's look now at how the collapse affects the getters.</t>
+<t tx="ekr.20120315101404.14255">Iirc, the collapse happened as I was trying to simplify do_Attribute,
+but that happened because I was working on the assignments_to getter.
+Here is the final code::
+
+    def assignments_to (self,s,all=True):
+
+        format,result = self.formatter.format,[]
+
+        for assn in self.assignments(all=all):
+            tree = assn.tree()
+            kind = self.ast_kind(tree)
+            if kind == 'Assign':
+                for target in tree.targets:
+                    lhs = format(target)
+                    if s == lhs:
+                        result.append(assn)
+                        break
+            else:
+                assert kind == 'AugAssign',kind
+                lhs = format(tree.target)
+                if s == lhs:
+                    result.append(assn)
+
+        return result
+
+This method finds all assignments to the string s in "self", a
+context.  Recall the contexts represent modules, classes, functions,
+methods, and all other statements.
+
+This is AST-traversal code.  Indeed, the tree getter returns an AST,
+and ast_kind is an internal getter that returns the AST type for an
+AST node.
+
+This code is elegant, for several reasons:
+
+A. It uses the (public) assignments getter to get the list of all
+assignments in this context and all contained (descendant) contexts.
+Recall that all public getters are members of the base Context class,
+so this code code "just" works for *all* contexts.
+
+B. The code is the simplest thing that could possibly work.  AST trees
+for assignments are a bit different from AST trees for augmented
+assignments, as shown.  Once the type of assignment is identified, the
+code simply *formats* the left hand side (lhs) of the assignment, and
+compares s with the lhs.  If there is a match, the entire assignment
+is appended to the result.
+
+C. Assignments are StatementContext objects, so they "just work" as
+elements returned by the getter.
+
+If you compare this code with the code found, for example, in pylint,
+you will begin to see how elegant this code is.</t>
+<t tx="ekr.20120315101404.14256">The AstFormatter class has now taken center stage in the leoInspect
+module.  Here, I'd like to describe how it works.  It is elegant
+enough that it might be difficult to understand.
+
+The basic coding pattern used throughout the formatter class is
+simple.  The code that handles each construct does the following:
+
+A. Calls self.visit for interior contexts to get the *formatted*
+string for those contexts.
+
+B. Computes a "result" string s.
+
+C. Calls self.append(s) to "return" the result.
+
+Let's look at f.do_Attribute.  This formats an attribute.  Attributes
+can be surprisingly complex.  For example, the following would be
+represented at the top level by an AST Attribute node::
+
+    a.f(...)[1:g(...)].c.e
+
+You get the idea.  Wheels within wheels.
+
+Here is the code for f.do_Attribute::
+
+    def do_Attribute(self,tree,tag=''):
+        name = tree.attr
+        expr = self.visit(tree.value,'attribute value')
+        self.append('%s.%s' % (expr,name))
+
+How does this work?  That is, how does the visit method return a
+string that properly "flattens" what might be an arbitrarily complex
+tree?
+
+The trick is in the AstFormatter.visit method.  Here it is, slightly
+edited::
+
+    def visit (self,tree,tag=None):
+        kind = tree.__class__
+        f = self.dispatch_table.get(kind)
+        if f:
+            self.push()
+            f(tree,tag)
+            val = self.pop()
+            return val
+        else:
+            g.trace('**** bad ast type',kind)
+            return None
+
+The visit method calls self.push() to save the present string being
+"accumulated", determines the proper function f to call using the
+dispatch table, visits the node by calling f and then calls
+self.pop().
+
+The push and pop methods make the coding pattern work.  Here they
+are::
+
+    def push (self):
+        self.stack.append(self.result)
+        self.result = []
+
+    def pop (self):
+        val = ''.join(self.result)
+        self.result = self.stack.pop()
+        return val
+
+The result from the "interior" call to f is ''.join(self.result).  The
+pop method computes this result and *then* pops the stack, restoring
+the previous value of self.result.
+
+The final piece of the puzzle is::
+
+    def append(self,s):
+        self.result.append(s)
+
+**Important**: the patten allows multiple calls to self.append in a
+single method.  Here is a more complex example that shows how flexible
+the pattern is::
+
+    def do_arguments(self,tree,tag=''):
+
+        kind = self.kind(tree)
+        assert kind == 'arguments',kind
+
+        args = []
+        for z in tree.args:
+            args.append(self.visit(z,'arg'))
+
+        defaults = []
+        for z in tree.defaults:
+            defaults.append(self.visit(z,'default arg'))
+
+        # Assign default values to the last args.
+        args2 = []
+        n_plain = len(args) - len(defaults)
+        for i in range(len(args)):
+            if i &lt; n_plain:
+                args2.append(args[i])
+            else:
+                args2.append('%s=%s' % (args[i],defaults[i-n_plain]))
+
+        # Now add the vararg and kwarg args.
+        name = hasattr(tree,'vararg') and tree.vararg
+        if name: args2.append('*'+name)
+
+        name = hasattr(tree,'kwarg') and tree.kwarg
+        if name: args2.append('**'+name)
+
+        self.append(','.join(args2))</t>
+<t tx="ekr.20120315101404.14257">**Note**: this post is a "thinking out loud" post that will be of
+interest primarily to those following my "new-lint" projects.  Feel
+free to ignore.
+
+Yesterday I completed the latest round of work on the leoInspect
+module.  It went much more smoothly than I expected due to yet another
+collapse in complexity.
+
+The collapse involves replacing AST-oriented code by strings created
+by the AstFormatter class in leoInspect.py.  That's it.
+
+I would describe the collapse as "spectacular". It was completely
+unexpected.  It's so good that it changes how I think about the whole
+project.  It's disorienting in that regard. This post is my first
+attempt at understanding in detail just what it all means.
+
+To see how effective and far-ranging this collapse is, let's look at
+the code.</t>
+<t tx="ekr.20120315101404.14258">The leoInspect module has become a supremely elegant way of accessing
+the information in AST's.   Using AstFormatter to simplify
+InspectTraverser may be the most clever refactoring I have ever done.
+Furthermore, the high-level getter interface is amazingly simple.
+
+The question is, what good is all this?  It's a fair question.
+
+My earlier vision of leoInspect was that the getters were a window
+into complex semantic data (lists and symbol tables) created by
+InspectTraverser as the result of calling the module getter.
+
+Now the symbol tables seem much less important.  Indeed, I now view
+InspectTraverser as creating a large numbers of "pointers" into the
+code.
+
+The getters essential retrieve these pointers.  That's all.
+
+The assignments_to, assignments_using and the new calls_to getters all
+specify a **pattern** to be matched against the the lhs of assignments
+(or against function names in the calls_to getter).  At present, the
+pattern must match as a plain word match, but it would be more natural
+to use regex matches.  That's coming.
+
+The bigger question is this:  could one create a lint using leoInspect
+as a base?  I believe the answer is clearly yes.  The InspectTraversal
+class is very fast.  In effect, it is a useful pre-pass for more heavy-
+duty analysis.  Multi-pass algorithms are often *faster* and more
+elegant than single-pass algorithms, so we appear to be on an
+interesting path.
+
+Furthermore, excellent collapses in complexity are, *all by
+themselves*, a sign of being on a fruitful path.
+
+Otoh, playing with the getters has exposed the difference between
+queries and far more capable programs such as pylint.  Queries may be
+useful for some purposes, but pylint is essentially a way of making
+*automatic* queries/inferences about *all* the objects in a program.
+
+The leoInspect project is about to run into a wall:  text-based
+queries are not nearly as useful as object-based or type-based
+queries.  Such queries require sophisticated type analysis of the kind
+that I (temporarily!) abandoned at the start of the leoInspect
+project.
+
+In short, it remains to be seen how useful text-based queries will
+be.  But this is not a "gotcha". We could erect a superstructure on
+top of the leoInspect base.  That base is stronger now than ever
+before.
+
+Enough for now.  All comments are welcome. </t>
+<t tx="ekr.20120315101404.14259">&gt; In short, it remains to be seen how useful text-based queries will
+&gt; be.  But this is not a "gotcha". We could erect a superstructure on
+&gt; top of the leoInspect base.  That base is stronger now than ever
+&gt; before.
+
+Thinking of leoInspect as a pre-pass is useful.  Because it is fast,
+we would prefer to do as much analysis there as possible.
+
+However, the present code does about as much analysis as it can.
+Further analysis requires type inference.  For example, when entering
+the "chain" a.b.c.d into the symbol table of context x, we know *only*
+that a is referenced in x, and so should be defined in x.  The symbol
+a.b is *not* necessarily a symbol defined in x: we need type inference
+to deduce the context y containing a.b.  The same remarks pertain to
+the objects a.b.c and a.b.c.d.
+
+Furthermore, there is no way to precompute the results of the
+assignment_to(s) getter, because the pattern "s" could be anything.
+
+These remarks explain why I said that leoInspect has come up against a
+"wall".  Again, this is not a gotcha: the wall is merely the (clear!)
+dividing line between static text analysis and more capable type
+analysis.  Imo, this "wall" is a big step forward: it's an excellent
+refactoring of an inherently difficult problem.</t>
+<t tx="ekr.20120315101404.14260">&gt; Thinking of leoInspect as a pre-pass is useful.  Because it is fast,
+&gt; we would prefer to do as much analysis there as possible.
+
+The new code takes about 4.6 seconds to preprocess Leo's 34 core
+modules, including qtGui.py.
+
+To answer the question, "how much time does formatting all the strings
+take?", I replaced InspectTraverser.formatter by a g.nullObject.  With
+this "do-nothing" formatter, the time drops to 4.3 seconds, so there
+is less than a 10% overhead.  Moreover, replacing the formatter with
+any other tree traversal would add time.
+
+The conclusion is that using AstFormatter in the InspectTraverser
+class takes a negligible amount of time.
+</t>
+<t tx="ekr.20120315101404.14261">Have you considered using leoInspect as a base to build some kind of
+refactoring tool(set)?
+
+I think that leoInspect is already very useful tool for refactoring code
+manually. I believe it is possible to make some scripts using leoInspect to
+perform some kinds of refactoring. For example *extracting function* type
+of refactoring requires to check for the assignments to variables in
+selected code block and check whether some of assigned variables are used
+after selected code block. Such variables should be returned from extracted
+function. All variables used in selected code block should become input
+arguments of the extracted function. If I am not mistaken, those are
+queries that leoInspect module could answer already.
+Vitalije
+PS: there is a project "bicyclerepair"
+http://sourceforge.net/projects/bicyclerepair/ but newest release is from
+2004 :-(
+
+&gt; I think that leoInspect is already very useful tool for
+refactoring code manually. I believe it is possible to make
+some scripts using leoInspect to perform some kinds of
+refactoring.
+
+Thanks for these comments.  These are early days for the leoInspect
+module.  I haven't really begun to explore all the possibilities.  At
+present, I want to make the "module" getter (that is, the prescan) as
+fast and as competent as possible.  By "competent", I mean supporting
+pattern matching in the getters, so that the getters aren't restricted
+to "plain word" matches.
+
+&gt; For example *extracting function* type of refactoring
+requires to check for the assignments to variables in
+selected code block and check whether some of assigned
+variables are used after selected code block. Such variables
+should be returned from extracted function. All variables
+used in selected code block should become input arguments of
+the extracted function. If I am not mistaken, those are
+queries that leoInspect module could answer already.
+
+There is a bug which needs to be fixed.  At present the "statements"
+doesn't return all the statements.
+
+Except for that bug, almost any conceivable **search** action on code
+is already possible.  However, new getters could help matters
+considerably.  For example, the "calls_to" getter doesn't filter
+argument lists:  a script would have to do text filtering "by hand".
+
+However, a refactoring tool **replaces** matches with other code.
+This is the realm of 2to3.  In fact, 2to3 is an excellent refactoring
+tool already, except that there is no documentation telling how to use
+it!
+
+Alas, 2to3 doesn't work on Leo files.  Perhaps adapter classes could
+make it work there.  I haven't considered this until just now.
+
+If we use leoInspect rather than 2to3, we need ways of replacing
+(leoInspect) matches with refactored equivalent.  This is an entirely
+new realm for design, coding and invention.
+
+The present code is based on ASTs, so it works on *external* files.  A
+parallel version of the tools would act on nodes.  Without such a
+tool, your script would have to do the replacing "all by itself",
+which would be tedious.  Otoh, the script might suggest the first
+draft of more formal tools.</t>
+<t tx="ekr.20120315101404.14262">&gt; However, a refactoring tool **replaces** matches with other code.
+&gt; This is the realm of 2to3.  In fact, 2to3 is an excellent refactoring
+&gt; tool already
+
+2to3 is "excellent" in the sense that it is capable and debugged.  It
+is also complex and clueless about Leo.
+
+Three new getters would give leoInspect the ability to replace
+refactored code:
+
+- o.range() Returns pointers (string offsets) to the start and end of
+o's text in the source file (or the Leo outline).
+
+- o.text()  Returns o's source text (a string).
+
+- o.tokens() Returns o's tokenized text.
+
+"range" is the fundamental getter.  Given "range" the "text" and
+"tokens" getters are trivial.
+
+Creating the "range" getter should be relatively straightforward.
+Indeed, all AST nodes have lineno and col_offset fields.  The
+col_offset is the UTF-8 byte offset of the first token that generated
+the node.  We also need **end_col_offset**, the byte offset of the end
+of the last token that generated the node.  This will be one less than
+the col_offset of the token following the last token. The base
+AstTraverser class can compute end_col_offset very quickly.
+
+Converting UTF-8 byte offsets to proper unicode string offsets may be
+tricky, however.  Right off hand, I have no idea how to do so.  Anyone
+have any thoughts?
+
+BTW, a good unit test will be to compare the *tokenized* original text
+with the tokenized version of various texts returned by o.text.  Using
+tokens ensures that whitespace is handled properly.</t>
+<t tx="ekr.20120315101404.14263">&gt; Three new getters would give leoInspect the ability to replace
+&gt; refactored code:
+
+Another new setter would be useful:
+
+o.replace(s) would replace o.text() by s.
+
+The "replace" setter would handle some straightforward but picky bookkeeping.
+</t>
+<t tx="ekr.20120315101404.14264">&gt; Converting UTF-8 byte offsets to proper unicode string offsets may be
+&gt; tricky, however.  Right off hand, I have no idea how to do so.
+
+Ah.  My *guess* is that much of the mysterious complexity in 2to3 is
+related to this topic.  Indeed, the complex code in 2to3 is similar to
+the complex constants in the codecs base class.  See::
+
+    http://docs.python.org/library/codecs.html
+
+Big sigh.  It looks like some study of 2to3 is in order.  On the
+bright side, I now have a clue about why the complexity exists, which
+may help...
+
+
+&gt;&gt; Converting UTF-8 byte offsets to proper unicode string offsets may be
+&gt;&gt; tricky, however.  Right off hand, I have no idea how to do so.
+
+This might work, assuming offset is valid, that is, a byte offset to
+the *start* of an encoded character::
+
+   n = len(g.toUnicode(byte_array[:offset]))
+
+In other words, if offset is valid, then byte_array[:offset] ends on a
+proper character boundary.
+
+Not tested yet, but this has a chance...
+
+
+&gt; - o.range() Returns pointers (string offsets) to the start
+and end of o's text in the source file (or the Leo
+outline)..."range" is the fundamental getter.
+
+I've decided to call the getter "token_range", not "range", so as not
+to conflict with the Python global.  Such conflicts are permitted, and
+harmless, but I don't like them.
+
+Some experiments show that token_range will require a new subclass of
+AstTraverser! In essence, we need to be able to compute tree.lastNode
+for any tree (AST node). The code will be similar to p.moveToLastNode
+in concept, but in practice different code is required for every
+different kind of AST node, which is why we need a new subclass.
+
+Furthermore, once we know the last node of a tree, we need to know the
+*next* node, in order to find the *end* of the last node. Finally, the
+AST classes represent offsets as offset relative to the start of the
+line given by tree.lineno.  This representation is annoying and
+clumsy.
+
+All this means that it would likely be too expensive (or just too
+ugly) to compute the data needed for token_range in the base
+AstTraverser class.  Such computations will be performed by traversing
+the module's entire AST the first time "token_range" is called.
+
+The bright side is that the token_range getter hides a lot of
+preprocessing (the new traverser class!) and a lot of picky
+complications (clumsy index computations), yielding a simple, easily
+understood result.  That's the mark of a useful getter.
+
+&gt; All this means that it would likely be too expensive (or just too
+&gt; ugly) to compute the data needed for token_range in the base
+&gt; AstTraverser class.  Such computations will be performed by traversing
+&gt; the module's entire AST the first time "token_range" is called.
+
+There are two parts to the problem.  Happily, neither requires a
+separate tree-traversal class.
+
+</t>
+<t tx="ekr.20120315101404.14265">For each node N of a module's tree, we want to inject the following
+two new ivars:
+
+- N.end_lineno: the line number of the last character of the token.
+- N.end_col_offset: the (byte) offset of the last character of the
+token.
+
+After experimenting with a few traversals last night I suddenly
+realized tree structure is irrelevant when computing these fields: we
+simply want a **sorted** list of (N.lineno,No.col_offset, N) tuples!
+
+The prepass will use ast.walk(root), to generate the list.  After
+sorting the list, the prepass will inject inject N.end_lineno and
+N.end_col_offset ivars into each node N by stepping through the list.
+The ending values of the previous node on the list are the the same as
+the beginning values of the next node on the list.
+
+This prepass need only be done once per module.
+
+</t>
+<t tx="ekr.20120315101404.14266">To compute token_range for a *particular* N, we want to discover
+values M.end_lineno and M.end_col_offset for M, the **last** token in
+N's entire tree.
+
+token_range will do the prepass on the modules tree if necessary.
+token_range will then call ast.walk(N) to discover all of N's nodes,
+sort the list, and return the last element of the list!
+
+In short, token_range is clean and bullet-proof--a happy result.
+</t>
+<t tx="ekr.20120315101404.14267">&gt; In short, token_range is clean and bullet-proof--a happy result.
+
+True, as far as it goes, but token_range will, by its design, include
+*all* text in the range, including comments.  Happily, nodes always
+begin a Python token, so a tokenizer will be able to find embedded
+comments cleanly.
+
+But handling comments is a non-trivial *design* problem.  Consider this call::
+
+    aFunc(
+        arg1=default1, # comment 1
+        arg2=default2, # comment 2
+    )
+
+Some refactorings, like changing the function's name, won't care about
+the comments.  Others might.  Similar remarks apply to any
+parenthesized expression: arbitrarily many comments may be embedded.
+
+I have no idea how 2to3 handles such issues.  Time to find out...
+
+Here is the first paragraph from "Extending 2to3 with your own fixers":
+http://python3porting.com/fixers.html
+
+"The 2to3 command is a wrapper around a standard library
+package, called lib2to3. It contains a code parser, a
+framework for setting up fixers that modify the parse tree
+and a large set of fixers."
+
+So that's one part of answer: fixers act on the parse tree,
+and presumably the source code gets recreated from the parse
+tree. Otoh, this doesn't answer the question of whether
+fixers preserve comments...
+
+Let's look at the fixer for the print statement, since it's easy to
+understand what it does, if not so easy to understand how it does it.
+
+newlint.leo contains a copy of all of 2to3's sources. The print fixer
+code is in fix_print.py, in the FixPrint.transform method.  I won't
+show it here, but the thing to notice is that all the operations are
+on AST nodes, and no nodes are deleted, only added.  Thus, the
+existing nodes will "pull in" any comments, so everything should just
+work.  However, there is one "replace" operation, so it's possible
+that there could be problems...
+
+In short, the comments problem lies hidden in the background in the
+2to3 sources.  I think I'll run some tests to see whether there might
+be some bugs lurking in 2to3.
+
+2to3 handled some simple tests properly, which is encouraging ;-)
+
+This suggests, perhaps strongly, that it might be good to repackage
+2to3 as a Leonine refactoring tool.  It's quite possible that 2to3 has
+already solved problems that I do not yet know even exist.
+
+The work with leoInspect getters remains valid, it seems to me.
+Indeed, the only "re-visioning" that might be needed would be to
+consider the o.replace setter as a wrapper for 2to3.
+
+I'm not overly impressed with 2to3's packaging, so wrapping it for Leo
+as a leoInspect setter might be a good simplification.  Otoh,
+specifying "fixes" the 2to3 way might be clumsy. Still, 2to3, however
+clumsy, might be a good base for a standard set of refactorings that
+can be done on Leo nodes.
+
+These are just my first thoughts.  Any comments, Amigos?
+
+&gt; This suggests, perhaps strongly, that it might be good to repackage
+&gt; 2to3 as a Leonine refactoring tool.  It's quite possible that 2to3 has
+&gt; already solved problems that I do not yet know even exist.
+
+This is being overly humble.  The leoInspect code is sound, because it
+is based on ASTs.  The getter interface is simple, powerful and good.
+If there are problems, we can deal with them using the simplified
+interface.  Wrapping 2to3 would negate all the advantages of
+leoInspect. </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
