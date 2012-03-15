@@ -119,6 +119,7 @@
 <v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
+<v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
 <v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
@@ -156,7 +157,6 @@
 <v t="mork.20041018204908.1"><vh>@file multifile.py</vh></v>
 <v t="ekr.20040331151007"><vh>@file niceNosent.py</vh></v>
 <v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
-<v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
@@ -164,8 +164,7 @@
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
-<v t="ekr.20060328125248"
-expanded="ekr.20060328125248.6,ekr.20061014075212,"><vh>@file mod_scripting.py</vh></v>
+<v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
@@ -202,23 +201,19 @@ expanded="ekr.20060328125248.6,ekr.20061014075212,"><vh>@file mod_scripting.py</
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
 <v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
 <v t="ekr.20061023141638"><vh>@url 'file:./../doc/leoDocs.leo#Users Guide--&gt;Basics--&gt;Customizing Leo'</vh></v>
-<v t="ekr.20061023141459"><vh>@url 'Plugins--&gt;UNL plugin--&gt;@file UNL.py'</vh></v>
 </v>
 </v>
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
-<v t="ekr.20060506070443.1"><vh>@file detect_urls.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
-<v t="EKR.20040517080555.2"
-expanded="EKR.20040517080555.3,"><vh>@file plugins_menu.py</vh></v>
+<v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 <v t="tbrown.20090119215428.2"></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 </v>
-<v t="ekr.20120309073748.9872"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>
@@ -449,7 +444,6 @@ To activate the rst3 plugin, do the following:
 - Check in the menu 'Edit' for item 'Write-Restructured-Text'.
 
 @color</t>
-<t tx="ekr.20061023141459"></t>
 <t tx="ekr.20061023141638"></t>
 <t tx="ekr.20061023142737"></t>
 <t tx="ekr.20061023142737.1"></t>
