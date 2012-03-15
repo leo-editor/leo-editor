@@ -188,31 +188,6 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@+node:ekr.20090815160535.5176: ** on_open_window (not used)
-# def on_open_window (tag,keywords):
-
-    # c = keywords.get('c')
-
-    # event = c.config.getString('vim_trigger_event') or 'icondclick1'
-
-    # if event.lower() != 'disable':
-        # g.registerHandler(event,open_in_vim)
-#@+node:EKR.20040517075715.11: ** open_in_vim (not used)
-# def open_in_vim (tag,keywords):
-
-    # if g.unitTesting: return
-    
-    # g.trace(keywords)
-
-    # c = keywords.get('c')
-    # p = keywords.get('p')
-    # p2 = keywords.get('old_p')
-    
-    # if tag.startswith('select') and p and p2 and p == p2:
-        # return
-
-    # if c:
-        # open_in_vim_helper(c)
 #@+node:ekr.20120315101404.9745: ** g.command('vim-open-node')
 @g.command('vim-open-node')
 def open_in_vim_command(event):

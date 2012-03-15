@@ -2,12 +2,10 @@
 #@+node:tbrown.20070322113635: * @file bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
-''' Supports @bookmarks nodes with url's in body text, adds pane to display them.
+''' Shows bookmarks in a pane.
 
-Below a node with @bookmarks in the title, double-clicking the headline of any
-node will attempt to open the url in the first line of the body-text. For lists
-of bookmarks (including UNLs) this gives a clean presentation with no '@url'
-markup repeated on every line etc.
+**Important**: Leo's core now supports the basic functions
+related to URL's and bookmarks.
 
 The bookmarks_show command will add a tab or pane (if free_layout is enabled)
 showing the bookmarks **in the current subtree** with unique colors. You can
@@ -46,14 +44,16 @@ if g.app.gui.guiName() == 'qt':
 #@+node:ekr.20100128073941.5371: ** init
 def init():
 
-    # g.registerHandler("icondclick1", onDClick1)
+    ok = bool(use_qt)
     
-    if use_qt:
+    if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
+    else:
+        g.es_print("Requires Qt GUI")
 
     g.plugin_signon(__name__)
 
-    return True
+    return ok
 #@+node:tbrown.20110712121053.19751: ** onCreate
 def onCreate(tag, keys):
     
@@ -62,35 +62,21 @@ def onCreate(tag, keys):
         BookMarkDisplayProvider(c)
     
     return
-#@+node:tbrown.20070322113635.4: ** onDClick1 (no longer used)
-def onDClick1 (tag,keywords):
-
-    c = keywords.get("c")
-    p = keywords.get("p")
-    bookmark = False
-    for nd in p.parents():
-        if '@bookmarks' in nd.h:
-            bookmark = True
-            break
-    if bookmark:
-        url = g.getUrlFromNode(p)
-        if url:
-            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                g.handleUrl(url,c=c,p=p)
-            g.doHook("@url2",c=c,p=p,v=p)
-#@+node:tbrown.20110712100955.39215: ** command bookmarks_show
+#@+node:tbrown.20110712100955.39215: ** g.command('bookmarks-show')
 @g.command('bookmarks_show')
 def bookmarks_show(event):
-    if use_qt:
-        bmd = BookMarkDisplay(event['c'])
-        
-        # Careful: we could be unit testing.
-        splitter = bmd.c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
-
-    else:
-        g.es("Requires Qt GUI")
+    
+    if not use_qt: return 
+   
+    bmd = BookMarkDisplay(event['c'])
+    
+    free_layout = g.loadOnePlugin('free_layout.py',verbose=True)
+    assert(free_layout)
+    
+    # Careful: we could be unit testing.
+    splitter = bmd.c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     
@@ -127,6 +113,9 @@ class BookMarkDisplay:
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text):
         """make a consistent light background color for text"""
+        
+        if g.isPython3:
+            text = g.toEncodedString(text,'utf-8')
         x = hashlib.md5(text).hexdigest()[-6:]
         x = tuple([int(x[2*i:2*i+2], 16)//4+int('bb',16) for i in range(3)])
         x = '%02x%02x%02x' % x
@@ -138,8 +127,24 @@ class BookMarkDisplay:
         if not p:
             return
         
-        return [(i.h, i.b.split('\n', 1)[0])
-                for i in p.subtree()]
+        # return [(i.h, i.b.split('\n', 1)[0])
+                # for i in p.subtree()]
+                
+        def strip(s):
+            if s.startswith('@url'):
+                s = s[4:]
+            return s.strip()
+
+        result,urls = [],[]
+        for p in p.subtree():
+            s = strip(g.splitLines(p.b)[0]) if p.b else ''
+            h = strip(p.h)
+            data = (h,s)
+            if s and g.isValidUrl(s) and data not in result and s not in urls:
+                result.append(data)
+                urls.append(s)
+
+        return result
     #@+node:tbrown.20110712100955.39217: *3* show_list
     def show_list(self, links):
         
@@ -161,13 +166,14 @@ class BookMarkDisplay:
             te.modifiers = event.modifiers()
             return prev(event)
         
-        te.mousePressEvent = capture_modifiers
+        # te.mousePressEvent = capture_modifiers
         
         def anchorClicked(url, c=self.c, p=p, te=te):
             url = str(url.toString())
-            if QtCore.Qt.ShiftModifier & te.modifiers:
-                sep = '\\' if '\\' in url else '/'
-                url = sep.join(url.split(sep)[:-1])
+            # g.trace(url,te)
+            # if QtCore.Qt.ShiftModifier & te.modifiers():
+                # sep = '\\' if '\\' in url else '/'
+                # url = sep.join(url.split(sep)[:-1])
             g.handleUrl(url,c=c,p=p)
         
         te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)

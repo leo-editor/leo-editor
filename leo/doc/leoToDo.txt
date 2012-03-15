@@ -11,11 +11,6 @@
 @language rest
 
 Finish docs.
-
-- no-clicks: disables clicks in headlines & body.
-
-
-
 .. @+node:ekr.20120228164039.10048: *3* Before 4.10 final
 The home page work is essential.  It's a good project to do while waiting.
 
