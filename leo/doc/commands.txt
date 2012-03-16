@@ -867,12 +867,13 @@ format like::
 
     1/30/2003 8:31:55
 .. @+node:EKR.20040524104904.137: *4* Reformatting paragraphs in body text
-The Reformat Paragraph command rearranges the words in a text paragraph to fill
-each line as full as possible, up to the @pagewidth setting. A paragraph is
-delimited by blank lines, Leo directives, and (of course) start and end of text
-in a node. The width of the line used by the reformatting operation is governed
-by @pagewidth and the indentation that would be applied to the node when
-Leo writes the file.
+The Reformat Paragraph command rearranges the words in a text
+paragraph to fill each line as full as possible, up to the \@pagewidth
+setting. A paragraph is delimited by blank lines, Leo directives, and
+(of course) start and end of text in a node. The width of the line
+used by the reformatting operation is governed by @pagewidth and the
+indentation that would be applied to the node when Leo writes the
+file.
 
 The command operates on the paragraph containing the insert cursor. If the
 insert cursor is on a blank line or directive, nothing happens. If the cursor is

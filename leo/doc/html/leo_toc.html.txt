@@ -33,6 +33,7 @@ Contents:
    unitTesting
    debuggers
    atShadow
+   leoInspect
    
    emacs
    IPythonBridge

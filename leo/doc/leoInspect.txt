@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20120315101404.14233: ** @rst html\leoInspect.html
-#####################
-leoInspect
-#####################
+#######################
+The leoInspect Module
+#######################
 
 This chapter discusses leoInspect, which provides answers to questions
 about Python source code such as:
@@ -38,17 +38,23 @@ such answers while debugging, or as documentation, or especially as
 the foundation for *fast* unit tests.
 
 leoInspect is, in essence, an elegant and easy-to-use front end for
-Python's AST (Abstract Syntax Tree) trees.  It provides access to
-all the information in an AST without having to know anything about
-the format of AST trees!  leoInspect does all the grunt work for you.
+Python's AST (Abstract Syntax Tree) trees. It provides access to all
+the information in an AST without having to know anything about the
+format of AST trees. leoInspect does all the grunt work for you.
+
+The leoInspect module is so elegant that it would be easy to
+underestimate either its importance or the work that lies behind it.
+The leoInspect module is *not* simply a wrapper for AST trees; it is a
+window into a richly connected set of semantic data built *from* AST
+trees. The simplicity of the leoInspect module could be called "third
+generation" simplicity. Several implementation Ahas lie behind it.
 
 .. contents::
     :depth: 2
 .. @+node:ekr.20120315101404.14243: *3* A query language
-In order to answer questions about text, we need some kind of query
-langauge. Mathematica's expressions inspired the design of the query
-language: simple and task oriented. All details in the background.
-leoInpect makes *Python* the query language! Let's see how.
+Mathematica's expressions inspired the design of the query language:
+simple and task oriented. All details in the background. leoInspect
+makes *Python* the query language! Let's see how.
 
 All queries start with a call to leoInspect.module::
 
@@ -64,7 +70,7 @@ For any context o, we can use **getters** to get lists of other contexts::
 
     aList = o.calls()      # All function/method calls in context o.
     aList = o.classes()    # All classes in context o.
-    aList = o.functions()  # All functsions in context o.
+    aList = o.functions()  # All functions in context o.
     aList = o.statements() # All the statements in context o.
     
 Assignments and calls are especially important for queries. The following
@@ -162,11 +168,11 @@ ivars.
 The o.format getter is an exception. It traverses o's AST to create
 the human-readable representation of o.
 
-In a remarkable collapse in complexity, InspectTraverser.do_Attriute
+In a remarkable collapse in complexity, InspectTraverser.do_Attribute
 uses the *formatting* code to compute the value of the attribute. This
 replaces complex AST-traversal code with a call to the formatter. This
 is one of the most clever refactorings I have ever discovered. For the
-gorey details behind this Aha, see `this post`_.
+gory details behind this Aha, see `this post`_.
 
 The InspectTraverser class is now so simple that it is now a bit hard
 to see what exactly it is doing. Most of the InspectTraverser class
@@ -243,7 +249,7 @@ Here is the code for f.do_Attribute::
 
 The AstFormatter.visit method is the crucial part of this design
 pattern. It returns a string that properly "flattens" what might be an
-arbitrarily complex tree. Here it is, slightly editied::
+arbitrarily complex tree. Here it is, slightly edited::
 
     def visit (self,tree,tag=None):
         kind = tree.__class__
