@@ -1,0 +1,319 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20120315101404.14225: * @file leoInspect.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  call_docutils=False
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20120315101404.14233: ** @rst html\leoInspect.html
+#####################
+leoInspect
+#####################
+
+This chapter discusses leoInspect, which provides answers to questions
+about Python source code such as:
+
+- Where are all assignments to 'w' in leoEditCommands.py?
+
+- Which of those assignments are "unusual" in some way?
+
+The leoInspect module grew out of a re-imagining of the new-pylint
+project, which has been a "hobby" project of mine for several years.
+Rather than attempting global "proofs" of difficult propositions, as
+new-pylint does, the leoInspect module answers specific questions
+about modules, functions, classes, methods and statements. We can use
+such answers while debugging, or as documentation, or especially as
+the foundation for *fast* unit tests.
+
+leoInspect is, in essence, an elegant and easy-to-use front end for
+Python's AST (Abstract Syntax Tree) trees.  It provides access to
+all the information in an AST without having to know anything about
+the format of AST trees!  leoInspect does all the grunt work for you.
+
+.. contents::
+    :depth: 2
+.. @+node:ekr.20120315101404.14243: *3* A query language
+In order to answer questions about text, we need some kind of query
+langauge. Mathematica's expressions inspired the design of the query
+language: simple and task oriented. All details in the background.
+leoInpect makes *Python* the query language! Let's see how.
+
+All queries start with a call to leoInspect.module::
+
+    import leo.core.leoInspect as inspect
+    o = inspect.module('leoApp.py')
+    
+The call to inspect.module creates a **query object** o representing
+all the data contained in the AST for leoApp.py. But this query object
+*also* represents a **context**, a module, class, function, method or
+statement.
+
+For any context o, we can use **getters** to get lists of other contexts::
+
+    aList = o.calls()      # All function/method calls in context o.
+    aList = o.classes()    # All classes in context o.
+    aList = o.functions()  # All functsions in context o.
+    aList = o.statements() # All the statements in context o.
+    
+Assignments and calls are especially important for queries. The following
+getters return the assignments related to some name s::
+
+    aList = o.assignments_to(s)
+    aList = o.assignments_using(s)
+    aList = o.calls_to(s)
+    aList = o.call_args_of(s)
+    
+The o.name getter returns the name of any module, class, method,
+function or var::
+
+    s = o.name()
+    
+The o.format getter returns a human-readable representation of a
+context's AST tree::
+
+    s = o.format()
+    
+These getters generally make it unnecessary to access AST trees
+directly: ASTs are merely part of the "plumbing" of the leoInspect
+module. However, the o.tree getter returns the actual AST tree if you
+really need it::
+
+    ast_tree = o.tree()
+
+Let's see how to create actual queries. Here is a script to discover
+all assignments to 'w' in leoEditCommands.py is::
+
+    import leo.core.leoInspect as inspect
+    m = inspect.module('leoEditCommands.py')
+    for a in m.assignments_to('w'):
+        print(a.format())
+        
+It is easy to "zero in" on particular classes or method using the
+o.name getter. The following script prints all assignments to the
+'files' ivar of the LoadManager class in leoApp.py::
+
+    import leo.core.leoInspect as inspect
+    m = inspect.module('leoApp.py')
+    for theClass in m.classes():
+        if theClass.name() == 'LoadManager':
+            for a in m.assignments_to('files'):
+                print(a.format())
+
+We have seen that the getters hide all the messy details of Python AST
+trees. This is a revolution in using AST trees!
+.. @+node:ekr.20120315101404.14258: *3* Comparing leoInspect and Pylint
+Could one create a lint-like programming using leoInspect? Perhaps,
+but much more work would be required. Indeed, pylint is an extremely
+capable program. It can make complex deductions that are presently far
+beyond leoInspect's capabilities.
+
+However, leoInspect is a supremely elegant front end. It might serve
+as the basis of more complex analysis. Multi-pass algorithms are often
+*faster* and more elegant than single-pass algorithms, so the "extra"
+overhead of the leoInspect prepass is probably not significant. What
+matters are the deductions that can be made using leoInspect.Context
+data.
+
+Speed is not an obstacle for a lint-like tool based on leoInspect.
+Indeed, the module getter creates *all* the context data in a very
+fast pass over the modules AST tree. It takes about 4.6 seconds to
+create the context data for all 34 of Leo's source files. Because
+getters are extremely fast, even complex queries will be fast. A
+multiple-pass query will typically take about 0.1 sec per pass. Using
+AstFormatter in the InspectTraverser class adds a negligible amount of
+time, less than 10% of the total tree-traversal time.
+.. @+node:ekr.20120316081721.14292: *3* Still to do
+The assignments_to, assignments_using and the new calls_to getters all
+specify a **pattern** to be matched against the the lhs of assignments
+(or against function names in the calls_to getter).  At present, the
+pattern must match as a plain word match, but it would be more natural
+to use regex matches.  That's coming.
+
+Three new getters would give leoInspect the ability to replace
+refactored code:
+
+- o.token_range: Returns pointers the list of tokens comprising o.
+
+- o.text: Returns o's source text (a string).
+
+- o.text_range: Returns the starting and ending offsets of the text in the file.
+
+These getters are non-trivial to do, but a reasonable design is in place.
+.. @+node:ekr.20120316081721.14278: *3* Theory of operation
+.. _`this post`: http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
+
+The module getter creates *all* the data used by the other getters.
+This data is a richly-linked set of Context objects. Getters are very
+fast because the getter of an object o merely returns one of o's
+ivars.
+
+The o.format getter is an exception. It traverses o's AST to create
+the human-readable representation of o.
+
+In a remarkable collapse in complexity, InspectTraverser.do_Attriute
+uses the *formatting* code to compute the value of the attribute. This
+replaces complex AST-traversal code with a call to the formatter. This
+is one of the most clever refactorings I have ever discovered. For the
+gorey details behind this Aha, see `this post`_.
+
+The InspectTraverser class is now so simple that it is now a bit hard
+to see what exactly it is doing. Most of the InspectTraverser class
+methods are simple variants of the base AstTraverser class. BTW,
+making InspectTraverser class be a subclass of AstFormatter would be
+bad style. We want the InspectTraverser class to *have* a formatter,
+not *be* a formatter.
+.. @+node:ekr.20120316081721.14295: *4* Getters
+Getters all follow roughly the same pattern.  For example::
+
+    def assignments_to (self,s,all=True):
+        
+        format,result = self.formatter.format,[]
+    
+        for assn in self.assignments(all=all):
+            tree = assn.tree()
+            kind = self.ast_kind(tree)
+            if kind == 'Assign':
+                for target in tree.targets:
+                    lhs = format(target)
+                    if s == lhs:
+                        result.append(assn)
+                        break
+            else:
+                assert kind == 'AugAssign',kind
+                lhs = format(tree.target)
+                if s == lhs:
+                    result.append(assn)
+    
+        return result
+        
+This is AST-traversal code. Indeed, the tree getter returns an AST,
+and ast_kind is an internal getter that returns the AST type for an
+AST node.
+
+This code is elegant. It uses the assignments getter to get the list
+of all assignments in this context and all contained (descendant)
+contexts. All public getters are members of the base Context class, so
+this code code "just works" for *all* contexts. Furthermore,
+assignments are StatementContext objects, so they "just work" as
+elements returned by the getter. Comparing this code with the code
+found in pylint shows how elegant this code truly is.
+
+No simpler code is possible. AST trees for assignments are a bit
+different from AST trees for augmented assignments. Once the type of
+assignment is identified, the code simply *formats* the left hand side
+(lhs) of the assignment, and compares s with the lhs. If there is a
+match, the entire assignment is appended to the result.
+.. @+node:ekr.20120315101404.14256: *4* The AstFormatter class
+The AstFormatter class is a crucial part of the leoInspect module. It
+is elegant enough that it might be difficult to understand. The basic
+coding pattern used throughout the formatter class is simple. The code
+that handles each construct does the following:
+
+A. Calls self.visit for interior contexts to get the *formatted*
+   string for those contexts.
+
+B. Computes a result string s.
+
+C. Calls self.append(s) to "return" the result.
+
+Let's look at AstFormatter.do_Attribute. Attributes can be complex.
+For example, the following would be represented at the top level by an
+AST Attribute node::
+
+    a.f(...)[1:g(...)].c.e
+
+Here is the code for f.do_Attribute::
+
+    def do_Attribute(self,tree,tag=''):
+        name = tree.attr
+        expr = self.visit(tree.value,'attribute value')
+        self.append('%s.%s' % (expr,name))
+
+The AstFormatter.visit method is the crucial part of this design
+pattern. It returns a string that properly "flattens" what might be an
+arbitrarily complex tree. Here it is, slightly editied::
+
+    def visit (self,tree,tag=None):
+        kind = tree.__class__
+        f = self.dispatch_table.get(kind)
+        if f:
+            self.push()
+            f(tree,tag)
+            val = self.pop()
+            return val
+        else:
+            g.trace('bad ast type',kind)
+            return None
+
+The visit method calls self.push() to save the present string being
+"accumulated", determines the proper function f to call using the
+dispatch table, visits the node by calling f and then calls
+self.pop().
+
+    def push (self):
+        self.stack.append(self.result)
+        self.result = []
+
+    def pop (self):
+        val = ''.join(self.result)
+        self.result = self.stack.pop()
+        return val
+
+The result from the "interior" call to f is ''.join(self.result).  The
+pop method computes this result and *then* pops the stack, restoring
+the previous value of self.result.
+
+The final piece of the puzzle is::
+
+    def append(self,s):
+        self.result.append(s)
+
+**Important**: the patten allows multiple calls to self.append in a
+single method.  The do_arguments method shows how flexible this pattern is.
+.. @+node:ekr.20120315101404.14264: *4* Computing token ranges
+This section describes the how the unfinished o.token_range getter will work.
+
+There are two parts to the problem...
+.. @+node:ekr.20120315101404.14265: *5* Token-info prepass
+For each node N of a module's tree, we want to inject the following
+two new ivars:
+
+- N.end_lineno: the line number of the last character of the token.
+
+- N.end_col_offset: the (byte) offset of the last character of the token.
+
+**Important**: tree structure is irrelevant when computing these fields: we
+simply want a **sorted** list of (N.lineno,No.col_offset, N) tuples!
+
+The prepass will use ast.walk(root), to generate the list.  After
+sorting the list, the prepass will inject inject N.end_lineno and
+N.end_col_offset ivars into each node N by stepping through the list.
+The ending values of the previous node on the list are the the same as
+the beginning values of the next node on the list.
+
+This prepass need only be done once per module.
+.. @+node:ekr.20120315101404.14266: *5* token_range
+To compute token_range for a *particular* N, we want to discover
+values M.end_lineno and M.end_col_offset for M, the **last** token in
+N's entire tree.
+
+token_range will do the prepass on the modules tree if necessary.
+token_range will then call ast.walk(N) to discover all of N's nodes,
+sort the list, and return the last element of the list!
+
+token_range will, by its design, include *all* text in the range,
+including comments.
+.. @-all
+.. @-leo
