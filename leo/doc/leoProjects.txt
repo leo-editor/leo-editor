@@ -735,11 +735,13 @@ if not g.app.isExternalUnitTest:
 #@+node:ekr.20111116103733.9818: *3* LeoInspect tests
 #@+node:ekr.20111116103733.10672: *4* @test leoInspect with multiple files
 import leo.core.leoInspect as inspect
-
 import os
+import time
 
 << define old_s >>
 << define s >>
+
+@others
 
 g.cls()
 
@@ -747,7 +749,7 @@ aList = (
     'leoAtFile.py',
     'leoEditCommands.py',
 )
-inspect.test(c,aList,print_stats=False,s=None,print_times=True)
+test(files=aList,print_stats=False,s=None,print_times=True)
 #@+node:ekr.20111116103733.10451: *5* << define old_s >>
 # import leo.core.leoGlobals
 # import leo.core.leoGlobals as g
@@ -834,20 +836,20 @@ def test(c):
 s = g.adjustTripleString(s,-4)
 # print(s)
 #@+node:ekr.20111116103733.10450: *5* test
-def test(c,files,print_stats=True,s=None,print_times=True):
+def test(files,print_stats=True,s=None,print_times=True):
    
     t1 = time.clock()
-    sd = SemanticData(controller=None)
+    sd = inspect.SemanticData(controller=None)
 
     if s: # Use test string.
         fn = '<test file>'
-        InspectTraverser(c,fn,sd,s).traverse(s)
+        inspect.InspectTraverser(fn,sd).traverse(s)
     else:
         for fn in files:
             print(g.shortFileName(fn))
-            s = LeoCoreFiles().get_source(fn)
+            s = inspect.LeoCoreFiles().get_source(fn)
             if s:
-                InspectTraverser(c,fn,sd,s).traverse(s)
+                inspect.InspectTraverser(fn,sd).traverse(s)
             else:
                 print('file not found: %s' % (fn))
            
@@ -858,25 +860,26 @@ def test(c,files,print_stats=True,s=None,print_times=True):
 #@+node:ekr.20111116103733.10449: *4* @test leoInspect.module.classes
 import leo.core.leoInspect as inspect
 
-dump_modules = False
+dump_classes = False
 print_modules = True
 print_functions = False
 print_stats = False
-print_times = True
+print_times = False
 
-if dump_modules or print_stats:
-    g.cls()
+# if dump_modules or print_stats:
+    # g.cls()
 
-m = inspect.module(c,'leoEditCommands.py',sd=None,
+m = inspect.module(fn='leoApp.py',sd=None,
     print_stats=print_stats,print_times=print_times)
     
+print(m)
 for o in m.classes():
-    if dump_modules:
+    if dump_classes:
         o.dump(verbose=False)
     if print_modules:
         print(o)
     if print_functions:
-        for f in o.functions:
+        for f in o.functions():
             print('  %s' % f)
 #@+node:ekr.20111116161118.10212: *4* @test leoInspect.module.classes 2
 import leo.core.leoInspect as inspect

@@ -3355,9 +3355,12 @@ class DefContext (Context):
 
         return 'def(%s)' % (self._tree.name)
         
-    def name (self):
-        kind = g.choose(self.class_context,'method','function')
-        return '%s %s' % (kind,self._tree.name)
+    def name (self,verbose=False):
+        if verbose:
+            kind = 'method' if self.class_context else 'function'
+            return '%s %s' % (kind,self._tree.name)
+        else:
+            return self._tree.name
         
     __str__ = __repr__
 #@+node:ekr.20111116103733.10416: *3* class ForContext
