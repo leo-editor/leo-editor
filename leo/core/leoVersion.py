@@ -27,7 +27,7 @@ except ImportError:
 
 static_version = 4900
 static_date = "2012-01-08"
-version = "4.9.1 devel"
+version = "4.10 b1"
 
 theDir = os.path.dirname(__file__)
 path = os.path.join(theDir,'..','..','.bzr','branch','last-revision')
