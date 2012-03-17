@@ -26,7 +26,7 @@ except ImportError:
 #@-<< imports >>
 
 static_version = 4900
-static_date = "2012-01-08"
+static_date = "2012-03-19"
 version = "4.10 b1"
 
 theDir = os.path.dirname(__file__)

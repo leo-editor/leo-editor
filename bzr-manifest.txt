@@ -1,8 +1,12 @@
+
+c:\leo.repo\trunk>c:\apps\bazaar\bzr.exe ls -V -R 
+.bzrignore
 INSTALL.TXT
 LICENSE.TXT
 Makefile
 PKG-INFO.TXT
 README.TXT
+bzr-manifest.txt
 launchLeo.py
 leo/
 leo/Icons/
@@ -934,6 +938,7 @@ leo/Icons/box15.bmp
 leo/Icons/boxes.bmp
 leo/Icons/bubbles.svg
 leo/Icons/cleo/
+leo/Icons/cleo/LeoTaskTab.png
 leo/Icons/cleo/bngblk.png
 leo/Icons/cleo/bullet.png
 leo/Icons/cleo/chkblk.png
@@ -1012,6 +1017,7 @@ leo/core/
 leo/core/LeoPyRef.leo
 leo/core/__init__.py
 leo/core/buttons.txt
+leo/core/bzr_version.py
 leo/core/format-code.py
 leo/core/key-handling-notes.txt
 leo/core/leoApp.py
@@ -1033,11 +1039,11 @@ leo/core/leoFrame.py
 leo/core/leoGlobals.py
 leo/core/leoGui.py
 leo/core/leoImport.py
+leo/core/leoInspect.py
 leo/core/leoKeys.py
 leo/core/leoMenu.py
 leo/core/leoNodes.py
 leo/core/leoPlugins.py
-leo/core/leoProjects.txt
 leo/core/leoPymacs.py
 leo/core/leoRst.py
 leo/core/leoShadow.py
@@ -1045,11 +1051,6 @@ leo/core/leoTangle.py
 leo/core/leoTest.py
 leo/core/leoUndo.py
 leo/core/leoVersion.py
-leo/core/leo_Debugger.py
-leo/core/leo_FileList.py
-leo/core/leo_RemoteDebugger.py
-leo/core/leo_Shell.py
-leo/core/leo_run.py
 leo/core/runLeo.py
 leo/core/test_core.txt
 leo/dist/
@@ -1072,6 +1073,7 @@ leo/doc/default.css
 leo/doc/design.txt
 leo/doc/directives.txt
 leo/doc/doc-startup.txt
+leo/doc/download.txt
 leo/doc/emacs.txt
 leo/doc/frontMatter.txt
 leo/doc/glossary.txt
@@ -1114,7 +1116,9 @@ leo/doc/inkscape-template.svg
 leo/doc/installing.txt
 leo/doc/intro.txt
 leo/doc/leoBridge.txt
+leo/doc/leoInspect.txt
 leo/doc/leoNotes.txt
+leo/doc/leoProjects.txt
 leo/doc/leoSlideShows.leo
 leo/doc/leoToDo.txt
 leo/doc/leoToDoLater.txt
@@ -1156,7 +1160,9 @@ leo/extensions/testExtension.py
 leo/external/
 leo/external/__init__.py
 leo/external/codewise.py
+leo/external/edb.py
 leo/external/ipy_leo.py
+leo/external/leoSAGlobals.py
 leo/external/leosax.py
 leo/external/lproto.py
 leo/external/stringlist.py
@@ -1488,6 +1494,7 @@ leo/plugins/attrib_edit.py
 leo/plugins/backlink.py
 leo/plugins/baseNativeTree.py
 leo/plugins/bibtex.py
+leo/plugins/bigdash.py
 leo/plugins/bookmarks.py
 leo/plugins/bzr_qcommands.py
 leo/plugins/chapter_hoist.py
@@ -1499,7 +1506,6 @@ leo/plugins/cursesGui.py
 leo/plugins/datenodes.py
 leo/plugins/debugger_pudb.py
 leo/plugins/default
-leo/plugins/detect_urls.py
 leo/plugins/dragdropgoodies.py
 leo/plugins/dtest.py
 leo/plugins/dump_globals.py
@@ -1531,7 +1537,6 @@ leo/plugins/ironPythonGui.py
 leo/plugins/jinjarender.py
 leo/plugins/keys.css
 leo/plugins/leoGuiPluginsRef.leo
-leo/plugins/leoOPML.leo
 leo/plugins/leoOPML.py
 leo/plugins/leoPluginNotes.txt
 leo/plugins/leoPluginsRef.leo
@@ -1543,6 +1548,7 @@ leo/plugins/leo_to_rtf.ini
 leo/plugins/leo_to_rtf.py
 leo/plugins/leocursor.py
 leo/plugins/leofeeds.py
+leo/plugins/leofts.py
 leo/plugins/leomail.py
 leo/plugins/leoremote.py
 leo/plugins/leoscreen.py
@@ -1605,7 +1611,6 @@ leo/plugins/run_nodes.py
 leo/plugins/screenshots.py
 leo/plugins/script_io_to_body.py
 leo/plugins/scripts_menu.py
-leo/plugins/scrolledmessage.py
 leo/plugins/setHomeDirectory.py
 leo/plugins/slideshow.py
 leo/plugins/spellpyx.txt
@@ -1642,6 +1647,7 @@ leo/plugins/zenity_file_dialogs.py
 leo/scripts/
 leo/scripts/LinixInstall.py
 leo/scripts/convert_to_shadow.py
+leo/scripts/gen_blender_docs.py
 leo/scripts/leo
 leo/scripts/leoFindScript.py
 leo/scripts/leoScripts.txt
@@ -1667,6 +1673,7 @@ leo/test/unitTestStartup.txt
 leo/test/unittest/
 leo/test/unittest/at-asis-test.py
 leo/test/unittest/at-auto-line-number-test.py
+leo/test/unittest/at-auto-section-ref-test.py
 leo/test/unittest/at-auto-test.py
 leo/test/unittest/at-file-line-number-test.py
 leo/test/unittest/at-file-test.leo
@@ -1681,6 +1688,7 @@ leo/test/unittest/at-path-test3.py
 leo/test/unittest/at-root-test.py
 leo/test/unittest/at-shadow-line-number-test.py
 leo/test/unittest/at-shadow-test.py
+leo/test/unittest/at-shadow-unlink-clones.py
 leo/test/unittest/at-thin-html-test.html
 leo/test/unittest/at-thin-line-number-test.py
 leo/test/unittest/at-thin-test.py
@@ -1707,6 +1715,7 @@ leo/test/unittest/perfectImport/unitTestFile.py
 leo/test/unittest/read_test.py
 leo/test/unittest/replaceFileWithStringTestFile.py
 leo/test/unittest/shadowWriteTest-2.py
+leo/test/unittest/tex-error.tex
 leo/www/
 leo/www/default.css
 leo/www/index.html
@@ -1717,3 +1726,4 @@ leo_to_html.xsl
 profileLeo.py
 pylint-leo.bat
 pylint-leo.py
+setup.py

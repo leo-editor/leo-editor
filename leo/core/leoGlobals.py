@@ -4483,7 +4483,7 @@ def handleUrl(url,c=None,p=None):
                 leo_path = urlparse.unquote(leo_path)
                 g.os_startfile(leo_path)
             else:
-                 g.es("File '%s' does not exist"%leo_path)
+                g.es("File '%s' does not exist"%leo_path)
         else:
             import webbrowser
     
