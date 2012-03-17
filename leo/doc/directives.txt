@@ -242,11 +242,13 @@ a problem: Leo 4.7 can read all external files written by Leo 4.6.
 The \@nosent <filename> creates an external file without sentinel lines.
 
 When writing an \@nosent tree, Leo expands section references, \@all and
-\@others directives, but Leo writes no sentinels to the external file. Thus, Leo
-can not update \@nosent trees from changes made to the external file.
+\@others directives, but Leo writes no sentinels to the external file.
+Thus, Leo can not update \@nosent trees from changes made to the external
+file. However, \@nosent trees do have their uses: unlike \@auto trees,
+cloned nodes *are* valid in \@nosent trees.
 
-When reading an \@nosent node, Leo does *not* read the external file. Instead, all the
-data in the \@nosent tree is stored in the .leo file.
+When reading an \@nosent node, Leo does *not* read the external file.
+Instead, all the data in the \@nosent tree is stored in the .leo file.
 
 **Note**: \@auto or \@shadow are usually better choices than \@nosent for
 creating external files without sentinels.

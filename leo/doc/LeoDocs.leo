@@ -539,7 +539,6 @@
 </v>
 <v t="ekr.20120229094652.15173"><vh>Update docs</vh>
 <v t="ekr.20120314095341.14215"><vh>Discuss url's, bookmarks and ctrl-clicks</vh></v>
-<v t="ekr.20120229094652.15096"><vh>Document new organization for @command and @button nodes</vh></v>
 <v t="ekr.20120229094652.15100"><vh>revise autocompletion docs based on recent posts</vh>
 <v t="ekr.20120229094652.15102"><vh>Creating ctags data</vh></v>
 <v t="ekr.20120229094652.15103"><vh>Using Leo's autocompleter (outline form)</vh>
@@ -572,7 +571,6 @@
 <v t="ekr.20120229094652.15152"><vh>All about clone conflicts</vh></v>
 <v t="ekr.20120229094652.15148"><vh>BibTeX citations from Leo</vh></v>
 <v t="ekr.20120229094652.19496"><vh>Bug 905276: explain how to clone multiple nodes at once</vh></v>
-<v t="ekr.20120313134250.14220"><vh>Improve docs for @nosent</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2859,29 +2857,6 @@ When I am satisfied with the @test node, I can leave it where it is
 
 The energy difference between weightless and heavy is astounding.  Try
 the new way: you will surely like it. 
-</t>
-<t tx="ekr.20120229094652.15096">Recent revs to to the trunk complete, with perhaps one or two small
-additions to come, a grand redesign of all of Leo's @command/@button
-nodes:
-
-- Significant @command nodes now appear in:
-
-   leoSettings.leo#@settings--&gt;Common @command nodes
-   --&gt;@commands--&gt;@ignore
-
-That is, they are define as common global @command nodes, but they
-are ignored.  Move them to myLeoSettings.leo as needed.
-
-- @buttons appear only local to specific files.  See leoSettings.leo
-for check buttons and LeoDocs.leo for various preview buttons.
-
-In other words, the new org uses @command for global scripts and
-@button for local scripts.  This makes sense for two reasons.  First,
-we can't use @button for global scripts because that would overwhelm
-the icon area.  Second, using @button for local scripts draws
-attention to scripts that only make sense in a local context.  It's
-very effect.
-
 </t>
 <t tx="ekr.20120229094652.15100">Overview of the code
 ====================
@@ -5456,22 +5431,6 @@ Caveats:
 - If the document is not in currently active tab, the navigation is
 done "in the background". Correct implementation would be to activate
 the tab in order to bring attention to it. 
-</t>
-<t tx="ekr.20120313134250.14220">The docs on @ &lt;file&gt; varieties somewhat deprecate @nosent.
-
-it would be useful IMO to point out that they are the only
-way to write out non-sentinel files "one way" AND be able to
-use outlining, clones etc.
-
-Possibly a useful way to **output** cloned nodes safely to
-multiple files, as long as **at most only one** location is
-reading any given node into the .leo file. Supplement to the
-"@all" method having lower priority method for avoiding
-"clone wars" data loss - all this paragraph needing more
-thorough thinking / testing etc before being written up.
-
-But in the meantime at least don't imply that @nosent
-doesn't have its uses.
 </t>
 <t tx="ekr.20120313134250.14232">The open_with plugin no longer exists. Support for the
 open-with command is part of Leo's core.</t>
