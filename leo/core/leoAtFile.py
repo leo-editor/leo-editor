@@ -988,7 +988,8 @@ class atFile:
                 at.error('invalid @shadow private file',fileName)
             else:
                 at.error('can not read 3.x derived file',fileName)
-                g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+                # g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+                g.es("Please use Leo's import command to read the file")
                 g.trace('root',root and root.h,fileName)
 
         if root:
