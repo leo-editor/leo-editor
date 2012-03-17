@@ -93,11 +93,10 @@ class AstTraverser(object):
             int: self.do_int,
             str: self.do_str,
             a.alias: self.do_alias,
-            a.arg: self.do_arg,
+            # a.arg: self.do_arg,
+                # Python 3.x only.
             a.arguments: self.do_arguments,
             a.comprehension: self.do_comprehension,
-            # a.id: self.do_id,
-            # a.keywords: self.do_Keywords,
             a.keyword: self.do_Keyword,
             a.Add: self.do_Add,
             a.And: self.do_And,
@@ -124,7 +123,8 @@ class AstTraverser(object):
             a.Ellipsis: self.do_Ellipsis,
             a.Eq: self.do_Eq,
             a.ExceptHandler: self.do_ExceptHandler,
-            ### a.Exec: self.do_Exec,
+            # a.Exec: self.do_Exec,
+                # Python 2.x only.
             a.Expr: self.do_Expr,
             a.Expression: self.do_Expression,
             a.ExtSlice : self.do_ExtSlice ,
@@ -164,10 +164,12 @@ class AstTraverser(object):
             a.Param: self.do_Param,
             a.Pass: self.do_Pass,
             a.Pow: self.do_Pow,
-            ### a.Print: self.do_Print,
+            # a.Print: self.do_Print,
+                # Python 2.x only.
             a.RShift: self.do_RShift,
             a.Raise: self.do_Raise,
-            ### a.Repr: self.do_Repr,
+            # a.Repr: self.do_Repr,
+                # Python 2.x only.
             a.Return: self.do_Return,
             a.Slice : self.do_Slice ,
             a.Store: self.do_Store,
@@ -185,12 +187,15 @@ class AstTraverser(object):
             a.With: self.do_With,
             a.Yield: self.do_Yield,
         }
-
-        if not g.isPython3:
-            d [bool] = self.do_bool
-            d [a.Exec] = self.do_Exec
+        
+        if g.isPython3:
+            d [a.arg]   = self.do_arg
+            d [a.Bytes] = self.do_Bytes
+        else:
+            d [bool]    = self.do_bool
+            d [a.Exec]  = self.do_Exec
             d [a.Print] = self.do_Print
-            d [a.Repr] = self.do_Repr
+            d [a.Repr]  = self.do_Repr
     #@+node:ekr.20111116103733.10283: *3*  a.Do-nothings
     # Don't delete these. They might be useful in a subclass.
     if 0:
@@ -210,6 +215,7 @@ class AstTraverser(object):
         def do_BitXor(self,tree,tag=''): pass
         def do_BoolOp(self,tree,tag=''): pass
         def do_Break(self,tree,tag=''): pass
+        def do_Bytes(self,tree,tag=''): pass
         def do_Call(self,tree,tag=''): pass
         def do_ClassDef(self,tree,tag=''): pass
         def do_Compare(self,tree,tag=''): pass
@@ -447,6 +453,10 @@ class AstTraverser(object):
 
     # Python 2.x only.
     def do_bool(self,tree,tag=''):
+        pass
+        
+    # Python 3.x only.
+    def do_Bytes(self,tree,tag=''):
         pass
 
     def do_Call(self,tree,tag=''):
@@ -1816,7 +1826,13 @@ class AstFormatter (AstTraverser):
     #@+node:ekr.20111117031039.10557: *4* formatter:simple operands
     # Python 2.x only.
     def do_bool(self,tree,tag=''):
-        g.trace(tree)
+        pass
+        # g.trace(tree)
+        
+    # Python 3.x only.
+    def do_Bytes(self,tree,tag=''):
+        assert g.isPython3
+        self.append(str(tree.s))
 
     def do_int (self,s,tag=''):
         self.append(s)
@@ -2200,6 +2216,7 @@ class InspectTraverser (AstTraverser):
         
     # do_Attribute
     do_bool         = format_tree
+    do_Bytes        = format_tree
     do_Call         = format_tree
     do_comprehension= format_tree
     do_Dict         = format_tree

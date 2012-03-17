@@ -638,9 +638,6 @@
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
-</v>
-<v t="ekr.20091230081322.1919"></v>
-<v t="ekr.20120311072228.2716"><vh>@url file://../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
 <v t="ekr.20120311074029.2727"><vh>URL's</vh>
 <v t="ekr.20120312075951.2740"><vh>@url file://{{c.openDirectory}}/../doc/LeoDocs.leo</vh></v>
 <v t="ekr.20120311074029.2728"><vh>@url file://C:/prog/test.sh</vh></v>
@@ -653,7 +650,7 @@
 <v t="ekr.20120311074029.2735"><vh>@url file://~/ekr.html</vh></v>
 <v t="ekr.20120311074029.2736"><vh>@url file://c:/users/edreamleo/ekr.html</vh></v>
 </v>
-<v t="ekr.20120312064707.2737"><vh>test </vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -954,7 +951,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8538,7 +8535,6 @@ timer.start(0)
 <t tx="ekr.20110526180653.2467"></t>
 <t tx="ekr.20110526180653.2468"></t>
 <t tx="ekr.20111020134534.2594"></t>
-<t tx="ekr.20120311072228.2716"></t>
 <t tx="ekr.20120311074029.2727"></t>
 <t tx="ekr.20120311074029.2728"></t>
 <t tx="ekr.20120311074029.2729"></t>
@@ -8549,8 +8545,6 @@ timer.start(0)
 <t tx="ekr.20120311074029.2734"></t>
 <t tx="ekr.20120311074029.2735"></t>
 <t tx="ekr.20120311074029.2736"></t>
-<t tx="ekr.20120312064707.2737">url=r'file://../doc/LeoDocs.leo#Leo 4.10 Release notes'
-g.handleUrl(c,p,url)</t>
 <t tx="ekr.20120312075951.2740">print(c.openDirectory)</t>
 </tnodes>
 </leo_file>

@@ -987,7 +987,7 @@ start_time = time.clock()
 
 count = 0
 for fn in inspect.LeoCoreFiles().files:
-    # print(fn)
+    print(fn)
     m = inspect.module(fn,sd=sd)
     count += 1
 
