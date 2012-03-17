@@ -4474,27 +4474,26 @@ def handleUrl(url,c=None,p=None):
                         c2.bringToFront()
                         return
 
-        isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
-
-        if not isHtml and scheme in ('', 'file'):
-            if os.path.exists(leo_path):
+        # isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
+        
+        # Use g.os_startfile for *all* files.
+        if scheme in ('', 'file'):
+            if g.os_path_exists(leo_path):
                 if trace: g.trace('g.os_startfile(%s)' % (leo_path))
                 leo_path = urlparse.unquote(leo_path)
                 g.os_startfile(leo_path)
-                return
-            if scheme == 'file':
-                g.es("File '%s' does not exist"%leo_path)
-                return
-            
-        import webbrowser
-
-        if trace: g.trace('webbrowser.open(%s)' % (url))
-        if g.unitTesting:
-            g.app.unitTestDict['browser']=url
+            else:
+                 g.es("File '%s' does not exist"%leo_path)
         else:
-            # Mozilla throws a weird exception, then opens the file!
-            try: webbrowser.open(url)
-            except: pass
+            import webbrowser
+    
+            if trace: g.trace('webbrowser.open(%s)' % (url))
+            if g.unitTesting:
+                g.app.unitTestDict['browser']=url
+            else:
+                # Mozilla throws a weird exception, then opens the file!
+                try: webbrowser.open(url)
+                except: pass
         
     except:
         g.es("exception opening",leo_path)
