@@ -391,6 +391,29 @@ If the merge goes well (it usually does), I do this to resolve the conflict::
 
     tr
     b pull
+.. @+node:ekr.20120229094652.15152: *4* How does Leo handle clone conflicts?
+Some people seem to think that it is difficult to understand how Leo
+handles "clone wars": differing values for a cloned nodes that appear in
+several external files. That's not true. The rule is::
+
+    **The last clone that Leo reads wins.**
+
+That is, for any cloned node C, Leo takes the value of C.h and C.b to
+be the values specified by the last copy that Leo reads.
+
+There is only one complication::
+
+    **Leo reads the entire outline before reading any external files.**
+
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value for C
+in x.py or y.py, depending on which @<file> node appears later in the
+outline.
+
+**Note**: Whenever Leo detects multiple values for C when opening an
+outline, Leo creates a "Recovered nodes" tree. This tree contains all the
+various values for C, nicely formatted so that it is easy to determine
+where the differences are.
+
 .. @+node:ekr.20101025080245.6084: *3* Leo in Shared environments
 .. @+node:ekr.20050830115714.12: *4* How should I use Leo with bzr/git/hg/svn/cvs?
 Using @file trees can eliminate most problems with using Leo in cooperative
@@ -962,6 +985,27 @@ disable scripts. There is no need for @button. To see the list of your
 Similarly to see the list of your \@command nodes, type::
 
     <alt-x>@b<tab>
+.. @+node:ekr.20120229094652.15148: *4* How can I use BibTeX citations from Leo?
+.. _`this posting about BibTeX citations`: http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786/9c2a298049f4f01c
+
+.. _`raw-data`: http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through
+
+When using LaTeX and BibTeX, I would like to use inside of Leo a kind of
+LaTeX-inline-markup, that after generation of the RsT file through Sphinx
+as well as after running of "make latex", generate a LaTeX file containing
+the citation call of the form \cite{CITBook001} as described in a file
+*.bib. Is there a way to have Leo/Sphinx/RsT generate the inline raw latex
+syntax?
+
+Use the docutils `raw-data`_ syntax. Examples::
+
+    .. role:: raw-role(raw)
+      :format: html latex
+    .. raw:: latex
+      \bibliographystyle{acm}
+      \bibliography{myBibliography}
+      
+For more details, see `this posting about BibTeX citations`_.
 .. @+node:ekr.20050830115714.76: *3* Trouble shooting
 .. @+node:ekr.20090130144433.1: *4* How do I get help?
 All questions are welcome at http://groups.google.com/group/leo-editor

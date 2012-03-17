@@ -81,7 +81,8 @@
 </v>
 <v t="ekr.20101025080245.5795"><vh>Basics</vh>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20100805165051.7151"><vh>@file FAQ.txt</vh></v>
+<v t="ekr.20100805165051.7151"
+expanded="ekr.20050830115714,ekr.20050830115714.118,"><vh>@file FAQ.txt</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
 <v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>
@@ -538,7 +539,6 @@
 </v>
 </v>
 <v t="ekr.20120229094652.15173"><vh>Update docs</vh>
-<v t="ekr.20120314095341.14215"><vh>Discuss url's, bookmarks and ctrl-clicks</vh></v>
 <v t="ekr.20120229094652.15100"><vh>revise autocompletion docs based on recent posts</vh>
 <v t="ekr.20120229094652.15102"><vh>Creating ctags data</vh></v>
 <v t="ekr.20120229094652.15103"><vh>Using Leo's autocompleter (outline form)</vh>
@@ -567,9 +567,8 @@
 <v t="ekr.20120229094652.15123"><vh>Existing docs</vh></v>
 </v>
 </v>
-<v t="ekr.20120229094652.15152"><vh>All about clone conflicts</vh></v>
-<v t="ekr.20120229094652.15148"><vh>BibTeX citations from Leo</vh></v>
-<v t="ekr.20120229094652.19496"><vh>Bug 905276: explain how to clone multiple nodes at once</vh></v>
+<v t="ekr.20120314095341.14215"><vh>Discuss url's, bookmarks and ctrl-clicks</vh></v>
+<v t="ekr.20120317150916.6165"><vh>Add default key bindings to the docs</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4199,71 +4198,6 @@ complexities are fresh in my mind.
 </t>
 <t tx="ekr.20120229094652.15147">End going to only physical line and not to the logical (wrapped) one)... 
 </t>
-<t tx="ekr.20120229094652.15148">http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786
-
-Currently I am using Leo as an outliner for the elaboration of
-documents with LaTeX. For this, I work with @rst nodes and Sphinx. It
-works really wonderful.
-
-When using citations, Sphinx and RsT offer a certain syntax that, as
-far as I have understood, does allow only for the generation of
-"simple", Leo-self-contained citation references (inside of say a "Leo
-References Section" node).
-
-So I use a citation of the form   [CITBook001]_ inline in the text.
-Somewhere else in the same Leo outline I have the corresponding
-description as:
-
-.. [CITBook001] A citation as well-known
-
-When using LaTeX and BibTeX, I would like to use inside of Leo a kind
-of LaTeX-inline-markup, that after generation of the RsT file through
-Sphinx as well as after  running of "make latex", it generates a LaTeX
-file containing the citation call of the form \cite{CITBook001} as
-described in a file *.bib.  The only way I follow today is the later
-editing by hand of the LaTeX file. This is of course not the best way.
-How to convince Leo/Sphinx/RsT to generate the inline raw latex
-syntax? It could be very simple, but ... I haven not been able to see
-it.
-
-Any hints? 
-
-=====
-
-&gt; How to convince Leo/Sphinx/RsT to generate the inline raw latex
-&gt; syntax?
-
-http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data...
-
-?
-
-Cheers -Terry 
-
-=====
-
-I followed the recommendations of Terry. It was much easier
-as I thought! Here a summary of the use of custom roles in
-Leo to generate LaTeX "inline markup" from Leo:
-
-+ @ rst-no head Defining the custom role, here applicable to html and
-latex syntax
-   .. role:: raw-role(raw)
-      :format: html latex
-
-+ @A document section
-   This is my text including an example of inline markup for
-generating :raw-role:`\LaTeX\` from Leo. For more details see
-:raw-role:`\cite{rstDocumentation}`. Of course, my bib database below will
-describe this citation with plenty of details.
-
-+ @rst-no-head Including the bib database
-   .. raw:: latex
-
-      \bibliographystyle{acm}
-      \bibliography{myBibliography}
-
-It worked really fine! 
-</t>
 <t tx="ekr.20120229094652.15149">http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
 
 &gt; Here's a one line @button node you can add to myLeoSettings.leo
@@ -4291,51 +4225,6 @@ stylesheet for c.frame.top.leo_ui) remains unchanged.
 &gt; In the past, I have always found read/write dialogs to be a) intrusive
 &gt; and b) panic-inducing, but this may be a tolerable exception.  We
 &gt; shall see.
-</t>
-<t tx="ekr.20120229094652.15152">groups.google.com/group/leo-editor/browse_thread/thread/5da0de4502154b2c/1b077a8bb8e65811
-
-Some people seem to think that it is difficult to understand how Leo
-handles "clone wars":  differing values for a cloned nodes that appear
-in several external files.  That's not true.  The rule is::
-
-    **The last clone that Leo reads wins.**
-
-That is, for any cloned node C, Leo takes the value of C.h and C.b to
-be the values specified by the last copy that Leo reads.
-
-There is only one complication::
-
-    **Leo reads the entire outline before reading any external
-files.**
-
-Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
-for C in x.py or y.py, depending on which @&lt;file&gt; node appears later
-in the outline.
-
-Notes:
-
-1. Whenever Leo detects multiple values for C when opening an outline,
-Leo creates a "Recovered nodes" tree.  This tree contains all the
-various values for C, nicely formatted so that it is easy to determine
-where the differences are.
-
-2. I've just refreshed my memory by looking at the code.  The relevant
-methods are:
-
-    fc.getLeoFile # Reads the outline, then calls at.readAll to read
-all external files.
-    at.indicateNodeChanged # Adds data to c.nodeConflictList
-    cacher.reportChangedClone # Adds data to c.nodeConflictList
-    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its
-children.
-
-3. The present code is the simplest code that could possibly work.
-There is no way Leo is going to do AI in order to implement complex
-rules for which clones are "more important" than others.  Thus, if you
-use cross-file clones, it is up to *you* to know these rules and
-handle any resulting conflicts.  Imo, the "Recovered Nodes" feature is
-a big step forward for Leo, and makes it impossible to lose data
-unless you willfully refuse to examine the data. 
 </t>
 <t tx="ekr.20120229094652.15153">groups.google.com/group/leo-editor/browse_thread/thread/3666397da2a0d05f/758071d6d9516ab9
 
@@ -4431,41 +4320,6 @@ nothing more I can do.
 <t tx="ekr.20120229094652.15174"></t>
 <t tx="ekr.20120229094652.15175"></t>
 <t tx="ekr.20120229094652.15176"></t>
-<t tx="ekr.20120229094652.19496">https://bugs.launchpad.net/leo-editor/+bug/905276
-The documentation should explain how to clone multiple nodes at once.
-
-I would suggest that right up at the top of that page be a statement
-
-somewhat along these lines (Edward do get rid of the blah blah! 8-) :
-
-The core Leo code is always being improved and developed,
-using a rigorous unit-testing blah-blah that ensures that
-the daily commits are as bug-free as possible. In fact
-(insert #% or qualifier) of the time, downloading the most
-recent "nightly snapshot" of the development code from our
-version control system Bazaar (link to here
-http://www.greygreen.org/leo/) is going to give you code
-that is just as stable and much more up-to-date than the
-most recent "release" available here (link to
-http://sourceforge.net/projects/leo/files/OldFiles/), which
-most Leonistas would at this point consider already
-outdated. If you are just checking Leo out, feel free to
-download and use the release version if it makes you feel
-more secure, but once you've decided to work with Leo on a
-regular basis, we highly recommend regularly keeping your
-installation up to date with the most recent snapshot:
-
-(assuming you keep the folder containing your leo code
-separate from your .mySettings.leo and any data files,
-including of course your .leo files)
-
-  1. archive and remove that app folder
-  2. download the nightly snapshot zip file
-  3. unzip it into the same place
-  4. enjoy your up-to-date Leo code. . .
-
-
-</t>
 <t tx="ekr.20120229094652.19777">- open-with hook has changed: it now uses a "d" arg.</t>
 <t tx="ekr.20120229094652.19778">The d argument to the open-with event handlers is a python
 dictionary whose keys are all the tags specified by the user
@@ -6786,6 +6640,7 @@ def isSectionRef (self,s):
 or \@@command.
 </t>
 <t tx="ekr.20120315101404.14224">@pagewidth 70</t>
+<t tx="ekr.20120317150916.6165">Also, add the official command name.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
