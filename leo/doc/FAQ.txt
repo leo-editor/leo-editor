@@ -423,6 +423,16 @@ files that are shared with those who don't want to see sentinel comments.
   The advantage of @shadow is that you can add your own structure.
 
 - @nosent is appropriate only for files that you alone modify.
+.. @+node:ekr.20120229094652.15137: *4* What's the recommended way to upgrade Leo?
+.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/61019e45d75a6f18/71ee770ee4421222
+
+1. Archive and remove the previous version of Leo.
+2. Download the nightly snapshot zip file.
+3. Unzip it into the same place as the previous version.
+4. Enjoy your up-to-date Leo code...
+
+To make this work, it's important to keep your folder containing Leo
+separate from your .mySettings.leo and any data files.
 .. @+node:ekr.20050830115714.13: *3* Using external files
 .. @+node:ekr.20050830115714.14: *4* How do I inhibit sentinels in external files?
 You have two options, depending on whether you want to be able to use sections

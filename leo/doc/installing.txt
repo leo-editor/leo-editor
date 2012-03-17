@@ -70,50 +70,41 @@ Download and install the PyEnchant package from
 http://www.rfk.id.au/software/pyenchant/download.html There is an executable
 installer for Windows users.
 .. @+node:ekr.20100817101952.4303: *3* Installing Leo itself
-.. @+node:ekr.20100817101952.4306: *4* Installing Leo with bzr
-Many users will want to track the development version of Leo, in order to stay
-on top of the latest features and bug fixes. Running the development version is
-quite safe and easy, and it's also a requirement if you want to contribute to
-Leo.
+.. links
 
-1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
-   users we recommend the standalone installer - the python installer may have
-   problems pushing to Launchpad. Plain bzr installer only contains the command
-   line version, so you might want to augment that with a friendly GUI - qbzr is
-   recommended as it's the easiest one to install. It provides command like
-   bzr qlog, bzr qannotate etc.
+.. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.9-final/
+.. _`SourceForge`: https://sourceforge.net
+.. _`Leo's snapshots page`:     http://www.greygreen.org/leo/
+.. _`nightly snapshot`:             http://www.greygreen.org/leo/
+.. _`Leo's latest sources`: https://code.launchpad.net/leo-editor/
+.. _`Launchpad`: https://code.launchpad.net/
+.. _`bzr`: http://bazaar.canonical.com/
 
-2. Get Leo from launchpad by doing::
+Leo's core code is always being improved and developed. Unit-testing
+ensures that the daily commits are as bug-free as possible. Almost all of
+the time, downloading the most recent `nightly snapshot`_ of the
+development code is going to give you code that is just as stable and much
+more up-to-date than the most recent `latest stable release`_ which most
+Leonistas would consider already outdated.
 
-     bzr branch lp:leo-editor
+If you are just checking Leo out, feel free to use the `latest stable release`_
+download if it makes you feel more secure, but once you've
+decided to work with Leo on a regular basis, we highly recommend regularly
+keeping your installation up to date with the most recent `nightly snapshot`_.
 
-And that's it! You can run leo/core/leo.py directly. When you want to refresh the
-code with latest modifications from Launchpad, run bzr pull.
+To summarize, you may get Leo in three ways:
 
-If you make modifications to Leo (with the interest in sharing them with the Leo
-community), you can check them in to your local branch by doing bzr checkin.
-Now, to actually request your changes to be merged to Leo trunk, you need a
-Launchpad account with RSA keys in place. There is showmedo video about how to
-accomplish this in Windows using puttygen and pageant at
-http://showmedo.com/videos/video?name=1510070&fromSeriesID=151.
+1. Download the `latest stable release`_ from `SourceForge`_. This release
+   contains an executable installer. This release will usually be a bit out
+   of date.
 
-After your Launchpad account is set up, go to
-https://launchpad.net/leo-editor, choose "Code" tab -> Register Branch,
-select Branch type "Hosted" and fill in descriptive details about the branch.
-After that, go to the branch home page from Code tab again, and copy-paste the
-push command line to terminal. For example, for branch::
-
-    https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
-
-The push command is::
-
-    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick    
-
-You may wish to add --remember command line option to bzr push, to direct all
-future pushes to that location. Then, you only need to execute bzr push.
-
-After your branch is pushed, you can email the Leo mailing list and request it
-to be reviewed and merged to trunk.
+2. Download a `nightly snapshot`_ from `Leo's snapshots page`_. This page
+   contains .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days
+   ago.
+   
+3. Download `Leo's latest sources`_ from `Launchpad`_ using `bzr`_.
+   Installing bzr is non-trivial, but once set up this is the easiest way
+   to get the latest version of Leo's code.
 .. @+node:ekr.20100731112744.7276: *4* Installing Leo on Windows
 1. Install Python from http://www.python.org/download/releases/
 
@@ -150,7 +141,7 @@ You can, instead, add the following link::
     sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
 
 Now you are ready to `run Leo`_.
-.. @+node:ekr.20100731112744.7275: *4* Installing Leo on MacOS X
+.. @+node:ekr.20100731112744.7275: *4* @rst-ignore Installing Leo on MacOS X
 **Important**: Installing Leo on MacOS is difficult and not recommended.
 Furthermore, Leo does not work as well on MacOS as on other platforms.
 
@@ -198,6 +189,126 @@ Here is how to install Leo on MacOS 10.5 (Leopard):
          python configure.py 
          make
          sudo make install
+.. @+node:ekr.20120229094652.15098: *4* Installing Leo on MacOs 10.7 Lion
+.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
+
+**Important**: Installing Leo on MacOS is, ah, challenging.
+Furthermore, Leo does not work as well on MacOS as on other platforms.
+
+Many thanks to Ludwig Schwardt for the following
+installation instructions.
+
+I recently received a new MacBook Pro and did a fresh upgrade to Mac OS
+10.7 (Lion). I then used the opportunity to test out installation
+procedures of various software on a clean system. My main finding is that
+the excellent Homebrew (mxcl.github.com/homebrew/) makes things much easier
+these days.
+
+Why Homebrew? It does not try to replace every single bit of functionality
+on your Mac with their own version, like Macports or fink. It reuses the
+existing libraries as far as possible. No need to reinstall Python, for
+example (one of my pet gripes when people try to install new software on
+their Macs, and the source of much confusion and pain). It installs to
+/usr/local, the standard place to find third-party libraries and headers,
+instead of the obscure /opt or /sw. It's simple to use and to extend.
+
+I last installed Leo on Mac OS 10.4 (Tiger) back in the Tk days, and
+wondered what it looked like in Qt. All the horror stories of PyQT on Mac
+discouraged me from trying this before, so I was keen to see if Homebrew
+helps. Here is my installation write-up:
+
+- Make sure you have Xcode installed (test it by confirming that "gcc" runs
+  in the Terminal)
+
+- In preparation for homebrew, the best option in my opinion is to delete
+  /usr/local via::
+
+    sudo rm -rf /usr/local
+
+  and install any software in it via homebrew instead. If this step fills
+  you with dread and you do not want to lose your beloved third-party
+  software, the second-best option is to make sure you have write
+  permission for the directory via::
+
+    sudo chown -R <your user name>:admin /usr/local
+
+  If you don't know your username, run "whoami". :-) This is useful because
+  homebrew actually discourages you from installing third-party software as
+  the superuser (the usual Mac apps in /Applications are also installed as
+  the normal user, for that matter).
+
+- Install Homebrew (http://mxcl.github.com/homebrew/) by running the
+  following command in the Terminal::
+
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+
+- Run "brew update" to get the latest formulas
+
+- Now install PyQT (yes, that's it!)::
+
+     brew install pyqt
+
+- Run "brew doctor" and check any further suggestions to improve your system.
+
+- Add the following lines to your ~/.bash_profile (or ~/.profile on Leopard)::
+
+      export PATH=/usr/local/bin:$PATH
+      # This is for SIP (and PyQT) as suggested by Homebrew
+      export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
+
+- Open a new Terminal tab / window so that the above settings take effect,
+  and install Leo. I downloaded the Leo-4.9-final-a.zip, unzipped it, and
+  ran "python launchLeo.py" inside the Leo directory.
+
+We should consider adding a Homebrew formula for Leo. This will simplify
+the process even further, to simply "brew install leo". I started on this,
+but wasn't sure where to put the various Leo files in the system hierarchy.
+The Debian package can give some clues here, but I haven't looked at it
+yet.
+.. @+node:ekr.20100817101952.4306: *4* Installing Leo with bzr
+Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bug fixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   bzr qlog, bzr qannotate etc.
+
+2. Get Leo from launchpad by doing::
+
+     bzr branch lp:leo-editor
+
+And that's it! You can run leo/core/leo.py directly. When you want to refresh the
+code with latest modifications from Launchpad, run bzr pull.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing bzr checkin.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this in Windows using puttygen and pageant at
+http://showmedo.com/videos/video?name=1510070&fromSeriesID=151.
+
+After your Launchpad account is set up, go to
+https://launchpad.net/leo-editor, choose "Code" tab -> Register Branch,
+select Branch type "Hosted" and fill in descriptive details about the branch.
+After that, go to the branch home page from Code tab again, and copy-paste the
+push command line to terminal. For example, for branch::
+
+    https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+The push command is::
+
+    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick    
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute bzr push.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.
 .. @+node:ekr.20100731112744.7277: *3* Running Leo
 You can run Leo from a Python interpreter as follows::
 
