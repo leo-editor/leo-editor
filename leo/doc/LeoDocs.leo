@@ -567,7 +567,6 @@
 <v t="ekr.20120229094652.15123"><vh>Existing docs</vh></v>
 </v>
 </v>
-<v t="ekr.20120229094652.15127"><vh>Revise Leo's docs re import commands</vh></v>
 <v t="ekr.20120229094652.15152"><vh>All about clone conflicts</vh></v>
 <v t="ekr.20120229094652.15148"><vh>BibTeX citations from Leo</vh></v>
 <v t="ekr.20120229094652.19496"><vh>Bug 905276: explain how to clone multiple nodes at once</vh></v>
@@ -3679,42 +3678,6 @@ The mini-buffer is a text area at the bottom of the body pane. You use it like t
 For example, to print a list of all commands type Alt-X print-commands &lt;Return&gt;.
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
-</t>
-<t tx="ekr.20120229094652.15127">Terry:
-
-I don't think the OP was trying to import MORE data, I think Leo is
-incorrectly trying to apply MORE rules on loading a .txt file.
-
-The File-&gt;Import command gives no indication it expects MORE data.
-
-OTOH, the simple workaround is to use File-&gt;Open.
-
-So perhaps it's a documentation / ui bug to clarify what File-&gt;Import
-is for.
-
-
-==============
-
-Rob:
-    
-I would agree the documentation could be updated to reflect current
-practice. The online docs (under the heading 'Importing Files Into Leo
-Outlines':
-
-The Import commands do not attempt to do perfect translations; they
-merely automate the bulk of the drudgery:
-
-   The Import to @file command creates an @file node from a file.
-   The Import CWEB Files command creates an @file node from a CWEB file.
-   The Import noweb Files command creates an @file node from a noweb file.
-   The Import External File command imports all the nodes in a external file into the outline. Unlike the read commands, the command preserves no outline structure.
-   The Import Flattened Outline command converts plain text written in MORE format to an outline.
-
-The Import Flattened Outline command brings up a
-dialog.................(more info about MORE spec)
-
-I would say most/all of this has been deprecated as there's only one
-Import command.
 </t>
 <t tx="ekr.20120229094652.15128">http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 

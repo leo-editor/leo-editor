@@ -693,28 +693,11 @@ the createOpenWithMenuFromTable routine described in the child of this node. The
 @file mod_open_with.py node in LeoPlugins.leo gives a complete example
 of handling the Open With menu.
 .. @+node:EKR.20040524104904.108: *4* Importing Files into Leo Outlines
-The Import commands do not attempt to do perfect translations; they merely automate the bulk of the drudgery:
-
--   The Import to @file command creates an @file node from a file.
-
--   The Import CWEB Files command creates an @file node from a `CWEB`_ file.
-
--   The Import noweb Files command creates an @file node from a `noweb`_ file.
-
--   The Import External File command imports all the nodes in a external file into the outline.
-    Unlike the read commands, the command preserves no outline structure.
-
--   The Import Flattened Outline command converts plain text written in MORE format to an outline.
-
-The Import Flattened Outline command brings up a dialog which will accept at
-most one file. If that file contains MORE-format text it creates an outline
-corresponding to that text. MORE is a now-defunct outliner program. MORE
-represents outlines as follows. Headlines are denoted by a leading + or
-- character, preceding by zero or more tabs that denote the level of the
-headline. Body text follows its headline, with no indentation. The original
-MORE format did not escape lines in the body text that started with + or -.
-Leo escapes such characters by preceding +, - or backslash with a
-backslash.
+The Import File command imports a file in various ways depending on the
+contents of the file. For plain files, the command creates an \@file node.
+If the file looks like an external file written by Leo, the import command
+will recreate the outline structure based on the sentinels in the file.
+This command can also read files writting in MORE outline format.
 .. @+node:EKR.20040524104904.109: *4* Exporting Files from Leo Outlines
 -   The Outline To CWEB command creates a `CWEB`_ file from the selected outline.
 
