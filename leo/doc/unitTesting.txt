@@ -138,6 +138,18 @@ section references, etc. For example::
         for test in (test1,test2,test3,test4):
             suite.addTest(test)
         g.app.scriptDict['suite'] = suite
+.. @+node:ekr.20120229094652.15125: *3* Using @mark-for-unit-tests
+When running unit tests externally, Leo copies any @mark-for-unit-tests nodes
+to dynamicUnitTest.leo.  Of course, this is in addition to all @test nodes
+and @suite nodes that are to be executed.
+You can use @mark-for-unit-test nodes to include any "supporting data"
+you want, including, say, "@common test code" to be imported as
+follows::
+
+    exec(g.findTestScript(c,'@common test code'))
+
+**Note**: putting @settings trees as descendants of an @mark-for-unit-test node
+will copy the @setting tree, but will *not* actually set the corresponding settings.
 .. @+node:ekr.20070628094515.2: *3* How the unit test commands work
 The run-all-unit-tests-locally and run-unit-tests-locally commands run unit
 tests in the process that is running Leo. These commands *can* change the
@@ -148,8 +160,8 @@ process, so unit tests can never have any side effects. These commands never
 changes the outline from which the tests were run. These commands do the
 following:
 
-1. Copy all @test, @suite and @unit-tests nodes (including their descendants) to the
-   file test/dynamicUnitTest.leo.
+1. Copy all @test, @suite, @unit-tests and @mark-for-unit-test nodes
+   (including their descendants) to the file test/dynamicUnitTest.leo.
 
 2. Run test/leoDynamicTest.py in a separate process.
 

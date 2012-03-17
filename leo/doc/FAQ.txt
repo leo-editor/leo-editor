@@ -1,6 +1,7 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100805165051.7151: * @file FAQ.txt
 .. @@language rest
+.. @@pagewidth 75
 .. @@tabwidth -4
 
 .. @+at @rst-options
@@ -948,6 +949,19 @@ the body pane so that you can use Leo's key bindings again.
 But you don't have to do that.  Instead, use Alt-tab once to change
 away from Leo, and then use Alt-tab again to change back to Leo.  When
 you do this, Leo puts focus in the body pane and you are all set.
+.. @+node:ekr.20120229094652.15099: *4* How can I make commonly-used scripts widely accessible?
+Put @command nodes as children of an @commands node in myLeoSettings.leo.
+This makes the the @command nodes available to all opened .leo files.
+
+Using @command rather than @button means that there is never any need to
+disable scripts. There is no need for @button. To see the list of your
+\@command nodes, type::
+
+    <alt-x>@c<tab>
+    
+Similarly to see the list of your \@command nodes, type::
+
+    <alt-x>@b<tab>
 .. @+node:ekr.20050830115714.76: *3* Trouble shooting
 .. @+node:ekr.20090130144433.1: *4* How do I get help?
 All questions are welcome at http://groups.google.com/group/leo-editor
@@ -1142,6 +1156,33 @@ the "guesses" that the \@shadow algorithm has made, you can simply change the
 \@shadow tree. After saving the outline, the *private* file will record your
 choice. The next time you open the outline, you will see the choices *you* made,
 not the guesses that the \@shadow algorithm made.
+.. @+node:ekr.20120229094652.15130: *4* Why do Qt windows disappear in my scripts?
+@language rest
+@pagewidth 75
+
+Q. When I run the following script I see a window appear and then
+immediately disappear::
+
+    from PyQt4 import QtGui
+    w = QtGui.QWidget()
+    w.resize(250, 150)
+    w.move(300, 300)
+    w.setWindowTitle('Simple test')
+    w.show()
+    
+What's going on?
+
+A. When the script exits the sole reference to the window, w, ceases to
+exist, so the window is destroyed (garbage collected). To keep the window
+open, add the following code as the last line to keep the reference alive::
+
+    g.app.scriptsDict['my-script_w'] = w
+
+Note that this reference will persist until the next time you run the
+execute-script. If you want something even more permanent, you can do
+something like::
+
+    g.app.my_script_w = w
 .. @+node:ekr.20071026055929: *3* Unicode issues
 .. @+node:ekr.20061021164213: *4* I can not enter non-ascii characters.  What can I do?
 Set @bool ignore_unbound_non_ascii_keys = False in LeoSettings.leo or myLeoSettings.leo.

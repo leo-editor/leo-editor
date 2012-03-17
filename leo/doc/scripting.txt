@@ -1,6 +1,7 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100805165051.7157: * @file scripting.txt
 .. @@language rest
+.. @@pagewidth 75
 .. @@tabwidth -4
 
 .. @+at @rst-options
@@ -29,18 +30,32 @@ show_doc_parts_as_paragraphs = True
 Scripting Leo with Python
 #########################
 
-This chapter describes how to write Python scripts that control Leo and access
-the data in Leo outlines. To write such scripts, you must understand the basics
-of Leo's internal data structures. As we shall see, these basics are quite simple.
+This chapter describes how to write Python scripts that control Leo and
+access the data in Leo outlines. To write such scripts, you must understand
+the basics of Leo's internal data structures. As we shall see, these basics
+are quite simple.
 
-Although this chapter discusses everything you will need to write most scripts,
-please keep in mind that your scripts have complete access to all of Leo's
-source code, that is, all the code in LeoPy.leo.
+Although this chapter discusses everything you will need to write most
+scripts, please keep in mind that your scripts have complete access to all
+of Leo's source code, that is, all the code in LeoPy.leo.
 
-**Note**: If you are reading this documentation in leoDocs.leo you can execute
-all code examples in this chapter by running the Execute Script command
-(Ctrl-B). You may have to select the actual code to execute if a node contains
-comments interspersed with the code.
+You can put Leo script in the body text of *any* outline node.  You can run
+scripts in several ways:
+
+1. Select a node containing the script and do Ctrl-B (execute-script).
+
+..  **Note**: If you are reading this documentation in leoDocs.leo you can
+..  execute all code examples in this chapter whit Ctrl-B. You may have to
+..  select the actual code to execute if a node contains comments
+..  interspersed with the code.
+
+2. \@button and \@command nodes allow you to run scripts while selecting
+   some *other* node. This brings scripts to data, an extremely powerful
+   capability. \@button nodes create a button in Leo's icon area. You can
+   execute the script **on the presently selected node** by pressing the
+   button. \@command nodes work similarly, but instead of creating a
+   button, they create a Leo command. (Actually, \@button nodes also create
+   Leo commands).
 
 .. contents::
     :depth: 3
@@ -62,7 +77,18 @@ have access to the following three **predefined objects**:
 
 - p is the presently selected position, the same as c.p.
 
-Leo scripts can use c and g to gain access to all of Leo's source code.
+The predefined c, g and p variables give *full* and *easy* access to all
+the data in your outlines, as well as hundreds, if not thousands, of useful
+Python functions in Leo's core. These variables define an easy-to-use DOM
+(Document Object Model) through which you can get o set any data in *your*
+outlines. The hello world example is::
+
+   for p in c.all_positions():
+       indent = '.' * p.level()
+       print('%s%s' % (indent,p.h))
+
+Here, c.all_positions() delivers a list of positions, and p.level() and p.h
+deliver the indentation level and head string of position p.
 .. @+node:ekr.20040403183229: *4* Import objects
 Leo scripts typically use the following objects:
 
@@ -1129,5 +1155,29 @@ The following script will create a minimal Leo outline::
     # Test that the script works.
     for p in c2.all_positions():
         g.es(p.h)
+.. @+node:ekr.20120317130339.8282: *4* Retaining pointers to Qt windows
+@language rest
+@pagewidth 75
+
+The following script won't work as intended:
+
+    from PyQt4 import QtGui
+    w = QtGui.QWidget()
+    w.resize(250, 150)
+    w.move(300, 300)
+    w.setWindowTitle('Simple test')
+    w.show()
+    
+When the script exits the sole reference to the window, w, ceases to
+exist, so the window is destroyed (garbage collected). To keep the window
+open, add the following code as the last line to keep the reference alive::
+
+    g.app.scriptsDict['my-script_w'] = w
+
+Note that this reference will persist until the next time you run the
+execute-script. If you want something even more permanent, you can do
+something like::
+
+    g.app.my_script_w = w
 .. @-all
 .. @-leo

@@ -538,10 +538,6 @@
 </v>
 </v>
 <v t="ekr.20120229094652.15173"><vh>Update docs</vh>
-<v t="ekr.20120229094652.15099"><vh>FAQ entry: @commands Aha</vh></v>
-<v t="ekr.20120229094652.15097"><vh>Document @mark-for-unit-test trees!</vh></v>
-<v t="ekr.20120229094652.15125"><vh>Document loading plugins when running unit tests externally</vh></v>
-<v t="ekr.20120314095341.15575"><vh>Features</vh>
 <v t="ekr.20120314095341.14215"><vh>Discuss url's, bookmarks and ctrl-clicks</vh></v>
 <v t="ekr.20120229094652.15096"><vh>Document new organization for @command and @button nodes</vh></v>
 <v t="ekr.20120229094652.15100"><vh>revise autocompletion docs based on recent posts</vh>
@@ -577,13 +573,6 @@
 <v t="ekr.20120229094652.15148"><vh>BibTeX citations from Leo</vh></v>
 <v t="ekr.20120229094652.19496"><vh>Bug 905276: explain how to clone multiple nodes at once</vh></v>
 <v t="ekr.20120313134250.14220"><vh>Improve docs for @nosent</vh></v>
-</v>
-<v t="ekr.20120314095341.15573"><vh>Testing</vh></v>
-<v t="ekr.20120229094652.15130"><vh>Add to scripting chapter</vh>
-<v t="ekr.20120229094652.15087"><vh>Add short intro to scripting</vh>
-<v t="ekr.20120229094652.15088"><vh>Easier scripting</vh></v>
-</v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2750,60 +2739,6 @@ The fix was the following lines in c.initConfigSettings:
 <t tx="ekr.20120229094652.15013">The fix was easy: moveWithinLineHelper does *not* call
 leoMoveCursorHelper for the case spot == 'end-line'
 </t>
-<t tx="ekr.20120229094652.15087">http://mail.google.com/mail/#inbox/1330f306b947656c
-
-&gt; Maybe I'm missing something here, probably because I've always
-&gt; dismissed scripting because I don't have the foggiest notion of how to
-&gt; write one.
-
-As you have just discovered, Leo does have scripting docs.
-
-However, let me say a few words about scripting in *this* context.
-
-What makes Leo scripting so important is that the predefined c, g and
-p variables give *full* and *easy* access to all the data in your
-outlines, as well as hundreds, if not thousands, of useful Python
-functions in Leo's core.
-
-You could say that these variables, especially c, define a *very*
-easy-to-use DOM (Document Object Model) through which you can get o
-set any data in *your** outlines.
-
-The hello world example is::
-
-   for p in c.all_positions():
-       indent = '.' * p.level()
-       print('%s%s' % (indent,p.h))
-
-Here, c.all_positions() delivers a list of positions, and p.level()
-and p.h deliver the indentation level and head string of position p.
-
-Another crucial part of Leo scripting is that you can put Leo script
-*anywhere* in a Leo outline.  You can do this in three ways:
-
-1. You can just put the script above in the body of any node and run
-it with Ctrl-B (execute-script).
-
-2. You can make a script button by putting the script in an @button node.
-
-3. You can make a new Leo command by putting the script in an @command node.
-
-</t>
-<t tx="ekr.20120229094652.15088"># aList = [z for z in dir(c) if 'hild' in z]
-# aList.sort()
-# for z in aList:
-    # print(z)
-
-c.insertHeadline(event=None, op_name='Insert Node', as_child=False)
-
-x = g.BasicLeoScript()
-
-x.insert()
-x.delete()
-x.node()
-n.h, n.d
-
-</t>
 <t tx="ekr.20120229094652.15089">http://groups.google.com/group/leo-editor/browse_thread/thread/b17d140b7ceb8fc9
 
 I've added web page bookmarking from your browser to Leo.
@@ -2947,139 +2882,6 @@ the icon area.  Second, using @button for local scripts draws
 attention to scripts that only make sense in a local context.  It's
 very effect.
 
-</t>
-<t tx="ekr.20120229094652.15097">I would prefer if it would be possible to launch tests externally without loading plug-ins.
-
-As I see in Code--&gt;Testing--&gt;@file leoTest.py--&gt;runUnitTestLeoFile
-and in Code--&gt;Testing--&gt;@file leoTest.py--&gt;class runTestExternallyHelperClass--&gt;runTests
-
-there is an option to set gui for testing (g.app.unitTestGui) and default is 'nullGui'.
-
-Maybe there could be an option to disable loading of plug-ins also ?
-
-For the tests that I mostly write and run, loading plug-ins is just wasting time.
-Vitalije.
-
-===========================
-
-&gt; I am not sure what happens at present, and I'm not sure whether any settings apply to these commands.
-
-Good news (mostly): you can set up dynamic unit tests exactly the way you want.
-
-I was going to point you at the documentation but (how can this
-possibly be?) the documentation doesn't exist!  I really could have
-sworn that everyone knew about what I am about to tell you ;-)  To
-quote Alan Greenspan, "I'm shocked.  Shocked."
-
-So here goes...
-
-Let p be the presently selected node when you hit Alt-5
-(run-unit-tests).  Leo, that is, the code in
-runTestExternallyHelperClass, creates dynamicUnitTest.leo by
-assembling all of the following nodes from p's descendants.
-
-- All @test nodes,
-- All @suite nodes, and, **most importantly**,
-- All children of all @mark-for-unit-tests nodes.
-
-You can use @mark-for-unit-test nodes to include any "supporting data"
-you want, including, say, "@common test code" to be imported as
-follows::
-
-    exec(g.findTestScript(c,'@common test code'))
-
-Hmm.  I doubt this is really written up properly, although I know for
-sure at the time I did write it up on leo-editor.  It's a very cool
-pattern.
-
-Now here is the new trick.  It *should* work, but actually does *not*
-work yet.  Boo hoo. Are you ready?
-
-- @mark-for-unit-tests
-  - @settings
-    - @enabled-plugins
-
-Alas, this doesn't work because the test code runs dynamicUnitTest.py,
-which runs dynamicUnitTest.leo **using the leoBridge module**.  And,
-as I have just verified, the leoBridge module doesn't load *any*
-plugins.  Nor does it init any other settings.
-
-So, no matter *what* @enabled-plugins contains, your code will start
-off with no plugins at all.  Thus, the following unit test will always
-pass when run with Alt-5::
-
-    @test loaded-plugins
-
-    pc = g.app.pluginsController
-    aList = pc.getLoadedPlugins()
-    assert not aList,aList
-
-However, your tests *can* load plugins if they like, provided they
-don't through an exception when loaded with nullGui.  For example, the
-following test passes::
-
-    @test load backlink plugin
-
-    pc = g.app.pluginsController
-    pc.loadOnePlugin('backlink.py')
-    aList = pc.getLoadedPlugins()
-    assert 'leo.plugins.backlink' in aList
-
-A similar trick could probably be used to set c.config settings from
-the @settings tree, but at present your code would have to do all the
-work itself: the leoBridge module does **not** initialize settings.
-That is, c.config.getBool(x) returns None for all (strings) x.
-
-I hope this gives you a sense of what is going on.  For full details,
-consult leoTest.py.
-
-It has been fun tracking this down.  I'll fix the documentation immediately. 
-</t>
-<t tx="ekr.20120229094652.15099">Wouldn't it be great if we all could remember what we, and others, have already done?
-
-Leo's @command nodes makes this easy: just create @command nodes in myLeoSettings.leo for
-all your common programming tasks.  This organization is perfect:
-
-- You always know where your scripts are.
-
-- There is no need for duplicates.
-
-- You can organize the scripts within myLeoSettings.leo as usual using
-organizer nodes.  This organization can change as needed.
-
-- Using @command rather than @button means that there is never any need
-  to disable scripts.  No more @@button.
-
-- Using @command saves screen real estate. Having buttons be
-  visible doesn't prevent them from being hidden in full
-  view.
-
-- If I use common prefixes, like c_ (for command) or edit_ (for edit-
-related scripts) or ekr_ (for personal scripts), the *typing
-completion* will let me zero in on the script I want to use:
-
-    &lt;alt-x&gt; c_&lt;tab&gt;
-    &lt;alt-x&gt; c_import&lt;tab&gt;
-
-etc.  Furthermore, Ctrl-P (repeat-complex-command) will allow me to
-rerun the last script run.  This is a quite common case.
-
-Summary
-=======
-
-This Aha substitutes an *already-existing* usage (typing completion)
-for a whole set of memory-intensive retrieval problems.  I'm not
-likely ever to forget typing completion, although I might forget the
-specif prefixes used in @command nodes.  If that happens, I'll know
-where to look.
-
-This Aha takes full advantage of Leo's organization strengths and
-*concentrates* those strengths by putting all the to-be-organized
-material in one place.  This allows for easy reorganization:  changing
-command-name prefixes, for instance, would be straightforward.
-
-This is another example of the assertion that Leo already has most of
-what is required to handle any task. 
 </t>
 <t tx="ekr.20120229094652.15100">Overview of the code
 ====================
@@ -3903,79 +3705,6 @@ For example, to print a list of all commands type Alt-X print-commands &lt;Retur
 
 The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
 </t>
-<t tx="ekr.20120229094652.15125">http://groups.google.com/group/leo-editor/browse_thread/thread/b560a3b84e7ec7a8
-
-Good news (mostly): you can set up dynamic unit tests exactly the way you want.
-
-I was going to point you at the documentation but (how can this
-possibly be?) the documentation doesn't exist!  I really could have
-sworn that everyone knew about what I am about to tell you ;-)  To
-quote Alan Greenspan, "I'm shocked.  Shocked."
-
-So here goes...
-
-Let p be the presently selected node when you hit Alt-5
-(run-unit-tests).  Leo, that is, the code in
-runTestExternallyHelperClass, creates dynamicUnitTest.leo by
-assembling all of the following nodes from p's descendants.
-
-- All @test nodes,
-- All @suite nodes, and, **most importantly**,
-- All children of all @mark-for-unit-tests nodes.
-
-You can use @mark-for-unit-test nodes to include any "supporting data"
-you want, including, say, "@common test code" to be imported as
-follows::
-
-    exec(g.findTestScript(c,'@common test code'))
-
-Hmm.  I doubt this is really written up properly, although I know for
-sure at the time I did write it up on leo-editor.  It's a very cool
-pattern.
-
-Now here is the new trick.  It *should* work, but actually does *not*
-work yet.  Boo hoo. Are you ready?
-
-- @mark-for-unit-tests
-  - @settings
-    - @enabled-plugins
-
-Alas, this doesn't work because the test code runs dynamicUnitTest.py,
-which runs dynamicUnitTest.leo **using the leoBridge module**.  And,
-as I have just verified, the leoBridge module doesn't load *any*
-plugins.  Nor does it init any other settings.
-
-So, no matter *what* @enabled-plugins contains, your code will start
-off with no plugins at all.  Thus, the following unit test will always
-pass when run with Alt-5::
-
-    @test loaded-plugins
-
-    pc = g.app.pluginsController
-    aList = pc.getLoadedPlugins()
-    assert not aList,aList
-
-However, your tests *can* load plugins if they like, provided they
-don't through an exception when loaded with nullGui.  For example, the
-following test passes::
-
-    @test load backlink plugin
-
-    pc = g.app.pluginsController
-    pc.loadOnePlugin('backlink.py')
-    aList = pc.getLoadedPlugins()
-    assert 'leo.plugins.backlink' in aList
-
-A similar trick could probably be used to set c.config settings from
-the @settings tree, but at present your code would have to do all the
-work itself: the leoBridge module does **not** initialize settings.
-That is, c.config.getBool(x) returns None for all (strings) x.
-
-I hope this gives you a sense of what is going on.  For full details,
-consult leoTest.py.
-
-It has been fun tracking this down.  I'll fix the documentation immediately. 
-</t>
 <t tx="ekr.20120229094652.15127">Terry:
 
 I don't think the OP was trying to import MORE data, I think Leo is
@@ -4092,32 +3821,6 @@ I haven't looked at it yet.
 Now I just have to start using Leo after all these years of checking
 it out... :-)
 
-</t>
-<t tx="ekr.20120229094652.15130">I want to learn about PyQt and leo's qtGui. As a first step,
-I'm trying to execute a script from within a leo body::
-
-    from PyQt4 import QtGui
-    w = QtGui.QWidget()
-    w.resize(250, 150)
-    w.move(300, 300)
-    w.setWindowTitle('Simple test')
-    w.show()
-
-Q. When I try the above, I see a window appear and then
-immediately disappear. How can I keep the window visible?
-
-A. When the script exits the sole reference to the window,
-w, ceases to exist, so the window is destroyed (garbage
-collected). To keep the window open, add the following code
-as the last line to keep the reference alive::
-
-    g.app.scriptsDict['my-script_w'] = w
-
-Note that this reference will persist until the next time
-the execute-script command is run.  If you want something even
-more permanent, you can do something like::
-
-    g.app.my_script_w = w
 </t>
 <t tx="ekr.20120229094652.15131">From Brian Theado
 
@@ -4786,7 +4489,7 @@ nothing more I can do.
 <t tx="ekr.20120229094652.15170"></t>
 <t tx="ekr.20120229094652.15172"></t>
 <t tx="ekr.20120229094652.15173">@language rest
-</t>
+@pagewidth 75</t>
 <t tx="ekr.20120229094652.15174"></t>
 <t tx="ekr.20120229094652.15175"></t>
 <t tx="ekr.20120229094652.15176"></t>
@@ -7160,8 +6863,6 @@ def isSectionRef (self,s):
 <t tx="ekr.20120314095341.14216">There no need to disable buttons and commands with \@@button
 or \@@command.
 </t>
-<t tx="ekr.20120314095341.15573"></t>
-<t tx="ekr.20120314095341.15575"></t>
 <t tx="ekr.20120315101404.14224">@pagewidth 70</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
