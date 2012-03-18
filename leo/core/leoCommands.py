@@ -3982,24 +3982,16 @@ class Commands (object):
             pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
 
         c.validateOutline()
-        
-        
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True)
 
-        if 1:
-            # This makes no sense: getLeoOutlineFromClipboard already does this.
-            # ***But**, we can't change anything significant until we demonstrate the problem!
-        
-            # paste as first child if back is expanded.
-            back = pasted.back()
-            #### back = c.p.back()
-        
-            if back and back.hasChildren() and back.isExpanded():
-                # 2011/06/21: fixed hanger: test back.hasChildren().
-                pasted.moveToNthChildOf(back,0)
-            # c.setRootPosition()
+        # paste as first child if back is expanded.
+        back = pasted.back()
+
+        if back and back.hasChildren() and back.isExpanded():
+            # 2011/06/21: fixed hanger: test back.hasChildren().
+            pasted.moveToNthChildOf(back,0)
 
         if pasteAsClone:
             # Set dirty bits for ancestors of *all* pasted nodes.
