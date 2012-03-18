@@ -5039,24 +5039,16 @@ def pasteOutline(self,event=None,reassignIndices=True):
         pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
 
     c.validateOutline()
-    
-    
     c.selectPosition(pasted)
     pasted.setDirty()
     c.setChanged(True)
 
-    if 1:
-        # This makes no sense: getLeoOutlineFromClipboard already does this.
-        # ***But**, we can't change anything significant until we demonstrate the problem!
-    
-        # paste as first child if back is expanded.
-        back = pasted.back()
-        #### back = c.p.back()
-    
-        if back and back.hasChildren() and back.isExpanded():
-            # 2011/06/21: fixed hanger: test back.hasChildren().
-            pasted.moveToNthChildOf(back,0)
-        # c.setRootPosition()
+    # paste as first child if back is expanded.
+    back = pasted.back()
+
+    if back and back.hasChildren() and back.isExpanded():
+        # 2011/06/21: fixed hanger: test back.hasChildren().
+        pasted.moveToNthChildOf(back,0)
 
     if pasteAsClone:
         # Set dirty bits for ancestors of *all* pasted nodes.
@@ -11807,6 +11799,261 @@ def handleDocOnlyMode (self,p,lines):
             # g.trace(len(result),p.h)
             self.writeHeadlineHelper(p)
     return result
+#@+node:ekr.20120318110848.9734: ** Added import-org-mode script
+#@+node:ekr.20120318110848.9735: *3* import-org-mode (command, not used)
+class ImportOrgMode:
+    @others
+
+def importOrgMode (self,event):
+    c = self.c
+    self.ImportOrgMode(c).go(c.p)
+    c.bodyWantsFocus()
+
+if False and g.app.inScript:
+    print('='*40)
+    ImportOrgMode(c).test()
+    print('done')
+#@+node:ekr.20120318110848.9736: *4* ctor
+def __init__ (self,c):
+    
+    self.c = c
+#@+node:ekr.20120318110848.9737: *4* go
+def go (self,p):
+    
+    '''Prompt for a file and pass the contents to scan().'''
+#@+node:ekr.20120318110848.9738: *4* scan
+def scan (self,fn,p,s):
+
+    self.c = c
+    root = p.insertAsLastChild()
+    root.h = fn
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        g.trace(repr(s))
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1
+                level += 1
+            if level > len(stack):
+                g.trace('bad level',repr(s))
+                last = None
+            elif level == len(stack):
+                last = stack[-1]
+                last.b = ''.join(body)
+            else:
+                last = stack[-1]
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            p = parent.insertAsLastChild()
+            p.h = s.strip()
+            stack.append(p)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        parent = stack[-1]
+        parent.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+#@+node:ekr.20120318110848.9739: *4* test
+def test (self):
+    
+    s = '''
+* A1
+    a1.1
+    a1.2
+** B11
+** B12
+b12.1
+*** C121
+c121.1
+    c121.2
+c121.3
+* A2
+a2.1
+** B21
+*** C211
+c211.1
+*** C212
+** B22
+    b22.1
+b22.1
+* A3
+* A4
+a4.1
+* A5
+** B51
+*** C511
+**** D5111
+***** E51111
+** B52
+*** C521
+c521.1
+'''
+
+    tag = 'test-import-org-mode'
+    p = g.findNodeAnywhere(c,tag)
+    s = g.adjustTripleString(s,-4)
+    if p:
+        try:
+            self.scan('test-file',p,s)
+        except Exception:
+            c.redraw(p)
+    else:
+        print('not found: %s' % tag)
+#@+node:ekr.20120318110848.9740: *3* @@button import-org-mode
+'''Import each file in the files list after the presently selected node.'''
+
+
+files = (
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+)
+
+@others
+
+for fn in files:
+    try:
+        root = c.p.copy()
+        f = open(fn)
+        s = f.read()
+        scan(c,fn,s)
+        c.selectPosition(root)
+    except IOError:
+        print('can not open %s' % fn)
+#@+node:ekr.20120318110848.9741: *4* scan
+def scan (c,fn,s):
+
+    last = root = c.p.insertAsLastChild()
+    last.h = g.shortFileName(fn)
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1 ; level += 1
+            if level > len(stack):
+                g.trace('bad level',repr(s))
+            elif level == len(stack):
+                last.b = ''.join(body)
+            else:
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            last = parent.insertAsLastChild()
+            last.h = s.strip()
+            stack.append(last)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        last.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+#@+node:ekr.20120318110848.9742: *3* test-import-org-mode
+#@+node:ekr.20120318110848.9747: ** Code for displaying a function call hierarchy in Leo
+From Brian Theado
+
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
+
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+#@+node:ekr.20120318110848.9748: *3* call tree
+import trace
+
+@language python
+@others
+
+# http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
+
+# Trace a minibuffer command.
+
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
+
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
+
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+#@+node:ekr.20120318110848.9749: *4* displayCalltree
+def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
+
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) > 0:
+       while len(levels[-1]) > 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+#@+node:ekr.20120318110848.9750: *4* trace session
 #@+node:ekr.20120314064059.9737: ** Use ctrl-click to open url's
 - (Done) Added the following commands:
     

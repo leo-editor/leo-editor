@@ -189,9 +189,60 @@
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
+<v t="ekr.20120229094652.15173"><vh>*** Update docs</vh>
+<v t="ekr.20120317150916.6165"><vh>Add default key bindings to the docs</vh></v>
+<v t="ekr.20120229094652.15100"><vh>revise autocompletion docs based on recent posts</vh>
+<v t="ekr.20120229094652.15102"><vh>Creating ctags data</vh></v>
+<v t="ekr.20120229094652.15103"><vh>Using Leo's autocompleter (outline form)</vh>
+<v t="ekr.20120229094652.15104"><vh>Starting autocompletions</vh></v>
+<v t="ekr.20120229094652.15105"><vh>Displaying autocompletions</vh></v>
+<v t="ekr.20120229094652.15106"><vh>Using the QCompleter</vh></v>
+<v t="ekr.20120229094652.15107"><vh>Using the Log pane completer</vh></v>
+<v t="ekr.20120229094652.15108"><vh>Showing docstrings</vh></v>
+</v>
+<v t="ekr.20120229094652.15109"><vh>Using Leo's autocompleter (COPY)</vh>
+<v t="ekr.20120229094652.15110"><vh>Starting autocompletions</vh></v>
+<v t="ekr.20120229094652.15111"><vh>Displaying autocompletions</vh></v>
+<v t="ekr.20120229094652.15112"><vh>Using the QCompleter</vh></v>
+<v t="ekr.20120229094652.15113"><vh>Using the Log pane completer</vh></v>
+<v t="ekr.20120229094652.15114"><vh>Showing docstrings</vh></v>
+</v>
+<v t="ekr.20120229094652.15115"><vh>Code notes</vh></v>
+<v t="ekr.20120229094652.15116"><vh>Minor settings</vh></v>
+<v t="ekr.20120229094652.15117"><vh>Appearance</vh></v>
+<v t="ekr.20120229094652.15118"><vh>Codewise notes</vh></v>
+<v t="ekr.20120229094652.15119"><vh>Performance</vh></v>
+<v t="ekr.20120229094652.15120"><vh>Completions</vh>
+<v t="ekr.20120229094652.15121"><vh>Docs</vh>
+<v t="ekr.20120229094652.15122"><vh>Additional options</vh></v>
+</v>
+<v t="ekr.20120229094652.15123"><vh>Existing docs</vh></v>
+</v>
+</v>
+<v t="ekr.20120229094652.15174"><vh>MacOS</vh>
+<v t="ekr.20120229094652.15128"><vh>Leo on Mac OSX: new installation instructions</vh></v>
+<v t="ekr.20120229094652.14591"><vh>MacOS is no longer fully supported???</vh></v>
+</v>
+</v>
 <v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
+<v t="ekr.20120318135910.6111"><vh>Ahas</vh>
+<v t="ekr.20120229094652.14594"><vh>Put scripts in @command nodes</vh></v>
+</v>
 <v t="ekr.20120229094652.14757"><vh>Bugs</vh>
+<v t="ekr.20120318075211.6163"><vh>Significant bugs</vh>
 <v t="ekr.20120229094652.14758"><vh>Fixed ancient hanger in paste-retaining-clones</vh></v>
+<v t="ekr.20120229094652.14780"><vh>Fixed serious atFile read bug</vh></v>
+<v t="ekr.20120229094652.14934"><vh>Fixed bug: @button @key=x does not override x</vh></v>
+<v t="ekr.20120229094652.14973"><vh>Fixed the wretched scrolling bug</vh></v>
+<v t="ekr.20120318075211.6165"><vh>Fixed several node-selection bugs related to hoists &amp; chaptesr</vh>
+<v t="ekr.20120313074006.14657"><vh>Fixed bug 823267: when a tab is closed focus may go to a tab other than the visible one</vh></v>
+<v t="ekr.20120313074006.14771"><vh>Fixed bug 875327: Positioning outside of hoisted outline" usually causes problems</vh></v>
+<v t="ekr.20120313074006.14663"><vh>Fixed bug 917814: Switching Log Pane tabs is done incompletely</vh></v>
+<v t="ekr.20120313074006.14740"><vh>Fixed bug 875323: Hoist an @chapter node leaves a non-visible node selected</vh></v>
+<v t="ekr.20120313074006.14765"><vh>Fixed bug 831658: @url doesn't leave Chapter</vh></v>
+</v>
+</v>
+<v t="ekr.20120318075211.6164"><vh>Minor bugs</vh>
 <v t="ekr.20120229094652.14759"><vh>Fixed bug in p.setAllAncestorAtFileNodesDirty</vh></v>
 <v t="ekr.20120229094652.14761"><vh>Fixed double-click problem</vh></v>
 <v t="ekr.20120229094652.14762"><vh>Fixed url focus issues</vh></v>
@@ -203,16 +254,13 @@
 <v t="ekr.20120229094652.14770"><vh>Made sure Leo's write code auto-detects file extension</vh></v>
 <v t="ekr.20120229094652.14772"><vh>Fixed cycle-editor-focus bug</vh></v>
 <v t="ekr.20120229094652.14775"><vh>Fixed Py3k crash in quicksearch.py</vh></v>
-<v t="ekr.20120229094652.14777"><vh>Support @ignore when installing @command/@button nodes</vh></v>
 <v t="ekr.20120229094652.14779"><vh>Macro expansion now forces a full recolor</vh></v>
-<v t="ekr.20120229094652.14780"><vh>Fixed serious atFile read bug</vh></v>
 <v t="ekr.20120229094652.14781"><vh>Fixed unicode bugs with @shadow</vh></v>
 <v t="ekr.20120229094652.14782"><vh>Recompute width of hard tabs depending on @tabwidth</vh></v>
 <v t="ekr.20120229094652.14783"><vh>Applied patch for Bug 800311: Undo: Word granularity should recognize cursor movements</vh></v>
 <v t="ekr.20120229094652.14784"><vh>Applied patch for Bug 800312: Collapsing node moves should be optional</vh></v>
 <v t="ekr.20120229094652.14785"><vh>Fixed Bug 880975: Binding Meta and print-bindings</vh></v>
 <v t="ekr.20120229094652.14786"><vh>Fixed bug 823601: cascade-windows fails</vh></v>
-<v t="ekr.20120229094652.14787"><vh>Generalized stylesheet handling</vh></v>
 <v t="ekr.20120229094652.14817"><vh>Fixed html colorizing by fixing a bad bug in g.importFromPath</vh></v>
 <v t="ekr.20120229094652.14818"><vh>Allow lower case keywords in colorizer</vh></v>
 <v t="ekr.20120229094652.14820"><vh>Fixed rst3 pdf problem</vh></v>
@@ -237,7 +285,6 @@
 <v t="ekr.20120229094652.14841"><vh>Fixed bug in p.moveToFirstChild</vh></v>
 <v t="ekr.20120229094652.14842"><vh>Fixed bug 804960: Refreshing unlinks clones, just reopening connects them again</vh></v>
 <v t="ekr.20120229094652.14848"><vh>Fixed crasher in reportMismatch</vh></v>
-<v t="ekr.20120229094652.14849"><vh>Disabled section-reference handling in @auto files</vh></v>
 <v t="ekr.20120229094652.14850"><vh>Fix bug: Allow @all only in top-level @&lt;file&gt; nodes (test2.leo)</vh></v>
 <v t="ekr.20120229094652.14855"><vh>Fixed erroneous "file changed" message</vh></v>
 <v t="ekr.20120229094652.14856"><vh>Fixed bug 889175: Changing @auto paths overwrites files without warning</vh></v>
@@ -247,10 +294,8 @@
 <v t="ekr.20120229094652.14894"><vh>Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display</vh></v>
 <v t="ekr.20120229094652.14925"><vh>Updating dependent dicts</vh></v>
 </v>
-<v t="ekr.20120229094652.14934"><vh>Fixed bug: @button @key=x does not override x</vh></v>
 <v t="ekr.20120229094652.14941"><vh>Fixed Bug: @mark-for-unit-tests nodes</vh></v>
 <v t="ekr.20120229094652.14942"><vh>The recent files commands now work</vh></v>
-<v t="ekr.20120229094652.14973"><vh>Fixed the wretched scrolling bug</vh></v>
 <v t="ekr.20120229094652.15012"><vh>Fixed bug: @int pagewidth now set c.page_width</vh></v>
 <v t="ekr.20120229094652.15013"><vh>Fixed bug: goto end line handler is broken</vh></v>
 <v t="ekr.20120229094652.14520"><vh>Removed unused color tags</vh></v>
@@ -258,76 +303,108 @@
 <v t="ekr.20120229094652.15146"><vh>Fixed bug 87933 with major key reorg</vh></v>
 <v t="ekr.20120313074006.14648"><vh>Fixed Bug 930726 re expandNodeAndGoToFirstChild</vh></v>
 <v t="ekr.20120313074006.14650"><vh>Fixed Bug 869429 (undo &amp; redo when deleting nodes from contextmenu)</vh></v>
-<v t="ekr.20120313074006.14655"><vh>vim and xemacs plugins now work smoothly with contextmenu plugin.</vh></v>
-<v t="ekr.20120313074006.14657"><vh>Fixed bug 823267: when a tab is closed focus may go to a tab other than the visible one</vh></v>
-<v t="ekr.20120313074006.14663"><vh>Fixed bug 917814: Switching Log Pane tabs is done incompletely</vh></v>
 <v t="ekr.20120313074006.14697"><vh>Fixed bug 924123: Some SyntaxError's thrown when compiling the whole source with Python 3</vh></v>
-<v t="ekr.20120313074006.14698"><vh>Tried, and failed, to fix bug 844953: copy-clone-pasted node appears in other tab</vh></v>
 <v t="ekr.20120313074006.14702"><vh>Fixed bug 501636: Leo's import code should support non-ascii xml tags</vh></v>
 <v t="ekr.20120313074006.14713"><vh>Fixed bug 799695: colorizer bug after move-lines-up into a docstring</vh></v>
 <v t="ekr.20120313074006.14714"><vh>Fixed bug 824087: Alt+F4 is not the same as Alt+F, c</vh></v>
 <v t="ekr.20120313074006.14715"><vh>Fixed bug 923301: Unicode error when executing 'rst3' command</vh></v>
-<v t="ekr.20120313074006.14722"><vh>Fixed bug 893230: URL coloring does not work for many Internet protocols</vh></v>
-<v t="ekr.20120313074006.14725"><vh>Fixed bug 944551: @url URL Open Hangs Leo...</vh></v>
 <v t="ekr.20120313074006.14738"><vh>Fixed g.os_startfile on Linux</vh></v>
-<v t="ekr.20120313074006.14740"><vh>Fixed bug 875323: Hoist an @chapter node leaves a non-visible node selected</vh></v>
-<v t="ekr.20120313074006.14765"><vh>Fixed bug 831658: @url doesn't leave Chapter</vh></v>
-<v t="ekr.20120313074006.14771"><vh>Fixed bug 875327: Positioning outside of hoisted outline" usually causes problems</vh></v>
-<v t="ekr.20120313074006.14772"><vh>Fixed bug 807561: dragging a binary to Leo should create @url, not @edit</vh></v>
 <v t="ekr.20120313074006.14800"><vh>Fixed Bug: multiple @language directive not colored correctly</vh></v>
 <v t="ekr.20120313074006.14906"><vh>Fixed Bug: multiple @language directives mess up add-comments command</vh></v>
 <v t="ekr.20120313074006.15120"><vh>Fixed bug 952365: Leo-Editor can't write a file created from the command line</vh></v>
 <v t="ekr.20120313074006.15125"><vh>Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages</vh></v>
-<v t="ekr.20120313074006.15135"><vh>Fixed bug 951739: xdg-open of a file-scheme URL containing blanks</vh></v>
-<v t="ekr.20120313074006.15138"><vh>Fixed bug 951721: @url with URL in headline</vh></v>
-<v t="ekr.20120313074006.15144"><vh>Fixed bug 944555: Ctrl-left-click URL handling not as sophisticated as @url URL handling</vh></v>
+</v>
+<v t="ekr.20120318075211.6166"><vh>Unfixed bugs</vh>
+<v t="ekr.20120313074006.14698"><vh>Failed to fix bug 844953: copy-clone-pasted node appears in other tab</vh></v>
+</v>
 </v>
 <v t="ekr.20120229094652.14518"><vh>Code improvements</vh>
-<v t="ekr.20120229094652.15175"><vh>Major</vh>
-<v t="ekr.20120229094652.15142"><vh>Leo's new classes</vh></v>
+<v t="ekr.20120229094652.15142"><vh>Leo's new classes</vh>
+<v t="ekr.20120318075211.6168"><vh>LoadManager</vh></v>
+<v t="ekr.20120318075211.6169"><vh>ModeController &amp; ModeInfo (not used yet)</vh></v>
+<v t="ekr.20120318075211.6170"><vh>LogManager (not used yet)</vh></v>
+<v t="ekr.20120318075211.6172"><vh>KeyStroke &amp; ShortcutInfo</vh></v>
+<v t="ekr.20120318075211.6173"><vh>EditCommandsManager</vh></v>
 </v>
+<v t="ekr.20120318075211.6174"><vh>Most files now import just leo.core.leoGlobals</vh></v>
+<v t="ekr.20120318075211.6175"><vh>Global switches are now all in leoGlobals.py</vh></v>
+<v t="ekr.20120229094652.15138"><vh>version.py now uses bzr_version.py</vh></v>
 <v t="ekr.20120229094652.15176"><vh>Minor</vh>
 <v t="ekr.20120229094652.14522"><vh>Eliminated the low-level interface</vh></v>
 <v t="ekr.20120229094652.14523"><vh>Removed unused cruft from high-level interface</vh></v>
-<v t="ekr.20120229094652.14524"><vh>All unit tests may now be run externally</vh></v>
 <v t="ekr.20120229094652.14525"><vh>Unified the high-level interface</vh></v>
 <v t="ekr.20120229094652.14526"><vh>Create properties for logCtrl &amp; bodyCtrl</vh></v>
 <v t="ekr.20120229094652.14527"><vh>Added eventFilters to top-level frames</vh></v>
 <v t="ekr.20120229094652.14528"><vh>added log.orderedTabNames</vh></v>
-<v t="ekr.20120229094652.14531"><vh>Removed many module-level imports</vh></v>
 <v t="ekr.20120229094652.14532"><vh>Created the TestManager class</vh></v>
 <v t="ekr.20120229094652.14533"><vh>Created the LoadManager class (docs)</vh></v>
 <v t="ekr.20120229094652.14534"><vh>Removed c argument from g.app.config getters</vh></v>
-<v t="ekr.20120229094652.14535"><vh>Delay "reading settings" message until after signon</vh>
-<v t="ekr.20120229094652.14536"><vh>pr (codewise)</vh></v>
-<v t="ekr.20120229094652.14537"><vh>g.pr</vh></v>
-</v>
+<v t="ekr.20120229094652.14535"><vh>Delay "reading settings" message until after signon</vh></v>
 <v t="ekr.20120229094652.14538"><vh>Use at.readOneAtAutoNode instead of ic.readOneAtAutoNode</vh></v>
 <v t="ekr.20120229094652.14578"><vh>Added p.positionAfterDeletedTree</vh></v>
 <v t="ekr.20120229094652.14577"><vh>Removed Leo's old syntax coloring code</vh></v>
 <v t="ekr.20120229094652.14583"><vh>Rewrote shell-command commands</vh></v>
 <v t="ekr.20120229094652.14608"><vh>Added g.app.isExternalUnitTest</vh></v>
 <v t="ekr.20120229094652.14611"><vh>Added c.config.set</vh></v>
+<v t="ekr.20120229094652.14595"><vh>help-for-command now uses g.getDocStringFromFunction</vh></v>
 </v>
 <v t="ekr.20120229094652.15157"><vh>Investigations</vh>
 <v t="ekr.20120229094652.15158"><vh>Investigated unicode problems with print</vh></v>
 <v t="ekr.20120229094652.15159"><vh>Investigated autocomplete popup bug</vh></v>
 </v>
-<v t="ekr.20120229094652.15138"><vh>version.py now uses bzr_version.py</vh></v>
-<v t="ekr.20120229094652.15139"><vh>Changed calling signatures of g.openWithFileName and g.app.newCommander</vh></v>
-<v t="ekr.20120229094652.19777"><vh>The open-with event now has a new format</vh></v>
-<v t="ekr.20120229173025.20636"><vh>Theory of operation: key handling</vh></v>
 </v>
-<v t="ekr.20120229094652.15170"><vh>Commands: improved</vh>
-<v t="ekr.20120229094652.14612"><vh>Alt-left-arrow collapses all children when selecting the parent</vh></v>
-<v t="ekr.20120229094652.15169"><vh>Improved page-up &amp; page-down commands</vh></v>
-<v t="ekr.20120229094652.14622"><vh>Improved presentation of bindings</vh></v>
-<v t="ekr.20120229094652.14618"><vh>Improved print-bindings &amp; print-commands</vh></v>
-<v t="ekr.20120229094652.14580"><vh>Open now shows all files</vh></v>
-<v t="ekr.20120229094652.14617"><vh>Selected @test node always run</vh></v>
+<v t="ekr.20120318075211.6176"><vh>Features</vh>
+<v t="ekr.20120229094652.15162"><vh>Major new features</vh>
+<v t="ekr.20120318075211.6167"><vh>Improved handling of URL's</vh>
+<v t="ekr.20120313074006.15135"><vh>Fixed bug 951739: xdg-open of a file-scheme URL containing blanks</vh></v>
+<v t="ekr.20120313074006.15138"><vh>Fixed bug 951721: @url with URL in headline</vh></v>
+<v t="ekr.20120313074006.15144"><vh>Fixed bug 944555: Ctrl-left-click URL handling not as sophisticated as @url URL handling</vh></v>
+<v t="ekr.20120313074006.14725"><vh>Fixed bug 944551: @url URL Open Hangs Leo...</vh></v>
+<v t="ekr.20120313074006.14722"><vh>Fixed bug 893230: URL coloring does not work for many Internet protocols</vh></v>
+</v>
+<v t="ekr.20120313134250.14232"><vh>Leo's File:Open With command now works with Qt</vh></v>
+<v t="ekr.20120229094652.14585"><vh>Added quick edit/save mode</vh></v>
+<v t="ekr.20120229094652.15153"><vh>Detached windows</vh></v>
+<v t="ekr.20120229094652.15135"><vh>The leoInspect module</vh></v>
+<v t="ekr.20120229094652.14787"><vh>Generalized stylesheet handling</vh></v>
 <v t="ekr.20120313074006.14640"><vh>Instant abbreviations (~a)</vh></v>
+</v>
+<v t="ekr.20120229094652.15163"><vh>Minor new features</vh>
+<v t="ekr.20120229094652.15151"><vh>Leo now raises a dialog on @ignore @&lt;file&gt; nodes</vh></v>
+<v t="ekr.20120229094652.14596"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
+<v t="ekr.20120229094652.14592"><vh>Added support for tags in @button nodes</vh></v>
+<v t="ekr.20120229094652.14610"><vh>bridgeController.initLeo now kills events if plugins not loaded</vh></v>
+<v t="ekr.20120229094652.14607"><vh>Call unselect1 hook only once</vh></v>
+<v t="ekr.20120229094652.14613"><vh>Improved scannerUnitTest</vh></v>
+<v t="ekr.20120314095341.14216"><vh>Leo supports @ignore when scanning fro @command and @button nodes.</vh></v>
+<v t="ekr.20120229094652.14593"><vh>Reorganized @button &amp; @command nodes.</vh></v>
+<v t="ekr.20120229094652.14541"><vh>set g.app.execute_script during script execution</vh></v>
+<v t="ekr.20120229094652.14605"><vh>Support marking an entire tree</vh></v>
+<v t="ekr.20120229094652.14600"><vh>Support single-line nodes like &lt;node/&gt; xml import code</vh></v>
+<v t="ekr.20120229094652.14576"><vh>The Find tab now scrolls</vh></v>
+<v t="ekr.20120229094652.14621"><vh>Warn when importing/reading/writing @ignored nodes</vh></v>
+<v t="ekr.20120229094652.14849"><vh>Disabled section-reference handling in @auto files</vh></v>
+<v t="ekr.20120313074006.14772"><vh>Dragging a binary file to Leo creates an @url node</vh></v>
+<v t="ekr.20120229094652.14612"><vh>Alt-left-arrow collapses all children when selecting the parent</vh></v>
+<v t="ekr.20120229094652.14617"><vh>Selected @test node always run</vh></v>
 <v t="ekr.20120313074006.14643"><vh>Reinstated warnings for conflicting definitions</vh></v>
-<v t="ekr.20120313134250.14294"><vh>Allow section references in rst3 command</vh>
+<v t="ekr.20120229094652.14777"><vh>Support @ignore when installing @command/@button nodes</vh></v>
+</v>
+<v t="ekr.20120229094652.15164"><vh>New &amp; improved commands</vh>
+<v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
+<v t="ekr.20120229094652.14544"><vh>Added beautify-c command</vh></v>
+<v t="ekr.20120229094652.14545"><vh>Added c-to-python command</vh></v>
+<v t="ekr.20120229094652.14625"><vh>Added clone-find-all-flattened command</vh></v>
+<v t="ekr.20120229094652.15090"><vh>Added clone/move/delete-marked commands</vh></v>
+<v t="ekr.20120229094652.14579"><vh>Added delete-marked-nodes and move-marked-nodes commands</vh></v>
+<v t="ekr.20120229094652.14602"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
+<v t="ekr.20120229094652.14542"><vh>Added select-to-matching-bracket command</vh></v>
+<v t="ekr.20120229094652.14616"><vh>Improved add/delete-comments</vh></v>
+<v t="ekr.20120229094652.14581"><vh>Improved open command</vh></v>
+<v t="ekr.20120229094652.15169"><vh>Improved page-up &amp; page-down commands</vh></v>
+<v t="ekr.20120229094652.14622"><vh>Improved presentation of autocompletion list</vh></v>
+<v t="ekr.20120229094652.14618"><vh>Improved print-bindings &amp; print-commands</vh></v>
+<v t="ekr.20120313134250.14294"><vh>Improved rst3 command</vh>
 <v t="ekr.20120313134250.14295"><vh>Report</vh></v>
 <v t="ekr.20120313134250.14296"><vh>Entry points</vh>
 <v t="ekr.20120313134250.14297"><vh>code_to_rst_command &amp; helpers</vh>
@@ -406,93 +483,23 @@
 <v t="ekr.20120313134250.14355"></v>
 <v t="ekr.20120313134250.14356"></v>
 </v>
-</v>
-<v t="ekr.20120229094652.15164"><vh>Commands: new</vh>
-<v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
-<v t="ekr.20120229094652.14544"><vh>Added beautify-c command</vh></v>
-<v t="ekr.20120229094652.14545"><vh>Added c-to-python command</vh></v>
-<v t="ekr.20120229094652.14625"><vh>Added clone-find-all-flattened command</vh>
-<v t="ekr.20120229094652.14626"><vh>cloneFindAll (minibufferFind)</vh></v>
-<v t="ekr.20120229094652.14627"><vh>cloneFindAllCommand &amp; cloneFindAllFlattenedCommand</vh></v>
-<v t="ekr.20120229094652.14628"><vh>cloneFindAllFlattened (minibufferFind)</vh></v>
-<v t="ekr.20120229094652.14629"><vh>Find wrappers</vh></v>
-<v t="ekr.20120229094652.14630"><vh>generalSearchHelper (minibufferFind)</vh></v>
-<v t="ekr.20120229094652.14631"><vh>getPublicCommands (searchCommandsClass)</vh></v>
-<v t="ekr.20120229094652.14632"><vh>findAll &amp; helper (leoFind)</vh>
-<v t="ekr.20120229094652.14633"><vh>createCloneFindAllNode</vh></v>
-</v>
-</v>
-<v t="ekr.20120229094652.15090"><vh>Added clone/move/delete-marked commands</vh></v>
-<v t="ekr.20120229094652.14579"><vh>Added delete-marked-nodes and move-marked-nodes commands</vh></v>
-<v t="ekr.20120229094652.14584"><vh>Added shell commands to Cmds menu</vh></v>
-<v t="ekr.20120229094652.14602"><vh>Support run-marked-unit-tests-locally/externally</vh></v>
-</v>
-<v t="ekr.20120229094652.19778"><vh>Events</vh></v>
-<v t="ekr.20120229094652.15162"><vh>Features: major</vh>
-<v t="ekr.20120313134250.14232"><vh>Leo's File:Open With command now works with Qt</vh></v>
-<v t="ekr.20120229094652.14585"><vh>Added quick edit/save mode</vh>
-<v t="ekr.20120229094652.14586"><vh>Request</vh></v>
-<v t="ekr.20120229094652.14587"><vh>Checkin log</vh></v>
-<v t="ekr.20120229094652.14588"><vh>Changed</vh></v>
-</v>
-<v t="ekr.20120229094652.14597"><vh>Added support for solarized colors</vh></v>
-<v t="ekr.20120229094652.15153"><vh>Detached windows</vh></v>
-<v t="ekr.20120229094652.15151"><vh>Leo now raises a dialog on @ignore @&lt;file&gt; nodes</vh></v>
-<v t="ekr.20120229094652.15135"><vh>The leoInspect module</vh></v>
-</v>
-<v t="ekr.20120229094652.15163"><vh>Features: minor</vh>
-<v t="ekr.20120229094652.14596"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
-<v t="ekr.20120229094652.14542"><vh>Added select-to-matching-bracket command</vh></v>
-<v t="ekr.20120229094652.14619"><vh>Added show-decoration-selected: 1 to</vh></v>
-<v t="ekr.20120229094652.14592"><vh>Added support for tags in @button nodes</vh></v>
-<v t="ekr.20120229094652.14599"><vh>Applied patch for bug 800399: Leo should have smart word jumps/deletes</vh></v>
-<v t="ekr.20120229094652.14610"><vh>bridgeController.initLeo now kills events if plugins not loaded</vh></v>
-<v t="ekr.20120229094652.14607"><vh>Call unselect1 hook only once</vh></v>
-<v t="ekr.20120229094652.14594"><vh>DingDing: big Aha's</vh></v>
-<v t="ekr.20120229094652.14603"><vh>Disabled messages on external unit tests</vh></v>
-<v t="ekr.20120229094652.14614"><vh>External unit tests now always read config settings</vh></v>
-<v t="ekr.20120229094652.14595"><vh>help-for-command now uses g.getDocStringFromFunction</vh></v>
-<v t="ekr.20120229094652.14616"><vh>Improved add/delete-comments</vh></v>
-<v t="ekr.20120229094652.14613"><vh>Improved scannerUnitTest</vh></v>
-<v t="ekr.20120314095341.14216"><vh>Leo supports @ignore when scanning fro @command and @button nodes.</vh></v>
-<v t="ekr.20120229094652.14581"><vh>Made open smarter</vh></v>
-<v t="ekr.20120229094652.14593"><vh>Reorganized @button &amp; @command nodes.</vh></v>
-<v t="ekr.20120229094652.14541"><vh>set g.app.execute_script during script execution</vh></v>
-<v t="ekr.20120229094652.14605"><vh>Support marking an entire tree</vh></v>
-<v t="ekr.20120229094652.14600"><vh>Support single-line nodes like &lt;node/&gt; xml import code</vh></v>
-<v t="ekr.20120229094652.14540"><vh>Supported auto-hide in viewrendered plugin</vh></v>
-<v t="ekr.20120229094652.14576"><vh>The Find tab now scrolls</vh></v>
-<v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
-<v t="ekr.20120229094652.14621"><vh>Warn when importing/reading/writing @ignored nodes</vh></v>
+<v t="ekr.20120229094652.14599"><vh>Improved word jumps/deletes</vh></v>
 </v>
 <v t="ekr.20120229094652.15167"><vh>Leo's web site</vh>
 <v t="ekr.20120229094652.14589"><vh>Searches from Leo's web pages now work</vh></v>
 <v t="ekr.20120229094652.14601"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
 </v>
-<v t="ekr.20120229094652.15174"><vh>MacOS</vh>
-<v t="ekr.20120229094652.15128"><vh>Leo on Mac OSX: new installation instructions</vh></v>
-<v t="ekr.20120229094652.14591"><vh>MacOS is no longer fully supported???</vh></v>
 </v>
 <v t="ekr.20120229094652.15165"><vh>Plugins</vh>
-<v t="ekr.20120229094652.14582"><vh>Improved create @auto nodes script</vh></v>
-<v t="ekr.20120229094652.14566"><vh>removed scrolledmessage plugin</vh></v>
 <v t="ekr.20120229094652.15091"><vh>Improved quicksearch plugin</vh></v>
 <v t="ekr.20120313074006.16135"><vh>New bigdash plugin</vh></v>
 <v t="ekr.20120229094652.14776"><vh>Removed scrolledmessage plugin</vh></v>
+<v t="ekr.20120313074006.14655"><vh>vim and xemacs plugins now work smoothly with contextmenu plugin.</vh></v>
+<v t="ekr.20120229094652.14540"><vh>Supported auto-hide in viewrendered plugin</vh></v>
 </v>
 <v t="ekr.20120229094652.15166"><vh>Scripts</vh>
-<v t="ekr.20120229094652.14567"><vh>Added import-org-mode script</vh>
-<v t="ekr.20120229094652.14568"><vh>import-org-mode (command, not used)</vh>
-<v t="ekr.20120229094652.14569"><vh>ctor</vh></v>
-<v t="ekr.20120229094652.14570"><vh>go</vh></v>
-<v t="ekr.20120229094652.14571"><vh>scan</vh></v>
-<v t="ekr.20120229094652.14572"><vh>test</vh></v>
-</v>
-<v t="ekr.20120229094652.14573"><vh>@@button import-org-mode</vh>
-<v t="ekr.20120229094652.14574"><vh>scan</vh></v>
-</v>
-<v t="ekr.20120229094652.14575"><vh>test-import-org-mode</vh></v>
-</v>
+<v t="ekr.20120229094652.14582"><vh>Improved create @auto nodes script</vh></v>
+<v t="ekr.20120229094652.14567"><vh>Added import-org-mode script</vh></v>
 <v t="ekr.20120229094652.15131"><vh>Code for displaying a function call hierarchy in Leo</vh>
 <v t="ekr.20120229094652.15132"><vh>call tree</vh>
 <v t="ekr.20120229094652.15133"><vh>displayCalltree</vh></v>
@@ -505,6 +512,8 @@
 <v t="ekr.20120229173025.20633"><vh>Document Terry's magic refactor button</vh>
 <v t="ekr.20120229173025.20635"><vh>@button fac</vh></v>
 </v>
+<v t="ekr.20120229094652.15139"><vh>Changed calling signatures of g.openWithFileName and g.app.newCommander</vh></v>
+<v t="ekr.20120229094652.19777"><vh>The open-with event now has a new format</vh></v>
 </v>
 <v t="ekr.20120229094652.15168"><vh>Settings</vh>
 <v t="ekr.20120229094652.14606"><vh>Added @bool use_body_focus_border</vh></v>
@@ -514,43 +523,19 @@
 <v t="ekr.20120229094652.15143"><vh>Eliminated the -c option</vh></v>
 <v t="ekr.20120229094652.15140"><vh>New format for @openwith settings nodes</vh></v>
 <v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
+<v t="ekr.20120229094652.14597"><vh>Added support for solarized colors</vh></v>
+<v t="ekr.20120318075211.7524"><vh>New default settings for run unit tests commands</vh></v>
+<v t="ekr.20120229094652.14619"><vh>Added show-decoration-selected: 1 to stylesheet</vh></v>
+<v t="ekr.20120229094652.14584"><vh>Added shell commands to Cmds menu</vh></v>
 </v>
 <v t="ekr.20120229094652.15172"><vh>Unit testing</vh>
+<v t="ekr.20120229094652.14524"><vh>All unit tests may now be run externally</vh></v>
 <v t="ekr.20120229094652.15092"><vh>Use Alt-4 for all unit tests</vh></v>
 <v t="ekr.20120229094652.15093"><vh>Weightless unit testsing</vh></v>
 <v t="ekr.20120229094652.14821"><vh>Added unit test that all plugins have an init method</vh></v>
-</v>
-</v>
-<v t="ekr.20120229094652.15173"><vh>Update docs</vh>
-<v t="ekr.20120314095341.14215"><vh>Discuss url's, bookmarks and ctrl-clicks</vh></v>
-<v t="ekr.20120317150916.6165"><vh>Add default key bindings to the docs</vh></v>
-<v t="ekr.20120229094652.15100"><vh>revise autocompletion docs based on recent posts</vh>
-<v t="ekr.20120229094652.15102"><vh>Creating ctags data</vh></v>
-<v t="ekr.20120229094652.15103"><vh>Using Leo's autocompleter (outline form)</vh>
-<v t="ekr.20120229094652.15104"><vh>Starting autocompletions</vh></v>
-<v t="ekr.20120229094652.15105"><vh>Displaying autocompletions</vh></v>
-<v t="ekr.20120229094652.15106"><vh>Using the QCompleter</vh></v>
-<v t="ekr.20120229094652.15107"><vh>Using the Log pane completer</vh></v>
-<v t="ekr.20120229094652.15108"><vh>Showing docstrings</vh></v>
-</v>
-<v t="ekr.20120229094652.15109"><vh>Using Leo's autocompleter (COPY)</vh>
-<v t="ekr.20120229094652.15110"><vh>Starting autocompletions</vh></v>
-<v t="ekr.20120229094652.15111"><vh>Displaying autocompletions</vh></v>
-<v t="ekr.20120229094652.15112"><vh>Using the QCompleter</vh></v>
-<v t="ekr.20120229094652.15113"><vh>Using the Log pane completer</vh></v>
-<v t="ekr.20120229094652.15114"><vh>Showing docstrings</vh></v>
-</v>
-<v t="ekr.20120229094652.15115"><vh>Code notes</vh></v>
-<v t="ekr.20120229094652.15116"><vh>Minor settings</vh></v>
-<v t="ekr.20120229094652.15117"><vh>Appearance</vh></v>
-<v t="ekr.20120229094652.15118"><vh>Codewise notes</vh></v>
-<v t="ekr.20120229094652.15119"><vh>Performance</vh></v>
-<v t="ekr.20120229094652.15120"><vh>Completions</vh>
-<v t="ekr.20120229094652.15121"><vh>Docs</vh>
-<v t="ekr.20120229094652.15122"><vh>Additional options</vh></v>
-</v>
-<v t="ekr.20120229094652.15123"><vh>Existing docs</vh></v>
-</v>
+<v t="ekr.20120229094652.14614"><vh>External unit tests now always read config settings</vh></v>
+<v t="ekr.20120229094652.14603"><vh>Disabled messages on external unit tests</vh></v>
+<v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
 </v>
 </v>
 </vnodes>
@@ -809,10 +794,16 @@ http://webpages.charter.net/edreamleo/intro.html
 The highlights of Leo 4.10:
 --------------------------
 
-- The leoInspect module for inspecting Python code easily.
-
-
-- *Many* small improvements and bug fixes.
+- Leo optionally highlights the pane containing the focus.
+- Significantly improved Leo's abbreviation handling.
+- Much improved handling of URL's.
+- Detached windows.
+- Leo now edit non-Leo files smoothly.
+- Better support for running unit tests externally.
+- The new leoInspect module answers questions about Python code.
+- Easier installation on MacOS.
+- More than 40 other new features and commands.
+- Fixed almost 70 bugs.
 
 Links:
 ------
@@ -876,14 +867,6 @@ It ensures that body/log.widget and body.bodyCtrl/log.logCtrl are always in sync
 <t tx="ekr.20120229094652.14527">Added eventFilter in createFrame in SDI/TabbedFrameFactory classes
 </t>
 <t tx="ekr.20120229094652.14528"></t>
-<t tx="ekr.20120229094652.14531">This is something that I've wanted to do for a long time.  
-
-Now, most modules import only leo.core.leoGlobals. However,
-Leo's core still imports leo.core.leoNodes in order to create
-positions, vnodes, etc. It would be straightforward to
-eliminate these by creating g.app factory methods, but there
-is no urgent reason to do so.
-</t>
 <t tx="ekr.20120229094652.14532">All top-level code in leoTest.py now resides in the
 TestManager class.
 
@@ -948,107 +931,7 @@ c.fileCommands.openLeoFile to create the outline.
 - Moved printSettings to LocalConfigManager.
 </t>
 <t tx="ekr.20120229094652.14535"></t>
-<t tx="ekr.20120229094652.14536">http://www.diveintopython.org/xml_processing/unicode.html
-
-pr_warning_given = False
-
-def pr(*args,**keys): # (codewise!)
-
-    '''Print all non-keyword args, and put them to the log pane.
-    The first, third, fifth, etc. arg translated by g.translateString.
-    Supports color, comma, newline, spaces and tabName keyword arguments.
-    '''
-
-    # Compute the effective args.
-    d = {'commas':False,'newline':True,'spaces':True}
-    d = g.doKeywordArgs(keys,d)
-    newline = d.get('newline')
-    if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
-        # sys.stdout is a TextIOWrapper with a particular encoding.
-        encoding = sys.stdout.encoding
-    else:
-        encoding = 'utf-8'
-
-    # Important:  Python's print statement *can* handle unicode.
-    # However, the following must appear in Python\Lib\sitecustomize.py:
-    #    sys.setdefaultencoding('utf-8')
-    s = g.translateArgs(args,d) # Translates everything to unicode.
-    if newline:
-        s = s + '\n'
-
-    if g.isPython3:
-        if encoding.lower() in ('utf-8','utf-16'):
-            s2 = s # There can be no problem.
-        else:
-            # 2010/10/21: Carefully convert s to the encoding.
-            s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
-            s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
-    else:
-        s2 = g.toEncodedString(s,encoding,reportErrors=False)
-
-    if 1: # Good for production: queues 'reading settings' until after signon.
-        if app.logInited:
-            sys.stdout.write(s2)
-        else:
-            app.printWaiting.append(s2)
-    else:
-        # Good for debugging: prints messages immediately.
-        print(s2)
-</t>
-<t tx="ekr.20120229094652.14537">http://www.diveintopython.org/xml_processing/unicode.html
-
-pr_warning_given = False
-
-def pr(*args,**keys):
-
-    '''Print all non-keyword args, and put them to the log pane.
-    The first, third, fifth, etc. arg translated by g.translateString.
-    Supports color, comma, newline, spaces and tabName keyword arguments.
-    '''
-    
-    print_immediately = False # True: good for debugging.
-
-    # Compute the effective args.
-    d = {'commas':False,'newline':True,'spaces':True}
-    d = g.doKeywordArgs(keys,d)
-    newline = d.get('newline')
-
-    if sys.platform.lower().startswith('win'):
-        encoding = 'ascii' # 2011/11/9.
-    elif hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
-        # sys.stdout is a TextIOWrapper with a particular encoding.
-        encoding = sys.stdout.encoding
-    else:
-        encoding = 'utf-8'
-
-    s = g.translateArgs(args,d) # Translates everything to unicode.
-    
-    # Add a newline unless we are going to queue the message.
-    if app.logInited and not print_immediately:
-        if newline:
-            s = s + '\n'
-
-    if g.isPython3:
-        if encoding.lower() in ('utf-8','utf-16'):
-            s2 = s # There can be no problem.
-        else:
-            # Carefully convert s to the encoding.
-            s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
-            s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
-    else:
-        s2 = g.toEncodedString(s,encoding,reportErrors=False)
-      
-    if print_immediately:
-        # Good for debugging: prints messages immediately.
-        sys.stdout.write(s2)
-    else:
-        # Good for production: queues 'reading settings' until after signon.
-        if app.logInited:
-            sys.stdout.write(s2)
-        else:
-            app.printWaiting.append(s2)
-</t>
-<t tx="ekr.20120229094652.14538"># It's important to use only one version of the code.
+<t tx="ekr.20120229094652.14538">It's important to use only one version of the code.
 </t>
 <t tx="ekr.20120229094652.14540"></t>
 <t tx="ekr.20120229094652.14541">This allows the following pattern to appear in Leo source files::
@@ -1071,203 +954,10 @@ the .leo file.
 </t>
 <t tx="ekr.20120229094652.14544">Added class CPrettyPrinter &amp; beatifyCCode
 </t>
-<t tx="ekr.20120229094652.14545">- Wrapped the code in a class.
-
-- Replaced all globals with ivars.
-
-- Replaced listToString with ''.join(aList)
-    
-- Eliminated stringToList.
-    The code never passes None where a sequence is expected.
-    
-- Get tab_width from @tabwidth directives.
-
-- Get user data from::
-    
-    @data c-to-python-class-list
-    @data c-to-python-type-list
-    @data c-to-python-ivars-dict
-        keys end in a colon
-        all other lines contain comma-delimited values for the current key.
-        
-- Add extra parens for 'if' that span several lines.
-- Fixed extra indentation.
-- Changed ! to not except before =.
-- Dedented C blocks, such as::
-    
-    {
-        statement;
-        statement;
-    }
-    
-- Improved formatting of block comments.
-</t>
-<t tx="ekr.20120229094652.14566">The viewrendered plugin does more.
-</t>
+<t tx="ekr.20120229094652.14545">This command is a rewrapping of the first Python script I ever wrote. It
+takes much of the scut work away from the task of converting C code to
+Python code.</t>
 <t tx="ekr.20120229094652.14567"></t>
-<t tx="ekr.20120229094652.14568">class ImportOrgMode:
-    @others
-
-def importOrgMode (self,event):
-    c = self.c
-    self.ImportOrgMode(c).go(c.p)
-    c.bodyWantsFocus()
-
-if False and g.app.inScript:
-    print('='*40)
-    ImportOrgMode(c).test()
-    print('done')
-</t>
-<t tx="ekr.20120229094652.14569">def __init__ (self,c):
-    
-    self.c = c
-</t>
-<t tx="ekr.20120229094652.14570">def go (self,p):
-    
-    '''Prompt for a file and pass the contents to scan().'''
-</t>
-<t tx="ekr.20120229094652.14571">def scan (self,fn,p,s):
-
-    self.c = c
-    root = p.insertAsLastChild()
-    root.h = fn
-    level,stack = 0,[root]
-    body = ['@others\n']
-    
-    for s in g.splitLines(s):
-        g.trace(repr(s))
-        if s.startswith('*'):
-            i,level = 0,0
-            while s[i] == '*':
-                i += 1
-                level += 1
-            if level &gt; len(stack):
-                g.trace('bad level',repr(s))
-                last = None
-            elif level == len(stack):
-                last = stack[-1]
-                last.b = ''.join(body)
-            else:
-                last = stack[-1]
-                last.b = ''.join(body)
-                stack = stack[:level]
-            parent = stack[-1]
-            p = parent.insertAsLastChild()
-            p.h = s.strip()
-            stack.append(p)
-            body = []
-        else:
-            body.append(s)
-            
-    # Finish any trailing lines.
-    if body:
-        parent = stack[-1]
-        parent.b = ''.join(body)
-        
-    root.contract()
-    c.redraw(root)
-</t>
-<t tx="ekr.20120229094652.14572">def test (self):
-    
-    s = '''
-* A1
-    a1.1
-    a1.2
-** B11
-** B12
-b12.1
-*** C121
-c121.1
-    c121.2
-c121.3
-* A2
-a2.1
-** B21
-*** C211
-c211.1
-*** C212
-** B22
-    b22.1
-b22.1
-* A3
-* A4
-a4.1
-* A5
-** B51
-*** C511
-**** D5111
-***** E51111
-** B52
-*** C521
-c521.1
-'''
-
-    tag = 'test-import-org-mode'
-    p = g.findNodeAnywhere(c,tag)
-    s = g.adjustTripleString(s,-4)
-    if p:
-        try:
-            self.scan('test-file',p,s)
-        except Exception:
-            c.redraw(p)
-    else:
-        print('not found: %s' % tag)
-</t>
-<t tx="ekr.20120229094652.14573">'''Import each file in the files list after the presently selected node.'''
-
-
-files = (
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-)
-
-@others
-
-for fn in files:
-    try:
-        root = c.p.copy()
-        f = open(fn)
-        s = f.read()
-        scan(c,fn,s)
-        c.selectPosition(root)
-    except IOError:
-        print('can not open %s' % fn)
-</t>
-<t tx="ekr.20120229094652.14574">def scan (c,fn,s):
-
-    last = root = c.p.insertAsLastChild()
-    last.h = g.shortFileName(fn)
-    level,stack = 0,[root]
-    body = ['@others\n']
-    
-    for s in g.splitLines(s):
-        if s.startswith('*'):
-            i,level = 0,0
-            while s[i] == '*':
-                i += 1 ; level += 1
-            if level &gt; len(stack):
-                g.trace('bad level',repr(s))
-            elif level == len(stack):
-                last.b = ''.join(body)
-            else:
-                last.b = ''.join(body)
-                stack = stack[:level]
-            parent = stack[-1]
-            last = parent.insertAsLastChild()
-            last.h = s.strip()
-            stack.append(last)
-            body = []
-        else:
-            body.append(s)
-            
-    # Finish any trailing lines.
-    if body:
-        last.b = ''.join(body)
-        
-    root.contract()
-    c.redraw(root)
-</t>
-<t tx="ekr.20120229094652.14575"></t>
 <t tx="ekr.20120229094652.14576">The change was to DynamicWindow.createLogPane.
 </t>
 <t tx="ekr.20120229094652.14577">This was Tk code, and so can not possibly be useful now.
@@ -1296,109 +986,37 @@ For example, the move-marked-nodes command first creates a **move node**, called
 positions of other nodes. **Deleting** these nodes *may* change the position of
 nodes, but the pattern above handles this complication cleanly.
 </t>
-<t tx="ekr.20120229094652.14579"># And rewrote clone-marked-nodes.
-</t>
-<t tx="ekr.20120229094652.14580">Surprisingly important: it is a not-so-subtle clue that *any* file may be
-opened: non-Leo files are opened in @edit nodes. Soon: external files containing
-Leo sentinels will be opened as @file nodes.
+<t tx="ekr.20120229094652.14579">And rewrote clone-marked-nodes.
 </t>
 <t tx="ekr.20120229094652.14581">Create @file nodes (not @thin nodes) when opening an external file.
 
 Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
 
 Changed c.open; minor changes to importDerivedFiles.
+
+Open now shows all files. This is urprisingly important: it is a
+not-so-subtle clue that *any* file may be opened: non-Leo files are opened
+in @edit nodes. Soon: external files containing Leo sentinels will be
+opened as @file nodes.
 </t>
 <t tx="ekr.20120229094652.14582"></t>
 <t tx="ekr.20120229094652.14583">Rewrote the shellCommand, shellCommandOnRegion and executeSubprocess methods.
 </t>
 <t tx="ekr.20120229094652.14584"></t>
-<t tx="ekr.20120229094652.14585">The idea is to allow Leo to be a drop-in replacement for SciTe.
-
-Suppose you do::
+<t tx="ekr.20120229094652.14585">The idea is to allow Leo to be a drop-in replacement for SciTe. Suppose you
+do::
     
     leo x.y
     
-where y is not "leo".
+where y is not "leo". Leo now opens an unnamed .leo file consisting of
+@edit x.y. if x.y exists, the @edit node contains the entire file;
+otherwise the node is empty.
 
-1. If x.y exists, Leo should:
-    
-- Open an unnamed .leo file consisting of @edit x.y.
+When you save the .leo files or close the Leo window Leo saves x.y if it
+has been changed, but Leo does *not* prompt you to save the "temporary"
+.leo file.
 
-- If you execute the save command, or close the Leo window,
-  Leo should save x.y if it has been changed, but *not* prompt
-  you to save the "temporary" .leo file.
-  
-2. If x.y does *not* exist, leo should do exactly the same
-   thing, except that @edit x.y will be empty.
-   
-However, there are two problems with using Leo as a replacement for SciTe:
-
-1. Load time.  SciTe loads instantly, Leo does not.
-
-2. Screen real estate: Leo is not at its best when presenting only a single
-   @edit node: everything but the body pane is wasted space.
-</t>
-<t tx="ekr.20120229094652.14586">https://bugs.launchpad.net/leo-editor/+bug/381527
-
-Opens a new nameless leo file and adds somefile.foo as an @edit node.
-
-This is good but...
-
-Saving is a pain, because you have to give a name / location for the .leo file,
-and in the quick edit use case you want to be able to just hit ctrl-S to save
-somefile.foo.
-
-=====
-
-Ah, at last I see the problem. Saving the **.leo** file is too "heavy". This is
-an interesting design problem. You could say that Leo could "throw away" the
-temporary .leo file, provided it contains only the @edit node.
-
-True, "quick" editing of a non-Leo file could be done in the workbook, but such
-an approach would litter the workbook, and would make opening the workbook
-slower and slower. That is, the workbook would get heavier and heavier.
-</t>
-<t tx="ekr.20120229094652.14587">Rev 4577 adds an important new feature: "quick edit/save mode"
-
-This fixes bug 381527 quick edit and save use of leo, and makes Leo considerably lighter.
-
-**Important**: As you will see below, quite a few hacks were needed to make this work.  That doesn't bother me at all, because they are all hidden.  The *effect* of those hacks is easily understandable.
-
-**However**, I may have missed something: I almost missed that I had to change the code that prompts for a save when closing an unsaved headline.  So please be on the lookout for any use cases that I missed.
-
-From the checkin log:
-
-QQQQQ
-
-"leo somefile.foo" opens a nameless .leo file containing a single @edit node.
-
-In quick edit/save mode, the user can change somefile.foo without saving the .leo file at all.
-
-Leo *does* properly prompt for saves so that changes to somefile.foo will not be lost.
-
-Quick edit/save mode changes Leo as follows:
-
-1. The save command, and *only* the save command (not save-as or save-to), looks for an unsaved .leo file containing a single @edit node. This is the "quick save" case.
-
-In this case, Leo does *not* prompt for a filename and does *not*, therefore, save the .leo file. However, Leo does save the @edit node if it is dirty.
-
-2. In the quick edit/save case, atFile.writeOneAtEdit node does *not* prompt for so-called dangerous writes, because, in fact, the write is not dangerous :-)
-
-3. In the quick edit/save case, leoFrame.promptForSave prompts for saving the @edit file, *not* the .leo file.
-
-QQQQQ
-
-I forgot to mention one detail.  There is no way to save the .leo file itself in quick edit/save mode.  If you want to do that, simply add any other node at the top level of the outline.  This ends quick edit/save mode.  When you save or close the outline, Leo will prompt you for the name of the .leo file as usual.
-
-Edward
-</t>
-<t tx="ekr.20120229094652.14588">The following were changed:
-
-c.save,
-at.writeOneAtEditNode,
-at.openFileForWriting
-leoFrame.promptForSave
-</t>
+Here is the wishlist bug: https://bugs.launchpad.net/leo-editor/+bug/381527</t>
 <t tx="ekr.20120229094652.14589">Updating Sphinx and using new .js files did the trick.
 </t>
 <t tx="ekr.20120229094652.14590"></t>
@@ -1556,14 +1174,8 @@ data!
 A great day for Leo.
 </t>
 <t tx="ekr.20120229094652.14595"></t>
-<t tx="ekr.20120229094652.14596">A big improvement.  There is no longer any need for @@buton, etc.: just put under an @ignore node.
-
-test.leo illustrates the new organization.
-</t>
+<t tx="ekr.20120229094652.14596">There is no longer any need for @@buton, etc.: just put under an @ignore node.</t>
 <t tx="ekr.20120229094652.14597">http://ethanschoonover.com/solarized
-
-
-- 
 
 </t>
 <t tx="ekr.20120229094652.14598">Made this optional, and configurable.
@@ -1573,7 +1185,9 @@ c.focus_border_width    = c.config.getInt('focus_border_width') or 1 # pixels
 c.use_body_focus_border = c.config.getBool('use_body_focus_border',default=True)
 c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
 </t>
-<t tx="ekr.20120229094652.14599">Some editors, such as Eclipse, vim, this Webkit form I type in, and even Word,
+<t tx="ekr.20120229094652.14599">Applied patch for bug 800399: Leo should have smart word jumps/deletes.
+
+Some editors, such as Eclipse, vim, this Webkit form I type in, and even Word,
 allow to jump over, select and delete words, especially those containing or
 surrounded by special characters, in a smarter way than just "going to the
 beginning of the word before" (back-word) or "going to the end of the next word"
@@ -1659,13 +1273,13 @@ The new class is xmlScanner and htmlScanner in leoImport.py.
 <t tx="ekr.20120229094652.14601">Leo's home page now shows the latest postings on the leo-editor group.
 </t>
 <t tx="ekr.20120229094652.14602">The new command names and default bindings are::
-    
+
     run-all-unit-tests-externally       = None
     run-all-unit-tests-locally          = None
-    run-marked-unit-tests-externally    = None
+    run-marked-unit-tests-externally    = Alt-4 # The new standard
     run-marked-unit-tests-locally       = None
-    run-selected-unit-tests-externally  = None
-    run-selected-unit-tests-locally     = Alt-4
+    run-selected-unit-tests-externally  = Alt-5 # The new standard
+    run-selected-unit-tests-locally     = None
 </t>
 <t tx="ekr.20120229094652.14603">1. Removing the signon message:
 
@@ -1742,7 +1356,8 @@ Added special-case code to findAllUnitTestNodes.
 </t>
 <t tx="ekr.20120229094652.14618">print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
 print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
-</t>
+
+Improved print-commands &amp; print-bindings: don't print 'all'</t>
 <t tx="ekr.20120229094652.14619">Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 
 This causes the entire headline row to be shown when select, a big improvement, imo.
@@ -1770,296 +1385,19 @@ fc.writeDirtyAtFileNodes
 
 3. Disabled runOpenFileDialog and runSaveFileDialog during unit testing.
 </t>
-<t tx="ekr.20120229094652.14622">- Improved autocompletion list:
-    don't print 'all' in bindings.
-    print bindings first
-    pad bindings properly, as is done in print-commands/bindings.
-    
-- Improved print-commands &amp; print-bindings: don't print 'all'
-
-- Simplfied the code in various ways.
+<t tx="ekr.20120229094652.14622">don't print 'all' in bindings.
+print bindings first
+pad bindings properly, as is done in print-commands/bindings.
 </t>
-<t tx="ekr.20120229094652.14625">The clone-find-all command includes nodes only once: if a
-node's ancestor appears in the list, the node is not include
-again in the top-level list.
-
-The new clone-find-all-flattened command includes every found node
-in the top-level list of nodes. I find this less confusing.
-</t>
-<t tx="ekr.20120229094652.14626">def cloneFindAll (self,event):
-
-    c = self.c ; k = self.k ; tag = 'clone-find-all'
-    state = k.getState(tag)
-
-    if state == 0:
-        w = self.editWidget(event) # sets self.w
-        if not w: return
-        self.setupArgs(forward=None,regexp=None,word=None)
-        # Init the pattern from the search pattern.
-        self.stateZeroHelper(
-            event,tag,'Clone Find All: ',self.cloneFindAll)
-    else:
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        self.generalSearchHelper(k.arg,cloneFindAll=True)
-        c.treeWantsFocus()
-        
-</t>
-<t tx="ekr.20120229094652.14627">def cloneFindAllCommand (self,event=None):
-
-    self.setup_command()
-    self.clone_find_all = True
-    self.findAll()
-    self.clone_find_all = False
-    
-def cloneFindAllFlattenedCommand (self,event=None):
-
-    self.setup_command()
-    self.clone_find_all = True
-    self.clone_find_all_flattened = True
-    self.findAll()
-    self.clone_find_all = False
-    self.clone_find_all_flattened = False
-</t>
-<t tx="ekr.20120229094652.14628">def cloneFindAllFlattened (self,event):
-
-    c = self.c ; k = self.k ; tag = 'clone-find-all-flattened'
-    state = k.getState(tag)
-
-    if state == 0:
-        w = self.editWidget(event) # sets self.w
-        if not w: return
-        self.setupArgs(forward=None,regexp=None,word=None)
-        # Init the pattern from the search pattern.
-        self.stateZeroHelper(
-            event,tag,'Clone Find All Flattened: ',self.cloneFindAllFlattened)
-    else:
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        self.generalSearchHelper(k.arg,cloneFindAllFlattened=True)
-        c.treeWantsFocus()
-</t>
-<t tx="ekr.20120229094652.14629">def changeAll(self,event=None):
-    '''Execute the 'Change All' command with the settings shown in the Find tab.'''
-    self.getHandler().changeAll(event)
-
-def cloneFindAll (self,event):
-    '''Do search-with-present-options and print all matches in the log pane. It
-    also creates a node at the beginning of the outline containing clones of all
-    nodes containing the 'find' string. Only one clone is made of each node,
-    regardless of how many clones the node has, or of how many matches are found
-    in each node.'''
-    self.getHandler().cloneFindAll(event)
-    
-def cloneFindAllFlattened (self,event):
-    self.getHandler().cloneFindAllFlattened(event)
-
-def findAll            (self,event):
-    '''Do search-with-present-options and print all matches in the log pane.'''
-    self.getHandler().findAll(event)
-
-def replaceString      (self,event):
-    '''Prompts for a search string. Type &lt;Return&gt; to end the search string. The
-    command will then prompt for the replacement string. Typing a second
-    &lt;Return&gt; key will place both strings in the Find tab and executes a **find**
-    command, that is, the search-with-present-options command.'''
-    self.getHandler().replaceString(event)
-
-def reSearchBackward   (self,event):
-    '''Do a reverse regex search.'''
-    self.getHandler().reSearchBackward(event)
-
-def reSearchForward    (self,event):
-    '''Do a forward regex search.'''
-    self.getHandler().reSearchForward(event)
-
-def searchBackward     (self,event):
-    '''Do a backward plain search.'''
-    self.getHandler().searchBackward(event)
-
-def searchForward      (self,event):
-    '''Do a forward plain search.'''
-    self.getHandler().searchForward(event)
-
-def wordSearchBackward (self,event):
-    '''Do a backward word-only search.'''
-    self.getHandler().wordSearchBackward(event)
-
-def wordSearchForward  (self,event):
-    '''Do a forward word-only search.'''
-    self.getHandler().wordSearchForward(event)
-
-def searchWithPresentOptions (self,event):
-    '''Prompts for a search string. Typing the &lt;Return&gt; key puts the search
-    string in the Find tab and executes a search based on all the settings in
-    the Find tab. Recommended as the default search command.'''
-    self.getHandler().searchWithPresentOptions(event)
-</t>
-<t tx="ekr.20120229094652.14630">def generalSearchHelper (self,pattern,cloneFindAll=False,cloneFindAllFlattened=False,findAll=False):
-
-    c = self.c
-
-    self.setupSearchPattern(pattern)
-
-    c.widgetWantsFocusNow(self.w)
-
-    self.finder.p = self.c.p
-    self.finder.v = self.finder.p.v
-
-    if findAll:
-        self.finder.findAllCommand()
-    elif cloneFindAll:
-        self.finder.cloneFindAllCommand()
-    elif cloneFindAllFlattened:
-        self.finder.cloneFindAllFlattenedCommand()
-    else:
-        # This handles the reverse option.
-        self.finder.findNextCommand()
-</t>
-<t tx="ekr.20120229094652.14631">def getPublicCommands (self):
-
-    return {
-        'clone-find-all':                       self.cloneFindAll,
-        'clone-find-all-flattened':             self.cloneFindAllFlattened,
-        
-        'change':                               self.findTabChange,
-        'change-all':                           self.changeAll,
-        'change-then-find':                     self.findTabChangeThenFind,
-        
-        'find-all':                             self.findAll,
-        'find-clone-all':                       self.cloneFindAll, # Synonym.
-        'find-clone-all-flattened':             self.cloneFindAllFlattened, # Synonym.
-        'find-next':                            self.findTabFindNext,
-        'find-prev':                            self.findTabFindPrev,
-
-        'find-tab-hide':                        self.hideFindTab, # new name
-        'find-tab-open':                        self.openFindTab, # new name
-
-        'isearch-forward':                      self.isearchForward,
-        'isearch-backward':                     self.isearchBackward,
-        'isearch-forward-regexp':               self.isearchForwardRegexp,
-        'isearch-backward-regexp':              self.isearchBackwardRegexp,
-        'isearch-with-present-options':         self.isearchWithPresentOptions,
-
-        'replace-string':                       self.replaceString,
-
-        're-search-forward':                    self.reSearchForward,
-        're-search-backward':                   self.reSearchBackward,
-
-        'search-again':                         self.findAgain,
-        'search-forward':                       self.searchForward,
-        'search-backward':                      self.searchBackward,
-        'search-with-present-options':          self.searchWithPresentOptions,
-
-        'set-find-everywhere':                  self.setFindScopeEveryWhere,
-        'set-find-node-only':                   self.setFindScopeNodeOnly,
-        'set-find-suboutline-only':             self.setFindScopeSuboutlineOnly,
-
-        'show-find-options':                    self.showFindOptions,
-
-        'toggle-find-collapses-nodes':          self.toggleFindCollapesNodes,
-
-        'toggle-find-ignore-case-option':       self.toggleIgnoreCaseOption,
-        'toggle-find-in-body-option':           self.toggleSearchBodyOption,
-        'toggle-find-in-headline-option':       self.toggleSearchHeadlineOption,
-        'toggle-find-mark-changes-option':      self.toggleMarkChangesOption,
-        'toggle-find-mark-finds-option':        self.toggleMarkFindsOption,
-        'toggle-find-regex-option':             self.toggleRegexOption,
-        # 'toggle-find-reverse-option':           self.toggleReverseOption,
-        'toggle-find-word-option':              self.toggleWholeWordOption,
-        'toggle-find-wrap-around-option':       self.toggleWrapSearchOption,
-
-        'word-search-forward':                  self.wordSearchForward,
-        'word-search-backward':                 self.wordSearchBackward,
-    }
-</t>
-<t tx="ekr.20120229094652.14632">def findAll(self):
-
-    trace = False and not g.unitTesting
-    c = self.c ; w = self.s_ctrl ; u = c.undoer
-    undoType = 'Clone Find All Flattened' if self.clone_find_all_flattened else 'Clone Find All'
-    if not self.checkArgs():
-        return
-    self.initInHeadline()
-    if self.clone_find_all:
-        self.p = None # Restore will select the root position.
-    data = self.save()
-    self.initBatchCommands()
-    skip = {} # Nodes that should be skipped.
-        # Keys are vnodes, values not important.
-    count,found = 0,None
-    if trace: g.trace(self.clone_find_all_flattened,self.p)
-    while 1:
-        pos, newpos = self.findNextMatch() # sets self.p.
-        if pos is None: break
-        if self.clone_find_all and self.p.v in skip:
-            continue
-        count += 1
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if self.clone_find_all:
-            if not skip:
-                undoData = u.beforeInsertNode(c.p)
-                found = self.createCloneFindAllNode()
-            if self.clone_find_all_flattened:
-                skip[self.p.v] = True
-            else:
-                # Don't look at the node or it's descendants.
-                for p2 in self.p.self_and_subtree():
-                    skip[p2.v] = True
-            # Create a clone of self.p under the find node.
-            p2 = self.p.clone()
-            p2.moveToLastChildOf(found)
-        else:
-            self.printLine(line,allFlag=True)
-
-    if self.clone_find_all and skip:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-</t>
-<t tx="ekr.20120229094652.14633">def createCloneFindAllNode(self):
-    
-    c = self.c
-    oldRoot = c.rootPosition()
-    found = oldRoot.insertAfter()
-    found.moveToRoot(oldRoot)
-    c.setHeadString(found,'Found: ' + self.find_text)
-    return found
+<t tx="ekr.20120229094652.14625">The clone-find-all command includes nodes only once: if a node's ancestor
+appears in the list, the node is not include again in the top-level list.
+The new clone-find-all-flattened command includes every found node in the
+top-level list of nodes. I find this less confusing.
 </t>
 <t tx="ekr.20120229094652.14757"></t>
 <t tx="ekr.20120229094652.14758">https://bugs.launchpad.net/leo-editor/+bug/800157
 
-In a new file containing only a "NewHeadline" and that being selected, execute:
-
-copy-node
-insert-child
-&lt;&lt;enter&gt;&gt;
-undo
-paste-retaining-clones
-
-Leo's UI freezes and loops forever with 100% CPU.
-
-Note: If one does not undo, Leo prints "Invalid paste: nodes may not descend
-from themselves". I guess the undo circumvents such a check. However, that
-should not be the case, as paste-retaining-clones inserts the clones _after_ and
-not as children of the selected node "NewHeadline".
-
-I guess that the undo forgets to set the selection back to "NewHeadline", so
-that Leo tries to insert the clones after the undone child node - therefore as
-child of "NewHeadline".
-
-====================
-
-EKR: only getLeoOutlineFromClipboar calls checkPaste.
-</t>
+Fixed at rev 5077.</t>
 <t tx="ekr.20120229094652.14759">The code that marks descendant @&lt;file&gt; nodes dirty now tests
 p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
 </t>
@@ -2201,10 +1539,7 @@ common leading part the longer prefix appears first in the lists.
 </t>
 <t tx="ekr.20120229094652.14786">https://bugs.launchpad.net/leo-editor/+bug/823601
 </t>
-<t tx="ekr.20120229094652.14787">A temporary fix while waiting for Terry's css work.
-
-Here's how it works:  code that wants to set a particular part of a
-widget's style sheet calls::
+<t tx="ekr.20120229094652.14787">Code that wants to set a particular part of a widget's style sheet calls::
 
    g.app.gui.update_style_sheet(w,key,value)
 
@@ -3731,20 +3066,18 @@ c.redraw()
        levels = levels[0:-1]
 </t>
 <t tx="ekr.20120229094652.15134"></t>
-<t tx="ekr.20120229094652.15135">http://groups.google.com/group/leo-editor/browse_thread/thread/f13fadac68eec41b/9124ba6d733ecbad
-leoInspect: a hobby with a future?
+<t tx="ekr.20120229094652.15135">The leoInspect module provides answers to questions about Python source
+code. leoInspect is an elegant and easy-to-use front end for Python's AST
+(Abstract Syntax Tree) trees *and* a window into a richly connected set of
+semantic data built *from* AST trees.
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/62f0e7b84a25e0d0/39f848ad8a96bcbc
-leoInspect: remarkable collapse in complexity and attempted assessment
-
-</t>
+For details, see
+file://LeoDocs.leo#--&gt;Users%20Guide--&gt;Intermediate%20Topics--&gt;The%20leoInspect%20Module</t>
 <t tx="ekr.20120229094652.15138">http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
 
-Leo now reports bzr version numbers and dates more accurately.
+Leo now reports bzr version numbers and dates automatically.  Very important.
 </t>
-<t tx="ekr.20120229094652.15139">
-
-Note: in rev 4990, the g.app.newCommander method (formerly called
+<t tx="ekr.20120229094652.15139">Note: in rev 4990, the g.app.newCommander method (formerly called
 g.app.newLeoCommanderAndFrame) also returns a single value (a
 Commander) rather than the tuple (c,c.frame). 
 </t>
@@ -3846,106 +3179,6 @@ Some have not been fully implemented.  Getting them all to work is a
 big part of the rewrite of Leo's config, loading and key-handling
 code.
 
-===== LoadManager
-
-This class handles all the messy details of loading .leo files at
-startup.  That's its *purpose*.
-
-At the code level, it encapsulates almost all the code in runLeo.py,
-as well as some methods in leoGlobals.py that really belong somewhere
-else.  Creating a class simplifies the code to a surprising degree: 5
-or 6 ivars of the class represent command-line options.  These ivars
-are always available: there is no need to pass them around as
-arguments.
-
-Defining a new class means that it might be possible to reuse this
-code in the leoBridge module, which would eliminate a lot of duplicate
-code.
-
-===== ModeController and ModeInfo
-
-The ModeController class represents a collection of modes.  The
-ModeInfo class represents a single mode.
-
-Without these classes, the code in leoKeys.py is extremely hard to
-understand.  In fact, the present code is a perfect example of the
-problems with procedural programming: client code is burdened with
-knowing way too many details about matters that it shouldn't have to
-know about.  Furthermore, that data itself is hard to understand:
-it's too "raw".  These classes provide "identity" for data.  The value
-of repr(aModeInfo) is surprisingly large.
-
-===== LogManager
-
-This class represents the global log.  It hides the details of the log
-from the g.app class and several other pieces of code.
-
-At present, the interface to this class is procedural.  That is, the
-present g.app methods that will be moved into this class have a
-procedural rather than descriptive nature.  I'm not sure how much this
-will change, but creating this class may create opportunities that
-were not apparently previously.
-
-===== KeyStroke and ShortcutInfo
-
-I've discussed these previously.  The KeyStroke class is a wrapper for
-plain strings.  It's most important attribute is its *identity*.  It
-announces that its contents is a canonicalized value, not a raw user
-settings string or any other kind of data associated with key
-handling.
-
-Similar remarks apply to ShortcutInfo objects.  Their identity
-clarifies the code.  The former code used g.bunches.  In complex code
-such as leoKeys.py, such anonymous objects really obfuscate matters.
-
-===== EditCommandsManager
-
-I wrote and tested this class last night.  It solves a problem that
-has been annoying me ever since I created leoEditCommands.py.  The
-problem is this:  without this class the classesList has to be defined
-at the end of the module, after all classes have been imported.
-Worse, several module-level methods were needed to manage the
-classesList.
-
-In the new scheme, each Commander creates an EditCommandsManager, and
-the code that previously had to call the module-level method
-leoEditCommands.x(c) now simply calls c.editCommandManager.x().  This
-is much cleaner and avoids several very ugly imports.  Which brings me
-to...
-
-===== Avoiding imports of Leo files
-
-I would like to avoid having Leo's modules import each other wherever
-possible.  This would simplify Leo's startup process considerably.
-
-At present, the ctor for the Commands class imports many modules.
-This is essential to break what would otherwise be circular
-dependencies among Python imports.  We can extend this pattern by
-creating more classes, as was done with the EditCommandsManager class.
-
-I'm not sure exactly how this will play out, but removing circular
-imports between Leo's module seems like a worthy goal.  The leoGlobals
-module is an important exception.  All of Leo's modules do::
-
-   import leo.core.leoGlobals as g
-
-To make this work, it is *essential* that leoGlobals.py import *no*
-other Leo modules.
-
-===== A new (limited!) use for section references
-
-I am going to create a new section in leoGlobals.py called &lt;&lt; global
-switches &gt;&gt;  It will contain code such as:
-
-   new_load = False # True: .leo files are loaded at most once.
-   if new_load: print('***** new_load')
-
-   new_modes = False # True: use ModeController and ModeInfo classes.
-   if new_modes: print('***** new_modes')
-
-This section is useful because I can clone it.  I can then enable and
-disable switches in the clone, without having to keep "@file
-leoGlobals.py" visible.  Very handy.
 </t>
 <t tx="ekr.20120229094652.15143"></t>
 <t tx="ekr.20120229094652.15144">leoSettings.leo:
@@ -4041,43 +3274,27 @@ stylesheet for c.frame.top.leo_ui) remains unchanged.
 &gt; and b) panic-inducing, but this may be a tolerable exception.  We
 &gt; shall see.
 </t>
-<t tx="ekr.20120229094652.15153">groups.google.com/group/leo-editor/browse_thread/thread/3666397da2a0d05f/758071d6d9516ab9
+<t tx="ekr.20120229094652.15153">http://groups.google.com/group/leo-editor/browse_thread/thread/3666397da2a0d05f/758071d6d9516ab9
 
 The right-click context menu on the tabs in the tabbed window mode (the
-default) has a 'Detach' option, if there's more than one outline / tab,
-and a Re-attach all option, if there's a detached outline window
-out there.
+default) has a 'Detach' option, if there's more than one outline/tab, and
+a Re-attach all option, if there's a detached outline window out there.
 
-Now there's also 'Horizontal tile', and 'Vertical tile', which detach
-the tab and then tile its window with the window from which it was
-detached.
+Now there's also 'Horizontal tile', and 'Vertical tile', which detach the
+tab and then tile its window with the window from which it was detached.
 
-This is very helpful for moving nodes between outlines, I was
-rearranging the windows by hand and setting one to 'always on top' with
-the window manager before.  Note: there's a @setting to determine
-whether dragging nodes between outlines copies or moves them.
+This is very helpful for moving nodes between outlines, I was rearranging
+the windows by hand and setting one to 'always on top' with the window
+manager before. Note: there's a @setting to determine whether dragging
+nodes between outlines copies or moves them.
 
-Depending on your OS / window manager, tiling / placement may be
-somewhat off, and may work better with or without the window being
-maximized before tiling, you'll have to experiment.
+Depending on your OS / window manager, tiling / placement may be somewhat
+off, and may work better with or without the window being maximized before
+tiling, you'll have to experiment.
 
-You'd think it would be straight forward for Qt to ask the
-window-manager where the window is now, and then tell it to put it
-somewhere specific, but apparently a lot of window-managers regard this
-as none of Qt's business.
-
-=====
-
-&gt; Now there's also 'Horizontal tile', and 'Vertical tile', which detach
-&gt; the tab and then tile its window with the window from which it was
-&gt; detached.
-
-BEHAVIOR CHANGE: to make the above new feature more useful, I've
-changed what happens when you close an outline window created by
-detaching a tab.  Before the outline was closed (with prompt for save
-in necessary).  Now the outline's just re-attached as a tab.  This
-means it's now possible to reattach just one outline, rather than
-having to use the 'reattach all' option. 
+When you close an outline window created by detaching a tab the outline is
+just re-attached as a tab. This means it's now possible to reattach just
+one outline, rather than having to use the 'reattach all' option.
 </t>
 <t tx="ekr.20120229094652.15157"></t>
 <t tx="ekr.20120229094652.15158">After so many years of confusion the problem is now apparent:
@@ -4128,18 +3345,12 @@ nothing more I can do.
 <t tx="ekr.20120229094652.15167"></t>
 <t tx="ekr.20120229094652.15168"></t>
 <t tx="ekr.20120229094652.15169"></t>
-<t tx="ekr.20120229094652.15170"></t>
 <t tx="ekr.20120229094652.15172"></t>
 <t tx="ekr.20120229094652.15173">@language rest
 @pagewidth 75</t>
 <t tx="ekr.20120229094652.15174"></t>
-<t tx="ekr.20120229094652.15175"></t>
 <t tx="ekr.20120229094652.15176"></t>
 <t tx="ekr.20120229094652.19777">- open-with hook has changed: it now uses a "d" arg.</t>
-<t tx="ekr.20120229094652.19778">The d argument to the open-with event handlers is a python
-dictionary whose keys are all the tags specified by the user
-in the body of the @open-with node.
-</t>
 <t tx="ekr.20120229173025.20633">http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
 
 Ever find that you have a whole lot of:
@@ -4263,241 +3474,6 @@ sc.createIconButton(
     statusLine = 'Make filter button',
     bg = "LightBlue"
 )</t>
-<t tx="ekr.20120229173025.20636">http://groups.google.com/group/leo-editor/browse_thread/thread/86593fb9543afb66/b888d149d75a9c77
-
-The following are mostly notes to myself (and to future maintainers).
-Feel free to ignore.
-
-Rev 4972 demonstrates that the KeyStroke class can indeed distinguish
-between "raw" user settings and the "canonicalized" form used
-throughout Leo.  Indeed, the ability to explicitly distinguish between
-the two, using type checking, has already substantially clarified and
-simplified the code.
-
-BTW, this is in no way a violation of OO principles.  The code is not
-dispatching on the type of objects, it is merely enforcing vital
-consistency checks.  This code is complex: confusion about the types
-of objects is intolerable.  Happily, the resulting clarity allows the
-code to be substantially simpler than it would otherwise be, which in
-turn clarifies the code further, and so on...
-
-Part 1: This work is vital
-
-As described below, the forthcoming work will lead to a cascade of
-other simplification.  These simplifications are important for at
-least three, reasons:
-
-1. The code must be simplified so that future maintainers (including
-me) will have an easier time of it.
-
-2. The present code provides no real help in creating unit tests that
-test how Leo handles keystrokes.
-
-3. Simplifying the code will provide a more solid foundation for vim-
-related bindings.
-
-Part 2: Notes about the KeyStroke class
-
-Objects of the KeyStroke class can be used *exactly* as a strings may
-be used:
-
-A.  KeyStroke objects may be used as dictionary keys, because they
-have __hash__ methods and all the so-called rich comparison methods:
-__eq__, __ne__, __ge__, __gt__, __le__ and __lt__.  Note that
-KeyStroke objects may be compared with other KeyStroke objects,
-strings and None.
-
-B. At present, KeyStroke objects supports the find, lower and
-startswith methods.  This simplifies the code substantially: we can
-apply these methods to either strings or KeyStroke objects, so there
-is no need to create different versions of the code depending on the
-value of g.new_strokes.
-
-However, having the KeyStroke class support string methods is bad
-design.  Indeed, it is a symptom that the client code that uses
-KeyStroke objects knows too much about the internals of KeyStroke
-objects.  Instead, the KeyStroke class should have higher-level
-methods that use s.find, s.lower and s.startswith internally.
-
-You could say that the fact that code in leoKeys.py calls s.find,
-s.lower and s.startswith is a symptom of non OO programming.  The
-internal details of settings and strokes "pollutes" the code.  This
-must be fixed.  This will likely create opportunities for further
-simplifications.
-
-Part 3: Other design changes
-
-The present work, enabled and disabled with g.new_strokes, has been a
-resounding success.  The next steps will be as follows:
-
-Better packaging.
-
-g.new_strokes, g.isStroke and g.isStrokeOrNone should be defined in
-leoKeys.py, not leoGlobals.py.
-I knew from the start that such global names were only a temporary
-expedient.
-
-Now I know where they should go. leoKeys.py, not leoConfig.py, is the
-proper place to handle all the details about key bindings.  Indeed the
-code in leoConfig.py simply parses user key settings into *strings*.
-These raw strings must be converted to KeyStroke objects by
-leoKeys.py.
-
-As a result, the KeyStroke class (and the ShortcutInfo class?) should
-be defined in leoKeys.py, not leoConfig.py.  To make this work, we'll
-want to create several factory methods: k.makeKeyStroke and
-k.makeShortcutInfo.
-
-Better separation of concerns.
-
-The Qt key input code can be hugely simplified by calling a new
-k.makeKeyStrokeFromData factory method.  At present, the Qt key input
-code knows *all* the details of  the format of *canonicalized*
-settings. This is absolutely wretched design.
-
-Instead, the Qt input key code should simply pass the key modifiers
-and other key information to k.makeKeyStrokeFromData, in a some kind
-of "easy" format.  For example, the Qt input key code would represent
-the internal Qt modifiers as lists of strings like "alt", "ctrl",
-"meta", "shift".  k.makeKeyStrokeFromData would then create a *user*
-setting from the components, and then call k.strokeFromSetting to
-complete the transformation.
-
-As I said in another thread, the present Qt input key code is
-entangled with other code.  I'll have to disentangle the code before
-putting this scheme into effect.
-
-Other classes
-
-The easiest next step will be to integrate the presently unused
-ShortcutsDict class into the code. This will eliminate the wretched
-special cases for the _hash key.
-
-Part 4: Conclusions
-
-I have high hopes that we will see wave after wave of
-simplifications.  Much of the difficult work presently scattered in a
-non-OO fashion throughout leoKeys.py, leoConfig.py and leoQtGui.py
-will migrate to become KeyStroke methods (or methods of other
-classes).
-
-The KeyStroke class has already made possible vital type-related
-assertions.  Knowing *for sure* exactly what crucial data is and what
-it means is a huge step forward.   More steps are coming.
-
-Edward 
-
-=====
-
-&gt; Why not just have .s attribute in KeyStroke, that contains the string
-&gt; version?
-
-A good question.  Indeed, all Keystroke objects ks do have an s ivar.
-
-Experience (that is, ugly code) has shown that *during* the transition
-we don't want to have two versions of the code, one using stroke (a
-string) and the other using ks.s.
-
-*After* the transition, that is, once the new_strokes switch goes
-away, we could, in fact, use ks.s instead of ks.  However, it's
-cleaner just to use ks and not have client code know about ks.s.
-
-More importantly, too much code manipulates stroke (or ks.s) objects.
-This is a symptom that the details key handling (whether represented
-as a string or as a KeyStroke) have "bled" into the areas of the
-leoKeys code where they do not belong.
-
-This is far from a theoretical problem.  A lot of code in leoKeys.py
-deals with the picky details of the representation of key strokes.
-This is a great violation of the Don't Repeat Yourself principle and
-makes the code "sclerotic": rigid and inflexible.
-
-I am convinced that the present work will greatly simplify what is, at
-present, by far the most difficult and poorly designed part of Leo.  A
-capable KeyStroke class is a very important first step.  I'll say more
-about this class in another thread. 
-
-=====
-
-&gt; A good question.  Indeed, all Keystroke objects ks do have an s ivar.
-
-I forgot the most important reason in my reply.  The reasons I gave
-all were code-level responses, but the most important reason is that
-is truly impossible to understand the key code without knowing whether
-an object is a string representing a user setting or the canonicalized
-version used in Leo's core, that is, a KeyStroke object.  Using ks.s
-instead of ks destroys precisely the information needed to understand
-the code.
-
-Again, this is not a theoretical concern.  The key code now contains
-assertions of the form::
-
-    assert g.isStroke(stroke)
-or
-    assert g.isStrokeOrNone(stroke)
-
-Getting these assertions to pass in *all* situations required several
-important revisions of the code.  The code that makes the assertions
-pass is "innocuous", that is, almost invisible in the mass of code,
-but obviously, these small pieces of code are vital.
-
-The present code highlights these changes: look for g.new_strokes,
-especially lines marked with ####.  These markers will be cleaned away
-eventually, but the asserts will remain forever.
-
-Furthermore, the asserts suggested further simplifications.  It was a
-tricky process, and it will be ongoing as I simplify the code further.
-
-Edward 
-
-=====
-
-&gt; it is truly impossible to understand the key code without knowing whether an object is a string representing a user setting or the canonicalized version used in Leo's core, that is, a KeyStroke object.
-
-There is another set of strings floating around the key-handling code,
-namely Leo's emacs-like command names. I am considering defining a new
-class, say k.CommandName, to wrap such names.  If I do that, I'll base
-the k.KeyStroke and k.CommandName classes on a common g.TypedString
-class.
-
-I am about to convert many of Leo's key-handling dictionaries to
-g.TypedDict objects.  Using TypedDicts will make it impossible to make
-invalid assignments to Leo's crucial key dictionaries, especially if I
-create the CommandName class.  In effect, g.TypedDict objects will
-enforce the constraints given in the comments in &lt;&lt; about key dicts &gt;&gt;
-in leoKeys.py.
-
-This machinery will allow further type-related assertions.  Details
-omitted, but they will be quite useful, both as sanity checks and as
-documentation.  The TypedDict class enforces its own type constrains
-automatically, so the crucial type checks will not unduly clutter the
-code.
-
-Edward 
-
-=====
-
-&gt; I am about to convert many of Leo's key-handling dictionaries to
-&gt; g.TypedDict objects.  Using TypedDicts will make it impossible to make
-&gt; invalid assignments to Leo's crucial key dictionaries.
-
-This has been a great success.  I also defined the g.TypedDictOfLists
-class, where the values are lists of a known type.  These classes are
-useful for more than type checking:  they have unique names and a dump
-method that dumps the dict in an easy-to-read format that includes the
-name, and valid types for keys and values.
-
-At present, these dicts are *not* subclasses of {}, which has its
-pluses and minuses.  These are quite simple classes, so at present
-only the "for key in d.keys()" idiom is supported, the "for key in d"
-idiom is not supported.
-
-Plain dicts do have their uses, but for "long-lived" dicts, and dicts
-passed around between methods, I am beginning to regard plain dicts as
-being as ill-advised as g.Bunches.
-
-Leo's key dictionaries will always be complex, but basing them on the
-TypedDict class is a major improvement. </t>
 <t tx="ekr.20120313074006.14640">Rev 5051 contains a *major* improvement in Leo's abbreviation code.
 It is simpler, and more general than before.
 
@@ -4763,11 +3739,13 @@ Caveats:
 done "in the background". Correct implementation would be to activate
 the tab in order to bring attention to it. 
 </t>
-<t tx="ekr.20120313134250.14232">The open_with plugin no longer exists. Support for the
-open-with command is part of Leo's core.</t>
+<t tx="ekr.20120313134250.14232">The open_with plugin no longer exists. Support for the open-with command is
+now part of Leo's core.</t>
 <t tx="ekr.20120313134250.14294">@nocolor-node
 
 *** Important *** This was all done in Leo 4.9
+
+Allow section references in rst3 command.
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
@@ -6149,12 +5127,104 @@ def isSectionRef (self,s):
             self.writeHeadlineHelper(p)
     return result
 </t>
-<t tx="ekr.20120314095341.14215"></t>
 <t tx="ekr.20120314095341.14216">There no need to disable buttons and commands with \@@button
 or \@@command.
 </t>
 <t tx="ekr.20120315101404.14224">@pagewidth 70</t>
 <t tx="ekr.20120317150916.6165">Also, add the official command name.</t>
+<t tx="ekr.20120318075211.6163"></t>
+<t tx="ekr.20120318075211.6164"></t>
+<t tx="ekr.20120318075211.6165"></t>
+<t tx="ekr.20120318075211.6166"></t>
+<t tx="ekr.20120318075211.6167"></t>
+<t tx="ekr.20120318075211.6168">This class handles all the messy details of loading .leo files at startup.
+This class encapsulates almost all the code in runLeo.py, as well as some
+methods in leoGlobals.py that really belong somewhere else.
+
+Creating a class simplifies the code to a surprising degree: 5 or 6 ivars
+of the class represent command-line options. These ivars are always
+available: there is no need to pass them around as arguments.
+</t>
+<t tx="ekr.20120318075211.6169">The ModeController class represents a collection of modes. The ModeInfo
+class represents a single mode.
+
+Without these classes, the code in leoKeys.py is extremely hard to
+understand. In fact, the old code was a perfect example of the problems
+with procedural programming: client code was burdened with knowing way too
+many details about matters that it shouldn't have to know about.
+Furthermore, that data itself is hard to understand: it's too "raw". These
+classes provide "identity" for data. repr(aModeInfo) is surprisingly
+useful.</t>
+<t tx="ekr.20120318075211.6170">===== LogManager
+
+This class represents the global log.  It hides the details of the log
+from the g.app class and several other pieces of code.
+
+At present, the interface to this class is procedural.  That is, the
+present g.app methods that will be moved into this class have a
+procedural rather than descriptive nature.  I'm not sure how much this
+will change, but creating this class may create opportunities that
+were not apparently previously.
+
+</t>
+<t tx="ekr.20120318075211.6172">The KeyStroke class is a wrapper for plain strings. It's most important
+attribute is its *identity*. It announces that its contents is a
+canonicalized value, not a raw user settings string or any other kind of
+data associated with key handling.
+
+Similar remarks apply to ShortcutInfo objects. Their identity clarifies the
+code. The former code used g.bunches. In complex code such as leoKeys.py,
+such anonymous objects really obfuscate matters.
+
+</t>
+<t tx="ekr.20120318075211.6173">This class solves a problem that has been annoying me ever since I created
+leoEditCommands.py. The problem is this: without this class the classesList
+has to be defined at the end of the module, after all classes have been
+imported. Worse, several module-level methods were needed to manage the
+classesList.
+
+In the new scheme, each Commander creates an EditCommandsManager, and the
+code that previously had to call the module-level method
+leoEditCommands.x(c) now simply calls c.editCommandManager.x(). This is
+much cleaner and avoids several very ugly imports. Which brings me to...
+</t>
+<t tx="ekr.20120318075211.6174">Now, most modules import only leo.core.leoGlobals. This simplifies Leo's
+startup process considerably. This is something that I've wanted to do for
+a long time. To make this work, it is *essential* that leoGlobals.py import
+*no* other Leo modules.
+
+However, Leo's core still imports leo.core.leoNodes in order to create
+positions, vnodes, etc. It would be straightforward to eliminate these by
+creating g.app factory methods, but there is no urgent reason to do so.
+
+The ctor for the Commands class imports many modules. This is essential to
+break what would otherwise be circular dependencies among Python imports.
+We can extend this pattern by creating more classes, as was done with the
+EditCommandsManager class.
+</t>
+<t tx="ekr.20120318075211.6175">leoGlobals.py now contains a section called ``&lt;&lt; global switches &gt;&gt;``
+
+This contains global tracing switches.  Experience shows that leoGlobals.py
+is the most convenient place for such switches.  This section also contains
+switches that enable new code bases.  Recent examples were::
+
+   new_load = False # True: .leo files are loaded at most once.
+   if new_load: print('***** new_load')
+
+   new_modes = False # True: use ModeController and ModeInfo classes.
+   if new_modes: print('***** new_modes')
+</t>
+<t tx="ekr.20120318075211.6176"></t>
+<t tx="ekr.20120318075211.7524">The new command names and default bindings are::
+
+    run-all-unit-tests-externally       = None
+    run-all-unit-tests-locally          = None
+    run-marked-unit-tests-externally    = Alt-4 # The new standard
+    run-marked-unit-tests-locally       = None
+    run-selected-unit-tests-externally  = Alt-5 # The new standard
+    run-selected-unit-tests-locally     = None
+</t>
+<t tx="ekr.20120318135910.6111"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
