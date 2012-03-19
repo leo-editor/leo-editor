@@ -502,7 +502,7 @@
 </v>
 </v>
 <v t="ekr.20100805165051.7155"></v>
-<v t="ekr.20120319170934.7457"><vh>** Remove outline chapter</vh></v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -4233,7 +4233,6 @@ switches that enable new code bases.  Recent examples were::
 </t>
 <t tx="ekr.20120318135910.6111"></t>
 <t tx="ekr.20120318180219.6107"></t>
-<t tx="ekr.20120319170934.7457"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
