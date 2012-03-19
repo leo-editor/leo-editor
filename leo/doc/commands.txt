@@ -859,88 +859,73 @@ Here are various miscellaneous minibuffer commands::
     write-dirty-at-file-nodes
     write-missing-at-file-nodes
     write-outline-only
-.. @+node:EKR.20040524104904.100: *3* The File Menu
+.. @+node:EKR.20040524104904.100: *3* File commands
 .. @+node:EKR.20040524104904.101: *4* Loading, Saving and Reverting Files
--   The New command creates a new Leo main window.
+The ``new`` (Ctrl-N) command creates a new Leo main window. The
+``open-outline`` (Ctrl-O) command opens an existing Leo file and shows it
+in a main window. The ``close-window`` (Ctrl-F4) command closes the
+selected Leo window, giving you an opportunity to save your work if you
+haven't yet done so.
 
--   The Open command opens an existing Leo file and shows it in a main window.
+The ``save-file`` (Ctrl-S), ``save-file-as`` and ``save-file-to`` commands
+save the Leo window to a file. The ``save-files-as`` command changes the
+name of the outline being edited; the ``save-file-to`` command does not.
+The ``save-file-as-zipped`` command is the same as the ``save-file-as``
+command except that the resulting .leo file is compressed with Python's
+zipfile module. Similarly, the ``save-file-as-unzipped`` command is the
+same as the ``save-as`` command except that the resulting .leo file is not
+compressed. The ``save-file``, ``save-file-as`` and ``save-file-to``
+commands compress the file if it was originally compressed. **Note**: Leo
+writes files with .leo extension, regardless of whether the file is zipped
+or not. Zipped .leo files contain a single archive, whose name is the same
+as the .leo file itself. Outside of Leo you can change the extension to
+.leo.zip and use stuffit or other program to expand the .leo file contained
+within. The ``revert`` command reloads a file, discarding any changes made
+to the file since it was last saved.
 
--   The Close command closes the topmost Leo window,
-    giving you an opportunity to save your work if you haven't yet done so.
+The Recent Files menu shows a list of recently opened files. Choosing an
+item in this submenu opens the selected file or brings it to the front. The
+``clear-recent-files`` command deletes all entries in the Recent Files
+submenu except the most recent file. The files themselves are not affected,
+just the menu entries.
 
--   The Save, Save As and Save To commands save the Leo window to a file.
-    The Save As command changes the name of the outline being edited;
-    the Save To command does not.
+The following commands are located in the File:Read/Write menu...
 
-    The Save File As Zipped command is the same as the
-    Save As command except that the resulting .leo file is compressed with Python's zipfile module.
-    Similarly, the Save File As Unzipped command is the same as the Save As command
-    except that the resulting .leo file is not compressed.
-    The Save, Save As and Save To commands compress the file if it was originally compressed.
-    **Note**: Leo writes files with .leo extension, regardless of whether the file is zipped or not.
-    Zipped .leo files contain a single archive, whose name is the same as the .leo file itself.
-    Outside of Leo you can change the extension to .leo.zip and use stuffit or other program to expand the .leo file
-    contained within.
-
--   The Revert command reloads a file, discarding any changes made to the file since it was last saved.
-
--   The Recent Files command brings up a submenu containing a list of recently
-    opened files. Choosing an item in this submenu opens the selected file or brings
-    it to the front.
-
--   The Clear Recent Files command deletes all entries in the Recent
-    Files submenu except the most recent file. The files themselves are not
-    affected, just the menu entries.
-
-The following commands are located in the Read/Write menu, part of the File
-menu.
-
--   The Read Outline Only command reads an outline using only the .leo file, not any files derived
-    from @file nodes. This command is useful for reverting a project to a
-    previously saved state.
-
--   The Read @file Nodes command updates all @file nodes in an outline.
-    This ensures that the state of an outline matches all files derived
-    from @file nodes. 
-
--   The Write Outline Only command saves an outline without writing any @file
-    trees. Useful for inserting an @file node into an outline without modifying a
-    external file with the same name.
-
--   The Write @file Nodes command forces an update of all @file trees.
-
--   The Write Dirty @file Nodes command writes all @file trees that have been changed.
+The ``read-outline-only`` command reads an outline using only the .leo
+file, not any files derived from @file nodes. This command is useful for
+reverting a project to a previously saved state. The ``read-at-file-nodes``
+command updates all @file nodes in an outline. This ensures that the state
+of an outline matches all files derived from \@file nodes. The
+``write-outline-only`` command saves an outline without writing any \@file
+trees. Useful for inserting an @file node into an outline without modifying
+a external file with the same name. The ``write-at-file-nodes`` command
+forces an update of all @file trees. The ``write-dirty-at-file-nodes``
+command writes all @file trees that have been changed.
 .. @+node:EKR.20040524104904.102: *4* Communicating with external editors
-The Open With command allows you to communicate with external editor. When
-you select this command Leo creates a temporary file and invokes an external
-program. Leo periodically checks whether this temporary file has changed; Leo
-changes the corresponding node in the outline if so. You must create the entries
-in the Open With submenu. This would typically be done in a hook routine, using
-the createOpenWithMenuFromTable routine described in the child of this node. The
-@file mod_open_with.py node in LeoPlugins.leo gives a complete example
-of handling the Open With menu.
+The ``open-with`` command allows you to communicate with external editor.
+When you select this command Leo creates a temporary file and invokes an
+external program. Leo periodically checks whether this temporary file has
+changed; Leo changes the corresponding node in the outline if so. You must
+create the entries using an \@openwith in myLeoSettings.leo. See the
+documentation in leoSettings.leo.
 .. @+node:EKR.20040524104904.108: *4* Importing Files into Leo Outlines
-The Import File command imports a file in various ways depending on the
+The ``import-file`` command imports a file in various ways depending on the
 contents of the file. For plain files, the command creates an \@file node.
 If the file looks like an external file written by Leo, the import command
 will recreate the outline structure based on the sentinels in the file.
 This command can also read files writting in MORE outline format.
 .. @+node:EKR.20040524104904.109: *4* Exporting Files from Leo Outlines
--   The Outline To CWEB command creates a `CWEB`_ file from the selected outline.
-
--   The Outline TO noweb command creates a `noweb`_ file from the selected outline.
-
--   The Flatten Outline command creates a text file in MORE format from the selected outline.
-    See the previous section for a discussion of MORE format.
-
--   The Remove Sentinels command removes all sentinel lines from a file derived from an @file node.
-
--   The Weave Command formats the selected text and writes it to a file.
+The ``outline-to-cweb`` command creates a `CWEB`_ file from the selected
+outline. The ``outline-to-noweb`` command creates a `noweb`_ file from the
+selected outline. The ``flatten-outline`` command creates a text file in
+MORE format from the selected outline. The ``remove-sentinels`` command
+removes all sentinel lines from a file derived from an @file node. The
+``weave`` command formats the selected text and writes it to a file.
 .. @+node:EKR.20040524104904.110: *4* Quitting Leo
-The Quit command causes Leo to exit. You may also exit Leo by closing the
-main window. You will be prompted to save any file that has been altered but not
-saved.
-.. @+node:EKR.20040524104904.111: *3* The Edit Menu
+The ``exit-leo`` (Ctrl-Q or Alt-F4) command causes Leo to exit. You may
+also exit Leo by closing the main window. You will be prompted to save any
+file that has been altered but not saved.
+.. @+node:EKR.20040524104904.111: *3* Edit commands
 .. @+node:EKR.20040524104904.112: *4* Undoing changes
 Leo supports unlimited undo and redo. Think of actions that may be undone or
 redone as a string of beads. A "bead pointer" points to the present bead.
@@ -1111,7 +1096,7 @@ bracket matching the leftmost bracket. If a match is found, the entire range of
 characters delimited by the brackets is highlighted and the cursor is placed
 just to the left of the matching characters. Thus, executing this command twice
 highlights the range of matched characters without changing the cursor.
-.. @+node:EKR.20040524104904.143: *3* The Outline Menu
+.. @+node:EKR.20040524104904.143: *3* Outline commands
 .. @+node:EKR.20040524104904.144: *4*  Checking outlines
 -   The Check Outline command checks the outline for consistency.
 
@@ -1177,7 +1162,7 @@ highlights the range of matched characters without changing the cursor.
     Hoist commands may be nested.  
 
 -   The De-hoist command restores the outline.
-.. @+node:EKR.20040524104904.151: *3* The Window Menu
+.. @+node:EKR.20040524104904.151: *3* Window commands
 -   The Equal Sized Panes command adjusts the sizes of the outline and body
     panes so that they are the same height.
 -   The Cascade command cleans up the screen by cascading all Leo windows.
@@ -1192,7 +1177,7 @@ highlights the range of matched characters without changing the cursor.
     ratios may be changed using settings.
 -   The Open Compare Window command opens a dialog that allows you to compare
     two files, one containing sentinels and one not.
-.. @+node:EKR.20040524104904.157: *3* The Help Menu
+.. @+node:EKR.20040524104904.157: *3* Help commands
 -   The About Leo command puts up a dialog box showing the version of Leo.
 -   The Online Home Page command opens Leo's home page at http://webpages.charter.net/edreamleo/front.html.
 -   The Open Online Tutorial command opens Joe Orr's excellent ScreenBook tutorial at

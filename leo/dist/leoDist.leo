@@ -17,6 +17,7 @@
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
+<v t="ekr.20120319132945.1853"><vh>Leo 4.10 b1</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -97,7 +98,7 @@
 
 3. Search for copyright
 
-    Latest copyright date: 2011.
+    Latest copyright date: 2012.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
@@ -106,7 +107,7 @@ for commercial use (including resale). There is no GNU-like "copyleft"
 restriction. The Open Source Initiative board has voted to certify the
 MIT license as Open Source. This license is compatible with the GPL.
 
-Copyright (c) 1997-2011 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2012 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -144,9 +145,9 @@ Unzip the downloaded .zip file into the **unpacked folder** in your home directo
 The unpacked folder will be called something like leo-4-5.
 
 You can run Leo from your home directory.
-You can add  ~/leo-4-9 to your path, or you can create an alias that executes::
+You can add  ~/leo-4.10 to your path, or you can create an alias that executes::
 
-    python ~/leo-4-9/launchLeo.py
+    python ~/leo-4-10/launchLeo.py
 </t>
 <t tx="EKR.20040519090846.5">
 Installing Leo on Windows
@@ -155,7 +156,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.9-final.exe
+   LeoSetup-4.10-final.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -176,7 +177,7 @@ There are now two ways to install Leo on Windows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.9-final
+Version: 4.10-b1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -184,51 +185,35 @@ Author-email: edreamleo@charter.net
 License: Python
 Description:
     Leo is an outline-oriented IDE written in 100% pure Python.
-	Leo features a multi-window outlining editor, Python colorizing,
-	powerful outline commands and many other things, including 
-	unlimited Undo/Redo and an integrated Python shell(IDLE) window.
+    Leo features a multi-window outlining editor, Python colorizing,
+    powerful outline commands and many other things, including 
+    unlimited Undo/Redo and an integrated Python shell(IDLE) window.
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.9 final              June 21, 2011
+<t tx="EKR.20040519090846.9">@language rest
 
-Leo 4.9 final is now available at:
-http://sourceforge.net/projects/leo/files/
+Leo 4.10 b1                                 March 21, 2012
+
+Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
-See: http://webpages.charter.net/edreamleo/intro.html
+http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.9:
+The highlights of Leo 4.10:
 --------------------------
 
-- The Qt gui completely replaces the Tk gui--Qt gui now has all essential
-  features of Tk, including plugins.
-
-- Completed Leo's autocompleter.
-
-- The rendering pane can now display movies, html, svg images, etc.
-
-- The scrolledmessage plugin can now use the rendering pane.
-
-- Nodes may contain multiple @language directives.
-
-- Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
-  browser. 
-
-- Leo uses an @file node's extension by default if there is no @language
-  directive in effect.
-  
-- Unified extract and import commands.
-
-- Leo can now colorize multiple @language directives in a single node.
-
-- Plain up/down arrow keys in headline-editing mode select a new node.
-
-- New commands to insert, delete, change or print uA's.
-
-- Added namespace directive to .leo files.
-
-- Fixed many bugs, some important, most quite minor.
+- Leo optionally highlights the pane containing the focus.
+- Significantly improved Leo's abbreviation handling.
+- Much improved handling of URL's.
+- Leo's Open With menu now works.
+- Detached windows.
+- Leo now edit non-Leo files smoothly.
+- Better support for running unit tests externally.
+- The new leoInspect module answers questions about Python code.
+- Easier installation on MacOS.
+- Dozens of new and improved features and commands.
+- Fixed almost 70 bugs.
 
 Links:
 ------
@@ -338,7 +323,11 @@ on my overall programming quality of life than anything else out there
 in the software world (apart maybe from the Python language itself,
 and those who contribute Python modules to the world). -- David McNab
 </t>
-<t tx="ekr.20080825083632.262">Python's HOME environment variable specifies Leo's HOME directory.
+<t tx="ekr.20080825083632.262">
+Leo's HOME directory
+--------------------
+
+Python's HOME environment variable specifies Leo's HOME directory.
 See http://docs.python.org/lib/os-procinfo.html for details.
 
 Leo puts several files in your HOME/.leo directory:
@@ -651,7 +640,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.9-final' ##version
+version = '4.10-b1' ##version
 
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
@@ -1157,5 +1146,37 @@ zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
 zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 
 # assert g.os_path_exists(manifest)</t>
+<t tx="ekr.20120319132945.1853">@language rest
+
+Leo 4.10 b1                                         March 21, 2012
+
+Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
+
+Leo is a text editor, data organizer, project manager and much more.
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.10:
+---------------------------
+
+- Leo optionally highlights the pane containing the focus.
+- Significantly improved Leo's abbreviation handling.
+- Much improved handling of URL's.
+- Leo's Open With menu now works.
+- Detached windows.
+- Leo now edit non-Leo files smoothly.
+- Better support for running unit tests externally.
+- The new leoInspect module answers questions about Python code.
+- Easier installation on MacOS.
+- Dozens of new and improved features and commands.
+- Fixed almost 70 bugs.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/projects/leo/files/
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
 </tnodes>
 </leo_file>

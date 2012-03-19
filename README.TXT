@@ -1,42 +1,26 @@
-Leo 4.9 final              June 21, 2011
+@language rest
 
-Leo 4.9 final is now available at:
-http://sourceforge.net/projects/leo/files/
+Leo 4.10 b1                                 March 21, 2012
+
+Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
-See: http://webpages.charter.net/edreamleo/intro.html
+http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.9:
+The highlights of Leo 4.10:
 --------------------------
 
-- The Qt gui completely replaces the Tk gui--Qt gui now has all essential
-  features of Tk, including plugins.
-
-- Completed Leo's autocompleter.
-
-- The rendering pane can now display movies, html, svg images, etc.
-
-- The scrolledmessage plugin can now use the rendering pane.
-
-- Nodes may contain multiple @language directives.
-
-- Leo highlights URL's everywhere. Ctrl-click URL's opens them in your web
-  browser. 
-
-- Leo uses an @file node's extension by default if there is no @language
-  directive in effect.
-  
-- Unified extract and import commands.
-
-- Leo can now colorize multiple @language directives in a single node.
-
-- Plain up/down arrow keys in headline-editing mode select a new node.
-
-- New commands to insert, delete, change or print uA's.
-
-- Added namespace directive to .leo files.
-
-- Fixed many bugs, some important, most quite minor.
+- Leo optionally highlights the pane containing the focus.
+- Significantly improved Leo's abbreviation handling.
+- Much improved handling of URL's.
+- Leo's Open With menu now works.
+- Detached windows.
+- Leo now edit non-Leo files smoothly.
+- Better support for running unit tests externally.
+- The new leoInspect module answers questions about Python code.
+- Easier installation on MacOS.
+- Dozens of new and improved features and commands.
+- Fixed almost 70 bugs.
 
 Links:
 ------
