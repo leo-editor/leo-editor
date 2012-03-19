@@ -94,13 +94,8 @@
 <v t="ekr.20100808120531.4280"><vh>@file outline-commands.txt</vh></v>
 <v t="ekr.20100808120531.4283"><vh>@file nutshell.txt</vh></v>
 </v>
-<v t="EKR.20040524104904.26"><vh>Using Outlines</vh>
-<v t="ekr.20100805165051.7153"
-expanded="ekr.20050901101608,"><vh>@file outlines.txt</vh></v>
-</v>
-<v t="EKR.20040524104904.99"><vh>Using Leo's Commands</vh>
-<v t="ekr.20100805165051.7155"
-expanded="ekr.20050901101608.2,"><vh>@file commands.txt</vh></v>
+<v t="EKR.20040524104904.99"><vh>Using Leo</vh>
+<v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
@@ -506,14 +501,13 @@ expanded="ekr.20050901101608.2,"><vh>@file commands.txt</vh></v>
 <v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
 </v>
 </v>
-<v t="ekr.20100805165051.7155"
-expanded="ekr.20050901101608.2,"></v>
+<v t="ekr.20100805165051.7155"></v>
+<v t="ekr.20120319170934.7457"><vh>** Remove outline chapter</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
 <t tx="EKR.20040524104904.211"></t>
 <t tx="EKR.20040524104904.245"></t>
-<t tx="EKR.20040524104904.26"></t>
 <t tx="EKR.20040524104904.261"></t>
 <t tx="EKR.20040524104904.274"></t>
 <t tx="EKR.20040524104904.99"></t>
@@ -4239,6 +4233,7 @@ switches that enable new code bases.  Recent examples were::
 </t>
 <t tx="ekr.20120318135910.6111"></t>
 <t tx="ekr.20120318180219.6107"></t>
+<t tx="ekr.20120319170934.7457"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

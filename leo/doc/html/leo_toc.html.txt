@@ -21,7 +21,6 @@ Contents:
    slides
    installing
    intro
-   outlines
    commands
    customizing
    
