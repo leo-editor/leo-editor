@@ -2,12 +2,20 @@
 #@+node:tbrown.20070322113635: * @file bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
-''' Shows bookmarks in a pane.
+''' Open bookmarks in a list, and show bookmarks in a pane.
 
-**Important**: Leo's core now supports the basic functions
-related to URL's and bookmarks.
+Adds the ``bookmarks-open-bookmark`` command which opens the bookmark in the
+selected node **if** the node has an ancestor which contains ``@bookmarks``
+in its heading.  Useful for binding to double-click.
 
-The bookmarks_show command will add a tab or pane (if free_layout is enabled)
+Also ``bookmarks-open-node``, like ``bookmarks-open-bookmark`` but without
+the ancestor requirement.
+
+*Note:* bookmarks treats file urls missing the ``file://`` part as urls,
+which deviates from Leo's behavior elsewhere.  It also recognizes local UNLs
+like ``#ToDo-->Critical`` as urls.
+
+The ``bookmarks-show`` command will add a tab or pane (if free_layout is enabled)
 showing the bookmarks **in the current subtree** with unique colors. You can
 very quickly jump around between nodes in a file using this. The free_layout
 Action button context menu will also allow you to add one of these bookmark
@@ -51,6 +59,11 @@ def init():
     
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
+        
+        # temporary until double-click is bindable in user settings
+        if g.app.config.getBool('bookmarks-grab-dblclick'):
+            g.registerHandler('icondclick1', lambda t,k: open_bookmark(k))
+        
     else:
         g.es_print("Requires Qt GUI")
 
@@ -69,8 +82,55 @@ def onCreate(tag, keys):
         assert hasattr(c.free_layout,'get_top_splitter')
         
         BookMarkDisplayProvider(c)
+#@+node:tbrown.20120319172643.20276: ** lenient_url_from_node
+def lenient_url_from_node(p):
+    
+    url = g.getUrlFromNode(p)
+    
+    if not url:
+        # be lenient, check for file urls with no 'file://' part
+        test_urls = [
+            p.h.strip(),
+            p.b.strip().split('\n',1)[0].strip(),
+        ]
+        for i in test_urls:
+            if g.os_path_isfile(i.split('#', 1)[0]):
+                url = 'file://'+i
+                break
+        else:
+            for i in test_urls:
+                if '#' in i:  # could be a local UNL
+                    url = i
+                    break
+    return url
+#@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
+@g.command('bookmarks-open-bookmark')
+def open_bookmark(event):
+
+    p = event["c"].p
+    bookmark = False
+    for nd in p.parents():
+        if '@bookmarks' in nd.h:
+            bookmark = True
+            break
+    if bookmark:
+        open_node(event)
+        
+           
+@g.command('bookmarks-open-node')
+def open_node(event):
+    
+    c = event["c"]
+    p = c.p
+
+    url = lenient_url_from_node(p)
+
+    if url:
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrl(url,c=c,p=p)
+        g.doHook("@url2",c=c,p=p,v=p)
 #@+node:tbrown.20110712100955.39215: ** g.command('bookmarks-show')
-@g.command('bookmarks_show')
+@g.command('bookmarks-show')
 def bookmarks_show(event):
     
     if not use_qt: return 
@@ -142,10 +202,10 @@ class BookMarkDisplay:
 
         result,urls = [],[]
         for p in p.subtree():
-            s = strip(g.splitLines(p.b)[0]) if p.b else ''
+            s = lenient_url_from_node(p)
             h = strip(p.h)
             data = (h,s)
-            if s and g.isValidUrl(s) and data not in result and s not in urls:
+            if s and data not in result and s not in urls:
                 result.append(data)
                 urls.append(s)
 
