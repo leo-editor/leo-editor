@@ -95,10 +95,12 @@
 <v t="ekr.20100808120531.4283"><vh>@file nutshell.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.26"><vh>Using Outlines</vh>
-<v t="ekr.20100805165051.7153"><vh>@file outlines.txt</vh></v>
+<v t="ekr.20100805165051.7153"
+expanded="ekr.20050901101608,"><vh>@file outlines.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Using Leo's Commands</vh>
-<v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
+<v t="ekr.20100805165051.7155"
+expanded="ekr.20050901101608.2,"><vh>@file commands.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
@@ -504,6 +506,8 @@
 <v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
 </v>
 </v>
+<v t="ekr.20100805165051.7155"
+expanded="ekr.20050901101608.2,"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>

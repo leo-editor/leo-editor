@@ -35,10 +35,11 @@ then continues with a discussion of commands in each of Leo's menus.
 .. _noweb:      http://www.eecs.harvard.edu/~nr/noweb/
 
 .. Relative links...
-.. _`Writing Programs in Leo`:              directives.html
-.. _`Customizing Leo`:                       customizing.html
-.. _`Clones and views`:                                 intro.html#clones-views
-.. _`Creating script buttons`:                          scripting.html#creating-script-buttons
+.. _`Writing Programs in Leo`:          directives.html
+.. _`Customizing Leo`:                  customizing.html
+.. _`Clones and views`:                 intro.html#clones-views
+.. _`Creating script buttons`:          scripting.html#creating-script-buttons
+.. _`A Tutorial Introduction to Leo`:   intro.html
 
 .. @+node:ekr.20120229094652.15103: *3* Autocompletion
 Leo's autocompletion feature suggests **completions**, text may be valid in
@@ -634,7 +635,6 @@ The following commands simulate mouse clicks, double-clicks or drags::
                     iconify-frame
                     minimize-all
                     open-compare-window
-                    open-find-dialog
                     open-spell-tab
                     resize-to-screen
     Shift+Next      scroll-down-half-page
@@ -927,87 +927,182 @@ also exit Leo by closing the main window. You will be prompted to save any
 file that has been altered but not saved.
 .. @+node:EKR.20040524104904.111: *3* Edit commands
 .. @+node:EKR.20040524104904.112: *4* Undoing changes
-Leo supports unlimited undo and redo. Think of actions that may be undone or
+Leo supports unlimited undo and redo with the ``undo`` (Ctrl-Z) and
+``redo`` (Ctrl-Shift-Z) commands. Think of actions that may be undone or
 redone as a string of beads. A "bead pointer" points to the present bead.
-Performing an operation creates a new bead after the present bead and removes
-all following beads. Undoing an operation moves the bead pointer backwards;
-redoing an operation moves the bead pointer forwards. The Undo command is
-disabled when the bead pointer moves in front of the first bead; the Redo
-command is disabled when the bead pointer points to the last bead.
+Performing an operation creates a new bead after the present bead and
+removes all following beads. Undoing an operation moves the bead pointer
+backwards; redoing an operation moves the bead pointer forwards. The ``undo``
+command is disabled when the bead pointer moves in front of the first bead;
+the ``redo`` command is disabled when the bead pointer points to the last bead.
+
+The @string undo_granularity setting controls the granularity of undo.
+There are four possible values:
+
+node
+    Starts a new undo unit when typing moves to a new node.
+
+line (default)
+    Starts a new undo unit when typing moves to new line.
+
+word
+    Starts a new undo unit when typing starts a new word.
+
+char (not recommended)
+    Starts a new undo unit for each character typed.
+    This wastes lots of computer memory.
 .. @+node:EKR.20040524104904.113: *4* Cutting, pasting and selecting text
-Leo supports the standard editing commands: Cut, Copy, Paste,
-Clear and Select All. These commands work with either headline or body
-text.
-.. @+node:EKR.20040524104904.114: *4* Shifting body text
-The Shift Left and Shift Right commands shift selected lines in the body
-text left or right one tab position. These commands shift the entire line if any
-characters in that line are selected.
+Leo supports the standard editing commands: ``cut-text`` (Ctrl-X),
+``copy-text`` (Ctrl-C) and ``paste-text`` (Ctrl-V), and ``select-all``
+(Ctrl-A) commands. These commands work with either headline or body text.
+.. @+node:EKR.20040524104904.114: *4* Indenting body text
+The ``indent-region`` (Ctrl-Tab) and ``unindent-region`` (Tab) commands
+shift selected lines in the body text left or right one tab position. These
+commands shift the entire line if any characters in that line are selected.
+If no text is selected, the Tab character insert a hard or soft tab
+depending on the value of the \@tabwidth directive in effect.
 .. @+node:ekr.20050313102319: *4* Adding and deleting comments in body text
--   The Add Comments command puts comments around a block of code.
-    This command uses single-line comments if possible.
-
--   The Delete Comments command deletes the comments specified by the Add Comments command.
+The ``add-comments`` (Ctrl-)) command puts comments around a block of code.
+This command uses single-line comments if possible. The ``delete-comments``
+(Ctrl-() command deletes the comments.
 .. @+node:EKR.20040524104904.115: *4* Creating nodes from body text
-The Extract, Extract Section and Extract Section Names commands create child nodes whose headline is the first line of the selected body text.
-
--   The Extract command creates a new node whose headline is the first line of selected body text and
-    whose body is all other lines of selected text.
-    Previously selected text is deleted from the original body text. 
-
--   The Extract Section command creates a new node whose headline is the first line of selected text and
-    whose body is @code followed by all the other lines of selected text.
-    All selected text lines except the first line are deleted from the original body text.
-    This command is enabled only if the first line contains nothing but section name.
-
--   The Extract Section Names command creates one or more child nodes,
-    one for each section name in the selected body text.
-    The headline of each created node is the section name; the body text is @code followed by a newline.
+The ``extract`` (Ctrl-Shift-D) command creates a new node whose headline is
+the first line of selected body text and whose body is all other lines of
+selected text. Previously selected text is deleted from the original body
+text. The ``extract-names`` (Ctrl-Shift-Command) command creates one or
+more child nodes, one for each section name in the selected body text. The
+headline of each created node is the section name.
 .. @+node:EKR.20040524104904.116: *4* Converting leading blanks and tabs in body text
--   The Convert Tabs command converts leading tabs to blanks in a single node.
--   The Convert Blanks command converts blanks to tabs in a single node.
--   The Convert All Tabs converts leading tabs to blanks throughout the selected tree.
--   The Convert All Blanks command converts leading blanks to tabs throughout the selected tree.
-
-All these commands convert between tabs and blanks using the tab width presently in effect.
+The ``convert-tabs`` command converts leading tabs to blanks in a single
+node. The ``convert-blanks`` command converts blanks to tabs in a single
+node. The ``convert-all-tabs`` command converts leading tabs to blanks
+throughout the selected tree. The ``convert-all-blanks`` command converts
+leading blanks to tabs throughout the selected tree. All these commands
+convert between tabs and blanks using the \@tabwidth setting presently in
+effect.
 .. @+node:EKR.20040524104904.117: *4* Executing Python scripts in body text
-The Execute Script command executes body text as a Python script. Leo
-execute the selected text, or the entire body text if no text is selected. The
-Execute Script command pre-defines the values c, g and p as
-follows:
+The ``exectute-script`` (Ctrl-B) command executes body text as a Python
+script. Leo execute the selected text, or the entire body text if no text
+is selected. The Execute Script command pre-defines the values c, g and p
+as follows:
 
 - c is the commander of the outline containing the script.
 - g is the leoGlobals modules.
 - p is c.p, that is, c.currentPosition().
 
-**Important**: Body text may contain Leo directives and section references. You
-can now use all of Leo's features to organize scripts that you execute
-interactively. Section definitions must appear in the node containing the script
-or in descendant nodes.
+**Important**: Body text may contain Leo directives and section references.
+You can use all of Leo's features to organize scripts that you execute
+interactively. Section definitions must appear in the node containing the
+script or in descendant nodes.
 
-Leo preprocesses all scripts by simulating the writing of a external file to a
-string. The Execute Script command sets app.scriptDict["script1"] to the
-value of the script before preprocessing, and sets app.scriptDict["script2"]
-to the value of the script after preprocessing. Scripts may examine and change
-app.scriptDict as they please.
+Leo preprocesses all scripts by simulating the writing of a external file
+to a string. The ``execute-script`` command sets app.scriptDict["script1"]
+to the value of the script before preprocessing, and sets
+app.scriptDict["script2"] to the value of the script after preprocessing.
+Scripts may examine and change app.scriptDict as they please.
 .. @+node:EKR.20040524104904.118: *4* Finding and changing text
-The following check boxes options appear in the search dialog and control the operations of the find and change commands.
+.. @+node:ekr.20120319065417.8792: *5* Overview
+Leo supports a wide array of commands for searching and replacing
+text. The typical way to find text is with the
+``search-with-present-options`` (Ctrl-F). Focus moves to the
+minibuffer. Type the search pattern, followed by a <Return>. To search
+and replace, type <Ctrl-F>, followed by the search pattern, followed
+by ``replace-string`` (Ctrl-Shift-R) command, followed by the
+replacement pattern, and finally a <Return> to start the search.
 
-Clone Find All
-    When checked, the the Find All command creates a new root node called Found: *<your search pattern>*.
-    This node contains clones of the nodes found by the Find All command.
-    It is your responsibility to navigate to this new node and to clean it up when it's no longer needed.
+The following sections discuss all of Leo's find and change commands.
+**Important**: The radio buttons in the Find tab (Entire Outline,
+Suboutline Only and Node only) control how much of the outline is
+affected by Leo's find and change commands.
+.. @+node:ekr.20120319065417.8790: *5* Basic searches
+The ``search-with-present-options`` (Ctrl-F) command prompts for a
+search string. Typing the <Return> key puts the search string in the
+Find tab and executes a search based on all the settings in the Find
+tab. This is a recommended default search command. The ``find-next``
+(F3) command continues a search started with
+``search-with-present-options``. The ``find-previous`` (F2) commands
+searches backwards using the present search options.
+
+To search and replace, type <Ctrl-F>, followed by the search pattern,
+followed by the ``replace-string`` (Ctrl-Shift-R) command, follwed by
+the replacement pattern, and finally a <Return> to start the search.
+.. @+node:ekr.20120319065417.8791: *5* find-all, clone-find-all & clone-find-all-flattened
+The ``find-all`` command prints all matches in the log pane. The
+``clone-find-all`` command searches the outline and creates a new root node
+called Found: *<your search pattern>*. This node contains clones of the
+found nodes. The ``clone-find-all-flattened`` commands includes all found
+nodes, even if they are also children of previously found nodes.
+.. @+node:ekr.20120319065417.8797: *5* Change commands
+The ``replace-string`` (Ctrl-Shift-R) command prompts for a search string.
+Type <Return> to end the search string. The command will then prompt for
+the replacement string. Typing a second <Return> key will place both
+strings in the Find tab and executes a **find** command, that is,
+search-with-present-options.
+
+The ``change`` (Ctrl-=) command replaces the selected text with the
+'change' text in the Find tab. The ``change-then-find`` (Ctrl--) command
+replaces the selected text with the 'change' text in the Find tab, then
+executes the find command again. These commands can simulate any kind of
+query-replace command. The ``change-all`` changes all occurrences of the
+'find' text with the 'change' text.
+.. @+node:ekr.20120319065417.8798: *5* Incremental find commands
+Incremental find commands move through the text as you type individual
+characters. Typing <BackSpace> backtracks the search. To repeat an
+incremental search, type the shortcut for that command again. Here are
+Leo's incremental find commands::
+
+    Alt+R isearch-backward
+          isearch-backward-regexp
+    Alt+S isearch-forward
+          isearch-forward-regexp
+          isearch-with-present-options
+.. @+node:ekr.20120319065417.8794: *5* Commands that set find options
+Several commands toggle the checkboxes and radio buttons in the Find tab,
+and thus affect the operation of the search-with-present-options command.
+You may bind these commands to keys or toggle these options in a mode.
+These commands toggle checkboxes::
+
+    Alt+Ctrl+I  toggle-find-ignore-case-option
+    Alt+Ctrl+B  toggle-find-in-body-option
+    Alt+Ctrl+H  toggle-find-in-headline-option
+    Alt+Ctrl+C  toggle-find-mark-changes-option
+    Alt+Ctrl+F  toggle-find-mark-finds-option
+    Alt+Ctrl+X  toggle-find-regex-option
+    Alt+Ctrl+W  toggle-find-word-option
+    Alt+Ctrl+A  toggle-find-wrap-around-option
+
+These commands set radio buttons::
+
+    Alt+Ctrl+E  set-find-everywhere
+    Alt+Ctrl+N  set-find-node-only
+    Alt+Ctrl+S  set-find-suboutline-only
+.. @+node:ekr.20120319065417.8795: *5* Word search and regex search commands
+The following commands set an option in the Find tab, then work
+exactly like the ``search-with-present-options`` command. The
+``search-backward`` and ``search-forward`` commands set the 'Whole
+Word' checkbox to False. The ``word-search-backward`` and
+``word-search-forward`` set the 'Whole Word' checkbox to True. The
+``re-search-forward`` and ``re-search-backward`` set the 'Regexp'
+checkbox to True.
+.. @+node:ekr.20120319065417.8788: *5* Find settings
+The following check boxes options appear in the search dialog and control
+the operations of the find and change commands.
 
 Ignore Case
-    When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
+    When checked, the Find and Change commands ignore the case of
+    alphabetic characters when determining matches.
 
 Mark Changes
-    When checked, the Change command marks all headlines whose headline or body text are changed by the command.
+    When checked, the Change command marks all headlines whose headline or
+    body text are changed by the command.
 
 Mark Matches
-    When checked, the Find and Change commands mark all headlines in which a match is found with the pattern.
+    When checked, the Find and Change commands mark all headlines in which
+    a match is found with the pattern.
 
 Pattern Match
-    When checked, the Find and Change commands treat several characters specially in the find pattern.
+    When checked, the Find and Change commands treat several characters
+    specially in the find pattern.
 
     - '*'  matches any sequence of zero or more characters.
     - '.'  matches any single character.
@@ -1021,62 +1116,56 @@ Examples::
     "a$" matches any line ending with "a".
     "^*$" matches any line at all.
 
-Reverse
-    When checked, the Find and Change commands search backward through the file.
-
 Search Body Text
     When checked, the Find and Change commands search body text.
 
 Search Headline Text
     When checked, the Find and Change commands search headline text.
 
-Show Context
-    When checked, the Find All command shows additional context information when printing matches.
-
 Suboutline Only
-    When checked, the Find and Change commands search only the currently selected headline and its offspring.
+    When checked, the Find and Change commands search only the currently
+    selected headline and its offspring.
 
 Whole Word
-    When checked, the find pattern must match an entire word.
-    Words consist of an alphabetic character or underscore, followed by zero or more
+    When checked, the find pattern must match an entire word. Words consist
+    of an alphabetic character or underscore, followed by zero or more
     alphabetic characters, numbers or underscores.
 
 Wrap Around
-    When checked, the Find and Change commands continues at the top of the file when
-    the command reaches the bottom of the file.
-    For reverse searches, the find or change command continues at the bottom of the file when
-    the command reaches the top of the file.
+    When checked, the Find and Change commands continues at the top of the
+    file when the command reaches the bottom of the file. For reverse
+    searches, the find or change command continues at the bottom of the
+    file when the command reaches the top of the file.
 .. @+node:EKR.20040524104904.134: *4* Go To Line Number
-The Go To Line Number command selects the locations in your outlines corresponding to a line in a external file.
+The ``goto-global-line`` (Alt-G) command selects the locations in your
+outlines corresponding to a line in a external file.
 .. @+node:EKR.20040524104904.136: *4* Inserting the date and time
-The Insert Body Time/Date and Insert Headline Time/Date commands insert
+The ``insert-body-time`` and ``insert-headline-time`` commands insert
 formatted time and date into body or headline text. You must be editing a
-headline to be able to insert the time/date into the headline.
-The  body_time_format_string and headline_time_format_string settings
-specify the format of the inserted text. These settings are the format string
+headline to be able to insert the time/date into the headline. The
+body_time_format_string and headline_time_format_string settings specify
+the format of the inserted text. These settings are the format string
 passed to time.strftime. For a complete list of the format options see
-http://www.python.org/doc/current/lib/module-time.html
-If the format specified by either of these two settings is erroneous the
-"%m/%d/%Y %H:%M:%S" format is used by default, resulting in a time/date
-format like::
+http://www.python.org/doc/current/lib/module-time.html The "%m/%d/%Y
+%H:%M:%S" format is used by default, resulting in a time/date format like::
 
     1/30/2003 8:31:55
 .. @+node:EKR.20040524104904.137: *4* Reformatting paragraphs in body text
-The Reformat Paragraph command rearranges the words in a text
-paragraph to fill each line as full as possible, up to the \@pagewidth
-setting. A paragraph is delimited by blank lines, Leo directives, and
-(of course) start and end of text in a node. The width of the line
-used by the reformatting operation is governed by @pagewidth and the
-indentation that would be applied to the node when Leo writes the
-file.
+The ``reformat-paragraph`` (Ctrl-Shift-P) command rearranges the words in a
+text paragraph to fill each line as full as possible, up to the \@pagewidth
+setting. A paragraph is delimited by blank lines, Leo directives, and (of
+course) start and end of text in a node. The width of the line used by the
+reformatting operation is governed by @pagewidth and the indentation that
+would be applied to the node when Leo writes the file.
 
 The command operates on the paragraph containing the insert cursor. If the
-insert cursor is on a blank line or directive, nothing happens. If the cursor is
-on a line containing text, then the paragraph containing that text line is
-reformatted and the insert cursor is moved to the next paragraph.
+insert cursor is on a blank line or directive, nothing happens. If the
+cursor is on a line containing text, then the paragraph containing that
+text line is reformatted and the insert cursor is moved to the next
+paragraph.
 
-**Note**: Hanging indentation is preserved. This is most useful for bulleted or
-numbered lists, such as::
+**Note**: Hanging indentation is preserved. This is most useful for
+bulleted or numbered lists, such as::
 
   1. This is the first paragraph,
      and it has a hanging indentation.
@@ -1084,84 +1173,203 @@ numbered lists, such as::
   2. This is the second paragraph,
      and it too has a hanging indentation.
 .. @+node:EKR.20040524104904.139: *4* Matching brackets and parenthesis
-The Match Brackets command is enabled if the cursor is next to one of the
+The ``match-brackets`` command is enabled if the cursor is next to one of the
 following characters in the body pane:
 
     ( ) [ ] { } < >
 
-This command looks for the matching character, searching backwards through the
-body text if the cursor is next to `)` `]` `}` or `>` and searching forward through the
-text otherwise. If the cursor is between two brackets the search is made for the
-bracket matching the leftmost bracket. If a match is found, the entire range of
-characters delimited by the brackets is highlighted and the cursor is placed
-just to the left of the matching characters. Thus, executing this command twice
-highlights the range of matched characters without changing the cursor.
+This command looks for the matching character, searching backwards through
+the body text if the cursor is next to ``)`` ``]`` ``}`` or ``>`` and
+searching forward through the text otherwise. If the cursor is between two
+brackets the search is made for the bracket matching the leftmost bracket.
+If a match is found, the entire range of characters delimited by the
+brackets is highlighted and the cursor is placed just to the left of the
+matching characters. Thus, executing this command twice highlights the
+range of matched characters without changing the cursor.
+.. @+node:ekr.20120319170934.6104: *4* Indenting body text automatically
+Leo auto indents unless @nocolor is in effect.  Typing a newline
+automatically inserts the same leading whitespace present on the previous line.
+
+If Python is the present language, Leo inserts an additional tab if the previous
+line ends with a colon.  When the smart_auto_indent setting is True, Leo uses Emacs-style
+auto-indentation instead.  This style of auto-indent aligns newly created lines
+with unmatched ( [ or { brackets in the previous line.
+.. @+node:ekr.20120319170934.6105: *4* Creating and destroying multiple body editors
+The ``add-editor`` command adds a new editor in the body pane and gives it
+the body editor focus. The ``delete-editor`` command deletes the editor
+with body editor focus. The ``cycle-editor-focus`` command cycles body
+editor focus between editors in the body text. The editor that has focus
+shows the content of the selected outline node; the other body editors
+continue to show the node contents they last had when they had the body
+editor focus.
+.. @+node:ekr.20120319170934.6109: *4* Opening URL's
+The ``open-url`` (Ctrl-F3 or Ctrl-Left-Click) command looks for a headline
+in either the headline or body text of the node. If the headline or first
+body line of the node looks like an URL, the ``open-url`` command attempts
+to open that URL using either os.startfile or a web browser.
+
+Leo checks that the URL is valid before doing so. A valid URL is:
+
+-   3 or more lowercase alphas
+-   followed by one :
+-   followed by one or more of:
+-   ``$%&'()*+,-./0-9:=?@A-Z_a-z{}~``
+-   followed by one of: ``$%&'()*+/0-9:=?@A-Z_a-z}~`` 
+
+That is, a comma, hyphen and open curly brace may not be the last character)
+URL's should contain no spaces: use %20 to indicate spaces. You may use any
+type of URL that your browser supports: http, mailto, ftp, file, etc.
+.. @+node:ekr.20120319170934.6110: *4* Using chapters
+Chapters are regions of a Leo outline whose root is an ``@chapter`` node. They
+are available in an outline if the ``@bool usechapters`` option is True.
+``@chapter`` nodes may appear anywhere in an outline, but the ``create-chapter``
+command (see below) creates ``@chapter`` nodes as children of the first
+``@chapters`` (note the ``s``) node in the outline.
+
+One selects a chapter with the ``select-chapter`` command, after which Leo shows
+only the nodes in the selected chapter; in this respect, chapters are like
+hoists. The ``main`` chapter represents the entire outline and can not be
+deleted by name. When chapters are in effect, Leo creates an ``@chapters`` node
+for the use of ``create-chapter``.
+
+Associated settings:
+
+- The ``@bool use_chapters`` setting determines whether chapters are enabled.
+- The ``@bool use_chapter_tabs`` setting determines whether the chapters
+  pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.
+
+When chapters are enabled, the Cmds->Chapters menu shows all available chapter commands:
+
+- The ``chapter-create`` command creates an @chapter node and populates it with a single node.
+- The ``chapter-remove`` command deletes the currently selected chapter.
+- The ``chapter-select`` command prompts for a chapter name and makes only the nodes of the selected chapter visible.
+- The ``chapter-move-node-to``, ``chapter-clone-node-to`` and ``chapter-copy-node-to`` commands
+  prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.
 .. @+node:EKR.20040524104904.143: *3* Outline commands
-.. @+node:EKR.20040524104904.144: *4*  Checking outlines
--   The Check Outline command checks the outline for consistency.
+.. @+node:ekr.20120319170934.6096: *4* Creating and destroying nodes
+The ``insert-node`` (Ctrl-I or Insert) command inserts a new node into the
+outline. When invoked, (from any pane), it inserts a new node below the
+presently selected node, and at the same level as that node, or at the
+child level if it has a visible child. The ``delete-node`` command deletes
+a node and all its children. To retain the children, just promote all the
+children before you do the delete.
+.. @+node:ekr.20120319170934.6095: *4* Expanding & contracting nodes
+You can expand or contract a node by clicking in the tree view icon to the
+left of the headline. The icon in the Qt gui matches the native OS's tree
+view icon, i.e. for Mac's, a triangle pointing right or down; on Windows, a
+square containing a plus or minus. Expanding a node shows its immediate
+children; contracting a node hides all its children.
 
--   The Check All Python Code and Check Python Code commands report any syntax errors or tabnanny errors.
-    These commands mark erroneous nodes and ignore any nodes for which:
+The ``expand-node`` and ``contract-node`` commands also expand and contract
+nodes. For more convenient navigation, there are ``expand-and-go-right``
+(Alt-Right) and ``contract-or-go-up`` (Alt-Left) commands.
 
-        - @ignore is in effect or
-        - @language python is in not effect.
+The ``expand-all`` command expands every node in the outline.
+``contract-all`` (Alt-hypen) contracts every node in the outline. In all
+but the smallest outlines, ``expand-all`` is rarely used, and it does not
+have a default key binding.
+.. @+node:ekr.20120319170934.6097: *4* Cutting, pasting and deleting nodes
+The ``cut-node`` (Ctrl-Shift-X) ``paste-node`` (Ctrl-Shift-V),
+``copy-node`` (Ctrl-Shift-C) and ``delete-node`` commands work on nodes
+rather than text. The ``cut-node`` and ``copy-node`` commands copy a text
+representation of the outline to the clipboard. This representation is the
+same as Leo's .leo file format with some information deleted. You may copy
+this text representation into a body pane (or into any other text editor)
+using Edit->Paste in the menus, Ctrl-V, or Alt-X paste-text.
 
--   The Check Python Code and Pretty Print Python Code pretty print body text.
-    You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
+**Warning**: If you want to preserve the "cloned" attribute of a node, or
+want to paste the node as a clone of the node you cut or copied, use the
+``past-retaining-clones`` command, which in the Outline menu is called
+"Paste Node as Clone". The ``paste-node`` command instead creates a new,
+distinct version of the node you previously cut or copied, though if there
+were descendant nodes which were clones of each other, the new version will
+have parallel, distinct nodes that are also clones of each other (just not
+of the originals). You may paste a node between .leo files, but there can
+be no clone relationship across files.
 
-        putOperator:      puts whitespace around operators.
-        putNormalToken:   puts whitespace around everything else.
-.. @+node:EKR.20040524104904.145: *4*  Creating & cloning nodes
--   The Insert Headline command inserts a new headline after the presently selected headline,
-    either as the next sibling or the first child of the presently selected headline
-    if the presently selected headline has children and is expanded.
+The ``paste-retaining-clones`` command is disabled if it would cause a node
+to become a parent of itself. The Leo outline is thus mathematically a
+*directed acyclic graph*: clones make it more flexible than a tree, but not
+a generalized graph.
+.. @+node:ekr.20120319170934.6094: *4* Navigating through the outline
+Leo has many commands that select nodes in the outline. These commands can be
+found in the Outline:Go To menu.
 
--   The Clone Node creates a clone of the selected node.
-    See `Clones and views`_ for full details about clones.
-.. @+node:EKR.20040524104904.146: *4*  Cutting, pasting and deleting nodes
--   The Cut Outline and Copy Outline commands copy a text
-    representation of the outline to the clipboard. This representation is the same
-    as the file format with some information deleted.
+As described in the tutorial, you can move about the outline by clicking on the
+headlines or using Alt+arrow keys.
+.. @+node:ekr.20120319170934.6098: *4* Moving & Reorganizing nodes
+The ``move-outline-up`` (Ctrl-U or Alt-Shift-Up), ``move-outline-down``
+(Ctrl-D or Alt-Shift-Down), ``move-outline-left`` (Ctrl-L or
+Alt-Shift-Left), and ``move-outline-right`` (Ctrl-R or Alt-Shift-Right)
+commands move the currently selected node. **Important**: When focus is in
+the outline pane, you can move nodes whithout adding the Alt modifier.
+Shift-Up moves the select node up, etc.
 
--   The Paste command (in the Edit menu) copies this representation into the *body* pane.
+The ``promote`` (Ctrl-[) command makes all the children of
+a node siblings of the node. The ``demote`` (Ctrl-]) command makes all following
+siblings of a node children of the node.
+.. @+node:ekr.20120319170934.6099: *4* Cloning nodes
+A cloned node is a copy of a node that changes when the original changes.
+One may also think of it as a single node that is hooked into the outline
+at multiple positions. Because that single node brings along all its
+descendants, changes are maintained across all the the clones of a node,
+along with changes to its offspring (children, grandchildren, etc.), i.e.,
+any changes are simultaneously made to the corresponding offspring of all
+of those clones. A small red arrow in the icon box marks cloned nodes. You
+can think of the arrow as pointing out that there are other paths to get to
+this same node. There is no real distinction between the "original" node
+and any of its clones. Any headline or body update of a clone headed
+subtree affects all of its clones simultaneously. A cloned node becomes a
+regular node whenever deletion of its other clones makes it the only one
+left. Clones are useful for making alternate views of a program. See
+`Clones and views`_ for full details.
 
--   The Paste Node As Clone command pastes the node from the clipboard, retaining the
-    identity of nodes.  Thus, if the pasted node already exists in the outline the newly
-    pasted node will become of a clone of the already-existing node.
+The ``clone-node`` (Ctrl-\`) command creates a clone as the immediate
+sibling of a selected node. You have to place it where you want it by
+either using move commands, or cutting and paste the clone.
+.. @+node:ekr.20120319170934.6100: *4* Marking nodes
+The ``mark`` (Ctrl-M) marks a node if it is unmarked, and unmarks the node
+if it is already marked. The ``mark-subheads`` command marks all offspring
+of the presently selected node. The ``mark-changed-items`` command marks
+all nodes whose headline or body text has been changed since the file
+was last saved.
 
--   The Paste Outline command creates nodes with new identities (new gnx's).
-.. @+node:EKR.20040524104904.147: *4*  Expanding and contracting nodes
--   The Expand command expands the currently selected node so that all its children are visible.
--   The Expand All Subheads command expands the currently selected node so that all its offspring are visible.
--   The Expand All command expands all the nodes of the entire tree.
--   The Contract Parent contracts the selected node's parent and selects the parent node.
-.. @+node:EKR.20040524104904.149: *4*  Marking nodes
-- The Mark Headline command marks a headline with a red marker near the leader
-  characters.
+Leo's find and change commands mark ndoes if the "Mark Changes" and "Mark
+Finds" checkboxes are checked. You can change these checkboxes with the
+``toggle-find-mark-changes-option`` and ``toggle-find-mark-finds-option``
+commands.
 
-- The Unmark Headline command removes such a mark.
+The ``goto-next-marked`` command selects the next marked node.
+.. @+node:ekr.20120319170934.6101: *4* Dragging nodes
+You may drag a node (including all its descendants) from one place to
+another in an outline. To start a drag, press the main (left) mouse button
+while the cursor is over the icon for a node. The cursor will change to a
+hand icon. If you release the mouse button while the hand cursor is above
+the icon for another node, Leo will move the dragged node after that node.
+If you release the mouse button when the hand cursor is not over an icon,
+Leo will leave the outline pane as it is. Leo scrolls the outline pane as
+the result of mouse-moved events, so to continue scrolling you must keep
+moving the mouse.
+.. @+node:EKR.20040524104904.148: *4* Hoisting & De-hoisting nodes
+The ``hoist`` command redraws the screen so presently selected tree becomes
+the only visible part of the outline. You may hoist an outline as many
+times as you wish. The ``dehoist`` command undoes the effect of the
+previous ``hoist`` command.
+.. @+node:EKR.20040524104904.144: *4* Checking outlines
+The ``check-outline`` command checks the outline for consistency. Leo
+automatically check the syntax of Python external files when Leo
+writes the external file.
 
-- The Mark Subheads command marks all offspring of the currently selected node.
+The ``pretty-print-python-code`` and ``pretty-print-all-python-code``
+pretty print body text. You can customize this code by overriding the
+following methods of class prettyPrinter in leoCommands.py::
 
-- The Unmark All command removes the marks from the entire tree.
-
-- The Mark Changed Items command marks all headlines whose headline or body text
-  has been changed since the file was last saved.
-.. @+node:EKR.20040524104904.150: *4*  Moving, sorting and reorganizing nodes
--   The Move Up, Move Down, Move Left and Move Right commands move the currently selected node.
-
--   The Promote command makes all the children of a node siblings of the node.
-
--   The Demote command makes all the siblings that follow a node children of the node.
-
--   The Sort Children command sorts all children of the present node in alphabetical order of their headlines.
-
--   The Sort Siblings command sorts all siblings of the present node in alphabetical order.
-.. @+node:EKR.20040524104904.148: *4*  Hoisting & De-hoisting nodes
--   The Hoist command redraws the screen so presently selected tree becomes the only visible part of the outline.
-    Hoist commands may be nested.  
-
--   The De-hoist command restores the outline.
+    putOperator:      puts whitespace around operators.
+    putNormalToken:   puts whitespace around everything else.
+.. @+node:ekr.20120319170934.6108: *4* Resizing panes
+You can change the relative sizes of the outline and body panes by dragging
+the splitter bar. The ``equal-sized-panes`` command resizes the panes so
+that each fills half of the main window.
 .. @+node:EKR.20040524104904.151: *3* Window commands
 -   The Equal Sized Panes command adjusts the sizes of the outline and body
     panes so that they are the same height.

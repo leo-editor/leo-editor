@@ -34,8 +34,6 @@ are those of the default EKR bindings.
 .. _`A Tutorial Introduction to Leo`:   intro.html
 .. _`Writing Programs in Leo`:          directives.html
 .. _`Clones and views`:                 intro.html#clones-views
-.. @+node:sps.20100710110337.12186: *3* @rst-ignore-node DO NOT SORT THESE HEADLINES
-I've ordered these sections in approximate ascending complexity of concepts and descending importance.
 .. @+node:sps.20100710110337.12187: *3* @rst-no-head Outline Related
 .. @+node:ekr.20060929040750: *4* Navigating through the outline
 Leo has many commands that select nodes in the outline. These commands can be
