@@ -40,35 +40,196 @@ then continues with a discussion of commands in each of Leo's menus.
 .. _`Clones and views`:                                 intro.html#clones-views
 .. _`Creating script buttons`:                          scripting.html#creating-script-buttons
 
-.. @+node:ekr.20060227102028.111: *3* Autocompletion
-Typing a period when @language python is in effect starts autocompletion. Typing
-Return or Control-g (keyboard-quit) exits autocompletion.
+.. @+node:ekr.20120229094652.15103: *3* Autocompletion
+Leo's autocompletion feature suggests **completions**, text may be valid in
+a given point, or **context** in source code. For example, suppose the
+context is::
 
-Autocompletion shows what may follow a period in code. (Actually you can specify
-any character using the auto-complete shortcut setting.) For example, after
-typing g. Leo will show a list of all the global functions in leoGlobals.py.
-Autocompletion works much like tab completion in the minibuffer. Unlike the
-minibuffer, the presently selected completion appears directly in the body
-pane.
+    os.path.s
+    
+That is, suppose the cursor follows ``os.path.s`` in the body pane. The
+valid completions are all the members of Python's os.path module whose
+names start with 's', namely::
 
-A leading period brings up 'Autocomplete Modules'. (The period goes away.) You
-can also get any module by typing its name. If more than 25 items would appear
-in the Autocompleter tab, Leo shows only the valid starting characters. At this
-point, typing an exclamation mark shows the complete list. Thereafter, typing
-further exclamation marks toggles between full and abbreviated modes.
+    samefile
+    sameopenfile
+    sep
+    split
+    splitdrive
+    splitext
+    splitunc
+    stat
+    supports_unicode_filenames
+    sys
+    
+How Leo displays these completions depends on the setting::
 
-If x is a list 'x.!' shows all its elements, and if x is a Python dictionary,
-'x.!' shows x.keys(). For example, 'sys.modules.!' Again, further exclamation
-marks toggles between full and abbreviated modes.
+    @bool use_qcompleter
+    
+True: Leo shows completions in the QCompleter popup window.
+False: Leo shows completions in the log pane.
+    
+To compute the list of completions, Leo first computes **Leo-specific**
+completions. These completions assume that c is a commander, g is the
+leoGlobals object and p is a postion. If there are no such completions, Leo
+computes completions using ctags data. In order to use these additional
+completions you must create the ctags data as described in a later section.
+.. @+node:ekr.20120229094652.15104: *4* Starting autocompletion
+There are two ways to have Leo show completions. **Manual autocompletion**
+shows autocompletions whenever you execute the auto-complete-force
+(ctrl-space) command. **Automatic autocompletion** shows completions
+whenever you type a period in the body pane.
 
-During autocompletion, typing a question mark shows the docstring for the
-object. For example: 'g.app?' shows the docstring for g.app. This doesn't work
-(yet) directly for Python globals, but '__builtin__.f?' does. Example:
-'__builtin__.pow?' shows the docstring for pow.
+You can enable autocompletion in two ways:
 
-Autocompletion works in the Find tab; you can use <Tab> to cycle through the
-choices. The 'Completion' tab appears while you are doing this; the Find tab
-reappears once the completion is finished.
+1. By setting @bool enable_autocompleter_initially = True.
+
+2. By using the toggle-autocompleter (Alt-1) command.
+.. @+node:ekr.20120229094652.15106: *4* Using the QCompleter
+When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
+popup window, regardless of how many completions there are. To **accept** a
+completion, use the up and down arrows to select a completion, then type the
+return key. To **cancel** completion, type the escape key. As an important
+shortcut, if the popup window contains only one entry, you may accept a
+completion by simply typing the return key.
+.. @+node:ekr.20120229094652.15107: *4* Using the Log pane completer
+When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
+Leo's log pane. When there are more than 20 completions, Leo shows only the
+characters that start a completions. For example, when completing ``os.path.``
+the log pane will show::
+
+    _ 17
+    a 2
+    b 1
+    c 2
+    d 3
+    e 4
+    g 5
+    i 5
+    j 1
+    l 1
+    n 2
+    o 1
+    p 2
+    r 2
+    s 10
+    
+To see the complete list, type the '!' character.  You will see::
+
+    __all__
+    __builtins__
+    __cached__
+    __doc__
+    __file__
+    __name__
+    __package__
+    _get_altsep
+    _get_bothseps
+    _get_colon
+    _get_dot
+    _get_empty
+    _get_sep
+    _get_special
+    _getfileinformation
+    _getfinalpathname
+    _getfullpathname
+    abspath
+    altsep
+    basename
+    commonprefix
+    curdir
+    defpath
+    devnull
+    dirname
+    exists
+    ...
+
+Typically, however, you would simply type one of the valid prefix characters.
+For example, typing the letter 'a' would create the context ``os.path.a`` and
+the log pane would show::
+
+    abspath
+    altsep
+    
+As you type, Leo enters the longest common prefix of all completions into the
+body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
+completion.
+.. @+node:ekr.20120229094652.15108: *4* Showing docstrings
+Regardless of the setting of ``@bool use_qcompleter``, typing '?' while
+autocompleting will show the docstring of the present context. For example,
+if the context is ``os.path.join``, typing '?' will show::
+
+    Join two or more pathname components, inserting "\" as needed.
+    If any component is an absolute path, all previous path components
+    will be discarded.
+    
+It is not possible at present to copy the docstring from the log pane when
+using the QCompleter because the QCompleter popup window is a modal dialog.
+.. @+node:ekr.20120229094652.15116: *4* Autocompleter settings
+These are found in leoSettings.leo: @settings-->Autocompleter::
+
+**@bool use_qcompleter = True**
+
+    True:  show completions in a QCompleter popup.
+    False: show completions in Leo's Completions tab.
+    
+**@bool auto_tab_complete = False**
+    
+    True: Automatically extend the completed text to the longest common
+    prefix of all completions.
+    
+**@bool autocomplete-brackets = False**
+    
+    True: When typing an opening bracket '(','[' or '{', immediately type
+    the corresponding closing bracket. To move past the closing bracket,
+    just type it.
+    
+**@bool enable_calltips_initially = False**
+    
+**@bool forbid_invalid_completions = False**
+    
+    True: Don't add characters during autocompletion that are not part of
+    any computed completion.
+.. @+node:ekr.20120229094652.15102: *4* Creating ctags data
+This section describes how to create ctags data files describing the
+desired completions. You must do this when the use_codewise setting is
+True.
+
+1. Make sure you have exuberant ctags (not just regular ctags)
+   installed. It's an Ubuntu package, so its easy to install if
+   you're using Ubuntu.
+   
+2. Execute the following commands from Leo's external/codewise.py
+   module. **Note**: On Windows, you can use codewise.bat to
+   execute these commands. For example::
+
+        python <path to leo>\external\codewise.py %*
+    
+A. [Optional] Create a custom ~/.ctags file containing default
+   configuration settings for ctags::
+    
+        codewise setup
+        
+    This command will leave the ~/.ctags file unchanged if it
+    exists.  Othewise, the ``codewise setup`` command will
+    create a ~/.ctags file containing the following defaults::
+    
+        --exclude=*.html
+        --exclude=*.css
+    
+    http://ctags.sourceforge.net/ctags.html#FILES for more
+    details about the .ctags file.
+    
+B. [Optional] Delete the existing ctags database in ~/.codewise.db::
+   
+        codewise init
+        
+C. Add ctags data to the existing ctags database::
+
+        codewise parse <path to directory>
+        
+   You can add data from multiple sources by running
+   the ``codewise parse`` command on multiple directories.
 .. @+node:ekr.20100504092040.17423: *3* Calltips
 Calltips appear after you type an open parenthesis in code. Calltips shows the
 expected arguments to a function or method. Calltips work for any Python
@@ -92,80 +253,123 @@ enable_autocompleter and enable_calltips settings in leoSettings.leo. You may
 enable or disable these features at any time with these commands:
 enable-auto-completer-command, enable-calltips-command,
 disable-auto-completer-command and disable-calltips-command.
-.. @+node:ekr.20060420094611: *3* The minibuffer
-The mini-buffer is a text area at the bottom of the body pane.
-You use it like the Emacs mini-buffer to invoke commands by their so-called *long name*.
-The following commands affect the minibuffer:
+.. @+node:ekr.20060420094611: *3* The minibuffer and minibuffer commands
+The mini-buffer is a text area at the bottom of the body pane. You use it
+like the Emacs mini-buffer to invoke commands by their so-called *long name*.
 
-- **full-command**: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
-  full command name, then hit <Return> to execute the command. Tab completion
-  works, but not yet for file names.
+The ``full-command`` (Alt-x) command puts the focus in the minibuffer. Type
+a full command name, then hit <Return> to execute the command. Tab
+completion works, but not yet for file names. For example, to print a list
+of all commands type::
 
-.. - **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is
-..   defined in leoSettings.leo. It is useful for commonly-used commands.
+    <Alt-X>print-commands<Return>
+    
+**Extremely important**: Like Emacs, many of Leo's commands have long-winded names.
+It is **not**, repeat **not** necessary to type the entire name in the minibuffer!
+Instead, you can use **tab completion** to shortcut your typing.  For example,
+Suppose you want to execute the print-commands return. First, you type the first
+few characters of the command, and hit the <tab> key::
 
-- **universal-argument**: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat
-  count for later command. Ctrl-u 999 a adds 999 a's.
+    <Alt-x>pri<Tab>
+    
+You will see the following list of completions in the log window::
 
-- **keyboard-quit**: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
-  the focus in the body pane.
+    print-all-uas
+    print-bindings
+    print-cmd-docstrings
+    print-commands
+    print-focus
+    print-node-uas
+    print-plugin-handlers
+    print-plugins-info
+    print-settings
+    
+The minibuffer now contains the **longest common prefix** of all the completions,
+in this case::
 
-For example, to print a list of all commands type Alt-X print-commands <Return>.
+    print-
+    
+So now, all you have to do is type::
 
-The following sections list the various commands that you can invoke from the minibuffer.
-**Important**: you may bind keystrokes to any of these commands.
-See `Customizing Leo`_ for full details.
+    s<tab>
+    
+and the minibuffer will show::
+
+    print-settings
+    
+Finally, execute the command by hitting the <return> key. Using tab
+completion quickly becomes second nature. It saves a huge amount of typing.
+More importantly, it means that not every command needs to be bound to a
+keystroke in order to be conveniently available.
+
+The ``keyboard-quit`` (Ctrl-g) commands exits any minibuffer mode and puts
+the focus in the body pane. **Important**: Use ctrl-g whenever you are
+unsure of what is happening.
+
+..  The ``universal-argument`` (Alt-u) command acts like Emacs Ctrl-u.
+.. It adds a repeat count for later command. Ctrl-u 999 a adds 999 a's.
+
+The following sections list the various commands that you can invoke from
+the minibuffer. **Important**: you may bind keystrokes to any of these
+commands. See `Customizing Leo`_ for full details.
 .. @+node:ekr.20060613062025.6: *4* Basic editing commands
-The following basic editing commands are typically bound to key strokes::
+Here is a list of Leo's basic editing commands with the default (EKR)
+bindings shown::
 
-    back-char
-    back-char-extend-selection
-    back-paragraph
-    back-paragraph-extend-selection
-    back-sentence
-    back-sentence-extend-selection
-    back-to-indentation
-    back-word
-    back-word-extend-selection
-    backward-delete-char
-    backward-kill-paragraph
-    backward-kill-sentence
-    backward-kill-word
-    beginning-of-buffer
-    beginning-of-buffer-extend-selection
-    beginning-of-line
-    beginning-of-line-extend-selection
-    cut-text
-    delete-char
-    end-of-buffer
-    end-of-buffer-extend-selection
-    end-of-line
-    end-of-line-extend-selection
-    exchange-point-mark
-    extend-to-word
-    forward-char
-    forward-char-extend-selection
-    forward-paragraph
-    forward-paragraph-extend-selection
-    forward-sentence
-    forward-sentence-extend-selection
-    forward-word
-    forward-word-extend-selection
-    insert-newline
-    move-lines-down
-    move-lines-up
-    move-past-close
-    move-past-close-extend-selection
-    newline-and-indent
-    next-line
-    next-line-extend-selection
-    paste-text
-    previous-line
-    previous-line-extend-selection
-    redo
-    select-all
-    set-mark-command
-    undo
+    Left                back-char
+    Shift-Left          back-char-extend-selection
+                        back-paragraph
+                        back-paragraph-extend-selection
+                        back-sentence
+                        back-sentence-extend-selection
+                        back-to-indentation
+    Alt-B or Ctrl-Left  back-word
+    Alt-Shift-B         back-word-extend-selection
+    Ctrl-Shift-Left     back-word-extend-selection
+    BackSpace           backward-delete-char
+    Shift-BackSpace     backward-delete-char
+    Ctrl-BackSpace      backward-delete-word
+                        backward-delete-word-smart
+                        backward-kill-paragraph
+                        backward-kill-sentence
+                        backward-kill-word
+    Ctrl-Home           beginning-of-buffer
+    Ctrl-Shift-Home     beginning-of-buffer-extend-selection
+    Home                beginning-of-line
+    Shift-Home          beginning-of-line-extend-selection
+    Ctrl-C              copy-text
+    Ctrl-X              cut-text
+    Delete              delete-char
+    Ctrl-End            end-of-buffer
+    Ctrl-Shift-End      end-of-buffer-extend-selection
+    End                 end-of-line
+    Shfit-End           end-of-line-extend-selection
+    Alt-M               exchange-point-mark
+    Ctrl-W              extend-to-word
+    Right               forward-char
+    Shift-Right         forward-char-extend-selection
+                        forward-paragraph
+                        forward-paragraph-extend-selection
+                        forward-sentence
+                        forward-sentence-extend-selection
+    Ctrl-Right          forward-word
+    Ctrl-Shift-Right    forward-word-extend-selection
+    Tab                 indent-region
+    Return              insert-newline
+                        move-lines-down
+                        move-lines-up
+                        move-past-close
+                        move-past-close-extend-selection
+    Ctrl-J or Tab       newline-and-indent
+    Down                next-line
+    Shift-Down          next-line-extend-selection
+    Ctrl-V              paste-text
+    Up                  previous-line
+    Shift-Up            previous-line-extend-selection
+    Shift-Ctrl-Z        redo
+    Ctrl-A              select-all
+    Ctrl-Z              undo
+    Shift-Tab           unindent-region
 .. @+node:ekr.20060613062025.1: *4* Debugging commands
 These commands are for debugging Leo itself::
 
@@ -185,252 +389,271 @@ These commands are for debugging Leo itself::
 The following commands work just like their Emacs counterparts.
 Use the help-for-command command for further details::
 
-    abbrev-mode
-    add-global-abbrev
-    add-space-to-lines
-    add-tab-to-lines
-    advertised-undo
-    append-to-buffer
-    append-to-register
-    call-last-keyboard-macro
-    capitalize-word
-    center-line
-    center-region
-    clean-lines
-    clear-extend-mode
-    clear-kill-ring
-    clear-rectangle
-    clear-selected-text
-    close-rectangle
-    copy-rectangle-to-register
-    copy-text
-    copy-to-register
-    count-region
-    dabbrev-completion
-    dabbrev-expands
-    delete-comments
-    delete-file
-    delete-indentation
-    delete-rectangle
-    delete-spaces
-    diff
-    digit-argument
-    downcase-region
-    downcase-word
-    end-kbd-macro
-    escape
-    eval-expression
-    expand-region-abbrevs
-    fill-paragraph
-    fill-region
-    fill-region-as-paragraph
-    flush-lines
-    full-command
-    goto-char
-    how-many
-    increment-register
-    indent-region
-    indent-relative
-    indent-rigidly
-    indent-to-comment-column
-    insert-body-time
-    insert-file
-    insert-keyboard-macro
-    insert-parentheses
-    insert-register
-    inverse-add-global-abbrev
-    jump-to-register
-    keep-lines
-    keyboard-quit
-    kill-all-abbrevs
-    kill-buffer
-    kill-line
-    kill-paragraph
-    kill-rectangle
-    kill-region
-    kill-region-save
-    kill-sentence
-    kill-word
-    line-number
-    list-abbrevs
-    list-buffers-alphabetically
-    load-file
-    make-directory
-    match-bracket
-    name-last-kbd-macro
-    negative-argument
-    number-command
-    number-command-0
-    number-command-1
-    number-command-2
-    number-command-3
-    number-command-4
-    number-command-5
-    number-command-6
-    number-command-7
-    number-command-8
-    number-command-9
-    open-rectangle
-    point-to-register
-    prepend-to-buffer
-    prepend-to-register
-    read-abbrev-file
-    remove-blank-lines
-    remove-directory
-    remove-sentinels
-    remove-space-from-lines
-    remove-tab-from-lines
-    rename-buffer
-    repeat-complex-command
-    reverse-region
-    run-unit-tests
-    select-paragraph
-    set-comment-column
-    set-fill-column
-    set-fill-prefix
-    shell-command
-    shell-command-on-region
-    sort-columns
-    sort-fields
-    sort-lines
-    split-line
-    start-kbd-macro
-    string-rectangle
-    suspend
-    switch-to-buffer
-    tabify
-    transpose-chars
-    transpose-lines
-    transpose-words
-    unindent-region
-    universal-argument
-    unmark-all
-    untabify
-    upcase-region
-    upcase-word
-    view-lossage
-    view-register
-    what-line
-    yank
-    yank-pop
-    yank-rectangle
-    zap-to-character
+                add-space-to-lines
+                add-tab-to-lines
+                advertised-undo
+                capitalize-word
+                center-line
+                center-region
+                clean-lines
+                clear-extend-mode
+                clear-kill-ring
+                clear-rectangle
+                clear-selected-text
+                count-pages
+                count-region
+                dabbrev-completion
+                dabbrev-expands
+                delete-comments
+                delete-file
+                delete-indentation
+                delete-rectangle
+                delete-spaces
+                diff
+                digit-argument
+                downcase-region
+                downcase-word
+                end-kbd-macro
+                escape
+                eval-expression
+                expand-region-abbrevs
+                fill-paragraph
+                fill-region
+                fill-region-as-paragraph
+                flush-lines
+                full-command
+                goto-char
+                how-many
+                increment-register
+                indent-region
+                indent-relative
+                indent-rigidly
+                indent-to-comment-column
+                insert-body-time
+                insert-file
+                insert-keyboard-macro
+                insert-parentheses
+                insert-register
+                inverse-add-global-abbrev
+                jump-to-register
+                keep-lines
+                keyboard-quit
+                kill-all-abbrevs
+                kill-buffer
+    Ctrl-K      kill-line
+                kill-paragraph
+                kill-rectangle
+                kill-region
+                kill-region-save
+                kill-sentence
+                kill-word
+                line-number
+                list-abbrevs
+                list-buffers-alphabetically
+                load-file
+                macro-call
+                macro-call-last
+                macro-end-recording
+                macro-load-all
+                macro-name-last
+                macro-print-all
+                macro-print-last
+                macro-save-all
+                macro-start-recording
+                make-directory
+                match-bracket
+                name-last-kbd-macro
+                negative-argument
+                number-command
+                number-command-0
+                number-command-1
+                number-command-2
+                number-command-3
+                number-command-4
+                number-command-5
+                number-command-6
+                number-command-7
+                number-command-8
+                number-command-9
+                open-rectangle
+                point-to-register
+                prepend-to-buffer
+                prepend-to-register
+                read-abbrev-file
+                rectangle-clear
+                rectangle-close
+                rectangle-delete
+                rectangle-kill
+                rectangle-open
+                rectangle-string
+                rectangle-yank
+                register-append-to
+                register-copy-rectangle-to
+                register-copy-to
+                register-increment
+                register-insert
+                register-jump-to
+                register-point-to
+                register-prepend-to
+                register-view
+                remove-blank-lines
+                remove-directory
+                remove-sentinels
+                remove-space-from-lines
+                remove-tab-from-lines
+                rename-buffer
+                repeat-complex-command
+                reverse-region
+                run-unit-tests
+                select-paragraph
+                set-comment-column
+                set-fill-column
+                set-fill-prefix
+                shell-command
+                shell-command-on-region
+                sort-columns
+                sort-fields
+                sort-lines
+                split-line
+                start-kbd-macro
+                string-rectangle
+                suspend
+                switch-to-buffer
+                tabify
+                transpose-chars
+                transpose-lines
+                transpose-words
+                unindent-region
+                universal-argument
+                unmark-all
+                untabify
+                upcase-region
+                upcase-word
+                view-lossage
+                what-line
+    Ctrl-Y      yank
+    Alt-Y       yank-pop
+                zap-to-character
 .. @+node:ekr.20060613062025.5: *4* Find commands
-Here is a list of all of Leo's find commands.
-The apropos-find-commands command will print a detailed
-help message discussing these commands::
+Here is a list of all of Leo's find commands. The apropos-find-commands
+command will print a detailed help message discussing these commands::
 
-    clone-find-all
-    find-character
-    find-tab-change
-    find-tab-change-all
-    find-tab-change-then-find
-    find-tab-find
-    find-tab-find-all
-    find-tab-find-prev
-    find-word
-    isearch-backward
-    isearch-backward-regexp
-    isearch-forward
-    isearch-forward-regexp
-    isearch-with-present-options
-    query-replace
-    query-replace-regex
-    re-search-backward
-    re-search-forward
-    replace-string
-    search-again
-    search-backward
-    search-forward
-    search-with-present-options
-    set-find-everywhere
-    set-find-node-only
-    set-find-suboutline-only
-    toggle-find-ignore-case-option
-    toggle-find-in-body-option
-    toggle-find-in-headline-option
-    toggle-find-mark-changes-option
-    toggle-find-mark-finds-option
-    toggle-find-regex-option
-    toggle-find-reverse-option
-    toggle-find-word-option
-    toggle-find-wrap-around-option
-    word-search-backward
-    word-search-forward
+                    clone-find-all
+                    clone-find-all-flattened
+                    find-all
+    Ctrl+Key+2      find-character
+    Ctrl+Shift-2    find-character-extend-selection
+                    find-clone-all
+                    find-clone-all-flattened
+    F3              find-next
+                    find-next-clone
+    F2              find-prev
+                    find-quick
+    Ctrl+Shift+F    find-quick-selected
+                    find-quick-test-failures
+                    find-quick-timeline
+                    find-tab-hide
+                    find-tab-open
+                    find-word
+                    find-word-in-line
+    Alt+R           isearch-backward
+                    isearch-backward-regexp
+    Alt+S           isearch-forward
+                    isearch-forward-regexp
+                    isearch-with-present-options
+                    re-search-backward
+                    re-search-forward
+                    replace-string
+                    search-again
+                    search-backward
+                    search-forward
+    Ctrl-F          search-with-present-options
+    Alt+Ctrl+E      set-find-everywhere
+    Alt+Ctrl+N      set-find-node-only
+    Alt+Ctrl+S      set-find-suboutline-only
+                    toggle-find-collapses-nodes
+    Alt+Ctrl+I      toggle-find-ignore-case-option
+    Alt+Ctrl+B      toggle-find-in-body-option
+    Alt+Ctrl+H      toggle-find-in-headline-option
+    Alt+Ctrl+C      toggle-find-mark-changes-option
+    Alt+Ctrl+F      toggle-find-mark-finds-option
+    Alt+Ctrl+X      toggle-find-regex-option
+    Alt+Ctrl+W      toggle-find-word-option
+    Alt+Ctrl+A      toggle-find-wrap-around-option
+                    word-search-backward
+                    word-search-forward
 .. @+node:ekr.20060613062025.9: *4* Gui commands
 The following commands simulate mouse clicks, double-clicks or drags::
 
-    abort-edit-headline
-    activate-cmds-menu
-    activate-edit-menu
-    activate-file-menu
-    activate-help-menu
-    activate-outline-menu
-    activate-plugins-menu
-    activate-window-menu
-    add-editor
-    cascade-windows
-    click-click-box
-    click-headline
-    click-icon-box
-    close-window
-    contract-body-pane
-    contract-log-pane
-    contract-outline-pane
-    contract-pane
-    cycle-editor-focus
-    cycle-focus
-    delete-editor
-    double-click-headline
-    double-click-icon-box
-    edit-headline
-    end-edit-headline
-    equal-sized-panes
-    expand-body-pane
-    expand-log-pane
-    expand-outline-pane
-    expand-pane
-    focus-to-body
-    focus-to-log
-    focus-to-minibuffer
-    focus-to-tree
-    fully-expand-body-pane
-    fully-expand-log-pane
-    fully-expand-outline-pane
-    fully-expand-pane
-    hide-body-pane
-    hide-find-tab
-    hide-invisibles
-    hide-log-pane
-    hide-mini-buffer
-    hide-outline-pane
-    hide-pane
-    hide-spell-tab
-    iconify-frame
-    minimize-all
-    open-compare-window
-    open-find-dialog
-    open-find-tab
-    open-spell-tab
-    press-rst3-button
-    press-save-button
-    press-spell-button
-    resize-to-screen
-    scroll-down
-    scroll-down-extend-selection
-    scroll-outline-down-line
-    scroll-outline-down-page
-    scroll-outline-up-line
-    scroll-outline-up-page
-    scroll-up
-    scroll-up-extend-selection
-    show-mini-buffer
-    simulate-begin-drag
-    simulate-end-drag
-    toggle-active-pane
-    toggle-invisibles
-    toggle-mini-buffer
-    toggle-split-direction
+                    abort-edit-headline
+                    activate-cmds-menu
+                    activate-edit-menu
+                    activate-file-menu
+                    activate-help-menu
+                    activate-outline-menu
+                    activate-plugins-menu
+                    activate-window-menu
+                    add-editor
+                    cascade-windows
+                    click-click-box
+                    click-headline
+                    click-icon-box
+                    close-window
+                    contract-body-pane
+                    contract-log-pane
+                    contract-outline-pane
+    Alt-Ctrl-Minus  contract-pane
+    Ctrl-Shift-Tab  cycle-all-focus
+                    cycle-editor-focus
+                    cycle-focus
+                    delete-editor
+                    double-click-headline
+                    double-click-icon-box
+                    edit-headline
+                    end-edit-headline
+                    equal-sized-panes
+                    expand-body-pane
+                    expand-log-pane
+                    expand-outline-pane
+    Alt-Ctrl-Plus   expand-pane
+    Alt-D           focus-to-body
+                    focus-to-log
+                    focus-to-minibuffer
+    Alt-T           focus-to-tree
+                    fully-expand-body-pane
+                    fully-expand-log-pane
+                    fully-expand-outline-pane
+                    fully-expand-pane
+                    hide-body-pane
+                    hide-find-tab
+                    hide-invisibles
+                    hide-log-pane
+                    hide-outline-pane
+                    hide-pane
+                    hide-spell-tab
+                    iconify-frame
+                    minimize-all
+                    open-compare-window
+                    open-find-dialog
+                    open-spell-tab
+                    resize-to-screen
+    Shift+Next      scroll-down-half-page
+                    scroll-down-line
+    Next            scroll-down-page
+                    scroll-outline-down-line
+                    scroll-outline-down-page
+                    scroll-outline-left
+                    scroll-outline-right
+                    scroll-outline-up-line
+                    scroll-outline-up-page
+    Shift+Prior     scroll-up-half-page
+                    scroll-up-line
+    Prior           scroll-up-page
+                    simulate-begin-drag
+                    simulate-end-drag
+    Ctrl-T          toggle-active-pane
+                    toggle-invisibles
+                    toggle-split-direction
 .. @+node:ekr.20060613062025.2: *4* Help commands
 The following commands print various helpful messages.
 Apropos commands print longer discussions of specific topics.
@@ -438,15 +661,15 @@ The help-for-command command prompts for a command name
 (you can use typing completion to specify the command)
 and then prints a brief description of that command::
 
-    apropos-autocompletion
-    apropos-bindings
-    apropos-find-commands
-    help
-    help-for-command
-    mode-help
-    print-bindings
-    print-commands
-    python-help
+        apropos-autocompletion
+        apropos-bindings
+        apropos-find-commands
+        help
+    F1  help-for-command
+        help-for-python
+        mode-help
+        print-bindings
+        print-commands
 .. @+node:ekr.20060613062025.10: *4* Mode commands
 These commands put Leo into various kinds of modes.
 
@@ -467,101 +690,105 @@ These commands put Leo into various kinds of modes.
 
 Here is the full list of mode-related commands::
 
-    auto-complete
-    auto-complete-force
-    disable-autocompleter
-    disable-calltips
-    enable-autocompleter
-    enable-calltips
-    enter-apropos-mode
-    enter-commands-mode
-    enter-edit-mode
-    enter-emacs-mode
-    enter-extract-mode
-    enter-file-mode
-    enter-gui-mode
-    enter-help-mode
-    enter-kill-mode
-    enter-modes-mode
-    enter-move-outline-mode
-    enter-outline-mode
-    enter-quick-command-mode
-    enter-toggle-find-mode
-    exit-named-mode
-    set-command-state
-    set-extend-mode
-    set-insert-state
-    set-overwrite-state
-    set-silent-mode
-    show-calltips
-    show-calltips-force
-    toggle-autocompleter
-    toggle-calltips
-    toggle-extend-mode
-    toggle-input-state
+                auto-complete
+    Ctrl-Space  auto-complete-force
+                disable-autocompleter
+                disable-calltips
+                enable-autocompleter
+                enable-calltips
+                enter-apropos-mode
+                enter-commands-mode
+                enter-edit-mode
+                enter-emacs-mode
+                enter-extract-mode
+                enter-file-mode
+                enter-gui-mode
+                enter-help-mode
+                enter-kill-mode
+                enter-modes-mode
+                enter-move-outline-mode
+                enter-outline-mode
+                enter-quick-command-mode
+                enter-toggle-find-mode
+                exit-named-mode
+                set-command-state
+                set-extend-mode
+                set-insert-state
+                set-overwrite-state
+                set-silent-mode
+                show-calltips
+                show-calltips-force
+    Alt-1       toggle-autocompleter
+    Alt-2       toggle-calltips
+                toggle-extend-mode
+                toggle-input-state
 .. @+node:ekr.20060613062025.7: *4* Outline commands
 The following commands invoke Leo's outline commands::
 
-    clone-node
-    contract-all
-    contract-node
-    contract-or-go-left
-    contract-parent
-    copy-node
-    cut-node
-    de-hoist
-    delete-node
-    demote
-    expand-to-level-1
-    expand-to-level-2
-    expand-to-level-3
-    expand-to-level-4
-    expand-to-level-5
-    expand-to-level-6
-    expand-to-level-7
-    expand-to-level-8
-    expand-to-level-9
-    expand-all
-    expand-and-go-right
-    expand-next-level
-    expand-node
-    expand-or-go-right
-    expand-prev-level
-    go-back
-    go-forward
-    goto-first-node
-    goto-first-sibling
-    goto-last-node
-    goto-last-sibling
-    goto-last-visible
-    goto-line
-    goto-line-number
-    goto-next-changed
-    goto-next-clone
-    goto-next-marked
-    goto-next-node
-    goto-next-sibling
-    goto-next-visible
-    goto-parent
-    goto-prev-node
-    goto-prev-sibling
-    goto-prev-visible
-    hoist
-    insert-node
-    mark
-    mark-changed-items
-    mark-subheads
-    move-outline-down
-    move-outline-left
-    move-outline-right
-    move-outline-up
-    outline-to-CWEB
-    outline-to-noweb
-    paste-node
-    paste-retaining-clones
-    promote
-    sort-children
-    sort-siblings
+    Ctrl-`          clone-node
+    Alt-Minus       contract-all
+                    contract-node
+    Left            contract-or-go-left
+                    contract-parent
+    Ctrl-Shift-C    copy-node
+                    cut-node
+                    de-hoist
+                    delete-node
+    Ctrl-]          demote
+                    expand-to-level-1
+                    expand-to-level-2
+                    expand-to-level-3
+                    expand-to-level-4
+                    expand-to-level-5
+                    expand-to-level-6
+                    expand-to-level-7
+                    expand-to-level-8
+                    expand-to-level-9
+                    expand-all
+                    expand-and-go-right
+                    expand-next-level
+    Alt-}           expand-node
+                    expand-or-go-right
+                    expand-prev-level
+                    go-back
+                    go-forward
+                    goto-first-node
+                    goto-first-sibling
+                    goto-last-node
+                    goto-last-sibling
+                    goto-last-visible
+                    goto-line
+                    goto-line-number
+                    goto-next-changed
+                    goto-next-clone
+                    goto-next-marked
+                    goto-next-node
+                    goto-next-sibling
+                    goto-next-visible
+                    goto-parent
+                    goto-prev-node
+                    goto-prev-sibling
+                    goto-prev-visible
+                    hoist
+                    insert-node
+    Ctrl-M          mark
+                    mark-changed-items
+                    mark-subheads
+    Ctrl+D          move-outline-down
+    Shift+Down      move-outline-down
+    Alt+Shift+Down  move-outline-down
+    Shift+Left      move-outline-left
+    Alt+Shift+Left  move-outline-left
+    Shift+Right     move-outline-right
+    Alt+Shift+Up    move-outline-up
+    Ctrl+U          move-outline-up
+                    outline-to-CWEB
+                    outline-to-noweb
+                    paste-node
+                    paste-retaining-clones
+    Ctrl-[          promote
+                    sort-children
+    Alt-A           sort-siblings
 .. @+node:ekr.20060613062025.8: *4* Miscellaneous commands
 Here are various miscellaneous minibuffer commands::
 

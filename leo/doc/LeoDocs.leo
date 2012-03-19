@@ -98,7 +98,8 @@
 <v t="ekr.20100805165051.7153"><vh>@file outlines.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Using Leo's Commands</vh>
-<v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
+<v t="ekr.20100805165051.7155"
+expanded="ekr.20050901101608.2,"><vh>@file commands.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
@@ -189,44 +190,10 @@
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20120229094652.15173"><vh>*** Update docs</vh>
-<v t="ekr.20120317150916.6165"><vh>Add default key bindings to the docs</vh></v>
-<v t="ekr.20120229094652.15100"><vh>revise autocompletion docs based on recent posts</vh>
-<v t="ekr.20120229094652.15102"><vh>Creating ctags data</vh></v>
-<v t="ekr.20120229094652.15103"><vh>Using Leo's autocompleter (outline form)</vh>
-<v t="ekr.20120229094652.15104"><vh>Starting autocompletions</vh></v>
-<v t="ekr.20120229094652.15105"><vh>Displaying autocompletions</vh></v>
-<v t="ekr.20120229094652.15106"><vh>Using the QCompleter</vh></v>
-<v t="ekr.20120229094652.15107"><vh>Using the Log pane completer</vh></v>
-<v t="ekr.20120229094652.15108"><vh>Showing docstrings</vh></v>
-</v>
-<v t="ekr.20120229094652.15109"><vh>Using Leo's autocompleter (COPY)</vh>
-<v t="ekr.20120229094652.15110"><vh>Starting autocompletions</vh></v>
-<v t="ekr.20120229094652.15111"><vh>Displaying autocompletions</vh></v>
-<v t="ekr.20120229094652.15112"><vh>Using the QCompleter</vh></v>
-<v t="ekr.20120229094652.15113"><vh>Using the Log pane completer</vh></v>
-<v t="ekr.20120229094652.15114"><vh>Showing docstrings</vh></v>
-</v>
-<v t="ekr.20120229094652.15115"><vh>Code notes</vh></v>
-<v t="ekr.20120229094652.15116"><vh>Minor settings</vh></v>
-<v t="ekr.20120229094652.15117"><vh>Appearance</vh></v>
-<v t="ekr.20120229094652.15118"><vh>Codewise notes</vh></v>
-<v t="ekr.20120229094652.15119"><vh>Performance</vh></v>
-<v t="ekr.20120229094652.15120"><vh>Completions</vh>
-<v t="ekr.20120229094652.15121"><vh>Docs</vh>
-<v t="ekr.20120229094652.15122"><vh>Additional options</vh></v>
-</v>
-<v t="ekr.20120229094652.15123"><vh>Existing docs</vh></v>
-</v>
-</v>
-<v t="ekr.20120229094652.15174"><vh>MacOS</vh>
-<v t="ekr.20120229094652.15128"><vh>Leo on Mac OSX: new installation instructions</vh></v>
-<v t="ekr.20120229094652.14591"><vh>MacOS is no longer fully supported???</vh></v>
-</v>
-</v>
 <v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
 <v t="ekr.20120318135910.6111"><vh>Ahas</vh>
 <v t="ekr.20120229094652.14594"><vh>Put scripts in @command nodes</vh></v>
+<v t="ekr.20120318180219.6107"><vh>Syncing files is not a big problem!</vh></v>
 </v>
 <v t="ekr.20120229094652.14757"><vh>Bugs</vh>
 <v t="ekr.20120318075211.6163"><vh>Significant bugs</vh>
@@ -516,17 +483,17 @@
 <v t="ekr.20120229094652.19777"><vh>The open-with event now has a new format</vh></v>
 </v>
 <v t="ekr.20120229094652.15168"><vh>Settings</vh>
+<v t="ekr.20120229094652.14615"><vh>Added @bool indent_added_comments setting</vh></v>
 <v t="ekr.20120229094652.14606"><vh>Added @bool use_body_focus_border</vh></v>
 <v t="ekr.20120229094652.14598"><vh>Added border around selected pane</vh></v>
+<v t="ekr.20120229094652.14584"><vh>Added shell commands to Cmds menu</vh></v>
+<v t="ekr.20120229094652.14619"><vh>Added show-decoration-selected: 1 to stylesheet</vh></v>
 <v t="ekr.20120229094652.14620"><vh>Added stylesheets for Log &amp; Find tabs</vh></v>
-<v t="ekr.20120229094652.14615"><vh>Added @bool indent_added_comments setting</vh></v>
+<v t="ekr.20120229094652.14597"><vh>Added support for solarized colors</vh></v>
 <v t="ekr.20120229094652.15143"><vh>Eliminated the -c option</vh></v>
+<v t="ekr.20120318075211.7524"><vh>New default settings for run unit tests commands</vh></v>
 <v t="ekr.20120229094652.15140"><vh>New format for @openwith settings nodes</vh></v>
 <v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
-<v t="ekr.20120229094652.14597"><vh>Added support for solarized colors</vh></v>
-<v t="ekr.20120318075211.7524"><vh>New default settings for run unit tests commands</vh></v>
-<v t="ekr.20120229094652.14619"><vh>Added show-decoration-selected: 1 to stylesheet</vh></v>
-<v t="ekr.20120229094652.14584"><vh>Added shell commands to Cmds menu</vh></v>
 </v>
 <v t="ekr.20120229094652.15172"><vh>Unit testing</vh>
 <v t="ekr.20120229094652.14524"><vh>All unit tests may now be run externally</vh></v>
@@ -537,6 +504,11 @@
 <v t="ekr.20120229094652.14603"><vh>Disabled messages on external unit tests</vh></v>
 <v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
 </v>
+</v>
+<v t="ekr.20100805165051.7155"
+expanded="ekr.20050901101608.2,"></v>
+<v t="ekr.20120317150916.6165"><vh>***Add default key bindings to the docs</vh>
+<v t="ekr.20120319065417.7440"><vh>commands</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -797,12 +769,13 @@ The highlights of Leo 4.10:
 - Leo optionally highlights the pane containing the focus.
 - Significantly improved Leo's abbreviation handling.
 - Much improved handling of URL's.
+- Leo's Open With menu now works.
 - Detached windows.
 - Leo now edit non-Leo files smoothly.
 - Better support for running unit tests externally.
 - The new leoInspect module answers questions about Python code.
 - Easier installation on MacOS.
-- More than 40 other new features and commands.
+- Dozens of new and improved features and commands.
 - Fixed almost 70 bugs.
 
 Links:
@@ -1020,9 +993,6 @@ Here is the wishlist bug: https://bugs.launchpad.net/leo-editor/+bug/381527</t>
 <t tx="ekr.20120229094652.14589">Updating Sphinx and using new .js files did the trick.
 </t>
 <t tx="ekr.20120229094652.14590"></t>
-<t tx="ekr.20120229094652.14591">Leo's home page no longer mentions MacOS and LeoDocs.leo and install.txt now
-warn people that MacOS is difficult to install.
-</t>
 <t tx="ekr.20120229094652.14592">The mod_scripting plugin so that the name of the command created by an @button
 nodes does not include any [&lt;tag&gt;] that immediately follows @button. Examples::
 
@@ -2075,906 +2045,6 @@ When I am satisfied with the @test node, I can leave it where it is
 The energy difference between weightless and heavy is astounding.  Try
 the new way: you will surely like it. 
 </t>
-<t tx="ekr.20120229094652.15100">Overview of the code
-====================
-
-All notes refer to methods in class AutoCompleterClass unless otherwise noted.
-
-- The autoComplete method is the entry point. It will be called
-  when autocompletion is enabled and the user types either a period
-  or ctrl-space (
-
-
-The legacy autocompleter is eval based.
-
- uses Leo-specific code to when editing specific .leo files: leoDocs.leo, leoPlugins.leo, etc.
-       
-</t>
-<t tx="ekr.20120229094652.15102">On Sep 10, 8:36 am, "Edward K. Ream" &lt;edream...@gmail.com&gt; wrote:
-
-&gt; Later posts will discuss the following:
-&gt; 
-&gt; - Setting up to use ctags/codewise completion.
-
-This section describes how to use Ville's codewise.py
-module in leo\external folder.
-
-**Note**: I've recently made a few changes to codewise.py. The
-following discussion reflects the following changes:
-
-- Changed docstring.
-
-- The setup command does not crash if the ~/.ctags file already
-  exist.
-  
-- The setup command does not call the init command, and thus does
-  not delete ~/.codewise.db.
-  
-- Revised various print statements so they look better with Python 3.x.
-
-**Important**: Leo's core contains all necessary autocompletion
-code. In particular, enable *neither* the ctagscompleter.py
-plugin *nor* the codewisecompleter.py plugin. I plan to remove
-these plugins immediately, unless someone gives a good reason not
-to do so.
-
-**Important**: I've taken care to with the following
-instructions, but there could be oversights or misunderstandings.
-I would appreciate any corrections or additions.
-
-Creating codewise/ctags data
-============================
-
-1. Make sure you have exuberant ctags (not just regular ctags)
-   installed. It's an Ubuntu package, so its easy to install if
-   you're using Ubuntu.
-   
-2. Execute the following commands from Leo's external/codewise.py
-   module. **Note**: On Windows, you can use codewise.bat to
-   execute these commands. For example::
-
-        python &lt;path to leo&gt;\external\codewise.py %*
-    
-A. [Optional] Create a custom ~/.ctags file containing default
-   configuration settings for ctags::
-    
-        codewise setup
-        
-    This command will leave the ~/.ctags file unchanged if it
-    exists.  Othewise, the ``codewise setup`` command will
-    create a ~/.ctags file containing the following defaults::
-    
-        --exclude=*.html
-        --exclude=*.css
-    
-    http://ctags.sourceforge.net/ctags.html#FILES for more
-    details about the .ctags file.
-    
-B. [Optional] Delete the existing ctags database in ~/.codewise.db::
-   
-        codewise init
-        
-C. Add ctags data to the existing ctags database::
-
-        codewise parse &lt;path to directory&gt;
-        
-   You can add data from multiple sources by running
-   the ``codewise parse`` command on multiple directories.
-   
-</t>
-<t tx="ekr.20120229094652.15103">Leo's autocompletion suggests **completions**, text may be valid in a given
-point, or **context** in source code. For example, suppose the context is::
-
-    os.path.s
-    
-That is, suppose the cursor follows ``os.path.s`` in the body pane. The valid
-completions are all the members of Python's os.path module whose names start with 's',
-namely::
-
-    samefile
-    sameopenfile
-    sep
-    split
-    splitdrive
-    splitext
-    splitunc
-    stat
-    supports_unicode_filenames
-    sys
-    
-</t>
-<t tx="ekr.20120229094652.15104">There are two ways to have Leo show autocompletions, manually and automatically.
-You can use both at the same time.
-
-**Manual autocompletion**: Leo will show autocompletions whenever you execute
-the auto-complete-force (ctrl-space) command.
-
-**Automatic autocompletion**: If (automatic) autocompletion is enabled, Leo will show completions
-whenever you type a period in the body pane.
-
-You can enable autocompletion in several ways:
-
-1. By setting @bool enable_autocompleter_initially = True.
-
-2. By using the toggle-autocompleter (Alt-1) command.
-</t>
-<t tx="ekr.20120229094652.15105">How Leo displays these completions depends on the setting::
-
-    @bool use_qcompleter
-    
-True: Leo shows completions in the QCompleter popup window.
-False: Leo shows completions in the log pane.
-    
-
-
-</t>
-<t tx="ekr.20120229094652.15106">When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
-popup window, regardless of how many completions there are. To **accept** a
-completion, use the up and down arrows to select a completion, then type the
-return key. To **cancel** completion, type the escape key. As an important
-shortcut, if the popup window contains only one entry, you may accept a
-completion by simply typing the return key.
-</t>
-<t tx="ekr.20120229094652.15107">When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
-Leo's log pane. When there are more than 20 completions, Leo shows only the
-characters that start a completions. For example, when completing ``os.path.``
-the log pane will show::
-
-    _ 17
-    a 2
-    b 1
-    c 2
-    d 3
-    e 4
-    g 5
-    i 5
-    j 1
-    l 1
-    n 2
-    o 1
-    p 2
-    r 2
-    s 10
-    
-To see the complete list, type the '!' character.  You will see::
-
-    __all__
-    __builtins__
-    __cached__
-    __doc__
-    __file__
-    __name__
-    __package__
-    _get_altsep
-    _get_bothseps
-    _get_colon
-    _get_dot
-    _get_empty
-    _get_sep
-    _get_special
-    _getfileinformation
-    _getfinalpathname
-    _getfullpathname
-    abspath
-    altsep
-    basename
-    commonprefix
-    curdir
-    defpath
-    devnull
-    dirname
-    exists
-    ...
-
-Typically, however, you would simply type one of the valid prefix characters.
-For example, typing the letter 'a' would create the context ``os.path.a`` and
-the log pane would show::
-
-    abspath
-    altsep
-    
-As you type, Leo enters the longest common prefix of all completions into the
-body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
-completion.
-</t>
-<t tx="ekr.20120229094652.15108">Regardless of the setting of ``@bool use_qcompleter``,
-typing '?' while autocompleting will show the docstring of
-the present context.  For example, if the context is
-``os.path.join``, typing '?' will show::
-
-    Join two or more pathname components, inserting "\" as needed.
-    If any component is an absolute path, all previous path components
-    will be discarded.
-    
-It is not possible to copy the docstring from the log pane
-when using the QCompleter because the QCompleter popup window is a modal dialog.
-</t>
-<t tx="ekr.20120229094652.15109">Leo's autocompletion suggests **completions**, text may be valid in a given
-point, or **context** in source code. For example, suppose the context is::
-
-    os.path.s
-    
-That is, suppose the cursor follows ``os.path.s`` in the body pane. The valid
-completions are all the members of Python's os.path module whose names start with 's',
-namely::
-
-    samefile
-    sameopenfile
-    sep
-    split
-    splitdrive
-    splitext
-    splitunc
-    stat
-    supports_unicode_filenames
-    sys
-    
-Starting autocompletions
-========================
-
-There are two ways to have Leo show autocompletions, manually and automatically.
-You can use both at the same time.
-
-**Manual autocompletion**: Leo will show autocompletions whenever you execute
-the auto-complete-force (ctrl-space) command.
-
-**Automatic autcompletion**: If (automatic) autocompletion is enabled, Leo will show completions
-whenever you type a period in the body pane.
-
-You can enable autocompletion in several ways:
-
-1. By setting @bool enable_autocompleter_initially = True.
-
-2. By using the toggle-autocompleter (Alt-1) command.
-
-Displaying autocompletions
-==========================
-
-How Leo displays these completions depends on the setting::
-
-    @bool use_qcompleter
-    
-True: Leo shows completions in the QCompleter popup window.
-False: Leo shows completions in the log pane.
-
-Using the QCompleter
-====================
-
-When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
-popup window, regardless of how many completions there are. To **accept** a
-completion, use the up and down arrows to select a completion, then type the
-return key. To **cancel** completion, type the escape key. As an important
-shortcut, if the popup window contains only one entry, you may accept a
-completion by simply typing the return key.
-
-Using the Log pane completer
-============================
-
-When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
-Leo's log pane. When there are more than 20 completions, Leo shows only the
-characters that start a completions. For example, when completing ``os.path.``
-the log pane will show::
-
-    _ 17
-    a 2
-    b 1
-    c 2
-    d 3
-    e 4
-    g 5
-    i 5
-    j 1
-    l 1
-    n 2
-    o 1
-    p 2
-    r 2
-    s 10
-    
-To see the complete list, type the '!' character.  You will see::
-
-    __all__
-    __builtins__
-    __cached__
-    __doc__
-    __file__
-    __name__
-    __package__
-    _get_altsep
-    _get_bothseps
-    _get_colon
-    _get_dot
-    _get_empty
-    _get_sep
-    _get_special
-    _getfileinformation
-    _getfinalpathname
-    _getfullpathname
-    abspath
-    altsep
-    basename
-    commonprefix
-    curdir
-    defpath
-    devnull
-    dirname
-    exists
-    ...
-
-Typically, however, you would simply type one of the valid prefix characters.
-For example, typing the letter 'a' would create the context ``os.path.a`` and
-the log pane would show::
-
-    abspath
-    altsep
-    
-As you type, Leo enters the longest common prefix of all completions into the
-body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
-completion.
-
-Showing docstrings
-==================
-
-Regardless of the setting of ``@bool use_qcompleter``,
-typing '?' while autocompleting will show the docstring of
-the present context.  For example, if the context is
-``os.path.join``, typing '?' will show::
-
-    Join two or more pathname components, inserting "\" as needed.
-    If any component is an absolute path, all previous path components
-    will be discarded.
-    
-It is not possible to copy the docstring from the log pane
-when using the QCompleter because the QCompleter popup window is a modal dialog.
-</t>
-<t tx="ekr.20120229094652.15110">There are two ways to have Leo show autocompletions, manually and automatically.
-You can use both at the same time.
-
-**Manual autocompletion**: Leo will show autocompletions whenever you execute
-the auto-complete-force (ctrl-space) command.
-
-**Automatic autocompletion**: If (automatic) autocompletion is enabled, Leo will show completions
-whenever you type a period in the body pane.
-
-You can enable autocompletion in several ways:
-
-1. By setting @bool enable_autocompleter_initially = True.
-
-2. By using the toggle-autocompleter (Alt-1) command.
-</t>
-<t tx="ekr.20120229094652.15111">How Leo displays these completions depends on the setting::
-
-    @bool use_qcompleter
-    
-True: Leo shows completions in the QCompleter popup window.
-False: Leo shows completions in the log pane.
-    
-
-
-</t>
-<t tx="ekr.20120229094652.15112">When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
-popup window, regardless of how many completions there are. To **accept** a
-completion, use the up and down arrows to select a completion, then type the
-return key. To **cancel** completion, type the escape key. As an important
-shortcut, if the popup window contains only one entry, you may accept a
-completion by simply typing the return key.
-</t>
-<t tx="ekr.20120229094652.15113">When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
-Leo's log pane. When there are more than 20 completions, Leo shows only the
-characters that start a completions. For example, when completing ``os.path.``
-the log pane will show::
-
-    _ 17
-    a 2
-    b 1
-    c 2
-    d 3
-    e 4
-    g 5
-    i 5
-    j 1
-    l 1
-    n 2
-    o 1
-    p 2
-    r 2
-    s 10
-    
-To see the complete list, type the '!' character.  You will see::
-
-    __all__
-    __builtins__
-    __cached__
-    __doc__
-    __file__
-    __name__
-    __package__
-    _get_altsep
-    _get_bothseps
-    _get_colon
-    _get_dot
-    _get_empty
-    _get_sep
-    _get_special
-    _getfileinformation
-    _getfinalpathname
-    _getfullpathname
-    abspath
-    altsep
-    basename
-    commonprefix
-    curdir
-    defpath
-    devnull
-    dirname
-    exists
-    ...
-
-Typically, however, you would simply type one of the valid prefix characters.
-For example, typing the letter 'a' would create the context ``os.path.a`` and
-the log pane would show::
-
-    abspath
-    altsep
-    
-As you type, Leo enters the longest common prefix of all completions into the
-body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
-completion.
-</t>
-<t tx="ekr.20120229094652.15114">Regardless of the setting of ``@bool use_qcompleter``,
-typing '?' while autocompleting will show the docstring of
-the present context.  For example, if the context is
-``os.path.join``, typing '?' will show::
-
-    Join two or more pathname components, inserting "\" as needed.
-    If any component is an absolute path, all previous path components
-    will be discarded.
-    
-It is not possible to copy the docstring from the log pane
-when using the QCompleter because the QCompleter popup window is a modal dialog.
-</t>
-<t tx="ekr.20120229094652.15115">Function and design
-===================
-
-Both the legacy and new completer now work *exactly* the
-same way, because they both use the AutoCompleterClass to
-compute the list of completions.
-
-The strict "stateless" requirement means that the
-"intermediate" completions must be entered into the body
-pane while completion is active. It works well as a visual
-cue when using the tabbed completer: indeed, the tabbed
-completer would be difficult to use without this cue.
-
-The situation is slightly different with the qcompleter.
-Adding code before the user accepts the completion might be
-considered an "advanced" feature. However, it does have two
-important advantages, especially when "chaining" across
-periods: it indicates the status of the chaining and it
-limits what must appear in the qcompleter window.
-</t>
-<t tx="ekr.20120229094652.15116">Minor Autocompletion settings
-=============================
-
-These are found in leoSettings.leo: @settings--&gt;Autocompleter
-
-- @bool use_codewise = False
-
-True: use codewise completions.
-False: use Leo-specific completions.
-
-- @bool use_qcompleter = True
-
-True:  show completions in a QCompleter popup.
-False: show completions in Leo's Completions tab.
-This option has effect only when using the qt or qttabs gui's.
-
-The following options specify minor user preferences: they have little or no effect on the design or code of the autocompleter:
-
-- @bool auto_tab_complete = False
-
-True: Automatically extend the completed text to the longest common prefix of all completions.
-
-- @bool autocomplete-brackets = False
-
-True: When typing an opening bracket '(','[' or '{', immediately type the corresponding closing bracket.  To move past the closing bracket, just type it.
-
-- @bool enable_calltips_initially = False
-
-- @bool forbid_invalid_completions = False
-
-True: Don't add characters during autocompletion that are not part of any computed completion.
-</t>
-<t tx="ekr.20120229094652.15117">Appearance
-==========
-
-There is little change to the legacy completer, except that
-no text is highlighted in the body pane during completion.
-This is calmer than before. Furthermore, there is no longer
-any need for highlighting, because when the user types a
-backspace the legacy completer now simply deletes a single
-character instead of the highlighted text.
-
-One minor change: the legacy completer now *does* insert
-characters that do not match the start of any possible
-completion. This is an experimental feature, but it might
-play well with using codewise completions as a fallback to
-Leo-related completions.
-
-</t>
-<t tx="ekr.20120229094652.15118">Why the codewise module
-=======================
-
-- This module supports modern code completion for the Leo editor.
-
-- Exuberant ctags is an excellent code scanner, but TAGS file
-  lookup sucks for "find methods of this class".
-  
-- This module puts all data in a single file, ~/.codewise.db by
-  default. In contrast, TAGS files can exist all over the file
-  system.
-
-- The code in codewise.py is usable as a python module, or a
-  command line tool.
-
-
-Codewise completions
-====================
-
-The codewise-oriented completions appear to work well. In
-large part, this is due to adding the global "self."
-completions to all class-related completions (kind ==
-'class' in ac.get_codewise_completions). This looks like a
-really good hack, and it eliminates the need for the
-ContextSniffer class.
-</t>
-<t tx="ekr.20120229094652.15119">Performance
-===========
-
-Performance of Leo-related completions is *much* better than
-before. The old code used Python's inspect module and was
-horribly complex. The new code uses eval and is perfectly
-straightforward.
-
-The present codewise-related code caches completions for all
-previously-seen prefixes. This dramatically speeds up
-backspacing. Global caching is possible because completions
-depend *only* on the present prefix, *not* on the presently
-selected node. If ContextSniffer were used, completions
-would depend on the selected node and caching would likely
-be impractical. Despite these improvements, the performance
-of codewise-oriented completions is noticeably slower than
-Leo-related completions.
-
-Performance notes
-=================
-
-The ac.get_cached_options cuts back the prefix until it
-finds a cached prefix. ac.compute_completion_list then uses
-this (perhaps-way-too-long-list) as a starting point, and
-computes the final completion list by calling
-g.itemsMatchingPrefixInList.
-
-This may not be absolutely the fastest way, but it is much
-simpler and more robust than attempting to do "prefix AI"
-based on comparing old and new prefixes. Furthermore, this
-scheme is completely independent of the how completions are
-actually computed. The autocompleter now caches options
-lists, regardless of whether using eval or codewise.
-
-In most cases the scheme is extremely fast: calls to
-get_completions replace calls to
-g.itemsMatchingPrefixInList. However, for short prefixes,
-the list that g.g.itemsMatchingPrefixInList scans can have
-thousands of items. Scanning large lists can't be helped in
-any case for short prefixes.
-
-Happily, the new scheme is still *completely* stateless: the
-completionDict does *not* define state (it is valid
-everywhere) and no state variables had to be added. In
-short, the new caching scheme is much better than before,
-and it probably is close to optimal in most situations.
-
-</t>
-<t tx="ekr.20120229094652.15120">os.path.splitdrive.d_rule
-os.path.join
-</t>
-<t tx="ekr.20120229094652.15121">Creating codewise/ctags data
-============================
-
-This is adapted from the thread: http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/ca01e7a803d2b546
-"HOWTO: make Ville's autocompleter work.
-
-1. Make sure you have exuberant ctags (not just regular ctags) installed.  It's an Ubuntu package, so it's easy to install if you're using Ubuntu.
-
-2. All recent versions of Leo contain Ville's codewise module: leo/external/codewise.py
-
-@pagewidth 60
-
-Overview of the code
-====================
-
-All notes refer to methods in class AutoCompleterClass
-unless otherwise noted.
-
-- The autoComplete method is the entry point.  It will be called when autocompletion is enabled and the user types either a period or ctrl-space (
-
-
-The legacy autocompleter is eval based.
-
- uses Leo-specific code to when editing specific .leo files: leoDocs.leo, leoPlugins.leo, etc.
-       
-
-
-Here are the contents of the discussion of autocompletion from the 4.9 release notes in LeoDocs.leo.  These should be folded into Leo's Users Guide: I'll do that today.
-
-QQQQQ
- 
-Appearance
-==========
-
-There is little change to the legacy completer, except that
-no text is highlighted in the body pane during completion.
-This is calmer than before. Furthermore, there is no longer
-any need for highlighting, because when the user types a
-backspace the legacy completer now simply deletes a single
-character instead of the highlighted text.
-
-One minor change: the legacy completer now *does* insert
-characters that do not match the start of any possible
-completion. This is an experimental feature, but it might
-play well with using codewise completions as a fallback to
-Leo-related completions.
-
-Function and design
-===================
-
-Both the legacy and new completer now work *exactly* the
-same way, because they both use the AutoCompleterClass to
-compute the list of completions.
-
-The strict "stateless" requirement means that the
-"intermediate" completions must be entered into the body
-pane while completion is active. It works well as a visual
-cue when using the tabbed completer: indeed, the tabbed
-completer would be difficult to use without this cue.
-
-The situation is slightly different with the qcompleter.
-Adding code before the user accepts the completion might be
-considered an "advanced" feature. However, it does have two
-important advantages, especially when "chaining" across
-periods: it indicates the status of the chaining and it
-limits what must appear in the qcompleter window.
-
-Codewise completions
-====================
-
-The codewise-oriented completions appear to work well. In
-large part, this is due to adding the global "self."
-completions to all class-related completions (kind ==
-'class' in ac.get_codewise_completions). This looks like a
-really good hack, and it eliminates the need for the
-ContextSniffer class.
-
-Performance
-===========
-
-Performance of Leo-related completions is *much* better than
-before. The old code used Python's inspect module and was
-horribly complex. The new code uses eval and is perfectly
-straightforward.
-
-The present codewise-related code caches completions for all
-previously-seen prefixes. This dramatically speeds up
-backspacing. Global caching is possible because completions
-depend *only* on the present prefix, *not* on the presently
-selected node. If ContextSniffer were used, completions
-would depend on the selected node and caching would likely
-be impractical. Despite these improvements, the performance
-of codewise-oriented completions is noticeably slower than
-Leo-related completions.
-
-Performance notes
-=================
-
-The ac.get_cached_options cuts back the prefix until it
-finds a cached prefix. ac.compute_completion_list then uses
-this (perhaps-way-too-long-list) as a starting point, and
-computes the final completion list by calling
-g.itemsMatchingPrefixInList.
-
-This may not be absolutely the fastest way, but it is much
-simpler and more robust than attempting to do "prefix AI"
-based on comparing old and new prefixes. Furthermore, this
-scheme is completely independent of the how completions are
-actually computed. The autocompleter now caches options
-lists, regardless of whether using eval or codewise.
-
-In most cases the scheme is extremely fast: calls to
-get_completions replace calls to
-g.itemsMatchingPrefixInList. However, for short prefixes,
-the list that g.g.itemsMatchingPrefixInList scans can have
-thousands of items. Scanning large lists can't be helped in
-any case for short prefixes.
-
-Happily, the new scheme is still *completely* stateless: the
-completionDict does *not* define state (it is valid
-everywhere) and no state variables had to be added. In
-short, the new caching scheme is much better than before,
-and it probably is close to optimal in most situations.
-
-QQQQQ
-
-Part 2: New documentation
-
-As I reread the release notes, I see that they are too code-oriented for the general reader.  What is needed are the following:
-
-1. A discussion of Autocompletion settings in 
-</t>
-<t tx="ekr.20120229094652.15122">The following options specify minor user preferences: they have little or no
-effect on the design or code of the autocompleter:
-
-- @bool auto_tab_complete = False
-
-True: Automatically extend the completed text to the longest common prefix of all completions.
-
-- @bool autocomplete-brackets = False
-
-True: When typing an opening bracket '(','[' or '{', immediately type the corresponding closing bracket.  To move past the closing bracket, just type it.
-
-- @bool enable_calltips_initially = False
-
-- @bool forbid_invalid_completions = False
-
-True: Don't add characters during autocompletion that are not part of any computed completion.
-</t>
-<t tx="ekr.20120229094652.15123">Typing a period when @language python is in effect starts
-autocompletion. Typing Return or Control-g (keyboard-quit) exits
-autocompletion.
-
-Autocompletion shows what may follow a period in code. (Actually
-you can specify any character using the auto-complete shortcut
-setting.) For example, after typing g. Leo will show a list of
-all the global functions in leoGlobals.py. Autocompletion works
-much like tab completion in the minibuffer. Unlike the
-minibuffer, the presently selected completion appears directly in
-the body pane.
-
-A leading period brings up ‘Autocomplete Modules’. (The period
-goes away.) You can also get any module by typing its name. If
-more than 25 items would appear in the Autocompleter tab, Leo
-shows only the valid starting characters. At this point, typing
-an exclamation mark shows the complete list. Thereafter, typing
-further exclamation marks toggles between full and abbreviated
-modes.
-
-If x is a list ‘x.!’ shows all its elements, and if x is a Python
-dictionary, ‘x.!’ shows x.keys(). For example, ‘sys.modules.!’
-Again, further exclamation marks toggles between full and
-abbreviated modes.
-
-During autocompletion, typing a question mark shows the docstring
-for the object. For example: ‘g.app?’ shows the docstring for
-g.app. This doesn’t work (yet) directly for Python globals, but
-‘__builtin__.f?’ does. Example: ‘__builtin__.pow?’ shows the
-docstring for pow.
-
-Autocompletion works in the Find tab; you can use &lt;Tab&gt; to cycle
-through the choices. The ‘Completion’ tab appears while you are
-doing this; the Find tab reappears once the completion is
-finished. Calltips
-
-Calltips appear after you type an open parenthesis in code.
-Calltips shows the expected arguments to a function or method.
-Calltips work for any Python function or method, including
-Python’s global functions. Typing Return or Control-g
-(keyboard-quit) exits calltips.
-
-Examples:
-
-    ‘g.toUnicode(‘ gives ‘g.toUnicode(s, encoding, reportErrors=False’
-    ‘c.widgetWantsFocusNow’ gives ‘c.widgetWantsFocusNow(w’
-    ‘reduce(‘ gives ‘reduce(function, sequence[, initial]) -&gt; value’
-
-The calltips appear directly in the text and the argument list is highlighted so you can just type to replace it. The calltips appear also in the status line for reference after you have started to replace the args.
-
-Options
-
-Both autocompletion and calltips are initially enabled or disabled by the enable_autocompleter and enable_calltips settings in leoSettings.leo. You may enable or disable these features at any time with these commands: enable-auto-completer-command, enable-calltips-command, disable-auto-completer-command and disable-calltips-command.
-The minibuffer
-
-The mini-buffer is a text area at the bottom of the body pane. You use it like the Emacs mini-buffer to invoke commands by their so-called long name. The following commands affect the minibuffer:
-
-    full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a full command name, then hit &lt;Return&gt; to execute the command. Tab completion works, but not yet for file names.
-
-    universal-argument: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat count for later command. Ctrl-u 999 a adds 999 a’s.
-    keyboard-quit: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts the focus in the body pane.
-
-For example, to print a list of all commands type Alt-X print-commands &lt;Return&gt;.
-
-The following sections list the various commands that you can invoke from the minibuffer. Important: you may bind keystrokes to any of these commands. See Customizing Leo for full details.
-</t>
-<t tx="ekr.20120229094652.15128">http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
-
-I bear good tidings of great joy! 
-
-I recently received a new MacBook Pro and did a fresh upgrade to Mac
-OS 10.7 (Lion). I then used the opportunity to test out installation
-procedures of various software on a clean system. My main finding is
-that the excellent Homebrew (mxcl.github.com/homebrew/) makes things
-much easier these days.
-
-Why Homebrew? It does not try to replace every single bit of
-functionality on your Mac with their own version, like Macports or
-fink. It reuses the existing libraries as far as possible. No need to
-reinstall Python, for example (one of my pet gripes when people try to
-install new software on their Macs, and the source of much confusion
-and pain). It installs to /usr/local, the standard place to find
-third-party libraries and headers, instead of the obscure /opt or /sw.
-It's simple to use and to extend.
-
-I last installed Leo on Mac OS 10.4 (Tiger) back in the Tk days, and
-wondered what it looked like in Qt. All the horror stories of PyQT on
-Mac discouraged me from trying this before, so I was keen to see if
-Homebrew helps. Here is my installation write-up:
-
-- Make sure you have Xcode installed
-  (test it by confirming that "gcc" runs in the Terminal)
-
-- In preparation for homebrew, the best option in my opinion is
-  to delete /usr/local via::
-
-  sudo rm -rf /usr/local
-
-  and install any software in it via homebrew instead. If this step
-  fills you with dread and you do not want to lose your beloved
-  third-party software, the second-best option is to make sure you
-  have write permission for the directory via::
-
-  sudo chown -R &lt;your user name&gt;:admin /usr/local
-
-  If you don't know your username, run "whoami". :-) This is
-  useful because homebrew actually discourages you from
-  installing third-party software as the superuser (the usual Mac
-  apps in /Applications are also installed as the normal user,
-  for that matter).
-
-- Install Homebrew (http://mxcl.github.com/homebrew/) by running
-  the following command in the Terminal::
-
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
-
-- Run "brew update" to get the latest formulas
-
-- Now install PyQT (yes, that's it!)::
-
-  brew install pyqt
-
-- Run "brew doctor" and check any further suggestions to improve
-  your system.
-
-- Add the following lines to your ~/.bash_profile
-  (or ~/.profile on Leopard)::
-
-  export PATH=/usr/local/bin:$PATH
-  # This is for SIP (and PyQT) as suggested by Homebrew
-  export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
-
-- Open a new Terminal tab / window so that the above settings
-  take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip,
-  unzipped it, and ran "python launchLeo.py" inside the Leo
-  directory.
-
-We should consider adding a Homebrew formula for Leo. This will
-simplify the process even further, to simply "brew install leo". I
-started on this, but wasn't sure where to put the various Leo files in
-the system hierarchy. The Debian package can give some clues here, but
-I haven't looked at it yet.
-
-Now I just have to start using Leo after all these years of checking
-it out... :-)
-
-</t>
 <t tx="ekr.20120229094652.15131">From Brian Theado
 
 The other day I stumbled across Ville's code in scripts.leo which displays the
@@ -3083,82 +2153,31 @@ Commander) rather than the tuple (c,c.frame).
 </t>
 <t tx="ekr.20120229094652.15140">http://groups.google.com/group/leo-editor/browse_thread/thread/dd5907529208ee98
 
-Revs 5037/8 contain fixes that allow the open-with command to start to
-work, at least in 'subprocess.Popen' mode.
-
-However, I think it is time for a complete rethink of how users
-specify open-with settings.
-
-===== The problems
-
-1. The format of settings in @openwith nodes is way too wonky.  At
-present, the body text of such nodes consists of a single line, which
-contains a 3-tuple of elements. Let us call this line the **open-with
-line**.
-
-The entire open-with line must be a valid Python tuple.  This causes
-problems for both user and implementation, as discussed more fully
-below.
-
-2. openTempFileInExternalEditor is the method that translates the
-settings in @openwith nodes into code that actually open the temp file
-with the desired editor.  At present, this method has to do an
-**eval** of the single @openwith line, which has lots bad
-consequences:
-
-- eval is a slight security problem, although there are a gazillion
-worse problems.
-
-- The user has to quote strings, and those quotes are removed by eval,
-so there is no easy way to specify quoted strings (the user has to
-*doubly* quote strings.)
-
-- There is no indication of what the parts of the open-with line mean.
-
-3. At present, openTempFileInExternalEditor does some ridiculously-
-complicated munging of the *eval'd* open-with line in order to get
-produce the correct call to subprocess.Popen.  It's possible that
-there is an easier way, but I haven't found it yet.
-
-===== A proposed solution
-
-1. We need a much more user-friendly format for @openwith nodes.  Let
-us suppose that the body of @openwith nodes contains one or more lines
+The body of @openwith nodes contains one or more lines
 of the following form::
 
    tag: value
 
 The possible tags will be::
 
-- kind: &lt;a string&gt;
+    kind: &lt;a string&gt;
 
 The value specifies the **opener logic**, that is, the method used to
-launch the external editor, one of
-('subprocess.Popen','os.system','os.startfile','os.spawnl','os.spawnv',
-'exec')
+launch the external editor, one of 'subprocess.Popen', 'os.startfile',
+'os.spawnl', 'os.spawnv', 'exec'.
 
-- arg: &lt;a string&gt;
+    arg: &lt;a string&gt;
 
-There may be many such arg lines. Each line will be a string to be
-passed as an argument to the opener logic, in a format that is
-compatible with the specified opener logic.
+There may be many such arg lines. Each line will be a string to be passed
+as an argument to the opener logic, in a format that is compatible with the
+specified opener logic.
 
-**Important**: quotes in &lt;a string&gt; will be *retained* (not eval'd),
-allowing the user to specify exactly the arguments to be passed to
-opener logic.
+Quotes in &lt;a string&gt; will be *retained*, allowing the user to specify
+exactly the arguments to be passed to opener logic.
 
-- custom: &lt;a string&gt;
-
-Here, &lt;a string&gt; *will* be eval'd, yielding an object to be used as
-the opener logic.
-
-It's likely that either the "custom" tag or the "exec" opener value is
-redundant.
-
-===== Summary
-
-The present scheme is wonky, confusing, inflexible and extremely
-difficult to implement. It should be replaced immediately.
+..  custom: &lt;a string&gt;
+..  Here, &lt;a string&gt; *will* be eval'd, yielding an object to be used as
+..  the opener logic.
 </t>
 <t tx="ekr.20120229094652.15142">http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
 
@@ -3346,9 +2365,6 @@ nothing more I can do.
 <t tx="ekr.20120229094652.15168"></t>
 <t tx="ekr.20120229094652.15169"></t>
 <t tx="ekr.20120229094652.15172"></t>
-<t tx="ekr.20120229094652.15173">@language rest
-@pagewidth 75</t>
-<t tx="ekr.20120229094652.15174"></t>
 <t tx="ekr.20120229094652.15176"></t>
 <t tx="ekr.20120229094652.19777">- open-with hook has changed: it now uses a "d" arg.</t>
 <t tx="ekr.20120229173025.20633">http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
@@ -5131,7 +4147,11 @@ def isSectionRef (self,s):
 or \@@command.
 </t>
 <t tx="ekr.20120315101404.14224">@pagewidth 70</t>
-<t tx="ekr.20120317150916.6165">Also, add the official command name.</t>
+<t tx="ekr.20120317150916.6165">@nocolor-node
+
+Also, add the official command name.
+
+</t>
 <t tx="ekr.20120318075211.6163"></t>
 <t tx="ekr.20120318075211.6164"></t>
 <t tx="ekr.20120318075211.6165"></t>
@@ -5225,6 +4245,756 @@ switches that enable new code bases.  Recent examples were::
     run-selected-unit-tests-locally     = None
 </t>
 <t tx="ekr.20120318135910.6111"></t>
+<t tx="ekr.20120318180219.6107"></t>
+<t tx="ekr.20120319065417.7440">@nocolor-node
+
+                  @button-fac
+                  @button-preview
+                  @button-preview-tree
+                  @button-rst3
+                  @command-align-eq-signs
+                  @command-c-to-python-clean-docs
+                  @command-clean-all-blank-lines
+                  @command-clean-body
+                  @command-clean-diff
+                  @command-clean-spellpyx
+                  @command-cls
+                  @command-count-pages
+                  @command-create-@auto-nodes
+                  @command-create-def-list
+                  @command-flatten-script
+                  @command-join-node-above
+                  @command-join-node-below
+                  @command-load-all-leo-files
+                  @command-preview-node
+                  @command-preview-tree
+                  @command-print-cmd-docstrings
+                  @command-promote-bodies
+                  @command-remove-newlines
+                  @command-split-defs
+                  abbrev-add-global
+                  abbrev-inverse-add-global
+                  abbrev-kill-all
+                  abbrev-list
+                  abbrev-read
+                  abbrev-write
+                  abort-edit-headline
+                  about-leo
+                  act-on-node
+                  activate-cmds-menu
+                  activate-edit-menu
+                  activate-file-menu
+                  activate-help-menu
+                  activate-outline-menu
+                  activate-plugins-menu
+                  activate-window-menu
+Ctrl-(            add-comments
+Ctrl-Shift-9      add-comments
+                  add-editor
+                  add-space-to-lines
+                  add-tab-to-lines
+                  advertised-undo
+                  align-eq-signs
+                  apropos-abbreviations
+                  apropos-autocompletion
+                  apropos-bindings
+                  apropos-debugging-commands
+                  apropos-find-commands
+.                 auto-complete
+Ctrl-Space        auto-complete-force
+                  back-char
+                  back-char-extend-selection
+                  back-page
+                  back-page-extend-selection
+                  back-paragraph
+                  back-paragraph-extend-selection
+                  back-sentence
+                  back-sentence-extend-selection
+Home              back-to-home
+                  back-to-indentation
+Alt-B             back-word
+Ctrl-Left         back-word
+Alt-Shift-B       back-word-extend-selection
+Ctrl-Shift-Left   back-word-extend-selection
+                  back-word-smart
+                  back-word-smart-extend-selection
+BackSpace         backward-delete-char
+Shift-BackSpace   backward-delete-char
+Ctrl-BackSpace    backward-delete-word
+                  backward-delete-word-smart
+Alt-Q             backward-find-character
+Ctrl-1            backward-find-character
+Alt-Shift-Q       backward-find-character-extend-selection
+Ctrl-Shift-1      backward-find-character-extend-selection
+                  backward-kill-paragraph
+                  backward-kill-sentence
+Alt-BackSpace     backward-kill-word
+                  beautify
+                  beautify-all
+                  beautify-c
+                  beautify-tree
+Ctrl-Home         beginning-of-buffer
+Ctrl-Shift-Home   beginning-of-buffer-extend-selection
+                  beginning-of-line
+Ctrl-Shift-A      beginning-of-line-extend-selection
+Shift-Home        beginning-of-line-extend-selection
+                  bookmarks_show
+                  buffer-append-to
+                  buffer-kill
+                  buffer-prepend-to
+                  buffer-switch-to
+                  buffers-list
+                  buffers-list-alphabetically
+                  c-to-python
+                  c-to-python-clean-docs
+                  capitalize-word
+                  cascade-windows
+                  center-line
+                  center-region
+Ctrl-=            change
+                  change-all
+Ctrl--            change-then-find
+                  chapter-clone-node-to
+                  chapter-convert-node-to
+                  chapter-copy-node-to
+                  chapter-create
+                  chapter-create-from-node
+                  chapter-move-node-to
+                  chapter-remove
+                  chapter-rename
+                  chapter-select
+                  check-derived-file
+                  check-leo-file
+                  check-outline
+                  clean-all-blank-lines
+                  clean-all-lines
+                  clean-body
+                  clean-diff
+                  clean-lines
+                  clean-recent-files
+                  clean-spellpyx
+                  clear-all-caches
+                  clear-all-uas
+                  clear-cache
+                  clear-extend-mode
+                  clear-kill-ring
+                  clear-node-uas
+                  clear-recent-files
+                  clear-selected-text
+                  click-click-box
+                  click-headline
+                  click-icon-box
+                  clone-find-all
+                  clone-find-all-flattened
+                  clone-marked-nodes
+Ctrl-`            clone-node
+                  close-others
+Ctrl-F4           close-window
+                  cls
+                  cm-external-editor
+                  code-to-rst
+Alt--             contract-all
+                  contract-all-other-nodes
+                  contract-body-pane
+                  contract-log-pane
+                  contract-node
+text: Left        contract-or-go-left
+tree: Left        contract-or-go-left
+                  contract-outline-pane
+Alt-Ctrl--        contract-pane
+                  contract-parent
+                  convert-all-blanks
+                  convert-all-tabs
+                  convert-blanks
+                  convert-tabs
+Ctrl-Shift-C      copy-node
+Ctrl-C            copy-text
+                  count-pages
+                  count-region
+                  create-@auto-nodes
+                  create-def-list
+                  ctrl-click-at-cursor
+                  ctrl-click-icon
+Ctrl-Shift-X      cut-node
+Ctrl-X            cut-text
+Ctrl-Shift-Tab    cycle-all-focus
+                  cycle-editor-focus
+                  cycle-focus
+                  cycle-log-focus
+                  dabbrev-completion
+                  dabbrev-expands
+                  de-hoist
+                  debug
+                  delete-@button-fac-button
+                  delete-@button-preview-button
+                  delete-@button-preview-tree-button
+                  delete-@button-rst3-button
+Delete            delete-char
+Shift-Delete      delete-char
+Ctrl-Shift-0      delete-comments
+Ctrl-)            delete-comments
+                  delete-editor
+                  delete-first-icon
+                  delete-indentation
+                  delete-last-icon
+                  delete-marked-nodes
+                  delete-node
+                  delete-node-icons
+                  delete-script-button-button
+                  delete-spaces
+Ctrl-Delete       delete-word
+                  delete-word-smart
+Ctrl-]            demote
+Ctrl-}            demote
+Ctrl-Shift-]      demote
+                  digit-argument
+                  directory-make
+                  directory-remove
+                  disable-autocompleter
+                  disable-calltips
+Ctrl-F7           do-nothing
+Ctrl-F6           do-nothing
+Ctrl-F5           do-nothing
+Ctrl-F2           do-nothing
+Ctrl-F1           do-nothing
+Ctrl-F9           do-nothing
+Ctrl-F8           do-nothing
+Ctrl-Next         do-nothing
+Shift-F5          do-nothing
+Ctrl-Up           do-nothing
+Ctrl-Down         do-nothing
+F12               do-nothing
+F10               do-nothing
+F11               do-nothing
+Ctrl-F12          do-nothing
+Ctrl-F11          do-nothing
+Ctrl-F10          do-nothing
+Shift-F11         do-nothing
+Shift-F10         do-nothing
+Shift-F12         do-nothing
+Ctrl-Prior        do-nothing
+F4                do-nothing
+F5                do-nothing
+F6                do-nothing
+F8                do-nothing
+F9                do-nothing
+Shift-F9          do-nothing
+Shift-F8          do-nothing
+Shift-F1          do-nothing
+Shift-F3          do-nothing
+Shift-F2          do-nothing
+Shift-F4          do-nothing
+Shift-F7          do-nothing
+Shift-F6          do-nothing
+                  double-click-headline
+Alt-9             double-click-icon-box
+                  downcase-region
+                  downcase-word
+                  dump-outline
+Ctrl-H            edit-headline
+                  enable-autocompleter
+                  enable-calltips
+                  end-edit-headline
+Ctrl-End          end-of-buffer
+Ctrl-Shift-End    end-of-buffer-extend-selection
+Ctrl-E            end-of-line
+End               end-of-line
+Ctrl-Shift-E      end-of-line-extend-selection
+Shift-End         end-of-line-extend-selection
+                  enter-quick-command-mode
+                  equal-sized-panes
+                  escape
+                  eval-expression
+Alt-M             exchange-point-mark
+Ctrl-B            execute-script
+Alt-F4            exit-leo
+Ctrl-Q            exit-leo
+                  exit-named-mode
+                  expand-all
+                  expand-all-subheads
+                  expand-ancestors-only
+Alt-Right         expand-and-go-right
+                  expand-body-pane
+                  expand-log-pane
+                  expand-next-level
+Alt-]             expand-node
+                  expand-or-go-right
+                  expand-outline-pane
+Alt-Ctrl-=        expand-pane
+                  expand-prev-level
+                  expand-to-level-1
+                  expand-to-level-2
+                  expand-to-level-3
+                  expand-to-level-4
+                  expand-to-level-5
+                  expand-to-level-6
+                  expand-to-level-7
+                  expand-to-level-8
+                  expand-to-level-9
+                  export-headlines
+                  export-html
+                  export-html-bullet
+                  export-html-head
+                  export-html-node
+                  export-html-node-bullet
+                  export-html-node-head
+                  export-html-node-number
+                  export-html-number
+Alt-L             extend-to-line
+                  extend-to-paragraph
+                  extend-to-sentence
+Ctrl-W            extend-to-word
+Ctrl-Shift-D      extract
+Ctrl-Shift-N      extract-names
+                  fac
+                  file-compare-leo-files
+                  file-delete
+                  file-diff-files
+                  file-insert
+                  file-open-by-name
+                  file-save
+                  fill-paragraph
+                  fill-region
+                  fill-region-as-paragraph
+                  find-all
+Ctrl-2            find-character
+Ctrl-@            find-character-extend-selection
+                  find-clone-all
+                  find-clone-all-flattened
+F3                find-next
+                  find-next-clone
+F2                find-prev
+                  find-quick
+Ctrl-Shift-F      find-quick-selected
+                  find-quick-test-failures
+                  find-quick-timeline
+                  find-tab-hide
+                  find-tab-open
+                  find-word
+                  find-word-in-line
+                  flatten-outline
+                  flatten-script
+                  flush-lines
+Alt-D             focus-to-body
+                  focus-to-log
+                  focus-to-minibuffer
+                  focus-to-nav
+Alt-T             focus-to-tree
+tree: Right       forward-char
+text: Right       forward-char
+                  forward-char-extend-selection
+                  forward-end-word
+                  forward-end-word-extend-selection
+                  forward-page
+                  forward-page-extend-selection
+Alt-}             forward-paragraph
+Alt-Shift-}       forward-paragraph-extend-selection
+                  forward-sentence
+                  forward-sentence-extend-selection
+Ctrl-Right        forward-word
+Ctrl-Shift-Right  forward-word-extend-selection
+                  forward-word-smart
+                  forward-word-smart-extend-selection
+Alt-X             full-command
+                  fully-expand-body-pane
+                  fully-expand-log-pane
+                  fully-expand-outline-pane
+                  fully-expand-pane
+                  gc-collect-garbage
+                  gc-dump-all-objects
+                  gc-dump-new-objects
+                  gc-dump-objects-verbose
+                  gc-print-summary
+                  gc-trace-disable
+                  gc-trace-enable
+                  go-back
+                  go-forward
+                  goto-char
+                  goto-first-node
+                  goto-first-sibling
+Alt-Home          goto-first-visible-node
+Alt-G             goto-global-line
+                  goto-last-node
+Alt-8             goto-last-sibling
+Alt-End           goto-last-visible-node
+                  goto-line
+                  goto-next-changed
+Alt-N             goto-next-clone
+                  goto-next-history-node
+                  goto-next-marked
+                  goto-next-node
+                  goto-next-sibling
+Alt-Down          goto-next-visible
+                  goto-parent
+                  goto-prev-history-node
+                  goto-prev-node
+                  goto-prev-sibling
+Alt-Up            goto-prev-visible
+tree: Up          goto-prev-visible
+text: Up          goto-prev-visible
+                  graph-toggle-autoload
+                  head-to-prev-node
+F1                help-for-command
+                  help-for-minibuffer
+                  help-for-python
+                  hide-body-pane
+                  hide-invisibles
+                  hide-log-pane
+                  hide-outline-pane
+                  hide-pane
+                  hide-spell-tab
+                  history
+                  hoist
+                  how-many
+                  iconify-frame
+                  import-file
+                  indent-region
+                  indent-relative
+                  indent-rigidly
+                  indent-to-comment-column
+                  insert-body-time
+Ctrl-Insert       insert-child
+                  insert-hard-tab
+                  insert-headline-time
+                  insert-icon
+tree: Return      insert-newline
+body: Return      insert-newline
+Ctrl-I            insert-node
+Insert            insert-node
+Shift-Insert      insert-node
+                  insert-parentheses
+                  insert-soft-tab
+Alt-R             isearch-backward
+                  isearch-backward-regexp
+Alt-S             isearch-forward
+                  isearch-forward-regexp
+                  isearch-with-present-options
+                  join-node-above
+                  join-node-below
+                  keep-lines
+Ctrl-G            keyboard-quit
+Ctrl-K            kill-line
+                  kill-paragraph
+                  kill-region
+                  kill-region-save
+                  kill-sentence
+                  kill-word
+                  kill-ws
+                  leoserv-start
+                  line-number
+                  load-all-leo-files
+                  macro-call
+                  macro-call-last
+                  macro-end-recording
+                  macro-load-all
+                  macro-name-last
+                  macro-print-all
+                  macro-print-last
+                  macro-save-all
+                  macro-start-recording
+Ctrl-M            mark
+                  mark-changed-items
+                  mark-subheads
+                  marked-list
+                  match-brackets
+                  minimize-all
+                  mode-help
+                  move-lines-down
+                  move-lines-up
+                  move-marked-nodes
+Ctrl-D            move-outline-down
+tree: Shift-Down  move-outline-down
+text: Shift-Down  move-outline-down
+Alt-Shift-Down    move-outline-down
+text: Shift-Left  move-outline-left
+tree: Shift-Left  move-outline-left
+Alt-Shift-Left    move-outline-left
+text: Shift-Right move-outline-right
+tree: Shift-Right move-outline-right
+Alt-Shift-Up      move-outline-up
+Ctrl-U            move-outline-up
+Alt-)             move-past-close
+Alt-Shift-0       move-past-close
+                  move-past-close-extend-selection
+                  negative-argument
+Ctrl-N            new
+Ctrl-J            newline-and-indent
+Tab               newline-and-indent
+tree: Down        next-line
+text: Down        next-line
+Ctrl-D            next-line-extend-selection
+tree: Shift-Down  next-line-extend-selection
+text: Shift-Down  next-line-extend-selection
+Alt-Shift-Down    next-line-extend-selection
+                  number-command
+                  number-command-0
+                  number-command-1
+                  number-command-2
+                  number-command-3
+                  number-command-4
+                  number-command-5
+                  number-command-6
+                  number-command-7
+                  number-command-8
+                  number-command-9
+                  open-find-dialog
+                  open-leoDocs-leo
+                  open-leoPlugins-leo
+                  open-leoSettings-leo
+                  open-myLeoSettings-leo
+                  open-offline-tutorial
+                  open-online-home
+                  open-online-tutorial
+Ctrl-O            open-outline
+                  open-python-window
+                  open-quickstart-leo
+                  open-scripts-leo
+F7                open-spell-tab
+Ctrl-F3           open-url
+                  open-users-guide
+                  open-with
+Alt-Ctrl-Shift-I  open-with-idle
+                  open-with-open office
+Alt-Ctrl-Shift-S  open-with-scite
+                  outline-to-cweb
+                  outline-to-noweb
+Ctrl-Shift-V      paste-node
+                  paste-retaining-clones
+Ctrl-V            paste-text
+                  pdb
+                  pretty-print-all-python-code
+                  pretty-print-python-code
+                  preview
+                  preview-node
+                  preview-tree
+Alt-Up            previous-line
+tree: Up          previous-line
+text: Up          previous-line
+tree: Shift-Up    previous-line-extend-selection
+text: Shift-Up    previous-line-extend-selection
+                  print-all-uas
+                  print-bindings
+                  print-cmd-docstrings
+                  print-commands
+                  print-focus
+                  print-node-uas
+                  print-plugin-handlers
+                  print-plugins-info
+                  print-settings
+                  project-wizard
+Ctrl-{            promote
+Ctrl-[            promote
+Ctrl-Shift-[      promote
+                  promote-bodies
+Alt-E             propagate-key-event
+Alt-F             propagate-key-event
+Alt-C             propagate-key-event
+Alt-H             propagate-key-event
+Alt-W             propagate-key-event
+Alt-P             propagate-key-event
+Alt-O             propagate-key-event
+                  re-search-backward
+                  re-search-forward
+                  read-at-auto-nodes
+                  read-at-file-nodes
+                  read-at-shadow-nodes
+                  read-file-into-node
+                  read-outline-only
+                  rectangle-clear
+                  rectangle-close
+                  rectangle-delete
+                  rectangle-kill
+                  rectangle-open
+                  rectangle-string
+                  rectangle-yank
+Ctrl-Shift-Z      redo
+Ctrl-Shift-P      reformat-paragraph
+                  register-append-to
+                  register-copy-rectangle-to
+                  register-copy-to
+                  register-increment
+                  register-insert
+                  register-jump-to
+                  register-point-to
+                  register-prepend-to
+                  register-view
+                  remove-blank-lines
+                  remove-newlines
+                  remove-sentinels
+                  remove-space-from-lines
+                  remove-tab-from-lines
+Ctrl-P            repeat-complex-command
+                  replace-current-character
+Ctrl-Shift-R      replace-string
+                  resize-to-screen
+                  reverse-region
+                  reverse-sort-lines
+                  reverse-sort-lines-ignoring-case
+                  revert
+                  rst3
+Alt-5             run-all-unit-tests-externally
+                  run-all-unit-tests-locally
+Alt-4             run-marked-unit-tests-externally
+                  run-marked-unit-tests-locally
+                  run-selected-unit-tests-externally
+                  run-selected-unit-tests-locally
+                  save-all
+                  save-buffers-kill-leo
+Ctrl-S            save-file
+                  save-file-as
+                  save-file-as-unzipped
+                  save-file-as-zipped
+                  save-file-to
+                  script-button
+text: Shift-Next  scroll-down-half-page
+tree: Shift-Next  scroll-down-half-page
+                  scroll-down-line
+text: Next        scroll-down-page
+tree: Next        scroll-down-page
+                  scroll-outline-down-line
+                  scroll-outline-down-page
+                  scroll-outline-left
+                  scroll-outline-right
+                  scroll-outline-up-line
+                  scroll-outline-up-page
+text: Shift-Prior scroll-up-half-page
+tree: Shift-Prior scroll-up-half-page
+                  scroll-up-line
+text: Prior       scroll-up-page
+tree: Prior       scroll-up-page
+                  search-again
+                  search-backward
+                  search-forward
+Ctrl-F            search-with-present-options
+Ctrl-A            select-all
+                  select-to-matching-bracket
+                  set-colors
+                  set-command-state
+                  set-comment-column
+                  set-extend-mode
+                  set-fill-column
+                  set-fill-prefix
+Alt-Ctrl-E        set-find-everywhere
+Alt-Ctrl-N        set-find-node-only
+Alt-Ctrl-S        set-find-suboutline-only
+                  set-font
+                  set-insert-state
+                  set-overwrite-state
+                  set-silent-mode
+                  set-ua
+                  settings
+                  shell-command
+                  shell-command-on-region
+(                 show-calltips
+                  show-calltips-force
+                  show-colors
+                  show-find-options
+                  show-fonts
+                  show-html
+                  show-html-bullet
+                  show-html-head
+                  show-html-node
+                  show-html-node-bullet
+                  show-html-node-head
+                  show-html-node-number
+                  show-html-number
+                  show-invisibles
+                  simulate-begin-drag
+                  simulate-end-drag
+                  sort-children
+                  sort-columns
+                  sort-fields
+                  sort-lines
+                  sort-lines-ignoring-case
+                  sort-recent-files
+Alt-A             sort-siblings
+                  spell-change
+                  spell-change-then-find
+                  spell-find
+                  spell-ignore
+                  split-defs
+                  split-line
+                  stickynote
+                  stickynote-new
+                  stickynoter
+                  suspend
+Ctrl-Tab          tab-cycle-next
+                  tab-cycle-previous
+                  tab-detach
+                  tabify
+                  tabula
+                  tabula-marked
+                  tabula-show
+                  tabula-subtree
+                  tail-to-next-node
+                  tangle
+                  tangle-all
+                  tangle-marked
+                  todo-dec-pri
+                  todo-inc-pri
+                  toggle-abbrev-mode
+Ctrl-T            toggle-active-pane
+                  toggle-angle-brackets
+Alt-1             toggle-autocompleter
+Alt-2             toggle-calltips
+                  toggle-case-region
+Alt-3             toggle-extend-mode
+                  toggle-find-collapses-nodes
+Alt-Ctrl-I        toggle-find-ignore-case-option
+Alt-Ctrl-B        toggle-find-in-body-option
+Alt-Ctrl-H        toggle-find-in-headline-option
+Alt-Ctrl-C        toggle-find-mark-changes-option
+Alt-Ctrl-F        toggle-find-mark-finds-option
+Alt-Ctrl-X        toggle-find-regex-option
+Alt-Ctrl-W        toggle-find-word-option
+Alt-Ctrl-A        toggle-find-wrap-around-option
+                  toggle-input-state
+                  toggle-invisibles
+                  toggle-sparse-move
+                  toggle-split-direction
+                  transpose-chars
+                  transpose-lines
+                  transpose-words
+Ctrl-Z            undo
+Shift-Tab         unindent-region
+Alt-U             universal-argument
+                  unmark-all
+                  untabify
+                  untangle
+                  untangle-all
+                  untangle-marked
+                  upcase-region
+                  upcase-word
+                  view-lossage
+                  viewrendered
+                  viewrendered-close
+                  viewrendered-hide
+                  viewrendered-lock-toggle
+                  viewrendered-pause-play
+                  viewrendered-show
+                  viewrendered-show-toggle
+                  viewrendered-update
+                  vr
+                  vs-create-tree
+                  vs-dump
+                  vs-reset
+                  vs-update
+                  weave
+                  what-line
+                  word-search-backward
+                  word-search-forward
+                  write-at-auto-nodes
+Ctrl-Shift-W      write-at-file-nodes
+                  write-at-shadow-nodes
+                  write-dirty-at-auto-nodes
+Ctrl-Shift-Q      write-dirty-at-file-nodes
+                  write-dirty-at-shadow-nodes
+                  write-file-from-node
+                  write-missing-at-file-nodes
+                  write-outline-only
+Ctrl-Y            yank
+Alt-Y             yank-pop
+Alt-Z             zap-to-character</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

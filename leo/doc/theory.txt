@@ -31,6 +31,67 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. @+node:ekr.20050901102300: *3* @rst-no-head links
 .. _`History of Leo`:   history.html
 .. _`White Papers`:     whitepapers.html
+.. @+node:ekr.20120319065417.6092: *3* Autocompletion
+.. @+node:ekr.20120229094652.15115: *4* UI notes
+Both the legacy and new completer now work *exactly* the same way, because
+they both use the AutoCompleterClass to compute the list of completions.
+
+The strict "stateless" requirement means that the "intermediate"
+completions must be entered into the body pane while completion is active.
+It works well as a visual cue when using the tabbed completer: indeed, the
+tabbed completer would be difficult to use without this cue.
+
+The situation is slightly different with the qcompleter. Adding code before
+the user accepts the completion might be considered an "advanced" feature.
+However, it does have two important advantages, especially when "chaining"
+across periods: it indicates the status of the chaining and it limits what
+must appear in the qcompleter window.
+.. @+node:ekr.20120229094652.15117: *4* Appearance
+There is little change to the legacy completer, except that no text is
+highlighted in the body pane during completion. This is calmer than before.
+Furthermore, there is no longer any need for highlighting, because when the
+user types a backspace the legacy completer now simply deletes a single
+character instead of the highlighted text.
+
+One minor change: the legacy completer now *does* insert characters that do
+not match the start of any possible completion. This is an experimental
+feature, but it might play well with using codewise completions as a
+fallback to Leo-related completions.
+
+.. @+node:ekr.20120229094652.15119: *4* Performance
+Performance of Leo-related completions is *much* better than before. The
+old code used Python's inspect module and was horribly complex. The new
+code uses eval and is perfectly straightforward.
+
+The present codewise-related code caches completions for all
+previously-seen prefixes. This dramatically speeds up backspacing. Global
+caching is possible because completions depend *only* on the present
+prefix, *not* on the presently selected node. If ContextSniffer were used,
+completions would depend on the selected node and caching would likely be
+impractical. Despite these improvements, the performance of
+codewise-oriented completions is noticeably slower than Leo-related
+completions.
+
+The ac.get_cached_options cuts back the prefix until it finds a cached
+prefix. ac.compute_completion_list then uses this
+(perhaps-way-too-long-list) as a starting point, and computes the final
+completion list by calling g.itemsMatchingPrefixInList.
+
+This may not be absolutely the fastest way, but it is much simpler and more
+robust than attempting to do "prefix AI" based on comparing old and new
+prefixes. Furthermore, this scheme is completely independent of the how
+completions are actually computed. The autocompleter now caches options
+lists, regardless of whether using eval or codewise.
+
+In most cases the scheme is extremely fast: calls to get_completions
+replace calls to g.itemsMatchingPrefixInList. However, for short prefixes,
+the list that g.g.itemsMatchingPrefixInList scans can have thousands of
+items. Scanning large lists can't be helped in any case for short prefixes.
+
+Happily, the new scheme is still *completely* stateless: the completionDict
+does *not* define state (it is valid everywhere) and no state variables had
+to be added. In short, the new caching scheme is much better than before,
+and it probably is close to optimal in most situations.
 .. @+node:EKR.20040524104904.265: *3* Clones
 New in Leo 4.7. All clones of a node **are the same node**. This is the
 so-called **one-node** world. In this world, vnodes represent data, generators
