@@ -375,7 +375,9 @@ Again, this is not a theoretical concern. The key code now
 contains assertions of the form::
 
     assert g.isStroke(stroke)
-or
+
+or::
+
     assert g.isStrokeOrNone(stroke)
 
 Getting these assertions to pass in *all* situations

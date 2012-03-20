@@ -994,7 +994,7 @@ When using LaTeX and BibTeX, I would like to use inside of Leo a kind of
 LaTeX-inline-markup, that after generation of the RsT file through Sphinx
 as well as after running of "make latex", generate a LaTeX file containing
 the citation call of the form \cite{CITBook001} as described in a file
-*.bib. Is there a way to have Leo/Sphinx/RsT generate the inline raw latex
+\*.bib. Is there a way to have Leo/Sphinx/RsT generate the inline raw latex
 syntax?
 
 Use the docutils `raw-data`_ syntax. Examples::

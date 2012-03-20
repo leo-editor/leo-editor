@@ -158,7 +158,8 @@
 <v t="ekr.20100805165051.7159"><vh>@file history.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.261"><vh>Theory of Operation</vh>
-<v t="ekr.20100805165051.7160"><vh>@file theory.txt</vh></v>
+<v t="ekr.20100805165051.7160"
+expanded="ekr.20050901101608.6,ekr.20110611085637.5019,"><vh>@file theory.txt</vh></v>
 </v>
 <v t="ekr.20050901084134"><vh>White papers</vh>
 <v t="ekr.20100805165051.7161"><vh>@file whitepapers.txt</vh></v>
@@ -756,17 +757,17 @@ http://webpages.charter.net/edreamleo/intro.html
 The highlights of Leo 4.10:
 --------------------------
 
-- Leo optionally highlights the pane containing the focus.
-- Significantly improved Leo's abbreviation handling.
-- Much improved handling of URL's.
-- Leo's Open With menu now works.
-- Detached windows.
-- Leo now edit non-Leo files smoothly.
-- Better support for running unit tests externally.
-- The new leoInspect module answers questions about Python code.
-- Easier installation on MacOS.
-- Dozens of new and improved features and commands.
-- Fixed almost 70 bugs.
+* Dozens of new and improved features and commands, including...
+  - Leo tabs may be detached from the main window.
+  - The Open With menu now works.
+  - The leoInspect module answers questions about Python code.
+  - Leo can highlight the pane containing the focus.
+  - Improved abbreviation capabilities.
+  - Improved handling of URL's.
+  - Improved editing of non-Leo files.
+  - Improved support for external unit tests.
+* Easier installation on MacOS.
+* Fixed almost 70 bugs.
 
 Links:
 ------
