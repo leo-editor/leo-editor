@@ -8660,6 +8660,41 @@ def os_startfile(fname):
 #@+node:ekr.20120311151914.9916: *4* Urls... (leoGlobals.py)
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
+#@+node:ekr.20120320053907.9776: *5* g.computeFileUrl
+def computeFileUrl(fn,c=None,p=None):
+    
+    '''Compute finalized url for filename fn.
+    This involves adding url escapes and evaluating Leo expressions.'''
+    
+    # First, replace special characters (especially %20, by their equivalent).
+    url = urlparse.unquote(fn)
+
+    # Finalize the path *before* parsing the url.
+    i = url.find('~')
+    if i > -1:
+        # Expand '~' and handle Leo expressions.
+        path = url[i:]
+        path = g.os_path_expanduser(path)
+        path = g.os_path_expandExpression(path,c=c)
+        path = g.os_path_finalize(path)
+        url = url[:i] + path
+    else:
+        # Handle Leo expressions.
+        tag = 'file://'
+        if url.startswith(tag):
+            path = url[len(tag):].lstrip()
+        else:
+            path = url
+        path = g.os_path_expandExpression(path,c=c)
+        # Handle ancestor @path directives.
+        if c and c.openDirectory:
+            base = c.getNodePath(p)
+            path = g.os_path_finalize_join(c.openDirectory,base,path)
+        else:
+            path = g.os_path_finalize(path)
+        url = '%s%s' % (tag,path)
+
+    return url
 #@+node:ekr.20120311151914.9917: *5* g.getUrlFromNode
 def getUrlFromNode(p):
     
@@ -8669,16 +8704,37 @@ def getUrlFromNode(p):
     2. Otherwise, look *only* at the first line of the body.
     '''
     
-    line1 = g.splitLines(p.b)[0] if p.b else ''
+    if not p: return None
+    c = p.v.context
+    assert c
     
-    for s in (p.h,line1):
-        if g.match_word(s,0,'@url'):
-            url = s[4:].strip()
-        else:
-            url = s.strip()
-        if g.isValidUrl(url):
-            return url
-    
+    table = [p.h,g.splitLines(p.b)[0] if p.b else '']
+    table = [s[4:] if g.match_word(s,0,'@url') else s for s in table]
+    table = [s.strip() for s in table if s.strip()]
+        
+    # First, check for url's with an explicit scheme.
+    for s in table:
+        if g.isValidUrl(s):
+            return s
+                
+    # Next check for existing file and add a file:// scheme.
+    for s in table:
+        tag = 'file://'
+        url = computeFileUrl(s,c=c,p=p)
+        if url.startswith(tag):
+            fn = url[len(tag):].lstrip()
+            fn = fn.split('#',1)[0]
+            # g.trace('fn',fn)
+            if g.os_path_isfile(fn):
+                # Return the *original* url, with a file:// scheme.
+                # g.handleUrl will call computeFileUrl again.
+                return 'file://'+s
+
+    # Finally, check for local url's.
+    for s in table:
+        if '#-->' in s:
+            return s
+            
     return None
 #@+node:tbrown.20090219095555.63: *5* g.handleUrl
 @ Most browsers should handle the following urls:
@@ -8699,29 +8755,9 @@ def handleUrl(url,c=None,p=None):
     try:
         tag = 'file://'
         if url.startswith(tag):
-            # First, replace special characters (especially %20, by their equivalent).
-            url = urlparse.unquote(url)
             # Finalize the path *before* parsing the url.
-            i = url.find('~')
-            if i > -1:
-                # Expand '~' and handle Leo expressions.
-                path = url[i:]
-                path = g.os_path_expanduser(path)
-                path = g.os_path_expandExpression(path,c=c)
-                path = g.os_path_finalize(path)
-                url = url[:i] + path
-            else:
-                # Handle Leo expressions.
-                path = url[len(tag):].lstrip()
-                path = g.os_path_expandExpression(path,c=c)
-                # Handle ancestor @path directives.
-                if c and c.openDirectory:
-                    base = c.getNodePath(p)
-                    path = g.os_path_finalize_join(c.openDirectory,base,path)
-                else:
-                    path = g.os_path_finalize(path)
-                url = '%s%s' % (tag,path)
-                
+            url = g.computeFileUrl(url,c=c,p=p)
+
         parsed   = urlparse.urlparse(url)
         fragment = parsed.fragment
         netloc   = parsed.netloc
@@ -12069,6 +12105,41 @@ def displayCalltree(p, callinfo):
 #@+node:ekr.20120311151914.9916: *3* Urls... (leoGlobals.py)
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
+#@+node:ekr.20120320053907.9776: *4* g.computeFileUrl
+def computeFileUrl(fn,c=None,p=None):
+    
+    '''Compute finalized url for filename fn.
+    This involves adding url escapes and evaluating Leo expressions.'''
+    
+    # First, replace special characters (especially %20, by their equivalent).
+    url = urlparse.unquote(fn)
+
+    # Finalize the path *before* parsing the url.
+    i = url.find('~')
+    if i > -1:
+        # Expand '~' and handle Leo expressions.
+        path = url[i:]
+        path = g.os_path_expanduser(path)
+        path = g.os_path_expandExpression(path,c=c)
+        path = g.os_path_finalize(path)
+        url = url[:i] + path
+    else:
+        # Handle Leo expressions.
+        tag = 'file://'
+        if url.startswith(tag):
+            path = url[len(tag):].lstrip()
+        else:
+            path = url
+        path = g.os_path_expandExpression(path,c=c)
+        # Handle ancestor @path directives.
+        if c and c.openDirectory:
+            base = c.getNodePath(p)
+            path = g.os_path_finalize_join(c.openDirectory,base,path)
+        else:
+            path = g.os_path_finalize(path)
+        url = '%s%s' % (tag,path)
+
+    return url
 #@+node:ekr.20120311151914.9917: *4* g.getUrlFromNode
 def getUrlFromNode(p):
     
@@ -12078,16 +12149,37 @@ def getUrlFromNode(p):
     2. Otherwise, look *only* at the first line of the body.
     '''
     
-    line1 = g.splitLines(p.b)[0] if p.b else ''
+    if not p: return None
+    c = p.v.context
+    assert c
     
-    for s in (p.h,line1):
-        if g.match_word(s,0,'@url'):
-            url = s[4:].strip()
-        else:
-            url = s.strip()
-        if g.isValidUrl(url):
-            return url
-    
+    table = [p.h,g.splitLines(p.b)[0] if p.b else '']
+    table = [s[4:] if g.match_word(s,0,'@url') else s for s in table]
+    table = [s.strip() for s in table if s.strip()]
+        
+    # First, check for url's with an explicit scheme.
+    for s in table:
+        if g.isValidUrl(s):
+            return s
+                
+    # Next check for existing file and add a file:// scheme.
+    for s in table:
+        tag = 'file://'
+        url = computeFileUrl(s,c=c,p=p)
+        if url.startswith(tag):
+            fn = url[len(tag):].lstrip()
+            fn = fn.split('#',1)[0]
+            # g.trace('fn',fn)
+            if g.os_path_isfile(fn):
+                # Return the *original* url, with a file:// scheme.
+                # g.handleUrl will call computeFileUrl again.
+                return 'file://'+s
+
+    # Finally, check for local url's.
+    for s in table:
+        if '#-->' in s:
+            return s
+            
     return None
 #@+node:tbrown.20090219095555.63: *4* g.handleUrl
 @ Most browsers should handle the following urls:
@@ -12108,29 +12200,9 @@ def handleUrl(url,c=None,p=None):
     try:
         tag = 'file://'
         if url.startswith(tag):
-            # First, replace special characters (especially %20, by their equivalent).
-            url = urlparse.unquote(url)
             # Finalize the path *before* parsing the url.
-            i = url.find('~')
-            if i > -1:
-                # Expand '~' and handle Leo expressions.
-                path = url[i:]
-                path = g.os_path_expanduser(path)
-                path = g.os_path_expandExpression(path,c=c)
-                path = g.os_path_finalize(path)
-                url = url[:i] + path
-            else:
-                # Handle Leo expressions.
-                path = url[len(tag):].lstrip()
-                path = g.os_path_expandExpression(path,c=c)
-                # Handle ancestor @path directives.
-                if c and c.openDirectory:
-                    base = c.getNodePath(p)
-                    path = g.os_path_finalize_join(c.openDirectory,base,path)
-                else:
-                    path = g.os_path_finalize(path)
-                url = '%s%s' % (tag,path)
-                
+            url = g.computeFileUrl(url,c=c,p=p)
+
         parsed   = urlparse.urlparse(url)
         fragment = parsed.fragment
         netloc   = parsed.netloc

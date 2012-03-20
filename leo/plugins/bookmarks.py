@@ -82,32 +82,34 @@ def onCreate(tag, keys):
         assert hasattr(c.free_layout,'get_top_splitter')
         
         BookMarkDisplayProvider(c)
-#@+node:tbrown.20120319172643.20276: ** lenient_url_from_node
-def lenient_url_from_node(p):
+#@+node:tbrown.20120319172643.20276: ** lenient_url_from_node (no longer used)
+# def lenient_url_from_node(p):
     
-    url = g.getUrlFromNode(p)
+    # url = g.getUrlFromNode(p)
     
-    if not url:
-        # be lenient, check for file urls with no 'file://' part
-        test_urls = [
-            p.h.strip(),
-            p.b.strip().split('\n',1)[0].strip(),
-        ]
-        for i in test_urls:
-            if g.os_path_isfile(i.split('#', 1)[0]):
-                url = 'file://'+i
-                break
-        else:
-            for i in test_urls:
-                if '#' in i:  # could be a local UNL
-                    url = i
-                    break
-    return url
+    # if not url:
+        # # be lenient, check for file urls with no 'file://' part
+        # test_urls = [
+            # p.h.strip(),
+            # p.b.strip().split('\n',1)[0].strip(),
+        # ]
+        # for i in test_urls:
+            # if g.os_path_isfile(i.split('#', 1)[0]):
+                # url = 'file://'+i
+                # break
+        # else:
+            # for i in test_urls:
+                # if '#' in i:  # could be a local UNL
+                    # url = i
+                    # break
+    # return url
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
 @g.command('bookmarks-open-bookmark')
 def open_bookmark(event):
 
-    p = event["c"].p
+    c = event.get('c')
+    if not c: return
+    p = c.p
     bookmark = False
     for nd in p.parents():
         if '@bookmarks' in nd.h:
@@ -115,20 +117,18 @@ def open_bookmark(event):
             break
     if bookmark:
         open_node(event)
-        
            
 @g.command('bookmarks-open-node')
 def open_node(event):
     
-    c = event["c"]
+    c = event.get('c')
+    if not c: return
     p = c.p
-
-    url = lenient_url_from_node(p)
-
+    url = g.getUrlFromNode(p)
+        # getUrlFromNode now does what lenient_url_from_node does, and more.
     if url:
-        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrl(url,c=c,p=p)
-        g.doHook("@url2",c=c,p=p,v=p)
+        # No need to handle url hooks here.
+        g.handleUrl(url,c=c,p=p)
 #@+node:tbrown.20110712100955.39215: ** g.command('bookmarks-show')
 @g.command('bookmarks-show')
 def bookmarks_show(event):

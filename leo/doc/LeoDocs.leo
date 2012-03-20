@@ -501,8 +501,6 @@
 <v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
 </v>
 </v>
-<v t="ekr.20100805165051.7155"></v>
-<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
