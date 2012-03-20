@@ -158,8 +158,7 @@
 <v t="ekr.20100805165051.7159"><vh>@file history.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.261"><vh>Theory of Operation</vh>
-<v t="ekr.20100805165051.7160"
-expanded="ekr.20050901101608.6,ekr.20110611085637.5019,"><vh>@file theory.txt</vh></v>
+<v t="ekr.20100805165051.7160"><vh>@file theory.txt</vh></v>
 </v>
 <v t="ekr.20050901084134"><vh>White papers</vh>
 <v t="ekr.20100805165051.7161"><vh>@file whitepapers.txt</vh></v>
@@ -172,7 +171,8 @@ expanded="ekr.20050901101608.6,ekr.20110611085637.5019,"><vh>@file theory.txt</v
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
-<v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
+<v t="ekr.20100805165051.7175"
+expanded="ekr.20101025080245.5791,ekr.20110601105631.19349,"><vh>@file whatsnew.txt</vh></v>
 </v>
 <v t="ekr.20111127144911.5545"><vh>Other pages</vh>
 <v t="ekr.20111127144911.5546"><vh>@file download.txt</vh></v>
@@ -186,6 +186,14 @@ expanded="ekr.20050901101608.6,ekr.20110611085637.5019,"><vh>@file theory.txt</v
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+</v>
+<v t="ekr.20120320153011.6055"><vh>Leo 4.10 (what's new)</vh>
+<v t="ekr.20120320153011.6056"><vh>Bugs fixed</vh></v>
+<v t="ekr.20120320153011.6057"><vh>Major improvements</vh></v>
+<v t="ekr.20120320153011.6058"><vh>New and improved features</vh></v>
+<v t="ekr.20120320153011.6808"><vh>Plugins</vh></v>
+<v t="ekr.20120320153011.6826"><vh>Settings</vh></v>
+<v t="ekr.20120320153011.8201"><vh>Weightless unit testing</vh></v>
 </v>
 <v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
 <v t="ekr.20120318135910.6111"><vh>Ahas</vh>
@@ -762,10 +770,11 @@ The highlights of Leo 4.10:
   - The Open With menu now works.
   - The leoInspect module answers questions about Python code.
   - Leo can highlight the pane containing the focus.
+  - The bigdash plugin searches across multiple files.
   - Improved abbreviation capabilities.
   - Improved handling of URL's.
   - Improved editing of non-Leo files.
-  - Improved support for external unit tests.
+  - Improvements create "weightless" unit testing.
 * Easier installation on MacOS.
 * Fixed almost 70 bugs.
 
@@ -1139,13 +1148,12 @@ A great day for Leo.
 <t tx="ekr.20120229094652.14597">http://ethanschoonover.com/solarized
 
 </t>
-<t tx="ekr.20120229094652.14598">Made this optional, and configurable.
+<t tx="ekr.20120229094652.14598">Configurable and optional::
 
-c.focus_border_color    = c.config.getColor('focus_border_color') or 'red'
-c.focus_border_width    = c.config.getInt('focus_border_width') or 1 # pixels
-c.use_body_focus_border = c.config.getBool('use_body_focus_border',default=True)
-c.use_focus_border      = c.config.getBool('use_focus_border',default=True)
-</t>
+    @color focus_border_color = red
+    @int focus_border_width = 1
+    @bool use_body_focus_border  = True
+    @bool use_focus_border = True</t>
 <t tx="ekr.20120229094652.14599">Applied patch for bug 800399: Leo should have smart word jumps/deletes.
 
 Some editors, such as Eclipse, vim, this Webkit form I type in, and even Word,
@@ -2740,9 +2748,9 @@ Instructions (with current trunk):
 - Enter "s somesearch" in the line editor and press enter
 - Browse the hits. Click on link to navigate to the node.
 
-Caveats:
+Caveat:
 
-- If the document is not in currently active tab, the navigation is
+If the document is not in currently active tab, the navigation is
 done "in the background". Correct implementation would be to activate
 the tab in order to bring attention to it. 
 </t>
@@ -4232,6 +4240,136 @@ switches that enable new code bases.  Recent examples were::
 </t>
 <t tx="ekr.20120318135910.6111"></t>
 <t tx="ekr.20120318180219.6107"></t>
+<t tx="ekr.20120320153011.6055">@language rest
+
+</t>
+<t tx="ekr.20120320153011.6056">.. _`bug 800157`: https://bugs.launchpad.net/leo-editor/+bug/800157
+
+- Fixed `bug 800157`_, an ancient hanger in paste-retaining-clones.
+  
+- Fixed at serious read bug. Changed at.readEndOthers and at.readEndRef.
+
+- Fixed bug: @button @key=x does not override x.
+
+- Fixed the wretched scrolling bug.
+
+.. _`bug 823267`: https://bugs.launchpad.net/leo-editor/+bug/823267
+.. _`bug 875327`: https://bugs.launchpad.net/leo-editor/+bug/875327
+.. _`bug 917814`: https://bugs.launchpad.net/leo-editor/+bug/917814
+.. _`bug 875323`: https://bugs.launchpad.net/leo-editor/+bug/875323
+.. _`bug 831658`: https://bugs.launchpad.net/leo-editor/+bug/831658
+
+- Fixed several bugs related to selection following hoists &amp; chapters:
+
+    - `bug 823267`_: When a tab is closed focus may go to a tab other than the visible one.
+    - `bug 875327`_: Positioning outside of hoisted outline" usually causes problems.
+    - `bug 917814`_: Switching Log Pane tabs is done incompletely.
+    - `bug 875323`_: Hoist an @chapter node leaves a non-visible node selected.
+    - `bug 831658`_: @url doesn't leave Chapter.
+
+- Fixed almost 70 minor bugs. For details, see the release notes.</t>
+<t tx="ekr.20120320153011.6057"></t>
+<t tx="ekr.20120320153011.6058"></t>
+<t tx="ekr.20120320153011.6808">- Improved quicksearch plugin.
+
+    http://groups.google.com/group/leo-editor/browse_thread/thread/e0ad60ae319359df/e932052a1ef6e9f5
+
+- New bigdash plugin.
+
+    http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
+
+- Removed scrolledmessage plugin.
+
+- vim and xemacs plugins now work smoothly with contextmenu plugin.
+
+- Supported auto-hide in viewrendered plugin.
+</t>
+<t tx="ekr.20120320153011.6826">- Added @bool indent_added_comments setting.
+
+- Added border around selected pane::
+
+    @color focus_border_color = red
+    @int focus_border_width = 1
+    @bool use_body_focus_border  = True
+    @bool use_focus_border = True
+
+- Added show-decoration-selected: 1 to QTreeWidget stylesheet. This causes
+  the entire headline row to be shown when selected, a big improvement.
+
+- Added stylesheets for Log &amp; Find tabs.
+
+.. _solarized: http://ethanschoonover.com/solarized
+
+- Added support for solarized_ colors. Search for "solarized" in leoSettings.leo.
+
+- Eliminated the -c option.
+
+- New format for @openwith settings nodes. The body of @openwith nodes
+  contains one or more lines of the following form::
+
+   tag: value
+
+The possible tags will be::
+
+    kind: &lt;a string&gt;
+
+The value specifies the **opener logic**, that is, the method used to
+launch the external editor, one of 'subprocess.Popen', 'os.startfile',
+'os.spawnl', 'os.spawnv', 'exec'.
+
+    arg: &lt;a string&gt;
+
+There may be many such arg lines. Each line will be a string to be passed
+as an argument to the opener logic, in a format that is compatible with the
+specified opener logic.
+
+Quotes in &lt;a string&gt; will be *retained*, allowing the user to specify
+exactly the arguments to be passed to opener logic.
+
+- New search order for leoSettings.leo:
+
+1. leoSettings.leo in the home directories.
+2. &lt;machine-name&gt;leoSettings.leo in the home directories.
+3. leoSettings.leo in leo/config directory.
+
+- New search order for myLeoSettings.leo:
+
+1. myLeoSettings.leo in the local directory.
+2. myLeoSettings.leo in the home directories.
+3. &lt;machine-name&gt;myLeoSettings.leo in the home directories.
+4. myLeoSettings.leo in leo/config directory.
+
+- New default settings for run unit tests commands::
+
+    run-all-unit-tests-externally       = None
+    run-all-unit-tests-locally          = None
+    run-marked-unit-tests-externally    = Alt-4
+    run-marked-unit-tests-locally       = None
+    run-selected-unit-tests-externally  = Alt-5
+    run-selected-unit-tests-locally     = None
+    </t>
+<t tx="ekr.20120320153011.8201">Small improvements the unit testing framework have outsized effects. They
+completely eliminate the overhead in running unit tests:
+
+- The run-marked-unit-tests-externally (Alt-4) command runs all marked
+  @test nodes. To choose tests, just mark them.
+- Alt-4 now saves the .leo file first.
+- External unit tests always read config settings.
+- The nullGui now uses a fully capable string-based body widget.
+- The nullGui now uses the regular undoer.
+- Unit tests now always have the sources available.
+
+These improvements mean that almost all unit tests may be run externally.
+In turn, this creates a remarkable work flow::
+
+    Edit
+    Alt-4
+    Edit
+    Alt-4
+    ...
+
+The energy difference between weightless and heavy is astounding. Try the
+new way: you will surely like it.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

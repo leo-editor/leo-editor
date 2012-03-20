@@ -3221,6 +3221,42 @@ Everything works on windows, but there are several problems on Ubuntu:
 1. The contextmenu plugin doesn't show many options.
 2. As you say, cutting and pasting does not preserve newlines.
 .. @+node:ekr.20111026091322.16503: *4* Other Bugs
+.. @+node:ekr.20120318124102.9739: *5* Focus border doesn't work with Python 2.x!
+.. @+node:ekr.20111022215436.16685: *6* Borders (qtGui)
+def add_border(self,c,w):
+
+    if c.use_focus_border and hasattr(w,'viewport'):
+        w = w.viewport()
+        # g.trace(w)
+        sheet = "border: %spx solid %s" % (
+            c.focus_border_width,c.focus_border_color)
+        self.update_style_sheet(w,'border',sheet)
+
+def remove_border(self,c,w):
+
+    if c.use_focus_border and hasattr(w,'viewport'):
+        w = w.viewport()
+        # g.trace(w)
+        sheet = "border: %spx solid white" % c.focus_border_width
+        self.update_style_sheet(w,'border',sheet)
+.. @+node:ekr.20111026115337.16528: *6* update_style_sheet (qtGui)
+def update_style_sheet (self,w,key,value):
+    
+    trace = False and not g.unitTesting
+    
+    # Step one: update the dict.
+    d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+    d[key] = value
+    aList = [d.get(key) for key in list(d.keys())]
+    w.leo_styles_dict = d
+    
+    # Step two: update the stylesheet.
+    s = '; '.join(aList)
+
+    if trace: g.trace('\nold: %s\nnew: %s' % (
+        str(w.styleSheet()),s))
+
+    w.setStyleSheet(s)
 .. @+node:ekr.20111010162047.15678: *5* Fix bug: Imports to @file should put @first/@last directives in root node
 @nocolor-node
 
