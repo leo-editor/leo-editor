@@ -82,27 +82,6 @@ def onCreate(tag, keys):
         assert hasattr(c.free_layout,'get_top_splitter')
         
         BookMarkDisplayProvider(c)
-#@+node:tbrown.20120319172643.20276: ** lenient_url_from_node (no longer used)
-# def lenient_url_from_node(p):
-    
-    # url = g.getUrlFromNode(p)
-    
-    # if not url:
-        # # be lenient, check for file urls with no 'file://' part
-        # test_urls = [
-            # p.h.strip(),
-            # p.b.strip().split('\n',1)[0].strip(),
-        # ]
-        # for i in test_urls:
-            # if g.os_path_isfile(i.split('#', 1)[0]):
-                # url = 'file://'+i
-                # break
-        # else:
-            # for i in test_urls:
-                # if '#' in i:  # could be a local UNL
-                    # url = i
-                    # break
-    # return url
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
 @g.command('bookmarks-open-bookmark')
 def open_bookmark(event):
@@ -125,7 +104,6 @@ def open_node(event):
     if not c: return
     p = c.p
     url = g.getUrlFromNode(p)
-        # getUrlFromNode now does what lenient_url_from_node does, and more.
     if url:
         # No need to handle url hooks here.
         g.handleUrl(url,c=c,p=p)
@@ -202,12 +180,12 @@ class BookMarkDisplay:
 
         result,urls = [],[]
         for p in p.subtree():
-            s = lenient_url_from_node(p)
+            url = g.getUrlFromNode(p)
             h = strip(p.h)
-            data = (h,s)
-            if s and data not in result and s not in urls:
+            data = (h,url)
+            if url and data not in result and url not in urls:
                 result.append(data)
-                urls.append(s)
+                urls.append(url)
 
         return result
     #@+node:tbrown.20110712100955.39217: *3* show_list

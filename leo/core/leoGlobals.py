@@ -4433,7 +4433,7 @@ def getUrlFromNode(p):
 
     # Finally, check for local url's.
     for s in table:
-        if '#-->' in s:
+        if s.startswith("#"):
             return s
             
     return None
