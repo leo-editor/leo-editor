@@ -35,7 +35,7 @@ What's New in Leo
 .. _`Leo and Emacs`:        emacs.html
 
 
-.. @+node:ekr.20120320153011.6055: *3* Leo 4.10
+.. @+node:ekr.20120320153011.6055: *3* Leo 4.10 (what is new)
 @language rest
 
 .. What's new.

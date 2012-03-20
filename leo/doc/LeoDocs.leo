@@ -186,11 +186,16 @@
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
-<v t="ekr.20120318135910.6111"><vh>Ahas</vh>
-<v t="ekr.20120229094652.14594"><vh>Put scripts in @command nodes</vh></v>
-<v t="ekr.20120318180219.6107"><vh>Syncing files is not a big problem!</vh></v>
+<v t="ekr.20120320153011.6055"><vh>Leo 4.10 (what is new)</vh>
+<v t="ekr.20120320153011.8201"><vh>Weightless unit testing</vh></v>
+<v t="ekr.20120320153011.8400"><vh>New features &amp; commands</vh></v>
+<v t="ekr.20120320153011.6808"><vh>Plugins</vh></v>
+<v t="ekr.20120320153011.8537"><vh>Scripts</vh></v>
+<v t="ekr.20120320153011.6826"><vh>Settings</vh></v>
+<v t="ekr.20120320153011.6056"><vh>Bugs fixed</vh></v>
 </v>
+<v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
+<v t="ekr.20120229094652.14594"><vh>Aha: Put scripts in @command nodes</vh></v>
 <v t="ekr.20120229094652.14757"><vh>Bugs</vh>
 <v t="ekr.20120318075211.6163"><vh>Significant bugs</vh>
 <v t="ekr.20120229094652.14758"><vh>Fixed ancient hanger in paste-retaining-clones</vh></v>
@@ -958,7 +963,7 @@ Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
 
 Changed c.open; minor changes to importDerivedFiles.
 
-Open now shows all files. This is urprisingly important: it is a
+Open now shows all files. This is surprisingly important: it is a
 not-so-subtle clue that *any* file may be opened: non-Leo files are opened
 in @edit nodes. Soon: external files containing Leo sentinels will be
 opened as @file nodes.
@@ -1135,7 +1140,7 @@ data!
 A great day for Leo.
 </t>
 <t tx="ekr.20120229094652.14595"></t>
-<t tx="ekr.20120229094652.14596">There is no longer any need for @@buton, etc.: just put under an @ignore node.</t>
+<t tx="ekr.20120229094652.14596">There is no longer any need for @@button, etc.: just put under an @ignore node.</t>
 <t tx="ekr.20120229094652.14597">http://ethanschoonover.com/solarized
 
 </t>
@@ -1270,7 +1275,7 @@ all nodes in the tree are considered to be marked.
 <t tx="ekr.20120229094652.14606"></t>
 <t tx="ekr.20120229094652.14607">http://groups.google.com/group/leo-editor/browse_thread/thread/e2980a2b86af913e
 
-Isee the following
+I see the following
 - when a file is opened
   - one message listing the root node
   - 7 repeats of the message for the current node
@@ -1464,7 +1469,7 @@ All unit tests pass with both Python 2.x and 3.x.
 Having set undo to word granularity, I often change something, move to a
 different line and continue editing there. When I want to undo my last change,
 Leo also undoes the change in the other place, as word granularity currently
-only recognises a new undo step when a new word is started, no matter if we
+only recognizes a new undo step when a new word is started, no matter if we
 moved to a completely different position first.
 
 The attached patch fixes the issue by remembering the previous cursor position.
@@ -4160,9 +4165,7 @@ many details about matters that it shouldn't have to know about.
 Furthermore, that data itself is hard to understand: it's too "raw". These
 classes provide "identity" for data. repr(aModeInfo) is surprisingly
 useful.</t>
-<t tx="ekr.20120318075211.6170">===== LogManager
-
-This class represents the global log.  It hides the details of the log
+<t tx="ekr.20120318075211.6170">This class represents the global log.  It hides the details of the log
 from the g.app class and several other pieces of code.
 
 At present, the interface to this class is procedural.  That is, the
@@ -4229,8 +4232,207 @@ switches that enable new code bases.  Recent examples were::
     run-selected-unit-tests-externally  = Alt-5 # The new standard
     run-selected-unit-tests-locally     = None
 </t>
-<t tx="ekr.20120318135910.6111"></t>
-<t tx="ekr.20120318180219.6107"></t>
+<t tx="ekr.20120320153011.6055">@language rest
+
+.. What's new.
+</t>
+<t tx="ekr.20120320153011.6056">.. _`bug 800157`: https://bugs.launchpad.net/leo-editor/+bug/800157
+.. _`bug 823267`: https://bugs.launchpad.net/leo-editor/+bug/823267
+.. _`bug 875327`: https://bugs.launchpad.net/leo-editor/+bug/875327
+.. _`bug 917814`: https://bugs.launchpad.net/leo-editor/+bug/917814
+.. _`bug 875323`: https://bugs.launchpad.net/leo-editor/+bug/875323
+.. _`bug 831658`: https://bugs.launchpad.net/leo-editor/+bug/831658
+
+- Fixed several bugs related to selection following hoists &amp; chapters:
+
+    - `bug 823267`_: When a tab is closed focus may go to a tab other than the visible one.
+    - `bug 875327`_: Positioning outside of hoisted outline" usually causes problems.
+    - `bug 917814`_: Switching Log Pane tabs is done incompletely.
+    - `bug 875323`_: Hoist an @chapter node leaves a non-visible node selected.
+    - `bug 831658`_: @url doesn't leave Chapter.
+
+.. _`bug 951739`: https://bugs.launchpad.net/leo-editor/+bug/951739
+.. _`bug 951721`: https://bugs.launchpad.net/leo-editor/+bug/951721
+.. _`bug 944555`: https://bugs.launchpad.net/leo-editor/+bug/944555
+.. _`bug 944551`: https://bugs.launchpad.net/leo-editor/+bug/944551
+.. _`bug 893230`: https://bugs.launchpad.net/leo-editor/+bug/893230
+    
+- Fixed several bugs related to URL's:
+
+    - `bug 951739`_: xdg-open of a file-scheme URL containing blanks.
+    - `bug 951721`_: @url with URL in headline.
+    - `bug 944555`_: Ctrl-left-click URL handling not as sophisticated as @url URL handling.
+    - `bug 944551`_: @url URL Open Hangs Leo.
+    - `bug 893230`_: URL coloring does not work for many Internet protocols.
+    - Removed "significant" calls to os.system.
+    - Added support for colorizing the following schemes:
+      gopher,mailto,news,nntp,prospero,telnet,wais.
+      
+- Fixed several other serious bugs:
+      
+    - `bug 800157`_, an ancient hanger in paste-retaining-clones.
+    - Fixed at serious read bug. Changed at.readEndOthers and at.readEndRef.
+    - Fixed bug: @button @key=x does not override x.
+    - Fixed the wretched scrolling bug.
+    
+- Fixed almost 70 minor bugs. For details, see the release notes.
+</t>
+<t tx="ekr.20120320153011.6808">.. _`quicksearch plugin`:  http://groups.google.com/group/leo-editor/browse_thread/thread/e0ad60ae319359df/e932052a1ef6e9f5
+.. _`bigdash plugin`: http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
+
+- Improved the `quicksearch plugin`_.
+
+- A new `bigdash plugin`_.
+
+- Removed scrolledmessage plugin.
+
+- The vim and xemacs plugins now work smoothly with contextmenu plugin.
+
+- Supported auto-hide in viewrendered plugin.
+</t>
+<t tx="ekr.20120320153011.6826">.. _solarized: http://ethanschoonover.com/solarized
+
+- New settings:
+
+    - @bool indent_added_comments
+    - @color focus_border_color = red
+    - @int focus_border_width = 1
+    - @bool use_body_focus_border  = True
+    - @bool use_focus_border = True
+    
+- Other changes:
+    
+    - Added show-decoration-selected: 1 to QTreeWidget stylesheet. This causes
+      the entire headline row to be shown when selected.
+    - Added stylesheets for Log &amp; Find tabs.
+    - Added support for solarized_ colors. Search for "solarized" in leoSettings.leo.
+    - Eliminated the -c option.
+    - New format for @openwith settings nodes. See leoSettings.leo for details.
+
+- New search order for leoSettings.leo::
+
+    1. leoSettings.leo in the home directories.
+    2. &lt;machine-name&gt;leoSettings.leo in the home directories.
+    3. leoSettings.leo in leo/config directory.
+
+- New search order for myLeoSettings.leo::
+
+    1. myLeoSettings.leo in the local directory.
+    2. myLeoSettings.leo in the home directories.
+    3. &lt;machine-name&gt;myLeoSettings.leo in the home directories.
+    4. myLeoSettings.leo in leo/config directory.
+
+- New default settings for run unit tests commands::
+
+    run-marked-unit-tests-externally    = Alt-4
+    run-selected-unit-tests-externally  = Alt-5
+    
+</t>
+<t tx="ekr.20120320153011.8201">Small improvements the unit testing framework have outsized effects. They
+completely eliminate the overhead in running unit tests:
+
+    - The run-marked-unit-tests-externally (Alt-4) command runs all marked
+      @test nodes. To choose tests, just mark them.
+    - Alt-4 now saves the .leo file first.
+    - External unit tests always read config settings.
+    - The nullGui now uses a fully capable string-based body widget.
+    - The nullGui now uses the regular undoer.
+    - Unit tests now always have the sources available.
+
+These improvements mean that almost all unit tests may be run externally.
+In turn, this creates a remarkable work flow::
+
+    Edit
+    Alt-4
+    Edit
+    Alt-4
+    ...
+
+The energy difference between weightless and heavy is astounding. Try the
+new way: you will surely like it.
+</t>
+<t tx="ekr.20120320153011.8400">- Added the following commands::
+
+    beautify-c
+    c-to-python
+    clone-find-all-flattened
+    clone-marked-nodes
+    delete-marked-nodes
+    move-marked-nodes
+    run-marked-unit-tests-externally
+    run-marked-unit-tests-locally
+    select-to-matching-bracket
+    split-defs
+    
+- Improved the following commands::
+    
+    add-comments
+    delete-comments
+    open
+    page-up
+    page-down
+    print-bindings
+    print-commands
+    rst3
+    shell-command
+    shell-command-on-region
+    
+.. _`The leoInspect Module`: http://webpages.charter.net/edreamleo/leoInspect.html
+    
+- The leoInspect module allows scripts to interrogate static code.
+  For full details, see `The leoInspect Module`_ chapter.
+    
+- Improved existing features:
+
+    - Leo's File:Open With command now works with Qt
+    - The new quick edit/save mode allows Leo to be a drop-in replacement for SciTe.
+    - Detached windows.
+    - A major improvements to Leo's abbreviation code.
+    - Improved presentation of autocompletion list.
+    - Applied patch for bug 800399: smart word jumps/deletes.
+
+- Code improvements:
+
+    - Most of Leo's core files now import just leo.core.leoGlobals.
+    - Global switches are now all in leoGlobals.py.
+    - version.py now uses bzr_version.py. Leo now reports bzr version numbers and dates automatically.
+    - Unified the high-level interface &amp; eliminated the low-level interface.
+    - Create properties for logCtrl &amp; bodyCtrl.
+    - Added event filters to top-level frames.
+    - Added g.app.isExternalUnitTest.
+    - Added c.config.set.
+
+- Created new classes::
+
+    EditCommandsManager
+    KeyStroke &amp; ShortcutInfo
+    LoadManager
+    TestManager
+    
+- Dozens of other new commands and features.
+
+For details, see the release notes.
+</t>
+<t tx="ekr.20120320153011.8537">- Improved the create @auto nodes script.
+
+- Added import-org-mode script.
+
+- Added a script for displaying a function call hierarchy in Leo.
+
+- Improved recursive import script.
+
+- Created a script for replacing Qt stylesheets on the fly.
+
+- Scripts to add bookmarks automatically.
+
+- A new "magic refactor" button.
+
+- Changed calling signatures of g.openWithFileName and g.app.newCommander.
+
+- The open-with event now uses a "d" arg.
+
+For full details, see the release notes.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
