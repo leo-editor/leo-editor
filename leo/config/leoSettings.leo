@@ -1365,6 +1365,15 @@
 <v t="ville.20091008201813.3909"><vh>Qt context menu</vh>
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
+<v t="ekr.20070411101857"><vh>Open With menu</vh>
+<v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
+<v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
+<v t="ekr.20070411101857.3"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
+<v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = False</vh></v>
+<v t="TL.20080702085131.3"><vh>@bool open_with_goto_node_on_update = True</vh></v>
+<v t="TL.20080702085131.4"><vh>@bool open_with_clean_filenames = False</vh></v>
+<v t="TL.20080702085131.5"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>
+</v>
 </v>
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
@@ -1421,15 +1430,6 @@
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
 <v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
-</v>
-<v t="ekr.20070411101857"><vh>Open With plugin</vh>
-<v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
-<v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
-<v t="ekr.20070411101857.3"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
-<v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = False</vh></v>
-<v t="TL.20080702085131.3"><vh>@bool open_with_goto_node_on_update = True</vh></v>
-<v t="TL.20080702085131.4"><vh>@bool open_with_clean_filenames = False</vh></v>
-<v t="TL.20080702085131.5"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>
 </v>
 <v t="ekr.20060919171527"><vh>opml plugin</vh>
 <v t="ekr.20060921080239"><vh>@bool opml_read_derived_files = True</vh></v>
@@ -4369,7 +4369,26 @@ viewrendered.py
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
 <t tx="ekr.20070326094544"></t>
-<t tx="ekr.20070411101857"></t>
+<t tx="ekr.20070411101857">The body of @openwith nodes contains one or more lines of the following
+form::
+
+   tag: value
+
+The possible tags are be::
+
+    kind: &lt;a string&gt;
+
+The value specifies the **opener logic**, that is, the method used to
+launch the external editor, one of 'subprocess.Popen', 'os.startfile',
+'os.spawnl', 'os.spawnv', 'exec'.
+
+    arg: &lt;a string&gt;
+
+There may be many such arg lines. Each line will be a string to be passed
+as an argument to the opener logic.
+
+Quotes in &lt;a string&gt; will be *retained*, allowing the user to specify
+exactly the arguments to be passed to opener logic.</t>
 <t tx="ekr.20070411101857.1"># 'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
 
 ext:    .py
