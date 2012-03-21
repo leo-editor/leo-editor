@@ -3,12 +3,13 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110609102702.16471: ** To do: 4.10
+.. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
 @language rest
 
 The home page work is essential.  It's a good project to do while waiting.
 
 The programming items are all optional. 
+.. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
 .. @+node:ekr.20120228164039.11404: *3* Leo's home page
 .. @+node:ekr.20110930174206.15470: *4* ** Urgent: Bring screen shots up to date
 > While doing so I noted that on the sourceforge project
@@ -772,410 +773,8 @@ def token_range (self):
         return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
     else:
         return -1,-1
-.. @+node:ekr.20120229094652.15178: *3* Minor (can be moved to 4.10.1)
-.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
-.. @+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
-.. @+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
-def exportHeadlines (self,fileName):
+.. @+node:ekr.20120318110848.9724: *3* Make leoInspect a stand-alone module
 
-    c = self.c ; p = c.p
-    nl = g.u(self.output_newline)
-    
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-
-    try:
-        theFile = open(fileName,'w')
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        c.testManager.fail()
-        return
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel,useVerticalBar=True)
-        s = head + nl
-        if not g.isPython3: # 2010/08/27
-            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-        theFile.write(s)
-    theFile.close()
-.. @+node:ekr.20051104075904.78: *5* TM.makeImportExportSuite
-def makeImportExportSuite(self,parentHeadline,doImport):
-
-    """Create an Import/Export test for every descendant of testParentHeadline.."""
-
-    tm = self
-    c = self.c
-    parent = tm.findNodeAnywhere(parentHeadline)
-    assert parent,'node not found: %s' % (parentHeadline)
-    temp = tm.findNodeInTree(parent,"tempNode")
-    assert temp,'node not found: tempNode'
-
-    # Create the suite and add all test cases.
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    for p in parent.children():
-        if p != temp:
-            # 2009/10/02: avoid copy arg to iter
-            p2 = p.copy()
-            dialog = tm.findNodeInTree(p2,"dialog")
-            assert(dialog)
-            test = importExportTestCase(c,p2,dialog,temp,doImport)
-            suite.addTest(test)
-
-    return suite
-.. @+node:ekr.20051104075904.79: *5* class importExportTestCase
-class importExportTestCase(unittest.TestCase):
-
-    """Data-driven unit tests for Leo's edit body commands."""
-
-    @others
-.. @+node:ekr.20051104075904.80: *6* __init__ (importExportTestCase)
-def __init__ (self,c,p,dialog,temp_p,doImport):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.dialog = dialog
-    self.p = p.copy()
-    self.temp_p = temp_p.copy()
-
-    self.gui = None
-    self.oldGui = None
-    self.wasChanged = c.changed
-    self.fileName = ""
-    self.doImport = doImport
-
-    self.old_p = c.p
-.. @+node:ekr.20051104075904.81: *6*  fail (importExportTestCase)
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-.. @+node:ekr.20051104075904.82: *6* importExport
-def importExport (self):
-
-    c = self.c ; p = self.p
-
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    commandName = p.h
-    command = getattr(c,commandName) # Will fail if command does not exist.
-    command(event=None)
-
-    failedMethod = g.app.unitTestDict.get("fail")
-    self.failIf(failedMethod,failedMethod)
-.. @+node:ekr.20051104075904.83: *6* runTest
-def runTest(self):
-
-    # """Import Export Test Case"""
-
-    self.importExport()
-.. @+node:ekr.20051104075904.84: *6* setUp
-def setUp(self):
-
-    trace = False
-    c = self.c ; temp_p = self.temp_p
-    d = self.dialog
-
-    temp_p.setBodyString('')
-
-    # Create a node under temp_p.
-    child = temp_p.insertAsLastChild()
-    assert(child)
-    c.setHeadString(child,"import/export test: " + self.p.h)
-    c.selectPosition(child)
-
-    assert(d)
-    s = d.bodyString()
-    lines = s.split('\n')
-    name = lines[0]
-    fileName = lines[1]
-
-    # Replace '\\' by os.path.sep in fileName
-    try:
-        # os.path.sep does not exist in Python 2.2.x.
-        sep = os.path.sep
-        fileName = fileName.replace('\\',sep)
-    except AttributeError:
-        fileName = g.os_path_normpath(fileName)
-
-    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
-    if trace: g.trace('(importExportTestCase',fileName)
-
-    if self.doImport:
-        theDict = {name: [fileName]}
-    else:
-        theDict = {name: fileName}
-
-    self.oldGui = g.app.gui
-    self.gui = leoGui.unitTestGui(theDict,trace=False)
-.. @+node:ekr.20051104075904.85: *6* shortDescription
-def shortDescription (self):
-
-    try:
-        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
-    except Exception:
-        return "ImportExportTestCase"
-.. @+node:ekr.20051104075904.86: *6* tearDown
-def tearDown (self):
-
-    c = self.c ; temp_p = self.temp_p
-
-    if self.gui:
-        self.gui.destroySelf()
-        self.gui = None
-
-    temp_p.setBodyString("")
-    temp_p.clearDirty()
-
-    if not self.wasChanged:
-        c.setChanged (False)
-
-    if 1: # Delete all children of temp node.
-        while temp_p.firstChild():
-            temp_p.firstChild().doDelete()
-
-    g.app.gui = self.oldGui
-    c.selectPosition(self.old_p)
-.. @+node:ekr.20031218072017.2850: *5* c.exportHeadlines
-def exportHeadlines (self,event=None):
-
-    '''Export all headlines to an external file.'''
-
-    c = self
-
-    filetypes = [("Text files", "*.txt"),("All files", "*")]
-
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile="headlines.txt",
-        title="Export Headlines",
-        filetypes=filetypes,
-        defaultextension=".txt")
-    c.bringToFront()
-
-    if fileName and len(fileName) > 0:
-        g.setGlobalOpenDir(fileName)
-        g.chdir(fileName)
-        c.importCommands.exportHeadlines(fileName)
-.. @+node:ekr.20120228164039.11406: *4* Clean up #### in leoKeys
-.. @+node:ekr.20120226131923.10221: *4* Allow abbreviations in minibuffer
-@nocolor-node
-
-cfa=clone-find-all-flattened
-.. @+node:ekr.20111125072438.10214: *4* (Maybe) Fix bug: Another @shadow bug (test4.leo)
-@nocolor-node
-
-email:
-http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
-
-see attachment, shadow file won't get written correctly, and it won't reread
-correctly too. Using leo-editor-snapshot- 201111090253.
-
-Hopefully I will be able to look on some bugs myself, but don't know when. Needs
-a bit of time, I am not very familiar with python.
-
-===== EKR
-
-Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
-.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "cython"        : "#",
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "haxe"          : "//",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
-    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lisp"          : ";", # EKR: 2010/09/29
-    "lua"           : "--",  # ddm 13/02/06
-    "matlab"        : "%", # EKR: 2011/10/21
-    "nsi"           : ";", # EKR: 2010/10/27
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "scala"         : "// /* */",
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--',
-        # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-# Used only by c.getOpenWithExt.
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    #"cython"        : "pyd",
-    #"cython"        : "pyi",
-    "cython"        : "pyx", # Only one extension is valid at present.
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "haxe"          : "hx",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
-    "javaserverpage": "jsp", # EKR: 2011/11/25
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "matlab"        : "m", # EKR: 2011/10/21
-    "nsi"           : "nsi", # EKR: 2010/10/27
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    # "rst"           : "rst", # caught by pylint.
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "scala"         : "scala",
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
-    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "m"     : "matlab", # EKR 2011/10/21
-    "nsi"   : "nsi", # EKR: 2010/10/27
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "pyd"   : "cython",
-    "pyi"   : "cython",
-    "pyx"   : "cython",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "scala" : "scala",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-    "hx"    : "haxe",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'hx'    : 'none',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nsi'   : 'none', # Leo 4.8.
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
-.. @+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
 
@@ -2501,6 +2100,410 @@ def createModeCommand (self,modeName,name,modeDict):
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
     
+.. @+node:ekr.20120229094652.15178: *3* Minor
+.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
+.. @+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
+.. @+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; p = c.p
+    nl = g.u(self.output_newline)
+    
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    try:
+        theFile = open(fileName,'w')
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        c.testManager.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = head + nl
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+.. @+node:ekr.20051104075904.78: *5* TM.makeImportExportSuite
+def makeImportExportSuite(self,parentHeadline,doImport):
+
+    """Create an Import/Export test for every descendant of testParentHeadline.."""
+
+    tm = self
+    c = self.c
+    parent = tm.findNodeAnywhere(parentHeadline)
+    assert parent,'node not found: %s' % (parentHeadline)
+    temp = tm.findNodeInTree(parent,"tempNode")
+    assert temp,'node not found: tempNode'
+
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
+
+    for p in parent.children():
+        if p != temp:
+            # 2009/10/02: avoid copy arg to iter
+            p2 = p.copy()
+            dialog = tm.findNodeInTree(p2,"dialog")
+            assert(dialog)
+            test = importExportTestCase(c,p2,dialog,temp,doImport)
+            suite.addTest(test)
+
+    return suite
+.. @+node:ekr.20051104075904.79: *5* class importExportTestCase
+class importExportTestCase(unittest.TestCase):
+
+    """Data-driven unit tests for Leo's edit body commands."""
+
+    @others
+.. @+node:ekr.20051104075904.80: *6* __init__ (importExportTestCase)
+def __init__ (self,c,p,dialog,temp_p,doImport):
+
+    # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.dialog = dialog
+    self.p = p.copy()
+    self.temp_p = temp_p.copy()
+
+    self.gui = None
+    self.oldGui = None
+    self.wasChanged = c.changed
+    self.fileName = ""
+    self.doImport = doImport
+
+    self.old_p = c.p
+.. @+node:ekr.20051104075904.81: *6*  fail (importExportTestCase)
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+.. @+node:ekr.20051104075904.82: *6* importExport
+def importExport (self):
+
+    c = self.c ; p = self.p
+
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    commandName = p.h
+    command = getattr(c,commandName) # Will fail if command does not exist.
+    command(event=None)
+
+    failedMethod = g.app.unitTestDict.get("fail")
+    self.failIf(failedMethod,failedMethod)
+.. @+node:ekr.20051104075904.83: *6* runTest
+def runTest(self):
+
+    # """Import Export Test Case"""
+
+    self.importExport()
+.. @+node:ekr.20051104075904.84: *6* setUp
+def setUp(self):
+
+    trace = False
+    c = self.c ; temp_p = self.temp_p
+    d = self.dialog
+
+    temp_p.setBodyString('')
+
+    # Create a node under temp_p.
+    child = temp_p.insertAsLastChild()
+    assert(child)
+    c.setHeadString(child,"import/export test: " + self.p.h)
+    c.selectPosition(child)
+
+    assert(d)
+    s = d.bodyString()
+    lines = s.split('\n')
+    name = lines[0]
+    fileName = lines[1]
+
+    # Replace '\\' by os.path.sep in fileName
+    try:
+        # os.path.sep does not exist in Python 2.2.x.
+        sep = os.path.sep
+        fileName = fileName.replace('\\',sep)
+    except AttributeError:
+        fileName = g.os_path_normpath(fileName)
+
+    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
+    if trace: g.trace('(importExportTestCase',fileName)
+
+    if self.doImport:
+        theDict = {name: [fileName]}
+    else:
+        theDict = {name: fileName}
+
+    self.oldGui = g.app.gui
+    self.gui = leoGui.unitTestGui(theDict,trace=False)
+.. @+node:ekr.20051104075904.85: *6* shortDescription
+def shortDescription (self):
+
+    try:
+        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
+    except Exception:
+        return "ImportExportTestCase"
+.. @+node:ekr.20051104075904.86: *6* tearDown
+def tearDown (self):
+
+    c = self.c ; temp_p = self.temp_p
+
+    if self.gui:
+        self.gui.destroySelf()
+        self.gui = None
+
+    temp_p.setBodyString("")
+    temp_p.clearDirty()
+
+    if not self.wasChanged:
+        c.setChanged (False)
+
+    if 1: # Delete all children of temp node.
+        while temp_p.firstChild():
+            temp_p.firstChild().doDelete()
+
+    g.app.gui = self.oldGui
+    c.selectPosition(self.old_p)
+.. @+node:ekr.20031218072017.2850: *5* c.exportHeadlines
+def exportHeadlines (self,event=None):
+
+    '''Export all headlines to an external file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="headlines.txt",
+        title="Export Headlines",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.exportHeadlines(fileName)
+.. @+node:ekr.20120228164039.11406: *4* Clean up #### in leoKeys
+.. @+node:ekr.20120226131923.10221: *4* Allow abbreviations in minibuffer
+@nocolor-node
+
+cfa=clone-find-all-flattened
+.. @+node:ekr.20111125072438.10214: *4* (Maybe) Fix bug: Another @shadow bug (test4.leo)
+@nocolor-node
+
+email:
+http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
+
+see attachment, shadow file won't get written correctly, and it won't reread
+correctly too. Using leo-editor-snapshot- 201111090253.
+
+Hopefully I will be able to look on some bugs myself, but don't know when. Needs
+a bit of time, I am not very familiar with python.
+
+===== EKR
+
+Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
+.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "matlab"        : "%", # EKR: 2011/10/21
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+# Used only by c.getOpenWithExt.
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    #"cython"        : "pyd",
+    #"cython"        : "pyi",
+    "cython"        : "pyx", # Only one extension is valid at present.
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "jsp", # EKR: 2011/11/25
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "matlab"        : "m", # EKR: 2011/10/21
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
+    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "m"     : "matlab", # EKR 2011/10/21
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "scala" : "scala",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+.. @+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
 .. @+node:ekr.20120226183512.10195: *3* Bugs
 @language rest
 
