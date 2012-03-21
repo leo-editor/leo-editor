@@ -398,6 +398,7 @@
 <v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
 </v>
 </v>
+<v t="ekr.20120321173338.5902"><vh>Improve summary</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2497,6 +2498,40 @@ switches that enable new code bases. Recent examples were::
     run-marked-unit-tests-locally       = None
     run-selected-unit-tests-externally  = Alt-5 # The new standard
     run-selected-unit-tests-locally     = None
+</t>
+<t tx="ekr.20120321173338.5902">@language rest
+
+Emphasize these four capabilities in the release notes for b2/final.
+
+&gt; Several important features are subtle; you could almost call them Easter Eggs.
+
+It's been interesting revising and rewriting the documentation the last few
+days. It was only by doing so that it became clear what features where
+truly important. Imo, they are:
+
+1. Tab completion now shows all @command &amp; @button nodes.
+
+If you put all your common scripts in @command nodes in myLeoSettings.leo,
+all you have to remember is that the script is in, in fact, in a common
+@command node. You can see this list of the common scripts by typing
+&lt;Alt-X&gt;@c&lt;tab&gt;
+
+2. Improved abbreviation capabilities.
+
+This is a sleeper. You can convert ~a to ã, for example, which was not
+possible before. Virtually any kind of abbreviation that can be imagined is
+possible in the new scheme.
+
+3. Improved handling of URL's.
+
+The new features allow URL's to be used as links to other Leo outlines.
+
+4 So-called "weightless" unit testing.
+
+The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit,
+alt-4,... Several seemingly innocuous changes made this work without an
+"friction". The result is a remarkable increase in productivity.
+
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
