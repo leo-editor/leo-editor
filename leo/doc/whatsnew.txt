@@ -104,16 +104,19 @@ What's New in Leo
 
 For details, see the release notes.
 .. @+node:ekr.20120320153011.8201: *5* Weightless unit testing
-Small improvements the unit testing framework have outsized effects. They
+Small improvements the unit testing framework created big results. They
 completely eliminate the overhead in running unit tests:
 
     - The run-marked-unit-tests-externally (Alt-4) command runs all marked
       @test nodes. To choose tests, just mark them.
     - Alt-4 now saves the .leo file first.
-    - External unit tests always read config settings.
-    - The nullGui now uses a fully capable string-based body widget.
-    - The nullGui now uses the regular undoer.
+    - Almost all unit tests may now be run externally:
+        - External unit tests always read config settings.
+        - The nullGui now uses a fully capable string-based body widget.
+        - The nullGui now uses the regular undoer.
     - Unit tests now always have the sources available.
+    - Disabled messages on external unit tests.
+    - The unit test commands always run a selected @test node.
 
 These improvements mean that almost all unit tests may be run externally.
 In turn, this creates a remarkable work flow::
@@ -126,6 +129,15 @@ In turn, this creates a remarkable work flow::
 
 The energy difference between weightless and heavy is astounding. Try the
 new way: you will surely like it.
+
+**Notes**:
+
+Experience shows that being able to run the desired unit tests *without*
+selecting any particular node makes an amazingly large difference. Being
+able to run all and only marked unit tests is a big step forward.
+
+If a marked node is neither an @test node nor an @suite node, all nodes in
+the tree are considered to be marked.
 .. @+node:ekr.20120320153011.6808: *4* Plugins
 .. _`quicksearch plugin`:  http://groups.google.com/group/leo-editor/browse_thread/thread/e0ad60ae319359df/e932052a1ef6e9f5
 .. _`bigdash plugin`: http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535

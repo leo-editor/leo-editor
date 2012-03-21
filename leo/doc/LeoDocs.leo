@@ -171,8 +171,7 @@
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
-<v t="ekr.20100805165051.7175"
-expanded="ekr.20120320153011.8400,"><vh>@file whatsnew.txt</vh></v>
+<v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
 </v>
 <v t="ekr.20111127144911.5545"><vh>Other pages</vh>
 <v t="ekr.20111127144911.5546"><vh>@file download.txt</vh></v>
@@ -295,7 +294,7 @@ expanded="ekr.20120320153011.8400,"><vh>@file whatsnew.txt</vh></v>
 <v t="ekr.20120229094652.14525"><vh>Unified the high-level interface</vh></v>
 <v t="ekr.20120229094652.14526"><vh>Create properties for logCtrl &amp; bodyCtrl</vh></v>
 <v t="ekr.20120229094652.14527"><vh>Added eventFilters to top-level frames</vh></v>
-<v t="ekr.20120229094652.14528"><vh>added log.orderedTabNames</vh></v>
+<v t="ekr.20120229094652.14528"><vh>Added log.orderedTabNames</vh></v>
 <v t="ekr.20120229094652.14532"><vh>Created the TestManager class</vh></v>
 <v t="ekr.20120229094652.14533"><vh>Created the LoadManager class (docs)</vh></v>
 <v t="ekr.20120229094652.14534"><vh>Removed c argument from g.app.config getters</vh></v>
@@ -313,23 +312,18 @@ expanded="ekr.20120320153011.8400,"><vh>@file whatsnew.txt</vh></v>
 <v t="ekr.20120229094652.15159"><vh>Investigated autocomplete popup bug</vh></v>
 </v>
 </v>
-<v t="ekr.20120318075211.6176"><vh>Features</vh>
 <v t="ekr.20120229094652.15162"><vh>Major new features</vh>
-<v t="ekr.20120318075211.6167"><vh>Improved handling of URL's</vh>
-<v t="ekr.20120313074006.15135"><vh>Fixed bug 951739: xdg-open of a file-scheme URL containing blanks</vh></v>
-<v t="ekr.20120313074006.15138"><vh>Fixed bug 951721: @url with URL in headline</vh></v>
-<v t="ekr.20120313074006.15144"><vh>Fixed bug 944555: Ctrl-left-click URL handling not as sophisticated as @url URL handling</vh></v>
-<v t="ekr.20120313074006.14725"><vh>Fixed bug 944551: @url URL Open Hangs Leo...</vh></v>
-<v t="ekr.20120313074006.14722"><vh>Fixed bug 893230: URL coloring does not work for many Internet protocols</vh></v>
-</v>
+<v t="ekr.20120318075211.6167"><vh>Improved handling of URL's</vh></v>
+<v t="ekr.20120229094652.14593"><vh>Tab completion shows all @command/@button commands</vh></v>
+<v t="ekr.20120229094652.15093"><vh>Weightless unit testsing</vh></v>
 <v t="ekr.20120313134250.14232"><vh>Leo's File:Open With command now works with Qt</vh></v>
 <v t="ekr.20120229094652.14585"><vh>Added quick edit/save mode</vh></v>
 <v t="ekr.20120229094652.15153"><vh>Detached windows</vh></v>
 <v t="ekr.20120229094652.15135"><vh>The leoInspect module</vh></v>
-<v t="ekr.20120229094652.14787"><vh>Generalized stylesheet handling</vh></v>
 <v t="ekr.20120313074006.14640"><vh>Instant abbreviations (~a)</vh></v>
 </v>
 <v t="ekr.20120229094652.15163"><vh>Minor new features</vh>
+<v t="ekr.20120229094652.14787"><vh>Generalized stylesheet handling</vh></v>
 <v t="ekr.20120229094652.15151"><vh>Leo now raises a dialog on @ignore @&lt;file&gt; nodes</vh></v>
 <v t="ekr.20120229094652.14596"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
 <v t="ekr.20120229094652.14592"><vh>Added support for tags in @button nodes</vh></v>
@@ -337,7 +331,6 @@ expanded="ekr.20120320153011.8400,"><vh>@file whatsnew.txt</vh></v>
 <v t="ekr.20120229094652.14607"><vh>Call unselect1 hook only once</vh></v>
 <v t="ekr.20120229094652.14613"><vh>Improved scannerUnitTest</vh></v>
 <v t="ekr.20120314095341.14216"><vh>Leo supports @ignore when scanning for @command and @button nodes.</vh></v>
-<v t="ekr.20120229094652.14593"><vh>Reorganized @button &amp; @command nodes.</vh></v>
 <v t="ekr.20120229094652.14777"><vh>Support @ignore when installing @command/@button nodes</vh></v>
 <v t="ekr.20120229094652.14541"><vh>set g.app.execute_script during script execution</vh></v>
 <v t="ekr.20120229094652.14600"><vh>Support single-line nodes like &lt;node/&gt; xml import code</vh></v>
@@ -347,14 +340,15 @@ expanded="ekr.20120320153011.8400,"><vh>@file whatsnew.txt</vh></v>
 <v t="ekr.20120313074006.14772"><vh>Dragging a binary file to Leo creates an @url node</vh></v>
 <v t="ekr.20120229094652.14612"><vh>Alt-left-arrow collapses all children when selecting the parent</vh></v>
 <v t="ekr.20120313074006.14643"><vh>Reinstated warnings for conflicting definitions</vh></v>
+<v t="ekr.20120229094652.14589"><vh>Searches from Leo's web pages now work</vh></v>
+<v t="ekr.20120229094652.14601"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
 </v>
 <v t="ekr.20120229094652.15164"><vh>New &amp; improved commands</vh>
 <v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
 <v t="ekr.20120229094652.14544"><vh>Added beautify-c command</vh></v>
 <v t="ekr.20120229094652.14545"><vh>Added c-to-python command</vh></v>
 <v t="ekr.20120229094652.14625"><vh>Added clone-find-all-flattened command</vh></v>
-<v t="ekr.20120229094652.15090"><vh>Added clone/move/delete-marked commands</vh></v>
-<v t="ekr.20120229094652.14579"><vh>Added delete-marked-nodes and move-marked-nodes commands</vh></v>
+<v t="ekr.20120229094652.15090"><vh>Added clone/move/delete-marked-nodes commands</vh></v>
 <v t="ekr.20120229094652.14602"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
 <v t="ekr.20120229094652.14542"><vh>Added select-to-matching-bracket command</vh></v>
 <v t="ekr.20120229094652.14616"><vh>Improved add/delete-comments</vh></v>
@@ -364,11 +358,6 @@ expanded="ekr.20120320153011.8400,"><vh>@file whatsnew.txt</vh></v>
 <v t="ekr.20120229094652.14618"><vh>Improved print-bindings &amp; print-commands</vh></v>
 <v t="ekr.20120313134250.14294"><vh>Improved rst3 command</vh></v>
 <v t="ekr.20120229094652.14599"><vh>Improved word jumps/deletes</vh></v>
-</v>
-<v t="ekr.20120229094652.15167"><vh>Leo's web site</vh>
-<v t="ekr.20120229094652.14589"><vh>Searches from Leo's web pages now work</vh></v>
-<v t="ekr.20120229094652.14601"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
-</v>
 </v>
 <v t="ekr.20120229094652.15165"><vh>Plugins</vh>
 <v t="ekr.20120229094652.15091"><vh>Improved quicksearch plugin</vh></v>
@@ -408,21 +397,8 @@ expanded="ekr.20120320153011.8400,"><vh>@file whatsnew.txt</vh></v>
 <v t="ekr.20120229094652.15140"><vh>New format for @openwith settings nodes</vh></v>
 <v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
 </v>
-<v t="ekr.20120229094652.15093"><vh>Weightless unit testsing</vh>
-<v t="ekr.20120229094652.15092"><vh>Use Alt-4 for all unit tests</vh></v>
-<v t="ekr.20120229094652.14614"><vh>External unit tests now always read config settings</vh></v>
-<v t="ekr.20120229094652.14603"><vh>Disabled messages on external unit tests</vh></v>
-<v t="ekr.20120229094652.14604"><vh>Unit tests now always have the sources available</vh></v>
-<v t="ekr.20120229094652.14617"><vh>Selected @test node always run</vh></v>
-<v t="ekr.20120229094652.14605"><vh>Support marking an entire tree</vh></v>
-<v t="ekr.20120229094652.14524"><vh>All unit tests may now be run externally</vh></v>
 </v>
-</v>
-<v t="ekr.20120320211931.6058"><vh>To be improved</vh>
-<v t="ekr.20120229094652.14593"></v>
-<v t="ekr.20120318075211.6167"></v>
-<v t="ekr.20120229094652.15093"></v>
-</v>
+<v t="ekr.20120321062453.5934"><vh>***Put new scripts where they belong</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -679,6 +655,7 @@ The highlights of Leo 4.10:
 --------------------------
 
 * Dozens of new and improved features and commands, including...
+  - Tab completion now shows all @command &amp; @button nodes.
   - Leo tabs may be detached from the main window.
   - The Open With menu now works.
   - The leoInspect module answers questions about Python code.
@@ -728,9 +705,6 @@ blank, docpart, leokeyword, link, name, nameBrackets, tab, url.
     update_idletasks
     xyToPythonIndex
     yview
-</t>
-<t tx="ekr.20120229094652.14524">- The nullGui now uses a fully capable string-based body widget.
-- The nullGui now uses the regular undoer.
 </t>
 <t tx="ekr.20120229094652.14525">leoQTextEditWidget overrides base toPythonIndex toPythonIndexRowCol.
 
@@ -871,19 +845,12 @@ For example, the move-marked-nodes command first creates a **move node**, called
 positions of other nodes. **Deleting** these nodes *may* change the position of
 nodes, but the pattern above handles this complication cleanly.
 </t>
-<t tx="ekr.20120229094652.14579">And rewrote clone-marked-nodes.
-</t>
-<t tx="ekr.20120229094652.14581">Create @file nodes (not @thin nodes) when opening an external file.
+<t tx="ekr.20120229094652.14581">Leo creates @file nodes (not @thin nodes) when opening an external file.
 
 Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
 
-Changed c.open; minor changes to importDerivedFiles.
-
-Open now shows all files. This is surprisingly important: it is a
-not-so-subtle clue that *any* file may be opened: non-Leo files are opened
-in @edit nodes. Soon: external files containing Leo sentinels will be
-opened as @file nodes.
-</t>
+Open now shows all files. This is a cue that *any* file may be opened:
+non-Leo files are opened in @edit nodes.</t>
 <t tx="ekr.20120229094652.14582"></t>
 <t tx="ekr.20120229094652.14583">Rewrote the shellCommand, shellCommandOnRegion and executeSubprocess methods.
 </t>
@@ -922,55 +889,64 @@ it is unlikely to have any impact whatsoever to existing @button nodes.
 
 The intended use is for searches of the form @button [some tag].
 </t>
-<t tx="ekr.20120229094652.14593">http://groups.google.com/group/leo-editor/browse_thread/thread/bd6ed96c88fabb4e
+<t tx="ekr.20120229094652.14593">Wouldn't it be great if we all could remember what we, and others, have
+already done? Now there is an easy way to do so: just put your
+commonly-used scripts in global @command nodes. You do this by placing each
+@command node as a child of an @commands node in your @settings tree in
+myLeoSettings.leo.
 
-Wouldn't it be great if we all could remember what we, and others, have
-already done?
+Leo's tab completion now shows you all @command nodes, all @button nodes
+and all the commands associated with those nodes.  To see the list of
+all your @command nodes, simply type::
 
-Last night I had a forehead-slapping moment: the place to put @button
-nodes is in myLeoSettings.leo.
+    &lt;Alt-X&gt;@c&lt;Tab&gt;
+    
+When I do that, I see::
 
-This morning, I realized that using @command rather than @button
-completes the Aha.
+    @command-align-eq-signs
+    @command-c-to-python-clean-docs
+    @command-clean-all-blank-lines
+    @command-clean-body
+    @command-clean-diff
+    @command-clean-spellpyx
+    @command-cls
+    @command-count-pages
+    @command-create-@auto-nodes
+    @command-create-def-list
+    @command-flatten-script
+    @command-join-node-above
+    @command-join-node-below
+    @command-load-all-leo-files
+    @command-preview-node
+    @command-preview-tree
+    @command-print-cmd-docstrings
+    @command-promote-bodies
+    @command-remove-newlines
+    @command-split-defs
+    
+For each @command (and @button node) Leo creates the correspond commands
+without the leading "@command-", so you can use typing completion on the
+shorter command name. For example, when writing documentation, I often use
+the promote-bodies script. After the reminder above, I can execute the
+script with::
 
-This organization has all benefits, and no drawbacks:
-
-- I always know here scripts are.
-
-- No need for duplicates.
-
-- I can organize the scripts within myLeoSettings.leo as usual using
-organizer nodes.  This organization can change as needed.
-
-- Using @command rather than @button means that I never have to
-disable scripts.  No more @@button.
-
-- Using @command saves screen real estate.  In my experience, having
-buttons be visible doesn't prevent them from being hidden in full
-view.
-
-- If I use common prefixes, like c_ (for command) or edit_ (for edit-
-related scripts) or ekr_ (for personal scripts), the *typing
-completion* will let me zero in on the script I want to use:
-
-    &lt;alt-x&gt; c_&lt;tab&gt;
-    &lt;alt-x&gt; c_import&lt;tab&gt;
-
-etc.  Furthermore, Ctrl-P (repeat-complex-command) will allow me to
-rerun the last script run.  This is a quite common case.
+    &lt;Alt-X&gt;prom&lt;Tab&gt;-&lt;Tab&gt;&lt;Return&gt;
+    
+Of course, to rexecute the command later, I can use repeat-complex-command
+(Ctrl-P).
 
 Summary
+=======
 
-This Aha substitutes an *already-existing* usage (typing completion)
-for a whole set of memory-intensive retrieval problems.  I'm not
-likely ever to forget typing completion, although I might forget the
-specif prefixes used in @command nodes.  If that happens, I'll know
-where to look.
+If you put all your commonly-used scripts in @command nodes, you can use
+&lt;Alt-X&gt;@c&lt;Tab&gt; to remind yourself of their names. That is, Leo's typing
+completion eliminates the need for memory-intensive retrieval. I'm not
+likely ever to forget typing completion.
 
-This Aha takes full advantage of Leo's organization strengths and
-*concentrates* those strengths by putting all the to-be-organized
-material in one place.  This allows for easy reorganization:  changing
-command-name prefixes, for instance, would be straightforward. 
+This scheme takes full advantage of Leo's organization strengths and
+*concentrates* those strengths by putting all the to-be-organized material
+in one place. This allows for easy reorganization: changing command-name
+prefixes, for instance, would be straightforward.
 </t>
 <t tx="ekr.20120229094652.14595"></t>
 <t tx="ekr.20120229094652.14596">There is no longer any need for @@button, etc.: just put under an @ignore node.</t>
@@ -983,86 +959,22 @@ command-name prefixes, for instance, would be straightforward.
     @int focus_border_width = 1
     @bool use_body_focus_border  = True
     @bool use_focus_border = True</t>
-<t tx="ekr.20120229094652.14599">Applied patch for bug 800399: Leo should have smart word jumps/deletes.
+<t tx="ekr.20120229094652.14599">Many editors allow you to jump over, select and delete words, especially
+those containing or surrounded by special characters, in a smarter way than
+just "going to the beginning of the word before" (back-word) or "going to
+the end of the next word" (forward-word).
 
-Some editors, such as Eclipse, vim, this Webkit form I type in, and even Word,
-allow to jump over, select and delete words, especially those containing or
-surrounded by special characters, in a smarter way than just "going to the
-beginning of the word before" (back-word) or "going to the end of the next word"
-(forward-word).
+Patches add "-smart" equivalents of the jump, select and delete commands.
+Users wanting to use these commands can set in their myLeoSettings.leo::
 
-E.g. in a line containing "i = ass" (note: multiple spaces) with the cursor at
-the end, Ctrl-BackSpace would delete everything up to the "=", leaving "i =",
-and if the cursor was right behind the "i", Ctrl-Right would position the cursor
-right before the "=", instead of before the "ass", as Leo does now.
-
-They also make deleting easy. Given a python method:
-
-def fun():
-    line1
-    line2
-
-Eclipse's and Webkit's Ctrl-BackSpace, beginning with the cursor behind "line2",
-used multiple times, yield (turn by turn):
-
-def fun():
-    line1
-    [4 spaces left of here]
-
-def fun():
-    line1
-[emtpy line]
-
-def fun():
-    line1
-
-def fun():
-    [4 spaces left of here]
-
-def fun():
-[empty line]
-
-def fun():
-
-def fun
-
-def [1 space left of here]
-
-[empty line]
-
-while Leo's backward-delete-word yields:
-
-def fun():
-    line1
-   [3 spaces left of here ?!]
-
-def fun():
-   [3 spaces left of here ?!]
-
-def
-
-[empty line]
-
-So to say, Leo's word-based commands jump, select and delete more than is useful
-for possibly many users coming from other editors, leaving them only with
-character-based commands.
-
-I have attached two patches that add "-smart" equivalents of the jump, select
-and delete commands.
-
-Users wanting to use these commands can set in their myLeoSettings.leo:
-
-  back-word-smart = Ctrl-LtArrow
+  back-word-smart                  = Ctrl-LtArrow
   back-word-smart-extend-selection = Ctrl-Shift-LtArrow
 
-  forward-word-smart = Ctrl-RtArrow
+  forward-word-smart                  = Ctrl-RtArrow
   forward-word-smart-extend-selection = Ctrl-Shift-RtArrow
 
-  delete-word-smart = Ctrl-Delete
-  backward-delete-word-smart = Ctrl-BackSpace
-
-which overrides the default bindings.
-</t>
+  delete-word-smart          = Ctrl-Delete
+  backward-delete-word-smart = Ctrl-BackSpace</t>
 <t tx="ekr.20120229094652.14600">The single-line nodes should end in a newline. Otherwise the created node
 will add a newline, and the checkers will complain.
 
@@ -1079,32 +991,6 @@ The new class is xmlScanner and htmlScanner in leoImport.py.
     run-selected-unit-tests-externally  = Alt-5 # The new standard
     run-selected-unit-tests-locally     = None
 </t>
-<t tx="ekr.20120229094652.14603">1. Removing the signon message:
-
-    This was nasty to find. They were created by the call to
-    c.new (the non-testc!) in runTests.
-
-    The trace in g.es was the key to discovering what was happening.
-    
-2. Moved the print statements from leoGlobals.py to writeWaitingLog.
-
-    This allows g.app.silentMode to have effect.
-    
-3. fc.save now takes a 'silent' argument, set only by createFileFromOutline.
-
-</t>
-<t tx="ekr.20120229094652.14604">The following code were changed:
-
-g.executeScript,
-c.executeScript,
-c.writeScriptFile,
-TM.doTests
-runTest (generalTestCase)
-TM.makeTestSuite.
-</t>
-<t tx="ekr.20120229094652.14605">If a marked node is neither an @test node nor an @suite node, all nodes in
-the tree are considered to be marked.
-</t>
 <t tx="ekr.20120229094652.14606"></t>
 <t tx="ekr.20120229094652.14607">http://groups.google.com/group/leo-editor/browse_thread/thread/e2980a2b86af913e
 
@@ -1117,7 +1003,7 @@ I see the following
   - a message is generated for each current node in each tab
 
 - shifting focus from body to headline doesn't generate the message,
-  shifting focus with &lt;ctl-h&gt; does
+  shifting focus with &lt;Ctrl-H&gt; does
 
 - switching from one tab to another doesn't generate the message 
 </t>
@@ -1136,21 +1022,18 @@ I see the following
 </t>
 <t tx="ekr.20120229094652.14613">The error message is now part of the failed assert.  Very helpful.
 </t>
-<t tx="ekr.20120229094652.14614"></t>
 <t tx="ekr.20120229094652.14615">The default, True, is the legacy operation, which I recommend.
 
 </t>
 <t tx="ekr.20120229094652.14616">add-comments preserves trailing whitespace.
+
 delete-comments now works whether or not blanks surround comments delims.
 </t>
-<t tx="ekr.20120229094652.14617">This is true regardless of command, marked status of the node, or @ignore nodes.  Doh!
+<t tx="ekr.20120229094652.14618">- print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
 
-Added special-case code to findAllUnitTestNodes.
-</t>
-<t tx="ekr.20120229094652.14618">print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
-print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
+- print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
 
-Improved print-commands &amp; print-bindings: don't print 'all'</t>
+- print-commands &amp; print-bindings do not print 'all'.</t>
 <t tx="ekr.20120229094652.14619">Added show-decoration-selected: 1 to QTreeWidget stylesheet.
 
 This causes the entire headline row to be shown when select, a big improvement, imo.
@@ -1178,9 +1061,9 @@ fc.writeDirtyAtFileNodes
 
 3. Disabled runOpenFileDialog and runSaveFileDialog during unit testing.
 </t>
-<t tx="ekr.20120229094652.14622">don't print 'all' in bindings.
-print bindings first
-pad bindings properly, as is done in print-commands/bindings.
+<t tx="ekr.20120229094652.14622">- don't print 'all' in bindings.
+
+- pad bindings properly, as is done in print-commands/bindings.
 </t>
 <t tx="ekr.20120229094652.14625">The clone-find-all command includes nodes only once: if a node's ancestor
 appears in the list, the node is not include again in the top-level list.
@@ -1785,39 +1668,40 @@ in ``about:config`` in Firefox.
 
 - Clicking a node or hitting &lt;return&gt; puts focus in body pane.
 </t>
-<t tx="ekr.20120229094652.15092">There is a collapse in complexity here that I just discovered: use
-Alt-4 for all tests.
+<t tx="ekr.20120229094652.15093">Small improvements the unit testing framework created big results. They
+completely eliminate the overhead in running unit tests:
 
-    unitTest.leo: bind Alt-4 to run-selected-unit-tests-externally
-    leoPy.leo:    bind Alt-4 to run-marked-unit-tests-locally 
+    - The run-marked-unit-tests-externally (Alt-4) command runs all marked
+      @test nodes. To choose tests, just mark them.
+    - Alt-4 now saves the .leo file first.
+    - Almost all unit tests may now be run externally:
+        - External unit tests always read config settings.
+        - The nullGui now uses a fully capable string-based body widget.
+        - The nullGui now uses the regular undoer.
+    - Unit tests now always have the sources available.
+    - Disabled messages on external unit tests.
+    - The unit test commands always run a selected @test node.
 
-run-marked-unit-tests-externally is the simplest thing that could possibly work.
-Bind Alt-4 to this command, marked just the desired tests and then run them with
-one keystroke. Brilliantly simple.
+These improvements mean that almost all unit tests may be run externally.
+In turn, this creates a remarkable work flow::
 
-Experience shows that being able to run the desired unit tests
-*without* selecting any particular node makes an amazingly large
-difference.  Being able to run all and only marked unit tests is a big
-step forward.
-</t>
-<t tx="ekr.20120229094652.15093">As of rev 4725, unit testing in leoPy.leo feels *completely*
-weightless.  The last change: running any unit test externally saves
-the .leo file automatically first.
+    Edit
+    Alt-4
+    Edit
+    Alt-4
+    ...
 
-Thus, Alt-4 runs all desired unit tests immediately.  To select/
-deselect unit tests, just mark/unmark @test nodes.
+The energy difference between weightless and heavy is astounding. Try the
+new way: you will surely like it.
 
-The difference in workflow is *huge*.  There is no need to select
-@test nodes in any way, except for marking them.
+**Notes**:
 
-So I create an @test node, make changes to that node, or to the code
-being tested, and hit Alt-4.  Done.
+Experience shows that being able to run the desired unit tests *without*
+selecting any particular node makes an amazingly large difference. Being
+able to run all and only marked unit tests is a big step forward.
 
-When I am satisfied with the @test node, I can leave it where it is
-(unmarked) or move it to unitTest.leo.
-
-The energy difference between weightless and heavy is astounding.  Try
-the new way: you will surely like it. 
+If a marked node is neither an @test node nor an @suite node, all nodes in
+the tree are considered to be marked.
 </t>
 <t tx="ekr.20120229094652.15131">From Brian Theado
 
@@ -2124,7 +2008,6 @@ nothing more I can do.
 <t tx="ekr.20120229094652.15164"></t>
 <t tx="ekr.20120229094652.15165"></t>
 <t tx="ekr.20120229094652.15166"></t>
-<t tx="ekr.20120229094652.15167"></t>
 <t tx="ekr.20120229094652.15168"></t>
 <t tx="ekr.20120229094652.15169"></t>
 <t tx="ekr.20120229094652.15176"></t>
@@ -2421,15 +2304,6 @@ I instantly like this new binding.
 </t>
 <t tx="ekr.20120313074006.14715">https://bugs.launchpad.net/leo-editor/+bug/923301
 </t>
-<t tx="ekr.20120313074006.14722">https://bugs.launchpad.net/leo-editor/+bug/893230
-
-Added support for colorizing the following schemes:
-gopher,mailto,news,nntp,prospero,telnet,wais
-</t>
-<t tx="ekr.20120313074006.14725">https://bugs.launchpad.net/leo-editor/+bug/944551
-
-Removed "significant" calls to os.system. (It's alright to call os.system('cls'))
-</t>
 <t tx="ekr.20120313074006.14738"></t>
 <t tx="ekr.20120313074006.14740">https://bugs.launchpad.net/leo-editor/+bug/875323
 </t>
@@ -2472,12 +2346,6 @@ createActualFile takes an IOError.
 </t>
 <t tx="ekr.20120313074006.15125">https://bugs.launchpad.net/leo-editor/+bug/951921
 </t>
-<t tx="ekr.20120313074006.15135">https://bugs.launchpad.net/leo-editor/+bug/951739
-</t>
-<t tx="ekr.20120313074006.15138">https://bugs.launchpad.net/leo-editor/+bug/951721
-</t>
-<t tx="ekr.20120313074006.15144">https://bugs.launchpad.net/leo-editor/+bug/944555
-</t>
 <t tx="ekr.20120313074006.16135">http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
 
 Screenshot here:
@@ -2498,7 +2366,7 @@ done "in the background". Correct implementation would be to activate
 the tab in order to bring attention to it. 
 </t>
 <t tx="ekr.20120313134250.14232">Support for the open-with command is now part of Leo's core.</t>
-<t tx="ekr.20120313134250.14294">*** Important *** This was all done in Leo 4.9
+<t tx="ekr.20120313134250.14294">**Important**: This was all done in Leo 4.9, but not properly documented.
 
 Allow section references in rst3 command.
 
@@ -2518,7 +2386,31 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 <t tx="ekr.20120318075211.6164"></t>
 <t tx="ekr.20120318075211.6165"></t>
 <t tx="ekr.20120318075211.6166"></t>
-<t tx="ekr.20120318075211.6167"></t>
+<t tx="ekr.20120318075211.6167">Leo's core now supports opening URL's in several ways:
+
+1. By Control-Clicking the headline of a node containing a URL in its
+   headline or the *first* line of its body text.
+   
+2. The open-url command opens a URL in a nodes headline or the first
+   line of its body text.
+   
+3. By Control-Clicking any URL in the body text.
+
+Notes::
+
+- URL's may optionally start with ``@url``.  Leo removes this prefix
+  before trying to open the URL.
+
+- Names of existing files are considered valid URL's. In that case, Leo
+  prepends ``file://`` to the file name.
+  
+- Relative file names are resolved to c.openDirectory, the directory of the
+  .leo file.
+  
+- You may use the {{expression}} syntax in any ``file://`` URL, including
+  ``file://`` URL's created from file names.
+  
+- The bookmarks.py plugin supports all of the features listed above.</t>
 <t tx="ekr.20120318075211.6168">This class handles all the messy details of loading .leo files at startup.
 This class encapsulates almost all the code in runLeo.py, as well as some
 methods in leoGlobals.py that really belong somewhere else.
@@ -2594,7 +2486,6 @@ switches that enable new code bases. Recent examples were::
    new_modes = False # True: use ModeController and ModeInfo classes.
    if new_modes: print('***** new_modes')
 </t>
-<t tx="ekr.20120318075211.6176"></t>
 <t tx="ekr.20120318075211.7524">The new command names and default bindings are::
 
     run-all-unit-tests-externally       = None
@@ -2604,7 +2495,7 @@ switches that enable new code bases. Recent examples were::
     run-selected-unit-tests-externally  = Alt-5 # The new standard
     run-selected-unit-tests-locally     = None
 </t>
-<t tx="ekr.20120320211931.6058">### Where to put scripts?</t>
+<t tx="ekr.20120321062453.5934"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
