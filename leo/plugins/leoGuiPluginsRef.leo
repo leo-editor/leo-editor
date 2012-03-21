@@ -36,8 +36,7 @@
 <v t="ekr.20081121105001.80"><vh>@file ironPythonGui.py</vh></v>
 <v t="ekr.20081121105001.595"><vh>@file swing_gui.py</vh></v>
 <v t="ekr.20081121110412.2"><vh>@file tkGui.py</vh></v>
-<v t="ekr.20090126093408.1"
-expanded="ekr.20090126093408.858,ekr.20090126093408.206,ekr.20090126093408.227,ekr.20090126093408.243,ekr.20090126093408.244,"><vh>@file wxGui.py</vh></v>
+<v t="ekr.20090126093408.1"><vh>@file wxGui.py</vh></v>
 </v>
 </vnodes>
 <tnodes>

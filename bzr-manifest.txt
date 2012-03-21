@@ -1,12 +1,8 @@
-
-c:\leo.repo\trunk>c:\apps\bazaar\bzr.exe ls -V -R 
-.bzrignore
 INSTALL.TXT
 LICENSE.TXT
 Makefile
 PKG-INFO.TXT
 README.TXT
-bzr-manifest.txt
 launchLeo.py
 leo/
 leo/Icons/
@@ -1726,4 +1722,3 @@ leo_to_html.xsl
 profileLeo.py
 pylint-leo.bat
 pylint-leo.py
-setup.py

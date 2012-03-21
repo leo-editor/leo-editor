@@ -26,8 +26,8 @@ except ImportError:
     bzr_version = None
 #@-<< imports >>
 
-static_version = 4900
-static_date = "2012-03-19"
+static_version = 5183
+static_date = "2012-03-21"
 version = "4.10 b1"
 
 theDir = os.path.dirname(__file__)
