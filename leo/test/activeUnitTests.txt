@@ -933,7 +933,8 @@ passList = (
     'backlink','baseNativeTree','bibtex','bookmarks',
     'codewisecompleter','colorize_headlines','contextmenu',
     'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
+    # 'detect_urls',
+    'dtest','empty_leo_file','enable_gc','initinclass',
     'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
     # 'leoN',
     'leoOPML','leoremote','lineNumbers',
@@ -10447,7 +10448,7 @@ else:
 
 #@+node:ekr.20111121081052.3908: *4* @test c.frame.log.numberOfVisibleTabs
 if g.app.isExternalUnitTest or not g.isPython3:
-    print('external test')
+    # print('external test')
     pass
 else:
     log = c.frame.log

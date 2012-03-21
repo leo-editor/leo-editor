@@ -3,8 +3,9 @@ System requirements
 
 Leo requires Python 2.6 or above (including Python 3.x) and PyQt.
 
-	Download Python from http://python.org/ 
-    Download PyQt from http://www.riverbankcomputing.co.uk/news
+- Download Python from http://python.org/
+    
+- Download PyQt from http://www.riverbankcomputing.co.uk/news
 
 Leo's HOME directory
 --------------------

@@ -398,7 +398,6 @@
 <v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
 </v>
 </v>
-<v t="ekr.20120321062453.5934"><vh>***Put new scripts where they belong</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -642,14 +641,18 @@ Important files:
 run-all-unit-tests-externally = Alt-5
 </t>
 <t tx="ekr.20111127144911.5545"></t>
-<t tx="ekr.20120229094652.14053">@language rest
+<t tx="ekr.20120229094652.14053">d@language rest
 
-Leo 4.10 b1              March 21, 2012
+Leo 4.10 b1                                         March 21, 2012
 
 Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html
+
+Leo 4.10 contains 9 months of intense work on Leo. Several very important
+features are subtle; you could almost call them Easter Eggs, so please read
+the following notes carefully.
 
 The highlights of Leo 4.10:
 --------------------------
@@ -2495,7 +2498,6 @@ switches that enable new code bases. Recent examples were::
     run-selected-unit-tests-externally  = Alt-5 # The new standard
     run-selected-unit-tests-locally     = None
 </t>
-<t tx="ekr.20120321062453.5934"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

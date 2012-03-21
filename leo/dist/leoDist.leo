@@ -90,7 +90,7 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="EKR.20040519090846">@nocolor
+<t tx="EKR.20040519090846">@language rest
 
 1. Search for ##version
 
@@ -132,8 +132,9 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 
 Leo requires Python 2.6 or above (including Python 3.x) and PyQt.
 
-	Download Python from http://python.org/ 
-    Download PyQt from http://www.riverbankcomputing.co.uk/news
+- Download Python from http://python.org/
+    
+- Download PyQt from http://www.riverbankcomputing.co.uk/news
 </t>
 <t tx="EKR.20040519090846.4">
 Installing the leo.py on Linux
@@ -193,25 +194,31 @@ Platform: Windows, Linux
 </t>
 <t tx="EKR.20040519090846.9">@language rest
 
-Leo 4.10 b1                                 March 21, 2012
+Leo 4.10 b1                                         March 21, 2012
 
 Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html
 
+Leo 4.10 contains 9 months of intense work on Leo. Several very important
+features are subtle; you could almost call them Easter Eggs, so please read
+the following notes carefully.
+
 The highlights of Leo 4.10:
 --------------------------
 
 * Dozens of new and improved features and commands, including...
+  - Tab completion now shows all @command &amp; @button nodes.
   - Leo tabs may be detached from the main window.
   - The Open With menu now works.
   - The leoInspect module answers questions about Python code.
   - Leo can highlight the pane containing the focus.
+  - The bigdash plugin searches across multiple files.
   - Improved abbreviation capabilities.
   - Improved handling of URL's.
   - Improved editing of non-Leo files.
-  - Improved support for external unit tests.
+  - Improvements create "weightless" unit testing.
 * Easier installation on MacOS.
 * Fixed almost 70 bugs.
 
@@ -548,7 +555,7 @@ Post-testing:
 LeoDist.leo:
     - Make sure copyright dates are correct.
         (trunk/license.txt **and** leo/doc/license.txt.)
-    - Update version numbers: search this file for ##version.
+    - Update version numbers: search leoDist.leo for ##version.
     - Update readme.txt
     - Check 'PKG-INFO.TXT'
 Run make-leo, making sure that the final revno matches the build number in version.py:
@@ -1155,18 +1162,24 @@ Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html
 
+Leo 4.10 contains 9 months of intense work on Leo. Several very important
+features are subtle; you could almost call them Easter Eggs, so please read
+the following notes carefully.
+
 The highlights of Leo 4.10:
----------------------------
+--------------------------
 
 * Dozens of new and improved features and commands, including...
+  - Tab completion now shows all @command &amp; @button nodes.
   - Leo tabs may be detached from the main window.
   - The Open With menu now works.
   - The leoInspect module answers questions about Python code.
   - Leo can highlight the pane containing the focus.
+  - The bigdash plugin searches across multiple files.
   - Improved abbreviation capabilities.
   - Improved handling of URL's.
   - Improved editing of non-Leo files.
-  - Improved support for external unit tests.
+  - Improvements create "weightless" unit testing.
 * Easier installation on MacOS.
 * Fixed almost 70 bugs.
 

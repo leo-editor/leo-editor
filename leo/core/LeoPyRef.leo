@@ -18,14 +18,12 @@
 <v t="ekr.20111123042248.12701"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20111031081007.9985"><vh>@shortcuts</vh></v>
 </v>
-<v t="ekr.20111103205308.9703"><vh>@command cls</vh></v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089"
-marks="ekr.20111110085739.10265,"><vh>@file ../doc/leoProjects.txt</vh></v>
+<v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
@@ -35,7 +33,6 @@ marks="ekr.20111110085739.10265,"><vh>@file ../doc/leoProjects.txt</vh></v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 <v t="ekr.20111124095033.10203"><vh>@edit bzr_version.py</vh></v>
-<v t="ekr.20111124095033.10201"><vh>v.bat</vh></v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
@@ -54,7 +51,7 @@ marks="ekr.20111110085739.10265,"><vh>@file ../doc/leoProjects.txt</vh></v>
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20111116103733.9817"><vh>@file leoInspect.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
@@ -120,6 +117,12 @@ u:  an undoer.
 w:  a gui widget.
 v:  a vnode
 z:  a local temp.
+
+In more limited contexts, the following conventions apply:
+    
+si: a g.ShortcutInfo object.
+ks: a g.KeyStroke object
+stroke: a KeyStroke object.
 
 The following are 'official' ivars that will always exist:
 
@@ -208,38 +211,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction. 
 </t>
-<t tx="ekr.20051031040240">def scan (self,fn,p,s):
-    
-    self.c = c
-    root = c.p.insertAsNthChild(0)
-    root.h = fn
-    root.b = '@others'
-    level,stack = 0,[root]
-    body = []
-    
-    for s in g.splitLines(s):
-        if s.startswith('*'):
-            i,level = 0,0
-            while s[i] == '*':
-                i += 1
-                level += 1
-            if level &gt; len(stack):
-                g.trace('bad level',repr(s))
-            else:
-                self.stack = self.stack[:level]
-                parent = self.stack[-1]
-                p = parent.insertAsLastChild()
-                p.b = ''.join(body)
-                p.h = s
-                body = []
-        else:
-            body.append(s)
-            
-    # Finish any trailing lines.
-    if body:
-        parent = self.stack[-1]
-        p.b = ''.join(body)
-</t>
+<t tx="ekr.20051031040240"></t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
 <t tx="ekr.20080730161153.8"></t>
@@ -252,8 +224,8 @@ row.  Similar remarks apply when going in the reverse direction.
 <t tx="ekr.20110607155823.16449"></t>
 <t tx="ekr.20111031081007.9985">run-selected-unit-tests-externally = Alt-4 # Standard binding, unchanged.
 run-marked-unit-tests-externally = Alt-5
-run-marked-unit-tests-locally = Alt-6</t>
-<t tx="ekr.20111103205308.9703">g.cls()</t>
+run-marked-unit-tests-locally = Alt-6
+</t>
 <t tx="ekr.20111123042248.12701"># Leo loads plugins in the order they appear here.
 
 # Highly-recommended plugins:
@@ -262,11 +234,7 @@ plugins_menu.py
 free_layout.py # needs to be early
 viewrendered.py
 mod_scripting.py
+bigdash.py
 </t>
-<t tx="ekr.20111124095033.10201">rem A windows script to create and commit leo/core/bzr_version.py
-echo off
-call b.bat version-info --python &gt; leo\core\bzr_version.py
-call 2to3.bat --fix=print --fix=unicode --nobackups leo\core\bzr_version.py
-call b.bat commit -m "v.bat: update bzr_version.py" leo\core\bzr_version.py</t>
 </tnodes>
 </leo_file>

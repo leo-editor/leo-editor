@@ -8,7 +8,8 @@
 # Leo 4.6.1 final: July 30, 2009.
 # Leo 4.7.1 final: February 26, 2010.
 # Leo 4.8   final: November 26, 2010.
-# Leo 4.9   final: June 21, 2011
+# Leo 4.9   final: June 21, 2011.
+# Leo 4.10 b1:     March 21, 2011.
 
 #@@language python
 #@@tabwidth -4
