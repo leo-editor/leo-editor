@@ -1272,7 +1272,7 @@
 <v t="ekr.20070925144534.406"><vh>@menu &amp;Help</vh>
 <v t="ekr.20070925144534.407"><vh>@item about-leo</vh></v>
 <v t="ekr.20070925144534.408"><vh>@item open-online-home</vh></v>
-<v t="ekr.20070925144534.409"><vh>@item *open-online-&amp;tutorial</vh></v>
+<v t="ekr.20070925144534.409"><vh>@@@item *open-online-&amp;tutorial</vh></v>
 <v t="ekr.20070925144534.410"><vh>@item *open-&amp;users-guide</vh></v>
 <v t="ekr.20070925144534.411"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.412"><vh>@item open-leoDocs-leo</vh></v>
@@ -4782,7 +4782,7 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.406"></t>
 <t tx="ekr.20070925144534.407">&amp;About Leo...</t>
 <t tx="ekr.20070925144534.408">Online &amp;Home Page</t>
-<t tx="ekr.20070925144534.409"></t>
+<t tx="ekr.20070925144534.409">The online tutorial no longer exists.</t>
 <t tx="ekr.20070925144534.41"></t>
 <t tx="ekr.20070925144534.410"></t>
 <t tx="ekr.20070925144534.411"></t>

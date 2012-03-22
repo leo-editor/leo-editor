@@ -43,13 +43,6 @@ how about a link "Search", leading to
 > where there's a search box.
 
 Good idea.  I'll do it today. 
-.. @+node:ekr.20120229173025.20629: *4* Remove online-tutorial link
-http://groups.google.com/group/leo-editor/browse_thread/thread/2157d8bfc0f381f1
-
-es, choosing Help-->"Open Online Tutorial" tries to go to a page on
-3dTree.com the site for which is no longer held.
-
-Should the Quick Intro be brought back instead? 
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
 .. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
 .. @+node:ekr.20120322073519.10406: *3* Optional

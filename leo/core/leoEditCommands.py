@@ -8066,7 +8066,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'open-myLeoSettings-leo':       c.openMyLeoSettings,
             'open-offline-tutorial':        f.leoHelp,
             'open-online-home':             c.leoHome,
-            'open-online-tutorial':         c.leoTutorial,
+            # 'open-online-tutorial':         c.leoTutorial,
             'open-outline':                 c.open,
             'open-python-window':           c.openPythonWindow,
             'open-quickstart-leo':          c.leoQuickStart,

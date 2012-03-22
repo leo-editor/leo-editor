@@ -6758,23 +6758,8 @@ class Commands (object):
 
         '''Open Leo's users guide in a web browser.'''
 
-        import webbrowser
-        c = self
-
-        theFile = c.os_path_finalize_join(
-            g.app.loadDir,'..','doc','html','_build','html','leo_toc.html')
-
-        if os.path.isfile(theFile):
-            url = 'file:%s' % theFile
-            webbrowser.open_new(url)
-            return
-
-        try:
-            url = 'http://webpages.charter.net/edreamleo/leo_toc.html'
-            webbrowser.open_new(url)
-            return
-        except:
-            g.es("not found:",url)
+        url = 'http://webpages.charter.net/edreamleo/leo_toc.html'
+        g.handleUrl(url)
     #@+node:ekr.20110402084740.14490: *4* Icon bar
     def goToNextHistory (self,event=None):
         
