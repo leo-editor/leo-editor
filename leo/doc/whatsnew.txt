@@ -172,8 +172,6 @@ the tree are considered to be marked.
 
 For full details, see the release notes.
 .. @+node:ekr.20120320153011.6826: *4* Settings
-.. _solarized: http://ethanschoonover.com/solarized
-
 - New settings:
 
     - @bool indent_added_comments
@@ -187,7 +185,6 @@ For full details, see the release notes.
     - Added show-decoration-selected: 1 to QTreeWidget stylesheet. This causes
       the entire headline row to be shown when selected.
     - Added stylesheets for Log & Find tabs.
-    - Added support for solarized_ colors. Search for "solarized" in leoSettings.leo.
     - Eliminated the -c option.
     - New format for @openwith settings nodes. See leoSettings.leo for details.
 

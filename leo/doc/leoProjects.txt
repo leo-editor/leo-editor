@@ -1409,8 +1409,9 @@ bigdash.py
 run-selected-unit-tests-externally = Alt-4 # Standard binding, unchanged.
 run-marked-unit-tests-externally = Alt-5
 run-marked-unit-tests-locally = Alt-6
-#@+node:ekr.20120318110848.9734: ** Added import-org-mode script
-#@+node:ekr.20120318110848.9735: *3* import-org-mode (command, not used)
+#@+node:ekr.20120322073519.10401: ** b1
+#@+node:ekr.20120318110848.9734: *3* Added import-org-mode script
+#@+node:ekr.20120318110848.9735: *4* import-org-mode (command, not used)
 class ImportOrgMode:
     @others
 
@@ -1423,15 +1424,15 @@ if False and g.app.inScript:
     print('='*40)
     ImportOrgMode(c).test()
     print('done')
-#@+node:ekr.20120318110848.9736: *4* ctor
+#@+node:ekr.20120318110848.9736: *5* ctor
 def __init__ (self,c):
     
     self.c = c
-#@+node:ekr.20120318110848.9737: *4* go
+#@+node:ekr.20120318110848.9737: *5* go
 def go (self,p):
     
     '''Prompt for a file and pass the contents to scan().'''
-#@+node:ekr.20120318110848.9738: *4* scan
+#@+node:ekr.20120318110848.9738: *5* scan
 def scan (self,fn,p,s):
 
     self.c = c
@@ -1472,7 +1473,7 @@ def scan (self,fn,p,s):
         
     root.contract()
     c.redraw(root)
-#@+node:ekr.20120318110848.9739: *4* test
+#@+node:ekr.20120318110848.9739: *5* test
 def test (self):
     
     s = '''
@@ -1518,7 +1519,7 @@ c521.1
             c.redraw(p)
     else:
         print('not found: %s' % tag)
-#@+node:ekr.20120318110848.9740: *3* @@button import-org-mode
+#@+node:ekr.20120318110848.9740: *4* @@button import-org-mode
 '''Import each file in the files list after the presently selected node.'''
 
 
@@ -1538,7 +1539,7 @@ for fn in files:
         c.selectPosition(root)
     except IOError:
         print('can not open %s' % fn)
-#@+node:ekr.20120318110848.9741: *4* scan
+#@+node:ekr.20120318110848.9741: *5* scan
 def scan (c,fn,s):
 
     last = root = c.p.insertAsLastChild()
@@ -1572,8 +1573,8 @@ def scan (c,fn,s):
         
     root.contract()
     c.redraw(root)
-#@+node:ekr.20120318110848.9742: *3* test-import-org-mode
-#@+node:ekr.20120318110848.9747: ** Code for displaying a function call hierarchy in Leo
+#@+node:ekr.20120318110848.9742: *4* test-import-org-mode
+#@+node:ekr.20120318110848.9747: *3* Code for displaying a function call hierarchy in Leo
 From Brian Theado
 
 The other day I stumbled across Ville's code in scripts.leo which displays the
@@ -1587,7 +1588,7 @@ Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
 the "call tree" node. The execution tree of the 'scroll-outline-up-line'
 minibuffer command will be displayed to stdout and also as a tree of leo
 headlines.
-#@+node:ekr.20120318110848.9748: *3* call tree
+#@+node:ekr.20120318110848.9748: *4* call tree
 import trace
 
 @language python
@@ -1609,7 +1610,7 @@ top = p.insertAsLastChild().copy()
 top.h = 'trace session'
 displayCalltree(top, tracer.results().callers.keys())
 c.redraw()
-#@+node:ekr.20120318110848.9749: *4* displayCalltree
+#@+node:ekr.20120318110848.9749: *5* displayCalltree
 def displayCalltree(p, callinfo):
    '''
    Converts the function call hierarchy in 'callinfo' into a tree of function
@@ -1663,8 +1664,8 @@ def displayCalltree(p, callinfo):
        path = path[0:-1]
        p = p.parent()
        levels = levels[0:-1]
-#@+node:ekr.20120318110848.9750: *4* trace session
-#@+node:ekr.20120314064059.9737: ** Use ctrl-click to open url's
+#@+node:ekr.20120318110848.9750: *5* trace session
+#@+node:ekr.20120314064059.9737: *3* Use ctrl-click to open url's
 - (Done) Added the following commands:
     
     - ctrl-click-icon
@@ -1676,6 +1677,45 @@ def displayCalltree(p, callinfo):
 - (Done) Only look at first line of the body in @url nodes.
 - (Done) Ctrl-click in body allows spaces in url's.
 
+#@+node:ekr.20120322073519.10402: ** b2
+#@+node:ekr.20120322073519.9785: *3* Fixed crasher in flattenOutline
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 553, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 2120, in flattenOutline
+    c.importCommands.flattenOutline(fileName)
+  File "c:\leo.repo\trunk\leo\core\leoImport.py", line 479, in flattenOutline
+    theFile.write(s)
+TypeError: must be str, not bytes
+#@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
+def flattenOutline (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.currentVnode()
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    try:
+        theFile = open(fileName,'wb')
+            # Fix crasher: open in 'wb' mode.
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        c.testManager.fail()
+        return
+
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel)
+        s = head + nl
+        if g.isPython3:
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+        body = p.moreBody() # Inserts escapes.
+        if len(body) > 0:
+            s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
+            theFile.write(s)
+    theFile.close()
+#@+node:ekr.20111027103125.16545: *3* Added link to home page from the TOC
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

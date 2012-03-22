@@ -1,4 +1,6 @@
 
+.. _`Leo's home page`: http://webpages.charter.net/edreamleo/front.html
+
 .. Leo documentation documentation master file, created by
    sphinx-quickstart on Mon Mar 30 16:39:02 2009.
    You can adapt this file completely to your liking, but it should at least
@@ -6,6 +8,8 @@
 
 Leo's Users Guide
 ==================
+
+`Leo's home page`_
 
 Contents:
 
@@ -49,3 +53,5 @@ Contents:
    glossary
    
    what-is-new
+   
+`Leo's home page`_
