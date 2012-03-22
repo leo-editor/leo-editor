@@ -25,24 +25,6 @@
 @nocolor-node
 
 In downloads folder: leo-4.9_viewrendered-layout.png
-.. @+node:ekr.20111020120612.15896: *4* Add link to glossary from Leo's home page
-@nocolor-node
-
-> Looks good, how about a link "Search", leading to
-> http://webpages.charter.net/edreamleo/genindex.html or some other page
-> where there's a search box.
-
-Good idea.  I'll do it today.
-.. @+node:ekr.20111027103125.16539: *4* Add link to search box from Leo's home page
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/eabbc401bbb9bf0/a705ad30d7900727
-
-how about a link "Search", leading to
-> http://webpages.charter.net/edreamleo/genindex.html or some other page
-> where there's a search box.
-
-Good idea.  I'll do it today. 
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
 .. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
 .. @+node:ekr.20120322073519.10406: *3* Optional

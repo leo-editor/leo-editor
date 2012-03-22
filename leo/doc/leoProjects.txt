@@ -1716,6 +1716,13 @@ def flattenOutline (self,fileName):
             theFile.write(s)
     theFile.close()
 #@+node:ekr.20111027103125.16545: *3* Added link to home page from the TOC
+#@+node:ekr.20120229173025.20629: *3* Removed online-tutorial link
+http://groups.google.com/group/leo-editor/browse_thread/thread/2157d8bfc0f381f1
+
+es, choosing Help-->"Open Online Tutorial" tries to go to a page on
+3dTree.com the site for which is no longer held.
+
+Should the Quick Intro be brought back instead? 
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
