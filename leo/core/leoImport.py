@@ -456,12 +456,9 @@ class leoImportCommands (scanUtility):
         self.setEncoding()
         firstLevel = p.level()
 
-        # 10/14/02: support for output_newline setting.
-        # mode = c.config.output_newline
-        # mode = g.choose(mode=="platform",'w','wb')
         try:
-            # theFile = open(fileName,mode)
-            theFile = open(fileName,'w')
+            theFile = open(fileName,'wb')
+                # Fix crasher: open in 'wb' mode.
         except IOError:
             g.es("can not open",fileName,color="blue")
             c.testManager.fail()
@@ -470,7 +467,7 @@ class leoImportCommands (scanUtility):
         for p in p.self_and_subtree():
             head = p.moreHead(firstLevel)
             s = head + nl
-            if not g.isPython3: # 2010/08/27
+            if g.isPython3:
                 s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
             theFile.write(s)
             body = p.moreBody() # Inserts escapes.

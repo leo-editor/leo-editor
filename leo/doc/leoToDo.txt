@@ -6,12 +6,8 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
 @language rest
 
-The home page work is essential.  It's a good project to do while waiting.
-
-The programming items are all optional. 
-.. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
-.. @+node:ekr.20120228164039.11404: *3* Leo's home page
-.. @+node:ekr.20110930174206.15470: *4* ** Urgent: Bring screen shots up to date
+.. @+node:ekr.20120228164039.11404: *3* ** Leo's home page
+.. @+node:ekr.20110930174206.15470: *4* Urgent: Bring screen shots up to date
 > While doing so I noted that on the sourceforge project
 > page some screenshots are bit old, such as touting Tk.
 >
@@ -69,6 +65,10 @@ es, choosing Help-->"Open Online Tutorial" tries to go to a page on
 3dTree.com the site for which is no longer held.
 
 Should the Quick Intro be brought back instead? 
+.. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
+.. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
+.. @+node:ekr.20120321174708.9743: *3* Improve help-for-command
+Every command should have a **complete** docstring.
 .. @+node:ekr.20111128103520.10245: *3* Finish leoInspect.token_range
 @language python
 @language rest
