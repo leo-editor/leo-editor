@@ -6,25 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
 @language rest
 
-.. @+node:ekr.20120228164039.11404: *3* ** Leo's home page
-.. @+node:ekr.20110930174206.15470: *4* Urgent: Bring screen shots up to date
-> While doing so I noted that on the sourceforge project
-> page some screenshots are bit old, such as touting Tk.
->
-> shows tk - http://webpages.charter.net/edreamleo/screen-shots.html
-    Fixed
-    
-> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
-
-> screenshots shows deprecated plugin manager -
-> http://sourceforge.net/projects/leo/
-    All souce-forge screenshots need to be replaced.
-
-
-.. @+node:ekr.20111027103125.16544: *4* Add screen shot to Leo's home page
-@nocolor-node
-
-In downloads folder: leo-4.9_viewrendered-layout.png
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
 .. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
 .. @+node:ekr.20120322073519.10406: *3* Optional

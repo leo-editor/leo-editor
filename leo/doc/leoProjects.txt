@@ -1732,6 +1732,7 @@ Should the Quick Intro be brought back instead?
 <p class="searchtip" style="font-size: 90%"> Enter search terms or a module, class or function name. </p>
 </div>
 #@+node:ekr.20111020120612.15896: *3* Added link to glossary from Leo's home page
+#@+node:ekr.20111027103125.16544: *3* (Experimental) Added screen shot to Leo's home page
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
