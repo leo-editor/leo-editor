@@ -10,36 +10,48 @@
 Leo screen shots
 ################
 
-.. contents::
-    :depth: 2
-.. @+node:ekr.20090811090022.14451: *4* @rst-no-head links
-.. Links used in this document...
-.. These create references to the _images directory.
-
-.. |leoQtMainWindow| image:: screen-shots/leo-qt-main-window.JPG
-
-.. .. |leoTkMainWindow| image:: screen-shots/leo-tk-main-window.jpg
-
-.. |leoQtMainWindowLinux| image:: screen-shots/leo-qt-main-window-linux.png
-
-.. |leoQtFindTab| image:: screen-shots/leo-qt-find-tab.JPG
 .. @+node:ekr.20090811090022.14452: *4* Windows screen shots
-Here is Leo's main window rendered with the Qt gui.
-Top-left: the outline pane.
-Top-right: the log pane.
-Bottom: the body pane.
-Below the body pane is the minibuffer.
+.. |leoQtMainWindow|    image:: screen-shots/leo-main-window.png
+
+Here is Leo's main window on Windows 7 showing
+the outline pane (1),
+the body pane (2),
+the minibuffer (3),
+the log pane, showing the find tab (4).
+
+The body pane shows the contents of the presently selected node in the outline pane.
 
 |leoQtMainWindow|
 
-Here is Leo's find tab.
-All parts of the find tab can be controlled from the keyboard.
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 
-|leoQtFindTab|
+.. |renderRST|      image:: screen-shots/render-rst.png
+.. |renderSVGref|   image:: screen-shots/render-svg-movie.png
+.. |renderSVGsrc|   image:: screen-shots/render-svg-sources.png
+.. |renderSplash|   image:: screen-shots/render-splash-screen.png
+
+The following screenshots show Leo's rendering pane.  It can render `reStructuredText`_:
+
+|renderRST|
+
+The rendering pane can render svg pictures, including animated pictures.  Here we see
+an .svg file included by reference:
+
+|renderSVGref|
+
+The rendering pane can also render svg sources contained in the body pane:
+
+|renderSVGsrc|
+
+The rendering pane can show pictures, music and movies.  Here we see Leo's splash screen:
+
+|renderSplash|
 .. @+node:ekr.20090811090022.14453: *4* Linux screen shots
+.. |LinuxMainWindow| image:: screen-shots/leo-qt-main-window-linux.png
+
 Here is Leo's main window as it appears on Linux:
 
-|leoQtMainWindowLinux|
+|LinuxMainWindow|
 .. @+node:ekr.20090526102407.10028: ** Important notes about Leo's code
 .. @+node:ekr.20090526102407.10029: *3* How to profile Leo
 To gather statistics, do the following in a console window, not idle::

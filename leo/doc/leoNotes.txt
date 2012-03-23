@@ -408,9 +408,6 @@ El 01/05/09 15:12, Ville M. Vainio escribió:
 These are plugins/projects that I'd like to investigate further.
 
 interact.py:  Add buttons so leo can interact with command line environments.
-
-g.command (class command) decorator:
-http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
 #@+node:ekr.20070614094933: *3* EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
@@ -2359,557 +2356,6 @@ Template(251, 158, ('/* ',
                     ' * box',
                     ' */   '))
 
-#@+node:ekr.20031218072017.365: *3* How to...
-#@+node:ekr.20060208112908: *4* BZR stuff...
-#@+node:ekr.20060331094112: *5* How to generate keys using putty
-To generate a SSH key using PuTTY:
-
-Execute c:\"Program Files"\tortoiseCVS\PUTTYGEN.EXE
-
-Select "SSH2 DSA", within the "Parameters" section.
-
-Click on the "Generate" button. Follow the instruction to move the mouse over
-the blank area of the program in order to create random data used by PUTTYGEN to
-generate secure keys. Key generation will occur once PUTTYGEN has collected
-sufficient random data.
-
-Enter edream@cvs.sourceforge.net for the key comment (depends on what host the
-key is for)
-
-(Omit) Enter the desired passphrase in the "Key passphrase" and "Confirm passphrase"
-fields. If the key will be used for automation of operations (i.e. as part of a
-script), you may choose to omit this step from the key generation process.
-
-Click on the "Save private key" button. Use the resulting dialog to save your
-private key data for future use. You may use a filename such as
-"SourceForge-Shell.ppk" or "SourceForge-CF.ppk". The .ppk extension is used for
-PuTTY Private Key files.
-
-Go to the SSH key posting page on the SourceForge.net site: http://sourceforge.net/account/
-
-Copy your public key data from the "Public key for pasting into OpenSSH
-authorized_keys2 file" section of the PuTTY Key Generator, and paste the key
-data to the provided form on the SourceForge.net site. Click on the "Update"
-button to complete the posting process.
-
-Exit the PuTTY Key Generator (PUTTYGEN).
-
-Key data sync to hosts from the SourceForge.net site occurs on regular
-intervals. Your key data will be synchronized to the designated servers (either
-shell and CVS, or the Compile Farm) after a short delay.
-#@+node:ekr.20031218072017.366: *5* How to add and remove files from CVS repository
-use the command line option in the admin menu to do the following:
-
-add leoConfig.py and leoConfig.txt
-    cvs add leoConfig.txt
-    cvs add leoConfig.py
-    (then do commit)
-
-remove readme*.doc
-    remove files from working area (done)
-    cvs remove readme1.doc
-    cvs remove readme2.doc
-    ...
-    (then do commit)
-#@+node:ekr.20031218072017.391: *5* How to use CVS branches
-@nocolor
-
-I have a fair bit of expertise on CVS branches. It's late at night, so I don't have time for a long soapbox spiel at the moment. I will try to post something tomorrow. 
-
-The brief picture is: 
-
-* Check out code from CVS at the point you want to create the branch. 
-
-* Make sure none of the files in your sandbox is modified. 
-
-* Create the branch (cvs tag -b branchname). The branch name must start with a letter (upper or lower case) and thereafter can have alphanumeric characters, hyphens, and underscores (no periods or spaces). 
-
-* The branch is created on the repository, but your sandbox is still checked out on the main branch. To check out on the new branch, do "cvs up -r branchname". 
-
-When you want to merge changes back into the main branch, you can use "cvs up -r MAIN" to retrieve the main branch, then "cvs up -j branchname" to merge changes, then "cvs commit" to commit the merged version to the main branch AFTER YOU HAVE VERIFIED IT. 
-
-I would recommend caution with merging because as you have noted, leo files are not well set up for CVS. They don't merge well because of inconsistent sentinel values. 
-
-You may want to look at manually merging changes back into the main branch until leo implements invariant unique (UUID) sentinel indices. 
-
-This will not hurt your ability to use branches, only your ability to automatically merge changes from one branch onto another.
-#@+node:ekr.20031218072017.367: *4* How to add support for a new language
-@nocolor
-
-- Add new entries in the following Python dictionariues in leoApp.py:
-  self.language_delims_dict, self.language_extension_dict and self.extension_dict
-
-- Add an entry to the languages list in <<configure language-specific settings>>
-
-- Add a list of the keywords of the language to << define colorizer keywords >>
-
-  N.B.: the name of this list must be x_keywords, where x is the entry in language in step a.
-
-- Add any language-specifig code to leoColor.colorizeAnyLanguage.
-  For most languages nothing need be done.
-
-- If the language is case insensitive, add it to the list of
-case_insensitiveLanguages found in  << define global colorizer data >>
-
-- Create the files theLanguage.xml and theLanguage.py file was added to the leo\modes directory.
-  See Chapter 15 of Leo's users guide for full details.
-
-TESTS
-
-- Test the syntax coloring for the new language by using the @language directive.
-
-@color
-#@+node:ekr.20080814134319.1: *4* How to create and push to a private bzr branch
-@nocolor
-
-C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
-
-C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
-
-#@+node:ekr.20051203084725: *4* How to expand java .jar files
-- Put whatever.jar in c:\prog
-- cd: c:\prog
-- jar xvf whatever.jar
-#@+node:ekr.20031218072017.384: *4* How to export syntax colored code preserving colors
-Scite has the option to "Export as html" and "export as rtf", and it will be
-full of colour and fonts - and you can define them in properties, so it will be
-the same as during editing.
-#@+node:ekr.20031218072017.385: *4* How to Increase environment space
-To increase the size of environment space, add the following to config.sys:
-
-shell=C:\windows\command\command.com /p:4096
-
-Notes:
-
-1. The path C:\windows\command\command.com may vary.
-Check you system for the location of command.com.
-
-2. This works for versions of Windows prior to Me.
-On Me you set the registry somehow.
-No information on XP.
-#@+node:ekr.20051203084725.1: *4* How to install and run jythonShell
-Install:
-
-Put JythonShellEA.jar in c:\prog\JythonShell
-
-(optional) Expand the jar so you can see the code:
-
-jar xvf JythonShellEA.jar
-
-Run:
-
-Here is the contents of jythonShell.bat:
-
-cd c:\prog\jythonShell
-java -cp c:\jython-2.2a1\jython.jar;c:\prog\jythonShell\JythonShellEA2.1.jar org.leo.shell.JythonShell
-#@+node:ekr.20050316092232: *4* How to install jyLeo
-- Unpack the .zip file, placing the result somewhere, say in c:\prog\jyleo-Jan-11-06
-
-- Edit jleo.bat so it refers to jyleo-Jan-11-06.  For example:
-
-rem open jyLeo
-set ARGS= 
-:loop 
-if [%1] == [] goto end 
-set ARGS=%ARGS% %1 
-shift 
-goto loop 
-:end 
-
-cd c:\prog\jyleo-Jan-11-06
-java -jar c:\jython-2.2a1\jython.jar src\leo.py
-#@+node:ekr.20050716104357: *5* Old instructions
-@nocolor
-
-- put the jyleo-nnn.jar file in c:\prog
-
-- Execute the following command in a console window
-    cd c:\prog
-    jar xvf j-leo-nnn.jar
-
-This creates a folder called j-leo-nnn
-
-- Do the following, or execute jleo.bat
-
-cd c:\prog\j-leo-nnn\src
-java -jar c:\jython22a0\jython.jar leo.py
-
-Note:  at present this gives KeyError: HOME
-
-In leo.py, in computeHomeDir, I changed:
-@color
-
-home = os.getenv('HOME' )#,default=dotDir)
-
-to:
-
-try:
-    home = os.getenv('HOME' )#,default=dotDir)
-except Exception:
-    home = ''
-#@+node:ekr.20050317153447: *5* jy-Leo install instructions by Paul Paterson
-@killcolor
-
-http://sourceforge.net/forum/message.php?msg_id=3053534
-By: paulpaterson
-
-Very interesting indeed - great work! 
-
-I didn't have Java/Jython installed so for others in the same boat here's what I had to do to get it work on my platform (Win2k). Some of this is in the README but I had to do some extra but I'm not sure why. 
-
-1. Install 1.5 JDK  
-http://java.sun.com/j2se/1.5.0/download.jsp 
-
-2. Install Jython 
-http://www.jython.org/jython22a1.zip 
-
-3. Edit Jython.bat file - the part that calls Java.exe to ... 
-"C:\Program Files\Java\jdk1.5.0_02\jre\bin\java" -cp "C:\Program Files\Java\jdk1.5.0_02\jre\lib";"c:\Apps\Python23\Jython";"C:\Apps\jLeo\j-leo-MAR15\Icons";"C:\Apps\jLeo\j-leo-MAR15\skins";"C:\Apps\jLeo\j-leo-MAR15\src";"C:\Apps\jLeo\j-leo-MAR15\skinimages" -Dpython.home="c:\Apps\Python23\Jython" -jar jython.jar %ARGS% 
-
-Where  
-- Java installed at C:\Program Files\Java\jdk1.5.0_02 
-- Jython at c:\Apps\Python23\Jython 
-- jLeo at C:\Apps\jLeo\j-leo-MAR15 
-
-Change your paths as appropriate! There must be a better way to do this - Java confuses me! 
-
-4. Edit leo.py in jleo/src directory to fix failure to find HOME env variable. 
-
-line 241 becomes ... 
-
-....try:home = os.getenv('HOME' )#,default=dotDir) 
-....except KeyError:home="" 
-
-
-Then, from the Jython install directory ... 
-
-Jython " 
-C:\Apps\jLeo\j-leo-MAR15\src\leo.py" 
-
-Works a treat!  
-
-Paul
-#@+node:ekr.20051129084430: *4* How to install jython
-@nocolor
-
-- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
-
-- Double-click the file.  This brings up an installer.  Follow the direction.
-  (I installed to c:\jython-2.2a1
-
-- Using the Control Panel, System, Advanced tab, environment variables,
-  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
-#@+node:ekr.20051129084430.1: *5* @url http://www.jython.org/install.html
-#@+node:ekr.20101004092958.6050: *4* How to make codewise work
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
-
-1. Make sure you have exuberant ctags (not just regular ctags)
-installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
-
-2. Install Ville's python module "codewise".  This is a small module on
-which the Leo plugin relies.
-
-   bzr branch lp:codewise
-   cd codewise
-   sudo python setup.py install
-
-3. You need a recent trunk version of leo to get the plugin which uses
-the above module.
-
-4. Enable the plugin by putting "codewisecompleter.py" on an
-uncommented line in your @enabled-plugins @settings node.
-
-5. On the command line:
-
-if you have an existing ~/.ctags for some reason, and it's nothing you
-need to keep:
-
-  rm ~/.ctags
-
-then
-
-  codewise setup
-  codewise init
-  codewise parse .../path/to/leo/  # assuming you want completion on
-                                   # leo code
-  codewise parse .../some/other/project/
-
-Then, after restarting leo if necessary, type
-
-c.op<Alt-0> in the body editor to find all the c. methods starting
-with 'op' etc.
-
-Nice work Ville, thanks.
-
-==================
-
-Thanks for this, I hope others will take a stab at it as well, given
-sane instructions (I burned my free cycles frantically coding this
-thing and neglected the all-important HOWTO). This is important
-because functional completion is the single most important thing still
-missing from Leo. Or, well, was ;-).
-
-Especially the presentation part (QCompleter) needs some care, so you
-can operate it from your keyboard alone. It should probably be moved
-to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
-just invoke w.complete(list_of_completions) that will bring up the
-QCompleter popup.
-
-> Then, after restarting leo if necessary, type
-
-> c.op<Alt-0> in the body editor to find all the c. methods starting
-> with 'op' etc.
-
-Also, try the explicit declarations:
-
-# w : SomeClass
-
-w.<alt+0>
-
-And self.<alt+0> 
-#@+node:ekr.20070623150151: *4* How to make Leo commands undoable
-The chapter commands provide a good example.  In this file, see the node:
-
-Code-->Core classes...-->@thin leoChapters.py-->class chapterController-->Undo
-
-The general plan is this:
-
-1. The command handler calls a **beforeCommand** method before changing the outline.
-
-The beforeCommand method creates a g.Bunch that contains all the information needed to
-restore the outline to its previous state. Typically, the beforeCommand method
-will call c.undoer.createCommonBunch(p), where p is, as usual, c.p.
-
-2. After changing the outline the command handler calls an **afterCommand** method.
-
-This method should take as one argument the g.Bunch returned by the
-beforeCommand method. In the discussion below, denote this bunch by b. The
-afterCommand method adds any information required to redo the operation after
-the operation has been undone.
-
-The afterCommand method also sets b.undoHelper and b.redoHelper to two method
-that actually perform the undo and redo operations. (Actually, the beforeCommand
-method could also set these two entries).
-
-When the afterCommand method has 'filled in' all the entries of b, the
-afterCommand method must call u.pushBead(b). This pushes all the undo
-operation on a stack managed by the Leo's undoer, i.e., c.commands.undoer.
-
-3. The undoer calls the undoHelper and redoHelper methods to perform the actual undo and redo operations.
-
-The undoer handles most of the housekeeping chores related to undo and redo.  All the undoHelper and redoHelper methods have to do is actually alter Leo's outline.
-
-**Note**: the undoer creates an ivar (instance variable) of the *undoer* class for every entry in the bunch b passed as an argument to u.pushBead(b).  For example, suppose u = c.commands.under and that b has ivars 'a','b' and 'c'.  Then, on entry to the undoHelper and the redoHelper the u.a, u.b and u.c ivars will be defined.  This makes it unnecessary for the undoHelper or the redoHelper to 'unpack' b explicitly.
-
-Writing correct undo and redo helpers is usually a bit tricky.  The code is often subtly different from the original code that implements a command.  That just can't be helped.
-
-
-
-
-#@+node:ekr.20091217112515.6070: *4* How to make the codewise completer work
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e
-
-Ville's completer is working and very cool, here are instructions for
-making it go.  They're like the instructions Ville gave, only usable ;-)
-
-1. (done) Make sure you have exuberant ctags (not just regular ctags)
-installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
-
-2. (done) Install Ville's python module "codewise".  This is a small module on
-which the Leo plugin relies.
-
-   bzr branch lp:codewise
-   cd codewise
-   sudo python setup.py install
-
-3. (done) You need a recent trunk version of leo to get the plugin which uses
-the above module.
-
-4. (done) Enable the plugin by putting "codewisecompleter.py" on an
-uncommented line in your @enabled-plugins @settings node.
-
-5. On the command line:
-
-if you have an existing ~/.ctags for some reason, and it's nothing you
-need to keep:
-
-  rm ~/.ctags
-
-then
-
-  codewise setup
-  codewise init
-  codewise parse .../path/to/leo/  # assuming you want completion on
-                                   # leo code
-  codewise parse .../some/other/project/
-
-Then, after restarting leo if necessary, type
-
-c.op<Alt-0> in the body editor to find all the c. methods starting
-with 'op' etc.
-
-
-===== Ville's response
-
-Especially the presentation part (QCompleter) needs some care, so you
-can operate it from your keyboard alone. It should probably be moved
-to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
-just invoke w.complete(list_of_completions) that will bring up the
-QCompleter popup.
-
-> Then, after restarting leo if necessary, type
-
-> c.op<Alt-0> in the body editor to find all the c. methods starting
-> with 'op' etc.
-
-Also, try the explicit declarations:
-
-# w : SomeClass
-
-w.<alt+0>
-
-And self.<alt+0>
-#@+node:ekr.20091217112515.6069: *5* Others posts
-@nocolor-node
-
-1. codewisecompleter.py now completes by explicit type hints (as seen in
-screenhots). p, c also work, as does 'self'.
-
-self works by scanning for parent headlines looking for "class Foo"
-
-Work remains for presentation part (it's mouse only now) but Edward
-will probably do it :-).
-
-2. > Would codewise work outside of leo, as stand-alone plugin for a text
-> editor?
-
-Yes, currently Leo uses it as an external program ("codewise m
-MyClass" dumps the methods in MyClass to stdout).
-
-Someone just has to write the vim integration plugin (or whatever they
-call it). OTOH, vim already has "pysmell" and the likes that do the
-same thing.
-
-==============
-
-The version of codewise completer that works with Tk is now on trunk.
-#@+node:ekr.20091217112515.6071: *5* plugin docs
-@nocolor-node
-
-- You need to create ctags file to ~/.leo/tags. Example::
-
-    cd ~/.leo
-    ctags -R /usr/lib/python2.5 ~/leo-editor ~/my-project
-
-- Enter text you want to complete and press alt+0 to show completions
-  (or bind/execute ctags-complete command yourself).
-
-Attempting to complete 'foo->' is useless, but 'foo->ba' will work (provided you
-don't have 2000 functions/methods starting with 'ba'. 'foo->' portion is ignored
-in completion search.
-#@+node:ekr.20031218072017.386: *4* How to remove cursed newlines: use binary mode
-teknico ( Nicola Larosa ) 
- RE: Removing '\r' characters?   
-2002-09-16 14:27  
-> I am plowing through old bug reports, and I found the following, from whom 
-> I don't know: 
-
-That's from me, *again*. You are kindly advised to stop forgetting the attribution to all my bug reports. ;^) 
-
->> - Source files still have the dreaded \r in them. Why don't you switch 
->> to \n only, once and for all, and live happily ever after? ;^) 
-
-> I sure whould like to do that, and I'm not sure how to do this. All 
-> versions of the read code attempt to remove '\r' characters, and all 
-> versions of the write code write '\n' only for newlines. 
-
-Sorry for being a bit vague, I was talking about the Leo source files themselves. I don't know what you use to edit them, ;^))) but in version 3.6 they still have \r\n as end-of-line. 
-
-If Leo itself does not solve the problem, may I suggest the 
-Tools/scripts/crlf.py script in the Python source distibution? It's nice and simple, and skips binary files, too. That's what I use every time I install a new version of Leo. :^) 
-
-#@+node:ekr.20031218072017.387: *5* The solution
-Under unix, python writes "\n" as "\n"; under windows, it writes it as "\r\n". The unix python interpreter ignores trailing "\r" in python source files. There are no such guarantees for other languages. Unix users should be able to get rid of the cosmetically detrimental "\r" either by running dos2unix on the offending files, or, if they're part of a .leo project, reading them into leo and writing them out again.  
-
-
-By: edream ( Edward K. Ream ) 
- RE: Removing '\r' characters?   
-2002-09-17 09:34  
-Oh, I see. Thanks very much for this clarification. 
-
-Just to make sure I understand you: the problem with '\r' characters is that: 
-
-1. I am creating LeoPy.leo and LeoDocs.leo on Windows and 
-2. People are then using these files on Linux. 
-
-and the way to remove the '\r' characters: 
-
-1. I could run dos2unix on all distributed files just before committing to CVS or making a final distribution or 
-2. People could, say, do the following: 
-
-Step 1: Read and Save the .leo files, thereby eliminating the '\r' in those files and 
-Step 2: Use the Write @file nodes command on all derived files to clear the '\r' in those files. 
-
-Do you agree so far? 
-
-> Under unix, python writes "\n" as "\n"; under windows, it writes it as "\r\n". 
-
-I am going to see if there is any way to get Python to write a "raw" '\n' to a file. I think there must be. This would solve the problem once and for all. 
-
-Thanks again for this most helpful comment. 
-
-Edward
-#@+node:ekr.20031218072017.388: *5* cursed newline answer
-In 2.3 you can open files with the "U" flag and get "universal newline"
-support: 
-
-% python
-Python 2.3a0 (#86, Sep 4 2002, 21:13:00) 
-[GCC 2.96 20000731 (Mandrake Linux 8.1 2.96-0.62mdk)] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> f = open("crlf.txt")
->>> line = f.readline()
->>> line
-'This is an example of what I have come to call the "cursed newline"
-problem,\r\n'
->>> f = open("crlf.txt", "rU")
->>> line = f.readline()
->>> line
-'This is an example of what I have come to call the "cursed newline" problem,\n'
-
-#@+node:ekr.20031218072017.389: *5* cursed newline answer 2
-> You can open the file in 'binary' mode (adding 'b' to the mode string) and
-> the file will contain '\r\n' on both platforms (and any other platforms.)
-
-Nope. Exactly wrong. In 2.2 and those before, when files are opened in
-*text* mode (no "b") then reading them will provide Unix-style line endings
-(newline only). When you open files in binary mode then you see the bytes
-stored in the file.
-
-On Unix systems there's no difference in the contents of a file whether in
-binary or text mode. On Windows a file is shorter by the number of carriage
-returns. On the Mac I have no idea what they do. Probably just carriage
-returns, to be different :-)
-
-2.3 will be a bit more flexible about such mattrers.
-#@+node:ekr.20061023153133: *4* How to run patch
-patch -p1 < patchfile
-#@+node:ekr.20050510071834: *4* How to use a temp file with pdb
-@killcolor
-
-http://sourceforge.net/forum/message.php?msg_id=3137690
-By: nobody
-
-I dont know if anyone has solved this for regular Leo, but in the JyLeo JythonShell,
-when the user executes a script with Pdb it:
-1. dumps the script in a tmp file system's tmp directory.
-2. Executes pdb based off of that tmp file.
-
-that way you get all the goodness that pdb can offer.
 #@+node:ekr.20070215183046: *3* IronPython notes
 @nocolor
 
@@ -3917,6 +3363,557 @@ Also note the text widget in Tk8.4 (http://www.tcl.tk/man/tcl8.4/TkCmd/text.htm#
 has a built-in way of seeing if the text has changed
 
 Brian Theado
+#@+node:ekr.20031218072017.365: ** How to...
+#@+node:ekr.20060208112908: *3* BZR stuff...
+#@+node:ekr.20060331094112: *4* How to generate keys using putty
+To generate a SSH key using PuTTY:
+
+Execute c:\"Program Files"\tortoiseCVS\PUTTYGEN.EXE
+
+Select "SSH2 DSA", within the "Parameters" section.
+
+Click on the "Generate" button. Follow the instruction to move the mouse over
+the blank area of the program in order to create random data used by PUTTYGEN to
+generate secure keys. Key generation will occur once PUTTYGEN has collected
+sufficient random data.
+
+Enter edream@cvs.sourceforge.net for the key comment (depends on what host the
+key is for)
+
+(Omit) Enter the desired passphrase in the "Key passphrase" and "Confirm passphrase"
+fields. If the key will be used for automation of operations (i.e. as part of a
+script), you may choose to omit this step from the key generation process.
+
+Click on the "Save private key" button. Use the resulting dialog to save your
+private key data for future use. You may use a filename such as
+"SourceForge-Shell.ppk" or "SourceForge-CF.ppk". The .ppk extension is used for
+PuTTY Private Key files.
+
+Go to the SSH key posting page on the SourceForge.net site: http://sourceforge.net/account/
+
+Copy your public key data from the "Public key for pasting into OpenSSH
+authorized_keys2 file" section of the PuTTY Key Generator, and paste the key
+data to the provided form on the SourceForge.net site. Click on the "Update"
+button to complete the posting process.
+
+Exit the PuTTY Key Generator (PUTTYGEN).
+
+Key data sync to hosts from the SourceForge.net site occurs on regular
+intervals. Your key data will be synchronized to the designated servers (either
+shell and CVS, or the Compile Farm) after a short delay.
+#@+node:ekr.20031218072017.366: *4* How to add and remove files from CVS repository
+use the command line option in the admin menu to do the following:
+
+add leoConfig.py and leoConfig.txt
+    cvs add leoConfig.txt
+    cvs add leoConfig.py
+    (then do commit)
+
+remove readme*.doc
+    remove files from working area (done)
+    cvs remove readme1.doc
+    cvs remove readme2.doc
+    ...
+    (then do commit)
+#@+node:ekr.20031218072017.391: *4* How to use CVS branches
+@nocolor
+
+I have a fair bit of expertise on CVS branches. It's late at night, so I don't have time for a long soapbox spiel at the moment. I will try to post something tomorrow. 
+
+The brief picture is: 
+
+* Check out code from CVS at the point you want to create the branch. 
+
+* Make sure none of the files in your sandbox is modified. 
+
+* Create the branch (cvs tag -b branchname). The branch name must start with a letter (upper or lower case) and thereafter can have alphanumeric characters, hyphens, and underscores (no periods or spaces). 
+
+* The branch is created on the repository, but your sandbox is still checked out on the main branch. To check out on the new branch, do "cvs up -r branchname". 
+
+When you want to merge changes back into the main branch, you can use "cvs up -r MAIN" to retrieve the main branch, then "cvs up -j branchname" to merge changes, then "cvs commit" to commit the merged version to the main branch AFTER YOU HAVE VERIFIED IT. 
+
+I would recommend caution with merging because as you have noted, leo files are not well set up for CVS. They don't merge well because of inconsistent sentinel values. 
+
+You may want to look at manually merging changes back into the main branch until leo implements invariant unique (UUID) sentinel indices. 
+
+This will not hurt your ability to use branches, only your ability to automatically merge changes from one branch onto another.
+#@+node:ekr.20031218072017.367: *3* How to add support for a new language
+@nocolor
+
+- Add new entries in the following Python dictionariues in leoApp.py:
+  self.language_delims_dict, self.language_extension_dict and self.extension_dict
+
+- Add an entry to the languages list in <<configure language-specific settings>>
+
+- Add a list of the keywords of the language to << define colorizer keywords >>
+
+  N.B.: the name of this list must be x_keywords, where x is the entry in language in step a.
+
+- Add any language-specifig code to leoColor.colorizeAnyLanguage.
+  For most languages nothing need be done.
+
+- If the language is case insensitive, add it to the list of
+case_insensitiveLanguages found in  << define global colorizer data >>
+
+- Create the files theLanguage.xml and theLanguage.py file was added to the leo\modes directory.
+  See Chapter 15 of Leo's users guide for full details.
+
+TESTS
+
+- Test the syntax coloring for the new language by using the @language directive.
+
+@color
+#@+node:ekr.20080814134319.1: *3* How to create and push to a private bzr branch
+@nocolor
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
+
+#@+node:ekr.20051203084725: *3* How to expand java .jar files
+- Put whatever.jar in c:\prog
+- cd: c:\prog
+- jar xvf whatever.jar
+#@+node:ekr.20031218072017.384: *3* How to export syntax colored code preserving colors
+Scite has the option to "Export as html" and "export as rtf", and it will be
+full of colour and fonts - and you can define them in properties, so it will be
+the same as during editing.
+#@+node:ekr.20031218072017.385: *3* How to Increase environment space
+To increase the size of environment space, add the following to config.sys:
+
+shell=C:\windows\command\command.com /p:4096
+
+Notes:
+
+1. The path C:\windows\command\command.com may vary.
+Check you system for the location of command.com.
+
+2. This works for versions of Windows prior to Me.
+On Me you set the registry somehow.
+No information on XP.
+#@+node:ekr.20051203084725.1: *3* How to install and run jythonShell
+Install:
+
+Put JythonShellEA.jar in c:\prog\JythonShell
+
+(optional) Expand the jar so you can see the code:
+
+jar xvf JythonShellEA.jar
+
+Run:
+
+Here is the contents of jythonShell.bat:
+
+cd c:\prog\jythonShell
+java -cp c:\jython-2.2a1\jython.jar;c:\prog\jythonShell\JythonShellEA2.1.jar org.leo.shell.JythonShell
+#@+node:ekr.20050316092232: *3* How to install jyLeo
+- Unpack the .zip file, placing the result somewhere, say in c:\prog\jyleo-Jan-11-06
+
+- Edit jleo.bat so it refers to jyleo-Jan-11-06.  For example:
+
+rem open jyLeo
+set ARGS= 
+:loop 
+if [%1] == [] goto end 
+set ARGS=%ARGS% %1 
+shift 
+goto loop 
+:end 
+
+cd c:\prog\jyleo-Jan-11-06
+java -jar c:\jython-2.2a1\jython.jar src\leo.py
+#@+node:ekr.20050716104357: *4* Old instructions
+@nocolor
+
+- put the jyleo-nnn.jar file in c:\prog
+
+- Execute the following command in a console window
+    cd c:\prog
+    jar xvf j-leo-nnn.jar
+
+This creates a folder called j-leo-nnn
+
+- Do the following, or execute jleo.bat
+
+cd c:\prog\j-leo-nnn\src
+java -jar c:\jython22a0\jython.jar leo.py
+
+Note:  at present this gives KeyError: HOME
+
+In leo.py, in computeHomeDir, I changed:
+@color
+
+home = os.getenv('HOME' )#,default=dotDir)
+
+to:
+
+try:
+    home = os.getenv('HOME' )#,default=dotDir)
+except Exception:
+    home = ''
+#@+node:ekr.20050317153447: *4* jy-Leo install instructions by Paul Paterson
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=3053534
+By: paulpaterson
+
+Very interesting indeed - great work! 
+
+I didn't have Java/Jython installed so for others in the same boat here's what I had to do to get it work on my platform (Win2k). Some of this is in the README but I had to do some extra but I'm not sure why. 
+
+1. Install 1.5 JDK  
+http://java.sun.com/j2se/1.5.0/download.jsp 
+
+2. Install Jython 
+http://www.jython.org/jython22a1.zip 
+
+3. Edit Jython.bat file - the part that calls Java.exe to ... 
+"C:\Program Files\Java\jdk1.5.0_02\jre\bin\java" -cp "C:\Program Files\Java\jdk1.5.0_02\jre\lib";"c:\Apps\Python23\Jython";"C:\Apps\jLeo\j-leo-MAR15\Icons";"C:\Apps\jLeo\j-leo-MAR15\skins";"C:\Apps\jLeo\j-leo-MAR15\src";"C:\Apps\jLeo\j-leo-MAR15\skinimages" -Dpython.home="c:\Apps\Python23\Jython" -jar jython.jar %ARGS% 
+
+Where  
+- Java installed at C:\Program Files\Java\jdk1.5.0_02 
+- Jython at c:\Apps\Python23\Jython 
+- jLeo at C:\Apps\jLeo\j-leo-MAR15 
+
+Change your paths as appropriate! There must be a better way to do this - Java confuses me! 
+
+4. Edit leo.py in jleo/src directory to fix failure to find HOME env variable. 
+
+line 241 becomes ... 
+
+....try:home = os.getenv('HOME' )#,default=dotDir) 
+....except KeyError:home="" 
+
+
+Then, from the Jython install directory ... 
+
+Jython " 
+C:\Apps\jLeo\j-leo-MAR15\src\leo.py" 
+
+Works a treat!  
+
+Paul
+#@+node:ekr.20051129084430: *3* How to install jython
+@nocolor
+
+- Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
+
+- Double-click the file.  This brings up an installer.  Follow the direction.
+  (I installed to c:\jython-2.2a1
+
+- Using the Control Panel, System, Advanced tab, environment variables,
+  add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
+#@+node:ekr.20051129084430.1: *4* @url http://www.jython.org/install.html
+#@+node:ekr.20101004092958.6050: *3* How to make codewise work
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e/a1558a10eb8537c0?lnk=gst&q=codewise#a1558a10eb8537c0
+
+1. Make sure you have exuberant ctags (not just regular ctags)
+installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
+
+2. Install Ville's python module "codewise".  This is a small module on
+which the Leo plugin relies.
+
+   bzr branch lp:codewise
+   cd codewise
+   sudo python setup.py install
+
+3. You need a recent trunk version of leo to get the plugin which uses
+the above module.
+
+4. Enable the plugin by putting "codewisecompleter.py" on an
+uncommented line in your @enabled-plugins @settings node.
+
+5. On the command line:
+
+if you have an existing ~/.ctags for some reason, and it's nothing you
+need to keep:
+
+  rm ~/.ctags
+
+then
+
+  codewise setup
+  codewise init
+  codewise parse .../path/to/leo/  # assuming you want completion on
+                                   # leo code
+  codewise parse .../some/other/project/
+
+Then, after restarting leo if necessary, type
+
+c.op<Alt-0> in the body editor to find all the c. methods starting
+with 'op' etc.
+
+Nice work Ville, thanks.
+
+==================
+
+Thanks for this, I hope others will take a stab at it as well, given
+sane instructions (I burned my free cycles frantically coding this
+thing and neglected the all-important HOWTO). This is important
+because functional completion is the single most important thing still
+missing from Leo. Or, well, was ;-).
+
+Especially the presentation part (QCompleter) needs some care, so you
+can operate it from your keyboard alone. It should probably be moved
+to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
+just invoke w.complete(list_of_completions) that will bring up the
+QCompleter popup.
+
+> Then, after restarting leo if necessary, type
+
+> c.op<Alt-0> in the body editor to find all the c. methods starting
+> with 'op' etc.
+
+Also, try the explicit declarations:
+
+# w : SomeClass
+
+w.<alt+0>
+
+And self.<alt+0> 
+#@+node:ekr.20070623150151: *3* How to make Leo commands undoable
+The chapter commands provide a good example.  In this file, see the node:
+
+Code-->Core classes...-->@thin leoChapters.py-->class chapterController-->Undo
+
+The general plan is this:
+
+1. The command handler calls a **beforeCommand** method before changing the outline.
+
+The beforeCommand method creates a g.Bunch that contains all the information needed to
+restore the outline to its previous state. Typically, the beforeCommand method
+will call c.undoer.createCommonBunch(p), where p is, as usual, c.p.
+
+2. After changing the outline the command handler calls an **afterCommand** method.
+
+This method should take as one argument the g.Bunch returned by the
+beforeCommand method. In the discussion below, denote this bunch by b. The
+afterCommand method adds any information required to redo the operation after
+the operation has been undone.
+
+The afterCommand method also sets b.undoHelper and b.redoHelper to two method
+that actually perform the undo and redo operations. (Actually, the beforeCommand
+method could also set these two entries).
+
+When the afterCommand method has 'filled in' all the entries of b, the
+afterCommand method must call u.pushBead(b). This pushes all the undo
+operation on a stack managed by the Leo's undoer, i.e., c.commands.undoer.
+
+3. The undoer calls the undoHelper and redoHelper methods to perform the actual undo and redo operations.
+
+The undoer handles most of the housekeeping chores related to undo and redo.  All the undoHelper and redoHelper methods have to do is actually alter Leo's outline.
+
+**Note**: the undoer creates an ivar (instance variable) of the *undoer* class for every entry in the bunch b passed as an argument to u.pushBead(b).  For example, suppose u = c.commands.under and that b has ivars 'a','b' and 'c'.  Then, on entry to the undoHelper and the redoHelper the u.a, u.b and u.c ivars will be defined.  This makes it unnecessary for the undoHelper or the redoHelper to 'unpack' b explicitly.
+
+Writing correct undo and redo helpers is usually a bit tricky.  The code is often subtly different from the original code that implements a command.  That just can't be helped.
+
+
+
+
+#@+node:ekr.20091217112515.6070: *3* How to make the codewise completer work
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e
+
+Ville's completer is working and very cool, here are instructions for
+making it go.  They're like the instructions Ville gave, only usable ;-)
+
+1. (done) Make sure you have exuberant ctags (not just regular ctags)
+installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
+
+2. (done) Install Ville's python module "codewise".  This is a small module on
+which the Leo plugin relies.
+
+   bzr branch lp:codewise
+   cd codewise
+   sudo python setup.py install
+
+3. (done) You need a recent trunk version of leo to get the plugin which uses
+the above module.
+
+4. (done) Enable the plugin by putting "codewisecompleter.py" on an
+uncommented line in your @enabled-plugins @settings node.
+
+5. On the command line:
+
+if you have an existing ~/.ctags for some reason, and it's nothing you
+need to keep:
+
+  rm ~/.ctags
+
+then
+
+  codewise setup
+  codewise init
+  codewise parse .../path/to/leo/  # assuming you want completion on
+                                   # leo code
+  codewise parse .../some/other/project/
+
+Then, after restarting leo if necessary, type
+
+c.op<Alt-0> in the body editor to find all the c. methods starting
+with 'op' etc.
+
+
+===== Ville's response
+
+Especially the presentation part (QCompleter) needs some care, so you
+can operate it from your keyboard alone. It should probably be moved
+to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
+just invoke w.complete(list_of_completions) that will bring up the
+QCompleter popup.
+
+> Then, after restarting leo if necessary, type
+
+> c.op<Alt-0> in the body editor to find all the c. methods starting
+> with 'op' etc.
+
+Also, try the explicit declarations:
+
+# w : SomeClass
+
+w.<alt+0>
+
+And self.<alt+0>
+#@+node:ekr.20091217112515.6069: *4* Others posts
+@nocolor-node
+
+1. codewisecompleter.py now completes by explicit type hints (as seen in
+screenhots). p, c also work, as does 'self'.
+
+self works by scanning for parent headlines looking for "class Foo"
+
+Work remains for presentation part (it's mouse only now) but Edward
+will probably do it :-).
+
+2. > Would codewise work outside of leo, as stand-alone plugin for a text
+> editor?
+
+Yes, currently Leo uses it as an external program ("codewise m
+MyClass" dumps the methods in MyClass to stdout).
+
+Someone just has to write the vim integration plugin (or whatever they
+call it). OTOH, vim already has "pysmell" and the likes that do the
+same thing.
+
+==============
+
+The version of codewise completer that works with Tk is now on trunk.
+#@+node:ekr.20091217112515.6071: *4* plugin docs
+@nocolor-node
+
+- You need to create ctags file to ~/.leo/tags. Example::
+
+    cd ~/.leo
+    ctags -R /usr/lib/python2.5 ~/leo-editor ~/my-project
+
+- Enter text you want to complete and press alt+0 to show completions
+  (or bind/execute ctags-complete command yourself).
+
+Attempting to complete 'foo->' is useless, but 'foo->ba' will work (provided you
+don't have 2000 functions/methods starting with 'ba'. 'foo->' portion is ignored
+in completion search.
+#@+node:ekr.20031218072017.386: *3* How to remove cursed newlines: use binary mode
+teknico ( Nicola Larosa ) 
+ RE: Removing '\r' characters?   
+2002-09-16 14:27  
+> I am plowing through old bug reports, and I found the following, from whom 
+> I don't know: 
+
+That's from me, *again*. You are kindly advised to stop forgetting the attribution to all my bug reports. ;^) 
+
+>> - Source files still have the dreaded \r in them. Why don't you switch 
+>> to \n only, once and for all, and live happily ever after? ;^) 
+
+> I sure whould like to do that, and I'm not sure how to do this. All 
+> versions of the read code attempt to remove '\r' characters, and all 
+> versions of the write code write '\n' only for newlines. 
+
+Sorry for being a bit vague, I was talking about the Leo source files themselves. I don't know what you use to edit them, ;^))) but in version 3.6 they still have \r\n as end-of-line. 
+
+If Leo itself does not solve the problem, may I suggest the 
+Tools/scripts/crlf.py script in the Python source distibution? It's nice and simple, and skips binary files, too. That's what I use every time I install a new version of Leo. :^) 
+
+#@+node:ekr.20031218072017.387: *4* The solution
+Under unix, python writes "\n" as "\n"; under windows, it writes it as "\r\n". The unix python interpreter ignores trailing "\r" in python source files. There are no such guarantees for other languages. Unix users should be able to get rid of the cosmetically detrimental "\r" either by running dos2unix on the offending files, or, if they're part of a .leo project, reading them into leo and writing them out again.  
+
+
+By: edream ( Edward K. Ream ) 
+ RE: Removing '\r' characters?   
+2002-09-17 09:34  
+Oh, I see. Thanks very much for this clarification. 
+
+Just to make sure I understand you: the problem with '\r' characters is that: 
+
+1. I am creating LeoPy.leo and LeoDocs.leo on Windows and 
+2. People are then using these files on Linux. 
+
+and the way to remove the '\r' characters: 
+
+1. I could run dos2unix on all distributed files just before committing to CVS or making a final distribution or 
+2. People could, say, do the following: 
+
+Step 1: Read and Save the .leo files, thereby eliminating the '\r' in those files and 
+Step 2: Use the Write @file nodes command on all derived files to clear the '\r' in those files. 
+
+Do you agree so far? 
+
+> Under unix, python writes "\n" as "\n"; under windows, it writes it as "\r\n". 
+
+I am going to see if there is any way to get Python to write a "raw" '\n' to a file. I think there must be. This would solve the problem once and for all. 
+
+Thanks again for this most helpful comment. 
+
+Edward
+#@+node:ekr.20031218072017.388: *4* cursed newline answer
+In 2.3 you can open files with the "U" flag and get "universal newline"
+support: 
+
+% python
+Python 2.3a0 (#86, Sep 4 2002, 21:13:00) 
+[GCC 2.96 20000731 (Mandrake Linux 8.1 2.96-0.62mdk)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> f = open("crlf.txt")
+>>> line = f.readline()
+>>> line
+'This is an example of what I have come to call the "cursed newline"
+problem,\r\n'
+>>> f = open("crlf.txt", "rU")
+>>> line = f.readline()
+>>> line
+'This is an example of what I have come to call the "cursed newline" problem,\n'
+
+#@+node:ekr.20031218072017.389: *4* cursed newline answer 2
+> You can open the file in 'binary' mode (adding 'b' to the mode string) and
+> the file will contain '\r\n' on both platforms (and any other platforms.)
+
+Nope. Exactly wrong. In 2.2 and those before, when files are opened in
+*text* mode (no "b") then reading them will provide Unix-style line endings
+(newline only). When you open files in binary mode then you see the bytes
+stored in the file.
+
+On Unix systems there's no difference in the contents of a file whether in
+binary or text mode. On Windows a file is shorter by the number of carriage
+returns. On the Mac I have no idea what they do. Probably just carriage
+returns, to be different :-)
+
+2.3 will be a bit more flexible about such mattrers.
+#@+node:ekr.20061023153133: *3* How to run patch
+patch -p1 < patchfile
+#@+node:ekr.20050510071834: *3* How to use a temp file with pdb
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=3137690
+By: nobody
+
+I dont know if anyone has solved this for regular Leo, but in the JyLeo JythonShell,
+when the user executes a script with Pdb it:
+1. dumps the script in a tmp file system's tmp directory.
+2. Executes pdb based off of that tmp file.
+
+that way you get all the goodness that pdb can offer.
 #@+node:ekr.20090105132011.6: ** Regex notes
 @nocolor-node
 
@@ -6594,180 +6591,5 @@ def removeLeadingAtCode (self,aList):
     elif self.match_word(aList,i,"@c"):
         i = self.skip_ws_and_nl(aList,2)
         del aList[0:i]
-#@+node:ekr.20110605121601.18094: *3* urlToImageHtml & helper (no longer used)
-def urlToImageHtml (self,c,p,s):
-
-    '''Create html that will display an image whose url is in s or p.h.'''
-
-    # Try to exract the path from the first body line
-    if s.strip():
-        lst = s.strip().split('\n',1)
-        
-        if len(lst) < 2:
-            html = self.urlToImageHtmlHelper (c,p,lst[0].strip())
-        else:
-            html = self.urlToImageHtmlHelper (c,p,lst[0].strip(),lst[1].strip())
-        if html != None:
-            return html
-
-    # if the previous try  does not return a valid path
-    # try to exract the path from the headline
-    assert p.h.startswith('@image')
-    if not s.strip():
-        html = self.urlToImageHtmlHelper (c,p,p.h[6:].strip())
-    else:
-        html = self.urlToImageHtmlHelper (c,p,p.h[6:].strip(),s)
-    
-    return html
-
-def urlToImageHtmlHelper (self,c,p,s,descr=''):
-
-    '''Create html that will display an image whose url is in s or p.h.
-      Returns None if it can not extract the valid path
-    '''
-
-    if s.startswith('file://'):
-        s2 = s[7:]
-        s2 = g.os_path_finalize_join(g.app.loadDir,s2)
-        if g.os_path_exists(s2):
-            # g.es(s2.replace('\\','/'))
-            s = 'file:///' + s2
-        else:
-            g.es('not found',s2)
-            return None
-    elif s.endswith('.html') or s.endswith('.htm'):
-        s = open(s).read()
-        #g.es('@image - html= ', html)
-        return s
-    elif s.startswith('http://'):
-        # 2011/01/25: bogomil: Download the image if url starts with http
-        s = localName = self.download_image(s)
-
-    s = s.replace('\\','/')
-    s = s.strip("'").strip('"').strip()
-    s1 = s
-    s = g.os_path_expandExpression(s,c=c) # 2011/01/25: bogomil
-    if s1 == s:
-        s2 = '/'.join([c.getNodePath(p),s])
-        if g.os_path_exists(s2):
-            s = s2
-    
-    if not g.os_path_exists(s):
-        return None
-
-    html = '''
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head></head>
-<body bgcolor="#fffbdc">
-<img src="%s">
-<br/>
-<p>%s</p>
-</body>
-</html>
-''' % (s, descr)
-
-    return html
-#@+node:ekr.20110605121601.18093: *4* download_image
-def url2name(self,url): 
-    return g.os_path_basename(urlparse.urlsplit(url)[2]) 
-
-def download_image(self,url): 
-    proxy_opener = urllib.build_opener()
-
-    proxy_support = urllib.ProxyHandler({})
-    no_proxy_opener = urllib.build_opener(proxy_support)
-    urllib.install_opener(no_proxy_opener)
-
-    localName = self.url2name(url) 
-    req = urllib.Request(url) 
-    
-    try:
-        r = urllib.urlopen(req, timeout=1)
-    except urllib.HTTPError as eh:
-        if hasattr(eh, 'reason'):
-            g.trace('HTTP reason: ', eh.reason)
-            g.trace('Reason erno: ', eh.reason.errno)
-        return ''
-
-    except urllib.URLError as eu:
-        if hasattr(eu, 'reason') and eu.reason.errno != 11001:
-            g.trace('Probbably wrong web address.')
-            g.trace('URLError reason: ', eu.reason)
-            g.trace('Reason erno: ', eu.reason.errno)
-            return ''
-
-        urllib.install_opener(proxy_opener)
-        
-        try:
-            r = urllib.urlopen(req, timeout=1)
-        except urllib.HTTPError as eh:
-            if hasattr(eh, 'reason'):
-                g.trace('HTTP reason: ', eh.reason)
-                g.trace('Reason erno: ', eh.reason.errno)
-            return ''
-    
-        except IOError as eu:
-            if hasattr(eu, 'reason'):
-                g.trace('Failed to reach a server through default proxy.')
-                g.trace('Reason: ', eu.reason)
-                g.trace('Reason erno: ', eu.reason.errno)
-            if hasattr(eu, 'code'):
-                g.trace('The server couldn\'t fulfill the request.')
-                g.trace('Error code: ', eu.code)
-                
-            return ""
-                
-    key = r.info().get('Content-Disposition')
-    if key:
-        # If the response has Content-Disposition, we take file name from it 
-        localName = key.split('filename=')[1] 
-        if localName[0] == '"' or localName[0] == "'": 
-            localName = localName[1:-1] 
-    elif r.url != url:  
-        # if we were redirected, the real file name we take from the final URL 
-        localName = self.url2name(r.url) 
-
-    localName = os.path.join(tempfile.gettempdir(), localName)
-
-    f = open(localName, 'wb') 
-    f.write(r.read()) 
-    f.close() 
-
-    return localName
-#@+node:tbrown.20090219095555.62: *3* g.checkUrl (Does nothing)
-@ A valid url is (according to D.T.Hein):
-
-3 or more lowercase alphas, followed by,
-one ':', followed by,
-one or more of: (excludes !"#;<>[\]^`|)
-  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-followed by one of: (same as above, except no minus sign or comma).
-  $%&'()*+/0-9:=?@A-Z_a-z}~
-@c
-
-def checkUrl(url):
-
-    # urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
-        
-    if False: g.trace('valid',url)
-    
-    # Add http:// if required.
-    # if not re.match('^([a-z]{3,}:)',url):
-    #     url = 'http://' + url
-    # if not re.match(urlPattern,url):
-    #     g.es("invalid url:",url)
-    #     return
-#@+node:tbrown.20090219095555.61: *3* g.handleUrlInUrlNode
-def handleUrlInUrlNode(url,c=None,p=None):
-    
-    # Called from tree.OnIconDoubleClick.
-
-    if url:
-        if c and not p:
-            p = c.p
-        g.handleUrl(url,c=c,p=p)
-    else:
-        g.es("no url following @url")
 #@-all
 #@-leo

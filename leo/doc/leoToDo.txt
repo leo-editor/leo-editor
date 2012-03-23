@@ -6,6 +6,14 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
 @language rest
 
+.. @+node:ekr.20110930174206.15470: *3* Bring screen shots up to date
+> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
+
+> screenshots shows deprecated plugin manager -
+> http://sourceforge.net/projects/leo/
+    All souce-forge screenshots need to be replaced.
+
+
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
 .. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
 .. @+node:ekr.20120322073519.10406: *3* Optional
