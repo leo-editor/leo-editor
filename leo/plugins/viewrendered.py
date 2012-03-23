@@ -648,11 +648,20 @@ class ViewRenderedController(QtGui.QWidget):
         
         force = keywords.get('force')
         
-        if pc.gs and not force: return
+        if pc.gs and not force:
+            return
 
         if not pc.gs:
+            
+            splitter = c.free_layout.get_top_splitter()
+
+            # Careful: we may be unit testing.
+            if not splitter:
+                g.trace('no splitter')
+                return
+
             # Create the widgets.
-            pc.gs = QtGui.QGraphicsScene(pc.splitter)
+            pc.gs = QtGui.QGraphicsScene(splitter)
             pc.gv = QtGui.QGraphicsView(pc.gs)
             w = pc.gv.viewport() # A QWidget
             
@@ -720,20 +729,24 @@ class ViewRenderedController(QtGui.QWidget):
             w.setPlainText('Movie\n\nno movie player: %s' % (path))
             return
             
-        if not pc.vp:
-            # Create the widgets.
-            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-            vw = vp.videoWidget()
-            vw.setObjectName('video-renderer')
+        if pc.vp:
+            vp = pc.vp
+            pc.vp.stop()
+            pc.vp.deleteLater()
+       
+        # Create a fresh player.
+        pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+        vw = vp.videoWidget()
+        vw.setObjectName('video-renderer')
             
-            # Embed the widgets
-            def delete_callback():
-                if pc.vp:
-                    pc.vp.stop()
-                    pc.vp.deleteLater()
-                    pc.vp = None
+        # Embed the widgets
+        def delete_callback():
+            if pc.vp:
+                pc.vp.stop()
+                pc.vp.deleteLater()
+                pc.vp = None
 
-            pc.embed_widget(vp,delete_callback=delete_callback)
+        pc.embed_widget(vp,delete_callback=delete_callback)
 
         pc.show()
         vp = pc.vp
