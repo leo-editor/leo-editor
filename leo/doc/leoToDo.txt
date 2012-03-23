@@ -6,20 +6,17 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
 @language rest
 
-.. @+node:ekr.20110930174206.15470: *3* Bring screen shots up to date
-> uses @thin - http://webpages.charter.net/edreamleo/PCWindow.gif
-
-> screenshots shows deprecated plugin manager -
-> http://sourceforge.net/projects/leo/
-    All souce-forge screenshots need to be replaced.
-
-
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
 .. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
-.. @+node:ekr.20120322073519.10406: *3* Optional
-There is no real need to do any of this for 4.10 final
-.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+.. @+node:ekr.20120321174708.9743: *3* Improve help-for-command
 Every command should have a **complete** docstring.
+.. @+node:ekr.20120322073519.10403: *3* Investigate solarized colors
+Withdraw claim that Leo supports solarized.
+.. @+node:ekr.20120322073519.10405: *4* Added support for solarized colors
+http://ethanschoonover.com/solarized
+
+.. @+node:ekr.20120322073519.10406: *3* Optional
+There is no real need to do any of these for 4.10 final
 .. @+node:ekr.20111128103520.10245: *4* Finish leoInspect.token_range
 @language python
 @language rest
@@ -725,11 +722,6 @@ def token_range (self):
     else:
         return -1,-1
 .. @+node:ekr.20120318110848.9724: *4* Make leoInspect a stand-alone module
-
-.. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
-Withdraw claim that Leo supports solarized.
-.. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
-http://ethanschoonover.com/solarized
 
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest

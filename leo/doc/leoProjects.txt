@@ -1733,6 +1733,16 @@ Should the Quick Intro be brought back instead?
 </div>
 #@+node:ekr.20111020120612.15896: *3* Added link to glossary from Leo's home page
 #@+node:ekr.20111027103125.16544: *3* (Experimental) Added screen shot to Leo's home page
+#@+node:ekr.20110930174206.15470: *3* Brought screen shots up to date
+#@+node:ekr.20120323110755.9687: *3* Fix viewrendered crash
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoPlugins.py", line 337, in callTagHandler
+    result = handler(tag,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 560, in update
+    f(s,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 655, in update_graphics_script
+    pc.gs = QtGui.QGraphicsScene(pc.splitter)
+AttributeError: 'ViewRenderedController' object has no attribute 'splitter'
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
