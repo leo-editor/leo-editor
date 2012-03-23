@@ -899,12 +899,15 @@ class ViewRenderedController(QtGui.QWidget):
         pc = self ; c = pc.c
         fn = s or c.p.h[len(tag):]
         fn = fn.strip()
-        # path = g.os_path_finalize_join(g.app.loadDir,fn)
-        fn = fn.replace('\\','/')
-        parts = fn.split('/')
-        args = [g.app.loadDir]
-        args.extend(parts)
-        path = g.os_path_finalize_join(*args,c=c)
+        if 1:
+            path = g.os_path_finalize_join(g.app.loadDir,fn)
+        else:
+            fn = fn.replace('\\','/')
+            parts = fn.split('/')
+            args = [g.app.loadDir]
+            args.extend(parts)
+            # g.trace(args)
+            path = g.os_path_finalize_join(*args,c=c)
         ok = g.os_path_exists(path)
         return ok,path
     #@+node:ekr.20110321005148.14536: *5* get_url
