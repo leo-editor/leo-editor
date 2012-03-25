@@ -97,7 +97,7 @@ class searchWidget:
         self.i = i
         self.sel = i,i
 
-    def setAllText (self,s,new_p=None):
+    def setAllText (self,s):
         self.s = s
         self.i = 0
         self.sel = 0,0

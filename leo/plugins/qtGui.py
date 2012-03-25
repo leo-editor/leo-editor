@@ -392,24 +392,26 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser)
     def getYScrollPosition(self):
         
-        trace = g.trace_scroll and not g.unitTesting
+        trace = False and g.trace_scroll and not g.unitTesting
+
         w = self
         sb = w.verticalScrollBar()
-        i = sb.sliderPosition()
-        
-        if trace:
-            print('leoQTextBrowser.getYScrollPosition %s' % i)
-        return i
+        pos = sb.sliderPosition()
+        if trace: g.trace(pos)
+        return pos
 
     def setYScrollPosition(self,pos):
         
         trace = g.trace_scroll and not g.unitTesting
-        print('leoQTextBrowser.setYScrollPosition %s' % pos)
+        w = self
 
-        if 1: # disabled 2011/12/21, restored 2012/02/25
-            w = self
+        if g.no_scroll:
+            return
+        elif pos is None:
+            if trace: g.trace('None')
+        else:
+            if trace: g.trace(pos,g.callers())
             sb = w.verticalScrollBar()
-            if pos is None: pos = 0
             sb.setSliderPosition(pos)
     #@-others
 #@-<< define LeoQTextBrowser >>
@@ -527,10 +529,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.leo_frame = None
         w.leo_name = name
         w.leo_label = None
-        w.leo_scrollBarSpot = None
-        w.leo_insertSpot = None
-        w.leo_selection = None
-
         return w
     #@+node:ekr.20110605121601.18029: *4* signals (leoQtBaseTextWidget)
     #@+node:ekr.20110605121601.18030: *5* onCursorPositionChanged (leoQtBaseTextWidget)
@@ -600,7 +598,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def appendText(self,s):
 
         s2 = self.getAllText()
-        self.setAllText(s2+s,insert=len(s2))
+        self.setAllText(s2+s)
+        self.setInsertPoint(len(s2))
 
     #@+node:ekr.20110605121601.18040: *6* getLastPosition
     def getLastPosition(self):
@@ -633,12 +632,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         j = self.toGuiIndex(j)
         return s[i:j]
-    #@+node:ekr.20110605121601.18043: *6* insert
+    #@+node:ekr.20110605121601.18043: *6* insert (leoQtBaseTextWidget)
     def insert(self,i,s):
 
         s2 = self.getAllText()
         i = self.toGuiIndex(i)
-        self.setAllText(s2[:i] + s + s2[i:],insert=i+len(s))
+        self.setAllText(s2[:i] + s + s2[i:])
+        self.setInsertPoint(i+len(s))
         return i
     #@+node:ekr.20110605121601.18044: *6* selectAllText
     def selectAllText(self,insert=None):
@@ -650,20 +650,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # g.trace('insert',insert)
 
     #@+node:ekr.20110605121601.18045: *6* setSelectionRange & dummy helper (leoQtBaseTextWidget)
-    # def setSelectionRange(self,*args,**keys):
+    # Note: this is used by leoQTextEditWidget.
+
     def setSelectionRange (self,i,j,insert=None):
-
-        # A kludge to allow a single arg containing i,j
-        # w = self.widget
-
-    #     if len(args) == 1:
-    #         i,j = args[0]
-    #     elif len(args) == 2:
-    #         i,j = args
-    #     else:
-    #         g.trace('can not happen',args)
-
-    #     insert = keys.get('insert')
 
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
 
@@ -693,13 +682,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def setYScrollPosition(self,pos):       pass
 
     # Must be defined in subclasses.
-    def getAllText(self):                           self.oops()
-    def getInsertPoint(self):                       self.oops()
-    def getSelectionRange(self,sort=True):          self.oops()
-    def hasSelection(self):                         self.oops()
-    def see(self,i):                                self.oops()
-    def setAllText(self,s,insert=None,new_p=None):  self.oops()
-    def setInsertPoint(self,i):                     self.oops()
+    def getAllText(self):                       self.oops()
+    def getInsertPoint(self):                   self.oops()
+    def getSelectionRange(self,sort=True):      self.oops()
+    def hasSelection(self):                     self.oops()
+    def see(self,i):                            self.oops()
+    def setAllText(self,s):                     self.oops()
+    def setInsertPoint(self,i):                 self.oops()
     #@+node:ekr.20110605121601.18056: *6* tag_configure (leoQtBaseTextWidget)
     def tag_configure (self,*args,**keys):
 
@@ -882,19 +871,15 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
     def seeInsertPoint (self):
         pass
     #@+node:ekr.20110605121601.18068: *5* setAllText leoQLineEditWidget
-    def setAllText(self,s,insert=None):
+    def setAllText(self,s):
 
         w = self.widget
         
         disabled = hasattr(w,'leo_disabled') and w.leo_disabled
-        i = g.choose(insert is None,0,insert)
-        
         if disabled:
             w.setEnabled(True)
 
         w.setText(s)
-        if insert is not None:
-            self.setSelectionRange(i,i,insert=i)
             
         if disabled:
             w.setEnabled(False)
@@ -1193,12 +1178,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # **Important**: There is a Qt bug here: the scrollbar position
         # is valid only if cursor is visible.  Otherwise the *reported*
         # scrollbar position will be such that the cursor *is* visible.
+        
+        trace = False and g.trace_scroll and not g.unitTesting
 
         w = self.widget
         sb = w.verticalScrollBar()
-        i = sb.sliderPosition()
-        if g.trace_scroll: g.trace('(LeoQTextEditWidget)',i)
-        return i
+        pos = sb.sliderPosition()
+        if trace: g.trace(pos)
+        return pos
     #@+node:ekr.20110605121601.18085: *5* hasSelection (leoQTextEditWidget)
     def hasSelection(self):
         
@@ -1261,21 +1248,25 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18090: *5* see & seeInsertPoint (leoQTextEditWidget)
     def see(self,i):
         
-        if g.trace_see and not g.unitTesting:
-            print('leoQTextEditWidget.see (ensureCursorVisible)')
+        trace = g.trace_see and not g.unitTesting
 
-        if 1: # Disabled 2011/12/21, enabled 2012/02/26
+        if g.no_see:
+            pass
+        else:
+            if trace: g.trace(i)
             self.widget.ensureCursorVisible()
 
     def seeInsertPoint (self):
         
-        if g.trace_see and not g.unitTesting:
-            print('leoQTextEditWidget.seeInsertPoint')
+        trace = g.trace_see and not g.unitTesting
 
-        if 1: # Disabled 2011/12/21, enabled 2012/02/26
+        if g.no_see:
+            pass
+        else:
+            if trace: g.trace()
             self.widget.ensureCursorVisible()
-    #@+node:ekr.20110605121601.18092: *5* setAllText (leoQTextEditWidget) & helper
-    def setAllText(self,s,insert=None,new_p=None):
+    #@+node:ekr.20110605121601.18092: *5* setAllText (leoQTextEditWidget) & helper (changed 4.10)
+    def setAllText(self,s):
 
         '''Set the text of the widget.
 
@@ -1292,44 +1283,25 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # Set a hook for the colorer.
         colorer.initFlag = True
 
-        sb = w.verticalScrollBar()
-        if insert is None: i,pos = 0,0
-        else: i,pos = insert,sb.sliderPosition()
-
-        if trace: g.trace(new_p)
         if trace and verbose: t1 = g.getTime()
+
         try:
             self.changingText = True # Disable onTextChanged
             colorizer.changingText = True
-            if False and w.htmlFlag and new_p and new_p.h.startswith('@html '):
-                # This is done in the rendering pane.
-                w.setReadOnly(False)
-                w.setHtml(s)
-                w.setReadOnly(True)
-            # elif w.htmlFlag and new_p and new_p.h.startswith('@image'):
-                # # This is now done in the rendering pane.
-                # s2 = self.urlToImageHtml(c,new_p,s)
-                # if s2 != None:
-                    # w.setReadOnly(False)
-                    # w.setHtml(s2)
-                    # w.setReadOnly(True)
-                # else:
-                    # w.setPlainText(s)
-            else:
-                w.setReadOnly(False)
-                w.setPlainText(s)
+            w.setReadOnly(False)
+            w.setPlainText(s)
         finally:
             self.changingText = False
             colorizer.changingText = False
-        if trace and verbose: g.trace(g.timeSince(t1))
 
-        self.setSelectionRange(i,i,insert=i)
-        sb.setSliderPosition(pos)
+        if trace and verbose: g.trace(g.timeSince(t1))
+        
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
     def setInsertPoint(self,i):
         
-        trace = g.trace_scroll and not g.unitTesting
-        if trace: print('leoQTextEditWidget.setInsertPoint %s' % i)
+        trace = False and not g.unitTesting
+        
+        if trace: g.trace(i)
         
         w = self.widget
         s = w.toPlainText()
@@ -1341,7 +1313,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert=None):
 
-        trace = g.trace_scroll and not g.unitTesting
+        trace = False and not g.unitTesting
+
         w = self.widget
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
@@ -1354,10 +1327,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         else:
             ins = self.toPythonIndex(insert)
             ins = max(0,min(ins,n))
-
-        if trace: print(
-            'leoQTextEditWidget.setSelectionRangeHelper %s %s %s' % (
-                i,j,insert),g.callers())
+            
+        if trace: g.trace(i,j,ins)
 
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
@@ -1372,7 +1343,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             # Put the insert point a i
             tc.setPosition(j)
             tc.setPosition(i,tc.KeepAnchor)
-
         w.setTextCursor(tc)
     #@+node:ekr.20110605121601.18097: *6* lengthHelper
     def lengthHelper(self):
@@ -1388,12 +1358,15 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
     def setYScrollPosition(self,pos):
         
-        trace = g.trace_scroll and not g.unitTesting   
-        if trace: print(
-            'leoQTextEditWidget.setYScrollPosition %s' % (pos))
-
-        if 1: # disabled 2011/12/21, enabled 2012/02/25
-            w = self.widget
+        trace = False and g.trace_scroll and not g.unitTesting
+        w = self.widget
+        
+        if g.no_scroll:
+            return
+        elif pos is None:
+            if trace: g.trace('None')
+        else:
+            if trace: g.trace(pos,g.callers())
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
@@ -1605,7 +1578,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
     # Use base-class method for seeInsertPoint.
     #@+node:ekr.20110605121601.18113: *5* setAllText
-    def setAllText(self,s,insert=None,new_p=None):
+    def setAllText(self,s):
 
         '''Set the text of the widget.
 
@@ -1719,15 +1692,12 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
     def seeInsertPoint (self):
         pass
     #@+node:ekr.20110605121601.18125: *5* setAllText
-    def setAllText(self,s,insert=None):
+    def setAllText(self,s):
 
         if not self.check(): return
 
         w = self.widget
-        i = g.choose(insert is None,0,insert)
         w.setText(s)
-        if insert is not None:
-            self.setSelectionRange(i,i,insert=i)
     #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget) (no longer called)
     def setEditorColors(self,bg,fg):
         
@@ -2796,7 +2766,8 @@ class leoQtBody (leoFrame.leoBody):
     def see(self,index):                    return self.widget.see(index)
     def seeInsertPoint(self):               return self.widget.seeInsertPoint()
     def selectAllText (self,insert=None):   self.widget.selectAllText(insert)
-    def setAllText (self,s,new_p=None):     return self.widget.setAllText(s,new_p=new_p)
+    # def setAllText (self,s,new_p=None):     return self.widget.setAllText(s,new_p=new_p)
+    def setAllText(self,s):                 return self.widget.setAllText(s)
     def setBackgroundColor (self,color):    return self.widget.setBackgroundColor(color)
     def setFocus (self):                    return self.widget.setFocus()
     def setForegroundColor (self,color):    return self.widget.setForegroundColor(color)
@@ -3062,7 +3033,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20110605121601.18203: *7* selectEditorHelper (qtBody)
     def selectEditorHelper (self,wrapper):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c ; cc = c.chapterController
         d = self.editorWidgets
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
@@ -3101,23 +3072,11 @@ class leoQtBody (leoFrame.leoBody):
             id(wrapper),w.leo_chapter,c.p.h,p.h))
 
         c.expandAllAncestors(p)
-        c.selectPosition(p) # Calls assignPositionToEditor.
+        c.selectPosition(p)
+            # Calls assignPositionToEditor.
+            # Calls p.v.restoreCursorAndScroll.
         c.redraw()
         c.recolor_now()
-        #@+<< restore the selection, insertion point and the scrollbar >>
-        #@+node:ekr.20110605121601.18204: *8* << restore the selection, insertion point and the scrollbar >> qtBody.selectEditorHelper
-        spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
-        wrapper.setInsertPoint(spot)
-
-        if hasattr(w,'leo_selection') and w.leo_selection:
-            try:
-                start,end = w.leo_selection
-                wrapper.setSelectionRange(start,end)
-            except Exception:
-                pass
-
-        # Don't restore the scrollbar here.
-        #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18205: *6* updateEditors (qtBody)
     # Called from addEditor and assignPositionToEditor
@@ -3191,11 +3150,7 @@ class leoQtBody (leoFrame.leoBody):
             if wrapper2 != wrapper and active:
                 w2.leo_active = False
                 self.unselectLabel(wrapper2)
-                w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
-                w2.leo_insertSpot = wrapper2.getInsertPoint()
-                w2.leo_selection = wrapper2.getSelectionRange()
-                if trace: g.trace('**deactivate wrapper %s w %s' % (
-                    id(wrapper2),id(w2)))
+                if trace: g.trace(w2)
                 self.onFocusOut(w2)
     #@+node:ekr.20110605121601.18210: *6* ensurePositionExists (qtBody)
     def ensurePositionExists(self,w):
@@ -3241,12 +3196,8 @@ class leoQtBody (leoFrame.leoBody):
         w.leo_chapter = None
         # w.leo_colorizer = None # Set in leoQtColorizer ctor.
         w.leo_frame = parentFrame
-        w.leo_insertSpot = None
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
-        # w.leo_on_focus_in = onFocusInCallback
-        w.leo_scrollBarSpot = None
-        w.leo_selection = None
         w.leo_wrapper = wrapper
     #@+node:ekr.20110605121601.18212: *6* packLabel (qtBody)
     def packLabel (self,w,n=None):
@@ -3508,7 +3459,6 @@ class leoQtBody (leoFrame.leoBody):
         '''Handle a focus-in event in the body pane.'''
 
         trace = False and not g.unitTesting
-
         c = self.c
         
         if trace: g.trace(str(obj.objectName()))
@@ -4146,7 +4096,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             trace = False and not g.unitTesting
             c = self.c
-            if not self.w: return ####
+            if not self.w: return
             command = keys.get('command')
             text = keys.get('text')
             # able to specify low-level QAction directly (QPushButton not forced)
@@ -4934,7 +4884,7 @@ class leoQtFrame (leoFrame.leoFrame):
         if self.top: self.top.showMinimized()
     def lift (self):
         # g.trace(self.c,'\n',g.callers(9))
-        if not self.top: return ####
+        if not self.top: return
         if self.top.isMinimized(): # Bug 379141
             self.top.showNormal()
         self.top.activateWindow()

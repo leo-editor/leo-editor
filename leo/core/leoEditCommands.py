@@ -4924,9 +4924,9 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20060113105246.1: *5* moveUpOrDownHelper
     def moveUpOrDownHelper (self,event,direction,extend):
 
+        trace = False and not g.unitTesting
         c = self.c ; w = self.editWidget(event)
         if not w: return
-        trace = False
 
         ins = w.getInsertPoint()
         s = w.getAllText()
@@ -4983,6 +4983,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20100109094541.6227: *5* moveToBufferHelper
     def moveToBufferHelper (self,event,spot,extend):
 
+        trace = False and not g.unitTesting
         c = self.c ; w = self.editWidget(event)
         if not w: return
 
@@ -5018,6 +5019,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20100109094541.6228: *5* moveToCharacterHelper
     def moveToCharacterHelper (self,event,spot,extend):
 
+        trace = False and not g.unitTesting
         c = self.c ; w = self.editWidget(event)
         if not w: return
 
@@ -5065,6 +5067,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
 
+        trace = False and not g.unitTesting
         c = self.c
         w = self.editWidget(event)
         if not w: return
@@ -5193,6 +5196,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20100109094541.6231: *4* moveWithinLineHelper
     def moveWithinLineHelper (self,event,spot,extend):
 
+        trace = False and not g.unitTesting
         c = self.c ; w = self.editWidget(event)
         if not w: return
 

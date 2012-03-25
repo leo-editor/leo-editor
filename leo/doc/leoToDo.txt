@@ -6,17 +6,20 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
 @language rest
 
+.. @+node:ekr.20120324124808.9833: *3* Alt-Home & Alt-End should collapse all nodes.
+.. @+node:ekr.20120323124339.9719: *3* fix get_fn in viewrendered plugin
+.. @+node:ekr.20120323124339.9721: *3* Investigate problem with desktop shortcut 
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
 .. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
-.. @+node:ekr.20120321174708.9743: *3* Improve help-for-command
-Every command should have a **complete** docstring.
-.. @+node:ekr.20120322073519.10403: *3* Investigate solarized colors
-Withdraw claim that Leo supports solarized.
-.. @+node:ekr.20120322073519.10405: *4* Added support for solarized colors
-http://ethanschoonover.com/solarized
-
 .. @+node:ekr.20120322073519.10406: *3* Optional
 There is no real need to do any of these for 4.10 final
+.. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
+Withdraw claim that Leo supports solarized.
+.. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
+http://ethanschoonover.com/solarized
+
+.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+Every command should have a **complete** docstring.
 .. @+node:ekr.20111128103520.10245: *4* Finish leoInspect.token_range
 @language python
 @language rest
@@ -758,7 +761,12 @@ new_keys = False
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
 
-# Traces of scrolling problems.
+# Traces & disabling of scrolling problems.
+no_scroll = False
+    # True: disable all calls to w.setYScrollPosition.
+no_see = False
+    # True: disable all calls to w.see and w.seeInsertPoint.
+
 trace_scroll = False
     # Trace calls to get/setYScrollPosition
 trace_see = False

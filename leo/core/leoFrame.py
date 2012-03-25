@@ -422,7 +422,7 @@ class baseTextWidget(object):
         self.delete(i,j)
         self.insert(i,s)
     #@+node:ekr.20070228074312.32: *4* setAllText (baseTextWidget)
-    def setAllText (self,s,new_p=None):
+    def setAllText (self,s):
 
         self.s = s
         i = len(self.s)
@@ -607,6 +607,7 @@ class leoBody (HighLevelInterface):
 
         '''Cycle keyboard focus between the body text editors.'''
 
+        trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
         w = c.frame.body.bodyCtrl
         values = list(d.values())
@@ -751,22 +752,9 @@ class leoBody (HighLevelInterface):
                 hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
 
         # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
-        c.redraw(w.leo_p)
+        p = w.leo_p
+        c.redraw(p)
         c.recolor()
-        #@+<< restore the selection, insertion point and the scrollbar >>
-        #@+node:ekr.20061017083312.1: *8* << restore the selection, insertion point and the scrollbar >> selectEditorHelper leoBody.selectEditorBody
-        spot = hasattr(w,'leo_insertSpot') and w.leo_insertSpot or 0
-        w.setInsertPoint(0)
-            
-        if hasattr(w,'leo_selection') and w.leo_selection:
-            try:
-                start,end = w.leo_selection
-                w.setSelectionRange(start,end)
-            except Exception:
-                pass
-
-        # Don't restore the scrollbar here.
-        #@-<< restore the selection, insertion point and the scrollbar >>
         c.bodyWantsFocus()
         return # (for Tk) 'break'
     #@+node:ekr.20060528131618: *6* updateEditors (leoBody)
@@ -827,6 +815,8 @@ class leoBody (HighLevelInterface):
                 w.leo_p = c.p
                 return False
     #@+node:ekr.20070424080640: *6* deactivateActiveEditor (leoBody)
+    # Not used in Qt.
+
     def deactivateActiveEditor(self,w):
 
         '''Inactivate the previously active editor.'''
@@ -839,9 +829,6 @@ class leoBody (HighLevelInterface):
             if w2 != w and w2.leo_active:
                 w2.leo_active = False
                 self.unselectLabel(w2)
-                w2.leo_scrollBarSpot = w2.getYScrollPosition()
-                w2.leo_insertSpot = w2.getInsertPoint()
-                w2.leo_selection = w2.getSelectionRange()
                 return
     #@+node:ekr.20060530204135: *6* recolorWidget (leoBody)
     def recolorWidget (self,p,w):
@@ -2090,7 +2077,7 @@ class leoTree:
             c.frame.tree.afterSelectHint(p,old_p)
 
         return val  # Don't put a return in a finally clause.
-    #@+node:ekr.20070423101911: *4* selectHelper (leoTree)
+    #@+node:ekr.20070423101911: *4* selectHelper (leoTree) (changed 4.10)
     # Do **not** try to "optimize" this by returning if p==c.p.
     # 2011/11/06: *event handlers* are called only if p != c.p.
 
@@ -2115,8 +2102,8 @@ class leoTree:
             # We may be in the process of changing roots.
             return None # Not an error.
 
-        if trace and (verbose or call_event_handlers):
-            g.trace(p and p.h,g.callers())
+        # if trace and (verbose or call_event_handlers):
+            # g.trace(p and p.h,g.callers())
                 
         if call_event_handlers:
             unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
@@ -2125,27 +2112,27 @@ class leoTree:
 
         if unselect:
             #@+<< unselect the old node >>
-            #@+node:ekr.20040803072955.129: *5* << unselect the old node >>
-            # Remember the position of the scrollbar before making any changes.
-            if body:
-                yview = body.getYScrollPosition()
-                insertSpot = c.frame.body.getInsertPoint()
+            #@+node:ekr.20040803072955.129: *5* << unselect the old node >> (selectHelper)
+            # Remember the position of the scrollbar *before* making any changes.
+            if old_p:
+                old_p.v.scrollBarSpot = yview = body.getYScrollPosition() if body else None
+                if trace: g.trace('old scroll: %3s insert: %3s %s' % (
+                    yview,old_p.v.insertSpot,old_p.h))
+                    
+            # Remember the selection range and insert point.
+            if old_p and body:
+                old_p.v.insertSpot = ins = body.getInsertPoint()
+                i,j = body.getSelectionRange()
+                assert(i<=j)
+                old_p.v.selectionStart = i
+                old_p.v.selectionLength = j-i
+                if trace: g.trace(i,j,ins)
                 
-                # g.trace('set insert spot',insertSpot)
-            else:
-                g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-                yview,insertSpot = None,0
+            # New in Leo 4.10: the code sets v.insertSpot as soon as it changes (not here).
 
             if old_p != p:
                 self.endEditLabel() # sets editPosition = None
                 self.setUnselectedLabelState(old_p)
-
-            if old_p and old_p != p:
-                # 2010/02/11: Don't change the *new* node's insert point!
-                old_p.v.scrollBarSpot = yview
-                old_p.v.insertSpot = insertSpot
-                if g.trace_scroll: g.trace('old scroll: %s insert: %s' % (
-                    yview,insertSpot))
             #@-<< unselect the old node >>
             
         if call_event_handlers:
@@ -2158,7 +2145,7 @@ class leoTree:
                 select = True
             if select:
                 #@+<< select the new node >>
-                #@+node:ekr.20040803072955.130: *5* << select the new node >>
+                #@+node:ekr.20040803072955.130: *5* << select the new node >> (selectHelper)
                 # Bug fix: we must always set this, even if we never edit the node.
                 self.revertHeadline = p.h
                 frame.setWrap(p)
@@ -2168,7 +2155,7 @@ class leoTree:
         else:
             if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
                 #@+<< select the new node >>
-                #@+node:ekr.20040803072955.130: *5* << select the new node >>
+                #@+node:ekr.20040803072955.130: *5* << select the new node >> (selectHelper)
                 # Bug fix: we must always set this, even if we never edit the node.
                 self.revertHeadline = p.h
                 frame.setWrap(p)
@@ -2178,7 +2165,7 @@ class leoTree:
             
         c.setCurrentPosition(p)
         #@+<< set the current node >>
-        #@+node:ekr.20040803072955.133: *5* << set the current node >>
+        #@+node:ekr.20040803072955.133: *5* << set the current node >> (selectHelper)
         self.setSelectedLabelState(p)
 
         frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
@@ -2196,6 +2183,8 @@ class leoTree:
         c.treeFocusHelper() # 2010/12/14
         c.undoer.onSelect(old_p,p)
         #@-<< set the current node >>
+        p.restoreCursorAndScroll(w)
+            # Was in setBodyTextAfterSelect (in <select the new node>)
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
         c.frame.updateStatusLine() # New in Leo 4.4.1.
 
@@ -2210,8 +2199,10 @@ class leoTree:
         if call_event_handlers: # 2011/11/06
             g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    #@+node:ekr.20090608081524.6109: *4* setBodyTextAfterSelect
+    #@+node:ekr.20090608081524.6109: *4* setBodyTextAfterSelect (changed 4.10)
     def setBodyTextAfterSelect (self,p,old_p):
+        
+        # trace = g.trace_scroll and not g.unitTesting
 
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c ; w = c.frame.body.bodyCtrl
@@ -2222,13 +2213,14 @@ class leoTree:
             pass
         else:
             # w.setAllText destroys all color tags, so do a full recolor.
-            w.setAllText(s,new_p=p)
+            w.setAllText(s)
             colorizer = c.frame.body.colorizer
             if hasattr(colorizer,'setHighlighter'):
                 colorizer.setHighlighter(p)
             self.frame.body.recolor(p)
 
-        p.restoreCursorAndScroll(w)
+        # This is now done after c.p has been changed.
+            # p.restoreCursorAndScroll(w)
     #@+node:ekr.20031218072017.3718: *3* oops
     def oops(self):
 

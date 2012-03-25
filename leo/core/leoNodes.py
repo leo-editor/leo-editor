@@ -2402,26 +2402,39 @@ class vnode (baseVnode):
     def setIcon (self):
 
         pass # Compatibility routine for old scripts
-    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
+    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (changed 4.10)
     # Called only by setBodyTextAfterSelect.
 
     def restoreCursorAndScroll (self,w):
-
-        trace = g.trace_scroll and not g.unitTesting
+        
+        trace = (False or g.trace_scroll) and not g.unitTesting
         v = self
-        spot = v and v.insertSpot or 0
-        w.setInsertPoint(spot)
+        ins = v.insertSpot
+        start,n = v.selectionStart,v.selectionLength
+
+        if start is not None and n is not None:
+            sel = (start,start+n)
+            w.setSelectionRange(start,start+n,insert=ins)
+        else:
+            sel = (None,None)
+            if ins is not None:
+                w.setInsertPoint(ins)
+                
+        if g.no_scroll:
+            return
+
+        # *only* restore the scrollbar setting.  Do not call see.
+        if v.scrollBarSpot is not None:
+            w.setYScrollPosition(v.scrollBarSpot)
             
-        # 2011/10/26: *only* restore the scrollbar setting.  Do not call see.
-        if v and v.scrollBarSpot != None:
-            pos = v.scrollBarSpot
-            if trace: print('v.restoreCursorAndScroll %s' % pos)
-            w.setYScrollPosition(pos)
+        if trace: g.trace('sel: %s ins: %s scroll: %s %s' % (
+            sel,ins,v.scrollBarSpot,v.h))
             
         # Never call w.see here.
-
-    #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll(w)
+    #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self,w):
+        
+        trace = g.trace_scroll and not g.unitTesting
 
         v = self
         if not w: return
@@ -2429,6 +2442,7 @@ class vnode (baseVnode):
         try:
             v.scrollBarSpot = w.getYScrollPosition()
             v.insertSpot = w.getInsertPoint()
+            if trace: g.trace(v.scrollBarSpot,v.insertSpot)
         except AttributeError:
             # 2011/03/21: w may not support the high-level interface.
             pass
