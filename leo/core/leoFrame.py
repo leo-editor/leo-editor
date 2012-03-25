@@ -2112,7 +2112,7 @@ class leoTree:
 
         if unselect:
             #@+<< unselect the old node >>
-            #@+node:ekr.20040803072955.129: *5* << unselect the old node >> (selectHelper)
+            #@+node:ekr.20120325072403.7771: *5* << unselect the old node >> (selectHelper)
             # Remember the position of the scrollbar *before* making any changes.
             # This does not work if we are switching body editors!
                 # if old_p:
@@ -2149,7 +2149,7 @@ class leoTree:
                 select = True
             if select:
                 #@+<< select the new node >>
-                #@+node:ekr.20040803072955.130: *5* << select the new node >> (selectHelper)
+                #@+node:ekr.20120325072403.7767: *5* << select the new node >> (selectHelper)
                 # Bug fix: we must always set this, even if we never edit the node.
                 self.revertHeadline = p.h
                 frame.setWrap(p)
@@ -2159,7 +2159,7 @@ class leoTree:
         else:
             if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
                 #@+<< select the new node >>
-                #@+node:ekr.20040803072955.130: *5* << select the new node >> (selectHelper)
+                #@+node:ekr.20120325072403.7767: *5* << select the new node >> (selectHelper)
                 # Bug fix: we must always set this, even if we never edit the node.
                 self.revertHeadline = p.h
                 frame.setWrap(p)
