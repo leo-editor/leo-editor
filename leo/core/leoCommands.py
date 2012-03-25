@@ -6307,9 +6307,12 @@ class Commands (object):
         '''Select the first node of the entire outline.'''
 
         c = self
-
         p = c.rootPosition()
+        c.selectPosition(p)
+        c.expandOnlyAncestorsOfNode()
+        c.redraw()
         c.treeSelectHelper(p)
+        
     #@+node:ekr.20051012092453: *6* goToFirstSibling
     def goToFirstSibling (self,event=None):
 
@@ -6332,19 +6335,24 @@ class Commands (object):
         p = c.firstVisible()
         if p:
             c.selectPosition(p)
+            c.expandOnlyAncestorsOfNode()
             c.redraw_after_select(p)
-
-        c.treeSelectHelper(p)
+            c.treeSelectHelper(p)
     #@+node:ekr.20031218072017.2915: *6* goToLastNode
     def goToLastNode (self,event=None):
 
         '''Select the last node in the entire tree.'''
 
-        c = self ; p = c.rootPosition()
+        c = self
+        p = c.rootPosition()
+        
         while p and p.hasThreadNext():
             p.moveToThreadNext()
-
+        
+        c.selectPosition(p)
         c.treeSelectHelper(p)
+        c.expandOnlyAncestorsOfNode()
+        c.redraw()
     #@+node:ekr.20051012092847.1: *6* goToLastSibling
     def goToLastSibling (self,event=None):
 
@@ -6367,9 +6375,9 @@ class Commands (object):
         p = c.lastVisible()
         if p:
             c.selectPosition(p)
+            c.expandOnlyAncestorsOfNode()
             c.redraw_after_select(p)
-
-        c.treeSelectHelper(p)
+            c.treeSelectHelper(p)
     #@+node:ekr.20031218072017.2916: *6* goToNextClone
     def goToNextClone (self,event=None):
 
