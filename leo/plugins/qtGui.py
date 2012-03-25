@@ -640,15 +640,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.setAllText(s2[:i] + s + s2[i:])
         self.setInsertPoint(i+len(s))
         return i
-    #@+node:ekr.20110605121601.18044: *6* selectAllText
+    #@+node:ekr.20110605121601.18044: *6* selectAllText (leoQtBaseTextWidget)
     def selectAllText(self,insert=None):
 
         w = self.widget
         w.selectAll()
-        if insert is not None:
-            self.setInsertPoint(insert)
-        # g.trace('insert',insert)
-
+        # if insert is not None:
+            # self.setInsertPoint(insert)
+        # Bug fix: 2012/03/25.
+        self.setSelectionRange(0,'end',insert=insert)
+       
     #@+node:ekr.20110605121601.18045: *6* setSelectionRange & dummy helper (leoQtBaseTextWidget)
     # Note: this is used by leoQTextEditWidget.
 
@@ -808,6 +809,22 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # Allow incremental recoloring.
             c.incrementalRecolorFlag = True
             c.outerUpdate()
+    #@+node:ekr.20120325032957.9730: *4* rememberSelectionAndScroll (leoQtBaseTextWidget)
+    def rememberSelectionAndScroll(self):
+
+        trace = (False or g.trace_scroll) and not g.unitTesting
+
+        w = self
+        v = self.c.p.v # Always accurate.
+        v.insertSpot = ins = w.getInsertPoint()
+        i,j = w.getSelectionRange()
+        if i > j: i,j = j,i
+        assert(i<=j)
+        v.selectionStart = i
+        v.selectionLength = j-i
+        v.scrollBarSpot = spot = w.getYScrollPosition()
+        
+        if trace: g.trace(id(v),id(w),i,j,ins,spot,v.h)
     #@-others
 #@-<< define leoQtBaseTextWidget class >>
 #@+<< define leoQLineEditWidget class >>
@@ -1019,6 +1036,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op,mode)
+            
+        # 2012/03/25.  Add this common code.
+        self.seeInsertPoint()
+        self.rememberSelectionAndScroll()
+        self.c.frame.updateStatusLine()
     #@+node:btheado.20120129145543.8180: *5* pageUpDown
     def pageUpDown (self, op, moveMode):
 
@@ -1299,10 +1321,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
     def setInsertPoint(self,i):
         
-        trace = False and not g.unitTesting
-        
-        if trace: g.trace(i)
-        
+        trace = (False or g.trace_scroll) and not g.unitTesting
+
         w = self.widget
         s = w.toPlainText()
         i = self.toPythonIndex(i)
@@ -1310,10 +1330,19 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         cursor = w.textCursor()
         cursor.setPosition(i)
         w.setTextCursor(cursor)
+        
+        # Remember the values for v.restoreCursorAndScroll.
+        v = self.c.p.v # Always accurate.
+        v.insertSpot = i
+        v.selectionStart = i
+        v.selectionLength = 0
+        v.scrollBarSpot = spot = w.getYScrollPosition()
+        if trace: g.trace(id(v),id(w),i,spot,v.h)
+
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert=None):
 
-        trace = False and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
 
         w = self.widget
         i = self.toPythonIndex(i)
@@ -1327,8 +1356,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         else:
             ins = self.toPythonIndex(insert)
             ins = max(0,min(ins,n))
-            
-        if trace: g.trace(i,j,ins)
 
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
@@ -1344,6 +1371,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             tc.setPosition(j)
             tc.setPosition(i,tc.KeepAnchor)
         w.setTextCursor(tc)
+
+        # Remember the values for v.restoreCursorAndScroll.
+        v = self.c.p.v # Always accurate.
+        v.insertSpot = ins
+        if i > j: i,j = j,i
+        assert(i<=j)
+        v.selectionStart = i
+        v.selectionLength = j-i
+        v.scrollBarSpot = spot = w.getYScrollPosition()
+        if trace: g.trace(id(v),id(v),i,j,ins,spot,v.h,g.callers())
     #@+node:ekr.20110605121601.18097: *6* lengthHelper
     def lengthHelper(self):
 
@@ -2603,7 +2640,7 @@ class DynamicWindow(QtGui.QMainWindow):
         return ratio
     #@-others
 
-#@+node:ekr.20110605121601.18180: *3* class leoQtBody (leoBody)
+#@+node:ekr.20110605121601.18180: *3* class leoQtBody (subclass of leoBody)
 class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
@@ -2867,7 +2904,7 @@ class leoQtBody (leoFrame.leoBody):
         self.recolorWidget(p,wrapper)
 
         return f,wrapper
-    #@+node:ekr.20110605121601.18197: *6* assignPositionToEditor
+    #@+node:ekr.20110605121601.18197: *6* assignPositionToEditor (qtBody)
     def assignPositionToEditor (self,p):
 
         '''Called *only* from tree.select to select the present body editor.'''
@@ -3033,7 +3070,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20110605121601.18203: *7* selectEditorHelper (qtBody)
     def selectEditorHelper (self,wrapper):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; cc = c.chapterController
         d = self.editorWidgets
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
@@ -3050,6 +3087,7 @@ class leoQtBody (leoFrame.leoBody):
         # g.trace('c.frame.body',c.frame.body)
         # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
         # g.trace('wrapper',wrapper)
+        
         c.frame.body.bodyCtrl = wrapper
         c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
         w.leo_active = True
@@ -3062,14 +3100,11 @@ class leoQtBody (leoFrame.leoBody):
         if not (hasattr(w,'leo_p') and w.leo_p):
             return g.trace('***** no w.leo_p',w)
             
-        # if not (hasattr(w,'leo_chapter') and w.leo_chapter):
-            # return g.trace('***** no w.leo_chapter',w)
-
         p = w.leo_p
         assert p,p
 
-        if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
-            id(wrapper),w.leo_chapter,c.p.h,p.h))
+        if trace: g.trace('wrapper %s old %s p %s' % (
+            id(wrapper),c.p.h,p.h))
 
         c.expandAllAncestors(p)
         c.selectPosition(p)

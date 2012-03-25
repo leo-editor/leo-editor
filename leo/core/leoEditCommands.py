@@ -4935,8 +4935,9 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=direction,extend=extend)
-            w.seeInsertPoint()
-            c.frame.updateStatusLine()
+            # w.seeInsertPoint()
+            # c.frame.updateStatusLine()
+            # w.rememberSelectionAndScroll()
         else:
             # Find the start of the next/prev line.
             row,col = g.convertPythonIndexToRowCol(s,ins)
@@ -4990,8 +4991,9 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
-            w.seeInsertPoint()
-            c.frame.updateStatusLine()
+            # w.seeInsertPoint()
+            # c.frame.updateStatusLine()
+            # w.rememberSelectionAndScroll()
         else:
             if spot == 'home':
                 self.moveToHelper(event,0,extend=extend)
@@ -5026,8 +5028,9 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
-            w.seeInsertPoint()
-            c.frame.updateStatusLine()
+            # w.seeInsertPoint()
+            # c.frame.updateStatusLine()
+            # w.rememberSelectionAndScroll()
         else:
             i = w.getInsertPoint()
             if spot == 'left':
@@ -5074,8 +5077,9 @@ class editCommandsClass (baseEditCommandsClass):
 
         if hasattr(w,'leoMoveCursorHelper'):
             w.leoMoveCursorHelper(kind='exchange',extend=False)
-            w.seeInsertPoint()
-            c.frame.updateStatusLine()
+            # w.seeInsertPoint()
+            # c.frame.updateStatusLine()
+            # w.rememberSelectionAndScroll()
         else:
             c.widgetWantsFocusNow(w)
             i,j = w.getSelectionRange(sort=False)
@@ -5207,9 +5211,9 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'leoMoveCursorHelper') and spot != 'end-line':
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
-            if g.trace_scroll: g.trace('seeInsertPoint',spot)
-            w.seeInsertPoint()
-            c.frame.updateStatusLine()
+            # w.seeInsertPoint()
+            # c.frame.updateStatusLine()
+            # w.rememberSelectionAndScroll()
         else:
             s = w.getAllText()
             ins = w.getInsertPoint()
@@ -5256,8 +5260,9 @@ class editCommandsClass (baseEditCommandsClass):
             w.leoMoveCursorHelper(
                 kind=g.choose(kind=='forward','page-down','page-up'),
                 extend=extend,linesPerPage=linesPerPage)
-            w.seeInsertPoint()
-            c.frame.updateStatusLine()
+            # w.seeInsertPoint()
+            # c.frame.updateStatusLine()
+            # w.rememberSelectionAndScroll()
         else:
             ins = w.getInsertPoint()
             s = w.getAllText()

@@ -2403,7 +2403,7 @@ class vnode (baseVnode):
 
         pass # Compatibility routine for old scripts
     #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (changed 4.10)
-    # Called only by setBodyTextAfterSelect.
+    # Called only by leoTree.selectHelper.
 
     def restoreCursorAndScroll (self,w):
         
@@ -2411,6 +2411,7 @@ class vnode (baseVnode):
         v = self
         ins = v.insertSpot
         start,n = v.selectionStart,v.selectionLength
+        spot = v.scrollBarSpot
 
         if start is not None and n is not None:
             sel = (start,start+n)
@@ -2423,18 +2424,20 @@ class vnode (baseVnode):
         if g.no_scroll:
             return
 
-        # *only* restore the scrollbar setting.  Do not call see.
-        if v.scrollBarSpot is not None:
-            w.setYScrollPosition(v.scrollBarSpot)
+        # Override any changes to the scrollbar setting that might
+        # have been done above by w.setSelectionRange or w.setInsertPoint.
+        if spot is not None:
+            w.setYScrollPosition(spot)
+        v.scrollBarSpot = spot
             
-        if trace: g.trace('sel: %s ins: %s scroll: %s %s' % (
-            sel,ins,v.scrollBarSpot,v.h))
+        if trace: g.trace('v: %s w: %s sel: %s ins: %s scroll: %s %s' % (
+            id(v), id(w),sel,ins,spot,v.h))
             
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self,w):
         
-        trace = g.trace_scroll and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
 
         v = self
         if not w: return

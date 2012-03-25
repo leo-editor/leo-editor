@@ -722,7 +722,7 @@ class leoBody (HighLevelInterface):
 
         c = self.c ; cc = c.chapterController ; d = self.editorWidgets
 
-        trace = False
+        trace = False and not g.unitTesting
 
         if not w.leo_p:
             g.trace('no w.leo_p') 
@@ -2114,19 +2114,23 @@ class leoTree:
             #@+<< unselect the old node >>
             #@+node:ekr.20040803072955.129: *5* << unselect the old node >> (selectHelper)
             # Remember the position of the scrollbar *before* making any changes.
-            if old_p:
-                old_p.v.scrollBarSpot = yview = body.getYScrollPosition() if body else None
-                if trace: g.trace('old scroll: %3s insert: %3s %s' % (
-                    yview,old_p.v.insertSpot,old_p.h))
+            # This does not work if we are switching body editors!
+                # if old_p:
+                    # old_p.v.scrollBarSpot = yview = body.getYScrollPosition() if body else None
+                    # if trace: g.trace('old scroll: %3s insert: %3s %s' % (
+                        # yview,old_p.v.insertSpot,old_p.h))
                     
             # Remember the selection range and insert point.
-            if old_p and body:
-                old_p.v.insertSpot = ins = body.getInsertPoint()
-                i,j = body.getSelectionRange()
-                assert(i<=j)
-                old_p.v.selectionStart = i
-                old_p.v.selectionLength = j-i
-                if trace: g.trace(i,j,ins)
+            # This does not work if we are switching body editors!
+            # Instead, w.setInsertPoint and w.setSelectionRangeHelper should do the saving.
+
+                # if old_p and body:
+                    # old_p.v.insertSpot = ins = body.getInsertPoint()
+                    # i,j = body.getSelectionRange()
+                    # assert(i<=j)
+                    # old_p.v.selectionStart = i
+                    # old_p.v.selectionLength = j-i
+                    # if trace: g.trace(i,j,ins)
                 
             # New in Leo 4.10: the code sets v.insertSpot as soon as it changes (not here).
 
