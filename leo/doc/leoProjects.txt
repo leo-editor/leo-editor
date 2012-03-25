@@ -1743,6 +1743,881 @@ Traceback (most recent call last):
   File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 655, in update_graphics_script
     pc.gs = QtGui.QGraphicsScene(pc.splitter)
 AttributeError: 'ViewRenderedController' object has no attribute 'splitter'
+#@+node:ekr.20120323124339.9722: *3* Fixed(mostly)scrolling problem with multiple editors
+@language python
+@language rest
+Selecting body editor with clicks doesn't save/restore visual ivars.
+The solution would be to create a new onClick event handler...
+#@+node:ekr.20120212060348.10374: *4*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Traces & disabling of scrolling problems.
+no_scroll = False
+    # True: disable all calls to w.setYScrollPosition.
+no_see = False
+    # True: disable all calls to w.see and w.seeInsertPoint.
+
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+    
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+#@+node:ekr.20120324124808.9839: *4* Not changed
+#@+node:ekr.20060528170438: *5* cycleEditorFocus (leoBody)
+def cycleEditorFocus (self,event=None):
+
+    '''Cycle keyboard focus between the body text editors.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; d = self.editorWidgets
+    w = c.frame.body.bodyCtrl
+    values = list(d.values())
+    if len(values) > 1:
+        i = values.index(w) + 1
+        if i == len(values): i = 0
+        w2 = list(d.values())[i]
+        assert(w!=w2)
+        self.selectEditor(w2)
+        c.frame.body.bodyCtrl = w2
+#@+node:ekr.20110605121601.18223: *5* Event handlers (qtBody)
+#@+node:ekr.20110930174206.15472: *6* onFocusIn (qtBody)
+def onFocusIn (self,obj):
+
+    '''Handle a focus-in event in the body pane.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    
+    if trace: g.trace(str(obj.objectName()))
+
+    # 2010/08/01: Update the history only on focus in events.
+    # 2011/04/02: Update history only in leoframe.tree.select.
+    # c.nodeHistory.update(c.p)
+    
+    if obj.objectName() == 'richTextEdit':
+        wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+        if wrapper and wrapper != self.bodyCtrl:
+            self.selectEditor(wrapper)
+        self.onFocusColorHelper('focus-in',obj)
+        obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
+#@+node:ekr.20110930174206.15473: *6* onFocusOut (qtBody)
+def onFocusOut (self,obj):
+
+    '''Handle a focus-out event in the body pane.'''
+    
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(str(obj.objectName()))
+    
+    # Apparently benign.
+    if obj.objectName() == 'richTextEdit':
+        self.onFocusColorHelper('focus-out',obj)
+        obj.setReadOnly(True)
+    
+#@+node:ekr.20110605121601.18224: *6* onFocusColorHelper (qtBody)
+badFocusColors = []
+
+def onFocusColorHelper(self,kind,obj):
+
+    trace = False and not g.unitTesting
+    
+    c = self.c ; w = c.frame.body.bodyCtrl
+    
+    if trace: g.trace(kind)
+    
+    if kind == 'focus-in':
+        # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
+        c.k.showStateColors(inOutline=False,w=self.widget)
+    else:
+        bg = self.unselectedBackgroundColor
+        fg = self.unselectedForegroundColor
+        c.frame.body.setEditorColors(bg,fg)
+
+    w.widget.ensureCursorVisible()
+        # 2011/10/02: Fix cursor-movement bug.
+#@+node:ekr.20111002125540.7021: *5* get/setYScrollPosition (LeoQTextBrowser)
+def getYScrollPosition(self):
+    
+    trace = False and g.trace_scroll and not g.unitTesting
+
+    w = self
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    if trace: g.trace(pos)
+    return pos
+
+def setYScrollPosition(self,pos):
+    
+    trace = g.trace_scroll and not g.unitTesting
+    w = self
+
+    if g.no_scroll:
+        return
+    elif pos is None:
+        if trace: g.trace('None')
+    else:
+        if trace: g.trace(pos,g.callers())
+        sb = w.verticalScrollBar()
+        sb.setSliderPosition(pos)
+#@+node:ekr.20031218072017.4037: *5* setSelectionAreas (leoBody)
+def setSelectionAreas (self,before,sel,after):
+
+    """Replace the body text by before + sel + after and
+    set the selection so that the sel text is selected."""
+
+    body = self ; w = body.bodyCtrl
+    
+    # 2012/02/05: save/restore Yscroll position.
+    pos = w.getYScrollPosition()
+    s = w.getAllText()
+    before = before or ''
+    sel = sel or ''
+    after = after or ''
+    w.delete(0,len(s))
+    w.insert(0,before+sel+after)
+    i = len(before)
+    j = max(i,len(before)+len(sel)-1)
+    # g.trace(i,j,repr(sel))
+    w.setSelectionRange(i,j,insert=j)
+    w.setYScrollPosition(pos)
+    return i,j
+#@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
+def setYScrollPosition(self,pos):
+    
+    trace = False and g.trace_scroll and not g.unitTesting
+    w = self.widget
+    
+    if g.no_scroll:
+        return
+    elif pos is None:
+        if trace: g.trace('None')
+    else:
+        if trace: g.trace(pos,g.callers())
+        sb = w.verticalScrollBar()
+        sb.setSliderPosition(pos)
+#@+node:ekr.20031218072017.3344: *5* v.__init
+# To support ZODB, the code must set v._p_changed = 1 whenever
+# v.unknownAttributes or any mutable vnode object changes.
+
+def __init__ (self,context):
+
+    # The primary data: headline and body text.
+    self._headString = g.u('newHeadline')
+    self._bodyString = g.u('')
+
+    # Structure data...
+    self.children = [] # Ordered list of all children of this node.
+    self.parents = [] # Unordered list of all parents of this node.
+
+    # Other essential data...
+    self.fileIndex = g.app.nodeIndices.getNewIndex()
+        # The immutable file index for this vnode.
+        # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+    self.iconVal = 0 # The present value of the node's icon.
+    self.statusBits = 0 # status bits
+
+    # v.t no longer exists.  All code must now be aware of the one-node world.
+    # self.t = self # For compatibility with scripts and plugins.
+
+    # Information that is never written to any file...
+    self.context = context # The context containing context.hiddenRootNode.
+        # Required so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+    self.insertSpot = None # Location of previous insert point.
+    self.scrollBarSpot = None # Previous value of scrollbar position.
+    self.selectionLength = 0 # The length of the selected body text.
+    self.selectionStart = 0 # The start of the selected body text.
+#@+node:ekr.20100303074003.5638: *5* v.saveCursorAndScroll
+def saveCursorAndScroll(self,w):
+    
+    trace = (False or g.trace_scroll) and not g.unitTesting
+
+    v = self
+    if not w: return
+    
+    try:
+        v.scrollBarSpot = w.getYScrollPosition()
+        v.insertSpot = w.getInsertPoint()
+        if trace: g.trace(v.scrollBarSpot,v.insertSpot)
+    except AttributeError:
+        # 2011/03/21: w may not support the high-level interface.
+        pass
+#@+node:ekr.20120324124808.9835: *4* Changed
+@language python
+@language rest
+
+- Removed insert=None,new_p=None args from all versions of setAllText.
+  These are entirely misguided, and may have contributed to scrolling problems.
+  
+  setAllText now *only* sets text, nothing else!
+
+- All calls to leoMoveCursorHelper are follwed by code that updates
+  v.insertSpot, v.selectionStart and v.selectionLength.
+  
+- v.restoreCursorAndScroll now *carefully* restores selection
+  based on v.insertSpot, v.selectionStart and v.selectionLength.
+  It also restores the scrollbar using v.scrollBarSpot.
+  
+- < < unselect the old node > > (selectHelper) now *only*
+  sets v.scrollBarSpot.
+  
+#@+node:ekr.20050920084036.136: *5* exchangePointMark
+def exchangePointMark (self,event):
+
+    '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        w.leoMoveCursorHelper(kind='exchange',extend=False)
+        # w.seeInsertPoint()
+        # c.frame.updateStatusLine()
+        # w.rememberSelectionAndScroll()
+    else:
+        c.widgetWantsFocusNow(w)
+        i,j = w.getSelectionRange(sort=False)
+        if i == j: return
+
+        ins = w.getInsertPoint()
+        ins = g.choose(ins==i,j,i)
+        w.setInsertPoint(ins)
+        w.setSelectionRange(i,j,insert=None)
+#@+node:ekr.20090530181848.6035: *5* movePageHelper
+def movePageHelper(self,event,kind,extend): # kind in back/forward.
+
+    '''Move the cursor up/down one page, possibly extending the selection.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    linesPerPage = 15 # To do.
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(
+            kind=g.choose(kind=='forward','page-down','page-up'),
+            extend=extend,linesPerPage=linesPerPage)
+        # w.seeInsertPoint()
+        # c.frame.updateStatusLine()
+        # w.rememberSelectionAndScroll()
+    else:
+        ins = w.getInsertPoint()
+        s = w.getAllText()
+        lines = g.splitLines(s)
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        row2 = g.choose(kind=='back',
+            max(0,row-linesPerPage),
+            min(row+linesPerPage,len(lines)-1))
+        if row == row2: return
+        spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
+        if trace: g.trace('spot',spot,'row2',row2)
+        self.extendHelper(w,extend,spot,upOrDown=True)
+#@+node:ekr.20100109094541.6227: *5* moveToBufferHelper
+def moveToBufferHelper (self,event,spot,extend):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        # w.seeInsertPoint()
+        # c.frame.updateStatusLine()
+        # w.rememberSelectionAndScroll()
+    else:
+        if spot == 'home':
+            self.moveToHelper(event,0,extend=extend)
+        elif spot == 'end':
+            s = w.getAllText()
+            self.moveToHelper(event,len(s),extend=extend)
+        else:
+            g.trace('can not happen: bad spot',spot)
+#@+node:ekr.20100109094541.6228: *5* moveToCharacterHelper
+def moveToCharacterHelper (self,event,spot,extend):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        # w.seeInsertPoint()
+        # c.frame.updateStatusLine()
+        # w.rememberSelectionAndScroll()
+    else:
+        i = w.getInsertPoint()
+        if spot == 'left':
+            i=max(0,i-1)
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'right':
+            i = min(i+1,len(w.getAllText()))
+            self.moveToHelper(event,i,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20060113105246.1: *5* moveUpOrDownHelper
+def moveUpOrDownHelper (self,event,direction,extend):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    w.seeInsertPoint()
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=direction,extend=extend)
+        # w.seeInsertPoint()
+        # c.frame.updateStatusLine()
+        # w.rememberSelectionAndScroll()
+    else:
+        # Find the start of the next/prev line.
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        if trace:
+            gui_ins = w.toGuiIndex(ins)
+            bbox = w.bbox(gui_ins)
+            if bbox:
+                x,y,width,height = bbox
+                # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+                g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+                g.trace('ins',ins,'row',row,'col',col,
+                    'event.x',event and event.x,'event.y',event and event.y)
+                g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+                g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
+        i,j = g.getLine(s,ins)
+        if direction == 'down':
+            i2,j2 = g.getLine(s,j)
+        else:
+            i2,j2 = g.getLine(s,i-1)
+
+        # The spot is the start of the line plus the column index.
+        n = max(0,j2-i2-1) # The length of the new line.
+        col2 = min(col,n)
+        spot = i2 + col2
+        if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
+
+        self.extendHelper(w,extend,spot,upOrDown=True)
+#@+node:ekr.20100109094541.6231: *5* moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+    
+    # Bug fix: 2012/02/28: don't use the Qt end-line logic:
+    # it apparently does not work for wrapped lines.
+    if hasattr(w,'leoMoveCursorHelper') and spot != 'end-line':
+        extend = extend or self.extendMode
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        # w.seeInsertPoint()
+        # c.frame.updateStatusLine()
+        # w.rememberSelectionAndScroll()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # Bug fix: 2011/11/13: Significant in external tests.
+            if g.match(s,j-1,'\n'): j -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@+node:ekr.20110605121601.18077: *5* leoMoveCursorHelper & helper (leoQTextEditWidget)
+def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+    '''Move the cursor in a QTextEdit.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+    w = self.widget
+    if trace:
+        g.trace(kind,'extend',extend)
+        if verbose:
+            g.trace(len(w.toPlainText()))
+
+    tc = QtGui.QTextCursor
+    d = {
+        'exchange': True, # Dummy.
+        'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
+        'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
+        'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
+        'up':tc.Up,
+    }
+    kind = kind.lower()
+    op = d.get(kind)
+    mode = g.choose(extend,tc.KeepAnchor,tc.MoveAnchor)
+
+    if not op:
+        return g.trace('can not happen: bad kind: %s' % kind)
+
+    if kind in ('page-down','page-up'):
+        self.pageUpDown(op, mode)
+    elif kind == 'exchange': # exchange-point-and-mark
+        cursor = w.textCursor()
+        anchor = cursor.anchor()
+        pos = cursor.position()
+        cursor.setPosition(pos,tc.MoveAnchor)
+        cursor.setPosition(anchor,tc.KeepAnchor)
+        w.setTextCursor(cursor)
+    else:
+        if not extend:
+            # Fix an annoyance. Make sure to clear the selection.
+            cursor = w.textCursor()
+            cursor.clearSelection()
+            w.setTextCursor(cursor)
+        w.moveCursor(op,mode)
+        
+    # 2012/03/25.  Add this common code.
+    self.seeInsertPoint()
+    self.rememberSelectionAndScroll()
+    self.c.frame.updateStatusLine()
+#@+node:btheado.20120129145543.8180: *6* pageUpDown
+def pageUpDown (self, op, moveMode):
+
+    '''The QTextEdit PageUp/PageDown functionality seems to be "baked-in"
+       and not externally accessible.  Since Leo has its own keyhandling
+       functionality, this code emulates the QTextEdit paging.  This is
+       a straight port of the C++ code found in the pageUpDown method
+       of gui/widgets/qtextedit.cpp'''
+
+    control = self.widget
+    cursor = control.textCursor()
+    moved = False
+    lastY = control.cursorRect(cursor).top()
+    distance = 0
+    # move using movePosition to keep the cursor's x
+    while True:
+        y = control.cursorRect(cursor).top()
+        distance += abs(y - lastY)
+        lastY = y
+        moved = cursor.movePosition(op, moveMode)
+        if (not moved or distance >= control.height()):
+            break
+    tc = QtGui.QTextCursor
+    sb = control.verticalScrollBar()
+    if moved:
+        if (op == tc.Up):
+            cursor.movePosition(tc.Down, moveMode)
+            sb.triggerAction(QtGui.QAbstractSlider.SliderPageStepSub)
+        else:
+            cursor.movePosition(tc.Up, moveMode)
+            sb.triggerAction(QtGui.QAbstractSlider.SliderPageStepAdd)
+    control.setTextCursor(cursor)
+#@+node:ekr.20110605121601.18209: *5* deactivateEditors (qtBody)
+def deactivateEditors(self,wrapper):
+
+    '''Deactivate all editors except wrapper's editor.'''
+
+    trace = False and not g.unitTesting
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        wrapper2 = d.get(key)
+        w2 = wrapper2.widget
+        if hasattr(w2,'leo_active'):
+            active = w2.leo_active
+        else:
+            active = True
+        if wrapper2 != wrapper and active:
+            w2.leo_active = False
+            self.unselectLabel(wrapper2)
+            if trace: g.trace(w2)
+            self.onFocusOut(w2)
+#@+node:ekr.20120325032957.9730: *5* rememberSelectionAndScroll (leoQtBaseTextWidget)
+def rememberSelectionAndScroll(self):
+
+    trace = (False or g.trace_scroll) and not g.unitTesting
+
+    w = self
+    v = self.c.p.v # Always accurate.
+    v.insertSpot = ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if i > j: i,j = j,i
+    assert(i<=j)
+    v.selectionStart = i
+    v.selectionLength = j-i
+    v.scrollBarSpot = spot = w.getYScrollPosition()
+    
+    if trace: g.trace(id(v),id(w),i,j,ins,spot,v.h)
+#@+node:ekr.20110605121601.18044: *5* selectAllText (leoQtBaseTextWidget)
+def selectAllText(self,insert=None):
+
+    w = self.widget
+    w.selectAll()
+    # if insert is not None:
+        # self.setInsertPoint(insert)
+    # Bug fix: 2012/03/25.
+    self.setSelectionRange(0,'end',insert=insert)
+   
+#@+node:ekr.20110605121601.18203: *5* selectEditorHelper (qtBody)
+def selectEditorHelper (self,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+    d = self.editorWidgets
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    w = wrapper.widget
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    # g.trace('c.frame.body',c.frame.body)
+    # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
+    # g.trace('wrapper',wrapper)
+    
+    c.frame.body.bodyCtrl = wrapper
+    c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
+    w.leo_active = True
+
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+
+    if not self.ensurePositionExists(w):
+        return g.trace('***** no position editor!')
+    if not (hasattr(w,'leo_p') and w.leo_p):
+        return g.trace('***** no w.leo_p',w)
+        
+    p = w.leo_p
+    assert p,p
+
+    if trace: g.trace('wrapper %s old %s p %s' % (
+        id(wrapper),c.p.h,p.h))
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Calls assignPositionToEditor.
+        # Calls p.v.restoreCursorAndScroll.
+    c.redraw()
+    c.recolor_now()
+    c.bodyWantsFocus()
+#@+node:ekr.20070423101911: *5* selectHelper (leoTree) (changed 4.10)
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+    
+    call_event_handlers = p != old_p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace(p and p.h,g.callers())
+            
+    if call_event_handlers:
+        unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    else:
+        unselect = True
+
+    if unselect:
+        << unselect the old node >>
+        
+    if call_event_handlers:
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+    if call_event_handlers:
+        if call_event_handlers:
+            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            select = True
+        if select:
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+    else:
+        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+        
+    c.setCurrentPosition(p)
+    << set the current node >>
+    p.restoreCursorAndScroll(w)
+        # Was in setBodyTextAfterSelect (in <select the new node>)
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace('**** after old: %s new %s' % (
+            # old_p and len(old_p.b),len(p.b)))
+
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine(p.get_UNL())
+
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+#@+node:ekr.20120325072403.7771: *6* << unselect the old node >> (selectHelper)
+# Remember the position of the scrollbar *before* making any changes.
+# This does not work if we are switching body editors!
+    # if old_p:
+        # old_p.v.scrollBarSpot = yview = body.getYScrollPosition() if body else None
+        # if trace: g.trace('old scroll: %3s insert: %3s %s' % (
+            # yview,old_p.v.insertSpot,old_p.h))
+        
+# Remember the selection range and insert point.
+# This does not work if we are switching body editors!
+# Instead, w.setInsertPoint and w.setSelectionRangeHelper should do the saving.
+
+    # if old_p and body:
+        # old_p.v.insertSpot = ins = body.getInsertPoint()
+        # i,j = body.getSelectionRange()
+        # assert(i<=j)
+        # old_p.v.selectionStart = i
+        # old_p.v.selectionLength = j-i
+        # if trace: g.trace(i,j,ins)
+    
+# New in Leo 4.10: the code sets v.insertSpot as soon as it changes (not here).
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+#@+node:ekr.20040803072955.133: *6* << set the current node >> (selectHelper)
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+# Was in ctor.
+use_chapters = c.config.getBool('use_chapters')
+
+if use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+c.treeFocusHelper() # 2010/12/14
+c.undoer.onSelect(old_p,p)
+#@+node:ekr.20120325072403.7767: *6* << select the new node >> (selectHelper)
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@+node:ekr.20110605121601.18092: *5* setAllText (leoQTextEditWidget) & helper (changed 4.10)
+def setAllText(self,s):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    if trace and verbose: t1 = g.getTime()
+
+    try:
+        self.changingText = True # Disable onTextChanged
+        colorizer.changingText = True
+        w.setReadOnly(False)
+        w.setPlainText(s)
+    finally:
+        self.changingText = False
+        colorizer.changingText = False
+
+    if trace and verbose: g.trace(g.timeSince(t1))
+    
+#@+node:ekr.20090608081524.6109: *5* setBodyTextAfterSelect (changed 4.10)
+def setBodyTextAfterSelect (self,p,old_p):
+    
+    # trace = g.trace_scroll and not g.unitTesting
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = p.v.b # Guaranteed to be unicode.
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        self.frame.body.recolor(p)
+
+    # This is now done after c.p has been changed.
+        # p.restoreCursorAndScroll(w)
+#@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
+def setInsertPoint(self,i):
+    
+    trace = (False or g.trace_scroll) and not g.unitTesting
+
+    w = self.widget
+    s = w.toPlainText()
+    i = self.toPythonIndex(i)
+    i = max(0,min(i,len(s)))
+    cursor = w.textCursor()
+    cursor.setPosition(i)
+    w.setTextCursor(cursor)
+    
+    # Remember the values for v.restoreCursorAndScroll.
+    v = self.c.p.v # Always accurate.
+    v.insertSpot = i
+    v.selectionStart = i
+    v.selectionLength = 0
+    v.scrollBarSpot = spot = w.getYScrollPosition()
+    if trace: g.trace(id(v),id(w),i,spot,v.h)
+
+#@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
+def setSelectionRangeHelper(self,i,j,insert=None):
+
+    trace = (False or g.trace_scroll) and not g.unitTesting
+
+    w = self.widget
+    i = self.toPythonIndex(i)
+    j = self.toPythonIndex(j)
+
+    n = self.lengthHelper()
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    if insert is None:
+        ins = max(i,j)
+    else:
+        ins = self.toPythonIndex(insert)
+        ins = max(0,min(ins,n))
+
+    # 2010/02/02: Use only tc.setPosition here.
+    # Using tc.movePosition doesn't work.
+    tc = w.textCursor()
+    if i == j:
+        tc.setPosition(i)
+    elif ins == j:
+        # Put the insert point at j
+        tc.setPosition(i)
+        tc.setPosition(j,tc.KeepAnchor)
+    else:
+        # Put the insert point a i
+        tc.setPosition(j)
+        tc.setPosition(i,tc.KeepAnchor)
+    w.setTextCursor(tc)
+
+    # Remember the values for v.restoreCursorAndScroll.
+    v = self.c.p.v # Always accurate.
+    v.insertSpot = ins
+    if i > j: i,j = j,i
+    assert(i<=j)
+    v.selectionStart = i
+    v.selectionLength = j-i
+    v.scrollBarSpot = spot = w.getYScrollPosition()
+    if trace: g.trace(id(v),id(v),i,j,ins,spot,v.h,g.callers())
+#@+node:ekr.20110605121601.18097: *6* lengthHelper
+def lengthHelper(self):
+
+    '''Return the length of the text.'''
+
+    w = self.widget
+    tc = w.textCursor()
+    tc.movePosition(QtGui.QTextCursor.End)
+    n = tc.position()
+    return n
+
+#@+node:ekr.20100303074003.5636: *5* v.restoreCursorAndScroll (changed 4.10)
+# Called only by leoTree.selectHelper.
+
+def restoreCursorAndScroll (self,w):
+    
+    trace = (False or g.trace_scroll) and not g.unitTesting
+    v = self
+    ins = v.insertSpot
+    start,n = v.selectionStart,v.selectionLength
+    spot = v.scrollBarSpot
+
+    if start is not None and n is not None:
+        sel = (start,start+n)
+        w.setSelectionRange(start,start+n,insert=ins)
+    else:
+        sel = (None,None)
+        if ins is not None:
+            w.setInsertPoint(ins)
+            
+    if g.no_scroll:
+        return
+
+    # Override any changes to the scrollbar setting that might
+    # have been done above by w.setSelectionRange or w.setInsertPoint.
+    if spot is not None:
+        w.setYScrollPosition(spot)
+    v.scrollBarSpot = spot
+        
+    if trace: g.trace('v: %s w: %s sel: %s ins: %s scroll: %s %s' % (
+        id(v), id(w),sel,ins,spot,v.h))
+        
+    # Never call w.see here.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

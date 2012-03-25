@@ -6,7 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
 @language rest
 
-.. @+node:ekr.20120324124808.9833: *3* Alt-Home & Alt-End should collapse all nodes.
 .. @+node:ekr.20120323124339.9719: *3* fix get_fn in viewrendered plugin
 .. @+node:ekr.20120323124339.9721: *3* Investigate problem with desktop shortcut 
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
