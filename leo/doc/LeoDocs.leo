@@ -52,8 +52,7 @@
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/front.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -179,8 +178,7 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
-<v t="ekr.20100805165051.7176"
-expanded="ekr.20090711120622.10446,ekr.20090711120622.10447,"><vh>@file other_docs.txt</vh></v>
+<v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
 <v t="ekr.20100821182153.4341"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>

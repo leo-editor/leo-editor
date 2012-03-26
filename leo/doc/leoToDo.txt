@@ -3,11 +3,58 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2
+.. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2/final
 @language rest
 
+.. @+node:ekr.20120326061010.9726: *3* fix Viktor's problem
+@nocolor-node
+
+n my installation, now on the latest revision ( r5195) I'm still
+experiencing an issue with the '@url command' using 'File-URL' in a Windows
+environement.
+
+I'm able to create the Leo User documentation locally. - However, when I
+try to read the documentation using the 'File-URL'
+
+file:///D:/Branches/leo-editor/leo/doc/html/_build/html/leo_toc.html
+
+I get the following message in the Leo-Log.
+
+<log>
+
+File 'D:\D:\Branches\leo-editor\leo\doc\html\_build\html\leo_toc.html' does not exist
+
+</log>
+
+However if I enter this URL directly into FF it is found and displayed properly.
 .. @+node:ekr.20120323124339.9719: *3* fix get_fn in viewrendered plugin
 .. @+node:ekr.20120323124339.9721: *3* Investigate problem with desktop shortcut 
+http://groups.google.com/group/leo-editor/browse_thread/thread/a03661d8c1eec0c6
+
+I'm experimenting with the latest version (WinXP). This is really odd. If I
+launch Leo using the desktop shortcut, I'm not able to open *any* valid
+.leo file except  LeoSettings.leo. This is the shortcut:
+C:\Python32\pythonw.exe "C:\Program Files\Leo-4.10-b1\launchLeo.py"
+
+However, if I launch using my Windows batch file, I'm able to open all
+files as expected. The code is:
+C:\Python32\python "C:\Program Files\Leo-4.10-b1\launchLeo.py" %*
+
+Anyone else experiencing this? Any possible explanation? 
+
+EKR: Are you doing this in a console window? 
+
+No, that's why I used the batch file so I can launch w/ a console. When I
+do, it works fine. 
+
+I just installed on another box w/ Python 2.6.2 That works fine. The other
+box has Python 3.2, not sure why that matters, but it might be a clue.
+.. @+node:ekr.20120326061010.9728: *3* Option to restore selection range?
+@nocolor-node
+
+If off, only the insert point is restored.
+
+Restoring the full selection range is good for testing.
 .. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
 .. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
 .. @+node:ekr.20120322073519.10406: *3* Optional

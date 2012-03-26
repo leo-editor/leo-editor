@@ -2618,6 +2618,16 @@ def restoreCursorAndScroll (self,w):
         id(v), id(w),sel,ins,spot,v.h))
         
     # Never call w.see here.
+#@+node:ekr.20120324124808.9833: *3* Alt-Home & Alt-End collapse all possible nodes
+#@+node:ekr.20120326061010.9727: *3* Scaled the screenshot on home page
+http://groups.google.com/group/leo-editor/browse_thread/thread/ea3c29888d8ac92b
+
+> - Added a full-sized screenshot at the bottom of the page.
+>  I'm not sure whether this is a good idea.  What do you think?
+
+Scaled the screen-shot using:
+
+http://stackoverflow.com/questions/3029422/image-auto-resize-to-fit-div-container
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
