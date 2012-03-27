@@ -75,12 +75,12 @@ def onCreate(tag, keys):
     
     c = keys.get('c')
     if hasattr(c, "free_layout"):
-        # don't load free_layout more than once, as this does
-        # m = g.loadOnePlugin('free_layout.py',verbose=True)
-        # assert m
-        # m.FreeLayoutController(c)
-        # assert c.free_layout
-        # assert hasattr(c.free_layout,'get_top_splitter')
+        m = g.loadOnePlugin('free_layout.py',verbose=True)
+        assert m
+        if not c.free_layout:
+            m.FreeLayoutController(c)
+        assert c.free_layout
+        assert hasattr(c.free_layout,'get_top_splitter')
         BookMarkDisplayProvider(c)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
 @g.command('bookmarks-open-bookmark')

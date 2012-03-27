@@ -2633,6 +2633,14 @@ In earlier version of Leo if one runs test externally with the selected
 position under @test node, that @test was executed with (run-marked-unit-tests-externally)
 
 The fix was to the "important special case" in TM.findAllUnitTestNodes.
+#@+node:ekr.20120327062318.9732: *3* Made sure the new load code loads plugins at most once
+@language python
+@language rest
+
+new load code, double init. for free layout
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd16ac6dc1832eb2
+
+bookmarks.py was the culprit. The code in onCreate must test to see if c.free_layout already exists.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
