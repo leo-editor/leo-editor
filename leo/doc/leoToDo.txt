@@ -6,7 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2/final
 @language rest
 
-.. @+node:ekr.20120323124339.9719: *3* fix get_fn in viewrendered plugin
 .. @+node:ekr.20120323124339.9721: *3* Investigate problem with desktop shortcut 
 http://groups.google.com/group/leo-editor/browse_thread/thread/a03661d8c1eec0c6
 

@@ -2642,9 +2642,11 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/dd16ac6dc1832eb2
 
 bookmarks.py was the culprit. The code in onCreate must test to see if c.free_layout already exists.
 #@+node:ekr.20120326061010.9726: *3* fixed problem with file:/// url's on Windows
-@nocolor-node
+@language rest
 
-n my installation, now on the latest revision ( r5195) I'm still
+http://groups.google.com/group/leo-editor/browse_thread/thread/bb063866875a81c3#
+
+In my installation, now on the latest revision ( r5195) I'm still
 experiencing an issue with the '@url command' using 'File-URL' in a Windows
 environement.
 

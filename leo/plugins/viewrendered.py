@@ -157,12 +157,11 @@ __version__ = '1.0'
 #@+node:tbrown.20100318101414.5993: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.plugins.qtGui as qtGui
-
 g.assertUi('qt')
 
-import sys
 import os
-import webbrowser
+# import sys
+# import webbrowser
 
 try:
     from docutils.core import publish_string
@@ -180,7 +179,7 @@ try:
 except ImportError:
     phonon = None
 
-import PyQt4.QtCore as QtCore
+# import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 import PyQt4.QtSvg as QtSvg
 #@-<< imports >>
@@ -909,20 +908,30 @@ class ViewRenderedController(QtGui.QWidget):
     #@+node:ekr.20110320233639.5776: *5* get_fn
     def get_fn (self,s,tag):
         
-        pc = self ; c = pc.c
+        pc = self
+        c = pc.c
         fn = s or c.p.h[len(tag):]
         fn = fn.strip()
-        if 1:
-            path = g.os_path_finalize_join(g.app.loadDir,fn)
+        
+        # Similar to code in g.computeFileUrl
+        if fn.startswith('~'):
+            # Expand '~' and handle Leo expressions.
+            fn = fn[1:]
+            fn = g.os_path_expanduser(fn)
+            fn = g.os_path_expandExpression(fn,c=c)
+            fn = g.os_path_finalize(fn)
         else:
-            fn = fn.replace('\\','/')
-            parts = fn.split('/')
-            args = [g.app.loadDir]
-            args.extend(parts)
-            # g.trace(args)
-            path = g.os_path_finalize_join(*args,c=c)
-        ok = g.os_path_exists(path)
-        return ok,path
+            # Handle Leo expressions.
+            fn = g.os_path_expandExpression(fn,c=c)
+            # Handle ancestor @path directives.
+            if c and c.openDirectory:
+                base = c.getNodePath(c.p)
+                fn = g.os_path_finalize_join(c.openDirectory,base,fn)
+            else:
+                fn = g.os_path_finalize(fn)
+
+        ok = g.os_path_exists(fn)
+        return ok,fn
     #@+node:ekr.20110321005148.14536: *5* get_url
     def get_url (self,s,tag):
         

@@ -92,8 +92,10 @@ def getPluginsList():
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
             
-        ('vim.py',      ''),
-        ('xemacs.py',   ''),
+        ('vim.py',          ''),
+        ('viewrendered.py', 'E1103'),
+            # Dangerous: PyQt4.phonon has no x member.
+        ('xemacs.py',       ''),
 
         # ('toolbar','E1101,W0221,W0511'),
             # Dangerous: many erroneous E1101 errors
