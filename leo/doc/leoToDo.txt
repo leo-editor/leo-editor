@@ -6,27 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2/final
 @language rest
 
-.. @+node:ekr.20120326061010.9726: *3* fix Viktor's problem
-@nocolor-node
-
-n my installation, now on the latest revision ( r5195) I'm still
-experiencing an issue with the '@url command' using 'File-URL' in a Windows
-environement.
-
-I'm able to create the Leo User documentation locally. - However, when I
-try to read the documentation using the 'File-URL'
-
-file:///D:/Branches/leo-editor/leo/doc/html/_build/html/leo_toc.html
-
-I get the following message in the Leo-Log.
-
-<log>
-
-File 'D:\D:\Branches\leo-editor\leo\doc\html\_build\html\leo_toc.html' does not exist
-
-</log>
-
-However if I enter this URL directly into FF it is found and displayed properly.
 .. @+node:ekr.20120323124339.9719: *3* fix get_fn in viewrendered plugin
 .. @+node:ekr.20120323124339.9721: *3* Investigate problem with desktop shortcut 
 http://groups.google.com/group/leo-editor/browse_thread/thread/a03661d8c1eec0c6

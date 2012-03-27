@@ -4387,7 +4387,10 @@ def computeFileUrl(fn,c=None,p=None):
     else:
         # Handle Leo expressions.
         tag = 'file://'
-        if url.startswith(tag):
+        tag2 = 'file:///'
+        if sys.platform.startswith('win') and url.startswith(tag2):
+            path = url[len(tag2):].lstrip()
+        elif url.startswith(tag):
             path = url[len(tag):].lstrip()
         else:
             path = url
