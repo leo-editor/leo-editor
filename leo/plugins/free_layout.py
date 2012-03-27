@@ -81,6 +81,9 @@ class FreeLayoutController:
     #@+node:ekr.20110318080425.14390: *3*  ctor
     def __init__ (self,c):
         
+        if hasattr(c, 'free_layout'):
+            return
+        
         self.c = c
         #X self.renderer = None # The renderer widget
         #X self.top_splitter = None # The top-level splitter.
