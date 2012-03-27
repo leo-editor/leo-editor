@@ -1418,12 +1418,9 @@ class TestManager:
         
         # An important special case: add the *selected* @test or @suite node,
         # regard regardless of all other considerations.
-        if (p and p != limit and p == c.p and
-            tm.isTestNode(p) or tm.isSuiteNode(p)
-        ):
+        if tm.isTestNode(c.p) or tm.isSuiteNode(c.p):
             seen.append(p.v)
-            result.append(p.copy())
-            p.moveToNodeAfterTree()
+            result.append(c.p.copy())
             
         while p and p != limit:
             if p.v in seen:
@@ -1472,7 +1469,15 @@ class TestManager:
                         p.moveToNodeAfterTree()
                     else:
                         p.moveToThreadNext()
-        return result
+                        
+        # Remove duplicates
+        result2,seen = [],[]
+        for p in result:
+            if p.v not in seen:
+                seen.append(p.v)
+                result2.append(p)
+
+        return result2
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
         

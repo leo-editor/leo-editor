@@ -2628,6 +2628,11 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/ea3c29888d8ac92b
 Scaled the screen-shot using:
 
 http://stackoverflow.com/questions/3029422/image-auto-resize-to-fit-div-container
+#@+node:ekr.20120327062318.9731: *3* Ensure selected @test node is run
+In earlier version of Leo if one runs test externally with the selected
+position under @test node, that @test was executed with (run-marked-unit-tests-externally)
+
+The fix was to the "important special case" in TM.findAllUnitTestNodes.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
