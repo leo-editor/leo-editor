@@ -2413,7 +2413,7 @@ class vnode (baseVnode):
         start,n = v.selectionStart,v.selectionLength
         spot = v.scrollBarSpot
 
-        if start is not None and n is not None:
+        if g.restore_selection_range and start is not None and n is not None:
             sel = (start,start+n)
             w.setSelectionRange(start,start+n,insert=ins)
         else:

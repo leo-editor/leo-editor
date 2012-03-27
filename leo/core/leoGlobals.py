@@ -29,6 +29,9 @@ new_keys = False
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
 
+# Debugging options.
+restore_selection_range = False
+
 # Traces & disabling of scrolling problems.
 no_scroll = False
     # True: disable all calls to w.setYScrollPosition.
