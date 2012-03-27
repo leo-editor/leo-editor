@@ -81,7 +81,7 @@ class FreeLayoutController:
     #@+node:ekr.20110318080425.14390: *3*  ctor
     def __init__ (self,c):
         
-        # g.trace('(FreeLayoutController)',g.callers())
+        # g.trace('(FreeLayoutController)',g.callers(files=True))
         
         if hasattr(c, 'free_layout'):
             return
