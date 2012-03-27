@@ -6,6 +6,18 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 b2/final
 @language rest
 
+.. @+node:ekr.20120327062318.9732: *3* Make sure the new load code loads plugins at most once
+@language python
+@language rest
+
+new load code, double init. for free layout
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd16ac6dc1832eb2
+
+bookmarks.py was the culprit, I've removed the offending code.
+
+Must be something about the new load code which allows the bug to manifest.
+Perhaps the old code wouldn't even attempt to load a plug-in twice? Perhaps
+the new code shouldn't either?
 .. @+node:ekr.20120326061010.9726: *3* fix Viktor's problem
 @nocolor-node
 
