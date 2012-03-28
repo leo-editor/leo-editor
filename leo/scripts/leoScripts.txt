@@ -2893,60 +2893,6 @@ for p in p.self_and_subtree():
     if change and result != p.b:
         c.setBodyString(p,result)
 
-#@+node:ekr.20110929185034.15716: *3* @@button import-org-mode
-'''Import each file in the files list after the presently selected node.'''
-
-
-files = (
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-)
-
-@others
-
-for fn in files:
-    try:
-        root = c.p.copy()
-        f = open(fn)
-        s = f.read()
-        scan(c,fn,s)
-        c.selectPosition(root)
-    except IOError:
-        print('can not open %s' % fn)
-#@+node:ekr.20110929185034.15717: *4* scan
-def scan (c,fn,s):
-
-    last = root = c.p.insertAsLastChild()
-    last.h = g.shortFileName(fn)
-    level,stack = 0,[root]
-    body = ['@others\n']
-    
-    for s in g.splitLines(s):
-        if s.startswith('*'):
-            i,level = 0,0
-            while s[i] == '*':
-                i += 1 ; level += 1
-            if level > len(stack):
-                g.trace('bad level',repr(s))
-            elif level == len(stack):
-                last.b = ''.join(body)
-            else:
-                last.b = ''.join(body)
-                stack = stack[:level]
-            parent = stack[-1]
-            last = parent.insertAsLastChild()
-            last.h = s.strip()
-            stack.append(last)
-            body = []
-        else:
-            body.append(s)
-            
-    # Finish any trailing lines.
-    if body:
-        last.b = ''.join(body)
-        
-    root.contract()
-    c.redraw(root)
 #@+node:ekr.20080221113205: *3* @@button print g.es stats
 @first # -*- coding: utf-8 -*-
 
@@ -13567,6 +13513,267 @@ try:
 finally:
     get_transaction().commit()
     connection.close()
+#@+node:ekr.20120328102352.6934: ** Important new scripts in Leo 4.10
+#@+node:ekr.20110929185034.15716: *3* @@button import-org-mode
+'''Import each file in the files list after the presently selected node.'''
+
+
+files = (
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+)
+
+@others
+
+for fn in files:
+    try:
+        root = c.p.copy()
+        f = open(fn)
+        s = f.read()
+        scan(c,fn,s)
+        c.selectPosition(root)
+    except IOError:
+        print('can not open %s' % fn)
+#@+node:ekr.20110929185034.15717: *4* scan
+def scan (c,fn,s):
+
+    last = root = c.p.insertAsLastChild()
+    last.h = g.shortFileName(fn)
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1 ; level += 1
+            if level > len(stack):
+                g.trace('bad level',repr(s))
+            elif level == len(stack):
+                last.b = ''.join(body)
+            else:
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            last = parent.insertAsLastChild()
+            last.h = s.strip()
+            stack.append(last)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        last.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+#@+node:ekr.20120328102352.6937: *3* Code for displaying a function call hierarchy in Leo
+@language python
+@language rest
+
+From Brian Theado
+
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
+
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+#@+node:ekr.20120328102352.6938: *4* call tree
+import trace
+
+@language python
+@others
+
+# http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
+
+# Trace a minibuffer command.
+
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
+
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
+
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+#@+node:ekr.20120328102352.6939: *5* displayCalltree
+def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
+
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) > 0:
+       while len(levels[-1]) > 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+#@+node:ekr.20120328102352.6940: *5* trace session
+#@+node:ekr.20120328102352.6948: *3* @@button set-style
+@language rest
+
+@
+http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
+Here's a one line @button node you can add to myLeoSettings.leo
+
+Important:  setStyleSheet *replaces* the previous stylesheet with the
+new stylesheet, so you had best set all the attributes of Leo's
+default stylesheet.
+
+As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
+set the stylesheet for that widget only: the top-level stylesheet (the
+stylesheet for c.frame.top.leo_ui) remains unchanged.
+@c
+
+@language python
+
+c.frame.top.leo_ui.setStyleSheet(p.b)
+#@+node:ekr.20120328102352.6945: *3* @@button fac
+@language python
+
+<< documentation >>
+
+from leo.plugins.mod_scripting import scriptingController
+
+sc = scriptingController(c)
+
+if c.frame.body.hasSelection():
+    code = c.frame.body.getSelectedText()
+    heading = 'fix'
+else:
+    code,heading = p.b,p.h
+
+def transform(c=c,code=code):
+    w = c.frame.body
+    s = w.getSelectedText()
+    g.es(s)
+    exec(code)
+    g.es(s)
+    w.deleteTextSelection()
+    i = w.getInsertPoint()
+    w.insert(i,s)
+    p.b = w.getAllText()
+    w.setInsertPoint(i)
+
+sc.createIconButton(
+    heading,
+    command = transform,
+    shortcut = None,
+    statusLine = 'Make filter button',
+    bg = "LightBlue"
+)
+#@+node:ekr.20120328102352.6949: *4* << documentation >>
+@nocolor-node
+@
+http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
+
+Ever find that you have a whole lot of:
+
+.. sourcecode:: py
+
+  rec[f['analyte']] ... rec[f['sample_type']] ...
+
+expressions in your code, and now things have changed and you want them all
+to be:
+
+.. sourcecode:: py
+
+  row.Analyte ... row.Sample_Type ...
+
+basically if str variable s was::
+
+  rec[f['analyte']]
+
+then you want to perform:
+
+.. sourcecode:: py
+
+  s = "row."+s.split("'")[1].title()
+
+on each one. In general it would be nice to be able to use a python
+expression when search and replace doesn't cut it.
+
+The button code below creates a button, ``fac``, which, when pressed,
+creates another button, with some name you choose, which, when pressed,
+executes some python code to fix the selected text in the body.
+
+You can define the code to be executed in two ways, either in its own node:
+
+ - insert a new node with a headline which describes the refactor
+ - enter code in the node which modifies the string variable ``s``,
+   which is initially set to the selected text in the body
+ - press the ``fac`` button, which creates a new button named
+   after this code node
+ - select each offending piece of text and press the button created
+   in the previous step to fix
+
+or
+
+ - type some code modifying ``s`` right in the body you're working on
+ - press the ``fac`` button, which creates a new button named "fix"
+ - select each offending piece of text and press the button created
+   in the previous step to fix
+
+Notes:
+
+ - unlike regular button nodes, changing the code after the
+   button's created (first option above) doesn't change the code
+   executed by the button
+ - replacing selection text makes Leo reposition the insert point at
+   the top of the window, this is annoying but unrelated to this code
 #@+node:ekr.20051104082605: ** Others
 #@+node:ekr.20050310082013: *3* AutoIt script from e
 @ http://sourceforge.net/forum/message.php?msg_id=3039793

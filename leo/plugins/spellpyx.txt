@@ -4688,3 +4688,9 @@ somesearch
 countcallers
 settings_fn
 machine_fn
+update_graphics_script
+computeFileUrl
+runfunc
+displayCalltree
+callinfo
+callees

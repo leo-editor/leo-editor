@@ -272,6 +272,11 @@
 <v t="ekr.20120313074006.14906"><vh>Fixed Bug: multiple @language directives mess up add-comments command</vh></v>
 <v t="ekr.20120313074006.15120"><vh>Fixed bug 952365: Leo-Editor can't write a file created from the command line</vh></v>
 <v t="ekr.20120313074006.15125"><vh>Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages</vh></v>
+<v t="ekr.20120328102352.5897"><vh>Fixed crasher in flattenOutline</vh></v>
+<v t="ekr.20120328102352.5899"><vh>Fix viewrendered crash</vh></v>
+<v t="ekr.20120328102352.5900"><vh>Fixed most scrolling problem with multiple editors</vh></v>
+<v t="ekr.20120328102352.5936"><vh>Ensure selected @test node is run</vh></v>
+<v t="ekr.20120328102352.5938"><vh>fixed problem with file:/// url's on Windows</vh></v>
 </v>
 <v t="ekr.20120318075211.6166"><vh>Unfixed bugs</vh>
 <v t="ekr.20120313074006.14698"><vh>Failed to fix bug 844953: copy-clone-pasted node appears in other tab</vh></v>
@@ -323,6 +328,7 @@
 <v t="ekr.20120313074006.14640"><vh>Instant abbreviations (~a)</vh></v>
 </v>
 <v t="ekr.20120229094652.15163"><vh>Minor new features</vh>
+<v t="ekr.20120328102352.5946"><vh>Improved Leo's home page</vh></v>
 <v t="ekr.20120229094652.14787"><vh>Generalized stylesheet handling</vh></v>
 <v t="ekr.20120229094652.15151"><vh>Leo now raises a dialog on @ignore @&lt;file&gt; nodes</vh></v>
 <v t="ekr.20120229094652.14596"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
@@ -342,6 +348,7 @@
 <v t="ekr.20120313074006.14643"><vh>Reinstated warnings for conflicting definitions</vh></v>
 <v t="ekr.20120229094652.14589"><vh>Searches from Leo's web pages now work</vh></v>
 <v t="ekr.20120229094652.14601"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
+<v t="ekr.20120328102352.5942"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 </v>
 <v t="ekr.20120229094652.15164"><vh>New &amp; improved commands</vh>
 <v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
@@ -642,9 +649,9 @@ run-all-unit-tests-externally = Alt-5
 <t tx="ekr.20111127144911.5545"></t>
 <t tx="ekr.20120229094652.14053">@language rest
 
-Leo 4.10 b1                                         March 21, 2012
+Leo 4.10 final                                         March 29, 2012
 
-Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
+Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html
@@ -667,6 +674,7 @@ The highlights of Leo 4.10:
   - Improved handling of URL's.
   - Improved editing of non-Leo files.
   - Improvements create "weightless" unit testing.
+  - Improved Leo's home page.
 * Easier installation on MacOS.
 * Fixed almost 70 bugs.
 
@@ -690,7 +698,7 @@ URL's can be used as links to other Leo outlines.
 4 Weightless unit testing.
 
 The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit,
-alt-4,... Several seemingly innocuous changes made this work without an
+alt-4,... Several seemingly innocuous changes made this work without
 "friction". The result is a remarkable increase in productivity.
 
 Links:
@@ -2516,6 +2524,51 @@ switches that enable new code bases. Recent examples were::
     run-marked-unit-tests-locally       = None
     run-selected-unit-tests-externally  = Alt-5 # The new standard
     run-selected-unit-tests-locally     = None
+</t>
+<t tx="ekr.20120328102352.5897">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 553, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 2120, in flattenOutline
+    c.importCommands.flattenOutline(fileName)
+  File "c:\leo.repo\trunk\leo\core\leoImport.py", line 479, in flattenOutline
+    theFile.write(s)
+TypeError: must be str, not bytes
+</t>
+<t tx="ekr.20120328102352.5899">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoPlugins.py", line 337, in callTagHandler
+    result = handler(tag,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 560, in update
+    f(s,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 655, in update_graphics_script
+    pc.gs = QtGui.QGraphicsScene(pc.splitter)
+AttributeError: 'ViewRenderedController' object has no attribute 'splitter'
+</t>
+<t tx="ekr.20120328102352.5900">Selecting body editor with clicks doesn't save/restore visual ivars.
+The solution would be to create a new onClick event handler...
+</t>
+<t tx="ekr.20120328102352.5936">In earlier version of Leo if one runs test externally with the selected
+position under @test node, that @test was executed with (run-marked-unit-tests-externally)
+
+The fix was to the "important special case" in TM.findAllUnitTestNodes.
+</t>
+<t tx="ekr.20120328102352.5938">http://groups.google.com/group/leo-editor/browse_thread/thread/bb063866875a81c3#
+
+The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
+</t>
+<t tx="ekr.20120328102352.5942"></t>
+<t tx="ekr.20120328102352.5946">http://webpages.charter.net/edreamleo/front.html
+
+- Added link to home page from the TOC.
+
+- Removed online-tutorial link.
+
+- Added search box to Leo's home page.
+
+- Added link to glossary from Leo's home page.
+
+- Added scaled screen shot to Leo's home page.
+
+- Brought screen shots up to date.
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

@@ -2773,6 +2773,50 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/ea3c29888d8ac92b
 Scaled the screen-shot using:
 
 http://stackoverflow.com/questions/3029422/image-auto-resize-to-fit-div-container
+#@+node:ekr.20120323124339.9721: *3* Investigated problem with desktop shortcut 
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a03661d8c1eec0c6
+
+I'm experimenting with the latest version (WinXP). This is really odd. If I
+launch Leo using the desktop shortcut, I'm not able to open *any* valid
+.leo file except  LeoSettings.leo. This is the shortcut:
+C:\Python32\pythonw.exe "C:\Program Files\Leo-4.10-b1\launchLeo.py"
+
+However, if I launch using my Windows batch file, I'm able to open all
+files as expected. The code is:
+C:\Python32\python "C:\Program Files\Leo-4.10-b1\launchLeo.py" %*
+
+Anyone else experiencing this? Any possible explanation?
+
+EKR: Are you doing this in a console window? 
+
+No, that's why I used the batch file so I can launch w/ a console. When I
+do, it works fine. 
+
+I just installed on another box w/ Python 2.6.2 That works fine. The other
+box has Python 3.2, not sure why that matters, but it might be a clue.
+#@+node:ekr.20120327163022.9742: *4* EKR response
+@language rest
+
+There are two differences between the two ways of launching.
+
+1. pythonw.exe vs python.exe
+
+2. The former has no "%*" argument.  It's possible that you have no
+workbook.leo file in your home directory, which might cause a failure,
+iirc.
+
+I suggest first changing pythonw to python.  This will open a console,
+but probably too briefly to read.  To fix this, add a -i argument,
+which will drop python into interactive mode, which has the side
+effect of leaving the console open.  This should tell you why exactly
+nothing happens.
+
+I suspect that adding the "%*" argument will fix the problem,
+regardless of whether you use pythonw or python.
+
+If not, please feel free to ask more questions.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

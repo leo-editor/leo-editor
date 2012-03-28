@@ -6,38 +6,6 @@
 .. @+node:ekr.20110609102702.16471: ** To do: 4.10 final
 @language rest
 
-.. @+node:ekr.20120323124339.9721: *3* Investigate problem with desktop shortcut 
-http://groups.google.com/group/leo-editor/browse_thread/thread/a03661d8c1eec0c6
-
-I'm experimenting with the latest version (WinXP). This is really odd. If I
-launch Leo using the desktop shortcut, I'm not able to open *any* valid
-.leo file except  LeoSettings.leo. This is the shortcut:
-C:\Python32\pythonw.exe "C:\Program Files\Leo-4.10-b1\launchLeo.py"
-
-However, if I launch using my Windows batch file, I'm able to open all
-files as expected. The code is:
-C:\Python32\python "C:\Program Files\Leo-4.10-b1\launchLeo.py" %*
-
-Anyone else experiencing this? Any possible explanation? 
-
-EKR: Are you doing this in a console window? 
-
-No, that's why I used the batch file so I can launch w/ a console. When I
-do, it works fine. 
-
-I just installed on another box w/ Python 2.6.2 That works fine. The other
-box has Python 3.2, not sure why that matters, but it might be a clue.
-.. @+node:ekr.20120321174708.9744: *3* Fix failing unit tests in distro
-.. @+node:ekr.20120321094039.9744: *3* Put new scripts where they belong
-.. @+node:ekr.20120322073519.10406: *3* Optional
-There is no real need to do any of these for 4.10 final
-.. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
-Withdraw claim that Leo supports solarized.
-.. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
-http://ethanschoonover.com/solarized
-
-.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
-Every command should have a **complete** docstring.
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
 
@@ -1371,15 +1339,24 @@ def createModeCommand (self,modeName,name,modeDict):
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
     
-.. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
-.. @+node:ekr.20111128103520.10245: *4* Finish leoInspect.token_range
+.. @+node:ekr.20120322073519.10406: *3* Next
+There is no real need to do any of these for 4.10 final
+.. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
+Withdraw claim that Leo supports solarized.
+.. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
+http://ethanschoonover.com/solarized
+
+.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+Every command should have a **complete** docstring.
+.. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
+.. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
 @language python
 @language rest
 
 Traverse the tree, setting N.end_lineno and N.end_col_offset.
 
 See the notes below.
-.. @+node:ekr.20111128103520.10257: *5* @test leoInspect.token_range (s)
+.. @+node:ekr.20111128103520.10257: *6* @test leoInspect.token_range (s)
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -1428,7 +1405,7 @@ if 0:
             show(d,1)
             for z in d.statements():
                 show(z,1)
-.. @+node:ekr.20111128103520.10258: *6* << define s >>
+.. @+node:ekr.20111128103520.10258: *7* << define s >>
 s = '''
 # x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
 a=b+c
@@ -1443,7 +1420,7 @@ a=b+c
     # def method():
         # pass
     
-.. @+node:ekr.20111129084537.10357: *5* Notes
+.. @+node:ekr.20111129084537.10357: *6* Notes
 @language rest
 
 > All this means that it would likely be too expensive (or just too
@@ -1488,7 +1465,7 @@ token_range will then call ast.walk(N) to discover all of N's nodes,
 sort the list, and return the last element of the list!
 
 In short, token_range is clean and bullet-proof--a happy result.
-.. @+node:ekr.20111116103733.10402: *5* << define class Context >>
+.. @+node:ekr.20111116103733.10402: *6* << define class Context >>
 class Context(object):
 
     '''The base class of all context-related semantic data.
@@ -1501,7 +1478,7 @@ class Context(object):
     __str__ = __repr__
 
     @others
-.. @+node:ekr.20111116103733.10403: *6* cx ctor
+.. @+node:ekr.20111116103733.10403: *7* cx ctor
 def __init__(self,tree,parent_context,sd,kind):
 
     self.is_temp_context = kind in ['comprehension','for','lambda','with']
@@ -1552,11 +1529,11 @@ def __init__(self,tree,parent_context,sd,kind):
         self.module_context = self
     else:
         self.module_context = parent_context.module_context
-.. @+node:ekr.20111116103733.10404: *6* cx.ast_kind
+.. @+node:ekr.20111116103733.10404: *7* cx.ast_kind
 def ast_kind (self,tree):
 
     return tree.__class__.__name__
-.. @+node:ekr.20111116103733.10405: *6* cx.description & name
+.. @+node:ekr.20111116103733.10405: *7* cx.description & name
 def description (self):
     
     '''Return a description of this context and all parent contexts.'''
@@ -1569,7 +1546,7 @@ def description (self):
 
 # All subclasses override name.
 name = description
-.. @+node:ekr.20111116103733.10407: *6* cx.dump
+.. @+node:ekr.20111116103733.10407: *7* cx.dump
 def dump (self,level=0,verbose=False):
 
     if 0: # Just print the context
@@ -1584,7 +1561,7 @@ def dump (self,level=0,verbose=False):
             z.dump(level+1)
         for z in self.temp_contexts:
             z.dump(level+1)
-.. @+node:ekr.20111117031039.10099: *6* cx.format
+.. @+node:ekr.20111117031039.10099: *7* cx.format
 def format(self,brief=True):
     
     cx = self
@@ -1594,6 +1571,240 @@ def format(self,brief=True):
     # return ast.dump(cx._tree,annotate_fields=True,include_attributes=not brief)
     
     return AstFormatter().format(cx._tree)
+.. @+node:ekr.20111116161118.10113: *7* cx.getters & setters
+.. @+node:ekr.20111116161118.10114: *8* cx.assignments & helper
+def assignments (self,all=True):
+    
+    if all:
+        return self.all_assignments(result=None)
+    else:
+        return self.filter_assignments(self._statements)
+
+def all_assignments(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_assignments(self._statements))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_assignments(result)
+    return result
+    
+def filter_assignments(self,aList):
+    '''Return all the assignments in aList.'''
+    return [z for z in aList
+        if z.context_kind in ('assn','aug-assn')]
+.. @+node:ekr.20111116161118.10115: *8* cx.assignments_to
+def assignments_to (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for assn in self.assignments(all=all):
+        tree = assn.tree()
+        kind = self.ast_kind(tree)
+        if kind == 'Assign':
+            for target in tree.targets:
+                lhs = format(target)
+                if s == lhs:
+                    result.append(assn)
+                    break
+        else:
+            assert kind == 'AugAssign',kind
+            lhs = format(tree.target)
+            if s == lhs:
+                result.append(assn)
+
+    return result
+.. @+node:ekr.20111116161118.10116: *8* cx.assignments_using
+def assignments_using (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for assn in self.assignments(all=all):
+        tree = assn.tree()
+        kind = self.ast_kind(tree)
+        assert kind in ('Assign','AugAssign'),kind
+        rhs = format(tree.value)
+        i = rhs.find(s,0)
+        while -1 < i < len(rhs):
+            if g.match_word(rhs,i,s):
+                result.append(assn)
+                break
+            else:
+                i += len(s)
+
+    return result
+.. @+node:ekr.20111126074312.10386: *8* cx.calls & helpers
+def calls (self,all=True):
+    
+    if all:
+        return self.all_calls(result=None)
+    else:
+        return self.filter_calls(self._statements)
+
+def all_calls(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_calls(self._statements))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_calls(result)
+    return result
+    
+def filter_calls(self,aList):
+    '''Return all the calls in aList.'''
+    return [z for z in aList
+        if z.context_kind == 'call']
+.. @+node:ekr.20111126074312.10384: *8* cx.call_to
+def calls_to (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for call in self.calls(all=all):
+        tree = call.tree()
+        func = format(tree.func)
+        if s == func:
+            result.append(call)
+
+    return result
+.. @+node:ekr.20111126074312.10400: *8* cx.call_args_of
+def call_args_of (self,s,all=True):
+    
+    format,result = self.formatter.format,[]
+
+    for call in self.calls(all=all):
+        tree = call.tree()
+        func = format(tree.func)
+        if s == func:
+            result.append(call)
+
+    return result
+.. @+node:ekr.20111116161118.10163: *8* cx.classes
+def classes (self,all=True):
+    
+    if all:
+        return self.all_classes(result=None)
+    else:
+        return self._classes
+
+def all_classes(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self._classes)
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_classes(result)
+    return result
+.. @+node:ekr.20111116161118.10164: *8* cx.defs
+def defs (self,all=True):
+    
+    if all:
+        return self.all_defs(result=None)
+    else:
+        return self._defs
+
+def all_defs(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self._defs)
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_defs(result)
+    return result
+.. @+node:ekr.20111116161118.10152: *8* cx.functions & helpers
+def functions (self,all=True):
+    
+    if all:
+        return self.all_functions(result=None)
+    else:
+        return self.filter_functions(self._defs)
+
+def all_functions(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_functions(self._defs))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_functions(result)
+    return result
+.. @+node:ekr.20111116161118.10223: *9* cx.filter_functions & is_function
+def filter_functions(self,aList):
+    return [z for z in aList if self.is_function(z)]
+
+def is_function(self,f):
+    '''Return True if f is a function, not a method.'''
+    return True
+.. @+node:ekr.20111126074312.10449: *8* cx.line_number
+def line_number (self):
+    
+    return self._tree.lineno
+.. @+node:ekr.20111116161118.10153: *8* cx.methods & helpers
+def methods (self,all=True):
+    
+    if all:
+        return self.all_methods(result=None)
+    else:
+        return self.filter_methods(self._defs)
+
+def all_methods(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self.filter_methods(self._defs))
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_methods(result)
+    return result
+.. @+node:ekr.20111116161118.10225: *9* cx.filter_functions & is_function
+def filter_methods(self,aList):
+    return [z for z in aList if self.is_method(z)]
+
+def is_method(self,f):
+    '''Return True if f is a method, not a function.'''
+    return True
+.. @+node:ekr.20111116161118.10165: *8* cx.statements
+def statements (self,all=True):
+    
+    if all:
+        return self.all_statements(result=None)
+    else:
+        return self._statements
+
+def all_statements(self,result):
+
+    if result is None:
+        result = []
+    result.extend(self._statements)
+    for aList in (self._classes,self._defs):
+        for cx in aList:
+            cx.all_statements(result)
+    return result
+.. @+node:ekr.20111128103520.10259: *8* cx.token_range
+def token_range (self):
+    
+    tree = self._tree
+    
+    # return (
+        # g.toUnicode(self.byte_array[:tree.col_offset]),
+        # g.toUnicode(self.byte_array[:tree_end_col_offset]),
+    # )
+    
+    if hasattr(tree,'col_offset') and hasattr(tree,'end_col_offset'):
+        return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
+    else:
+        return -1,-1
+.. @+node:ekr.20111116161118.10166: *8* cx.tree
+def tree(self):
+    
+    '''Return the AST (Abstract Syntax Tree) associated with this query object
+    (Context Class).  This tree can be passed to the format method for printing.
+    '''
+    
+    return self._tree
 .. @+node:ekr.20111116161118.10113: *6* cx.getters & setters
 .. @+node:ekr.20111116161118.10114: *7* cx.assignments & helper
 def assignments (self,all=True):
@@ -1828,218 +2039,6 @@ def tree(self):
     '''
     
     return self._tree
-.. @+node:ekr.20111116161118.10113: *5* cx.getters & setters
-.. @+node:ekr.20111116161118.10114: *6* cx.assignments & helper
-def assignments (self,all=True):
-    
-    if all:
-        return self.all_assignments(result=None)
-    else:
-        return self.filter_assignments(self._statements)
-
-def all_assignments(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_assignments(self._statements))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_assignments(result)
-    return result
-    
-def filter_assignments(self,aList):
-    '''Return all the assignments in aList.'''
-    return [z for z in aList
-        if z.context_kind in ('assn','aug-assn')]
-.. @+node:ekr.20111116161118.10115: *6* cx.assignments_to
-def assignments_to (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for assn in self.assignments(all=all):
-        tree = assn.tree()
-        kind = self.ast_kind(tree)
-        if kind == 'Assign':
-            for target in tree.targets:
-                lhs = format(target)
-                if s == lhs:
-                    result.append(assn)
-                    break
-        else:
-            assert kind == 'AugAssign',kind
-            lhs = format(tree.target)
-            if s == lhs:
-                result.append(assn)
-
-    return result
-.. @+node:ekr.20111116161118.10116: *6* cx.assignments_using
-def assignments_using (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for assn in self.assignments(all=all):
-        tree = assn.tree()
-        kind = self.ast_kind(tree)
-        assert kind in ('Assign','AugAssign'),kind
-        rhs = format(tree.value)
-        i = rhs.find(s,0)
-        while -1 < i < len(rhs):
-            if g.match_word(rhs,i,s):
-                result.append(assn)
-                break
-            else:
-                i += len(s)
-
-    return result
-.. @+node:ekr.20111126074312.10386: *6* cx.calls & helpers
-def calls (self,all=True):
-    
-    if all:
-        return self.all_calls(result=None)
-    else:
-        return self.filter_calls(self._statements)
-
-def all_calls(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_calls(self._statements))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_calls(result)
-    return result
-    
-def filter_calls(self,aList):
-    '''Return all the calls in aList.'''
-    return [z for z in aList
-        if z.context_kind == 'call']
-.. @+node:ekr.20111126074312.10384: *6* cx.call_to
-def calls_to (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for call in self.calls(all=all):
-        tree = call.tree()
-        func = format(tree.func)
-        if s == func:
-            result.append(call)
-
-    return result
-.. @+node:ekr.20111126074312.10400: *6* cx.call_args_of
-def call_args_of (self,s,all=True):
-    
-    format,result = self.formatter.format,[]
-
-    for call in self.calls(all=all):
-        tree = call.tree()
-        func = format(tree.func)
-        if s == func:
-            result.append(call)
-
-    return result
-.. @+node:ekr.20111116161118.10163: *6* cx.classes
-def classes (self,all=True):
-    
-    if all:
-        return self.all_classes(result=None)
-    else:
-        return self._classes
-
-def all_classes(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self._classes)
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_classes(result)
-    return result
-.. @+node:ekr.20111116161118.10164: *6* cx.defs
-def defs (self,all=True):
-    
-    if all:
-        return self.all_defs(result=None)
-    else:
-        return self._defs
-
-def all_defs(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self._defs)
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_defs(result)
-    return result
-.. @+node:ekr.20111116161118.10152: *6* cx.functions & helpers
-def functions (self,all=True):
-    
-    if all:
-        return self.all_functions(result=None)
-    else:
-        return self.filter_functions(self._defs)
-
-def all_functions(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_functions(self._defs))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_functions(result)
-    return result
-.. @+node:ekr.20111116161118.10223: *7* cx.filter_functions & is_function
-def filter_functions(self,aList):
-    return [z for z in aList if self.is_function(z)]
-
-def is_function(self,f):
-    '''Return True if f is a function, not a method.'''
-    return True
-.. @+node:ekr.20111126074312.10449: *6* cx.line_number
-def line_number (self):
-    
-    return self._tree.lineno
-.. @+node:ekr.20111116161118.10153: *6* cx.methods & helpers
-def methods (self,all=True):
-    
-    if all:
-        return self.all_methods(result=None)
-    else:
-        return self.filter_methods(self._defs)
-
-def all_methods(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self.filter_methods(self._defs))
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_methods(result)
-    return result
-.. @+node:ekr.20111116161118.10225: *7* cx.filter_functions & is_function
-def filter_methods(self,aList):
-    return [z for z in aList if self.is_method(z)]
-
-def is_method(self,f):
-    '''Return True if f is a method, not a function.'''
-    return True
-.. @+node:ekr.20111116161118.10165: *6* cx.statements
-def statements (self,all=True):
-    
-    if all:
-        return self.all_statements(result=None)
-    else:
-        return self._statements
-
-def all_statements(self,result):
-
-    if result is None:
-        result = []
-    result.extend(self._statements)
-    for aList in (self._classes,self._defs):
-        for cx in aList:
-            cx.all_statements(result)
-    return result
 .. @+node:ekr.20111128103520.10259: *6* cx.token_range
 def token_range (self):
     
@@ -2054,29 +2053,7 @@ def token_range (self):
         return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
     else:
         return -1,-1
-.. @+node:ekr.20111116161118.10166: *6* cx.tree
-def tree(self):
-    
-    '''Return the AST (Abstract Syntax Tree) associated with this query object
-    (Context Class).  This tree can be passed to the format method for printing.
-    '''
-    
-    return self._tree
-.. @+node:ekr.20111128103520.10259: *5* cx.token_range
-def token_range (self):
-    
-    tree = self._tree
-    
-    # return (
-        # g.toUnicode(self.byte_array[:tree.col_offset]),
-        # g.toUnicode(self.byte_array[:tree_end_col_offset]),
-    # )
-    
-    if hasattr(tree,'col_offset') and hasattr(tree,'end_col_offset'):
-        return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
-    else:
-        return -1,-1
-.. @+node:ekr.20120318110848.9724: *4* Make leoInspect a stand-alone module
+.. @+node:ekr.20120318110848.9724: *5* Make leoInspect a stand-alone module
 
 .. @+node:ekr.20120229094652.15178: *3* Minor
 .. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
@@ -2487,6 +2464,14 @@ self.global_commands_dict = {}
 
 Most of these will be moved to the Leo 4.10.1 list.
 .. @+node:ekr.20120313134250.9853: *4* First
+.. @+node:ekr.20120327163022.9744: *5* The @auto script *must* put @first nodes in root node
+@nocolor-node
+
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
 .. @+node:ekr.20111222113610.10245: *5* Fix bug 711158: Warn if same .leo file open in another Leo instance
 See https://bugs.launchpad.net/leo-editor/+bug/711158
 .. @+node:ekr.20111025141618.16484: *5* Fix bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer
