@@ -3,20 +3,8 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110609102702.16471: ** To do: 4.10 final
-@language rest
-
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
-
-Top 10:
-
-* Rendering to tex,pdf, etc.
-* Use c.db for marks and expansion bits.
-* Restart vim project
-* Bridges
-
-
 .. @+node:ekr.20111017132257.15891: *3* Urgent: Get IPython working again
 .. @+node:ekr.20111017132257.15890: *4* Investigate how IPython hijacks event loops
 http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
@@ -3378,6 +3366,12 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
 Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
 .. @+node:ekr.20120226183512.10199: *3* Features
+Most important
+
+* Rendering to tex,pdf, etc.
+* Use c.db for marks and expansion bits.
+* Restart vim project
+* Bridges
 .. @+node:ekr.20111109083738.9796: *4* First
 .. @+node:ekr.20120226180525.10191: *5* Run unit tests interactively?
 @nocolor-node

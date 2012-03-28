@@ -1601,11 +1601,10 @@ if not g.app.isExternalUnitTest:
         c.atFileCommands.readOneAtShadowNode (fn,root,force=True)
         c.undoer.afterChangeTree(p,'fc.readOneAtShadowNode',b)
         assert child.isCloned(),'fail 2: intended test fails'
+        c.undoer.undo()
     finally:
-        if 1:
-            c.undoer.undo()
-            c.selectPosition(p)
-            c.redraw()
+        c.selectPosition(p)
+        c.redraw()
 #@+node:ekr.20120228174052.3929: *5* Node 1
 # node 1 text A.
 #@+node:ekr.20050105093136: *4* @test at.remove

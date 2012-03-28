@@ -2653,6 +2653,13 @@ The new code is much like g.computeFileUrl.
 
 Added code to findAllUnitTestNodes to look up the tree for @test & @suite nodes
 if none have been found so far.  Only for the run-unit-tests-externally/locally.
+#@+node:ekr.20120321174708.9744: *4* Fixed failing unit tests in distro
+@nocolor-node
+
+The @test at.readOneAtShadowNode retains @shadow links node
+give fail1: test not set up properly.
+The outline is then corrupted, causing other unit tests to fail.
+The partial solution is not to call the undo command in the finally clause.
 #@+node:ekr.20120327163022.9739: *3* Features
 #@+node:ekr.20120324124808.9833: *4* Alt-Home & Alt-End collapse all possible nodes
 #@+node:ekr.20120326061010.9728: *4* Added g.restore_selection_range
@@ -2773,7 +2780,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/ea3c29888d8ac92b
 Scaled the screen-shot using:
 
 http://stackoverflow.com/questions/3029422/image-auto-resize-to-fit-div-container
-#@+node:ekr.20120323124339.9721: *3* Investigated problem with desktop shortcut 
+#@+node:ekr.20120323124339.9721: *3* Investigated problem with desktop shortcut
 @language rest
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/a03661d8c1eec0c6
