@@ -237,7 +237,7 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618">@language python
+<t tx="edream.110203113231.618" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">@language python
 @tabwidth -4
 @pagewidth 80
 </t>

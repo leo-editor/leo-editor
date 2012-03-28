@@ -149,19 +149,7 @@ File "C:\leo.repo\trunk\leo\doc\html\silver_city.css"
 File "C:\leo.repo\trunk\leo\doc\html\techReport.html"
 
 SetOutPath $INSTDIR\leo\doc\html\screen-shots
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\PCWindow.gif"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\PCWindow.png"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\at-test-nodes.jpg"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\find-tab.jpg"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\leo-qt-at-file-first-child.JPG"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\leo-qt-at-file-main-node.JPG"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\leo-qt-at-file-named-child.JPG"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\leo-qt-find-tab.JPG"
 File "C:\leo.repo\trunk\leo\doc\html\screen-shots\leo-qt-main-window-linux.png"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\leo-qt-main-window.JPG"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\leo-tk-main-window.jpg"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\spell-tab.jpg"
-File "C:\leo.repo\trunk\leo\doc\html\screen-shots\unit-test-leo.jpg"
 
 SetOutPath $INSTDIR\leo\extensions
 File "C:\leo.repo\trunk\leo\extensions\__init__.py"

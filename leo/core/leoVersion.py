@@ -26,7 +26,7 @@ except ImportError:
     bzr_version = None
 #@-<< imports >>
 
-static_version = 5215
+static_version = 5216
 static_date = "2012-03-29"
 version = "4.10 final"
 
