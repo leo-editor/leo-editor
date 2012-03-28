@@ -2648,6 +2648,11 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 groups.google.com/group/leo-editor/browse_thread/thread/bb063866875a81c3/6162e6108b09428e
 
 The new code is much like g.computeFileUrl.
+#@+node:ekr.20120327163022.9741: *4* Restored special case for run-selected-unit-tests
+@language rest
+
+Added code to findAllUnitTestNodes to look up the tree for @test & @suite nodes
+if none have been found so far.  Only for the run-unit-tests-externally/locally.
 #@+node:ekr.20120327163022.9739: *3* Features
 #@+node:ekr.20120324124808.9833: *4* Alt-Home & Alt-End collapse all possible nodes
 #@+node:ekr.20120326061010.9728: *4* Added g.restore_selection_range

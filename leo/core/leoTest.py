@@ -1470,7 +1470,15 @@ class TestManager:
                     else:
                         p.moveToThreadNext()
                         
-        # Remove duplicates
+        # Another important special case for run-selected-tests.
+        # Look up the tree for @test & @suite nodes if none have been found so far.
+        if not result and not marked and not all:
+            for p in c.p.parents():
+                if tm.isTestNode(p) or tm.isSuiteNode(p):
+                    result.append(p.copy())
+                    break
+                        
+        # Remove duplicates.
         result2,seen = [],[]
         for p in result:
             if p.v not in seen:
