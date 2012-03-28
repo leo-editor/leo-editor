@@ -17,7 +17,7 @@
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
-<v t="ekr.20120319132945.1853"><vh>Leo 4.10 b1</vh></v>
+<v t="ekr.20120328150744.1791"><vh>Leo 4.10 final</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -178,7 +178,7 @@ There are now two ways to install Leo on Windows:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.10-b1
+Version: 4.10-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -192,11 +192,9 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux
 </t>
-<t tx="EKR.20040519090846.9">@language rest
+<t tx="EKR.20040519090846.9">Leo 4.10 final                                         March 29, 2012
 
-Leo 4.10 b1                                         March 21, 2012
-
-Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
+Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html
@@ -219,8 +217,32 @@ The highlights of Leo 4.10:
   - Improved handling of URL's.
   - Improved editing of non-Leo files.
   - Improvements create "weightless" unit testing.
+  - Improved Leo's home page.
 * Easier installation on MacOS.
 * Fixed almost 70 bugs.
+
+The Easter Eggs
+---------------
+
+1. Tab completion now shows all @command &amp; @button nodes.
+
+Put all your common scripts in @command nodes in myLeoSettings.leo.
+Typing &lt;Alt-X&gt;@c&lt;Tab&gt; will remind you of the names of these scripts.
+You can execute the scripts by name without the "@command-" prefix.
+
+2. Improved abbreviation capabilities.
+
+Virtually any kind of abbreviation is possible. For example, ~a to ã.
+
+3. Improved handling of URL's.
+
+URL's can be used as links to other Leo outlines.
+
+4 Weightless unit testing.
+
+The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit,
+alt-4,... Several seemingly innocuous changes made this work without
+"friction". The result is a remarkable increase in productivity.
 
 Links:
 ------
@@ -647,7 +669,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.10-b1' ##version
+version = '4.10-final' ##version
 
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
@@ -1154,11 +1176,9 @@ zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
 zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 
 # assert g.os_path_exists(manifest)</t>
-<t tx="ekr.20120319132945.1853">@language rest
+<t tx="ekr.20120328150744.1791">Leo 4.10 final                                         March 29, 2012
 
-Leo 4.10 b1                                         March 21, 2012
-
-Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
+Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html
@@ -1181,8 +1201,32 @@ The highlights of Leo 4.10:
   - Improved handling of URL's.
   - Improved editing of non-Leo files.
   - Improvements create "weightless" unit testing.
+  - Improved Leo's home page.
 * Easier installation on MacOS.
 * Fixed almost 70 bugs.
+
+The Easter Eggs
+---------------
+
+1. Tab completion now shows all @command &amp; @button nodes.
+
+Put all your common scripts in @command nodes in myLeoSettings.leo.
+Typing &lt;Alt-X&gt;@c&lt;Tab&gt; will remind you of the names of these scripts.
+You can execute the scripts by name without the "@command-" prefix.
+
+2. Improved abbreviation capabilities.
+
+Virtually any kind of abbreviation is possible. For example, ~a to ã.
+
+3. Improved handling of URL's.
+
+URL's can be used as links to other Leo outlines.
+
+4 Weightless unit testing.
+
+The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit,
+alt-4,... Several seemingly innocuous changes made this work without
+"friction". The result is a remarkable increase in productivity.
 
 Links:
 ------

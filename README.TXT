@@ -1,8 +1,6 @@
-@language rest
+Leo 4.10 final                                         March 29, 2012
 
-Leo 4.10 b1                                         March 21, 2012
-
-Leo 4.10 b1 is now available at: http://sourceforge.net/projects/leo/files/
+Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html
@@ -25,8 +23,32 @@ The highlights of Leo 4.10:
   - Improved handling of URL's.
   - Improved editing of non-Leo files.
   - Improvements create "weightless" unit testing.
+  - Improved Leo's home page.
 * Easier installation on MacOS.
 * Fixed almost 70 bugs.
+
+The Easter Eggs
+---------------
+
+1. Tab completion now shows all @command & @button nodes.
+
+Put all your common scripts in @command nodes in myLeoSettings.leo.
+Typing <Alt-X>@c<Tab> will remind you of the names of these scripts.
+You can execute the scripts by name without the "@command-" prefix.
+
+2. Improved abbreviation capabilities.
+
+Virtually any kind of abbreviation is possible. For example, ~a to ã.
+
+3. Improved handling of URL's.
+
+URL's can be used as links to other Leo outlines.
+
+4 Weightless unit testing.
+
+The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit,
+alt-4,... Several seemingly innocuous changes made this work without
+"friction". The result is a remarkable increase in productivity.
 
 Links:
 ------

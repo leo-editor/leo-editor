@@ -9,7 +9,6 @@
 # Leo 4.7.1 final: February 26, 2010.
 # Leo 4.8   final: November 26, 2010.
 # Leo 4.9   final: June 21, 2011.
-# Leo 4.10 b1:     March 21, 2011.
 # Leo 4.10  final: March 29, 2011.
 
 #@@language python
@@ -27,7 +26,7 @@ except ImportError:
     bzr_version = None
 #@-<< imports >>
 
-static_version = 5183
+static_version = 5215
 static_date = "2012-03-29"
 version = "4.10 final"
 

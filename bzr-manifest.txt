@@ -1,8 +1,12 @@
+
+c:\leo.repo\trunk>c:\apps\bazaar\bzr.exe ls -V -R 
+.bzrignore
 INSTALL.TXT
 LICENSE.TXT
 Makefile
 PKG-INFO.TXT
 README.TXT
+bzr-manifest.txt
 launchLeo.py
 leo/
 leo/Icons/
@@ -1093,19 +1097,7 @@ leo/doc/html/leo_rst.css
 leo/doc/html/leo_toc.html.txt
 leo/doc/html/make.bat
 leo/doc/html/screen-shots/
-leo/doc/html/screen-shots/PCWindow.gif
-leo/doc/html/screen-shots/PCWindow.png
-leo/doc/html/screen-shots/at-test-nodes.jpg
-leo/doc/html/screen-shots/find-tab.jpg
-leo/doc/html/screen-shots/leo-qt-at-file-first-child.JPG
-leo/doc/html/screen-shots/leo-qt-at-file-main-node.JPG
-leo/doc/html/screen-shots/leo-qt-at-file-named-child.JPG
-leo/doc/html/screen-shots/leo-qt-find-tab.JPG
 leo/doc/html/screen-shots/leo-qt-main-window-linux.png
-leo/doc/html/screen-shots/leo-qt-main-window.JPG
-leo/doc/html/screen-shots/leo-tk-main-window.jpg
-leo/doc/html/screen-shots/spell-tab.jpg
-leo/doc/html/screen-shots/unit-test-leo.jpg
 leo/doc/html/silver_city.css
 leo/doc/html/techReport.html
 leo/doc/inkscape-template.svg
@@ -1722,3 +1714,4 @@ leo_to_html.xsl
 profileLeo.py
 pylint-leo.bat
 pylint-leo.py
+setup.py
