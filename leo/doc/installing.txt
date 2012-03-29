@@ -72,7 +72,7 @@ installer for Windows users.
 .. @+node:ekr.20100817101952.4303: *3* Installing Leo itself
 .. links
 
-.. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.9-final/
+.. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's snapshots page`:     http://www.greygreen.org/leo/
 .. _`nightly snapshot`:             http://www.greygreen.org/leo/

@@ -651,7 +651,7 @@ run-all-unit-tests-externally = Alt-5
 
 Leo 4.10 final                                         March 29, 2012
 
-Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/
+Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
 
 Leo is a text editor, data organizer, project manager and much more.
 http://webpages.charter.net/edreamleo/intro.html

@@ -33,7 +33,7 @@ Downloading Leo
 
 .. links
 
-.. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.10-b1/
+.. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.10%20final/
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's snapshots page`:     http://www.greygreen.org/leo/
 .. _`nightly snapshot`:             http://www.greygreen.org/leo/
