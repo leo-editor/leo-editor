@@ -132,6 +132,7 @@ def onCreate (tag, keys):
         st = ipy_leo._request_immediate_connect
     except AttributeError:
         return
+
     if st:
         c.ipythonController.startIPython()
 
@@ -156,8 +157,8 @@ class ipythonController:
         c = self.c ; k = c.k
 
         table = (
-            ('start-ipython',           self.startIPython),
-            ('push-to-ipython',         self.pushToIPythonCommand),
+            ('start-ipython',   self.startIPython),
+            ('push-to-ipython', self.pushToIPythonCommand),
         )
 
         shortcut = None
@@ -168,13 +169,14 @@ class ipythonController:
         for commandName,func in table:
             k.registerCommand (commandName,shortcut,func,pane='all',verbose=True)
     #@+node:ekr.20080201151802.1: *3* Commands
-    #@+node:ekr.20080201143319.10: *4* startIPython
+    #@+node:ekr.20080201143319.10: *4* startIPython (rewrite)
     def startIPython(self,event=None):
 
         '''The start-ipython command'''
 
         c = self.c
         global gIP
+
         try:
             from leo.external import ipy_leo
         except ImportError:
@@ -182,15 +184,16 @@ class ipythonController:
             return
 
         if gIP:
-            # if we are already running, just inject a new commander for current document
-
+            # Just inject a new commander for current document.
+            # if we are already running.
             leox = leoInterface(c,g) # inject leox into the namespace.
             ipy_leo.update_commander(leox)
             return
 
         try:
             api = IPython.ipapi
-            leox = leoInterface(c,g) # inject leox into the namespace.
+            leox = leoInterface(c,g)
+                # Inject leox into the IPython namespace.
 
             existing_ip = api.get()
             if existing_ip is None:

@@ -1,12 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120092047.6087: * @file ../external/ipy_leo.py
-#@@language python
-#@@tabwidth -4
-#@+others
-#@+node:ekr.20100120092047.6088: ** ipy_leo declarations
 """ ILeo - Leo plugin for IPython
 
 """
+
+#@@language python
+#@@tabwidth -4
+
+#@+<< ipy_leo imports >>
+#@+node:ekr.20100120092047.6088: ** << ipy_leo imports >>
 import IPython.ipapi
 import IPython.genutils
 import IPython.generics
@@ -16,10 +18,18 @@ import UserDict
 from IPython.ipapi import TryNext 
 import IPython.macro
 import IPython.Shell
+#@-<< ipy_leo imports >>
 
+# Globals.
 _leo_push_history = set()
-
 wb = None
+
+# EKR: these were not explicitly inited.
+ip = None
+_request_immediate_connect = None
+    # Set below in lleo_f.
+
+#@+others
 #@+node:ekr.20100120092047.6089: ** init_ipython
 def init_ipython(ipy):
     """ This will be run by _ip.load('ipy_leo') 
