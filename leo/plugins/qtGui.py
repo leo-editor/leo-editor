@@ -7957,7 +7957,8 @@ class leoQtGui(leoGui.leoGui):
         
         if c.exists and tag == 'body':
             self.active = True
-            c.bodyWantsFocusNow()
+            # Retain the focus that existed when the deactivate event happened.
+                # c.bodyWantsFocusNow()
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
     def onDeactivateEvent (self,event,c,obj,tag):
