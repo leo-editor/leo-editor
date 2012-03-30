@@ -5,17 +5,145 @@
 .. @+all
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
-.. @+node:ekr.20111017132257.15891: *3* Urgent: Get IPython working again
-.. @+node:ekr.20111017132257.15890: *4* Investigate how IPython hijacks event loops
+.. @+node:ekr.20120330040023.9778: *3* First
+.. @+node:ekr.20120330040023.9777: *4* clean leoTree.selectHelper
+.. @+node:ekr.20070423101911: *5* selectHelper (leoTree) (changed 4.10)
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+    
+    call_event_handlers = p != old_p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace(p and p.h,g.callers())
+            
+    if call_event_handlers:
+        unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    else:
+        unselect = True
+
+    if unselect:
+        << unselect the old node >>
+        
+    if call_event_handlers:
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+    if call_event_handlers:
+        if call_event_handlers:
+            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            select = True
+        if select:
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+    else:
+        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+        
+    c.setCurrentPosition(p)
+    << set the current node >>
+    p.restoreCursorAndScroll(w)
+        # Was in setBodyTextAfterSelect (in <select the new node>)
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace('**** after old: %s new %s' % (
+            # old_p and len(old_p.b),len(p.b)))
+
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine(p.get_UNL())
+
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+.. @+node:ekr.20120325072403.7771: *6* << unselect the old node >> (selectHelper)
+# Remember the position of the scrollbar *before* making any changes.
+# This does not work if we are switching body editors!
+    # if old_p:
+        # old_p.v.scrollBarSpot = yview = body.getYScrollPosition() if body else None
+        # if trace: g.trace('old scroll: %3s insert: %3s %s' % (
+            # yview,old_p.v.insertSpot,old_p.h))
+        
+# Remember the selection range and insert point.
+# This does not work if we are switching body editors!
+# Instead, w.setInsertPoint and w.setSelectionRangeHelper should do the saving.
+
+    # if old_p and body:
+        # old_p.v.insertSpot = ins = body.getInsertPoint()
+        # i,j = body.getSelectionRange()
+        # assert(i<=j)
+        # old_p.v.selectionStart = i
+        # old_p.v.selectionLength = j-i
+        # if trace: g.trace(i,j,ins)
+    
+# New in Leo 4.10: the code sets v.insertSpot as soon as it changes (not here).
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+.. @+node:ekr.20040803072955.133: *6* << set the current node >> (selectHelper)
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+# Was in ctor.
+use_chapters = c.config.getBool('use_chapters')
+
+if use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+c.treeFocusHelper() # 2010/12/14
+c.undoer.onSelect(old_p,p)
+.. @+node:ekr.20120325072403.7767: *6* << select the new node >> (selectHelper)
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+.. @+node:ekr.20111017132257.15891: *4* Urgent: Get IPython working again
+@language python
+@language rest
+
+Port ipy_leo.py to latest version of IPython
+
+Investigate how IPython hijacks event loops
 http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
-.. @+node:ekr.20111009162434.7204: *4* Port ipy_leo.py to latest version of IPython
-.. @+node:ekr.20120208062900.10146: *3* Urgent: Complete new_modes
+
+pyos_inputhook is relevant
+
+IPython lib.inputhook
+http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
+.. @+node:ekr.20120208062900.10146: *4* Urgent: Complete new_modes
 @nocolor-node
 
 This will eliminate the hacks for *entry-commands* and *command-prompt keys.
 
 ModeController: a wrapper for g.app.config.modeCommandsDict
-.. @+node:ekr.20120212060348.10374: *4*  << global switches >>
+.. @+node:ekr.20120212060348.10374: *5*  << global switches >>
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
@@ -66,12 +194,12 @@ if 0:
     print('*** isPython3: %s' % isPython3)
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
-.. @+node:ekr.20120208061308.10131: *4* Weird stroke code
+.. @+node:ekr.20120208061308.10131: *5* Weird stroke code
 @nocolor-node
 
 isFKey and k.isPlainKey don't seem to know the types of their args.
-.. @+node:ekr.20061031131434.181: *5* k.Shortcuts & bindings
-.. @+node:ekr.20061031131434.176: *6* k.computeInverseBindingDict
+.. @+node:ekr.20061031131434.181: *6* k.Shortcuts & bindings
+.. @+node:ekr.20061031131434.176: *7* k.computeInverseBindingDict
 def computeInverseBindingDict (self):
 
     k = self ; d = {}
@@ -98,7 +226,7 @@ def computeInverseBindingDict (self):
             d [si.commandName] = shortcutList
 
     return d
-.. @+node:ekr.20061031131434.179: *6* k.getShortcutForCommand/Name
+.. @+node:ekr.20061031131434.179: *7* k.getShortcutForCommand/Name
 def getShortcutForCommandName (self,commandName):
 
     k = self ; c = k.c
@@ -125,7 +253,7 @@ def getShortcutForCommand (self,command):
                 if si.commandName == command.__name__:
                     return stroke
     return None
-.. @+node:ekr.20090518072506.8494: *6* k.isFKey
+.. @+node:ekr.20090518072506.8494: *7* k.isFKey
 def isFKey (self,stroke):
 
     k = self
@@ -134,7 +262,7 @@ def isFKey (self,stroke):
     s = stroke.s if g.isStroke(stroke) else stroke
     s = s.lower()
     return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-.. @+node:ekr.20061031131434.182: *6* k.isPlainKey
+.. @+node:ekr.20061031131434.182: *7* k.isPlainKey
 def isPlainKey (self,stroke):
 
     '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
@@ -166,7 +294,7 @@ def isPlainKey (self,stroke):
 
         # g.trace(isPlain,repr(shortcut))
         return isPlain and not self.isFKey(shortcut)
-.. @+node:ekr.20061031131434.191: *6* k.prettyPrintKey
+.. @+node:ekr.20061031131434.191: *7* k.prettyPrintKey
 def prettyPrintKey (self,stroke,brief=False):
 
     trace = False and not g.unitTesting
@@ -209,7 +337,7 @@ def prettyPrintKey (self,stroke,brief=False):
         s = s[:-1]+'Space' # 2010/11/06
         
     return s
-.. @+node:ekr.20061031131434.184: *6* k.strokeFromSetting
+.. @+node:ekr.20061031131434.184: *7* k.strokeFromSetting
 def strokeFromSetting (self,setting,addKey=True):
 
     k = self
@@ -236,7 +364,7 @@ def strokeFromSetting (self,setting,addKey=True):
 
 canonicalizeShortcut = strokeFromSetting # For compatibility.
 ### strokeFromSetting = shortcutFromSetting
-.. @+node:ekr.20061031131434.185: *7* << define cmd, ctrl, alt, shift >>
+.. @+node:ekr.20061031131434.185: *8* << define cmd, ctrl, alt, shift >>
 s2 = s.lower()
 
 cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
@@ -244,18 +372,18 @@ ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
 alt   = s2.find("alt") >= 0
 shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
 meta  = s2.find("meta") >= 0
-.. @+node:ekr.20061031131434.186: *7* << swap cmd and ctrl keys >>
+.. @+node:ekr.20061031131434.186: *8* << swap cmd and ctrl keys >>
 if ctrl and not cmd:
     cmd = True ; ctrl = False
 if alt and not ctrl:
     ctrl = True ; alt = False
-.. @+node:ekr.20061031131434.187: *7* << convert minus signs to plus signs >>
+.. @+node:ekr.20061031131434.187: *8* << convert minus signs to plus signs >>
 # Replace all minus signs by plus signs, except a trailing minus:
 if s.endswith('-'):
     s = s[:-1].replace('-','+') + '-'
 else:
     s = s.replace('-','+')
-.. @+node:ekr.20061031131434.188: *7* << compute the last field >>
+.. @+node:ekr.20061031131434.188: *8* << compute the last field >>
 if s.endswith('+'):
     last = '+'
 else:
@@ -286,7 +414,7 @@ else:
     # This is a *one-way* translation, done only here.
     d = k.settingsNameDict
     last = d.get(last.lower(),last)
-.. @+node:ekr.20061031131434.189: *7* << compute shortcut >>
+.. @+node:ekr.20061031131434.189: *8* << compute shortcut >>
 table = (
     (alt, 'Alt+'),
     (ctrl,'Ctrl+'),
@@ -298,7 +426,7 @@ table = (
 
 # new in 4.4b3: convert all characters to unicode first.
 shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
-.. @+node:ekr.20110606004638.16929: *6* k.stroke2char
+.. @+node:ekr.20110606004638.16929: *7* k.stroke2char
 def stroke2char (self,stroke):
     
     '''Convert a stroke to an (insertable) char.
@@ -358,7 +486,7 @@ def stroke2char (self,stroke):
 
     if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
     return val
-.. @+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
+.. @+node:ekr.20061031131434.100: *5* k.addModeCommands (enterModeCallback)
 def addModeCommands (self):
 
     '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
@@ -379,8 +507,8 @@ def addModeCommands (self):
         c.commandsDict[key] = f = enterModeCallback
         k.inverseCommandsDict [f.__name__] = key
         if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-.. @+node:ekr.20120208064440.10192: *4* From leoConfig...
-.. @+node:ekr.20060102103625.1: *5* doMode (ParserBaseClass)
+.. @+node:ekr.20120208064440.10192: *5* From leoConfig...
+.. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
 
     '''Parse an @mode node and create the enter-<name>-mode command.'''
@@ -456,7 +584,7 @@ def doMode(self,p,kind,name,val):
         
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20041120112043: *5* parseShortcutLine (ParserBaseClass)
+.. @+node:ekr.20041120112043: *6* parseShortcutLine (ParserBaseClass)
 def parseShortcutLine (self,kind,s):
 
     '''Parse a shortcut line.  Valid forms:
@@ -523,7 +651,7 @@ def parseShortcutLine (self,kind,s):
     si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
     if trace: g.trace('%25s %s' % (name,si))
     return name,si
-.. @+node:ekr.20060102103625: *5* createModeCommand (ParserBaseClass)
+.. @+node:ekr.20060102103625: *6* createModeCommand (ParserBaseClass)
 def createModeCommand (self,modeName,name,modeDict):
 
     modeName = 'enter-' + modeName.replace(' ','-')
@@ -540,7 +668,7 @@ def createModeCommand (self,modeName,name,modeDict):
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
     
-.. @+node:ekr.20120208064440.10148: *4* class ModeController
+.. @+node:ekr.20120208064440.10148: *5* class ModeController
 class ModeController:
     
     def __init__ (self,c):
@@ -555,14 +683,14 @@ class ModeController:
     __str__ = __repr__
             
     @others
-.. @+node:ekr.20120208064440.10161: *5* addModeCommands (ModeController)
+.. @+node:ekr.20120208064440.10161: *6* addModeCommands (ModeController)
 def addModeCommands(self):
     
     g.trace(self,self.d)
     
     for mode in self.d.values():
         mode.createModeCommand()
-.. @+node:ekr.20120208064440.10163: *5* getMode (ModeController)
+.. @+node:ekr.20120208064440.10163: *6* getMode (ModeController)
 def getMode (self,modeName):
     
     g.trace(self)
@@ -571,7 +699,7 @@ def getMode (self,modeName):
     g.trace(modeName,mode)
     return mode
     
-.. @+node:ekr.20120208064440.10164: *5* makeMode (ModeController)
+.. @+node:ekr.20120208064440.10164: *6* makeMode (ModeController)
 def makeMode (self,name,aList):
 
 
@@ -580,7 +708,7 @@ def makeMode (self,name,aList):
     g.trace(self,mode.name,mode)
     self.d[mode.name] = mode
     
-.. @+node:ekr.20120208064440.10150: *4* class ModeInfo
+.. @+node:ekr.20120208064440.10150: *5* class ModeInfo
 class ModeInfo:
     
     def __repr__(self):
@@ -590,7 +718,7 @@ class ModeInfo:
     
     @others
     
-.. @+node:ekr.20120208064440.10193: *5*  ctor (ModeInfo)
+.. @+node:ekr.20120208064440.10193: *6*  ctor (ModeInfo)
 def __init__ (self,c,name,aList):
     
     g.trace(name,aList)
@@ -605,7 +733,7 @@ def __init__ (self,c,name,aList):
     self.prompt = self.computeModePrompt(self.name)
 
     self.init(name,aList)
-.. @+node:ekr.20120208064440.10152: *5* computeModeName (ModeInfo)
+.. @+node:ekr.20120208064440.10152: *6* computeModeName (ModeInfo)
 def computeModeName (self,name):
 
     s = name.strip().lower()
@@ -623,7 +751,7 @@ def computeModeName (self,name):
         s = s[:i]
 
     return s + '-mode'
-.. @+node:ekr.20120208064440.10156: *5* computeModePrompt (ModeInfo)
+.. @+node:ekr.20120208064440.10156: *6* computeModePrompt (ModeInfo)
 def computeModePrompt (self,name):
     
     assert name == self.name
@@ -636,7 +764,7 @@ def computeModePrompt (self,name):
         prompt = s
     
     return prompt
-.. @+node:ekr.20120208064440.10160: *5* createModeBindings (ModeInfo) (NOT USED)
+.. @+node:ekr.20120208064440.10160: *6* createModeBindings (ModeInfo) (NOT USED)
 ##### k.createModeBindings is used instead????
 
 def createModeBindings (self,w):
@@ -680,7 +808,7 @@ def createModeBindings (self,w):
                     stroke=stroke)
                 k.masterBindingsDict[modeName] = d2
                 if trace: g.trace(modeName,d2)
-.. @+node:ekr.20120208064440.10195: *5* createModeCommand (ModeInfo)
+.. @+node:ekr.20120208064440.10195: *6* createModeCommand (ModeInfo)
 def createModeCommand (self):
     
     g.trace(self)
@@ -695,7 +823,7 @@ def createModeCommand (self):
     k.inverseCommandsDict [f.__name__] = key
     
     g.trace('(ModeInfo)',f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-.. @+node:ekr.20120208064440.10180: *5* enterMode (ModeInfo)
+.. @+node:ekr.20120208064440.10180: *6* enterMode (ModeInfo)
 def enterMode (self):
     
     g.trace('(ModeInfo)')
@@ -705,7 +833,7 @@ def enterMode (self):
         # Allow inner commands in the mode.
     event=None ####
     k.generalModeHandler(event,modeName=self.name)
-.. @+node:ekr.20120208064440.10153: *5* init (ModeInfo) (Can we check command names here??)
+.. @+node:ekr.20120208064440.10153: *6* init (ModeInfo) (Can we check command names here??)
 def init (self,name,dataList):
     
     '''aList is a list of tuples (commandName,si).'''
@@ -736,7 +864,7 @@ def init (self,name,dataList):
                 aList.extend(aList3)
             aList.append(si)
             d[name] = aList
-.. @+node:ekr.20120208064440.10158: *5* initMode (ModeInfo)
+.. @+node:ekr.20120208064440.10158: *6* initMode (ModeInfo)
 def initMode (self):
     
     trace = False and not g.unitTesting
@@ -778,8 +906,8 @@ def initMode (self):
     k.createModeBindings(self.name,self.d,w)
     #### self.createModeBindings(w)
     k.showStateAndMode(prompt=self.name)
-.. @+node:ekr.20120208064440.10191: *4* From leoKeys...
-.. @+node:ekr.20061031131434.76: *5* k.__init__
+.. @+node:ekr.20120208064440.10191: *5* From leoKeys...
+.. @+node:ekr.20061031131434.76: *6* k.__init__
 def __init__ (self,c):
 
     '''Create a key handler for c.'''
@@ -819,8 +947,8 @@ def __init__ (self,c):
 
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09
-.. @+node:ekr.20120208064440.10190: *5* k.Modes (no change)
-.. @+node:ekr.20061031131434.100: *6* k.addModeCommands (enterModeCallback)
+.. @+node:ekr.20120208064440.10190: *6* k.Modes (no change)
+.. @+node:ekr.20061031131434.100: *7* k.addModeCommands (enterModeCallback)
 def addModeCommands (self):
 
     '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
@@ -841,7 +969,7 @@ def addModeCommands (self):
         c.commandsDict[key] = f = enterModeCallback
         k.inverseCommandsDict [f.__name__] = key
         if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-.. @+node:ekr.20061031131434.157: *6* k.badMode
+.. @+node:ekr.20061031131434.157: *7* k.badMode
 def badMode(self,modeName):
 
     k = self
@@ -849,7 +977,7 @@ def badMode(self,modeName):
     k.clearState()
     if modeName.endswith('-mode'): modeName = modeName[:-5]
     k.setLabelGrey('@mode %s is not defined (or is empty)' % modeName)
-.. @+node:ekr.20061031131434.158: *6* k.createModeBindings
+.. @+node:ekr.20061031131434.158: *7* k.createModeBindings
 def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
@@ -893,7 +1021,7 @@ def createModeBindings (self,modeName,d,w):
                     nextMode=si.nextMode,
                     stroke=stroke)
                 k.masterBindingsDict [ modeName ] = d2
-.. @+node:ekr.20120208064440.10179: *6* k.endMode
+.. @+node:ekr.20120208064440.10179: *7* k.endMode
 def endMode(self):
 
     k = self ; c = k.c
@@ -910,14 +1038,14 @@ def endMode(self):
 
     if w:
         c.widgetWantsFocusNow(w)
-.. @+node:ekr.20061031131434.160: *6* k.enterNamedMode
+.. @+node:ekr.20061031131434.160: *7* k.enterNamedMode
 def enterNamedMode (self,event,commandName):
 
     k = self ; c = k.c
     modeName = commandName[6:]
     c.inCommand = False # Allow inner commands in the mode.
     k.generalModeHandler(event,modeName=modeName)
-.. @+node:ekr.20061031131434.161: *6* k.exitNamedMode
+.. @+node:ekr.20061031131434.161: *7* k.exitNamedMode
 def exitNamedMode (self,event=None):
     
     '''Exit an input mode.'''
@@ -928,7 +1056,7 @@ def exitNamedMode (self,event=None):
         k.endMode()
 
     k.showStateAndMode()
-.. @+node:ekr.20061031131434.165: *6* k.modeHelp & helper (revise helper)
+.. @+node:ekr.20061031131434.165: *7* k.modeHelp & helper (revise helper)
 def modeHelp (self,event):
 
     '''The mode-help command.
@@ -950,7 +1078,7 @@ def modeHelp (self,event):
         c.minibufferWantsFocus()
 
     return
-.. @+node:ekr.20061031131434.166: *7* modeHelpHelper
+.. @+node:ekr.20061031131434.166: *8* modeHelpHelper
 def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
@@ -979,7 +1107,7 @@ def modeHelpHelper (self,d):
     # This isn't perfect in variable-width fonts.
     for s1,s2 in data:
         g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
-.. @+node:ekr.20061031131434.164: *6* k.reinitMode (call k.createModeBindings???)
+.. @+node:ekr.20061031131434.164: *7* k.reinitMode (call k.createModeBindings???)
 def reinitMode (self,modeName):
 
     k = self ; c = k.c
@@ -996,7 +1124,7 @@ def reinitMode (self,modeName):
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
 
-.. @+node:ekr.20120208064440.10199: *6* k.generalModeHandler (OLD)
+.. @+node:ekr.20120208064440.10199: *7* k.generalModeHandler (OLD)
 def generalModeHandler (self,event,
     commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
@@ -1053,8 +1181,8 @@ def generalModeHandler (self,event,
                 self.initMode(event,nextMode) # Enter another mode.
                 # Careful: k.initMode can execute commands that will destroy a commander.
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
-.. @+node:ekr.20061031131434.156: *5* k.Modes (changed)
-.. @+node:ekr.20061031131434.163: *6* k.initMode (changed)
+.. @+node:ekr.20061031131434.156: *6* k.Modes (changed)
+.. @+node:ekr.20061031131434.163: *7* k.initMode (changed)
 def initMode (self,event,modeName):
 
     k = self ; c = k.c
@@ -1106,7 +1234,7 @@ def initMode (self,event,modeName):
         w = g.choose(k.silentMode,k.modeWidget,k.w)
         k.createModeBindings(modeName,d,w)
         k.showStateAndMode(prompt=prompt)
-.. @+node:ekr.20120208064440.10201: *6* k.NEWgeneralModeHandler (NEW MODES)
+.. @+node:ekr.20120208064440.10201: *7* k.NEWgeneralModeHandler (NEW MODES)
 def NEWgeneralModeHandler (self,event,
     commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
@@ -1166,8 +1294,8 @@ def NEWgeneralModeHandler (self,event,
                 if g.app.quitting or not c.exists: return # (for Tk) 'break'
 
     return # (for Tk) 'break'
-.. @+node:ekr.20120228164039.10047: *4* Initing...
-.. @+node:ekr.20060102103625.1: *5* doMode (ParserBaseClass)
+.. @+node:ekr.20120228164039.10047: *5* Initing...
+.. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
 
     '''Parse an @mode node and create the enter-<name>-mode command.'''
@@ -1243,7 +1371,7 @@ def doMode(self,p,kind,name,val):
         
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName,name1,d)
-.. @+node:ekr.20041120112043: *5* parseShortcutLine (ParserBaseClass)
+.. @+node:ekr.20041120112043: *6* parseShortcutLine (ParserBaseClass)
 def parseShortcutLine (self,kind,s):
 
     '''Parse a shortcut line.  Valid forms:
@@ -1310,7 +1438,7 @@ def parseShortcutLine (self,kind,s):
     si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
     if trace: g.trace('%25s %s' % (name,si))
     return name,si
-.. @+node:ekr.20060102103625: *5* createModeCommand (ParserBaseClass)
+.. @+node:ekr.20060102103625: *6* createModeCommand (ParserBaseClass)
 def createModeCommand (self,modeName,name,modeDict):
 
     modeName = 'enter-' + modeName.replace(' ','-')
@@ -1327,15 +1455,11 @@ def createModeCommand (self,modeName,name,modeDict):
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
     
-.. @+node:ekr.20120322073519.10406: *3* Next
-There is no real need to do any of these for 4.10 final
 .. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
 Withdraw claim that Leo supports solarized.
 .. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
 http://ethanschoonover.com/solarized
 
-.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
-Every command should have a **complete** docstring.
 .. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
 .. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
 @language python
@@ -2043,10 +2167,13 @@ def token_range (self):
         return -1,-1
 .. @+node:ekr.20120318110848.9724: *5* Make leoInspect a stand-alone module
 
-.. @+node:ekr.20120229094652.15178: *3* Minor
-.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
-.. @+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
-.. @+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
+.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+Every command should have a **complete** docstring.
+.. @+node:ekr.20120228164039.11406: *4* Clean up #### in leoKeys
+.. @+node:ekr.20120229094652.15178: *4* Minor
+.. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
+.. @+node:ekr.20111114085925.9932: *5* Why does the unittest/output folder contain empty files?
+.. @+node:ekr.20031218072017.1462: *6* ic.exportHeadlines
 def exportHeadlines (self,fileName):
 
     c = self.c ; p = c.p
@@ -2069,7 +2196,7 @@ def exportHeadlines (self,fileName):
             s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
         theFile.write(s)
     theFile.close()
-.. @+node:ekr.20051104075904.78: *5* TM.makeImportExportSuite
+.. @+node:ekr.20051104075904.78: *6* TM.makeImportExportSuite
 def makeImportExportSuite(self,parentHeadline,doImport):
 
     """Create an Import/Export test for every descendant of testParentHeadline.."""
@@ -2094,13 +2221,13 @@ def makeImportExportSuite(self,parentHeadline,doImport):
             suite.addTest(test)
 
     return suite
-.. @+node:ekr.20051104075904.79: *5* class importExportTestCase
+.. @+node:ekr.20051104075904.79: *6* class importExportTestCase
 class importExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
     @others
-.. @+node:ekr.20051104075904.80: *6* __init__ (importExportTestCase)
+.. @+node:ekr.20051104075904.80: *7* __init__ (importExportTestCase)
 def __init__ (self,c,p,dialog,temp_p,doImport):
 
     # Init the base class.
@@ -2118,7 +2245,7 @@ def __init__ (self,c,p,dialog,temp_p,doImport):
     self.doImport = doImport
 
     self.old_p = c.p
-.. @+node:ekr.20051104075904.81: *6*  fail (importExportTestCase)
+.. @+node:ekr.20051104075904.81: *7*  fail (importExportTestCase)
 def fail (self,msg=None):
 
     """Mark a unit test as having failed."""
@@ -2126,7 +2253,7 @@ def fail (self,msg=None):
     import leo.core.leoGlobals as g
 
     g.app.unitTestDict["fail"] = g.callers()
-.. @+node:ekr.20051104075904.82: *6* importExport
+.. @+node:ekr.20051104075904.82: *7* importExport
 def importExport (self):
 
     c = self.c ; p = self.p
@@ -2139,13 +2266,13 @@ def importExport (self):
 
     failedMethod = g.app.unitTestDict.get("fail")
     self.failIf(failedMethod,failedMethod)
-.. @+node:ekr.20051104075904.83: *6* runTest
+.. @+node:ekr.20051104075904.83: *7* runTest
 def runTest(self):
 
     # """Import Export Test Case"""
 
     self.importExport()
-.. @+node:ekr.20051104075904.84: *6* setUp
+.. @+node:ekr.20051104075904.84: *7* setUp
 def setUp(self):
 
     trace = False
@@ -2184,14 +2311,14 @@ def setUp(self):
 
     self.oldGui = g.app.gui
     self.gui = leoGui.unitTestGui(theDict,trace=False)
-.. @+node:ekr.20051104075904.85: *6* shortDescription
+.. @+node:ekr.20051104075904.85: *7* shortDescription
 def shortDescription (self):
 
     try:
         return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
     except Exception:
         return "ImportExportTestCase"
-.. @+node:ekr.20051104075904.86: *6* tearDown
+.. @+node:ekr.20051104075904.86: *7* tearDown
 def tearDown (self):
 
     c = self.c ; temp_p = self.temp_p
@@ -2212,7 +2339,7 @@ def tearDown (self):
 
     g.app.gui = self.oldGui
     c.selectPosition(self.old_p)
-.. @+node:ekr.20031218072017.2850: *5* c.exportHeadlines
+.. @+node:ekr.20031218072017.2850: *6* c.exportHeadlines
 def exportHeadlines (self,event=None):
 
     '''Export all headlines to an external file.'''
@@ -2232,12 +2359,11 @@ def exportHeadlines (self,event=None):
         g.setGlobalOpenDir(fileName)
         g.chdir(fileName)
         c.importCommands.exportHeadlines(fileName)
-.. @+node:ekr.20120228164039.11406: *4* Clean up #### in leoKeys
-.. @+node:ekr.20120226131923.10221: *4* Allow abbreviations in minibuffer
+.. @+node:ekr.20120226131923.10221: *5* Allow abbreviations in minibuffer
 @nocolor-node
 
 cfa=clone-find-all-flattened
-.. @+node:ekr.20111125072438.10214: *4* (Maybe) Fix bug: Another @shadow bug (test4.leo)
+.. @+node:ekr.20111125072438.10214: *5* (Maybe) Fix bug: Another @shadow bug (test4.leo)
 @nocolor-node
 
 email:
@@ -2252,7 +2378,7 @@ a bit of time, I am not very familiar with python.
 ===== EKR
 
 Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
-.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
+.. @+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
     # Keys are languages, values are 1,2 or 3-tuples of delims.
@@ -2446,7 +2572,7 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
-.. @+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
+.. @+node:ekr.20120305084218.9915: *5* Show all commands after <alt-x><tab>
 .. @+node:ekr.20120226183512.10195: *3* Bugs
 @language rest
 

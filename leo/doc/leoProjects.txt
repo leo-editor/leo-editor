@@ -2826,85 +2826,49 @@ regardless of whether you use pythonw or python.
 
 If not, please feel free to ask more questions.
 #@+node:ekr.20120329072206.9701: ** 4.10.1
-#@+node:ekr.20120329072206.9698: *3* Investigated focus helper
-#@+node:ekr.20070226121510: *4*  c.xFocusHelper
-def treeEditFocusHelper (self):
-    c = self
-    if c.stayInTreeAfterEdit:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
+#@+node:ekr.20120330040023.9780: *3* Bugs
+#@+node:ekr.20120330040023.9779: *4* Restore focus on window activation
+#@+node:ekr.20110607182447.16456: *5* Event handlers (qtGui)
+#@+node:ekr.20110605121601.18480: *6* onActivateEvent (qtGui)
+# Called from eventFilter
 
-def treeFocusHelper (self):
-    c = self
-    if c.stayInTreeAfterSelect:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
+def onActivateEvent (self,event,c,obj,tag):
 
-def initialFocusHelper (self):
-    c = self
-    if c.outlineHasInitialFocus:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
-#@+node:ekr.20110605121601.18223: *4* Event handlers (qtBody)
-#@+node:ekr.20110930174206.15472: *5* onFocusIn (qtBody)
-def onFocusIn (self,obj):
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
 
-    '''Handle a focus-in event in the body pane.'''
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
 
     trace = False and not g.unitTesting
-    c = self.c
-    
-    if trace: g.trace(str(obj.objectName()))
 
-    # 2010/08/01: Update the history only on focus in events.
-    # 2011/04/02: Update history only in leoframe.tree.select.
-    # c.nodeHistory.update(c.p)
+    if trace: g.trace(tag)
     
-    if obj.objectName() == 'richTextEdit':
-        wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
-        if wrapper and wrapper != self.bodyCtrl:
-            self.selectEditor(wrapper)
-        self.onFocusColorHelper('focus-in',obj)
-        obj.setReadOnly(False)
-        obj.setFocus() # Weird, but apparently necessary.
-#@+node:ekr.20110930174206.15473: *5* onFocusOut (qtBody)
-def onFocusOut (self,obj):
+    if c.exists and tag == 'body':
+        self.active = True
+        # Retain the focus that existed when the deactivate event happened.
+            # c.bodyWantsFocusNow()
+        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110605121601.18481: *6* onDeactiveEvent (qtGui)
+def onDeactivateEvent (self,event,c,obj,tag):
 
-    '''Handle a focus-out event in the body pane.'''
-    
-    trace = False and not g.unitTesting
-
-    if trace: g.trace(str(obj.objectName()))
-    
-    # Apparently benign.
-    if obj.objectName() == 'richTextEdit':
-        self.onFocusColorHelper('focus-out',obj)
-        obj.setReadOnly(True)
-    
-#@+node:ekr.20110605121601.18224: *5* onFocusColorHelper (qtBody)
-badFocusColors = []
-
-def onFocusColorHelper(self,kind,obj):
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
 
     trace = False and not g.unitTesting
-    
-    c = self.c ; w = c.frame.body.bodyCtrl
-    
-    if trace: g.trace(kind)
-    
-    if kind == 'focus-in':
-        # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
-        c.k.showStateColors(inOutline=False,w=self.widget)
-    else:
-        bg = self.unselectedBackgroundColor
-        fg = self.unselectedForegroundColor
-        c.frame.body.setEditorColors(bg,fg)
 
-    w.widget.ensureCursorVisible()
-        # 2011/10/02: Fix cursor-movement bug.
+    # This is called several times for each window activation.
+    # Save the headline only once.
+
+    if c.exists and tag.startswith('tree'):
+        self.active = False
+        if trace: g.trace()
+        c.k.keyboardQuit(setFocus=False)
+            # 2011/06/13.
+            # 2011/09/29. Don't change the tab in the log pane.
+        # c.endEditing()
+        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20120330040023.9781: *3* Features
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
