@@ -1609,11 +1609,12 @@ class LoadManager:
         script     = lm.options.get('script')
 
         if g.app.gui:
-                
-            assert g.app.gui == g.app.nullGui
-            g.app.gui = None # Enable g.app.createDefaultGui 
-            g.app.createDefaultGui(__file__)
-                
+            if g.app.gui == g.app.nullGui:
+                g.app.gui = None # Enable g.app.createDefaultGui 
+                g.app.createDefaultGui(__file__)
+            else:
+                # This can happen when launching Leo from IPython.
+                g.trace('g.app.gui',g.app.gui)
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
@@ -1714,29 +1715,20 @@ class LoadManager:
         parser = optparse.OptionParser()
         add = parser.add_option
         
-        #### To be removed.
-        # add('-c', '--config', dest="one_config_path",
-            # help = 'use a single configuration file')
-        # add('--debug',        action="store_true",dest="debug",
-            # help = 'enable debugging support')
-        # add('-f', '--file',   dest="fileName",
-            # help = 'load a file at startup')
-        add('--gui',
-            help = 'gui to use (qt/qttabs)')
-        add('--minimized',    action="store_true",
-            help = 'start minimized')
-        add('--maximized',    action="store_true",
-            help = 'start maximized (Qt only)')
         add('--fullscreen',   action="store_true",
             help = 'start fullscreen (Qt only)')
         add('--ipython',      action="store_true",dest="use_ipython",
             help = 'enable ipython support')
+        add('--gui',
+            help = 'gui to use (qt/qttabs)')
+        add('--maximized',    action="store_true",
+            help = 'start maximized (Qt only)')
+        add('--minimized',    action="store_true",
+            help = 'start minimized')
         add('--no-cache',     action="store_true",dest='no_cache',
             help = 'disable reading of cached files')
         add('--no-splash',    action="store_true",dest='no_splash_screen',
             help = 'disable the splash screen')
-        add('--silent',       action="store_true",dest="silent",
-            help = 'disable all log messages')
         add('--screen-shot',  dest='screenshot_fn',
             help = 'take a screen shot and then exit')
         add('--script',       dest="script",
@@ -1745,6 +1737,8 @@ class LoadManager:
             help = 'open a window for scripts')
         add('--select',       dest='select',
             help='headline or gnx of node to select')
+        add('--silent',       action="store_true",dest="silent",
+            help = 'disable all log messages')
         add('--version',      action="store_true",dest="version",
             help='print version number and exit')
         add('--window-size',  dest='window_size',
@@ -1753,33 +1747,11 @@ class LoadManager:
         # Parse the options, and remove them from sys.argv.
         options, args = parser.parse_args()
         sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-        if trace: print('scanOptions:',sys.argv)
+        if trace:
+            # print('scanOptions:',sys.argv)
+            g.trace('options',options)
 
         # Handle the args...
-
-        # -c or --config
-        
-        ####
-        # path = options.one_config_path
-        # if path:
-            # path = g.os_path_finalize_join(os.getcwd(),path)
-            # if g.os_path_exists(path):
-                # g.app.oneConfigFilename = path
-            # else:
-                # g.es_print('Invalid -c option: file not found:',path,color='red')
-
-        # --debug
-        ####
-        # if options.debug:
-            # g.debug = True
-            # print('scanOptions: *** debug mode on')
-
-        # -f or --file
-        ####
-        # fileName = options.fileName
-        # if fileName:
-            # fileName = fileName.strip('"')
-            # if trace: print('scanOptions:',fileName)
 
         # --gui
         gui = options.gui
@@ -1802,17 +1774,18 @@ class LoadManager:
             g.app.qt_use_tabs = True
 
         assert gui
-        g.app.guiArgName = gui # 2011/06/15
-
-        # --minimized
-        # --maximized
-        # --fullscreen
-        g.app.start_minimized = options.minimized
-        g.app.start_maximized = options.maximized
-        g.app.start_fullscreen = options.fullscreen
-
+        g.app.guiArgName = gui
+        
         # --ipython
         g.app.useIpython = options.use_ipython
+        if trace: g.trace('g.app.useIpython',g.app.useIpython)
+        
+        # --fullscreen
+        # --minimized
+        # --maximized
+        g.app.start_fullscreen = options.fullscreen
+        g.app.start_maximized = options.maximized
+        g.app.start_minimized = options.minimized
 
         # --no-cache
         if options.no_cache:
@@ -1856,6 +1829,7 @@ class LoadManager:
 
         # --version: print the version and exit.
         versionFlag = options.version
+        
 
         # --window-size
         windowSize = options.window_size
@@ -1886,6 +1860,8 @@ class LoadManager:
             'windowFlag':windowFlag,
             'windowSize':windowSize,
         }
+        
+        if trace: g.trace(d)
 
         return d
     #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
