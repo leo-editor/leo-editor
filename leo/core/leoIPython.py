@@ -5,6 +5,12 @@
 
 '''Unified support code for ILeo: the Leo-IPython bridge.
 
+Using this bridge, scripts running in Leo can affect IPython, and vice
+versa. In particular, scripts running in IPython can alter Leo outlines!
+
+For full details, see Leo Users Guide:
+http://webpages.charter.net/edreamleo/IPythonBridge.html
+
 This module replaces both ipython.py and leo/external/ipy_leo.
 
 Users no longer need to activate a plugin. This code will be active
@@ -18,8 +24,6 @@ This module supports all versions of the IPython api:
 #@@language python
 #@@tabwidth -4
 
-print('***** leoIPython.py')
-
 #@+<< imports >>
 #@+node:ekr.20120401063816.10141: ** << imports >> (leoIPython.py)
 import leo.core.leoGlobals as g
@@ -27,108 +31,7 @@ import leo.core.leoGlobals as g
 import re
 import sys
 import UserDict
-
-# From ipy_leo.py...
-
-if 1:
-    import IPython
-    from IPython.core.hooks import CommandChainDispatcher
-else:
-    # Old imports
-    import IPython.ipapi
-    import IPython.genutils
-    import IPython.generics
-    from IPython.hooks import CommandChainDispatcher
-    from IPython.ipapi import TryNext 
-    import IPython.macro
-    import IPython.Shell
-
-# From ipython.py
-if 0:
-    import_ok = True
-else:
-    try:
-        # import IPython.ipapi
-        import IPython.frontend.terminal.ipapp as ipapp
-        import IPython.core.interactiveshell as ishell
-        import_ok = True
-    except ImportError:
-        g.es_print('ipython plugin: can not import frontend.terminal.ipapp',color='red')
-        import_ok = False
-    except SyntaxError:
-        g.es_print('ipython plugin: syntax error importing frontend.terminal.ipapp',color='red')
-        import_ok = False
-        
-try:
-    import leo.external.ipy_leo as ipy_leo
-except ImportError:
-    g.es_print('can not import leo.external.ipy_leo',color='red')
-    import_ok = False
-    
-try:
-    st = ipy_leo._request_immediate_connect
-except AttributeError:
-    g.es_print('not found: ipy_leo._request_immediate_connect',color='red')
-    import_ok = False
 #@-<< imports >>
-#@+<< globals >>
-#@+node:ekr.20120401063816.10207: ** << globals >> (leoIPyton.py)
-# From ipy_leo.py
-
-if 0: # Now defined in IPythonManager class.
-    _leo_push_history = set()
-    wb = None
-    
-    # EKR: these were not explicitly inited.
-    ip = None
-    _request_immediate_connect = None
-        # Set below in lleo_f.
-    first_launch = True
-    c = None
-    g = None
-
-# From ipython.py
-
-# IPython IPApi instance. One can exist through the whole leo session.
-# gIP = None
-#@-<< globals >>
-#@+<< docstring >>
-#@+node:ekr.20120401063816.10229: ** << docstring >>
-''' Creates a two-way communication (bridge) between Leo
-scripts and IPython running in the console from which Leo was launched.
-
-Using this bridge, scripts running in Leo can affect IPython, and vice versa.
-In particular, scripts running in IPython can alter Leo outlines!
-
-For full details, see Leo Users Guide:
-http://webpages.charter.net/edreamleo/IPythonBridge.html
-
-'''
-#@-<< docstring >>
-#@+<< to do >>
-#@+node:ekr.20120401063816.10231: ** << to do >>
-#@@nocolor
-#@+at
-# 
-# new
-# ===
-# 
-# Init GlobalIPythonManager in LoadManager class.
-# 
-# 
-# old
-# ===
-# 
-# - Read the docs re saving and restoring the IPython namespace.
-# 
-# - Is it possible to start IPShellEmbed automatically?
-# 
-#     Calling IPShellEmbed.ipshell() blocks, so it can't be done
-#     outside the event loop.  It might be possible to do this in
-#     an idle-time handler.
-# 
-#     If it is possible several more settings would be possible.
-#@-<< to do >>
 #@+<< version history >>
 #@+node:ekr.20120401063816.10230: ** << version history >>
 #@@killcolor
@@ -1248,12 +1151,104 @@ class GlobalIPythonManager:
     def __init__ (self):
         
         self.first_launch = True
+            # True: this is the first time IPython has been launched.
         self.ip = None
+            # The global IPython instance.
+        self.legacy = None
+            # True: use legacy API.
+        self.imported = False
+            # True: some workable version of IPython has been found.
+        self.ipapp = None
+            # IPython.frontend.terminal.ipapp or None
+        self.ishell = None
+            # IPython.frontend.terminal.interactiveshell or None.
         self.push_history = set()
+            # The IPython history.
         self.request_immediate_connect = None
-        self.wb = None
+            # ???
+        self.use_ipapp = True
+            # Used only for new-style api.
+            # True:  imports frontend.terminal.ipapp.  Prints signon.
+            # False: frontend.terminal.interactiveshell. No signon.
+        self.wb = LeoWorkbook()
+            # The Leo workbook instance.
+            
+        # Attempt to import IPython.
+        self.import_ipython()
+            # Sets self.legacy to True or False.
+    #@+node:ekr.20120401144849.10117: *3* gipm.import_ipython
+    def import_ipython(self):
+        
+        '''Import IPyton api files and set self.legacy and self.imported ivars.'''
+        
+        trace = True and not g.unitTesting
+
+        try:
+            import IPython.ipapi as ipapi
+                # Does not exist with IPython 0.12.
+                # It is called IPython.core.ipapi.
+            self.legacy = True
+            self.imported = True
+            if trace: g.trace('imported legacy IPython.ipapi')
+        except ImportError:
+            self.legacy = False
+            
+        if self.imported:
+            return
+            
+        try:
+            # Either of these works.
+            if self.use_ipapp:
+                tag = 'IPython.frontend.terminal.ipapp'
+                import IPython.frontend.terminal.ipapp as ipapp
+                self.ipapp = ipapp
+            else:
+                tag = 'IPython.frontend.terminal.interactiveshell'
+                import IPython.frontend.terminal.interactiveshell as ishell
+                self.ishell = ishell
+            if trace: g.trace('imported %s' % tag)
+            self.imported = True
+        except ImportError:
+            g.trace('can not import %s' % tag)
+    #@+node:ekr.20110605121601.18482: *3* gipm.embed_ipython & helpers
+    def embed_ipython(self):
+
+        '''Run the Qt main loop using IPython if possible.'''
+        
+        if not self.imported:
+            sys.exit(self.qtApp.exec_())
+                # Just run the Qt main loop.
+        elif self.legacy:
+            self.start_legacy_api()
+        else:
+            self.start_new_api()
+    #@+node:ekr.20120401144849.10115: *4* gipm.start_legacy_api
+    def start_legacy_api(self):
+        
+        # No c is available: we can't get @string ipython_argv setting.
+        old_argv = sys.argv
+        sys.argv = ['leo.py', '-p', 'sh']         
+        sesion = self.ipapi.make_session()
+        sys.argv = old_argv
+
+        # Does not return until IPython closes.
+        # IPython runs the leo mainloop
+        sesion.mainloop()
+    #@+node:ekr.20120401144849.10116: *4* gipm.start_new_api
+    def start_new_api(self):
+
+        # No c is available: we can't get @string ipython_argv setting.
+        sys.argv =  ['ipython']
+
+        if self.use_ipapp:
+            # Prints signon.
+            self.ipapp.launch_new_instance()
+        else:
+            # Doesn't print signon.
+            shell = self.ishell.TerminalInteractiveShell()
+            shell.mainloop()
     #@+node:ekr.20120401063816.10144: *3* gipm.init_ipython 
-    def init_ipython(ipy):
+    def init_ipython(self,ipy):
         
         """ This will be run by _ip.load('ipy_leo') 
 
@@ -1261,8 +1256,8 @@ class GlobalIPythonManager:
 
         """
         
-        global ip
-        ip = ipy
+        #### global ip
+        self.ip = ip = ipy
         
         #### IPython.Shell.hijack_tk()
         ip.set_hook('complete_command', mb_completer, str_key = '%mb')
@@ -1280,10 +1275,24 @@ class GlobalIPythonManager:
         expose_ileo_push(push_ipython_script, 1000)
         expose_ileo_push(push_plain_python, 100)
         expose_ileo_push(push_ev_node, 100)
-        ip.set_hook('pre_prompt_hook', ileo_pre_prompt_hook)     
-        global wb
-        wb = LeoWorkbook()
-        ip.user_ns['wb'] = wb
+        ip.set_hook('pre_prompt_hook', ileo_pre_prompt_hook) 
+            
+        # global wb
+        # wb = LeoWorkbook()
+        ip.user_ns['wb'] = self.wb
+    #@+node:ekr.20120401144849.10119: *3* gipm.show_welcome
+    def show_welcome(self):
+
+        print("------------------")
+        print("Welcome to Leo-enabled IPython session!")
+        print("Try %leoref for quick reference.")
+        
+        if self.legacy:
+            import IPython.platutils as u
+            u.set_term_title('ILeo')
+            u.freeze_term_title()
+        else:
+            pass ### Not ready yet.
     #@+node:ekr.20120401063816.10145: *3* gipm.update_commander
     # first_launch = True
 
@@ -1298,10 +1307,10 @@ class GlobalIPythonManager:
 
         """
 
-        global first_launch
-        if first_launch:
-            show_welcome()
-            first_launch = False
+        # global first_launch
+        if self.first_launch:
+            self.show_welcome()
+            self.first_launch = False
 
         global c,g
         c,g = new_leox.c, new_leox.g

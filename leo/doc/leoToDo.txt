@@ -2682,6 +2682,86 @@ http://mail.scipy.org/pipermail/ipython-dev/
 http://ipython.org/ipython-doc/rel-0.12/api/index.html
 .. @+node:ekr.20120330110655.10026: *6* @url ipython.core.interactiveshell
 http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
+.. @+node:ekr.20120212060348.10374: *5*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Debugging options.
+restore_selection_range = False
+
+# Traces & disabling of scrolling problems.
+no_scroll = False
+    # True: disable all calls to w.setYScrollPosition.
+no_see = False
+    # True: disable all calls to w.see and w.seeInsertPoint.
+
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+    
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+.. @+node:ekr.20110605121601.18134: *5* init (qtGui.py top level) (qtPdb)
+def init():
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace and g.trace_startup: print('qtGui.__init__')
+
+    if g.app.unitTesting: # Not Ok for unit testing!
+        return False
+
+    if not QtCore:
+        return False
+
+    if g.app.gui:
+        return g.app.gui.guiName() == 'qt'
+    else:
+        g.app.gui = leoQtGui()
+
+        # Override g.pdb
+        def qtPdb(message=''):
+            if message: print(message)
+            import pdb
+            if True: ##### not g.app.useIpython:
+                QtCore.pyqtRemoveInputHook()
+            pdb.set_trace()
+        g.pdb = qtPdb
+
+        g.app.gui.finishCreate()
+        g.plugin_signon(__name__)
+        return True
 .. @+node:ekr.20120209051836.10242: *5* class LoadManager
 class LoadManager:
     
@@ -3498,6 +3578,7 @@ def initApp (self,verbose):
     assert g.app.loadManager
     
     import leo.core.leoConfig as leoConfig
+    import leo.core.leoIPython as leoIPython
     import leo.core.leoNodes as leoNodes
     import leo.core.leoPlugins as leoPlugins
     
@@ -3513,6 +3594,7 @@ def initApp (self,verbose):
     g.app.recentFilesManager = RecentFilesManager()
     g.app.config = leoConfig.GlobalConfigManager()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.ipm = leoIPython.GlobalIPythonManager()
 
     # Complete the plugins class last.
     g.app.pluginsController.finishCreate()
@@ -4198,8 +4280,8 @@ def runMainLoop(self):
         else:
             g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
     elif g.app.useIpython:
-        self.embed_ipython()
-            # Calls sys.exit.
+        g.app.ipm.embed_ipython()
+            # Runs main loop and calls sys.exit.
     else:
         sys.exit(self.qtApp.exec_())
 .. @+node:ekr.20120226183512.10195: *3* Bugs
@@ -4887,7 +4969,7 @@ def pdb (message=''):
     if message:
         print(message)
     pdb.set_trace()
-.. @+node:ekr.20110605121601.18134: *8* init (qtGui.py top level)
+.. @+node:ekr.20110605121601.18134: *8* init (qtGui.py top level) (qtPdb)
 def init():
     
     trace = (False or g.trace_startup) and not g.unitTesting
@@ -4908,7 +4990,7 @@ def init():
         def qtPdb(message=''):
             if message: print(message)
             import pdb
-            if not g.app.useIpython:
+            if True: ##### not g.app.useIpython:
                 QtCore.pyqtRemoveInputHook()
             pdb.set_trace()
         g.pdb = qtPdb

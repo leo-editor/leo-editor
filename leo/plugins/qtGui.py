@@ -1863,7 +1863,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@+others
 #@+node:ekr.20110605121601.18133: **  Module level
 
-#@+node:ekr.20110605121601.18134: *3* init (qtGui.py top level)
+#@+node:ekr.20110605121601.18134: *3* init (qtGui.py top level) (qtPdb)
 def init():
     
     trace = (False or g.trace_startup) and not g.unitTesting
@@ -1884,7 +1884,7 @@ def init():
         def qtPdb(message=''):
             if message: print(message)
             import pdb
-            if not g.app.useIpython:
+            if True: ##### not g.app.useIpython:
                 QtCore.pyqtRemoveInputHook()
             pdb.set_trace()
         g.pdb = qtPdb
@@ -7458,46 +7458,6 @@ class leoQtGui(leoGui.leoGui):
             self.frameFactory = TabbedFrameFactory()
         else:
             self.frameFactory = SDIFrameFactory()
-    #@+node:ekr.20110605121601.18482: *5* embed_ipython (qtGui)
-    def embed_ipython(self):
-
-        '''Run the Qt main loop using IPython if possible.'''
-        
-        trace = False
-        use_ipapp = True
-        
-        try:
-            # Either of these work: see below.
-            if use_ipapp:
-                tag = 'IPython.frontend.terminal.ipapp'
-                import IPython.frontend.terminal.ipapp as ipapp
-            else:
-                tag = 'IPython.frontend.terminal.interactiveshell'
-                import IPython.frontend.terminal.interactiveshell as ishell
-            if trace: g.trace('imported %s' % tag)
-            ok = True
-        except ImportError:
-            g.trace('can not import %s' % tag)
-            ok = False
-        except Exception:
-            g.trace('error importing %s' % tag)
-            g.es_exception()
-            ok = False
-
-        if ok:
-            # There is no c available.
-                # sys.argv = c.config.getString('ipython_argv')
-            sys.argv =  ['ipython']
-            if use_ipapp:
-                # Prints signon.
-                ipapp.launch_new_instance()
-            else:
-                # Doesn't print signon.
-                shell = ishell.TerminalInteractiveShell()
-                shell.mainloop()
-        else:
-            # Just run the Qt main loop.
-            sys.exit(self.qtApp.exec_())
     #@+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
     def runMainLoop(self):
 
@@ -7514,8 +7474,8 @@ class leoQtGui(leoGui.leoGui):
             else:
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
         elif g.app.useIpython:
-            self.embed_ipython()
-                # Calls sys.exit.
+            g.app.ipm.embed_ipython()
+                # Runs main loop and calls sys.exit.
         else:
             sys.exit(self.qtApp.exec_())
     #@+node:ekr.20110605121601.18484: *5* destroySelf

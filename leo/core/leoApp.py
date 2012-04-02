@@ -1683,6 +1683,7 @@ class LoadManager:
         assert g.app.loadManager
         
         import leo.core.leoConfig as leoConfig
+        import leo.core.leoIPython as leoIPython
         import leo.core.leoNodes as leoNodes
         import leo.core.leoPlugins as leoPlugins
         
@@ -1698,6 +1699,7 @@ class LoadManager:
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+        g.app.ipm = leoIPython.GlobalIPythonManager()
 
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
