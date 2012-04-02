@@ -18,7 +18,7 @@ This module supports all versions of the IPython api:
 #@@language python
 #@@tabwidth -4
 
-print('***** leoIPyhon.py')
+print('***** leoIPython.py')
 
 #@+<< imports >>
 #@+node:ekr.20120401063816.10141: ** << imports >> (leoIPython.py)
