@@ -86,9 +86,9 @@ def getPassList():
 def getPluginsList():
 
     return (
-        ('bookmarks',   ''),
-        # ('mod_http',  ''),
-        ('mod_scripting','E0611'),
+        ('bookmarks',       ''),
+        # ('mod_http',      ''),
+        ('mod_scripting',   'E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
             
@@ -101,7 +101,6 @@ def getPluginsList():
             # Dangerous: many erroneous E1101 errors
             # Harmless: W0221: Arguments number differs from overridden method
             # Harmless: W0511: Fixme and to-do.
-            
     )
 #@+node:ekr.20120225032124.17089: ** getRecentCoreList
 def getRecentCoreList():
@@ -120,13 +119,17 @@ def getRecentCoreList():
         # ('leoFrame',          'R0923'),
             # R0923: Interface not implemented.
 
-        ('leoGlobals',          'E0611,E1103'),
+        # ('leoGlobals',          'E0611,E1103'),
             # E0611: no name 'parse' in urllib.
             # E1103: Instance of 'ParseResult' has no 'xxx' member
             # (but some types could not be inferred)
 
         # ('leoGui',            ''),
         # ('leoImport',         ''),
+
+        ('leoIPython',           'W0108'),
+            # W0108: Lambda may not be necessary (who cares).
+    
         # ('leoKeys',           ''),
         # ('leoMenu',           'W0108'),
             # W0108: Lambda may not be necessary (it is).

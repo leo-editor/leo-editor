@@ -1884,7 +1884,7 @@ def init():
         def qtPdb(message=''):
             if message: print(message)
             import pdb
-            if True: ##### not g.app.useIpython:
+            if not g.app.useIpython:
                 QtCore.pyqtRemoveInputHook()
             pdb.set_trace()
         g.pdb = qtPdb

@@ -1687,6 +1687,10 @@ class LoadManager:
         import leo.core.leoNodes as leoNodes
         import leo.core.leoPlugins as leoPlugins
         
+        # Use the GlobalIPythonManager created during the import process.
+        # This ensures that only one copy is ever created.
+        g.app.ipm = leoIPython.gipm
+        
         # Make sure we call the new leoPlugins.init top-level function.
         # This prevents a crash when run is called repeatedly from
         # IPython's lleo extension.
@@ -1699,7 +1703,6 @@ class LoadManager:
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-        g.app.ipm = leoIPython.GlobalIPythonManager()
 
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
