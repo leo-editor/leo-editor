@@ -1683,13 +1683,16 @@ class LoadManager:
         assert g.app.loadManager
         
         import leo.core.leoConfig as leoConfig
-        import leo.core.leoIPython as leoIPython
+        
         import leo.core.leoNodes as leoNodes
         import leo.core.leoPlugins as leoPlugins
         
-        # Use the GlobalIPythonManager created during the import process.
-        # This ensures that only one copy is ever created.
-        g.app.ipm = leoIPython.gipm
+        # Import leoIPython only if requested.  The import is quite slow.
+        if g.app.useIpython:
+            import leo.core.leoIPython as leoIPython
+            # Use the GlobalIPythonManager created during the import process.
+            # This ensures that only one copy is ever created.
+            g.app.ipm = leoIPython.g_ipm
         
         # Make sure we call the new leoPlugins.init top-level function.
         # This prevents a crash when run is called repeatedly from
