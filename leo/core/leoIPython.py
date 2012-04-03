@@ -357,9 +357,6 @@ if g_import_ok:
                 d.add(f)
                 d()
             
-            
-            
-            
             # if g_legacy:
                 # self.legacy_push_to_ipython()
             # else:
