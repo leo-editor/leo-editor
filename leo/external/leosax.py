@@ -128,7 +128,7 @@ class LeoReader(ContentHandler):
     def endElement(self, name):
         """decode unknownAttributes when t element is done"""
 
-    self.in_ = None
+        self.in_ = None
         # could maintain a stack, but we only need to know for
         # character collection, so it doesn't matter
 
