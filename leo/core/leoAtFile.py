@@ -830,6 +830,10 @@ class atFile:
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
+        
+        if not g.os_path_exists(fileName):
+            g.es_print('not found: @auto %s' % (fileName),color='red')
+            return
 
         # 2010/7/28: Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
@@ -844,13 +848,18 @@ class atFile:
 
         if not g.unitTesting:
             g.es("reading:",p.h)
-
-        ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+            
+        try:
+            # 2012/04/09: catch failed asserts in the import code.
+            ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+        except AssertionError:
+            ic.errors += 1
 
         if ic.errors:
-            # Note: the file contains an @ignore,
-            # so no unintended write can happen.
-            g.es_print('errors inhibited read @auto',fileName,color='red')
+            # Read the entire file into the node.
+            g.es_print('errors inhibited read @auto %s' % (fileName),color='red')
+            g.es_print('reading entire file into @auto node.')
+            at.readOneAtEditNode(fileName,p)
 
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
