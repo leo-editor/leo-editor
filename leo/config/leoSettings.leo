@@ -4394,7 +4394,7 @@ exactly the arguments to be passed to opener logic.</t>
 ext:    .py
 kind:   subprocess.Popen
 arg:    pythonw
-arg:    "C:/Python24/Lib/idlelib/idle.pyw"
+arg:    "%PYTHONHOME%/Lib/idlelib/idle.pyw"
 </t>
 <t tx="ekr.20070411101857.2"># 'subprocess.Popen','C:/Program Files/Microsoft Office/Office/WINWORD.exe',None
 
@@ -4405,7 +4405,7 @@ arg:    "C:/Program Files/Microsoft Office/Office/WINWORD.exe"</t>
 
 ext:    
 kind:   subprocess.Popen
-arg:    "C:/Program Files/Windows NT/Accessories/wordpad.exe"</t>
+arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"</t>
 <t tx="ekr.20070411172718">@openwith nodes in @settings trees create menu items. The openWith
 plugin must be active for these settings to have any effect.
 
