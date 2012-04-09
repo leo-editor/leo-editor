@@ -34,15 +34,14 @@ g_use_ipapp = True
     # True:  imports frontend.terminal.ipapp.  Prints signon.
     # False: frontend.terminal.interactiveshell. No signon.
 
-# Global vars, set later...
+# Global vars, set only at the top level...
+# None of these globals requires the "global" statement.
 g_import_ok = None
     # True if any IPython found.
 g_ipm = None
     # The global, singleton GlobalIPythonManager instance.
 g_legacy = None
     # True if IPython 0.11 or previous found.
-g_root_node = None
-    # The root node for some commands.
 #@-<< globals >>
 #@+<< imports >>
 #@+node:ekr.20120401063816.10141: ** << imports >> (leoIPython.py)
@@ -52,6 +51,7 @@ import pprint
 import os
 import re
 import sys
+import time
 import textwrap
 
 if g.isPython3:
@@ -66,7 +66,7 @@ else:
 # First, try importing the legacy version of IPython.
 try:
     import IPython.ipapi as ipapi
-    import IPython.genutils as genutils
+    # import IPython.genutils as genutils
     import IPython.generics as generics
     import IPython.macro as macro
     # import IPython.Shell as Shell # Used only for Shell.hijack_tk()
@@ -204,6 +204,8 @@ if g_import_ok:
                 # The global IPython instance.
             self.push_history = set()
                 # The IPython history.
+            self.root_node = None
+                # The global root node used by the allcells() and rootnode() functions.
             self.started = False
                 # True: IPython has been started.
             self.wb = LeoWorkbook()
@@ -298,13 +300,13 @@ if g_import_ok:
             
             if 0: # Not ready yet.
                 # Note that no other push command should EVER have lower than 0
-                expose_ileo_push(push_mark_req, -1)
-                expose_ileo_push(push_cl_node,100)
+                g_ipm.expose_ileo_push(push_mark_req,-1)
+                g_ipm.expose_ileo_push(push_cl_node,100)
                 # this should be the LAST one that will be executed,
                 # and it will never raise TryNext.
-                expose_ileo_push(push_ipython_script, 1000)
-                expose_ileo_push(push_plain_python, 100)
-                expose_ileo_push(push_ev_node, 100)
+                g_ipm.expose_ileo_push(push_ipython_script,1000)
+                g_ipm.expose_ileo_push(push_plain_python,100)
+                g_ipm.expose_ileo_push(push_ev_node,100)
             
             ip.set_hook('pre_prompt_hook',ileo_pre_prompt_hook) 
                 
@@ -955,8 +957,7 @@ if g_import_ok:
             c.redraw()
     #@+node:ekr.20120401144849.10077: *3* all_cells
     def all_cells():
-        
-        global g_root_node
+
         c = g_ipm.c
         d = {}
         if not c:
@@ -972,7 +973,7 @@ if g_import_ok:
             h = p.headString()
             if h.strip() == '@ipy-root':
                 # update root node (found it for the first time)
-                g_root_node = LeoNode(p)            
+                g_ipm.root_node = LeoNode         
                 # the next recursive call will use the children of new root
                 return all_cells()
 
@@ -1008,6 +1009,9 @@ if g_import_ok:
 
     #@+node:ekr.20120401144849.10082: *3* eval_node
     def eval_node(n):
+        
+        ip = g_ipm.ip
+        if not ip: return
         
         body = n.b    
         if not body.startswith('@cl'):
@@ -1045,6 +1049,7 @@ if g_import_ok:
         
         """ Custom completer for minibuffer """
         
+        c = g_ipm.c
         ip = g_ipm.ip
 
         cmd_param = event.line.split()
@@ -1086,14 +1091,15 @@ if g_import_ok:
         Note that the root is the *first* @ipy-root item found    
         """
         
-        global g_root_node
+        c = g_ipm.c
+        n = g_ipm.root_node
 
-        if g_root_node is None:
+        if n is None:
             return None
-        elif c.positionExists(g_root_node.p):
-            return g_root_node
+        elif c.positionExists(n.p):
+            return n
         else:
-            g_root_node = None
+            g_ipm.root_node = None
             return None  
     #@+node:ekr.20120401144849.10105: *3* shadow_walk
     def shadow_walk(directory, parent=None, isroot=True):
@@ -1259,7 +1265,7 @@ if g_import_ok:
         """
         ))
     #@+node:ekr.20120401144849.10088: *3* lleo_f
-    def lleo_f(selg,  args):
+    def lleo_f(selg,args):
         """ Launch leo from within IPython
 
         This command will return immediately when Leo has been
@@ -1275,6 +1281,8 @@ if g_import_ok:
         import sys
         import shlex
         argv = shlex.split(args)
+        ip = g_ipm.ip
+        if not ip: return
 
         # when run without args, leo will open ipython_notebook for 
         # quick note taking / experimentation
@@ -1301,7 +1309,7 @@ if g_import_ok:
 
         """
 
-        import time
+        wb = g_ipm.wb
 
         try:
             scr = wb.Scratch

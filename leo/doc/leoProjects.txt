@@ -862,7 +862,7 @@ import leo.core.leoInspect as inspect
 
 dump_classes = False
 print_modules = True
-print_functions = False
+print_functions = True
 print_stats = False
 print_times = False
 
@@ -886,7 +886,7 @@ import leo.core.leoInspect as inspect
 
 g.cls()
 
-m = inspect.module(c,'leoEditCommands.py')
+m = inspect.module(fn='leoEditCommands.py')
     #,sd=None,print_stats=False,print_times=False)
     
 for z in m.classes():
@@ -896,21 +896,31 @@ import leo.core.leoInspect as inspect
 
 g.cls()
 
-m = inspect.module(c,'leoEditCommands.py')
+m = inspect.module(fn='leoEditCommands.py')
     #,sd=None,print_stats=False,print_times=False)
     
-for z in m.defs():
+print(m)
+    
+for z in m.classes():
     print(z)
+    for z2 in z.defs():
+        name = z2._tree.name
+        aList = z2.call_args_of(name)
+        args = ','.join(aList)
+        print(' %s(%s)' % (name,args))
 #@+node:ekr.20111116161118.10181: *4* @test leoInspect.module.statements
 import leo.core.leoInspect as inspect
 
 g.cls()
 
-m = inspect.module(c,'leoEditCommands.py')
+m = inspect.module(fn='leoEditCommands.py')
     #,sd=None,print_stats=False,print_times=False)
-    
-for z in m.statements():
+
+print(m)
+for z in m.classes():
     print(z)
+    for z2 in z.defs():
+        print(z2)
 #@+node:ekr.20111116161118.10230: *4* @test leoInspect (leoEditCommands.py)
 import leo.core.leoInspect as inspect
 
