@@ -79,6 +79,8 @@ Debugger commands
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20110914171443.7241: ** << imports >>
+from __future__ import print_function
+
 import os
 import re
 import sys

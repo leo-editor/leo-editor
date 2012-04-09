@@ -4,6 +4,8 @@ Clones and derived files are ignored.  Useful for scanning
 multiple .leo files quickly.
 """
 
+from __future__ import print_function
+
 from xml.sax.handler import ContentHandler
 from xml.sax import parse
 from pickle import loads
@@ -126,7 +128,7 @@ class LeoReader(ContentHandler):
     def endElement(self, name):
         """decode unknownAttributes when t element is done"""
 
-	self.in_ = None
+    self.in_ = None
         # could maintain a stack, but we only need to know for
         # character collection, so it doesn't matter
 
@@ -173,4 +175,4 @@ if __name__ == '__main__':
             os.path.join('~', '.leo', 'workbook.leo')
         )
     leo_data = get_leo_data(wb)
-    print leo_data
+    print(leo_data)
