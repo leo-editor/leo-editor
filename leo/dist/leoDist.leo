@@ -568,6 +568,7 @@ LeoPy.leo:
     - Update version numbers.
     - Update the build number.
 LeoDocs.leo:
+    - ** Update version numbers in html/conf.py
     - Remove top-level clones.
     - Select the readme node.
 LeoPlugins.leo:
