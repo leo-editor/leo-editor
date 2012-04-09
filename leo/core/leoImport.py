@@ -2736,9 +2736,13 @@ class baseScannerClass (scanUtility):
             elif self.startsId(s,i):
                 i = self.skipId(s,i)
             elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
+                i1 = i # for debugging
                 i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
                 # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
             else: i += 1
+            if progress >= i:
+                g.pdb()
+                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
         return start,putRef,bodyIndent
@@ -2769,7 +2773,7 @@ class baseScannerClass (scanUtility):
             return start,False
         else:
             return i,True 
-    #@+node:ekr.20070707073859: *5* skipBlock
+    #@+node:ekr.20070707073859: *5* skipBlock (baseScannerClass)
     def skipBlock(self,s,i,delim1=None,delim2=None):
 
         '''Skip from the opening delim to *past* the matching closing delim.
@@ -2778,16 +2782,14 @@ class baseScannerClass (scanUtility):
 
         trace = False and not g.unitTesting
         verbose = False
-        start = i
         if delim1 is None: delim1 = self.blockDelim1
         if delim2 is None: delim2 = self.blockDelim2
         match1 = g.choose(len(delim1)==1,g.match,g.match_word)
         match2 = g.choose(len(delim2)==1,g.match,g.match_word)
         assert match1(s,i,delim1)
-        level = 0 ; start = i
-        startIndent = self.startSigIndent
+        level,start,startIndent = 0,i,self.startSigIndent
         if trace and verbose:
-            g.trace('***','startIndent',startIndent,g.callers())
+            g.trace('***','startIndent',startIndent)
         while i < len(s):
             progress = i
             if g.is_nl(s,i):
@@ -2842,7 +2844,7 @@ class baseScannerClass (scanUtility):
             g.trace(i,s[i:j])
         else:
             if trace: g.trace('** no block')
-        return start
+        return start+1 # 2012/04/04: Ensure progress in caller.
     #@+node:ekr.20070712091019: *5* skipCodeBlock
     def skipCodeBlock (self,s,i,kind):
 
