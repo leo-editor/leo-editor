@@ -2878,6 +2878,10 @@ def onDeactivateEvent (self,event,c,obj,tag):
             # 2011/09/29. Don't change the tab in the log pane.
         # c.endEditing()
         g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20120409074150.9940: *4* The @auto read code now catches failed asserts in import code.
+@nocolor-node
+
+If an assert fails, the entire file is read into a single node.
 #@+node:ekr.20120330040023.9781: *3* Features
 #@-all
 
