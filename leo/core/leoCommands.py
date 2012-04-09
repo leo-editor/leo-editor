@@ -6693,10 +6693,13 @@ class Commands (object):
 
         c = self
         fileName = g.os_path_join(g.app.loadDir,'..','scripts','scripts.leo')
-
-        c2 = g.openWithFileName(fileName,old_c=c)
-        if not c2:
-            g.es('not found:',fileName)
+        
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
+        
+        g.es('not found:',fileName)
     #@+node:ekr.20031218072017.2940: *5* leoDocumentation
     def leoDocumentation (self,event=None):
 
@@ -6705,9 +6708,12 @@ class Commands (object):
         c = self ; name = "LeoDocs.leo"
 
         fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
-        c2 = g.openWithFileName(fileName,old_c=c)
-        if not c2:
-            g.es("not found:",name)
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
+            
+        g.es("not found:",name)
     #@+node:ekr.20031218072017.2941: *5* leoHome
     def leoHome (self,event=None):
 
@@ -6731,8 +6737,10 @@ class Commands (object):
 
         for name in names:
             fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
-            c2 = g.openWithFileName(fileName,old_c=c)
-            if c2: return
+            # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+            if g.os_path_exists(fileName):
+                c2 = g.openWithFileName(fileName,old_c=c)
+                if c2: return
 
         g.es('not found:', ', '.join(names))
     #@+node:ekr.20090628075121.5994: *5* leoQuickStart
@@ -6743,9 +6751,12 @@ class Commands (object):
         c = self ; name = "quickstart.leo"
 
         fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
-        c2 = g.openWithFileName(fileName,old_c=c)
-        if not c2:
-            g.es("not found:",name)
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
+        
+        g.es("not found:",name)
     #@+node:ekr.20031218072017.2942: *5* leoTutorial (version number)
     def leoTutorial (self,event=None):
 

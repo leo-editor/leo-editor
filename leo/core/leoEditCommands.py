@@ -6736,7 +6736,8 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = self.k ; fileName = ''.join(k.givenArgs)
 
-        if fileName:
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if fileName and g.os_path_exists(fileName):
             g.openWithFileName(fileName,old_c=c)
         else:
             k.setLabelBlue('Open Leo Outline: ',protect=True)
