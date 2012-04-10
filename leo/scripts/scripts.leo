@@ -75,7 +75,8 @@
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
 expanded="ekr.20120328102352.6938,"><vh>@thin leoScripts.txt</vh></v>
-<v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
+<v t="ekr.20110914030246.2405"
+expanded="ekr.20110914030403.2417,"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 </vnodes>
 <tnodes>

@@ -857,7 +857,7 @@ def pyclass2predef(fw, module_name, type_name, value):
             py_descr2predef(_IDENT, fw, descr, module_name, type_name, key)
 
     for key, descr in descr_items:
-        if type(descr) in {types.FunctionType, types.MethodType}:
+        if type(descr) in (types.FunctionType, types.MethodType):
             pyfunc2predef(_IDENT, fw, key, descr)
 
     for key, descr in descr_items:

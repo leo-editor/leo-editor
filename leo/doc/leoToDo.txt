@@ -75,7 +75,7 @@ If you mean setup.py, you shouldn't use it.
 
 It wasn't done intentionally. There may be an nsi option to get around this
 problem, but I'm not sure about it. I'll look at this soon.
-.. @+node:ekr.20120208062900.10146: *4* Urgent: Complete new_modes
+.. @+node:ekr.20120208062900.10146: *4* Complete new_modes
 @nocolor-node
 
 This will eliminate the hacks for *entry-commands* and *command-prompt keys.
@@ -2226,8 +2226,9 @@ def token_range (self):
 .. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
 Every command should have a **complete** docstring.
 .. @+node:ekr.20120228164039.11406: *4* Clean up #### in leoKeys
-.. @+node:ekr.20120409182030.10028: *4* Fix traceback when importing C code
-.. @+node:ekr.20120406142037.9938: *5* Traceback
+.. @+node:ekr.20120229094652.15178: *4* Minor
+.. @+node:ekr.20120409182030.10028: *5* Fix traceback when importing C code
+.. @+node:ekr.20120406142037.9938: *6* Traceback
 @nocolor-node
 
 Abbreviations are on
@@ -2393,7 +2394,6 @@ afterChangeGroup oops: expecting beforeGroup, got node
 afterChangeGroup oops: expecting beforeGroup, got node
 
 c:\leo.repo\trunk>
-.. @+node:ekr.20120229094652.15178: *4* Minor
 .. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
 .. @+node:ekr.20111114085925.9932: *5* Why does the unittest/output folder contain empty files?
 .. @+node:ekr.20031218072017.1462: *6* ic.exportHeadlines
@@ -2795,7 +2795,7 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
-.. @+node:ekr.20120305084218.9915: *5* Show all commands after <alt-x><tab>
+.. @+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
 .. @+node:ekr.20111017132257.15891: *3* Get IPython working again
 @language python
 @language rest
