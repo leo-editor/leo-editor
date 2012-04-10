@@ -1829,6 +1829,7 @@ class leoTree:
     #@+node:ekr.20040803072955.90: *4* head key handlers (leoTree)
     #@+node:ekr.20040803072955.91: *5* onHeadChanged (leoTree)
     # Tricky code: do not change without careful thought and testing.
+    # Important: This code *is* used.  See also, nativeTree.onHeadChanged.
 
     def onHeadChanged (self,p,undoType='Typing',s=None,e=None): # e used in baseNativeTree.
 
@@ -1839,7 +1840,9 @@ class leoTree:
         c = self.c ; u = c.undoer
         w = self.edit_widget(p)
 
-        if c.suppressHeadChanged: return
+        if c.suppressHeadChanged:
+            if trace: g.trace('c.suppressHeadChanged')
+            return
         if not w:
             if trace: g.trace('****** no w for p: %s',repr(p))
             return
@@ -1855,10 +1858,12 @@ class leoTree:
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *6* << truncate s if it has multiple lines >>
         # Remove one or two trailing newlines before warning of truncation.
-        for i in (0,1):
-            if s and s[-1] == '\n':
-                if len(s) > 1: s = s[:-1]
-                else: s = ''
+        # for i in (0,1):
+            # if s and s[-1] == '\n':
+                # if len(s) > 1: s = s[:-1]
+                # else: s = ''
+        while s and s[-1] == '\n':
+            s = s[:-1]
 
         # Warn if there are multiple lines.
         i = s.find('\n')

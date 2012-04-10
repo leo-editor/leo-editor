@@ -892,7 +892,27 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         oldHead = p.h
         changed = s != oldHead
         if changed:
-            if trace: g.trace('new',repr(s),'old',p.h,g.callers())
+            # New in Leo 4.10.1.
+            if trace: g.trace('new',repr(s),'old',repr(p.h))
+            #@+<< truncate s if it has multiple lines >>
+            #@+node:ekr.20120409185504.10028: *4* << truncate s if it has multiple lines >>
+            # Remove trailing newlines before warning of truncation.
+            while s and s[-1] == '\n':
+                s = s[:-1]
+
+            # Warn if there are multiple lines.
+            i = s.find('\n')
+            if i > -1:
+                s = s[:i]
+                if s != oldHead:
+                    g.es("truncating headline to one line",color="blue")
+
+            limit = 1000
+            if len(s) > limit:
+                s = s[:limit]
+                if s != oldHead:
+                    g.es("truncating headline to",limit,"characters",color="blue")
+            #@-<< truncate s if it has multiple lines >>
             p.initHeadString(s)
             item.setText(0,s) # Required to avoid full redraw.
             undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)

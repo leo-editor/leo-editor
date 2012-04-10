@@ -143,6 +143,10 @@ def runEditCommandTest (c,p,inHeadline=False):
         location = 'headline' if inHeadline else 'body'
         s1 = work.h if inHeadline else work.b
         s2 = after.b
+        
+        # Strip '\n' from 'before' headline, as is now done in Leo.
+        if inHeadline and s2.endswith('\n'):
+            s2 = s2[:-1]
 
         assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
         sel3 = w.getSelectionRange()

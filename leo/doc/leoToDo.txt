@@ -6,10 +6,6 @@
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
 .. @+node:ekr.20120330040023.9778: *3* First
-.. @+node:ekr.20120409074150.9941: *4* Have maximum size of headlines
-@nocolor-node
-
-And don't allow newlines in headlines.
 .. @+node:ekr.20120401144849.10110: *4* Bugs
 .. @+node:ekr.20120401144849.10035: *5* Fix bug 971166: Prints to tabs in the Log Pane are UTF-8 encoded
 @language rest
