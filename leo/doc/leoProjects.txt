@@ -2883,6 +2883,147 @@ def onDeactivateEvent (self,event,c,obj,tag):
 
 If an assert fails, the entire file is read into a single node.
 #@+node:ekr.20120330040023.9781: *3* Features
+#@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
+@nocolor-node
+
+The new code works like leoTree.onHeadChanged.
+
+The code can be called twice, so it is a bit tricky
+to only issue warnings once.
+#@+node:ekr.20061008140603: *5* TM.runEditCommandTest
+def runEditCommandTest (self,p):
+
+    tm = self
+    c = self.c
+    atTest = p.copy()
+    w = c.frame.body.bodyCtrl
+
+    h = atTest.h
+    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
+    commandName = h[6:].strip()
+    # Ignore everything after the actual command name.
+    i = g.skip_id(commandName, 0, chars='-')
+    commandName = commandName[:i]
+    assert commandName, 'empty command name'
+    command = c.commandsDict.get(commandName)
+    assert command, 'no command: %s' % (commandName)
+
+    work,before,after = tm.findChildrenOf(atTest)
+    before_h = 'before sel='
+    after_h = 'after sel='
+    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
+        h2 = node.h
+        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
+
+    sels = []
+    for node,h in ((before,before_h),(after,after_h)):
+        sel = node.h[len(h):].strip()
+        aList = [str(z) for z in sel.split(',')]
+        sels.append(tuple(aList))
+    sel1,sel2 = sels
+    #g.trace(repr(sels))
+
+    c.selectPosition(work)
+    c.setBodyString(work,before.b)
+    #g.trace(repr(sel1[0]),repr(sel1[1]))
+    w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
+    c.k.simulateCommand(commandName)
+    s1 = work.b ; s2 = after.b
+    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
+    sel3 = w.getSelectionRange()
+    ins = w.toGuiIndex(w.getInsertPoint())
+    #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
+    # Convert both selection ranges to gui indices.
+    sel2_orig = sel2
+    # g.trace(w)
+    assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
+    i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+    assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
+    i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+    c.selectPosition(atTest)
+    atTest.contract()
+    # Don't redraw.
+#@+node:ekr.20110605121601.17912: *5* onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('** no p')
+        return
+
+    item = self.getCurrentItem()
+    if not item:
+        if trace and verbose: g.trace('** no item')
+        return
+    if not e:
+        e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('** not editing')
+        return
+
+    s = g.u(e.text())
+
+    if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
+        return
+
+    self.closeEditorHelper(e,item)
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        # New in Leo 4.10.1.
+        if trace: g.trace('new',repr(s),'old',repr(p.h))
+        << truncate s if it has multiple lines >>
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    g.doHook("headkey2",c=c,p=c.p,v=c.p,s=s)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    if changed:
+        self.redraw_after_head_changed()
+
+    if 0: # Don't do this: it interferes with clicks, and is not needed.
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+
+    c.outerUpdate()
+#@+node:ekr.20120409185504.10028: *6* << truncate s if it has multiple lines >>
+# Remove trailing newlines before warning of truncation.
+while s and s[-1] == '\n':
+    s = s[:-1]
+
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    s = s[:i]
+    if s != oldHead:
+        g.es("truncating headline to one line",color="blue")
+
+limit = 1000
+if len(s) > limit:
+    s = s[:limit]
+    if s != oldHead:
+        g.es("truncating headline to",limit,"characters",color="blue")
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
