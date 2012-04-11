@@ -2882,6 +2882,18 @@ def onDeactivateEvent (self,event,c,obj,tag):
 @nocolor-node
 
 If an assert fails, the entire file is read into a single node.
+#@+node:ekr.20120409182030.10028: *4* Fixed several problems with c-to-py command 
+@nocolor-node
+
+An assert failed during scanning in mungeAllFunctions.
+
+Added defensive code to mungeAllFunctions, dedentBlocks and
+replaceComments. The new code simply increments a pointer if a "progress"
+assert would fail. (The progress assert still exists, as a double-check.)
+
+Fixed bug: the call to u.afterChangeGroup in the go() method is called only once.
+
+Suppress warning messages given by CPrettyPrinter.indent.
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node
@@ -3063,7 +3075,7 @@ def profile_leo ():
     p.print_stats()
 
 prof = profile_leo
-#@+node:ekr.20120410175141.10027: *4* Added --no-plugins option 
+#@+node:ekr.20120410175141.10027: *4* Added --no-plugins option
 #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helper
 def scanOptions(self,fileName,pymacs):
 

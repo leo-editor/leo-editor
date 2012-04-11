@@ -4650,7 +4650,7 @@ class Commands (object):
             # self.ignore_ws = False
                 # # True: ignore the next whitespace token if any.
         #@+node:ekr.20110917174948.6911: *8* indent & helpers
-        def indent (self,p,toList=False):
+        def indent (self,p,toList=False,giveWarnings=True):
 
             c = self.c
             if not p.b: return
@@ -4659,7 +4659,7 @@ class Commands (object):
             aList = self.tokenize(p.b)
             assert ''.join(aList) == p.b
             
-            aList = self.add_statement_braces(aList)
+            aList = self.add_statement_braces(aList,giveWarnings=giveWarnings)
 
             self.bracketLevel = 0
             self.parens = 0
@@ -4677,15 +4677,17 @@ class Commands (object):
             else:
                 return ''.join(self.result)
         #@+node:ekr.20110918225821.6815: *9* add_statement_braces
-        def add_statement_braces (self,s):
+        def add_statement_braces (self,s,giveWarnings=False):
             
             p = self.p
             trace = False
             
             def oops(message,i,j):
-                g.es('** changed ',p.h,color='red')
-                g.es('%s after\n%s' % (
-                    message,repr(''.join(s[i:j]))))
+                # This can be called from c-to-python, in which case warnings should be suppressed.
+                if giveWarnings:
+                    g.es('** changed ',p.h,color='red')
+                    g.es('%s after\n%s' % (
+                        message,repr(''.join(s[i:j]))))
             
             i,n,result = 0,len(s),[]
             while i < n:

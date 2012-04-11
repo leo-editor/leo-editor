@@ -1737,12 +1737,11 @@ class editCommandsClass (baseEditCommandsClass):
             w.setSelectionRange(i,j,insert=j)
                 # 2011/11/21: Bug fix: was ins=j.
             w.see(j)
-    #@+node:ekr.20110916215321.8053: *3* c-to-py
-    #@+node:ekr.20110916215321.8054: *4* cToPy (leoEditCommands)
+    #@+node:ekr.20110916215321.8054: *3* cToPy (leoEditCommands)
     class C_to_python:
         #@+<< docstring: theory of operation >>
-        #@+middle:ekr.20110918184425.6914: *5* class C_to_python
-        #@+node:ekr.20110916215321.7983: *6* << docstring: theory of operation >>
+        #@+middle:ekr.20110918184425.6914: *4* class C_to_python
+        #@+node:ekr.20110916215321.7983: *5* << docstring: theory of operation >>
         #@@nocolor-node
 
         '''
@@ -1768,8 +1767,8 @@ class editCommandsClass (baseEditCommandsClass):
         '''
         #@-<< docstring: theory of operation >>
         #@+others
-        #@+node:ekr.20110918184425.6914: *5* class C_to_python
-        #@+node:ekr.20110916215321.8057: *6* ctor & helpers (C_to_python)
+        #@+node:ekr.20110918184425.6914: *4* class C_to_python
+        #@+node:ekr.20110916215321.8057: *5* ctor & helpers (C_to_python)
         def __init__ (self,c):
             
             self.c = c
@@ -1787,7 +1786,7 @@ class editCommandsClass (baseEditCommandsClass):
                 
             # Get user types.
             self.get_user_types()
-        #@+node:ekr.20110916215321.7984: *7* get_user_types
+        #@+node:ekr.20110916215321.7984: *6* get_user_types
         #@@nocolor
         #@+at
         # 
@@ -1834,7 +1833,7 @@ class editCommandsClass (baseEditCommandsClass):
                     for val in d.get(key):
                         print('  %s' % (val))
             
-        #@+node:ekr.20110917104720.6877: *7* parse_ivars_data
+        #@+node:ekr.20110917104720.6877: *6* parse_ivars_data
         def parse_ivars_data (self,aList):
             
             d,key = {},None
@@ -1852,7 +1851,7 @@ class editCommandsClass (baseEditCommandsClass):
                     return {}
 
             return d
-        #@+node:ekr.20110916215321.8058: *6* go
+        #@+node:ekr.20110916215321.8058: *5* go
         def go (self):
             
             c = self.c
@@ -1868,7 +1867,7 @@ class editCommandsClass (baseEditCommandsClass):
                     # g.es("converting:",p.h)
                     bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
                     
-                    s = pp.indent(p)
+                    s = pp.indent(p,giveWarnings=False)
                     aList = list(s)
                     self.convertCodeList(aList)
                 
@@ -1879,12 +1878,13 @@ class editCommandsClass (baseEditCommandsClass):
                         dirtyVnodeList.append(p.v)
                         c.undoer.afterChangeNodeContents(p,undoType,bunch)
                         changed = True
-                            
-                if changed:
-                    u.afterChangeGroup(c.p,undoType,
-                        reportFlag=False,dirtyVnodeList=dirtyVnodeList)
+              
+            # 2012/04/11: Bug fix.  Call this only once, at end.
+            if changed:
+                u.afterChangeGroup(c.p,undoType,
+                    reportFlag=False,dirtyVnodeList=dirtyVnodeList)
             g.es("done")
-        #@+node:ekr.20110916215321.7997: *6* convertCodeList (main pattern function)
+        #@+node:ekr.20110916215321.7997: *5* convertCodeList (main pattern function)
         def convertCodeList(self,aList):
             
             r,sr = self.replace,self.safe_replace
@@ -1951,8 +1951,8 @@ class editCommandsClass (baseEditCommandsClass):
             self.replaceComments(aList) # should follow all calls to safe_replace
             self.removeTrailingWs(aList)
             r(aList, "\t ", "\t") # happens when deleting declarations.
-        #@+node:ekr.20110916215321.8001: *6* Scanning
-        #@+node:ekr.20110919211949.6920: *7* insert_not
+        #@+node:ekr.20110916215321.8001: *5* Scanning
+        #@+node:ekr.20110919211949.6920: *6* insert_not
         def insert_not (self,aList):
             
             '''Change "!" to "not" except before "="'''
@@ -1966,7 +1966,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i += 4
                 else:
                     i += 1
-        #@+node:ekr.20110916215321.8003: *7* mungeAllFunctions
+        #@+node:ekr.20110916215321.8003: *6* mungeAllFunctions
         def mungeAllFunctions(self,aList):
             
             '''Scan for a '{' at the top level that is preceeded by ')' '''
@@ -1998,15 +1998,13 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     j = i + 1
                 
+                # Handle unusual cases.
+                if j <= progress:
+                    j = progress + 1
                 assert j > progress
+                    
                 i = j
-                
-        # elif self.match_word(aList, i, "@code"):
-            # j = i + 5
-            # prevSemi = j # restart the scan
-        # elif self.match_word(aList, i, "@c"):
-            # j = i + 2 ; prevSemi = j # restart the scan
-        #@+node:ekr.20110916215321.8004: *8* handlePossibleFunctionHeader
+        #@+node:ekr.20110916215321.8004: *7* handlePossibleFunctionHeader
         # converts function header lines from c++ format to python format.
         # That is, converts
         # x1..nn w::y ( t1 z1,..tn zn) {
@@ -2072,7 +2070,7 @@ class editCommandsClass (baseEditCommandsClass):
 
             aList[prevSemi:k] = result
             return prevSemi + len(result)
-        #@+node:ekr.20110916215321.8005: *8* massageFunctionArgs
+        #@+node:ekr.20110916215321.8005: *7* massageFunctionArgs
         def massageFunctionArgs (self,args):
 
             assert(args[0]=='(')
@@ -2104,7 +2102,7 @@ class editCommandsClass (baseEditCommandsClass):
             result.append(':')
             # print "new args:", ''.join(result)
             return result
-        #@+node:ekr.20110916215321.8006: *8* massageFunctionHead (sets .class_name)
+        #@+node:ekr.20110916215321.8006: *7* massageFunctionHead (sets .class_name)
         def massageFunctionHead (self,head):
             
             result = []
@@ -2143,7 +2141,7 @@ class editCommandsClass (baseEditCommandsClass):
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
-        #@+node:ekr.20110916215321.8007: *8* massageFunctionBody & helpers
+        #@+node:ekr.20110916215321.8007: *7* massageFunctionBody & helpers
         def massageFunctionBody (self,body):
 
             body = self.massageIvars(body)
@@ -2151,7 +2149,7 @@ class editCommandsClass (baseEditCommandsClass):
             body = self.removeTypeNames(body)
             body = self.dedentBlocks(body)
             return body
-        #@+node:ekr.20110919224143.6928: *9* dedentBlocks
+        #@+node:ekr.20110919224143.6928: *8* dedentBlocks
         def dedentBlocks (self,body):
             
             '''Look for '{' preceded by '{' or '}' or ';'
@@ -2204,11 +2202,15 @@ class editCommandsClass (baseEditCommandsClass):
                         j += len(m)
                 else:
                     j = i + 1
+                    
+                # Defensive programming.
+                if i == j:
+                    j += 1
                 assert i < j
                 i = j
                         
             return body
-        #@+node:ekr.20110916215321.8008: *9* massageIvars
+        #@+node:ekr.20110916215321.8008: *8* massageIvars
         def massageIvars (self,body):
 
             if self.class_name and self.ivars_dict.has_key(self.class_name):
@@ -2235,7 +2237,7 @@ class editCommandsClass (baseEditCommandsClass):
                     else: i = j
                 else: i += 1
             return body
-        #@+node:ekr.20110916215321.8009: *9* removeCasts
+        #@+node:ekr.20110916215321.8009: *8* removeCasts
         def removeCasts (self,body):
 
             i = 0
@@ -2261,7 +2263,7 @@ class editCommandsClass (baseEditCommandsClass):
                                 i = start
                 else: i += 1
             return body
-        #@+node:ekr.20110916215321.8010: *9* removeTypeNames
+        #@+node:ekr.20110916215321.8010: *8* removeTypeNames
         # Do _not_ remove type names when preceeded by new.
 
         def removeTypeNames (self,body):
@@ -2290,7 +2292,7 @@ class editCommandsClass (baseEditCommandsClass):
                         i = j
                 else: i += 1
             return body
-        #@+node:ekr.20110916215321.8011: *7* handle_all_keywords
+        #@+node:ekr.20110916215321.8011: *6* handle_all_keywords
         def handle_all_keywords (self,aList):
             
             '''
@@ -2312,7 +2314,7 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     i += 1
             # print "handAllKeywords2:", ''.join(aList)
-        #@+node:ekr.20110916215321.8012: *8* handle_keyword
+        #@+node:ekr.20110916215321.8012: *7* handle_keyword
         def handle_keyword (self,aList,i):
 
             isFor = False
@@ -2352,9 +2354,9 @@ class editCommandsClass (baseEditCommandsClass):
                     j = j + 2
                 return j
             return i
-        #@+node:ekr.20110916215321.8063: *6* Utils
-        #@+node:ekr.20110916215321.8017: *7* match...
-        #@+node:ekr.20110916215321.8020: *8* match
+        #@+node:ekr.20110916215321.8063: *5* Utils
+        #@+node:ekr.20110916215321.8017: *6* match...
+        #@+node:ekr.20110916215321.8020: *7* match
         def match (self,s,i,pat):
             
             '''Return True if s[i:] matches the pat string.
@@ -2374,7 +2376,7 @@ class editCommandsClass (baseEditCommandsClass):
                     return False
 
             return False
-        #@+node:ekr.20110916215321.8021: *8* match_word
+        #@+node:ekr.20110916215321.8021: *7* match_word
         def match_word (self,s,i,pat):
             
             '''Return True if s[i:] word matches the pat string.'''
@@ -2389,8 +2391,8 @@ class editCommandsClass (baseEditCommandsClass):
                     return not ch.isalnum() and ch != '_'
             else:
                 return False
-        #@+node:ekr.20110916215321.8066: *7* is...
-        #@+node:ekr.20110916215321.8015: *8* isSectionDef
+        #@+node:ekr.20110916215321.8066: *6* is...
+        #@+node:ekr.20110916215321.8015: *7* isSectionDef
         # returns the ending index if i points to < < x > > =
         def isSectionDef (self,aList,i):
 
@@ -2403,19 +2405,19 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     i += 1
             return False
-        #@+node:ekr.20110916215321.8016: *8* is_string_or_comment
+        #@+node:ekr.20110916215321.8016: *7* is_string_or_comment
         def is_string_or_comment (self,s,i):
 
             # Does range checking.
             m = self.match
             return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
-        #@+node:ekr.20110916215321.8014: *8* is_ws and is_ws_or_nl
+        #@+node:ekr.20110916215321.8014: *7* is_ws and is_ws_or_nl
         def is_ws (self,ch):
             return ch in ' \t'
 
         def is_ws_or_nl (self,ch):
             return ch in ' \t\n'
-        #@+node:ekr.20110916215321.8041: *7* prevNonWsChar and prevNonWsOrNlChar
+        #@+node:ekr.20110916215321.8041: *6* prevNonWsChar and prevNonWsOrNlChar
         def prevNonWsChar (self,s,i):
 
             i -= 1
@@ -2429,8 +2431,8 @@ class editCommandsClass (baseEditCommandsClass):
             while i >= 0 and self.is_ws_or_nl(s[i]):
                 i -= 1
             return i
-        #@+node:ekr.20110916215321.8022: *7* remove...
-        #@+node:ekr.20110916215321.8028: *8* removeBlankLines
+        #@+node:ekr.20110916215321.8022: *6* remove...
+        #@+node:ekr.20110916215321.8028: *7* removeBlankLines
         def removeBlankLines (self,aList):
 
             i = 0
@@ -2442,7 +2444,7 @@ class editCommandsClass (baseEditCommandsClass):
                     del aList[i:j+1]
                 else:
                     i = self.skip_past_line(aList,i)
-        #@+node:ekr.20110916215321.8029: *8* removeExcessWs
+        #@+node:ekr.20110916215321.8029: *7* removeExcessWs
         def removeExcessWs (self,aList):
 
             i = 0
@@ -2454,7 +2456,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i += 1
                     i = self.removeExcessWsFromLine(aList,i)
                 else: i += 1
-        #@+node:ekr.20110916215321.8030: *8* removeExessWsFromLine
+        #@+node:ekr.20110916215321.8030: *7* removeExessWsFromLine
         def removeExcessWsFromLine (self,aList,i):
 
             assert(i==0 or aList[i-1] == '\n')
@@ -2474,7 +2476,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i += 1 # make sure we don't go past a newline!
                 else: i += 1
             return i
-        #@+node:ekr.20110916215321.8032: *8* removeMatchingBrackets
+        #@+node:ekr.20110916215321.8032: *7* removeMatchingBrackets
         def removeMatchingBrackets (self,aList, i):
 
             j = self.skip_to_matching_bracket(aList, i)
@@ -2488,7 +2490,7 @@ class editCommandsClass (baseEditCommandsClass):
                     return j - 1
                 else: return j + 1
             else: return j
-        #@+node:ekr.20110916215321.8033: *8* removeSemicolonsAtEndOfLines
+        #@+node:ekr.20110916215321.8033: *7* removeSemicolonsAtEndOfLines
         def removeSemicolonsAtEndOfLines (self,aList):
 
             i = 0
@@ -2506,7 +2508,7 @@ class editCommandsClass (baseEditCommandsClass):
                         del aList[i]
                     else: i += 1
                 else: i += 1
-        #@+node:ekr.20110916215321.8034: *8* removeTrailingWs
+        #@+node:ekr.20110916215321.8034: *7* removeTrailingWs
         def removeTrailingWs (self,aList):
 
             i = 0
@@ -2520,8 +2522,8 @@ class editCommandsClass (baseEditCommandsClass):
                         del aList[j:i]
                         i = j
                 else: i += 1
-        #@+node:ekr.20110916215321.8035: *7* replace... & safe_replace
-        #@+node:ekr.20110916215321.8036: *8* replace
+        #@+node:ekr.20110916215321.8035: *6* replace... & safe_replace
+        #@+node:ekr.20110916215321.8036: *7* replace
         def replace (self,aList,findString,changeString):
             
             '''# Replaces all occurances of findString by changeString.
@@ -2538,7 +2540,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i += len(changeList)
                 else:
                     i += 1
-        #@+node:ekr.20110916215321.8037: *8* replaceComments
+        #@+node:ekr.20110916215321.8037: *7* replaceComments
         def replaceComments (self,aList):
 
             i = 0
@@ -2568,9 +2570,12 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     j = i+1
 
+                # Defensive programming.
+                if j == progress:
+                    j += 1
                 assert j > progress
                 i = j
-        #@+node:ekr.20110920063732.6935: *9* munge_block_comment
+        #@+node:ekr.20110920063732.6935: *8* munge_block_comment
         def munge_block_comment (self,comment_lines):
             
             trace = False
@@ -2599,7 +2604,7 @@ class editCommandsClass (baseEditCommandsClass):
                 for z in result: print(repr(z))
 
             return result
-        #@+node:ekr.20110916215321.8038: *8* replaceSectionDefs
+        #@+node:ekr.20110916215321.8038: *7* replaceSectionDefs
         def replaceSectionDefs (self,aList):
             
             '''Replaces < < x > > = by @c (at the start of lines).'''
@@ -2616,7 +2621,7 @@ class editCommandsClass (baseEditCommandsClass):
                     j = self.isSectionDef(aList,i)
                     if j > i: aList[i:j] = list("@c ")
                 else: i += 1
-        #@+node:ekr.20110916215321.8039: *8* safe_replace
+        #@+node:ekr.20110916215321.8039: *7* safe_replace
         def safe_replace (self,aList,findString,changeString):
             
             '''Replaces occurances of findString by changeString,
@@ -2644,8 +2649,8 @@ class editCommandsClass (baseEditCommandsClass):
                         i += len(changeList)
                     else:
                         i += 1
-        #@+node:ekr.20110916215321.8040: *7* skip
-        #@+node:ekr.20110916215321.8042: *8* skip_c_block_comment
+        #@+node:ekr.20110916215321.8040: *6* skip
+        #@+node:ekr.20110916215321.8042: *7* skip_c_block_comment
         def skip_c_block_comment (self,s,i):
             
             # if 'replaceComments' in g.callers():
@@ -2661,7 +2666,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i += 1
 
             return i
-        #@+node:ekr.20110916215321.8043: *8* skip_past_line
+        #@+node:ekr.20110916215321.8043: *7* skip_past_line
         def skip_past_line (self,s,i):
 
             while i < len(s) and s[i] != '\n':
@@ -2669,7 +2674,7 @@ class editCommandsClass (baseEditCommandsClass):
             if i < len(s) and s[i] == '\n':
                 i += 1
             return i
-        #@+node:ekr.20110916215321.8044: *8* skip_past_word
+        #@+node:ekr.20110916215321.8044: *7* skip_past_word
         def skip_past_word (self,s,i):
 
             assert(s[i].isalpha() or s[i]=='~')
@@ -2685,7 +2690,7 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     break
             return i
-        #@+node:ekr.20110916215321.8045: *8* skip_string
+        #@+node:ekr.20110916215321.8045: *7* skip_string
         def skip_string (self,s,i):
 
             delim = s[i] # handle either single or double-quoted strings
@@ -2700,7 +2705,7 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     i += 1
             return i
-        #@+node:ekr.20110916215321.8046: *8* skip_string_or_comment
+        #@+node:ekr.20110916215321.8046: *7* skip_string_or_comment
         def skip_string_or_comment (self,s,i):
 
             if self.match(s,i,"'") or self.match(s,i,'"'):
@@ -2713,7 +2718,7 @@ class editCommandsClass (baseEditCommandsClass):
             
             # g.trace(repr(''.join(s[i:j])))
             return j
-        #@+node:ekr.20110916215321.8047: *8* skip_to_matching_bracket
+        #@+node:ekr.20110916215321.8047: *7* skip_to_matching_bracket
         def skip_to_matching_bracket (self,s,i):
 
             ch = s[i]
@@ -2734,7 +2739,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i += 1 # skip the closing bracket.
                 else: i += 1
             return i
-        #@+node:ekr.20110916215321.8048: *8* skip_ws and skip_ws_and_nl
+        #@+node:ekr.20110916215321.8048: *7* skip_ws and skip_ws_and_nl
         def skip_ws (self,aList,i):
 
             while i < len(aList):
@@ -2756,7 +2761,7 @@ class editCommandsClass (baseEditCommandsClass):
 
     def cToPy (self,event):
         #@+<< docstring: c-to-python >>
-        #@+node:ekr.20110916215321.7982: *5* << docstring: c-to-python >>
+        #@+node:ekr.20110916215321.7982: *4* << docstring: c-to-python >>
         ''' The c-to-python command converts C or C++ text to python text. The
         conversion is not complete. Nevertheless, c2py eliminates much of the tedious
         text manipulation that would otherwise be required.
