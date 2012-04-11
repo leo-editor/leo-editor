@@ -36,16 +36,14 @@ except ImportError:
 
 #@+others
 #@+node:ville.20120302233106.3580: ** init
-
 def init ():
 
-    print ("bigdash init")
     import leo.core.leoGlobals as g
+    # print("bigdash init")
     
     set_leo(g)
     ok = g.app.gui.guiName() == "qt"
 
-    
     g._global_search = None
     if ok:        
         @g.command("global-search")
