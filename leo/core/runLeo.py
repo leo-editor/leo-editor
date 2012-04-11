@@ -37,13 +37,9 @@ assert(g.app)
 
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
-#@+at To gather statistics, do the following in a Python window, not idle:
-# 
-#     import leo
-#     import leo.core.runLeo as runLeo
-#     runLeo.profile_leo()  (this runs leo)
-#     load leoDocs.leo (it is very slow)
-#     quit Leo.
+#@+at To gather statistics, do the following in a console window:
+#     
+#     python profileLeo.py <list of .leo files>
 #@@c
 
 def profile_leo ():
@@ -71,7 +67,8 @@ def profile_leo ():
     profile.run('import leo ; leo.run()',name)
     p = pstats.Stats(name)
     p.strip_dirs()
-    p.sort_stats('module','calls','time','name')
+    # p.sort_stats('module','calls','time','name')
+    p.sort_stats('cumulative','time')
     #reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
     #p.print_stats(reFiles)
     p.print_stats()
