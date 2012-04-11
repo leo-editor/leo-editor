@@ -46,6 +46,7 @@ class LeoApp:
         
         # Command-line arguments...
         self.batchMode = False          # True: run in batch mode.
+        self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
         self.qt_use_tabs = False        # True: allow tabbed main window.
@@ -1733,9 +1734,11 @@ class LoadManager:
             help = 'start maximized (Qt only)')
         add('--minimized',    action="store_true",
             help = 'start minimized')
-        add('--no-cache',     action="store_true",dest='no_cache',
+        add('--no-cache',     action="store_true", dest='no_cache',
             help = 'disable reading of cached files')
-        add('--no-splash',    action="store_true",dest='no_splash_screen',
+        add('--no-plugins',   action="store_true", dest='no_plugins',
+            help = 'disable all plugins')
+        add('--no-splash',    action="store_true", dest='no_splash_screen',
             help = 'disable the splash screen')
         add('--screen-shot',  dest='screenshot_fn',
             help = 'take a screen shot and then exit')
@@ -1745,9 +1748,9 @@ class LoadManager:
             help = 'open a window for scripts')
         add('--select',       dest='select',
             help='headline or gnx of node to select')
-        add('--silent',       action="store_true",dest="silent",
+        add('--silent',       action="store_true", dest="silent",
             help = 'disable all log messages')
-        add('--version',      action="store_true",dest="version",
+        add('--version',      action="store_true", dest="version",
             help='print version number and exit')
         add('--window-size',  dest='window_size',
             help='initial window size in height x width format')
@@ -1799,6 +1802,11 @@ class LoadManager:
         if options.no_cache:
             if trace: print('scanOptions: disabling caching')
             g.enableDB = False
+            
+        # --no-plugins
+        if options.no_plugins:
+            if trace: print('scanOptions: disabling plugins')
+            g.app.enablePlugins = False
             
         # --no-splash
         # g.trace('--no-splash',options.no_splash_screen)

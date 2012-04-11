@@ -381,7 +381,7 @@ class LeoPluginsController:
             return
             
         # g.trace(tag,g.callers())
-
+        
         if tag in ('start1','open0'):
             self.loadHandlers(tag,keywords)
 
@@ -526,6 +526,10 @@ class LeoPluginsController:
 
         trace = False and not g.unitTesting
         verbose = False or verbose
+        
+        if not g.app.enablePlugins:
+            if trace: g.trace('plugins disabled')
+            return None
 
         if moduleOrFileName.startswith('@'):
             if trace: g.trace('ignoring Leo directive')
