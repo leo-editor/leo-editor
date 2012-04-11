@@ -6,7 +6,7 @@
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
 .. @+node:ekr.20120330040023.9778: *3* First
-.. @+node:ekr.20120401144849.10110: *4* Bugs
+.. @+node:ekr.20120401144849.10110: *4* Fix Bugs
 .. @+node:ekr.20120401144849.10035: *5* Fix bug 971166: Prints to tabs in the Log Pane are UTF-8 encoded
 @language rest
 
@@ -27,29 +27,6 @@ Most editors don't let you select the encoding of the file you want to
 edit. Emacs does allow me to set the encoding to UTF-8, but it still does
 not correctly interpret UTF-8 data I copy from the Log pane. This can
 probably be made to work, but I have not made it work.
-.. @+node:ekr.20120401144849.10036: *5* Fix bug 971171: re .leoRecentFiles
-@language rest
-
-If If $(HOME)/.leo/.leoRecentFiles.txt does not exist,
-the only recent file ever is the current file
-https://bugs.launchpad.net/leo-editor/+bug/971171
-
-This is a problem for new installations, but it probably is not noticed by
-long-time users of Leo-Editor because for them
-$(HOME)/.leo/.leoRecentFiles.txt does exist. I noticed the problem because
-I installed a new operating system and hence made a new home directory.
-
-Beginning with some, probably recent, version, Leo-Editor stopped creating
-$(HOME)/.leo/.leoRecentFiles.txt. Hence, if the recent files file does not
-exist, it is never created and Leo-Editor always presents a recent files
-menu containing only the current file.
-
-Work Around: With Leo-Editor not running, create a zero length file
-$(HOME)/.leo/.leoRecentFiles.txt.
-
-This is tricky under Windows because File Explorer does NOT let you enter a
-file name that begins with a period. You can get around it by using the
-command line and standard-out redirection.
 .. @+node:ekr.20120401144849.10037: *5* Fix installer problem
 @language rest
 

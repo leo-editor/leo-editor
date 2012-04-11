@@ -2882,7 +2882,7 @@ def onDeactivateEvent (self,event,c,obj,tag):
 @nocolor-node
 
 If an assert fails, the entire file is read into a single node.
-#@+node:ekr.20120409182030.10028: *4* Fixed several problems with c-to-py command 
+#@+node:ekr.20120409182030.10028: *4* Fixed several problems with c-to-py command
 @nocolor-node
 
 An assert failed during scanning in mungeAllFunctions.
@@ -2894,6 +2894,15 @@ assert would fail. (The progress assert still exists, as a double-check.)
 Fixed bug: the call to u.afterChangeGroup in the go() method is called only once.
 
 Suppress warning messages given by CPrettyPrinter.indent.
+#@+node:ekr.20120401144849.10036: *4* Fixed bug 971171: re .leoRecentFiles
+@language python
+@language rest
+
+If If $(HOME)/.leo/.leoRecentFiles.txt does not exist,
+the only recent file ever is the current file
+https://bugs.launchpad.net/leo-editor/+bug/971171
+
+The fix: rf.writeRecentFilesFile creates $(HOME)/.leo/.leoRecentFiles.txt if it does not exist.
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node

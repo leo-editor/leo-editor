@@ -2841,7 +2841,14 @@ class RecentFilesManager:
         if written:
             rf.recentFileMessageWritten = True
         else:
-            pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+            # Attempt to create .leoRecentFiles.txt in the user's home directory.
+            if g.app.homeLeoDir:
+                fileName = g.os_path_finalize_join(g.app.homeLeoDir,tag)
+                if not g.os_path_exists(fileName):
+                    g.es_print('creating: %s' % (fileName),color='red')
+                rf.writeRecentFilesFileHelper(fileName)
+
+            
     #@+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
     def writeRecentFilesFileHelper (self,fileName):
 
