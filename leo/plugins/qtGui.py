@@ -1458,6 +1458,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     def get(self,i,j=None):
         
         if 1:
+            # 2012/04/12: fix the following two bugs by using the vanilla code:
+            # https://bugs.launchpad.net/leo-editor/+bug/979142
+            # https://bugs.launchpad.net/leo-editor/+bug/971166
             s = self.getAllText()
             i = self.toGuiIndex(i)
             j = self.toGuiIndex(j)

@@ -2903,6 +2903,22 @@ the only recent file ever is the current file
 https://bugs.launchpad.net/leo-editor/+bug/971171
 
 The fix: rf.writeRecentFilesFile creates $(HOME)/.leo/.leoRecentFiles.txt if it does not exist.
+#@+node:ekr.20120401144849.10035: *4* Fixed bugs 971166 & 979142 re copy/paste
+@language python
+@language rest
+
+These bugs are really the same bug
+
+Node body contents displayed is unpredictably incorrect
+https://bugs.launchpad.net/leo-editor/+bug/979142
+
+Prints to tabs in the Log Pane are UTF-8 encoded
+https://bugs.launchpad.net/leo-editor/+bug/971166
+
+The fix was:
+
+1. Use the "slow" code in leoQTextEditWidget.get.
+2. Use w.get/setAllText in leoFrame.pasteText.
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node
