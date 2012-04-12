@@ -1457,12 +1457,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18102: *5* get (leoQTextEditWidget)
     def get(self,i,j=None):
         
-        if 0:
+        if 1:
             s = self.getAllText()
             i = self.toGuiIndex(i)
             j = self.toGuiIndex(j)
             return s[i:j]
         else:
+            # This fails when getting text from the html-encoded log panes.
             i = self.toGuiIndex(i)
             if j is None: 
                 j = i+1
@@ -1482,12 +1483,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 #print "fastget",ret
                 return ret
         
-            # the next implementation is much slower, but will have to do        
+            # This is much slower, but will have to do        
         
             #g.trace('Slow get()', g.callers(5))
             s = self.getAllText()
             i = self.toGuiIndex(i)
-        
             j = self.toGuiIndex(j)
             return s[i:j]
     #@-others
@@ -5054,6 +5054,7 @@ class leoQtLog (leoFrame.leoLog):
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
+        trace = False and not g.unitTesting
         c = self.c
         if g.app.quitting or not c or not c.exists:
             print('qtGui.log.put fails',repr(s))
@@ -5079,7 +5080,9 @@ class leoQtLog (leoFrame.leoLog):
                 s = s.replace(' ','&nbsp;')
             s = s.rstrip().replace('\n','<br>')
             s = '<font color="%s">%s</font>' % (color,s)
-            w.append(s)
+            if trace: print('leoQtLog.put',type(s),len(s),s[:40],w)
+            w.append(s) # w.append is a QTextBrowser method.
+            # w.insertHtml(s+'<br>') # Also works.
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(0) # Force the slider to the initial position.
         else:
@@ -7512,7 +7515,7 @@ class leoQtGui(leoGui.leoGui):
             QtGui.QApplication.processEvents()
             cb.setText(s)
             QtGui.QApplication.processEvents()
-            if trace: g.trace(len(s),type(s))
+            if trace: g.trace(len(s),type(s),s[:25])
         else:
             g.trace('no clipboard!')
 
@@ -7525,7 +7528,7 @@ class leoQtGui(leoGui.leoGui):
         if cb:
             QtGui.QApplication.processEvents()
             s = cb.text()
-            if trace: g.trace (len(s),type(s))
+            if trace: g.trace (len(s),type(s),s[:25])
             s = g.app.gui.toUnicode(s)
                 # Same as g.u(s), but with error handling.
             return s

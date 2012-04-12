@@ -2632,20 +2632,19 @@ def es(*args,**keys):
             # This makes the output of unit tests match the output of scripts.
             # s = g.toEncodedString(s,'ascii')
             g.pr(s,newline=newline)
+    elif log and app.logInited:
+        log.put(s,color=color,tabName=tabName)
+        for ch in s:
+            if ch == '\n': log.newlines += 1
+            else: log.newlines = 0
+        if newline:
+            g.ecnl(tabName=tabName) # only valid here
+    elif app.logInited:
+        print(s.rstrip()) # Happens only rarely.
+    elif newline:
+        app.logWaiting.append((s+'\n',color),)
     else:
-        if log and app.logInited:
-            log.put(s,color=color,tabName=tabName)
-            for ch in s:
-                if ch == '\n': log.newlines += 1
-                else: log.newlines = 0
-            if newline:
-                g.ecnl(tabName=tabName) # only valid here
-        elif app.logInited:
-            print(s.rstrip()) # Happens only rarely.
-        elif newline:
-            app.logWaiting.append((s+'\n',color),)
-        else:
-            app.logWaiting.append((s,color),)
+        app.logWaiting.append((s,color),)
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 

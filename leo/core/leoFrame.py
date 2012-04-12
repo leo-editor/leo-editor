@@ -1378,6 +1378,8 @@ class leoFrame:
         else:
             s = s1 = g.app.gui.getTextFromClipboard()
 
+        # g.trace(type(s),s[:25])
+
         s = g.toUnicode(s)
 
         # g.trace('pasteText','wname',wname,'s',s,g.callers())
@@ -1389,27 +1391,34 @@ class leoFrame:
             while s and s [ -1] in ('\n','\r'):
                 s = s [: -1]
 
-        if 1: # Was a try.
-            # Update the widget.
+        # Update the widget.
+        if 1:
+            # 2012/04/12: Fix bug 971166.
+            # Use w.get/setAllText to avoid strange Qt problems.
+            s2 = w.getAllText()
+            if i > j: i,j = j,i
+            new_s = s2[:i] + s + s2[j:]
+            w.setAllText(new_s)
+        else:
             if i != j:
                 w.delete(i,j)
             w.insert(i,s)
             w.see(i+len(s) + 2) # 2011/06/01
 
-            if wname.startswith('body'):
-                c.frame.body.forceFullRecolor()
-                c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
-            elif singleLine:
-                s = w.getAllText()
-                while s and s [ -1] in ('\n','\r'):
-                    s = s [: -1]
-                # 2011/11/14: headline width methods do nothing at present.
-                # if wname.startswith('head'):
-                    # The headline is not officially changed yet.
-                    # p.initHeadString(s)
-                    # width = f.tree.headWidth(p=None,s=s)
-                    # w.setWidth(width)
-            else: pass
+        if wname.startswith('body'):
+            c.frame.body.forceFullRecolor()
+            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s [ -1] in ('\n','\r'):
+                s = s [: -1]
+            # 2011/11/14: headline width methods do nothing at present.
+            # if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                # width = f.tree.headWidth(p=None,s=s)
+                # w.setWidth(width)
+        else: pass
 
         return
 

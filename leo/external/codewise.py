@@ -455,7 +455,7 @@ def translateArgs(args,d):
             result.append(arg)
 
     return ''.join(result)
-#@+node:ekr.20110310093050.14280: *4* Unicode utils...
+#@+node:ekr.20110310093050.14280: *4* Unicode utils (codewise)...
 #@+node:ekr.20110310093050.14282: *5* isBytes, isCallable, isChar, isString & isUnicode (codewise)
 # The syntax of these functions must be valid on Python2K and Python3K.
 
