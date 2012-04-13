@@ -6,8 +6,7 @@
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
 .. @+node:ekr.20120330040023.9778: *3* First
-.. @+node:ekr.20120401144849.10110: *4* Fix Bugs
-.. @+node:ekr.20120401144849.10037: *5* Fix installer problem
+.. @+node:ekr.20120401144849.10037: *4* Fix installer problem
 @language rest
 
 Leo 4.10 final released
@@ -32,6 +31,579 @@ If you mean setup.py, you shouldn't use it.
 
 It wasn't done intentionally. There may be an nsi option to get around this
 problem, but I'm not sure about it. I'll look at this soon.
+.. @+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
+.. @+node:ekr.20111017132257.15891: *4* Get IPython working again
+@language python
+@language rest
+
+Port ipy_leo.py to latest version of IPython
+
+Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+
+pyos_inputhook is relevant
+
+IPython lib.inputhook
+http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
+.. @+node:ekr.20120401144849.10152: *5* What I did
+@language rest
+
+- Import logic looks for legacy IPython first (0.11 and prev),
+  then looks for new-style IPython (0.12 and above).
+
+- Created GlobalIPythonManager class, assigned to leoIPython.gipm and g.app.gipm.
+
+- Added self.c ivar to LeoNode class.  This is the same as p.v.context.
+.. @+node:ekr.20120330110655.10023: *5*  Notes
+@language rest
+
+* IPython seems to require Python 2.x.
+* I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
+
+From C:\prog\ipython-0.12\IPython\scripts
+
+#!/usr/bin/env python
+"""Terminal-based IPython entry point.
+"""
+
+from IPython.frontend.terminal.ipapp import launch_new_instance
+
+launch_new_instance()
+
+Here is ipapi.get::
+
+@language python
+
+    def get():
+        """Get the global InteractiveShell instance."""
+        from IPython.core.interactiveshell import InteractiveShell
+        return InteractiveShell.instance()
+.. @+node:ekr.20120330110655.10024: *6* @url ipython-dev archive
+http://mail.scipy.org/pipermail/ipython-dev/
+.. @+node:ekr.20120330110655.10025: *6* @url ipython api
+http://ipython.org/ipython-doc/rel-0.12/api/index.html
+.. @+node:ekr.20120330110655.10026: *6* @url ipython.core.interactiveshell
+http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
+.. @+node:ekr.20120212060348.10374: *5*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Debugging options.
+restore_selection_range = False
+
+# Traces & disabling of scrolling problems.
+no_scroll = False
+    # True: disable all calls to w.setYScrollPosition.
+no_see = False
+    # True: disable all calls to w.see and w.seeInsertPoint.
+
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+    
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+.. @+node:ekr.20110605121601.18134: *5* init (qtGui.py top level) (qtPdb)
+def init():
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace and g.trace_startup: print('qtGui.__init__')
+
+    if g.app.unitTesting: # Not Ok for unit testing!
+        return False
+
+    if not QtCore:
+        return False
+
+    if g.app.gui:
+        return g.app.gui.guiName() == 'qt'
+    else:
+        g.app.gui = leoQtGui()
+
+        # Override g.pdb
+        def qtPdb(message=''):
+            if message: print(message)
+            import pdb
+            if not g.app.useIpython:
+                QtCore.pyqtRemoveInputHook()
+            pdb.set_trace()
+        g.pdb = qtPdb
+
+        g.app.gui.finishCreate()
+        g.plugin_signon(__name__)
+        return True
+.. @+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
+def runMainLoop(self):
+
+    '''Start the Qt main loop.'''
+    
+    g.app.gui.dismiss_splash_screen()
+    
+    if self.script:
+        log = g.app.log
+        if log:
+            g.pr('Start of batch script...\n')
+            log.c.executeScript(script=self.script)
+            g.pr('End of batch script')
+        else:
+            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+    elif g.app.useIpython:
+        g.app.ipm.embed_ipython()
+            # Runs main loop and calls sys.exit.
+    else:
+        sys.exit(self.qtApp.exec_())
+.. @+node:ekr.20120402202350.10027: *5* Fix push-to-ipython
+.. @+node:ekr.20120401144849.10094: *6* gipm.push...
+.. @+node:ekr.20120401144849.10095: *7* gipm.expose_ileo_push
+def expose_ileo_push(self,f,priority=0):
+    
+    if g_legacy:
+
+        self.push_from_leo.add(f,priority)
+.. @+node:ekr.20120401144849.10102: *7* gipm.push_position_from_leo
+def push_position_from_leo(self,p):
+    
+    try:
+        # self.push_from_leo(LeoNode(p))
+        if g_legacy:
+            d = CommandChainDispatcher(LeoNode(p))
+            d()
+        else:
+            g.trace('not ready yet')
+
+    except AttributeError as e:
+        if e.args == ("Commands instance has no attribute 'frame'",):
+            es("Error: ILeo not associated with .leo document")
+            es("Press alt+shift+I to fix!")
+        else:
+            raise
+.. @+node:ekr.20120401144849.10142: *7* gipm.push_to_ipython
+def push_to_ipython(self):
+    
+    c,ip = self.c,self.ip
+    if not c:
+        return g.trace('can not happen: no c.')
+        
+    if not self.ip:
+        return g.trace('can not happen: no ip.')
+        
+    c.inCommand = False # Disable the command lockout logic
+        
+    n = LeoNode(c.p)
+    
+    if g_legacy:
+        def f(self=self,n=n):
+            self.push_ipython_script(n)
+            return True
+        d = CommandChainDispatcher()
+        d.add(f)
+        d()
+    
+    # if g_legacy:
+        # self.legacy_push_to_ipython()
+    # else:
+        # self.new_push_to_ipython()
+.. @+node:ekr.20120401144849.10143: *8* gipm.legacy_push_to_ipython
+def legacy_push_to_ipython(self):
+    
+    # if script:
+        # gIP.runlines(script)
+        # return
+        
+    c,ip = self.c,self.ip
+    if not c:
+        return g.trace('can not happen: no c.')
+        
+    if not self.ip:
+        return g.trace('can not happen: no ip.')
+        
+    self.update_commander(c)
+    
+    push = ip.user_ns['_leo'].push
+    
+    g.trace(push)
+    
+    c.inCommand = False # Disable the command lockout logic
+    push(c.p)
+  
+.. @+node:ekr.20120401144849.10144: *8* gipm.new_push_to_ipython
+def new_push_to_ipython (self):
+    
+    ip = ishell.InteractiveShell.instance()
+    if not ip:
+        return g.trace('can not happen: IPython not running')
+
+    c = self.c
+    if not c:
+        return g.trace('can not happen: no c.')
+    
+    p = c.p
+    if not ip.user_ns.get('_leo'):
+        leox = LeoInterface(c,g)
+        # ipy_leo.init_ipython(ip)
+        ipy_leo.update_commander(leox,new_ip=ip)
+        # g.trace('_leo',ip.user_ns.get('_leo'))
+        assert ip.user_ns.get('_leo')
+    c.inCommand = False
+        # Disable the command lockout logic
+    push = ip.user_ns['_leo'].push
+        # This is really push_position_from_leo.
+    push(p)
+.. @+node:ekr.20120401144849.10096: *7* gipm.push_cl_node
+def push_cl_node(self,node):
+
+    """ If node starts with @cl, eval it
+
+    The result is put as last child of @ipy-results node, if it exists
+    """
+
+    if not node.b.startswith('@cl'):
+        raise TryNext
+
+    p2 = g.findNodeAnywhere(c,'@ipy-results')
+    val = node.v
+    if p2:
+        es("=> @ipy-results")
+        LeoNode(p2).v = val
+    es(val)
+
+.. @+node:ekr.20120401144849.10097: *7* gipm.push_ev_node
+def push_ev_node(self,node):
+    
+    """ If headline starts with @ev, eval it and put result in body """
+
+    if not node.h.startswith('@ev '):
+        raise TryNext
+
+    expr = node.h.lstrip('@ev ')
+    es('ipy eval ' + expr)
+    res = ip.ev(expr)
+    node.v = res
+
+.. @+node:ekr.20120401144849.10098: *7* gipm.push_from_leo (not used)
+# if g_legacy:
+
+    # push_from_leo = CommandChainDispatcher()
+    
+# else:
+    
+    # pass
+
+    # # def push_from_leo(self,args):
+        
+        # # g.trace(args)
+        
+        # # CommandChainDispatcher(args)
+.. @+node:ekr.20120401144849.10099: *7* gipm.push_ipython_script
+def push_ipython_script(self,node):
+    """ Execute the node body in IPython,
+    as if it was entered in interactive prompt """
+    
+    c = self.c
+    ip = self.ip
+    # g.trace(c,node)
+    try:
+        ohist = ip.IP.output_hist 
+        hstart = len(ip.IP.input_hist)
+        script = node.script()
+
+        # The current node _p needs to handle
+        # wb.require() and recursive ipushes.
+        old_p = ip.user_ns.get('_p',None)
+        ip.user_ns['_p'] = node
+        ip.runlines(script)
+        ip.user_ns['_p'] = old_p
+        if old_p is None:
+            del ip.user_ns['_p']
+
+        has_output = False
+        for idx in range(hstart,len(ip.IP.input_hist)):
+            val = ohist.get(idx,None)
+            if val is None:
+                continue
+            has_output = True
+            inp = ip.IP.input_hist[idx]
+            if inp.strip():
+                es('In: %s' % (inp[:40], ))
+            es('<%d> %s' % (idx,pprint.pformat(ohist[idx],width=40)))
+
+        if not has_output:
+            es('ipy run: %s (%d LL)' %(node.h,len(script)))
+    finally:
+        c.redraw()
+.. @+node:ekr.20120401144849.10100: *7* gipm.push_mark_req
+def push_mark_req(self,node):
+    """ This should be the first one that gets called.
+
+    It will mark the node as 'pushed', for wb.require.
+    """
+
+    _leo_push_history.add(node.h)
+    raise TryNext
+.. @+node:ekr.20120401144849.10101: *7* gipm.push_plain_python
+def push_plain_python(self,node):
+    
+    if not node.h.endswith('P'):
+        raise TryNext
+
+    script = node.script()
+    lines = script.count('\n')
+    try:
+        # exec script in ip.user_ns
+        # 2010/02/04: per 2to3
+        exec(script,ip.user_ns)
+    except:
+        print(" -- Exception in script:\n"+script + "\n --")
+        raise
+    es('ipy plain: %s (%d LL)' % (node.h,lines))
+.. @+node:ekr.20120401144849.10140: *6* push-to-ipython
+@g.command('push-to-ipython')
+def pushToIPythonCommand(event=None):
+
+    '''The push-to-ipython command.
+
+    IPython must be started, but the commander need not be inited.'''
+    
+    trace = False and not g.unitTesting
+    
+    if not g_ipm.c:
+        c = event.get('c')
+        if c:
+            g_ipm.c = c
+            if trace: g.trace('setting g_ipm.c',c)
+        else:
+            return g.trace('can not happen: no commander')
+    
+    if not g_ipm.started:
+        startIPython()
+        
+    g_ipm.push_to_ipython()
+.. @+node:ekr.20120401063816.10145: *6* gipm.update_commander
+def update_commander(self,c):
+    """ Set the Leo commander to use
+
+    This will be run every time Leo does ipython-launch; basically,
+    when the user switches the document he is focusing on, he should do
+    ipython-launch to tell ILeo what document the commands apply to.
+
+    """
+
+    ip = self.ip
+    assert ip
+    
+    if not c:
+        return
+    if ip.user_ns.get('c') == c:
+        return
+        
+    self.c = c
+    print("Set Leo Commander: %s" % c.frame.getTitle())
+
+    leox = LeoInterface(c,g)
+    leox.push = self.push_position_from_leo
+
+    # will probably be overwritten by user,
+    # but handy for experimentation early on.
+    ip.user_ns['c'] = c
+    ip.user_ns['g'] = g
+    ip.user_ns['_leo'] = leox
+        # inject leox into the namespace.
+
+    self.run_leo_startup_node()
+    ip.user_ns['_prompt_title'] = 'ileo'
+.. @+node:ekr.20120401144849.10142: *6* gipm.push_to_ipython
+def push_to_ipython(self):
+    
+    c,ip = self.c,self.ip
+    if not c:
+        return g.trace('can not happen: no c.')
+        
+    if not self.ip:
+        return g.trace('can not happen: no ip.')
+        
+    c.inCommand = False # Disable the command lockout logic
+        
+    n = LeoNode(c.p)
+    
+    if g_legacy:
+        def f(self=self,n=n):
+            self.push_ipython_script(n)
+            return True
+        d = CommandChainDispatcher()
+        d.add(f)
+        d()
+    
+    # if g_legacy:
+        # self.legacy_push_to_ipython()
+    # else:
+        # self.new_push_to_ipython()
+.. @+node:ekr.20120401144849.10143: *7* gipm.legacy_push_to_ipython
+def legacy_push_to_ipython(self):
+    
+    # if script:
+        # gIP.runlines(script)
+        # return
+        
+    c,ip = self.c,self.ip
+    if not c:
+        return g.trace('can not happen: no c.')
+        
+    if not self.ip:
+        return g.trace('can not happen: no ip.')
+        
+    self.update_commander(c)
+    
+    push = ip.user_ns['_leo'].push
+    
+    g.trace(push)
+    
+    c.inCommand = False # Disable the command lockout logic
+    push(c.p)
+  
+.. @+node:ekr.20120401144849.10144: *7* gipm.new_push_to_ipython
+def new_push_to_ipython (self):
+    
+    ip = ishell.InteractiveShell.instance()
+    if not ip:
+        return g.trace('can not happen: IPython not running')
+
+    c = self.c
+    if not c:
+        return g.trace('can not happen: no c.')
+    
+    p = c.p
+    if not ip.user_ns.get('_leo'):
+        leox = LeoInterface(c,g)
+        # ipy_leo.init_ipython(ip)
+        ipy_leo.update_commander(leox,new_ip=ip)
+        # g.trace('_leo',ip.user_ns.get('_leo'))
+        assert ip.user_ns.get('_leo')
+    c.inCommand = False
+        # Disable the command lockout logic
+    push = ip.user_ns['_leo'].push
+        # This is really push_position_from_leo.
+    push(p)
+.. @+node:ekr.20120401144849.10099: *6* gipm.push_ipython_script
+def push_ipython_script(self,node):
+    """ Execute the node body in IPython,
+    as if it was entered in interactive prompt """
+    
+    c = self.c
+    ip = self.ip
+    # g.trace(c,node)
+    try:
+        ohist = ip.IP.output_hist 
+        hstart = len(ip.IP.input_hist)
+        script = node.script()
+
+        # The current node _p needs to handle
+        # wb.require() and recursive ipushes.
+        old_p = ip.user_ns.get('_p',None)
+        ip.user_ns['_p'] = node
+        ip.runlines(script)
+        ip.user_ns['_p'] = old_p
+        if old_p is None:
+            del ip.user_ns['_p']
+
+        has_output = False
+        for idx in range(hstart,len(ip.IP.input_hist)):
+            val = ohist.get(idx,None)
+            if val is None:
+                continue
+            has_output = True
+            inp = ip.IP.input_hist[idx]
+            if inp.strip():
+                es('In: %s' % (inp[:40], ))
+            es('<%d> %s' % (idx,pprint.pformat(ohist[idx],width=40)))
+
+        if not has_output:
+            es('ipy run: %s (%d LL)' %(node.h,len(script)))
+    finally:
+        c.redraw()
+.. @+node:ekr.20120403093858.10043: *5* pylint
+@nocolor-node
+
+
+E0611: 57: No name 'UserDict' in module 'collections'
+E0611: 92: No name 'terminal' in module 'IPython.frontend'
+E0611: 95: No name 'terminal' in module 'IPython.frontend'
+E0611: 96: No name 'utils' in module 'IPython'
+E0611: 97: No name 'core' in module 'IPython'
+E0611: 99: No name 'utils' in module 'IPython'
+E0611:100: No name 'core' in module 'IPython'
+
+W1001:158:LeoWorkbook: Use of "property" on an old style class
+E0602:159:LeoWorkbook.<lambda>: Undefined variable 'c'
+E0602:182:LeoWorkbook.require: Undefined variable '_leo_push_history'
+E1101:218:GlobalIPythonManager.embed_ipython: Instance of 'GlobalIPythonManager' has no 'qtApp' member
+E1103:267:GlobalIPythonManager.get_history: Instance of 'list' has no 'get' member (but some types could not be inferred
+)
+E0602:302:GlobalIPythonManager.init_ipython: Undefined variable 'push_mark_req'
+E0602:303:GlobalIPythonManager.init_ipython: Undefined variable 'push_cl_node'
+E0602:306:GlobalIPythonManager.init_ipython: Undefined variable 'push_ipython_script'
+E0602:307:GlobalIPythonManager.init_ipython: Undefined variable 'push_plain_python'
+E0602:308:GlobalIPythonManager.init_ipython: Undefined variable 'push_ev_node'
+E1101:321:GlobalIPythonManager.expose_ileo_push: Instance of 'GlobalIPythonManager' has no 'push_from_leo' member
+E0602:403:GlobalIPythonManager.new_push_to_ipython: Undefined variable 'ipy_leo'
+E0602:422:GlobalIPythonManager.push_cl_node: Undefined variable 'c'
+E0602:439:GlobalIPythonManager.push_ev_node: Undefined variable 'ip'
+E0602:500:GlobalIPythonManager.push_mark_req: Undefined variable '_leo_push_history'
+E0602:513:GlobalIPythonManager.push_plain_python: Undefined variable 'ip'
+E1101:526:GlobalIPythonManager.run_leo_startup_node: Instance of 'GlobalIPythonManager' has no 'push_from_leo' member
+W1001:637:LeoNode: Use of "property" on an old style class
+W1001:649:LeoNode: Use of "property" on an old style class
+W1001:654:LeoNode: Use of "property" on an old style class
+W1001:660:LeoNode: Use of "property" on an old style class
+E0602:741:LeoNode.ipush: Undefined variable 'push_from_leo'
+W0106:764:LeoNode.script: Expression "(" Method to get the 'tangled' contents of the node\n\n            (parse @others,
+ %s references etc.)\n            ") % (g.angleBrackets(' section '))" is assigned to nothing
+W1001:781:LeoNode: Use of "property" on an old style class
+E1101:943:add_var: Class 'LeoNode' has no 'p' member
+E1101:948:add_var: Class 'LeoNode' has no 'p' member
+E1101:967:all_cells: Class 'LeoNode' has no 'p' member
+E1101:986:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
+E0602:1015:eval_node: Undefined variable 'ip'
+E0602:1023:eval_node: Undefined variable 'ip'
+E0602:1024:eval_node: Undefined variable 'ip'
+E0602:1029:eval_node: Undefined variable 'ip'
+E1101:1095:rootnode: Class 'LeoNode' has no 'p' member
+E0602:1285:lleo_f: Undefined variable 'ip'
+E0602:1309:lno_f: Undefined variable 'wb'
+E0602:1313:lno_f: Undefined variable 'wb'
+
+R0923:578:LeoInterface: Interface not implemented
 .. @+node:ekr.20120208062900.10146: *4* Complete new_modes
 @nocolor-node
 
@@ -2585,579 +3157,6 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
-.. @+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
-.. @+node:ekr.20111017132257.15891: *3* Get IPython working again
-@language python
-@language rest
-
-Port ipy_leo.py to latest version of IPython
-
-Investigate how IPython hijacks event loops
-http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
-
-pyos_inputhook is relevant
-
-IPython lib.inputhook
-http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
-.. @+node:ekr.20120401144849.10152: *4* What I did
-@language rest
-
-- Import logic looks for legacy IPython first (0.11 and prev),
-  then looks for new-style IPython (0.12 and above).
-
-- Created GlobalIPythonManager class, assigned to leoIPython.gipm and g.app.gipm.
-
-- Added self.c ivar to LeoNode class.  This is the same as p.v.context.
-.. @+node:ekr.20120330110655.10023: *4*  Notes
-@language rest
-
-* IPython seems to require Python 2.x.
-* I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
-
-From C:\prog\ipython-0.12\IPython\scripts
-
-#!/usr/bin/env python
-"""Terminal-based IPython entry point.
-"""
-
-from IPython.frontend.terminal.ipapp import launch_new_instance
-
-launch_new_instance()
-
-Here is ipapi.get::
-
-@language python
-
-    def get():
-        """Get the global InteractiveShell instance."""
-        from IPython.core.interactiveshell import InteractiveShell
-        return InteractiveShell.instance()
-.. @+node:ekr.20120330110655.10024: *5* @url ipython-dev archive
-http://mail.scipy.org/pipermail/ipython-dev/
-.. @+node:ekr.20120330110655.10025: *5* @url ipython api
-http://ipython.org/ipython-doc/rel-0.12/api/index.html
-.. @+node:ekr.20120330110655.10026: *5* @url ipython.core.interactiveshell
-http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
-.. @+node:ekr.20120212060348.10374: *4*  << global switches >>
-trace_startup = False
-    # These traces use print instead of g.trace so that
-    # the traces can add class info the method name.
-
-new_modes = False
-    # True: use ModeController and ModeInfo classes.
-if new_modes: print('***** new_modes')
-
-new_keys = False
-    # This project hardly seems urgent.
-    # True: Qt input methods produce a **user setting**, not a stroke.
-if new_keys: print('***** new_keys')
-
-# Debugging options.
-restore_selection_range = False
-
-# Traces & disabling of scrolling problems.
-no_scroll = False
-    # True: disable all calls to w.setYScrollPosition.
-no_see = False
-    # True: disable all calls to w.see and w.seeInsertPoint.
-
-trace_scroll = False
-    # Trace calls to get/setYScrollPosition
-trace_see = False
-    # Trace calls to see and setInsertPoint.
-
-# Switches to trace the garbage collector.
-trace_gc = False           
-trace_gc_calls = False    
-trace_gc_calls = False 
-trace_gc_verbose = False
-trace_gc_inited = False
-
-trace_masterCommand = False
-trace_masterKeyHandler = False
-trace_masterKeyHandlerGC = False
-trace_minibuffer = False
-trace_modes = False
-
-enableDB = True
-    # Don't even think about eliminating this constant:
-    # it is needed for debugging.
-    
-# These print statements have been moved to writeWaitingLog.
-# This allows for better --silent operation.
-if 0:
-    print('*** isPython3: %s' % isPython3)
-    if not enableDB:
-        print('** leoGlobals.py: caching disabled')
-.. @+node:ekr.20110605121601.18134: *4* init (qtGui.py top level) (qtPdb)
-def init():
-    
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace and g.trace_startup: print('qtGui.__init__')
-
-    if g.app.unitTesting: # Not Ok for unit testing!
-        return False
-
-    if not QtCore:
-        return False
-
-    if g.app.gui:
-        return g.app.gui.guiName() == 'qt'
-    else:
-        g.app.gui = leoQtGui()
-
-        # Override g.pdb
-        def qtPdb(message=''):
-            if message: print(message)
-            import pdb
-            if not g.app.useIpython:
-                QtCore.pyqtRemoveInputHook()
-            pdb.set_trace()
-        g.pdb = qtPdb
-
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-        return True
-.. @+node:ekr.20110605121601.18483: *4* runMainLoop (qtGui)
-def runMainLoop(self):
-
-    '''Start the Qt main loop.'''
-    
-    g.app.gui.dismiss_splash_screen()
-    
-    if self.script:
-        log = g.app.log
-        if log:
-            g.pr('Start of batch script...\n')
-            log.c.executeScript(script=self.script)
-            g.pr('End of batch script')
-        else:
-            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
-    elif g.app.useIpython:
-        g.app.ipm.embed_ipython()
-            # Runs main loop and calls sys.exit.
-    else:
-        sys.exit(self.qtApp.exec_())
-.. @+node:ekr.20120402202350.10027: *4* Fix push-to-ipython
-.. @+node:ekr.20120401144849.10094: *5* gipm.push...
-.. @+node:ekr.20120401144849.10095: *6* gipm.expose_ileo_push
-def expose_ileo_push(self,f,priority=0):
-    
-    if g_legacy:
-
-        self.push_from_leo.add(f,priority)
-.. @+node:ekr.20120401144849.10102: *6* gipm.push_position_from_leo
-def push_position_from_leo(self,p):
-    
-    try:
-        # self.push_from_leo(LeoNode(p))
-        if g_legacy:
-            d = CommandChainDispatcher(LeoNode(p))
-            d()
-        else:
-            g.trace('not ready yet')
-
-    except AttributeError as e:
-        if e.args == ("Commands instance has no attribute 'frame'",):
-            es("Error: ILeo not associated with .leo document")
-            es("Press alt+shift+I to fix!")
-        else:
-            raise
-.. @+node:ekr.20120401144849.10142: *6* gipm.push_to_ipython
-def push_to_ipython(self):
-    
-    c,ip = self.c,self.ip
-    if not c:
-        return g.trace('can not happen: no c.')
-        
-    if not self.ip:
-        return g.trace('can not happen: no ip.')
-        
-    c.inCommand = False # Disable the command lockout logic
-        
-    n = LeoNode(c.p)
-    
-    if g_legacy:
-        def f(self=self,n=n):
-            self.push_ipython_script(n)
-            return True
-        d = CommandChainDispatcher()
-        d.add(f)
-        d()
-    
-    # if g_legacy:
-        # self.legacy_push_to_ipython()
-    # else:
-        # self.new_push_to_ipython()
-.. @+node:ekr.20120401144849.10143: *7* gipm.legacy_push_to_ipython
-def legacy_push_to_ipython(self):
-    
-    # if script:
-        # gIP.runlines(script)
-        # return
-        
-    c,ip = self.c,self.ip
-    if not c:
-        return g.trace('can not happen: no c.')
-        
-    if not self.ip:
-        return g.trace('can not happen: no ip.')
-        
-    self.update_commander(c)
-    
-    push = ip.user_ns['_leo'].push
-    
-    g.trace(push)
-    
-    c.inCommand = False # Disable the command lockout logic
-    push(c.p)
-  
-.. @+node:ekr.20120401144849.10144: *7* gipm.new_push_to_ipython
-def new_push_to_ipython (self):
-    
-    ip = ishell.InteractiveShell.instance()
-    if not ip:
-        return g.trace('can not happen: IPython not running')
-
-    c = self.c
-    if not c:
-        return g.trace('can not happen: no c.')
-    
-    p = c.p
-    if not ip.user_ns.get('_leo'):
-        leox = LeoInterface(c,g)
-        # ipy_leo.init_ipython(ip)
-        ipy_leo.update_commander(leox,new_ip=ip)
-        # g.trace('_leo',ip.user_ns.get('_leo'))
-        assert ip.user_ns.get('_leo')
-    c.inCommand = False
-        # Disable the command lockout logic
-    push = ip.user_ns['_leo'].push
-        # This is really push_position_from_leo.
-    push(p)
-.. @+node:ekr.20120401144849.10096: *6* gipm.push_cl_node
-def push_cl_node(self,node):
-
-    """ If node starts with @cl, eval it
-
-    The result is put as last child of @ipy-results node, if it exists
-    """
-
-    if not node.b.startswith('@cl'):
-        raise TryNext
-
-    p2 = g.findNodeAnywhere(c,'@ipy-results')
-    val = node.v
-    if p2:
-        es("=> @ipy-results")
-        LeoNode(p2).v = val
-    es(val)
-
-.. @+node:ekr.20120401144849.10097: *6* gipm.push_ev_node
-def push_ev_node(self,node):
-    
-    """ If headline starts with @ev, eval it and put result in body """
-
-    if not node.h.startswith('@ev '):
-        raise TryNext
-
-    expr = node.h.lstrip('@ev ')
-    es('ipy eval ' + expr)
-    res = ip.ev(expr)
-    node.v = res
-
-.. @+node:ekr.20120401144849.10098: *6* gipm.push_from_leo (not used)
-# if g_legacy:
-
-    # push_from_leo = CommandChainDispatcher()
-    
-# else:
-    
-    # pass
-
-    # # def push_from_leo(self,args):
-        
-        # # g.trace(args)
-        
-        # # CommandChainDispatcher(args)
-.. @+node:ekr.20120401144849.10099: *6* gipm.push_ipython_script
-def push_ipython_script(self,node):
-    """ Execute the node body in IPython,
-    as if it was entered in interactive prompt """
-    
-    c = self.c
-    ip = self.ip
-    # g.trace(c,node)
-    try:
-        ohist = ip.IP.output_hist 
-        hstart = len(ip.IP.input_hist)
-        script = node.script()
-
-        # The current node _p needs to handle
-        # wb.require() and recursive ipushes.
-        old_p = ip.user_ns.get('_p',None)
-        ip.user_ns['_p'] = node
-        ip.runlines(script)
-        ip.user_ns['_p'] = old_p
-        if old_p is None:
-            del ip.user_ns['_p']
-
-        has_output = False
-        for idx in range(hstart,len(ip.IP.input_hist)):
-            val = ohist.get(idx,None)
-            if val is None:
-                continue
-            has_output = True
-            inp = ip.IP.input_hist[idx]
-            if inp.strip():
-                es('In: %s' % (inp[:40], ))
-            es('<%d> %s' % (idx,pprint.pformat(ohist[idx],width=40)))
-
-        if not has_output:
-            es('ipy run: %s (%d LL)' %(node.h,len(script)))
-    finally:
-        c.redraw()
-.. @+node:ekr.20120401144849.10100: *6* gipm.push_mark_req
-def push_mark_req(self,node):
-    """ This should be the first one that gets called.
-
-    It will mark the node as 'pushed', for wb.require.
-    """
-
-    _leo_push_history.add(node.h)
-    raise TryNext
-.. @+node:ekr.20120401144849.10101: *6* gipm.push_plain_python
-def push_plain_python(self,node):
-    
-    if not node.h.endswith('P'):
-        raise TryNext
-
-    script = node.script()
-    lines = script.count('\n')
-    try:
-        # exec script in ip.user_ns
-        # 2010/02/04: per 2to3
-        exec(script,ip.user_ns)
-    except:
-        print(" -- Exception in script:\n"+script + "\n --")
-        raise
-    es('ipy plain: %s (%d LL)' % (node.h,lines))
-.. @+node:ekr.20120401144849.10140: *5* push-to-ipython
-@g.command('push-to-ipython')
-def pushToIPythonCommand(event=None):
-
-    '''The push-to-ipython command.
-
-    IPython must be started, but the commander need not be inited.'''
-    
-    trace = False and not g.unitTesting
-    
-    if not g_ipm.c:
-        c = event.get('c')
-        if c:
-            g_ipm.c = c
-            if trace: g.trace('setting g_ipm.c',c)
-        else:
-            return g.trace('can not happen: no commander')
-    
-    if not g_ipm.started:
-        startIPython()
-        
-    g_ipm.push_to_ipython()
-.. @+node:ekr.20120401063816.10145: *5* gipm.update_commander
-def update_commander(self,c):
-    """ Set the Leo commander to use
-
-    This will be run every time Leo does ipython-launch; basically,
-    when the user switches the document he is focusing on, he should do
-    ipython-launch to tell ILeo what document the commands apply to.
-
-    """
-
-    ip = self.ip
-    assert ip
-    
-    if not c:
-        return
-    if ip.user_ns.get('c') == c:
-        return
-        
-    self.c = c
-    print("Set Leo Commander: %s" % c.frame.getTitle())
-
-    leox = LeoInterface(c,g)
-    leox.push = self.push_position_from_leo
-
-    # will probably be overwritten by user,
-    # but handy for experimentation early on.
-    ip.user_ns['c'] = c
-    ip.user_ns['g'] = g
-    ip.user_ns['_leo'] = leox
-        # inject leox into the namespace.
-
-    self.run_leo_startup_node()
-    ip.user_ns['_prompt_title'] = 'ileo'
-.. @+node:ekr.20120401144849.10142: *5* gipm.push_to_ipython
-def push_to_ipython(self):
-    
-    c,ip = self.c,self.ip
-    if not c:
-        return g.trace('can not happen: no c.')
-        
-    if not self.ip:
-        return g.trace('can not happen: no ip.')
-        
-    c.inCommand = False # Disable the command lockout logic
-        
-    n = LeoNode(c.p)
-    
-    if g_legacy:
-        def f(self=self,n=n):
-            self.push_ipython_script(n)
-            return True
-        d = CommandChainDispatcher()
-        d.add(f)
-        d()
-    
-    # if g_legacy:
-        # self.legacy_push_to_ipython()
-    # else:
-        # self.new_push_to_ipython()
-.. @+node:ekr.20120401144849.10143: *6* gipm.legacy_push_to_ipython
-def legacy_push_to_ipython(self):
-    
-    # if script:
-        # gIP.runlines(script)
-        # return
-        
-    c,ip = self.c,self.ip
-    if not c:
-        return g.trace('can not happen: no c.')
-        
-    if not self.ip:
-        return g.trace('can not happen: no ip.')
-        
-    self.update_commander(c)
-    
-    push = ip.user_ns['_leo'].push
-    
-    g.trace(push)
-    
-    c.inCommand = False # Disable the command lockout logic
-    push(c.p)
-  
-.. @+node:ekr.20120401144849.10144: *6* gipm.new_push_to_ipython
-def new_push_to_ipython (self):
-    
-    ip = ishell.InteractiveShell.instance()
-    if not ip:
-        return g.trace('can not happen: IPython not running')
-
-    c = self.c
-    if not c:
-        return g.trace('can not happen: no c.')
-    
-    p = c.p
-    if not ip.user_ns.get('_leo'):
-        leox = LeoInterface(c,g)
-        # ipy_leo.init_ipython(ip)
-        ipy_leo.update_commander(leox,new_ip=ip)
-        # g.trace('_leo',ip.user_ns.get('_leo'))
-        assert ip.user_ns.get('_leo')
-    c.inCommand = False
-        # Disable the command lockout logic
-    push = ip.user_ns['_leo'].push
-        # This is really push_position_from_leo.
-    push(p)
-.. @+node:ekr.20120401144849.10099: *5* gipm.push_ipython_script
-def push_ipython_script(self,node):
-    """ Execute the node body in IPython,
-    as if it was entered in interactive prompt """
-    
-    c = self.c
-    ip = self.ip
-    # g.trace(c,node)
-    try:
-        ohist = ip.IP.output_hist 
-        hstart = len(ip.IP.input_hist)
-        script = node.script()
-
-        # The current node _p needs to handle
-        # wb.require() and recursive ipushes.
-        old_p = ip.user_ns.get('_p',None)
-        ip.user_ns['_p'] = node
-        ip.runlines(script)
-        ip.user_ns['_p'] = old_p
-        if old_p is None:
-            del ip.user_ns['_p']
-
-        has_output = False
-        for idx in range(hstart,len(ip.IP.input_hist)):
-            val = ohist.get(idx,None)
-            if val is None:
-                continue
-            has_output = True
-            inp = ip.IP.input_hist[idx]
-            if inp.strip():
-                es('In: %s' % (inp[:40], ))
-            es('<%d> %s' % (idx,pprint.pformat(ohist[idx],width=40)))
-
-        if not has_output:
-            es('ipy run: %s (%d LL)' %(node.h,len(script)))
-    finally:
-        c.redraw()
-.. @+node:ekr.20120403093858.10043: *4* pylint
-@nocolor-node
-
-
-E0611: 57: No name 'UserDict' in module 'collections'
-E0611: 92: No name 'terminal' in module 'IPython.frontend'
-E0611: 95: No name 'terminal' in module 'IPython.frontend'
-E0611: 96: No name 'utils' in module 'IPython'
-E0611: 97: No name 'core' in module 'IPython'
-E0611: 99: No name 'utils' in module 'IPython'
-E0611:100: No name 'core' in module 'IPython'
-
-W1001:158:LeoWorkbook: Use of "property" on an old style class
-E0602:159:LeoWorkbook.<lambda>: Undefined variable 'c'
-E0602:182:LeoWorkbook.require: Undefined variable '_leo_push_history'
-E1101:218:GlobalIPythonManager.embed_ipython: Instance of 'GlobalIPythonManager' has no 'qtApp' member
-E1103:267:GlobalIPythonManager.get_history: Instance of 'list' has no 'get' member (but some types could not be inferred
-)
-E0602:302:GlobalIPythonManager.init_ipython: Undefined variable 'push_mark_req'
-E0602:303:GlobalIPythonManager.init_ipython: Undefined variable 'push_cl_node'
-E0602:306:GlobalIPythonManager.init_ipython: Undefined variable 'push_ipython_script'
-E0602:307:GlobalIPythonManager.init_ipython: Undefined variable 'push_plain_python'
-E0602:308:GlobalIPythonManager.init_ipython: Undefined variable 'push_ev_node'
-E1101:321:GlobalIPythonManager.expose_ileo_push: Instance of 'GlobalIPythonManager' has no 'push_from_leo' member
-E0602:403:GlobalIPythonManager.new_push_to_ipython: Undefined variable 'ipy_leo'
-E0602:422:GlobalIPythonManager.push_cl_node: Undefined variable 'c'
-E0602:439:GlobalIPythonManager.push_ev_node: Undefined variable 'ip'
-E0602:500:GlobalIPythonManager.push_mark_req: Undefined variable '_leo_push_history'
-E0602:513:GlobalIPythonManager.push_plain_python: Undefined variable 'ip'
-E1101:526:GlobalIPythonManager.run_leo_startup_node: Instance of 'GlobalIPythonManager' has no 'push_from_leo' member
-W1001:637:LeoNode: Use of "property" on an old style class
-W1001:649:LeoNode: Use of "property" on an old style class
-W1001:654:LeoNode: Use of "property" on an old style class
-W1001:660:LeoNode: Use of "property" on an old style class
-E0602:741:LeoNode.ipush: Undefined variable 'push_from_leo'
-W0106:764:LeoNode.script: Expression "(" Method to get the 'tangled' contents of the node\n\n            (parse @others,
- %s references etc.)\n            ") % (g.angleBrackets(' section '))" is assigned to nothing
-W1001:781:LeoNode: Use of "property" on an old style class
-E1101:943:add_var: Class 'LeoNode' has no 'p' member
-E1101:948:add_var: Class 'LeoNode' has no 'p' member
-E1101:967:all_cells: Class 'LeoNode' has no 'p' member
-E1101:986:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
-E0602:1015:eval_node: Undefined variable 'ip'
-E0602:1023:eval_node: Undefined variable 'ip'
-E0602:1024:eval_node: Undefined variable 'ip'
-E0602:1029:eval_node: Undefined variable 'ip'
-E1101:1095:rootnode: Class 'LeoNode' has no 'p' member
-E0602:1285:lleo_f: Undefined variable 'ip'
-E0602:1309:lno_f: Undefined variable 'wb'
-E0602:1313:lno_f: Undefined variable 'wb'
-
-R0923:578:LeoInterface: Interface not implemented
 .. @+node:ekr.20120226183512.10195: *3* Bugs
 @language rest
 

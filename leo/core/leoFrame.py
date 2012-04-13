@@ -1399,6 +1399,7 @@ class leoFrame:
             if i > j: i,j = j,i
             new_s = s2[:i] + s + s2[j:]
             w.setAllText(new_s)
+            w.setSelectionRange(i,i+len(s),insert=i)
         else:
             if i != j:
                 w.delete(i,j)

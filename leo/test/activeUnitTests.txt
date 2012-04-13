@@ -9648,6 +9648,7 @@ finally:
 # Should be a comment
 h = 'Test headline abc'
 p = c.testManager.findNodeAnywhere(h)
+w = c.frame.body.bodyCtrl
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocus()
@@ -9656,7 +9657,9 @@ g.app.gui.replaceClipboardWith(paste)
 c.outerUpdate()
 n = c.frame.body.colorizer.count
 event = g.app.gui.create_key_event(c,None,None,c.frame.body.bodyCtrl)
+i = w.getInsertPoint()
 c.frame.pasteText(event)
+assert w.getInsertPoint()==i
 
 # Move around and and make sure it doesn't change.
 try:
