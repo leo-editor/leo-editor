@@ -7479,7 +7479,8 @@ class leoQtGui(leoGui.leoGui):
                 g.pr('End of batch script')
             else:
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
-        elif g.app.useIpython:
+        elif g.app.useIpython and g.app.ipm:
+            # g.app.ipm exists only if IPython was imported properly.
             g.app.ipm.embed_ipython()
                 # Runs main loop and calls sys.exit.
         else:

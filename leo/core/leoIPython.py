@@ -27,19 +27,25 @@ This module supports all versions of the IPython api:
 #@+<< globals >>
 #@+node:ekr.20120402202350.10028: ** << globals >> (leoIPython.py)
 # Globals switches...
-g_trace = True
+
+g_trace_imports = True
     # True: trace imports
+
 g_use_ipapp = True
     # Used only when g_legacy == False.
     # True:  imports frontend.terminal.ipapp.  Prints signon.
     # False: frontend.terminal.interactiveshell. No signon.
 
 # Global vars, set only at the top level...
-# None of these globals requires the "global" statement.
+# None of these globals requires Python's "global" statement.
+
 g_import_ok = None
     # True if any IPython found.
+
 g_ipm = None
     # The global, singleton GlobalIPythonManager instance.
+    # This will remain None if there errors importing IPython.
+
 g_legacy = None
     # True if IPython 0.11 or previous found.
 #@-<< globals >>
@@ -63,50 +69,66 @@ else:
 
 # for z in sys.path: print(z)
 
-# First, try importing the legacy version of IPython.
+#@+<< attempt to import new version of IPython >>
+#@+node:ekr.20120413094617.12250: *3* << attempt to import new version of IPython >>
 try:
-    import IPython.ipapi as ipapi
-    # import IPython.genutils as genutils
-    import IPython.generics as generics
-    import IPython.macro as macro
-    # import IPython.Shell as Shell # Used only for Shell.hijack_tk()
-    from IPython.hooks import CommandChainDispatcher
+    # Either of these works.
+    if g_use_ipapp:
+        tag = 'IPython.frontend.terminal.ipapp'
+        import IPython.frontend.terminal.ipapp as ipapp
+    else:
+        tag = 'IPython.frontend.terminal.interactiveshell'
+        import IPython.frontend.terminal.interactiveshell as ishell
+    import IPython.utils.generics as generics
+    import IPython.core.macro as macro
     from IPython.external.simplegeneric import generic
-    from IPython.ipapi import TryNext
-    from IPython.genutils import SList
-    g_legacy = True
+    from IPython.utils.text import SList
+    from IPython.core.error import TryNext
     g_import_ok = True
-    if g_trace: print('imported legacy IPython.ipapi')
+    g_legacy = False
+    if g_trace_imports:
+        print('imported %s' % tag)
+
 except ImportError:
-    g_legacy = False
-    g_import_ok = False
+    if g_trace_imports:
+        print('can not import new-style IPython')
+
 except Exception:
-    g_legacy = False
-    g_import_ok = False
-    if g_trace: print('unexpected exception importing legacy IPython')
-    
+    if g_trace_imports:
+        print('unexpected exception importing new-style IPython')
+#@-<< attempt to import new version of IPython >>
 if not g_import_ok:
+    #@+<< attempt to import legacy IPython >>
+    #@+node:ekr.20120413094617.12251: *3* << attempt to import legacy IPython >>
     try:
-        # Either of these works.
-        if g_use_ipapp:
-            tag = 'IPython.frontend.terminal.ipapp'
-            import IPython.frontend.terminal.ipapp as ipapp
-        else:
-            tag = 'IPython.frontend.terminal.interactiveshell'
-            import IPython.frontend.terminal.interactiveshell as ishell
-        import IPython.utils.generics as generics
-        import IPython.core.macro as macro
+        import IPython.ipapi as ipapi
+        # import IPython.genutils as genutils
+        import IPython.generics as generics
+        import IPython.macro as macro
+        # import IPython.Shell as Shell # Used only for Shell.hijack_tk()
+        from IPython.hooks import CommandChainDispatcher
         from IPython.external.simplegeneric import generic
-        from IPython.utils.text import SList
-        from IPython.core.error import TryNext
+        from IPython.ipapi import TryNext
+        from IPython.genutils import SList
+        g_legacy = True
         g_import_ok = True
-        if g_trace: print('imported %s' % tag)
+        if g_trace_imports:
+            print('imported legacy IPython.ipapi')
+
     except ImportError:
-        pass
+        g_legacy = False
+        g_import_ok = False
+        if g_trace_imports:
+            print('can not import legacy IPython.ipapi')
+
     except Exception:
-        pass
-        
-if g_trace and not g_import_ok:
+        g_legacy = False
+        g_import_ok = False
+        if g_trace_imports:
+            print('unexpected exception importing legacy IPython')
+    #@-<< attempt to import legacy IPython >>
+
+if g_trace_imports and not g_import_ok:
     print('leoIPython.py: can not import IPython')
 #@-<< imports >>
 #@+<< class LeoWorkBook >>

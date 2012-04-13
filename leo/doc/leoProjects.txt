@@ -2933,6 +2933,10 @@ The fix was:
 
 1. Use the "slow" code in leoQTextEditWidget.get.
 2. Use w.get/setAllText in leoFrame.pasteText.
+#@+node:ekr.20120413093125.10036: *4* Stablilized hscroll when pasting
+@nocolor-node
+
+A very easy fix to leoFrame.pasteText.
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node

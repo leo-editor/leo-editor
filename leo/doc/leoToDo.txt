@@ -10,15 +10,9 @@
 @language python
 @language rest
 
-Port ipy_leo.py to latest version of IPython
+To do:
 
-Investigate how IPython hijacks event loops
-http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
-
-pyos_inputhook is relevant
-
-IPython lib.inputhook
-http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
+- Try to load new IPython first.
 .. @+node:ekr.20120401144849.10152: *5* What I did
 @language rest
 
@@ -30,6 +24,15 @@ http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
 - Added self.c ivar to LeoNode class.  This is the same as p.v.context.
 .. @+node:ekr.20120330110655.10023: *5*  Notes
 @language rest
+
+Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+
+pyos_inputhook is relevant
+
+IPython lib.inputhook
+http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
+
 
 * IPython seems to require Python 2.x.
 * I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
@@ -160,7 +163,8 @@ def runMainLoop(self):
             g.pr('End of batch script')
         else:
             g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
-    elif g.app.useIpython:
+    elif g.app.useIpython and g.app.ipm:
+        # g.app.ipm exists only if IPython was imported properly.
         g.app.ipm.embed_ipython()
             # Runs main loop and calls sys.exit.
     else:
