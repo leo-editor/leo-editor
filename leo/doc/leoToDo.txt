@@ -31,7 +31,6 @@ If you mean setup.py, you shouldn't use it.
 
 It wasn't done intentionally. There may be an nsi option to get around this
 problem, but I'm not sure about it. I'll look at this soon.
-.. @+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again
 @language python
 @language rest

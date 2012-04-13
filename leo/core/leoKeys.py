@@ -3729,6 +3729,11 @@ class keyHandlerClass:
 
         k.mb_tabList,common_prefix = g.itemsMatchingPrefixInList(command,defaultTabList)
         c.frame.log.clearTab(tabName)
+        
+        if not k.mb_tabList:
+            # Return *all* completions.
+            k.mb_tabList = sorted(defaultTabList)
+            common_prefix = ''
 
         if k.mb_tabList:
             k.mb_tabListIndex = -1 # The next item will be item 0.

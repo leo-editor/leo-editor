@@ -3614,6 +3614,11 @@ self.extra_extension_dict = {
 }
 
 self.global_commands_dict = {}
+#@+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
+@nocolor-node
+
+A simple change to k.computeCompletionList was all that was needed.
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
