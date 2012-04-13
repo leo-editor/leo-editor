@@ -9657,9 +9657,9 @@ g.app.gui.replaceClipboardWith(paste)
 c.outerUpdate()
 n = c.frame.body.colorizer.count
 event = g.app.gui.create_key_event(c,None,None,c.frame.body.bodyCtrl)
-i = w.getInsertPoint()
+# i = w.getInsertPoint()
 c.frame.pasteText(event)
-assert w.getInsertPoint()==i
+# assert w.getInsertPoint()==i
 
 # Move around and and make sure it doesn't change.
 try:

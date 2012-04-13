@@ -1392,22 +1392,10 @@ class leoFrame:
                 s = s [: -1]
 
         # Update the widget.
-        if 1:
-            # 2012/04/12: Fix bug 971166.
-            # Use w.get/setAllText to avoid strange Qt problems.
-            s2 = w.getAllText()
-            if i > j: i,j = j,i
-            new_s = s2[:i] + s + s2[j:]
-            pos = w.getYScrollPosition()
-            w.setAllText(new_s)
-            w.setSelectionRange(i,i+len(s),insert=i)
-            # w.see(i)
-            w.setYScrollPosition(pos)
-        else:
-            if i != j:
-                w.delete(i,j)
-            w.insert(i,s)
-            w.see(i+len(s) + 2) # 2011/06/01
+        if i != j:
+            w.delete(i,j)
+        w.insert(i,s)
+        w.see(i+len(s) + 2) # 2011/06/01
 
         if wname.startswith('body'):
             c.frame.body.forceFullRecolor()
