@@ -2,9 +2,12 @@
 ;@+node:ekr.20101027115225.1494: * @thin nsi-boilerplate.txt
 ;@@language nsi
 
+; RequestExecutionLevel highest
+; RequestExecutionLevel admin
+
 ;@+<< prolog >>
 ;@+node:ekr.20101027115225.1495: ** << prolog >>
-
+ 
 ; Globals.
 Var PythonDirectory
     ; Directory containing Pythonw.exe
@@ -23,6 +26,7 @@ SetDatablockOptimize on
 WindowIcon on
 ShowInstDetails show
 ShowUnInstDetails show
+
 
 ; Locations
 Name "${name}"

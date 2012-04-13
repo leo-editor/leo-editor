@@ -1398,8 +1398,11 @@ class leoFrame:
             s2 = w.getAllText()
             if i > j: i,j = j,i
             new_s = s2[:i] + s + s2[j:]
+            pos = w.getYScrollPosition()
             w.setAllText(new_s)
             w.setSelectionRange(i,i+len(s),insert=i)
+            # w.see(i)
+            w.setYScrollPosition(pos)
         else:
             if i != j:
                 w.delete(i,j)

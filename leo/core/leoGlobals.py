@@ -29,14 +29,24 @@ new_keys = False
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
 
-# Debugging options.
-restore_selection_range = False
+# User options...
 
-# Traces & disabling of scrolling problems.
+restore_selection_range = False
+    # True: restore the selection range when re-entering a node.
+    # EKR: I don't think this is useful, and it may be slightly dangerous.
+
+# Debugging options...
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+
 no_scroll = False
     # True: disable all calls to w.setYScrollPosition.
 no_see = False
     # True: disable all calls to w.see and w.seeInsertPoint.
+    
+# Tracing options...
 
 trace_scroll = False
     # Trace calls to get/setYScrollPosition
@@ -56,16 +66,13 @@ trace_masterKeyHandlerGC = False
 trace_minibuffer = False
 trace_modes = False
 
-enableDB = True
-    # Don't even think about eliminating this constant:
-    # it is needed for debugging.
-    
 # These print statements have been moved to writeWaitingLog.
 # This allows for better --silent operation.
 if 0:
     print('*** isPython3: %s' % isPython3)
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
+
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
