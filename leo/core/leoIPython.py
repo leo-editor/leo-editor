@@ -13,8 +13,9 @@ http://webpages.charter.net/edreamleo/IPythonBridge.html
 
 This module replaces both ipython.py and leo/external/ipy_leo.
 
-Users no longer need to activate a plugin. This code will be active
-provided that some version of IPyton is found on the Python path.
+Users no longer need to activate a plugin. Use the --ipython command-line
+option instead. This code will be active provided that some version of
+IPyton is found on the Python path.
 
 This module supports all versions of the IPython api:
     - legacy api: IPython to 0.11.
@@ -31,7 +32,7 @@ This module supports all versions of the IPython api:
 g_trace_imports = True
     # True: trace imports
 
-g_use_ipapp = True
+g_use_ipapp = False
     # Used only when g_legacy == False.
     # True:  imports frontend.terminal.ipapp.  Prints signon.
     # False: frontend.terminal.interactiveshell. No signon.
@@ -133,7 +134,7 @@ if g_trace_imports and not g_import_ok:
 #@-<< imports >>
 #@+<< class LeoWorkBook >>
 #@+node:ekr.20120401063816.10181: ** << class LeoWorkbook >>
-class LeoWorkbook:
+class LeoWorkbook(object):
     """ class for 'advanced' node access 
 
     Has attributes for all "discoverable" nodes.
@@ -217,7 +218,7 @@ if g_import_ok:
         '''A class to manage global IPython data'''
         
         #@+others
-        #@+node:ekr.20120401082519.10037: *3* gipm.ctor
+        #@+node:ekr.20120401082519.10037: *3* ctor (GlobalIPythonManager)
         def __init__ (self):
             
             self.c = None
@@ -232,7 +233,7 @@ if g_import_ok:
                 # True: IPython has been started.
             self.wb = LeoWorkbook()
                 # The Leo workbook instance.
-        #@+node:ekr.20110605121601.18482: *3* gipm.embed_ipython & helpers
+        #@+node:ekr.20110605121601.18482: *3* embed_ipython & helpers
         def embed_ipython(self):
 
             '''Run the Qt main loop using IPython if possible.'''
@@ -244,7 +245,7 @@ if g_import_ok:
                 self.start_legacy_api()
             else:
                 self.start_new_api()
-        #@+node:ekr.20120401144849.10115: *4* gipm.start_legacy_api
+        #@+node:ekr.20120401144849.10115: *4* start_legacy_api
         def start_legacy_api(self):
 
             self.started = True
@@ -260,7 +261,7 @@ if g_import_ok:
             # Does not return until IPython closes.
             # IPython runs the leo mainloop
             session.mainloop()
-        #@+node:ekr.20120401144849.10116: *4* gipm.start_new_api
+        #@+node:ekr.20120401144849.10116: *4* start_new_api
         def start_new_api(self):
 
             # No c is available: we can't get @string ipython_argv setting.
@@ -271,11 +272,13 @@ if g_import_ok:
             if g_use_ipapp:
                 # Prints signon.
                 ipapp.launch_new_instance()
+                # ip = ipapp.what # ?????
             else:
                 # Doesn't print signon.
                 shell = ishell.TerminalInteractiveShell()
+                self.ip = shell
                 shell.mainloop()
-        #@+node:ekr.20120401144849.10084: *3* gipm.get_history
+        #@+node:ekr.20120401144849.10084: *3* get_history
         def get_history(self,hstart = 0):
             res = []
             
@@ -296,7 +299,7 @@ if g_import_ok:
                     res.append(pprint.pformat(val))
                     res.append('\n')    
             return ''.join(res)
-        #@+node:ekr.20120401063816.10144: *3* gipm.init_ipython
+        #@+node:ekr.20120401063816.10144: *3* init_ipython
         def init_ipython(self):
             
             """ This will be run by _ip.load('ipy_leo') 
@@ -320,29 +323,29 @@ if g_import_ok:
             ip.expose_magic('lshadow',lshadow_f)
             ip.expose_magic('lno',lno_f)
             
-            if 0: # Not ready yet.
-                # Note that no other push command should EVER have lower than 0
-                g_ipm.expose_ileo_push(push_mark_req,-1)
-                g_ipm.expose_ileo_push(push_cl_node,100)
-                # this should be the LAST one that will be executed,
-                # and it will never raise TryNext.
-                g_ipm.expose_ileo_push(push_ipython_script,1000)
-                g_ipm.expose_ileo_push(push_plain_python,100)
-                g_ipm.expose_ileo_push(push_ev_node,100)
+            # Not ready yet.
+                # # Note that no other push command should EVER have lower than 0
+                # g_ipm.expose_ileo_push(push_mark_req,-1)
+                # g_ipm.expose_ileo_push(push_cl_node,100)
+                # # this should be the LAST one that will be executed,
+                # # and it will never raise TryNext.
+                # g_ipm.expose_ileo_push(push_ipython_script,1000)
+                # g_ipm.expose_ileo_push(push_plain_python,100)
+                # g_ipm.expose_ileo_push(push_ev_node,100)
             
             ip.set_hook('pre_prompt_hook',ileo_pre_prompt_hook) 
                 
             # global wb
             # wb = LeoWorkbook()
             ip.user_ns['wb'] = self.wb
-        #@+node:ekr.20120401144849.10094: *3* gipm.push...
-        #@+node:ekr.20120401144849.10095: *4* gipm.expose_ileo_push
+        #@+node:ekr.20120401144849.10094: *3* push...
+        #@+node:ekr.20120401144849.10095: *4* expose_ileo_push
         def expose_ileo_push(self,f,priority=0):
             
             if g_legacy:
 
                 self.push_from_leo.add(f,priority)
-        #@+node:ekr.20120401144849.10102: *4* gipm.push_position_from_leo
+        #@+node:ekr.20120401144849.10102: *4* push_position_from_leo
         def push_position_from_leo(self,p):
             
             try:
@@ -359,7 +362,7 @@ if g_import_ok:
                     es("Press alt+shift+I to fix!")
                 else:
                     raise
-        #@+node:ekr.20120401144849.10142: *4* gipm.push_to_ipython
+        #@+node:ekr.20120401144849.10142: *4* push_to_ipython
         def push_to_ipython(self):
             
             c,ip = self.c,self.ip
@@ -385,7 +388,7 @@ if g_import_ok:
                 # self.legacy_push_to_ipython()
             # else:
                 # self.new_push_to_ipython()
-        #@+node:ekr.20120401144849.10143: *5* gipm.legacy_push_to_ipython
+        #@+node:ekr.20120401144849.10143: *5* legacy_push_to_ipython
         def legacy_push_to_ipython(self):
             
             # if script:
@@ -408,7 +411,7 @@ if g_import_ok:
             c.inCommand = False # Disable the command lockout logic
             push(c.p)
           
-        #@+node:ekr.20120401144849.10144: *5* gipm.new_push_to_ipython
+        #@+node:ekr.20120401144849.10144: *5* new_push_to_ipython
         def new_push_to_ipython (self):
             
             ip = ishell.InteractiveShell.instance()
@@ -431,13 +434,15 @@ if g_import_ok:
             push = ip.user_ns['_leo'].push
                 # This is really push_position_from_leo.
             push(p)
-        #@+node:ekr.20120401144849.10096: *4* gipm.push_cl_node
+        #@+node:ekr.20120401144849.10096: *4* push_cl_node
         def push_cl_node(self,node):
 
             """ If node starts with @cl, eval it
 
             The result is put as last child of @ipy-results node, if it exists
             """
+            
+            c = self.c
 
             if not node.b.startswith('@cl'):
                 raise TryNext
@@ -449,7 +454,7 @@ if g_import_ok:
                 LeoNode(p2).v = val
             es(val)
 
-        #@+node:ekr.20120401144849.10097: *4* gipm.push_ev_node
+        #@+node:ekr.20120401144849.10097: *4* push_ev_node
         def push_ev_node(self,node):
             
             """ If headline starts with @ev, eval it and put result in body """
@@ -459,24 +464,24 @@ if g_import_ok:
 
             expr = node.h.lstrip('@ev ')
             es('ipy eval ' + expr)
-            res = ip.ev(expr)
+            res = self.ip.ev(expr)
             node.v = res
 
-        #@+node:ekr.20120401144849.10098: *4* gipm.push_from_leo (not used)
-        # if g_legacy:
+        #@+node:ekr.20120401144849.10098: *4* push_from_leo
+        if g_legacy:
 
-            # push_from_leo = CommandChainDispatcher()
+            push_from_leo = CommandChainDispatcher()
             
-        # else:
+        else:
             
-            # pass
+            pass
 
-            # # def push_from_leo(self,args):
+            # def push_from_leo(self,args):
                 
-                # # g.trace(args)
+                # g.trace(args)
                 
-                # # CommandChainDispatcher(args)
-        #@+node:ekr.20120401144849.10099: *4* gipm.push_ipython_script
+                # CommandChainDispatcher(args)
+        #@+node:ekr.20120401144849.10099: *4* push_ipython_script
         def push_ipython_script(self,node):
             """ Execute the node body in IPython,
             as if it was entered in interactive prompt """
@@ -513,16 +518,16 @@ if g_import_ok:
                     es('ipy run: %s (%d LL)' %(node.h,len(script)))
             finally:
                 c.redraw()
-        #@+node:ekr.20120401144849.10100: *4* gipm.push_mark_req
+        #@+node:ekr.20120401144849.10100: *4* push_mark_req
         def push_mark_req(self,node):
             """ This should be the first one that gets called.
 
             It will mark the node as 'pushed', for wb.require.
             """
 
-            _leo_push_history.add(node.h)
+            self.push_history.add(node.h)
             raise TryNext
-        #@+node:ekr.20120401144849.10101: *4* gipm.push_plain_python
+        #@+node:ekr.20120401144849.10101: *4* push_plain_python
         def push_plain_python(self,node):
             
             if not node.h.endswith('P'):
@@ -533,12 +538,12 @@ if g_import_ok:
             try:
                 # exec script in ip.user_ns
                 # 2010/02/04: per 2to3
-                exec(script,ip.user_ns)
+                exec(script,self.ip.user_ns)
             except:
                 print(" -- Exception in script:\n"+script + "\n --")
                 raise
             es('ipy plain: %s (%d LL)' % (node.h,lines))
-        #@+node:ekr.20120401144849.10104: *3* gipm.run_leo_startup_node
+        #@+node:ekr.20120401144849.10104: *3* run_leo_startup_node
         def run_leo_startup_node(self):
             
             c = self.c
@@ -548,7 +553,7 @@ if g_import_ok:
                 for n in LeoNode(p):
                     self.push_from_leo(n)
 
-        #@+node:ekr.20120401144849.10119: *3* gipm.show_welcome
+        #@+node:ekr.20120401144849.10119: *3* show_welcome
         def show_welcome(self):
 
             print("------------------")
@@ -561,7 +566,7 @@ if g_import_ok:
                 u.freeze_term_title()
             else:
                 pass ### Not ready yet.
-        #@+node:ekr.20120401063816.10145: *3* gipm.update_commander
+        #@+node:ekr.20120401063816.10145: *3* update_commander
         def update_commander(self,c):
             """ Set the Leo commander to use
 
@@ -609,7 +614,7 @@ if g_import_ok:
             self.c = c
             self.g = g
     #@+node:ekr.20120401063816.10189: ** class LeoNode
-    class LeoNode(UserDictMixin): #### (object,UserDict.DictMixin):
+    class LeoNode(UserDictMixin,object): #### (object,UserDict.DictMixin):
         """ Node in Leo outline
 
         Most important attributes (getters/setters available:
@@ -783,12 +788,11 @@ if g_import_ok:
         def script(self):
             """ Method to get the 'tangled' contents of the node
 
-            (parse @others, %s references etc.)
-            """ % g.angleBrackets(' section ')
+            (parse @others, section references etc.)
+            """
 
             c = self.c
             return g.getScript(c,self.p,useSelectedText=False,useSentinels=False)
-
         #@+node:ekr.20120401063816.10206: *3* __get_uA
         def __get_uA(self):
             
