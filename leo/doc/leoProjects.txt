@@ -2933,10 +2933,167 @@ The fix was:
 
 1. Use the "slow" code in leoQTextEditWidget.get.
 2. Use w.get/setAllText in leoFrame.pasteText.
-#@+node:ekr.20120413093125.10036: *4* Stablilized hscroll when pasting
-@nocolor-node
+#@+node:ekr.20120413152012.10048: *4* Minimize scrolling during paste-text
+#@+node:ekr.20070130115927.7: *5* leoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
 
-A very easy fix to leoFrame.pasteText.
+    '''Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+
+    trace = False and not g.unitTesting
+    f = self ; c = f.c
+    w = event and event.widget
+    wname = (w and c.widget_name(w)) or '<no widget>'
+    if trace: g.trace(g.app.gui.isTextWidget(w),w)
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = s1 = g.app.gui.getTextFromClipboard()
+
+    # g.trace(type(s),s[:25])
+
+    s = g.toUnicode(s)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+
+    # Update the widget.
+    if i != j:
+        w.delete(i,j)
+    w.insert(i,s)
+    w.see(i+len(s) + 2) # 2011/06/01
+
+    if wname.startswith('body'):
+        c.frame.body.forceFullRecolor()
+        c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+    elif singleLine:
+        s = w.getAllText()
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+        # 2011/11/14: headline width methods do nothing at present.
+        # if wname.startswith('head'):
+            # The headline is not officially changed yet.
+            # p.initHeadString(s)
+            # width = f.tree.headWidth(p=None,s=s)
+            # w.setWidth(width)
+    else: pass
+
+    return
+
+OnPasteFromMenu = pasteText
+#@+node:ekr.20110605121601.18092: *5* setAllText (leoQTextEditWidget) & helper (changed 4.10)
+def setAllText(self,s):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    if trace and verbose: t1 = g.getTime()
+
+    try:
+        self.changingText = True # Disable onTextChanged
+        colorizer.changingText = True
+        w.setReadOnly(False)
+        w.setPlainText(s)
+    finally:
+        self.changingText = False
+        colorizer.changingText = False
+
+    if trace and verbose: g.trace(g.timeSince(t1))
+    
+#@+node:ekr.20110605121601.18079: *5* delete (avoid call to setAllText) (leoQTextEditWidget)
+def delete(self,i,j=None):
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    n = colorer.recolorCount
+
+    if trace: g.trace(self.getSelectionRange())
+
+    i = self.toGuiIndex(i)
+    if j is None: j = i+1
+    j = self.toGuiIndex(j)
+    if i > j: i,j = j,i
+
+    if trace: g.trace(i,j)
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    cursor = w.textCursor()
+
+    try:
+        self.changingText = True # Disable onTextChanged
+
+        old_i,old_j = self.getSelectionRange()
+        if i == old_i and j == old_j:
+            # Work around an apparent bug in cursor.movePosition.
+            cursor.removeSelectedText()
+        elif i == j:
+            pass
+        else:
+            # g.trace('*** using dubious code')
+            cursor.setPosition(i)
+            moveCount = abs(j-i)
+            cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+            w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+            if trace:
+                i,j = self.getSelectionRange()
+                g.trace(i,j)
+            cursor.removeSelectedText()
+            if trace: g.trace(self.getSelectionRange())
+    finally:
+        self.changingText = False
+
+    sb.setSliderPosition(pos)
+
+    # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
+#@+node:ekr.20110605121601.18089: *5* insert (avoid call to setAllText) (leoQTextWidget)
+def insert(self,i,s):
+
+    c,w = self.c,self.widget
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    n = colorer.recolorCount
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+    i = self.toGuiIndex(i)
+    cursor = w.textCursor()
+    try:
+        self.changingText = True # Disable onTextChanged.
+        cursor.setPosition(i)
+        cursor.insertText(s) # This cause an incremental call to recolor.
+        w.setTextCursor(cursor) # Bug fix: 2010/01/27
+    finally:
+        self.changingText = False
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node

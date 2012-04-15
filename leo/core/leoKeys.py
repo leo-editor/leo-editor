@@ -2036,7 +2036,7 @@ class keyHandlerClass:
                 k.callAltXFunction(k.mb_event)
         elif char in ('\t','Tab'):
             if trace and verbose: g.trace('***Tab')
-            k.doTabCompletion(list(c.commandsDict.keys()))
+            k.doTabCompletion(list(c.commandsDict.keys()),allow_empty_completion=True)
             c.minibufferWantsFocus()
         elif char in ('\b','BackSpace'):
             if trace and verbose: g.trace('***BackSpace')
@@ -3721,7 +3721,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.175: *4* k.computeCompletionList
     # Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
 
-    def computeCompletionList (self,defaultTabList,backspace):
+    def computeCompletionList (self,defaultTabList,backspace,allow_empty_completion=False):
 
         k = self ; c = k.c ; s = k.getLabel() ; tabName = 'Completion'
         command = s [len(k.mb_prompt):]
@@ -3730,7 +3730,7 @@ class keyHandlerClass:
         k.mb_tabList,common_prefix = g.itemsMatchingPrefixInList(command,defaultTabList)
         c.frame.log.clearTab(tabName)
         
-        if not k.mb_tabList:
+        if not k.mb_tabList and allow_empty_completion:
             # Return *all* completions.
             k.mb_tabList = sorted(defaultTabList)
             common_prefix = ''
@@ -3792,7 +3792,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.178: *4* k.doTabCompletion
     # Used by getArg and fullCommand.
 
-    def doTabCompletion (self,defaultTabList,redraw=True):
+    def doTabCompletion (self,defaultTabList,redraw=True,allow_empty_completion=False):
 
         '''Handle tab completion when the user hits a tab.'''
 
@@ -3807,7 +3807,10 @@ class keyHandlerClass:
             k.setLabel(k.mb_prompt + k.mb_tabList [k.mb_tabListIndex])
         else:
             if redraw:
-                k.computeCompletionList(defaultTabList,backspace=False)
+                # g.trace('** recomputing default completions')
+                k.computeCompletionList(defaultTabList,
+                    backspace=False,
+                    allow_empty_completion=allow_empty_completion)
 
         c.minibufferWantsFocus()
     #@+node:ekr.20061031131434.168: *4* k.getFileName & helpers

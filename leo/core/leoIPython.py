@@ -49,6 +49,8 @@ g_ipm = None
 
 g_legacy = None
     # True if IPython 0.11 or previous found.
+    
+g_c = None # A copy of g.app.ipm.c
 #@-<< globals >>
 #@+<< imports >>
 #@+node:ekr.20120401063816.10141: ** << imports >> (leoIPython.py)
@@ -180,7 +182,7 @@ class LeoWorkbook(object):
     __repr__ = __str__
     #@+node:ekr.20120401063816.10186: *3* current
     current = property(
-        lambda self: LeoNode(c.currentPosition()),
+        lambda self: LeoNode(g_c.currentPosition()),
         doc = "Currently selected node")
     #@+node:ekr.20120401063816.10187: *3* match_h
     def match_h(self,regex):
@@ -272,12 +274,16 @@ if g_import_ok:
             if g_use_ipapp:
                 # Prints signon.
                 ipapp.launch_new_instance()
-                # ip = ipapp.what # ?????
+                self.ip = ipapp.shell() # ?????
             else:
                 # Doesn't print signon.
                 shell = ishell.TerminalInteractiveShell()
                 self.ip = shell
                 shell.mainloop()
+                
+                # shell = InteractiveShellEmbed(config=cfg, user_ns=namespace, banner2=banner)
+                # shell.user_ns = {}
+                # shell()
         #@+node:ekr.20120401144849.10084: *3* get_history
         def get_history(self,hstart = 0):
             res = []
@@ -584,6 +590,8 @@ if g_import_ok:
             if ip.user_ns.get('c') == c:
                 return
                 
+            global g_c
+            g_c = c
             self.c = c
             print("Set Leo Commander: %s" % c.frame.getTitle())
 

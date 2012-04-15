@@ -8,8 +8,6 @@
 .. @+node:ekr.20120330040023.9778: *3* First
 .. @+node:ekr.20111017132257.15891: *4* Get IPython working again
 @language python
-@language rest
-
 
 To do:
 
@@ -392,6 +390,8 @@ def update_commander(self,c):
     if ip.user_ns.get('c') == c:
         return
         
+    global g_c
+    g_c = c
     self.c = c
     print("Set Leo Commander: %s" % c.frame.getTitle())
 
@@ -578,12 +578,16 @@ def start_new_api(self):
     if g_use_ipapp:
         # Prints signon.
         ipapp.launch_new_instance()
-        # ip = ipapp.what # ?????
+        self.ip = ipapp.shell() # ?????
     else:
         # Doesn't print signon.
         shell = ishell.TerminalInteractiveShell()
         self.ip = shell
         shell.mainloop()
+        
+        # shell = InteractiveShellEmbed(config=cfg, user_ns=namespace, banner2=banner)
+        # shell.user_ns = {}
+        # shell()
 .. @+node:ekr.20120401144849.10084: *6* get_history
 def get_history(self,hstart = 0):
     res = []
@@ -890,6 +894,8 @@ def update_commander(self,c):
     if ip.user_ns.get('c') == c:
         return
         
+    global g_c
+    g_c = c
     self.c = c
     print("Set Leo Commander: %s" % c.frame.getTitle())
 
@@ -916,12 +922,16 @@ def start_new_api(self):
     if g_use_ipapp:
         # Prints signon.
         ipapp.launch_new_instance()
-        # ip = ipapp.what # ?????
+        self.ip = ipapp.shell() # ?????
     else:
         # Doesn't print signon.
         shell = ishell.TerminalInteractiveShell()
         self.ip = shell
         shell.mainloop()
+        
+        # shell = InteractiveShellEmbed(config=cfg, user_ns=namespace, banner2=banner)
+        # shell.user_ns = {}
+        # shell()
 .. @+node:ekr.20120208062900.10146: *4* Complete new_modes
 @nocolor-node
 
