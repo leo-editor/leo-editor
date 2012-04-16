@@ -32,11 +32,6 @@ This module supports all versions of the IPython api:
 g_trace_imports = True
     # True: trace imports
 
-g_use_ipapp = False
-    # Used only when g_legacy == False.
-    # True:  imports frontend.terminal.ipapp.  Prints signon.
-    # False: frontend.terminal.interactiveshell. No signon.
-
 # Global vars, set only at the top level...
 # None of these globals requires Python's "global" statement.
 
@@ -70,27 +65,24 @@ else:
     import UserDict
     UserDictMixin = UserDict.DictMixin
 
-# for z in sys.path: print(z)
-
 #@+<< attempt to import new version of IPython >>
 #@+node:ekr.20120413094617.12250: *3* << attempt to import new version of IPython >>
 try:
     # Either of these works.
-    if g_use_ipapp:
-        tag = 'IPython.frontend.terminal.ipapp'
-        import IPython.frontend.terminal.ipapp as ipapp
-    else:
-        tag = 'IPython.frontend.terminal.interactiveshell'
-        import IPython.frontend.terminal.interactiveshell as ishell
+    import IPython.frontend.terminal.ipapp as ipapp
     import IPython.utils.generics as generics
     import IPython.core.macro as macro
     from IPython.external.simplegeneric import generic
     from IPython.utils.text import SList
+    from IPython.core.completer import IPCompleter
     from IPython.core.error import TryNext
+    from IPython.core.hooks import CommandChainDispatcher
+    from IPython.core.interactiveshell import InteractiveShell
+    
     g_import_ok = True
     g_legacy = False
     if g_trace_imports:
-        print('imported %s' % tag)
+        print('imported new-style IPython')
 
 except ImportError:
     if g_trace_imports:
@@ -116,7 +108,7 @@ if not g_import_ok:
         g_legacy = True
         g_import_ok = True
         if g_trace_imports:
-            print('imported legacy IPython.ipapi')
+            print('imported legacy IPython')
 
     except ImportError:
         g_legacy = False
@@ -271,19 +263,14 @@ if g_import_ok:
             
             self.started = True
 
-            if g_use_ipapp:
-                # Prints signon.
-                ipapp.launch_new_instance()
-                self.ip = ipapp.shell() # ?????
-            else:
+            # Prints signon.
+            # self.ip set in update_commander.
+            ipapp.launch_new_instance()
+
                 # Doesn't print signon.
-                shell = ishell.TerminalInteractiveShell()
-                self.ip = shell
-                shell.mainloop()
-                
-                # shell = InteractiveShellEmbed(config=cfg, user_ns=namespace, banner2=banner)
-                # shell.user_ns = {}
-                # shell()
+                # shell = ishell.TerminalInteractiveShell()
+                # self.ip = shell
+                # shell.mainloop()
         #@+node:ekr.20120401144849.10084: *3* get_history
         def get_history(self,hstart = 0):
             res = []
@@ -291,14 +278,21 @@ if g_import_ok:
             ip = self.ip
             
             if g_legacy:
+                ihist = ip.IP.input_hist
+                ihist_raw = ip.IP.input_hist_raw
                 ohist = ip.IP.output_hist
             else:
-                ohist = [] ####
+                m = ip.history_manager
+                ihist = m.input_hist_parsed
+                ihist_raw = m.input_hist_raw
+                ohist = m.output_hist
 
-            for idx in range(hstart, len(ip.IP.input_hist)):
+            # for idx in range(hstart, len(ip.IP.input_hist)):
+            for idx in range(hstart, len(ihist)):
                 val = ohist.get(idx,None)
                 has_output = True
-                inp = ip.IP.input_hist_raw[idx]
+                # inp = ip.IP.input_hist_raw[idx]
+                inp = ihist_raw[idx]
                 if inp.strip():
                     res.append('In [%d]: %s' % (idx, inp))
                 if val:
@@ -382,64 +376,12 @@ if g_import_ok:
                 
             n = LeoNode(c.p)
             
-            if g_legacy:
-                def f(self=self,n=n):
-                    self.push_ipython_script(n)
-                    return True
-                d = CommandChainDispatcher()
-                d.add(f)
-                d()
-            
-            # if g_legacy:
-                # self.legacy_push_to_ipython()
-            # else:
-                # self.new_push_to_ipython()
-        #@+node:ekr.20120401144849.10143: *5* legacy_push_to_ipython
-        def legacy_push_to_ipython(self):
-            
-            # if script:
-                # gIP.runlines(script)
-                # return
-                
-            c,ip = self.c,self.ip
-            if not c:
-                return g.trace('can not happen: no c.')
-                
-            if not self.ip:
-                return g.trace('can not happen: no ip.')
-                
-            self.update_commander(c)
-            
-            push = ip.user_ns['_leo'].push
-            
-            g.trace(push)
-            
-            c.inCommand = False # Disable the command lockout logic
-            push(c.p)
-          
-        #@+node:ekr.20120401144849.10144: *5* new_push_to_ipython
-        def new_push_to_ipython (self):
-            
-            ip = ishell.InteractiveShell.instance()
-            if not ip:
-                return g.trace('can not happen: IPython not running')
-
-            c = self.c
-            if not c:
-                return g.trace('can not happen: no c.')
-            
-            p = c.p
-            if not ip.user_ns.get('_leo'):
-                leox = LeoInterface(c,g)
-                # ipy_leo.init_ipython(ip)
-                ipy_leo.update_commander(leox,new_ip=ip)
-                # g.trace('_leo',ip.user_ns.get('_leo'))
-                assert ip.user_ns.get('_leo')
-            c.inCommand = False
-                # Disable the command lockout logic
-            push = ip.user_ns['_leo'].push
-                # This is really push_position_from_leo.
-            push(p)
+            def f(self=self,n=n):
+                self.push_ipython_script(n)
+                return True
+            d = CommandChainDispatcher()
+            d.add(f)
+            d()
         #@+node:ekr.20120401144849.10096: *4* push_cl_node
         def push_cl_node(self,node):
 
@@ -492,37 +434,61 @@ if g_import_ok:
             """ Execute the node body in IPython,
             as if it was entered in interactive prompt """
             
+            trace = False
             c = self.c
             ip = self.ip
-            # g.trace(c,node)
             try:
-                ohist = ip.IP.output_hist 
-                hstart = len(ip.IP.input_hist)
+                if 0:
+                    g.trace()
+                    for z in sorted(dir(ip)):
+                        print('%30s %s' % (z,getattr(ip,z).__class__))
+                
+                if g_legacy:
+                    ihist = ip.IP.input_hist
+                    ohist = ip.IP.output_hist 
+                    hstart = len(ip.IP.input_hist)
+                else:
+                    m = ip.history_manager
+                    hstart = ip.history_length
+                    ihist = m.input_hist_parsed
+                    ohist = m.output_hist
+
+                if trace:
+                    g.trace('ihist',ihist)
+                    g.trace('ohist',ohist)
+            
                 script = node.script()
 
                 # The current node _p needs to handle
                 # wb.require() and recursive ipushes.
                 old_p = ip.user_ns.get('_p',None)
                 ip.user_ns['_p'] = node
-                ip.runlines(script)
+                
+                if g_legacy:
+                    ip.runlines(script)
+                else:
+                    ip.runcode(script)
+
                 ip.user_ns['_p'] = old_p
                 if old_p is None:
                     del ip.user_ns['_p']
 
                 has_output = False
-                for idx in range(hstart,len(ip.IP.input_hist)):
+                # for idx in range(hstart,len(ip.IP.input_hist)):
+                for idx in range(hstart,len(ihist)):
                     val = ohist.get(idx,None)
-                    if val is None:
-                        continue
-                    has_output = True
-                    inp = ip.IP.input_hist[idx]
-                    if inp.strip():
-                        es('In: %s' % (inp[:40], ))
-                    es('<%d> %s' % (idx,pprint.pformat(ohist[idx],width=40)))
+                    if val is not None:
+                        has_output = True
+                        # inp = ip.IP.input_hist[idx]
+                        inp = ihist[idx]
+                        if inp.strip():
+                            es('In: %s' % (inp[:40], ))
+                        es('<%d> %s' % (idx,pprint.pformat(ohist[idx],width=40)))
 
                 if not has_output:
                     es('ipy run: %s (%d LL)' %(node.h,len(script)))
             finally:
+                # if trace: g.trace('end push_ipython_script')
                 c.redraw()
         #@+node:ekr.20120401144849.10100: *4* push_mark_req
         def push_mark_req(self,node):
@@ -572,6 +538,14 @@ if g_import_ok:
                 u.freeze_term_title()
             else:
                 pass ### Not ready yet.
+        #@+node:ekr.20120415174008.10063: *3* get_ip
+        def get_ip (self):
+            
+            """Get the global InteractiveShell instance."""
+            
+            shell = InteractiveShell.instance()
+            
+            return shell
         #@+node:ekr.20120401063816.10145: *3* update_commander
         def update_commander(self,c):
             """ Set the Leo commander to use
@@ -583,7 +557,12 @@ if g_import_ok:
             """
 
             ip = self.ip
-            assert ip
+            
+            if g_legacy:
+                assert ip
+            elif not ip:
+                ip = self.ip = self.get_ip()
+                assert ip
             
             if not c:
                 return
@@ -857,83 +836,7 @@ if g_import_ok:
             g_ipm.start_legacy_api()
         else:
             g_ipm.start_new_api()
-
-        # if c:
-            # # Just inject a new commander for current document.
-            # # if we are already running.
-            # leox = leoInterface(c,g) # inject leox into the namespace.
-            # g_ipm.update_commander(leox)
-            # return
-
-        # try:
-            # api = IPython.ipapi
-            # leox = leoInterface(c,g)
-                # # Inject leox into the IPython namespace.
-
-            # existing_ip = api.get()
-            # if existing_ip is None:
-                # args = c.config.getString('ipython_argv')
-                # if args is None:
-                    # argv = ['leo.py']
-                # else:
-                    # # force str instead of unicode
-                    # argv = [str(s) for s in args.split()] 
-                # if g.app.gui.guiName() == 'qt':
-                    # # qt ui takes care of the coloring (using scintilla)
-                    # if '-colors' not in argv:
-                        # argv.extend(['-colors','NoColor'])
-                # sys.argv = argv
-
-                # self.message('Creating IPython shell.')
-                # ses = api.make_session()
-                # gIP = ses.IP.getapi()
-
-                # #if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
-                # if 0:
-                    # # disable this code for now - --ipython is the one recommended way of using qt + ipython
-                    # g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
-                    # return
-                    # #try:
-                    # #    import ipy_qt.qtipywidget
-                    # #except:
-                    # #    g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
-                    # #    raise
-
-
-                    # import textwrap
-                    # self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
-                    # self.qtwidget.set_ipython_session(gIP)
-                    # self.qtwidget.show()
-                    # self.qtwidget.viewport.append(textwrap.dedent("""\
-                    # Qt IPython widget (for Leo). Commands entered on box below.
-                    # If you want the classic IPython text console, start leo with 'launchLeo.py --gui=qt --ipython'
-                    # """))
-
-            # else:
-                # # To reuse an old IPython session, you need to launch Leo from IPython by doing:
-                # #
-                # # import IPython.Shell
-                # # IPython.Shell.hijack_tk()
-                # # %run leo.py  (in leo/leo/src)              
-                # #
-                # # Obviously you still need to run launch-ipython (Alt-Shift-I) to make 
-                # # the document visible for ILeo
-
-                # self.message('Reusing existing IPython shell')
-                # gIP = existing_ip                
-
-            # ipy_leo_m = gIP.load('leo.external.ipy_leo')
-            # ipy_leo_m.update_commander(leox)
-            # c.inCommand = False # Disable the command lockout logic, just as for scripts.
-            # # start mainloop only if it's not running already
-            # if existing_ip is None and g.app.gui.guiName() != 'qt':
-                # # Does not return until IPython closes!
-                # ses.mainloop()
-
-        # except Exception:
-            # self.error('exception creating IPython shell')
-            # g.es_exception()
-    #@+node:ekr.20120401144849.10140: *3* push-to-ipython
+    #@+node:ekr.20120401144849.10140: *3* pushToIPythonCommand (g.command push-to-ipython)
     @g.command('push-to-ipython')
     def pushToIPythonCommand(event=None):
 
@@ -943,17 +846,9 @@ if g_import_ok:
         
         trace = False and not g.unitTesting
         
-        if not g_ipm.c:
-            c = event.get('c')
-            if c:
-                g_ipm.c = c
-                if trace: g.trace('setting g_ipm.c',c)
-            else:
-                return g.trace('can not happen: no commander')
+        # Ensure that the correct commander is set.
+        startIPython(event=event)
         
-        if not g_ipm.started:
-            startIPython()
-            
         g_ipm.push_to_ipython()
     #@+node:ekr.20120401144849.10134: ** Top-level functions
     #@+node:ekr.20120401144849.10075: *3* add_file
@@ -1094,7 +989,13 @@ if g_import_ok:
             if g_legacy:
                 return ip.IP.Completer.file_matches(event.symbol)
             else:
-                pass ### Not ready yet.
+                completer = IPCompleter(shell=ip,
+                    namespace=ip.user_ns,
+                    global_namespace=None,
+                    alias_table=None,
+                    use_readline=True,
+                    config=None)
+                return completer.file_matches(event.symbol)
 
         return sorted(list(c.commandsDict.keys()))
     #@+node:ekr.20120401144849.10092: *3* mb_f

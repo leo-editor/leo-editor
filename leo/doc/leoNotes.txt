@@ -8237,5 +8237,53 @@ def started (self):
     
     ### return gIP
     return ishell.InteractiveShell.instance()
+#@+node:ekr.20120415174008.10060: *4* New code
+The push_to_ipython code appears to work with both versions.
+#@+node:ekr.20120401144849.10143: *5* legacy_push_to_ipython
+def legacy_push_to_ipython(self):
+    
+    # if script:
+        # gIP.runlines(script)
+        # return
+        
+    c,ip = self.c,self.ip
+    if not c:
+        return g.trace('can not happen: no c.')
+        
+    if not self.ip:
+        return g.trace('can not happen: no ip.')
+        
+    self.update_commander(c)
+    
+    push = ip.user_ns['_leo'].push
+    
+    g.trace(push)
+    
+    c.inCommand = False # Disable the command lockout logic
+    push(c.p)
+  
+#@+node:ekr.20120401144849.10144: *5* new_push_to_ipython
+def new_push_to_ipython (self):
+    
+    ip = ishell.InteractiveShell.instance()
+    if not ip:
+        return g.trace('can not happen: IPython not running')
+
+    c = self.c
+    if not c:
+        return g.trace('can not happen: no c.')
+    
+    p = c.p
+    if not ip.user_ns.get('_leo'):
+        leox = LeoInterface(c,g)
+        # ipy_leo.init_ipython(ip)
+        ipy_leo.update_commander(leox,new_ip=ip)
+        # g.trace('_leo',ip.user_ns.get('_leo'))
+        assert ip.user_ns.get('_leo')
+    c.inCommand = False
+        # Disable the command lockout logic
+    push = ip.user_ns['_leo'].push
+        # This is really push_position_from_leo.
+    push(p)
 #@-all
 #@-leo
