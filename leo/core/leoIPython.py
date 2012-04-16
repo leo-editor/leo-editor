@@ -221,6 +221,8 @@ if g_import_ok:
                 # The global IPython instance.
             self.push_history = set()
                 # The IPython history.
+            self.inited = False
+                # True: init_ipython called
             self.root_node = None
                 # The global root node used by the allcells() and rootnode() functions.
             self.started = False
@@ -311,27 +313,31 @@ if g_import_ok:
             ip = self.ip
             # g.trace(ip)
             
+            if self.inited:
+                return
+            
             self.show_welcome()
 
             #### Shell.hijack_tk()
             ip.set_hook('complete_command',mb_completer,str_key = '%mb')
-
-            ip.expose_magic('mb',mb_f)
-            ip.expose_magic('lee',lee_f)
-            ip.expose_magic('leoref',leoref_f)
-            ip.expose_magic('lleo',lleo_f)    
-            ip.expose_magic('lshadow',lshadow_f)
-            ip.expose_magic('lno',lno_f)
             
-            # Not ready yet.
-                # # Note that no other push command should EVER have lower than 0
-                # g_ipm.expose_ileo_push(push_mark_req,-1)
-                # g_ipm.expose_ileo_push(push_cl_node,100)
-                # # this should be the LAST one that will be executed,
-                # # and it will never raise TryNext.
-                # g_ipm.expose_ileo_push(push_ipython_script,1000)
-                # g_ipm.expose_ileo_push(push_plain_python,100)
-                # g_ipm.expose_ileo_push(push_ev_node,100)
+            f = ip.expose_magic if g_legacy else ip.define_magic
+            
+            f('mb',mb_f)
+            f('lee',lee_f)
+            f('leoref',leoref_f)
+            f('lleo',lleo_f)    
+            f('lshadow',lshadow_f)
+            f('lno',lno_f)
+
+            # Note that no other push command should EVER have lower than 0
+            g_ipm.expose_ileo_push(g_ipm.push_mark_req,-1)
+            g_ipm.expose_ileo_push(g_ipm.push_cl_node,100)
+            # this should be the LAST one that will be executed,
+            # and it will never raise TryNext.
+            g_ipm.expose_ileo_push(g_ipm.push_ipython_script,1000)
+            g_ipm.expose_ileo_push(g_ipm.push_plain_python,100)
+            g_ipm.expose_ileo_push(g_ipm.push_ev_node,100)
             
             ip.set_hook('pre_prompt_hook',ileo_pre_prompt_hook) 
                 
@@ -342,19 +348,14 @@ if g_import_ok:
         #@+node:ekr.20120401144849.10095: *4* expose_ileo_push
         def expose_ileo_push(self,f,priority=0):
             
-            if g_legacy:
-
-                self.push_from_leo.add(f,priority)
+            # self.push_from_leo.add(f,priority)
+            CommandChainDispatcher().add(f,priority)
         #@+node:ekr.20120401144849.10102: *4* push_position_from_leo
         def push_position_from_leo(self,p):
             
             try:
-                # self.push_from_leo(LeoNode(p))
-                if g_legacy:
-                    d = CommandChainDispatcher(LeoNode(p))
-                    d()
-                else:
-                    g.trace('not ready yet')
+                d = CommandChainDispatcher(LeoNode(p))
+                d()
 
             except AttributeError as e:
                 if e.args == ("Commands instance has no attribute 'frame'",):
@@ -416,19 +417,7 @@ if g_import_ok:
             node.v = res
 
         #@+node:ekr.20120401144849.10098: *4* push_from_leo
-        if g_legacy:
-
-            push_from_leo = CommandChainDispatcher()
-            
-        else:
-            
-            pass
-
-            # def push_from_leo(self,args):
-                
-                # g.trace(args)
-                
-                # CommandChainDispatcher(args)
+        # push_from_leo = CommandChainDispatcher()
         #@+node:ekr.20120401144849.10099: *4* push_ipython_script
         def push_ipython_script(self,node):
             """ Execute the node body in IPython,
@@ -523,7 +512,8 @@ if g_import_ok:
             if p:
                 print("Running @ipy-startup nodes")
                 for n in LeoNode(p):
-                    self.push_from_leo(n)
+                    # self.push_from_leo(n)
+                    CommandChainDispatcher(n)
 
         #@+node:ekr.20120401144849.10119: *3* show_welcome
         def show_welcome(self):
@@ -531,13 +521,15 @@ if g_import_ok:
             print("------------------")
             print("Welcome to Leo-enabled IPython session!")
             print("Try %leoref for quick reference.")
-            
+
             if g_legacy:
                 import IPython.platutils as u
                 u.set_term_title('ILeo')
                 u.freeze_term_title()
             else:
-                pass ### Not ready yet.
+                import IPython.utils.terminal as u
+                u.toggle_set_term_title(True)
+                u.set_term_title('ILeo')
         #@+node:ekr.20120415174008.10063: *3* get_ip
         def get_ip (self):
             
@@ -569,6 +561,9 @@ if g_import_ok:
             if ip.user_ns.get('c') == c:
                 return
                 
+            if not self.inited:
+                self.init_ipython()
+
             global g_c
             g_c = c
             self.c = c
@@ -753,7 +748,8 @@ if g_import_ok:
         #@+node:ekr.20120401063816.10202: *3* ipush (LeoNode)
         def ipush(self):
             """ Does push-to-ipython on the node """
-            push_from_leo(self)
+            # push_from_leo(self)
+            CommandChainDispatcher(self)
         #@+node:ekr.20120401063816.10203: *3* go
         def go(self):
             """ Set node as current node (to quickly see it in Outline) """
