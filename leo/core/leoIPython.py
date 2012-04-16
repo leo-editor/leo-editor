@@ -32,8 +32,10 @@ This module supports all versions of the IPython api:
 g_trace_imports = True
     # True: trace imports
 
-# Global vars, set only at the top level...
-# None of these globals requires Python's "global" statement.
+# Global vars...
+
+g_c = None
+    # A copy of g.app.ipm.c
 
 g_import_ok = None
     # True if any IPython found.
@@ -45,7 +47,8 @@ g_ipm = None
 g_legacy = None
     # True if IPython 0.11 or previous found.
     
-g_c = None # A copy of g.app.ipm.c
+g_push_history = set()
+    # The IPython push history.
 #@-<< globals >>
 #@+<< imports >>
 #@+node:ekr.20120401063816.10141: ** << imports >> (leoIPython.py)
@@ -196,8 +199,10 @@ class LeoWorkbook(object):
         E.g. wb.require('foo') will do wb.foo.ipush()
         if it hasn't been done already.
         """
+        
+        global g_push_history
 
-        if req not in _leo_push_history:
+        if req not in g_push_history:
             es('Require: ' + req)
             getattr(self,req).ipush()
     #@-others
@@ -219,8 +224,6 @@ if g_import_ok:
                 # The current commander, set by update_commander.
             self.ip = None
                 # The global IPython instance.
-            self.push_history = set()
-                # The IPython history.
             self.inited = False
                 # True: init_ipython called
             self.root_node = None
@@ -485,8 +488,11 @@ if g_import_ok:
 
             It will mark the node as 'pushed', for wb.require.
             """
+            
+            global g_push_history
 
-            self.push_history.add(node.h)
+            g_push_history.add(node.h)
+
             raise TryNext
         #@+node:ekr.20120401144849.10101: *4* push_plain_python
         def push_plain_python(self,node):
