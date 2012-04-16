@@ -121,14 +121,14 @@ class LeoFts:
         return r
         
         
-    def search(self, searchstring):        
+    def search(self, searchstring, limit=30):        
                 
         res = []
         g._gnxcache.update_new_cs()
         with self.ix.searcher() as searcher:
             #print (list(searcher.lexicon("b")))
             query = MultifieldParser(["h", "b"], schema=self.schema()).parse(searchstring)
-            results = searcher.search(query, limit=30)
+            results = searcher.search(query, limit=limit)
             print (results)
             for r in results:
                 rr = r.fields()

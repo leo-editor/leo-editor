@@ -8,6 +8,17 @@
 
 To use full text search, you need to install Whoosh library ('easy_install Whoosh').
 
+The fts_max_hits setting controls the maximum hits returned.
+
+Implemenation note:
+    
+    I (Terry) added an index of the oulines containing hits at the top of
+    the output.  Because the link handling is already handled by BigDash
+    and not the WebView widget, I couldn't find a way to use the normal
+    "#id" <href>/<a> index jumping, so I extended the link handling to
+    re-run the search and render hits in the outline of interest at the
+    top.
+
 '''
 #@-<< docstring >>
 
@@ -176,28 +187,8 @@ class GlobalSearch:
             gc.update_new_cs()
             
                 
-        hits = []
         if q:
-            res = fts.search(q)
-            for r in res:
-                #print("hit", r)
-                hits.append("<p>")
-                add_anchor(hits, r["gnx"], r["h"])
-                hits.append("</p>")
-                if r['f']:
-                    opener = ""
-                else:
-                    opener = '<a href="unl!%s"> &gt; </a>' % r["parent"]
-                    
-                hl = r.get("highlight")
-                
-                if hl:
-                    hits.append("<pre>%s</pre>" % hl)
-                    
-                hits.append("""<p><small><i>%s</i>%s</small></p>""" % (r["parent"], opener))                
-            html = "".join(hits)
-            tgt.web.setHtml(html)
-            self.bd.set_link_handler(self.do_link_jump_gnx)
+            self.do_find(tgt, q)
     
     def do_search(self,tgt, qs):        
         ss = str(qs)
@@ -237,6 +228,10 @@ class GlobalSearch:
     def do_link_jump_gnx(self, l):
         print ("jumping to", l)
         
+        if l.startswith("about:blank#"):
+            target_outline = l.split('#', 1)[1]
+            self.do_find(self._old_tgt, self._old_q, target_outline=target_outline)
+            
         if l.startswith("unl!"):
             l = l[4:]
             open_unl(l)
@@ -252,7 +247,84 @@ class GlobalSearch:
             return
         
         print("Not found in any open document")        
-
+            
+    def do_find(self, tgt, q, target_outline=None):
+        self._old_tgt = tgt
+        self._old_q = q
+        fts = self.get_fts()
+        hits = ["""
+            <html><head><style>
+                * { font-family: sans-serif; }
+                pre { font-family: monospace; }
+                pre * { font-family: monospace; }
+                a { text-decoration: none; }
+                a:hover { text-decoration: underline; color: red; }
+                pre { margin-top: 0; margin-bottom: 0; }
+            </style></head><body>
+        """]
+            
+        fts_max_hits = limit=g.app.config.getInt('fts_max_hits') or 30
+        res = fts.search(q, fts_max_hits)
+        outlines = {}
+        for r in res:
+            
+            if '#' in r["parent"]:
+                file_name, node = r["parent"].split('#', 1)
+            else:
+                file_name, node = r["parent"], None                
+            
+            outlines.setdefault(file_name, []).append(r)
+            
+        hits.append("<p>%d hits (max. hits reported = %d)</p>"%
+            (len(res), fts_max_hits))
+            
+        if len(outlines) > 1:
+            hits.append("<p><div>Hits in:</div>")
+            for outline in outlines:
+                hits.append("<div><a href='#%s'>%s</a>"%(outline, outline))   
+                if outline == target_outline:
+                    hits.append("<b> (moved to top)</b>")
+                hits.append("</div>")       
+            hits.append("</p>")
+            
+        outline_order = outlines.keys()
+        outline_order.sort(key=lambda x:'' if x==target_outline else x)
+            
+        for outline in outline_order:
+            
+            hits.append("<div id='%s'><p><b>%s</b></p>"%(outline, outline))
+            
+            res = outlines[outline]
+            
+            for r in res:
+                #print("hit", r)
+                hits.append("<p>")
+                hits.append("<div>")
+                add_anchor(hits, r["gnx"], r["h"])
+                hits.append("</div>")
+                
+                # always show opener link because r['f'] is True when
+                # outline was open but isn't any more (GnxCache stale)
+                if False and r['f']:
+                    opener = ""
+                else:
+                    opener = ' (<a href="unl!%s">open</a>)' % r["parent"]
+                    
+                hl = r.get("highlight")
+                
+                if hl:
+                    hits.append("<pre>%s</pre>" % hl)
+                    
+                hits.append("""<div><small><i>%s</i>%s</small></div>""" % (r["parent"], opener))          
+                hits.append("</p>")    
+                
+            hits.append("<hr/></div>")
+            
+        hits.append("</body></html>")
+        html = "".join(hits)
+        tgt.web.setHtml(html)
+        self.bd.set_link_handler(self.do_link_jump_gnx)
+    
 class BigDash:
     def docmd(self):
         t = self.led.text()
@@ -282,9 +354,10 @@ class BigDash:
                     <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
                     <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
                     <tr><td> <b>help</b></td><td>   <i>Show this help</i></td></tr>
+                    <tr><td> <b>stats</b></td><td>   <i>List indexed files</i></td></tr>
+                    <tr><td> <b>fts refresh</b></td><td>   <i>re-index files</i></td></tr>
                     </table>
                     
-                    <p>Other commands: fts refresh, stats</p> 
                     """)
         
     def create_ui(self):
@@ -314,6 +387,7 @@ class BigDash:
                 return True
             return False
         self.add_cmd_handler(help_handler)
+        self.led.setFocus()
         
     def __init__(self):
         
