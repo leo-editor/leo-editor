@@ -23,7 +23,7 @@ node's body is assumed to be a simple text listing of paths to .leo files).
     It may be necessary to quote the "file" on the command line,
     as the '#' may be interpreted as a comment delimiter::
         
-        python leoftsindex.py python leoftsindex.py "workbook.leo#Links"
+        python leoftsindex.py "workbook.leo#Links"
 
 
 """
