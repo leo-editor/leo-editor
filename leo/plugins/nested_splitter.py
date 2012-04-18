@@ -284,17 +284,22 @@ class NestedSplitter(QtGui.QSplitter):
         
         return NestedSplitterHandle(self)
     #@+node:tbrown.20110729101912.30820: *4* childEvent
-    def childEvent(self, c):
+    def childEvent(self, event):
         """If a panel client is closed not by us, there may be zero
         splitter handles left, so add an Action button"""
-            
-        QtGui.QSplitter.childEvent(self, c)
+                    
+        QtGui.QSplitter.childEvent(self, event)
         
-        if not c.removed():
+        if not event.removed():
             return
-        
-        if self.top().max_count() < 2:
-            self.top().insert(0)  # create an action button
+
+        # don't leave a one widget splitter
+        if self.count() == 1 and self.top() != self:
+            self.parent().addWidget(self.widget(0))
+            self.deleteLater()
+            
+        if self.count() == 1 and self.top() == self:
+            self.insert(0)
     #@+node:ekr.20110605121601.17971: *3* add
     def add(self,side,w=None):
 
@@ -302,7 +307,7 @@ class NestedSplitter(QtGui.QSplitter):
         
         layout = self.parent().layout()
 
-        if isinstance(self.parent(),NestedSplitter):
+        if isinstance(self.parent(), NestedSplitter):
             # don't add new splitter if not needed, i.e. we're the
             # only child of a previosly more populated splitter
             self.parent().insertWidget(
@@ -566,7 +571,10 @@ class NestedSplitter(QtGui.QSplitter):
         else:
             self.close_or_keep(widget)
     #@+node:ekr.20110605121601.17981: *4* close_or_keep
-    def close_or_keep(self, widget):
+    def close_or_keep(self, widget, other_top=None):
+        """when called from a closing secondary window, self.top() would
+        be the top splitter in the closing window, and we need the client
+        to specify the top of the primary window for us, in other_top"""
 
         if widget is None:
             return True
@@ -574,8 +582,9 @@ class NestedSplitter(QtGui.QSplitter):
         for k in self.root.holders:
             if hasattr(widget, k):
                 holder = self.root.holders[k]
+                
                 if holder == 'TOP':
-                    holder = self.top()
+                    holder = other_top or self.top()
                 if hasattr(holder, "addTab"):
                     holder.addTab(widget, getattr(widget,k))
                 else:

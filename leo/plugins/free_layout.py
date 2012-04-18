@@ -18,7 +18,7 @@ g.assertUi('qt')
 
 from PyQt4 import QtCore, QtGui, Qt
 
-from leo.plugins.nested_splitter import NestedSplitter
+from leo.plugins.nested_splitter import NestedSplitter, NestedSplitterChoice
 
 import json
 #@-<< imports >>
@@ -74,6 +74,40 @@ def loadLayouts(tag, keys):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.load_layout(layout)
+#@+node:tbrown.20120418121002.25711: ** class TopLevelFreeLayout
+class TopLevelFreeLayout(QtGui.QWidget):
+    #@+others
+    #@+node:tbrown.20120418121002.25713: *3* __init__
+    def __init__(self, *args, **kargs):
+        self.owner = kargs['owner']
+        del kargs['owner']
+        QtGui.QWidget.__init__(self, *args, **kargs)
+    #@+node:tbrown.20120418121002.25714: *3* closeEvent
+    def closeEvent(self, event):
+        widget = self.findChild(NestedSplitter)
+        
+        other_top = self.owner.get_top_splitter()
+        
+        # adapted from NestedSplitter.remove()
+        count = widget.count()
+        all_ok = True
+
+        to_close = []
+
+        for splitter in widget.self_and_descendants():
+            for i in range(splitter.count()-1, -1, -1):
+                
+                to_close.append(splitter.widget(i))
+                
+        for w in to_close:
+                
+            all_ok &= (widget.close_or_keep(w, other_top=other_top) is not False)
+
+        if all_ok or count <= 0:
+            self.owner.closing(self)
+        else:
+            event.ignore()
+    #@-others
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     
@@ -91,6 +125,8 @@ class FreeLayoutController:
         #X self.top_splitter = None # The top-level splitter.
         c.free_layout = self
         #X  # For viewrendered plugin.
+        
+        self.windows = []
         
         self.init()
         
@@ -193,7 +229,7 @@ class FreeLayoutController:
         top_splitter = self.get_top_splitter()
         if not top_splitter: return
 
-        logTabWidget = top_splitter.findChild(QtGui.QWidget, "logTabWidget")
+        logTabWidget = self.find_child(QtGui.QWidget, "logTabWidget")
 
         for n in range(logTabWidget.count()):
 
@@ -262,8 +298,7 @@ class FreeLayoutController:
         ans = []
         
         # list of things in tab widget
-        logTabWidget = self.get_top_splitter().findChild(
-            QtGui.QWidget, "logTabWidget")
+        logTabWidget = self.find_child(QtGui.QWidget, "logTabWidget")
         for n in range(logTabWidget.count()):
             text = str(logTabWidget.tabText(n))  # not QString
             if text in ('Body', 'Tree'):
@@ -286,8 +321,7 @@ class FreeLayoutController:
         
             id_ = id_.split(':', 1)[1]
         
-            logTabWidget = self.get_top_splitter().findChild(
-                QtGui.QWidget, "logTabWidget")
+            logTabWidget = self.find_child(QtGui.QWidget, "logTabWidget")
                 
             for n in range(logTabWidget.count()):
                 if logTabWidget.tabText(n) == id_:
@@ -303,7 +337,7 @@ class FreeLayoutController:
         if id_.startswith('_leo_pane:'):
         
             id_ = id_.split(':', 1)[1]
-            w = self.get_top_splitter().findChild(QtGui.QWidget, id_)
+            w = self.find_child(QtGui.QWidget, id_)
             if w:
                 w.setHidden(False)  # may be from Tab holder
                 w.setMinimumSize(20,20)
@@ -316,6 +350,7 @@ class FreeLayoutController:
         
         ans = [
             ('Save layout', '_fl_save_layout'),
+            ('Open window', '_fl_open_window'),
         ]
         
         d = g.app.db.get('ns_layouts', {})
@@ -328,6 +363,10 @@ class FreeLayoutController:
     #@+node:tbrown.20110628083641.11732: *3* ns_do_context
     def ns_do_context(self, id_, splitter, index):
         
+        if id_.startswith('_fl_open_window'):
+            self.open_window()
+            return True
+
         if id_ == '_fl_save_layout':
             
             if self.c.config.getData("free-layout-layout"):
@@ -370,6 +409,51 @@ class FreeLayoutController:
         if id_.startswith('_fl_forget_layout:') or id_.startswith('_fl_delete_layout:'):
             if '_ns_layout' in self.c.db:
                 del self.c.db['_ns_layout']
+    #@+node:tbrown.20120418121002.25438: *3* open_window
+    def open_window(self):
+        
+        window = TopLevelFreeLayout(owner=self)
+        window.setStyleSheet(
+            '\n'.join(self.c.config.getData('qt-gui-plugin-style-sheet')))
+        hbox = QtGui.QHBoxLayout()
+        window.setLayout(hbox)
+        hbox.setContentsMargins(0,0,0,0)
+        window.resize(400,300)
+        
+        ns = NestedSplitter(root=self.get_top_splitter().root)
+        hbox.addWidget(ns)
+        ns.addWidget(NestedSplitterChoice(ns))
+        ns.addWidget(NestedSplitterChoice(ns))
+        ns.setSizes([0,1])
+
+        #X ns.register(self.offer_tabs)
+        #X ns.register(self.from_g)
+        #X ns.register(self.embed)
+        #X ns.register_provider(self)
+
+        self.windows.append(window)
+        
+        
+        window.show()
+    #@+node:tbrown.20120418121002.25712: *3* closing
+    def closing(self, window):
+        
+        self.windows.remove(window)
+    #@+node:tbrown.20120418121002.25439: *3* find_child
+    def find_child(self, child_class, child_name=None):
+        """Like QObject.findChild, except search self.get_top_splitter()
+        *AND* each window in self.windows()
+        """
+        
+        child = self.get_top_splitter().findChild(child_class, child_name)
+        
+        if not child:
+            for window in self.windows:
+                child = window.findChild(child_class, child_name)
+                if child:
+                    break
+        
+        return child
     #@-others
 #@-others
 #@-leo
