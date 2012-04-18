@@ -1321,23 +1321,29 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
     def setInsertPoint(self,i):
         
-        trace = (False or g.trace_scroll) and not g.unitTesting
-
-        w = self.widget
-        s = w.toPlainText()
-        i = self.toPythonIndex(i)
-        i = max(0,min(i,len(s)))
-        cursor = w.textCursor()
-        cursor.setPosition(i)
-        w.setTextCursor(cursor)
+        # Fix bug 981849: incorrect body content shown.
+        # Use the more careful code in setSelectionRangeHelper & lengthHelper.
+        self.setSelectionRangeHelper(i=i,j=i,insert=i)
         
-        # Remember the values for v.restoreCursorAndScroll.
-        v = self.c.p.v # Always accurate.
-        v.insertSpot = i
-        v.selectionStart = i
-        v.selectionLength = 0
-        v.scrollBarSpot = spot = w.getYScrollPosition()
-        if trace: g.trace(id(v),id(w),i,spot,v.h)
+        # trace = (True or g.trace_scroll) and not g.unitTesting
+
+        # w = self.widget
+        # s = w.toPlainText()
+        # i = self.toPythonIndex(i)
+        # i = max(0,min(i,len(s)))
+        
+        # cursor = w.textCursor()
+        # cursor.setPosition(i)
+        # w.setTextCursor(cursor)
+        
+        # # Remember the values for v.restoreCursorAndScroll.
+        # v = self.c.p.v # Always accurate.
+        # v.insertSpot = i
+        # v.selectionStart = i
+        # v.selectionLength = 0
+        # v.scrollBarSpot = spot = w.getYScrollPosition()
+        
+        # if trace: g.trace(i,v.h)
 
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert=None):
@@ -1380,7 +1386,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         v.selectionStart = i
         v.selectionLength = j-i
         v.scrollBarSpot = spot = w.getYScrollPosition()
-        if trace: g.trace(id(v),id(v),i,j,ins,spot,v.h,g.callers())
+        if trace: g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
     #@+node:ekr.20110605121601.18097: *6* lengthHelper
     def lengthHelper(self):
 

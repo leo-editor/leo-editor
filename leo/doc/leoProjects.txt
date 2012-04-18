@@ -1755,12 +1755,6 @@ new_keys = False
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
 
-# User options...
-
-restore_selection_range = False
-    # True: restore the selection range when re-entering a node.
-    # EKR: I don't think this is useful, and it may be slightly dangerous.
-
 # Debugging options...
 
 enableDB = True
@@ -2518,23 +2512,29 @@ def setBodyTextAfterSelect (self,p,old_p):
 #@+node:ekr.20110605121601.18095: *7* setInsertPoint (leoQTextEditWidget)
 def setInsertPoint(self,i):
     
-    trace = (False or g.trace_scroll) and not g.unitTesting
-
-    w = self.widget
-    s = w.toPlainText()
-    i = self.toPythonIndex(i)
-    i = max(0,min(i,len(s)))
-    cursor = w.textCursor()
-    cursor.setPosition(i)
-    w.setTextCursor(cursor)
+    # Fix bug 981849: incorrect body content shown.
+    # Use the more careful code in setSelectionRangeHelper & lengthHelper.
+    self.setSelectionRangeHelper(i=i,j=i,insert=i)
     
-    # Remember the values for v.restoreCursorAndScroll.
-    v = self.c.p.v # Always accurate.
-    v.insertSpot = i
-    v.selectionStart = i
-    v.selectionLength = 0
-    v.scrollBarSpot = spot = w.getYScrollPosition()
-    if trace: g.trace(id(v),id(w),i,spot,v.h)
+    # trace = (True or g.trace_scroll) and not g.unitTesting
+
+    # w = self.widget
+    # s = w.toPlainText()
+    # i = self.toPythonIndex(i)
+    # i = max(0,min(i,len(s)))
+    
+    # cursor = w.textCursor()
+    # cursor.setPosition(i)
+    # w.setTextCursor(cursor)
+    
+    # # Remember the values for v.restoreCursorAndScroll.
+    # v = self.c.p.v # Always accurate.
+    # v.insertSpot = i
+    # v.selectionStart = i
+    # v.selectionLength = 0
+    # v.scrollBarSpot = spot = w.getYScrollPosition()
+    
+    # if trace: g.trace(i,v.h)
 
 #@+node:ekr.20110605121601.18096: *7* setSelectionRangeHelper & helper (leoQTextEditWidget)
 def setSelectionRangeHelper(self,i,j,insert=None):
@@ -2577,7 +2577,7 @@ def setSelectionRangeHelper(self,i,j,insert=None):
     v.selectionStart = i
     v.selectionLength = j-i
     v.scrollBarSpot = spot = w.getYScrollPosition()
-    if trace: g.trace(id(v),id(v),i,j,ins,spot,v.h,g.callers())
+    if trace: g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
 #@+node:ekr.20110605121601.18097: *8* lengthHelper
 def lengthHelper(self):
 
@@ -2599,15 +2599,11 @@ def restoreCursorAndScroll (self,w):
     ins = v.insertSpot
     start,n = v.selectionStart,v.selectionLength
     spot = v.scrollBarSpot
+    
+    # Fix bug 981849: incorrect body content shown.
+    if ins is None: ins = 0
+    w.setInsertPoint(ins)
 
-    if g.restore_selection_range and start is not None and n is not None:
-        sel = (start,start+n)
-        w.setSelectionRange(start,start+n,insert=ins)
-    else:
-        sel = (None,None)
-        if ins is not None:
-            w.setInsertPoint(ins)
-            
     if g.no_scroll:
         return
 
@@ -2617,8 +2613,8 @@ def restoreCursorAndScroll (self,w):
         w.setYScrollPosition(spot)
     v.scrollBarSpot = spot
         
-    if trace: g.trace('v: %s w: %s sel: %s ins: %s scroll: %s %s' % (
-        id(v), id(w),sel,ins,spot,v.h))
+    if trace: g.trace('start: %s n: %s ins: %s spot: %s %s' % (
+        start,n,ins,spot,v.h))
         
     # Never call w.see here.
 #@+node:ekr.20120327062318.9731: *5* Ensure selected @test node is run
@@ -2700,12 +2696,6 @@ new_keys = False
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
 
-# User options...
-
-restore_selection_range = False
-    # True: restore the selection range when re-entering a node.
-    # EKR: I don't think this is useful, and it may be slightly dangerous.
-
 # Debugging options...
 
 enableDB = True
@@ -2754,15 +2744,11 @@ def restoreCursorAndScroll (self,w):
     ins = v.insertSpot
     start,n = v.selectionStart,v.selectionLength
     spot = v.scrollBarSpot
+    
+    # Fix bug 981849: incorrect body content shown.
+    if ins is None: ins = 0
+    w.setInsertPoint(ins)
 
-    if g.restore_selection_range and start is not None and n is not None:
-        sel = (start,start+n)
-        w.setSelectionRange(start,start+n,insert=ins)
-    else:
-        sel = (None,None)
-        if ins is not None:
-            w.setInsertPoint(ins)
-            
     if g.no_scroll:
         return
 
@@ -2772,8 +2758,8 @@ def restoreCursorAndScroll (self,w):
         w.setYScrollPosition(spot)
     v.scrollBarSpot = spot
         
-    if trace: g.trace('v: %s w: %s sel: %s ins: %s scroll: %s %s' % (
-        id(v), id(w),sel,ins,spot,v.h))
+    if trace: g.trace('start: %s n: %s ins: %s spot: %s %s' % (
+        start,n,ins,spot,v.h))
         
     # Never call w.see here.
 #@+node:ekr.20120327163022.9738: *4* Home page
@@ -3094,6 +3080,121 @@ def insert(self,i,s):
         w.setTextCursor(cursor) # Bug fix: 2010/01/27
     finally:
         self.changingText = False
+#@+node:ekr.20120418065452.10029: *4* Fixed bug 981849: incorrect body content shown
+@language python
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/981849
+
+Use the more careful code in setSelectionRangeHelper & lengthHelper.
+#@+node:ekr.20100303074003.5636: *5* v.restoreCursorAndScroll (changed 4.10)
+# Called only by leoTree.selectHelper.
+
+def restoreCursorAndScroll (self,w):
+    
+    trace = (False or g.trace_scroll) and not g.unitTesting
+    v = self
+    ins = v.insertSpot
+    start,n = v.selectionStart,v.selectionLength
+    spot = v.scrollBarSpot
+    
+    # Fix bug 981849: incorrect body content shown.
+    if ins is None: ins = 0
+    w.setInsertPoint(ins)
+
+    if g.no_scroll:
+        return
+
+    # Override any changes to the scrollbar setting that might
+    # have been done above by w.setSelectionRange or w.setInsertPoint.
+    if spot is not None:
+        w.setYScrollPosition(spot)
+    v.scrollBarSpot = spot
+        
+    if trace: g.trace('start: %s n: %s ins: %s spot: %s %s' % (
+        start,n,ins,spot,v.h))
+        
+    # Never call w.see here.
+#@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
+def setSelectionRangeHelper(self,i,j,insert=None):
+
+    trace = (False or g.trace_scroll) and not g.unitTesting
+
+    w = self.widget
+    i = self.toPythonIndex(i)
+    j = self.toPythonIndex(j)
+
+    n = self.lengthHelper()
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    if insert is None:
+        ins = max(i,j)
+    else:
+        ins = self.toPythonIndex(insert)
+        ins = max(0,min(ins,n))
+
+    # 2010/02/02: Use only tc.setPosition here.
+    # Using tc.movePosition doesn't work.
+    tc = w.textCursor()
+    if i == j:
+        tc.setPosition(i)
+    elif ins == j:
+        # Put the insert point at j
+        tc.setPosition(i)
+        tc.setPosition(j,tc.KeepAnchor)
+    else:
+        # Put the insert point a i
+        tc.setPosition(j)
+        tc.setPosition(i,tc.KeepAnchor)
+    w.setTextCursor(tc)
+
+    # Remember the values for v.restoreCursorAndScroll.
+    v = self.c.p.v # Always accurate.
+    v.insertSpot = ins
+    if i > j: i,j = j,i
+    assert(i<=j)
+    v.selectionStart = i
+    v.selectionLength = j-i
+    v.scrollBarSpot = spot = w.getYScrollPosition()
+    if trace: g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
+#@+node:ekr.20110605121601.18097: *6* lengthHelper
+def lengthHelper(self):
+
+    '''Return the length of the text.'''
+
+    w = self.widget
+    tc = w.textCursor()
+    tc.movePosition(QtGui.QTextCursor.End)
+    n = tc.position()
+    return n
+
+#@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
+def setInsertPoint(self,i):
+    
+    # Fix bug 981849: incorrect body content shown.
+    # Use the more careful code in setSelectionRangeHelper & lengthHelper.
+    self.setSelectionRangeHelper(i=i,j=i,insert=i)
+    
+    # trace = (True or g.trace_scroll) and not g.unitTesting
+
+    # w = self.widget
+    # s = w.toPlainText()
+    # i = self.toPythonIndex(i)
+    # i = max(0,min(i,len(s)))
+    
+    # cursor = w.textCursor()
+    # cursor.setPosition(i)
+    # w.setTextCursor(cursor)
+    
+    # # Remember the values for v.restoreCursorAndScroll.
+    # v = self.c.p.v # Always accurate.
+    # v.insertSpot = i
+    # v.selectionStart = i
+    # v.selectionLength = 0
+    # v.scrollBarSpot = spot = w.getYScrollPosition()
+    
+    # if trace: g.trace(i,v.h)
+
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node

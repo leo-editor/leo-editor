@@ -6,7 +6,8 @@
 .. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
 @language rest
 .. @+node:ekr.20120330040023.9778: *3* First
-.. @+node:ekr.20120415174008.10059: *4* ** Cancelling save of dirty untitled commander doesn't work
+.. @+node:ekr.20120415174008.10059: *4* Cancelling save of dirty untitled commander doesn't work
+Only happens with --ipython.
 .. @+node:ekr.20120208062900.10146: *4* Complete new_modes
 @nocolor-node
 
@@ -27,12 +28,6 @@ new_keys = False
     # This project hardly seems urgent.
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
-
-# User options...
-
-restore_selection_range = False
-    # True: restore the selection range when re-entering a node.
-    # EKR: I don't think this is useful, and it may be slightly dangerous.
 
 # Debugging options...
 
@@ -1457,6 +1452,7 @@ Withdraw claim that Leo supports solarized.
 http://ethanschoonover.com/solarized
 
 .. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
+Could leoInspect be the basis of "smart searches" ?
 .. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
 @language python
 @language rest

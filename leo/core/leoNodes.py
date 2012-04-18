@@ -2412,15 +2412,11 @@ class vnode (baseVnode):
         ins = v.insertSpot
         start,n = v.selectionStart,v.selectionLength
         spot = v.scrollBarSpot
+        
+        # Fix bug 981849: incorrect body content shown.
+        if ins is None: ins = 0
+        w.setInsertPoint(ins)
 
-        if g.restore_selection_range and start is not None and n is not None:
-            sel = (start,start+n)
-            w.setSelectionRange(start,start+n,insert=ins)
-        else:
-            sel = (None,None)
-            if ins is not None:
-                w.setInsertPoint(ins)
-                
         if g.no_scroll:
             return
 
@@ -2430,8 +2426,8 @@ class vnode (baseVnode):
             w.setYScrollPosition(spot)
         v.scrollBarSpot = spot
             
-        if trace: g.trace('v: %s w: %s sel: %s ins: %s scroll: %s %s' % (
-            id(v), id(w),sel,ins,spot,v.h))
+        if trace: g.trace('start: %s n: %s ins: %s spot: %s %s' % (
+            start,n,ins,spot,v.h))
             
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll

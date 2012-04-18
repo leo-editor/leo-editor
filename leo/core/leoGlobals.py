@@ -29,12 +29,6 @@ new_keys = False
     # True: Qt input methods produce a **user setting**, not a stroke.
 if new_keys: print('***** new_keys')
 
-# User options...
-
-restore_selection_range = False
-    # True: restore the selection range when re-entering a node.
-    # EKR: I don't think this is useful, and it may be slightly dangerous.
-
 # Debugging options...
 
 enableDB = True
