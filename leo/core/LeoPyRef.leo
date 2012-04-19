@@ -15,7 +15,7 @@
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20080412053100.4"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20100902154544.5872"><vh>@bool enable-abbreviations = True</vh></v>
-<v t="ekr.20111123042248.12701"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20111123042248.12701"><vh>@@@enabled-plugins</vh></v>
 <v t="ekr.20111031081007.9985"><vh>@shortcuts</vh></v>
 </v>
 </v>
@@ -74,6 +74,7 @@
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
 <v t="ekr.20110605121601.17863"><vh>@file ../plugins/baseNativeTree.py</vh></v>
+<v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
