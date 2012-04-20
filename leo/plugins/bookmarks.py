@@ -74,14 +74,19 @@ def init():
 def onCreate(tag, keys):
     
     c = keys.get('c')
-    if hasattr(c, "free_layout"):
-        m = g.loadOnePlugin('free_layout.py',verbose=True)
-        assert m
-        if not c.free_layout:
-            m.FreeLayoutController(c)
+    
+    if 1: # New code.
         assert c.free_layout
-        assert hasattr(c.free_layout,'get_top_splitter')
         BookMarkDisplayProvider(c)
+    else: # Old code.
+        if hasattr(c, "free_layout"):
+            m = g.loadOnePlugin('free_layout.py',verbose=True)
+            assert m
+            if not c.free_layout:
+                m.FreeLayoutController(c)
+            assert c.free_layout
+            assert hasattr(c.free_layout,'get_top_splitter')
+            BookMarkDisplayProvider(c)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
 @g.command('bookmarks-open-bookmark')
 def open_bookmark(event):

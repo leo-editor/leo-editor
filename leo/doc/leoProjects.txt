@@ -3624,6 +3624,7 @@ def __init__(self):
     # self.openWithManager = None   # The singleton OpenWithManager instance.
     self.nodeIndices = None         # The singleton nodeIndices instance.
     self.pluginsController = None   # The singleton PluginsManager instance.
+    self.sessionManager = None      # The singleton SessionManager instance.
     
     # Global status vars...
     

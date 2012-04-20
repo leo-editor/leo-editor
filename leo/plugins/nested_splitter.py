@@ -5,6 +5,8 @@
 
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
+import leo.core.leoGlobals as g
+
 import sys
 
 from inspect import isclass
@@ -84,6 +86,8 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
     #@+node:ekr.20110605121601.17962: *3* __init__ (NestedSplitterHandle)
     def __init__(self, owner):
         
+        # g.trace('NestedSplitterHandle')
+        
         QtGui.QSplitterHandle.__init__(self, owner.orientation(), owner)
 
         self.setStyleSheet("background-color: green;")
@@ -112,6 +116,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         splitter = self.splitter()
 
         if not splitter.enabled:
+            g.trace('splitter not enabled')
             return
 
         index = splitter.indexOf(self)
@@ -257,6 +262,8 @@ class NestedSplitter(QtGui.QSplitter):
         
         QtGui.QSplitter.__init__(self,orientation,parent)
             # This creates a NestedSplitterHandle.
+            
+        # g.trace('(NestedSplitter)')
 
         if root is None:
             root = self.top()

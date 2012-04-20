@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20110203111907.5519: * @file free_layout.py
+#@+node:ekr.20120419093256.10048: * @file ../plugins/free_layout.py
 #@+<< docstring >>
 #@+node:ekr.20110319161401.14467: ** << docstring >>
 """Adds flexible panel layout through context menus on the handles between panels.
@@ -10,11 +10,13 @@ Requires Qt.
 __version__ = '0.1'
     # 0.1 - initial release - TNB
     
+# print('free_layout imported')
+    
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
 
-g.assertUi('qt')
+# g.assertUi('qt')
 
 from PyQt4 import QtCore, QtGui, Qt
 
@@ -23,57 +25,65 @@ from leo.plugins.nested_splitter import NestedSplitter, NestedSplitterChoice
 import json
 #@-<< imports >>
 
-controllers = {}  # Keys are c.hash(), values are PluginControllers.
+# controllers = {}  # Keys are c.hash(), values are PluginControllers.
 
 #@+others
-#@+node:tbrown.20110203111907.5521: ** init
+#@+node:tbrown.20110203111907.5521: ** init (free_layout.py)
 def init():
     
-    # g.trace('free_layout.py')
-
-    if g.app.gui.guiName() != "qt":
-        return False
-
-    g.registerHandler('after-create-leo-frame',bindControllers)
-    g.registerHandler('after-create-leo-frame2',loadLayouts)
-    g.plugin_signon(__name__)
+    if 1:
+        return g.app.gui.guiName() == "qt"
+    else:
+        # g.trace('free_layout.py')
+        if g.app.gui.guiName() != "qt":
+            return False
     
-    # DEPRECATED
-    if not hasattr(g, 'free_layout_callbacks'):
-        g.free_layout_callbacks = []
-
-    return True
-#@+node:ekr.20110318080425.14391: ** bindControllers
-def bindControllers(tag, keys):
-    
-    c = keys.get('c')
-    if c:
-        NestedSplitter.enabled = True
-        FreeLayoutController(c) 
-#@+node:tbrown.20110714155709.22852: ** loadLayouts
-def loadLayouts(tag, keys):
-    
-    c = keys.get('c')
-    if c:
-
-        layout = c.config.getData("free-layout-layout")
+        g.registerHandler('after-create-leo-frame',bindControllers)
+        g.registerHandler('after-create-leo-frame2',loadLayouts)
+        g.plugin_signon(__name__)
         
-        if layout:
-            layout = json.loads('\n'.join(layout))
-            
-        if '_ns_layout' in c.db:
-            name = c.db['_ns_layout']
-            if layout:
-                g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
-                    "overrides saved layout "+name)
-            else:
-                layout = g.app.db['ns_layouts'][name]
+        # DEPRECATED
+        if not hasattr(g, 'free_layout_callbacks'):
+            g.free_layout_callbacks = []
     
-        if layout:
-            # Careful: we could be unit testing.
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.load_layout(layout)
+        return True
+#@+node:ekr.20120419095424.9925: ** no longer used
+if 0:
+    # bindControllers is done in FreeLayoutController.__init__
+    # loadLayous is now a FreeLayoutController method.
+    #@+others
+    #@+node:ekr.20110318080425.14391: *3* bindControllers
+    def bindControllers(tag, keys):
+        
+        c = keys.get('c')
+        if c:
+            NestedSplitter.enabled = True
+            FreeLayoutController(c) 
+    #@+node:tbrown.20110714155709.22852: *3* loadLayouts
+    def loadLayouts(tag, keys):
+        
+        c = keys.get('c')
+        if c:
+
+            layout = c.config.getData("free-layout-layout")
+            
+            if layout:
+                layout = json.loads('\n'.join(layout))
+                
+            if '_ns_layout' in c.db:
+                name = c.db['_ns_layout']
+                if layout:
+                    g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
+                        "overrides saved layout "+name)
+                else:
+                    layout = g.app.db['ns_layouts'][name]
+        
+            if layout:
+                # Careful: we could be unit testing.
+                splitter = c.free_layout.get_top_splitter()
+                if splitter:
+                    splitter.load_layout(layout)
+    #@-others
 #@+node:tbrown.20120418121002.25711: ** class TopLevelFreeLayout
 class TopLevelFreeLayout(QtGui.QWidget):
     #@+others
@@ -112,23 +122,31 @@ class TopLevelFreeLayout(QtGui.QWidget):
 class FreeLayoutController:
     
     #@+others
-    #@+node:ekr.20110318080425.14390: *3*  ctor
+    #@+node:ekr.20110318080425.14390: *3*  ctor (FreeLayoutController)
     def __init__ (self,c):
         
-        # g.trace('(FreeLayoutController)',g.callers(files=True))
+        # g.trace('(FreeLayoutController)',c) # ,g.callers(files=True))
         
-        if hasattr(c, 'free_layout'):
-            return
+        # if hasattr(c,'free_layout'):
+            # return
         
         self.c = c
+        
         #X self.renderer = None # The renderer widget
         #X self.top_splitter = None # The top-level splitter.
-        c.free_layout = self
+        
+        # c.free_layout = self
+            # To be removed
+        
         #X  # For viewrendered plugin.
         
         self.windows = []
         
-        self.init()
+        # g.registerHandler('after-create-leo-frame',self.bindControllers)
+        g.registerHandler('after-create-leo-frame',self.init)
+        g.registerHandler('after-create-leo-frame2',self.loadLayouts)
+        
+        ### self.init()
         
     #@+node:ekr.20110318080425.14393: *3* create_renderer
     def Xcreate_renderer (self,w):
@@ -149,15 +167,29 @@ class FreeLayoutController:
             c.frame.equalSizedPanes()
             c.bodyWantsFocusNow()
             # g.trace(splitter)
-    #@+node:tbrown.20110203111907.5522: *3* init
-    def init(self):
+    #@+node:tbrown.20110203111907.5522: *3* init (FreeLayoutController)
+    def init(self,tag,keys):
 
         c = self.c
 
+        if c != keys.get('c'):
+            return
+            
+        # g.trace(c.frame.title)
+
         # Careful: we could be unit testing.
+
         splitter = self.get_top_splitter() # A NestedSplitter.
         if not splitter:
-            return
+            # g.trace('no splitter!')
+            return None
+            
+        # Was in bindControlers function.
+        NestedSplitter.enabled = True
+
+        # DEPRECATED
+        if not hasattr(g,'free_layout_callbacks'):
+            g.free_layout_callbacks = []
 
         # Register menu callbacks with the NestedSplitter.
         splitter.register(self.offer_tabs)
@@ -184,8 +216,7 @@ class FreeLayoutController:
         # if the log tab panel is removed, move it back to the top splitter
         logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
         logWidget._is_permanent = True
-        
-        
+
         # tag core Leo components (see ns_provides)
         splitter.findChild(QtGui.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
         splitter.findChild(QtGui.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
@@ -206,6 +237,34 @@ class FreeLayoutController:
             return f.top.findChild(NestedSplitter).top()
         else:
             return None
+    #@+node:ekr.20120419095424.9927: *3* loadLayouts (FreeLayoutController)
+    def loadLayouts(self,tag,keys):
+        
+        c = self.c
+        
+        if c != keys.get('c'):
+            return
+            
+        # g.trace(c.frame.title)
+      
+        layout = c.config.getData("free-layout-layout")
+        
+        if layout:
+            layout = json.loads('\n'.join(layout))
+            
+        if '_ns_layout' in c.db:
+            name = c.db['_ns_layout']
+            if layout:
+                g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
+                    "overrides saved layout "+name)
+            else:
+                layout = g.app.db['ns_layouts'][name]
+
+        if layout:
+            # Careful: we could be unit testing.
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.load_layout(layout)
     #@+node:ekr.20110318080425.14392: *3* menu callbacks
     # These are called when the user right-clicks the NestedSplitter.
     #@+node:ekr.20110317024548.14380: *4* add_item

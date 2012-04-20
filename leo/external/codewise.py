@@ -528,11 +528,14 @@ def reportBadChars (s,encoding):
                 print(s2)
         elif g.isChar(s):
             for ch in s:
-                try: unicode(ch,encoding,"strict")
+                # try: unicode(ch,encoding,"strict")
+                # 2012/04/20: use str instead of str.
+                try: str(ch)
                 except Exception: errors += 1
             if errors:
                 s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
+                    errors,str(encoding),
+                    # unicode(s,encoding,'replace'),
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     print(s2)

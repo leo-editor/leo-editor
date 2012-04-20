@@ -274,7 +274,6 @@ class Commands (object):
         self.searchCommands = None
         self.spellCommands = None
         self.leoTestManager = None
-        
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self,gui):
         
@@ -320,21 +319,24 @@ class Commands (object):
         import leo.core.leoUndo as leoUndo
         
         self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
-        self.chapterController   = leoChapters.chapterController(c)
-        self.shadowController    = leoShadow.shadowController(c)
-        self.fileCommands   = leoFileCommands.fileCommands(c)
-        self.atFileCommands = leoAtFile.atFile(c)
-        self.importCommands = leoImport.leoImportCommands(c)
-        self.rstCommands    = leoRst.rstCommands(c)
-        self.tangleCommands = leoTangle.tangleCommands(c)
-        self.testManager    = leoTest.TestManager(c)
+        self.chapterController  = leoChapters.chapterController(c)
+        self.shadowController   = leoShadow.shadowController(c)
+        self.fileCommands       = leoFileCommands.fileCommands(c)
+        self.atFileCommands     = leoAtFile.atFile(c)
+        self.importCommands     = leoImport.leoImportCommands(c)
+        self.rstCommands        = leoRst.rstCommands(c)
+        self.tangleCommands     = leoTangle.tangleCommands(c)
+        self.testManager        = leoTest.TestManager(c)
         
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()
 
-        c.cacher = leoCache.cacher(c)
-        c.cacher.initFileDB(self.mFileName)
+        self.cacher = leoCache.cacher(c)
+        self.cacher.initFileDB(self.mFileName)
         self.undoer = leoUndo.undoer(self)
+        
+        import leo.plugins.free_layout as free_layout
+        self.free_layout = free_layout.FreeLayoutController(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__ (self):
 

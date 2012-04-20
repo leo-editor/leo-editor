@@ -4259,7 +4259,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@+node:ekr.20110605121601.18271: *5* setCommandForButton
+        #@+node:ekr.20110605121601.18271: *5* setCommandForButton (@rclick nodes)
         def setCommandForButton(self,button,command):
 
             if command:
@@ -4297,7 +4297,7 @@ class leoQtFrame (leoFrame.leoFrame):
                         break
 
                 if rclicks:
-                    b.setText(unicode(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
+                    b.setText(g.u(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
 
                 for rclick in rclicks:
 
