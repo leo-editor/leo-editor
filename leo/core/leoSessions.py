@@ -36,9 +36,8 @@ class SessionManager:
     #@+node:ekr.20120420054855.14246: *3* clear_session
     def clear_session(self,c):
 
-        """Close other tabs.
-        """
-        
+        '''Close all tabs except the presently selected tab.'''
+
         for frame in g.app.windowList:
             if frame.c != c:
                 frame.c.close()
@@ -49,8 +48,7 @@ class SessionManager:
     #@+node:ekr.20120420054855.14245: *3* get_session
     def get_session(self):
 
-        """Return a list of UNLs for open tabs.
-        """
+        '''Return a list of UNLs for open tabs.'''
         
         result = []
         for frame in g.app.windowList:
@@ -69,8 +67,7 @@ class SessionManager:
     #@+node:ekr.20120420054855.14247: *3* load_session
     def load_session(self,c,unls):
 
-        """Open a tab for each item in UNLs.
-        """
+        '''Open a tab for each item in UNLs & select the indicated node in each.'''
         
         for unl in unls:
             if unl.strip():
@@ -85,19 +82,19 @@ class SessionManager:
     #@+node:ekr.20120420054855.14248: *3* load_snapshot
     def load_snapshot(self):
         
-        '''Load a snapshot of a session.'''
+        '''Load a snapshot of a session from the leo.session file.'''
 
         if self.path:
             with open(self.path) as f:
                 session = json.loads(f.read())
             return session
         else:
-            self.error('can not load session: no session path')  
+            self.error('can not load session: no leo.session file')  
             return None
     #@+node:ekr.20120420054855.14249: *3* save_snapshot
     def save_snapshot(self,c):
         
-        '''Save a snapshot of the present session.'''
+        '''Save a snapshot of the present session to the leo.session file.'''
 
         if self.path:
             session = self.get_session()
@@ -105,7 +102,7 @@ class SessionManager:
                 json.dump(session,f)
                 f.close()  
         else:
-            self.error('can not save session: no session path')  
+            self.error('can not save session: no leo.session file')  
     #@-others
 #@+node:ekr.20120420054855.14375: ** Commands
 #@+node:ekr.20120420054855.14388: *3* session-clear
