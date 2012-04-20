@@ -99,6 +99,7 @@ class LeoApp:
         # self.openWithManager = None   # The singleton OpenWithManager instance.
         self.nodeIndices = None         # The singleton nodeIndices instance.
         self.pluginsController = None   # The singleton PluginsManager instance.
+        self.sessionManager = None      # The singleton SessionManager instance.
         
         # Global status vars...
         
@@ -1684,9 +1685,9 @@ class LoadManager:
         assert g.app.loadManager
         
         import leo.core.leoConfig as leoConfig
-        
         import leo.core.leoNodes as leoNodes
         import leo.core.leoPlugins as leoPlugins
+        import leo.core.leoSessions as leoSessions
         
         # Import leoIPython only if requested.  The import is quite slow.
         if g.app.useIpython:
@@ -1707,6 +1708,7 @@ class LoadManager:
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+        g.app.sessionManager = leoSessions.SessionManager()
 
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
