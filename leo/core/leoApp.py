@@ -50,6 +50,7 @@ class LeoApp:
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
         self.qt_use_tabs = False        # True: allow tabbed main window.
+        self.restore_session = False    # True: restore session on startup.
         self.silentMode = False         # True: no signon.
         self.start_fullscreen = False   # For qtGui plugin.
         self.start_maximized = False    # For qtGui plugin.
@@ -1742,6 +1743,8 @@ class LoadManager:
             help = 'disable all plugins')
         add('--no-splash',    action="store_true", dest='no_splash_screen',
             help = 'disable the splash screen')
+        add('--restore-session',action="store_true",dest='restore_session',
+            help = 'restore previously stored session tabs')
         add('--screen-shot',  dest='screenshot_fn',
             help = 'take a screen shot and then exit')
         add('--script',       dest="script",
@@ -1813,6 +1816,10 @@ class LoadManager:
         # --no-splash
         # g.trace('--no-splash',options.no_splash_screen)
         g.app.use_splash_screen = not options.no_splash_screen
+        
+        # --restore-session
+        if options.restore_session:
+            g.app.restore_session = True
 
         # --screen-shot=fn
         screenshot_fn = options.screenshot_fn
@@ -1891,7 +1898,7 @@ class LoadManager:
             files.append(fileName)
 
         for arg in sys.argv[1:]:
-            if not arg.startswith('-'):
+            if arg and not arg.startswith('-'):
                 files.append(arg)
 
         return [lm.completeFileName(z) for z in files]
@@ -1906,6 +1913,7 @@ class LoadManager:
 
         # Create the main frame.  Show it and all queued messages.
         
+        # g.trace(lm.files)
         if lm.files:
             c1 = None
             for fn in lm.files:
@@ -1914,6 +1922,16 @@ class LoadManager:
                 assert c
                 if not c1: c1 = c
         else:
+            c1 = None
+                
+        if g.app.restore_session:
+            m = g.app.sessionManager
+            if m:
+                aList = m.load_snapshot()
+                m.load_session(c1,aList)
+                c1 = g.app.windowList[0].c
+            
+        if not g.app.windowList:
             # Create an empty frame.
             fn = lm.computeWorkbookFileName()
             c = c1 = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
@@ -2122,7 +2140,7 @@ class LoadManager:
         '''
         
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('lm.loadLocalFile: %s' % (g.shortFileName(fn)))
+        if trace: print('lm.loadLocalFile: %s' % (fn))
         
         lm = self
 
