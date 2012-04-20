@@ -127,7 +127,7 @@ def getRecentCoreList():
         # ('leoGui',            ''),
         # ('leoImport',         ''),
 
-        ('leoIPython',           'E0611,W0108,R0923'),
+        # ('leoIPython',           'E0611,W0108,R0923'),
             # E0611: No name 'x' in module 'y'
                 # Not serious: the imports will find any problems.
             # W0108: Lambda may not be necessary (who cares).
@@ -142,6 +142,7 @@ def getRecentCoreList():
             # E1120: no value passed for param.
             # E1101: (dangerous) Class 'str' has no 'maketrans' member
         # ('leoRst',            ''),
+        ('leoSessions',         ''),
         # ('leoShadow',         ''),
         # ('leoTangle',         ''),
         # ('leoTest',           ''),
