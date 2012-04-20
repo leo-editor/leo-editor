@@ -126,7 +126,7 @@ def session_create_command(event):
         session = m.get_session()
         session_node = c.p.insertAfter()
         session_node.b = "\n".join(session)
-        session_node.h = "@session <session name> {timestamp info}"
+        session_node.h = "@session"
         c.redraw()
 #@+node:ekr.20120420054855.14387: *3* session-refresh
 @g.command('session-refresh')
@@ -142,11 +142,16 @@ def session_refresh_command(event):
 @g.command('session-restore')
 def session_restore_command(event):
     
+    
+    
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:
-        unls = c.p.b.split("\n")
-        m.load_session(c,unls)
+        if c.p.h.startswith('@session'):
+            unls = c.p.b.split("\n")
+            m.load_session(c,unls)
+        else:
+            m.error('Please select an "@session" node')
 #@+node:ekr.20120420054855.14390: *3* session-snapshot-load
 @g.command('session-snapshot-load')
 def session_snapshot_load_command(event):
