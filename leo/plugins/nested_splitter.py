@@ -129,6 +129,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
 
         index = splitter.indexOf(self)
 
+        # get three pairs
         widget, neighbour, count = splitter.handle_context(index)
 
         lr = 'Left', 'Right'
@@ -314,7 +315,8 @@ class NestedSplitter(QtGui.QSplitter):
             self.insert(0)
     #@+node:ekr.20110605121601.17971: *3* add
     def add(self,side,w=None):
-
+        """wrap a horizontal splitter in a vertical splitter, or
+        visa versa"""
         orientation = self.other_orientation[self.orientation()]
         
         layout = self.parent().layout()
@@ -345,7 +347,7 @@ class NestedSplitter(QtGui.QSplitter):
             pass
     #@+node:tbrown.20110621120042.22675: *3* add_adjacent
     def add_adjacent(self, what, widget_id, side='right-of'):
-        
+        """add a widget relative to another already present widget"""
         layout = self.top().get_layout()
         
         def hunter(layout, id_):
@@ -405,7 +407,7 @@ class NestedSplitter(QtGui.QSplitter):
         return True
     #@+node:ekr.20110605121601.17972: *3* choice_menu
     def choice_menu(self, button, pos):
-
+        """build menu on Action button"""
         menu = QtGui.QMenu()
         
         index=self.indexOf(button)
@@ -434,7 +436,7 @@ class NestedSplitter(QtGui.QSplitter):
         menu.exec_(button.mapToGlobal(pos))
     #@+node:tbrown.20110628083641.11723: *3* place_provided
     def place_provided(self, id_, index):
-        
+        """replace Action button with provided widget"""
         provided = self.get_provided(id_)
         
         if provided is None:
@@ -450,11 +452,12 @@ class NestedSplitter(QtGui.QSplitter):
             self.top().insert(0, NestedSplitterChoice(self.top()))
     #@+node:tbrown.20110628083641.11729: *3* context_cb
     def context_cb(self, id_, index):
-
+        """find a provider to provide a context menu service, and do it"""
         for provider in self.root.providers:
             if hasattr(provider, 'ns_do_context'):
                 provided = provider.ns_do_context(id_, self, index)
-                break
+                if provided:
+                    break
     #@+node:ekr.20110605121601.17973: *3* contains
     def contains(self, widget):
 
@@ -470,7 +473,20 @@ class NestedSplitter(QtGui.QSplitter):
         return False
     #@+node:ekr.20110605121601.17974: *3* handle_context
     def handle_context(self, index):
-
+        """for a handle, return (widget, neighbour, count)
+        
+        This is the handle's context in the NestedSplitter, not the
+        handle's context menu.
+        
+        widget
+          the pair of widgets either side of the handle
+        neighbour
+          the pair of NestedSplitters either side of the handle, or None
+          if the neighbours are not NestedSplitters, i.e.
+          [ns0, ns1] or [None, ns1] or [ns0, None] or [None, None]
+        count
+          the pair of nested counts of widgets / spliters around the handle
+        """
         widget = [
             self.widget(index-1),
             self.widget(index),
@@ -491,6 +507,7 @@ class NestedSplitter(QtGui.QSplitter):
         return widget, neighbour, count
     #@+node:tbrown.20110621120042.22920: *3* equalize_sizes
     def equalize_sizes(self, recurse=False):
+        """make all pane sizes equal"""
         if not self.count():
             return
             
@@ -506,7 +523,7 @@ class NestedSplitter(QtGui.QSplitter):
                     self.widget(i).equalize_sizes(recurse=True)
     #@+node:ekr.20110605121601.17975: *3* insert
     def insert(self,index,w=None):
-        
+        """insert a pane with a widget or, when w==None, Action button"""
         if w is None:  # do NOT use 'not w', fails in PyQt 4.8
             w = NestedSplitterChoice(self)
             # A QWidget, with self as parent.
@@ -519,14 +536,14 @@ class NestedSplitter(QtGui.QSplitter):
         return w
     #@+node:ekr.20110605121601.17976: *3* invalid_swap
     def invalid_swap(self,w0,w1):
-        
+        """check for swap violating hierachy"""
         return (
             w0 == w1 or
             isinstance(w0,NestedSplitter) and w0.contains(w1) or
             isinstance(w1,NestedSplitter) and w1.contains(w0))
     #@+node:ekr.20110605121601.17977: *3* mark
     def mark(self, index, side):
-
+        """mark a widget for later swapping"""
         self.root.marked = (self, index, side-1,
             self.widget(index+side-1))
     #@+node:ekr.20110605121601.17978: *3* max_count
@@ -547,7 +564,29 @@ class NestedSplitter(QtGui.QSplitter):
 
     #@+node:tbrown.20110627201141.11744: *3* register_provider
     def register_provider(self, provider):
+        """Register something which provides some of the ns_* methods.
         
+        NestedSplitter tests for the presence of the following methods on
+        the registered things, and calls them when needed if they exist.
+        
+        ns_provides()
+          should return a list of ('Item name', '__item_id') strings, 
+          'Item name' is displayed in the Action button menu, and
+          '__item_id' is used in ns_provide().
+        ns_provide(id_)
+          should return the widget to replace the Action button based on
+          id_, or None if the called thing is not the provider for this id_
+        ns_context()
+          should return a list of ('Item name', '__item_id') strings, 
+          'Item name' is displayed in the splitter handle context-menu, and
+          '__item_id' is used in ns_do_context().  May also return a dict,
+          in which case each key is used as a sub-menu title, whose menu
+          items are the corresponding dict value, a list of tuples as above.
+          dicts and tuples may be interspersed in lists.
+        ns_do_context()
+          should do something based on id_ and return True, or return False
+          if the called thing is not the provider for this id_
+        """
         self.root.providers.append(provider)
     #@+node:ekr.20110605121601.17980: *3* remove & helper
     def remove(self, index, side):
@@ -646,7 +685,8 @@ class NestedSplitter(QtGui.QSplitter):
         yield self
     #@+node:ekr.20110605121601.17985: *3* split (NestedSplitter)
     def split(self,index,side,w=None,name=None):
-
+        """replace the adjacent widget with a NestedSplitter containing
+        the widget and an Action button"""
         sizes = self.sizes()
 
         old = self.widget(index+side-1)
@@ -675,7 +715,7 @@ class NestedSplitter(QtGui.QSplitter):
         self.setSizes(sizes)
     #@+node:ekr.20110605121601.17986: *3* swap
     def swap(self, index):
-
+        """swap widgets either side of a handle"""
         self.insertWidget(index-1, self.widget(index))
     #@+node:ekr.20110605121601.17987: *3* swap_with_marked
     def swap_with_marked(self, index, side):

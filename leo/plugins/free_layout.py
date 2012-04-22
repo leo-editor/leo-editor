@@ -152,7 +152,10 @@ class FreeLayoutController:
     ns_provides, ns_provide, ns_context, ns_do_context, which 
     NestedSplitter uses as callbacks to populate splitter-handle context-menu
     and the empty pane Action button menu:
-        
+    
+    see (ctrl-click this URL)
+    file://{{g.getBaseDirectory(c)}}/LeoPyRef.leo#Code-->Qt%20gui-->@file%20../plugins/nested_splitter.py-->class%20NestedSplitter%20(QSplitter)-->register_provider
+    
     ns_provides
       tell NestedSplitter which Action button items we can provide
     ns_provide
@@ -428,10 +431,16 @@ class FreeLayoutController:
                 del d[name]
                 # make sure g.app.db's __set_item__ is hit so it knows to save
                 g.app.db['ns_layouts'] = d
-        
-        if id_.startswith('_fl_forget_layout:') or id_.startswith('_fl_delete_layout:'):
+                if '_ns_layout' in self.c.db:
+                    del self.c.db['_ns_layout']
+            return True
+            
+        if id_.startswith('_fl_forget_layout:'):
             if '_ns_layout' in self.c.db:
                 del self.c.db['_ns_layout']
+            return True
+            
+        return False
     #@+node:tbrown.20120119080604.22982: *3* embed
     def embed(self): 
         """called from ns_do_context - embed layout in outline's
