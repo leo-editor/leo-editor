@@ -3,6 +3,9 @@
 #@+<< docstring >>
 #@+node:ekr.20110319161401.14467: ** << docstring >>
 """Adds flexible panel layout through context menus on the handles between panels.
+
+Uses NestedSplitter, a more intelligent QSplitter, from leo.plugins.nested_splitter
+
 Requires Qt.
 """
 #@-<< docstring >>
@@ -42,10 +45,6 @@ def init():
         g.registerHandler('after-create-leo-frame2',loadLayouts)
         g.plugin_signon(__name__)
         
-        # DEPRECATED
-        if not hasattr(g, 'free_layout_callbacks'):
-            g.free_layout_callbacks = []
-    
         return True
 #@+node:ekr.20120419095424.9925: ** no longer used
 if 0:
@@ -86,17 +85,38 @@ if 0:
     #@-others
 #@+node:tbrown.20120418121002.25711: ** class TopLevelFreeLayout
 class TopLevelFreeLayout(QtGui.QWidget):
+    """A QWidget to wrap a NestedSplitter to allow it to live in a top
+    level window and handle close events properly.
+    
+    These windows are opened by the free-layout splitter handle
+    context-menu item 'Open Window'.
+    
+    The NestedSplitter itself can't be the top-level widget/window,
+    because it assumes it can wrap itself in another NestedSplitter
+    when the user wants to "Add Above/Below/Left/Right".  I.e. wrap
+    a vertical nested splitter in a horizontal nested splitter, or
+    visa versa.  Parent->SplitterOne becomes Parent->SplitterTwo->SplitterOne,
+    where parent is either Leo's main window's QWidget 'centralwidget',
+    or one of these TopLevelFreeLayout "window frames".
+    """
     #@+others
     #@+node:tbrown.20120418121002.25713: *3* __init__
     def __init__(self, *args, **kargs):
+        """Init. taking note of the FreeLayoutController which owns this"""
         self.owner = kargs['owner']
         del kargs['owner']
         QtGui.QWidget.__init__(self, *args, **kargs)
     #@+node:tbrown.20120418121002.25714: *3* closeEvent
     def closeEvent(self, event):
-        widget = self.findChild(NestedSplitter)
+        """A top-level free-layout window has been closed, check all the
+        panes for widgets which must be preserved, and move any found
+        back into the main Leo window for this outline."""
+        
+        widget = self.findChild(NestedSplitter)  
+        # top level NestedSplitter in window being closed
         
         other_top = self.owner.get_top_splitter()
+        # top level NestedSplitter in main Leo window for this outline
         
         # adapted from NestedSplitter.remove()
         count = widget.count()
@@ -104,6 +124,8 @@ class TopLevelFreeLayout(QtGui.QWidget):
 
         to_close = []
 
+        # get list of widgets to close so index based access isn't
+        # derailed by closing widgets in the same loop
         for splitter in widget.self_and_descendants():
             for i in range(splitter.count()-1, -1, -1):
                 
@@ -113,6 +135,9 @@ class TopLevelFreeLayout(QtGui.QWidget):
                 
             all_ok &= (widget.close_or_keep(w, other_top=other_top) is not False)
 
+        # it should always be ok to close the window, because it should always
+        # be possible to move widgets which must be preserved back to the
+        # ain Leo window for this outline, but if not, keep this window open
         if all_ok or count <= 0:
             self.owner.closing(self)
         else:
@@ -120,7 +145,26 @@ class TopLevelFreeLayout(QtGui.QWidget):
     #@-others
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
+    """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
+    code should be in here, none in NestedSplitter.
     
+    *ALSO* implements the provider interface for NestedSplitter, in
+    ns_provides, ns_provide, ns_context, ns_do_context, which 
+    NestedSplitter uses as callbacks to populate splitter-handle context-menu
+    and the empty pane Action button menu:
+        
+    ns_provides
+      tell NestedSplitter which Action button items we can provide
+    ns_provide
+      provide the advertised service when an Action button item we
+      advertised is selected
+    ns_context
+      tell NestedSplitter which splitter-handle context-menu items
+      we can provide
+    ns_do_context
+      provide the advertised service when a splitter-handle context-menu
+      item we advertised is selected
+    """
     #@+others
     #@+node:ekr.20110318080425.14390: *3*  ctor (FreeLayoutController)
     def __init__ (self,c):
@@ -132,25 +176,28 @@ class FreeLayoutController:
         
         self.c = c
         
-        #X self.renderer = None # The renderer widget
-        #X self.top_splitter = None # The top-level splitter.
-        
         # c.free_layout = self
             # To be removed
         
-        #X  # For viewrendered plugin.
-        
-        self.windows = []
+        self.windows = []  
+        # list of top level free-layout windows opened from 'Open Window'
+        # splitter handle context menu
         
         # g.registerHandler('after-create-leo-frame',self.bindControllers)
+        
+        # attach to an outline
         g.registerHandler('after-create-leo-frame',self.init)
+        
+        # now that the outline's set up (plugins etc.), load layout for
+        # outline, can't do that sooner as plugins must be loaded first
+        # to provide their widgets in panels etc.
         g.registerHandler('after-create-leo-frame2',self.loadLayouts)
         
         ### self.init()
         
     #@+node:ekr.20110318080425.14393: *3* create_renderer
-    def Xcreate_renderer (self,w):
-        
+    def XXcreate_renderer (self,w):
+        """NO LONGER USED, viewrendered use of free-layout is in viewrendered.py"""
         pc = self ; c = pc.c
         
         if not pc.renderer:
@@ -169,6 +216,17 @@ class FreeLayoutController:
             # g.trace(splitter)
     #@+node:tbrown.20110203111907.5522: *3* init (FreeLayoutController)
     def init(self,tag,keys):
+        """Attach to an outline and
+        
+        - add tags to widgets to indicate that they're essential
+          (tree, body, log-window-tabs) and
+          
+        - tag the log-window-tabs widget as the place to put widgets
+          from free-laout panes which are closed
+          
+        - register this FreeLayoutController as a provider of menu items
+          for NestedSplitter
+        """
 
         c = self.c
 
@@ -184,17 +242,9 @@ class FreeLayoutController:
             # g.trace('no splitter!')
             return None
             
-        # Was in bindControlers function.
+        # by default NestedSplitter's context menus are disabled, needed
+        # once to globally enable them
         NestedSplitter.enabled = True
-
-        # DEPRECATED
-        if not hasattr(g,'free_layout_callbacks'):
-            g.free_layout_callbacks = []
-
-        # Register menu callbacks with the NestedSplitter.
-        splitter.register(self.offer_tabs)
-        splitter.register(self.from_g)
-        splitter.register(self.embed)
 
         # when NestedSplitter disposes of children, it will either close
         # them, or move them to another designated widget.  Here we set
@@ -223,11 +273,6 @@ class FreeLayoutController:
         splitter.findChild(QtGui.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
 
         splitter.register_provider(self)
-    #@+node:tbrown.20110621120042.22918: *3* from_g
-    def from_g(self, menu, splitter, index, button_mode):
-        
-        for i in g.free_layout_callbacks:
-            i(menu, splitter, index, button_mode, self.c)
     #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
     def get_top_splitter(self):
         
@@ -265,92 +310,6 @@ class FreeLayoutController:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.load_layout(layout)
-    #@+node:ekr.20110318080425.14392: *3* menu callbacks
-    # These are called when the user right-clicks the NestedSplitter.
-    #@+node:ekr.20110317024548.14380: *4* add_item
-    def add_item(self,func,menu,name,splitter):
-        
-        act = QtGui.QAction(name,splitter)
-        act.setObjectName(str(name).lower().replace(' ','-'))
-        act.connect(act, Qt.SIGNAL('triggered()'), func)
-        menu.addAction(act)
-    #@+node:ekr.20110316100442.14371: *4* offer_tabs
-    def offer_tabs(self, menu, splitter, index, button_mode):
-        
-        return
-        
-        pc = self
-        
-        if not button_mode:
-            return
-
-        # Careful: we could be unit testing.
-        top_splitter = self.get_top_splitter()
-        if not top_splitter: return
-
-        logTabWidget = self.find_child(QtGui.QWidget, "logTabWidget")
-
-        for n in range(logTabWidget.count()):
-
-            def wrapper(
-                w=logTabWidget.widget(n),
-                splitter=splitter,
-                s=logTabWidget.tabText(n)):
-                w.setHidden(False)
-                w._is_from_tab = s
-                splitter.replace_widget(splitter.widget(index), w)
-
-            self.add_item(wrapper,menu,"Add "+logTabWidget.tabText(n),splitter)
-    #@+node:tbrown.20120119080604.22982: *4* embed
-    def embed(self, menu, splitter, index, button_mode):
-        """embed layout in outline"""
-        
-        if button_mode:
-            return
-        # Careful: we could be unit testing.
-        top_splitter = self.get_top_splitter()
-        if not top_splitter: return
-
-        def make_settings(c=self.c, layout=top_splitter.get_saveable_layout()):
-            
-            nd = g.findNodeAnywhere(c, "@data free-layout-layout")
-            if not nd:
-                settings = g.findNodeAnywhere(c, "@settings")
-                if not settings:
-                    settings = c.rootPosition().insertAfter()
-                    settings.h = "@settings"
-                nd = settings.insertAsNthChild(0)
-            
-            nd.h = "@data free-layout-layout"
-            nd.b = json.dumps(layout, indent=4)
-            
-            nd = nd.parent()
-            if not nd or nd.h != "@settings":
-                g.es("WARNING: @data free-layout-layout node is not " \
-                    "under an active @settings node")
-            
-            c.redraw()
-
-        self.add_item(make_settings,menu,"Embed layout",splitter)
-    #@+node:ekr.20110316100442.14372: *4* offer_viewrendered
-    def offer_viewrendered(self, menu, splitter, index, button_mode):
-        
-        return  # done from viewrendered.py
-        
-        pc = self ; c = pc.c
-        
-        vr_pc = hasattr(c,"viewrendered") and c.viewrendered
-
-        if button_mode and vr_pc and not vr_pc.has_renderer():
-            
-            def wrapper(index=index,pc=vr_pc,splitter=splitter):
-                w = pc.w
-                splitter.replace_widget(splitter.widget(index),w)
-                pc.show()
-                pc.set_renderer(splitter,index)
-                # g.trace(index)
-            
-            self.add_item(wrapper,menu,"Add Viewrendered",splitter)
     #@+node:tbrown.20110627201141.11745: *3* ns_provides
     def ns_provides(self):
 
@@ -408,6 +367,7 @@ class FreeLayoutController:
         
         
         ans = [
+            ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
             ('Open window', '_fl_open_window'),
         ]
@@ -422,6 +382,10 @@ class FreeLayoutController:
     #@+node:tbrown.20110628083641.11732: *3* ns_do_context
     def ns_do_context(self, id_, splitter, index):
         
+        if id_.startswith('_fl_embed_layout'):
+            self.embed()
+            return True
+
         if id_.startswith('_fl_open_window'):
             self.open_window()
             return True
@@ -468,8 +432,41 @@ class FreeLayoutController:
         if id_.startswith('_fl_forget_layout:') or id_.startswith('_fl_delete_layout:'):
             if '_ns_layout' in self.c.db:
                 del self.c.db['_ns_layout']
+    #@+node:tbrown.20120119080604.22982: *3* embed
+    def embed(self): 
+        """called from ns_do_context - embed layout in outline's
+        @settings, an alternative to the Load/Save named layout system
+        """
+        
+        # Careful: we could be unit testing.
+        top_splitter = self.get_top_splitter()
+        if not top_splitter: return
+        
+        c = self.c
+
+        layout=top_splitter.get_saveable_layout()
+            
+        nd = g.findNodeAnywhere(c, "@data free-layout-layout")
+        if not nd:
+            settings = g.findNodeAnywhere(c, "@settings")
+            if not settings:
+                settings = c.rootPosition().insertAfter()
+                settings.h = "@settings"
+            nd = settings.insertAsNthChild(0)
+        
+        nd.h = "@data free-layout-layout"
+        nd.b = json.dumps(layout, indent=4)
+        
+        nd = nd.parent()
+        if not nd or nd.h != "@settings":
+            g.es("WARNING: @data free-layout-layout node is not " \
+                "under an active @settings node")
+        
+        c.redraw()
     #@+node:tbrown.20120418121002.25438: *3* open_window
     def open_window(self):
+        """open a top-level window, a TopLevelFreeLayout instance, to hold a
+        free-layout in addition to the one in the outline's main window"""
         
         window = TopLevelFreeLayout(owner=self)
         window.setStyleSheet(
@@ -481,27 +478,24 @@ class FreeLayoutController:
         
         ns = NestedSplitter(root=self.get_top_splitter().root)
         hbox.addWidget(ns)
+        
+        # NestedSplitters must have two widgets so the handle carrying
+        # the all important context menu exists
         ns.addWidget(NestedSplitterChoice(ns))
         ns.addWidget(NestedSplitterChoice(ns))
-        ns.setSizes([0,1])
-
-        #X ns.register(self.offer_tabs)
-        #X ns.register(self.from_g)
-        #X ns.register(self.embed)
-        #X ns.register_provider(self)
+        ns.setSizes([0,1])  # but hide one initially
 
         self.windows.append(window)
-        
         
         window.show()
     #@+node:tbrown.20120418121002.25712: *3* closing
     def closing(self, window):
-        
+        """forget a top-level additional layout which was closed"""
         self.windows.remove(window)
     #@+node:tbrown.20120418121002.25439: *3* find_child
     def find_child(self, child_class, child_name=None):
         """Like QObject.findChild, except search self.get_top_splitter()
-        *AND* each window in self.windows()
+        *AND* each window in self.windows
         """
         
         child = self.get_top_splitter().findChild(child_class, child_name)

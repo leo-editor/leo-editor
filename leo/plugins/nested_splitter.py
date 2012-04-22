@@ -57,6 +57,9 @@ class DemoWidget(QtGui.QWidget):
     #@-others
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
 class NestedSplitterChoice(QtGui.QWidget):
+    """When a new pane is opened in a nested splitter layout, this widget
+    presents a button, labled 'Action', which provides a popup menu
+    for the user to select what to do in the new pane"""
     #@+others
     #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
     def __init__(self,parent=None):
@@ -81,7 +84,8 @@ class NestedSplitterChoice(QtGui.QWidget):
     #@-others
 #@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle
 class NestedSplitterHandle(QtGui.QSplitterHandle):
-
+    """Show the context menu on a NestedSplitter splitter-handle to access
+    NestedSplitter's special features"""
     #@+others
     #@+node:ekr.20110605121601.17962: *3* __init__ (NestedSplitterHandle)
     def __init__(self, owner):
@@ -105,13 +109,14 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
     __str__ = __repr__
     #@+node:ekr.20110605121601.17964: *3* add_item
     def add_item (self,func,menu,name):
-        
+        """helper for splitter_menu menu building"""
         act = QtGui.QAction(name, self)
         act.setObjectName(name.lower().replace(' ','-'))
         act.connect(act, Qt.SIGNAL('triggered()'),func)
         menu.addAction(act)
     #@+node:ekr.20110605121601.17965: *3* splitter_menu
     def splitter_menu(self, pos):
+        """build the context menu for NestedSplitter"""
 
         splitter = self.splitter()
 
@@ -130,6 +135,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             lr, ab = ab, lr
             split_dir = 'Horizontally'
 
+        # blue/orange - color-blind friendly
         color = '#729fcf', '#f57900'
         sheet = []
         for i in 0,1:
