@@ -5,7 +5,10 @@
 
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
-import leo.core.leoGlobals as g
+try:
+    import leo.core.leoGlobals as g
+except ImportError:
+    pass  # this import should be removed anyway
 
 import sys
 
@@ -215,9 +218,6 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             splitter.equalize_sizes(recurse=True)
         self.add_item(eq, menu, 'Equalize all')
 
-        for cb in splitter.root.callbacks:
-            cb(menu, splitter, index, button_mode=False)   
-
         if True:
             submenu = menu.addMenu('Debug')
             act = QtGui.QAction("Print splitter layout", self)
@@ -275,7 +275,6 @@ class NestedSplitter(QtGui.QSplitter):
             root = self.top()
             if root == self:
                 root.marked = None # Tuple: self,index,side-1,widget
-                root.callbacks = []
                 root.providers = []
                 root.holders = {}
 
@@ -419,9 +418,6 @@ class NestedSplitter(QtGui.QSplitter):
                 lambda: self.replace_widget(button, self.root.marked[3]))
             menu.addAction(act)        
 
-        for cb in self.root.callbacks:
-            cb(menu, self, index, button_mode=True)
-
         for provider in self.root.providers:
             if hasattr(provider, 'ns_provides'):
                 for title, id_ in provider.ns_provides():
@@ -549,10 +545,6 @@ class NestedSplitter(QtGui.QSplitter):
 
         return max(counts)
 
-    #@+node:ekr.20110605121601.17979: *3* register
-    def register(self, cb):
-        
-        self.root.callbacks.append(cb)
     #@+node:tbrown.20110627201141.11744: *3* register_provider
     def register_provider(self, provider):
         
@@ -884,7 +876,7 @@ class NestedSplitter(QtGui.QSplitter):
         if _depth == 1:
             return '\n'.join(_ans)
     #@-others
-#@+node:ekr.20110605121601.17991: ** main & helpers
+#@+node:ekr.20110605121601.17991: ** main
 def main():
     
     app = Qt.QApplication(sys.argv)
@@ -896,8 +888,14 @@ def main():
     splitter.addWidget(wdg)
     splitter.addWidget(wdg2)
 
-    splitter.register(callback)
-    # splitter.register(callback2)
+    class DemoProvider:
+        def ns_provides(self):
+            return[('Add demo widget', '_add_demo_widget')] 
+        def ns_provide(seld, id_):
+            if id_ == '_add_demo_widget':
+                return DemoWidget()
+
+    splitter.register_provider(DemoProvider())
 
     holder = QtGui.QWidget()
     holder.setLayout(QtGui.QVBoxLayout())
@@ -906,75 +904,6 @@ def main():
     holder.show()
 
     app.exec_()
-#@+node:ekr.20110605121601.17992: *3* demo_nest
-def demo_nest(splitter):
-
-    orientation = splitter.other_orientation[splitter.orientation()]
-    x = NestedSplitter(splitter, root=splitter.root,
-        orientation=orientation)
-    s = [x]
-    for i in range(4):
-        orientation = splitter.other_orientation[orientation]
-        ns = []
-        for j in s:
-            j.addWidget(DemoWidget())
-            ns.append(NestedSplitter(splitter, orientation=orientation,
-                root=splitter.root))
-            j.addWidget(ns[-1])
-        s = ns
-
-    for i in s:
-        i.addWidget(DemoWidget())
-
-    return x
-
-#@+node:ekr.20110605121601.17993: *3* callback
-def callback(menu, splitter, index, button_mode):
-
-    if not button_mode:
-        return
-
-    act = QtGui.QAction("Add DemoWidget", splitter)
-    def wrapper():
-        splitter.replace_widget(splitter.widget(index),
-           DemoWidget(splitter))
-    act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
-    menu.addAction(act)
-
-    act = QtGui.QAction("Add DemoWidget Nest", splitter)
-    def wrapper():
-        splitter.replace_widget(splitter.widget(index),
-            demo_nest(splitter))
-    act.connect(act, Qt.SIGNAL('triggered()'), wrapper)
-    menu.addAction(act)
-
-#@+node:ekr.20110605121601.17994: *3* callback2
-# example - remove "Remove" commands from handle context menu
-def callback2(menu, splitter, index, button_mode):
-
-    if button_mode:
-        return
-
-    for i in [i for i in menu.actions()
-              if str(i.objectName()).startswith('remove')]:
-        menu.removeAction(i)
-
-#@+node:ekr.20110605121601.17995: *3* dont_close_special
-# more complex example only removing remove action for particular target
-def dont_close_special(menu, splitter, index, button_mode):
-
-    if button_mode:
-        return
-
-    widget, neighbour, count = splitter.handle_context(index)
-
-    for i in 0,1:
-        if (widget[i] == special or
-            neighbour[i] and neighbour[i].contains(special)):
-
-            for a in [a for a in menu.actions()
-                      if a.objectName() == "remove %d"%i]:
-                menu.removeAction(i)
 #@-others
 
 if __name__ == "__main__":
