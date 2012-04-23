@@ -403,6 +403,8 @@ class NestedSplitter(QtGui.QSplitter):
         if (orient == horizontal and side in ('right-of','left-of') or
             orient == vertical   and side in ('above', 'below')
         ):
+            # easy case, just insert the new thing, what, 
+            # either side of old, in existng splitter
             if trace:
                 g.trace('** use existing splitter: orient %s side: %s' % (orient,side))
 
@@ -412,11 +414,13 @@ class NestedSplitter(QtGui.QSplitter):
             layout['splitter'].insert(pos, what)
             
         else:
+            
+            # hard case, need to replace old with a new splitter
             if trace:
                 g.trace('** create splitter: orient %s side: %s' % (orient,side))
         
             if side in ('right-of', 'left-of'):
-                ns = NestedSplitter(root=self.root)
+                ns = NestedSplitter(orientation=horizontal,root=self.root)
             else:
                 ns = NestedSplitter(orientation=vertical,root=self.root)
                 
@@ -424,10 +428,13 @@ class NestedSplitter(QtGui.QSplitter):
             if not isinstance(old, QtGui.QWidget):  # see get_layout()
                 old = layout['splitter']
                 
-            ns.insert(0, old)
-            ns.insert(1 if side in ('right-of','below') else 0, what)
-            
-            layout['splitter'].insert(pos, ns)
+            # put new thing, what, in new splitter, no impact on anything else
+            ns.insert(0, what)
+            # then swap the new splitter with the old content
+            layout['splitter'].replace_widget_at_index(pos, ns)
+            # now put the old content in the new splitter,
+            # doing this sooner would mess up the index (pos)
+            ns.insert(0 if side in ('right-of','below') else 1, old)
             
         if trace:
             g.trace('after layout...\n%s' % (self.layout_to_text(layout)))
