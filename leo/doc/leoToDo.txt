@@ -84,10 +84,6 @@ def init():
         g.registerHandler('after-create-leo-frame2',loadLayouts)
         g.plugin_signon(__name__)
         
-        # DEPRECATED
-        if not hasattr(g, 'free_layout_callbacks'):
-            g.free_layout_callbacks = []
-    
         return True
 .. @+node:ekr.20110318080425.14390: *5*  ctor (FreeLayoutController)
 def __init__ (self,c):
@@ -99,24 +95,38 @@ def __init__ (self,c):
     
     self.c = c
     
-    #X self.renderer = None # The renderer widget
-    #X self.top_splitter = None # The top-level splitter.
-    
     # c.free_layout = self
         # To be removed
     
-    #X  # For viewrendered plugin.
-    
-    self.windows = []
+    self.windows = []  
+    # list of top level free-layout windows opened from 'Open Window'
+    # splitter handle context menu
     
     # g.registerHandler('after-create-leo-frame',self.bindControllers)
+    
+    # attach to an outline
     g.registerHandler('after-create-leo-frame',self.init)
+    
+    # now that the outline's set up (plugins etc.), load layout for
+    # outline, can't do that sooner as plugins must be loaded first
+    # to provide their widgets in panels etc.
     g.registerHandler('after-create-leo-frame2',self.loadLayouts)
     
     ### self.init()
     
 .. @+node:tbrown.20110203111907.5522: *5* init (FreeLayoutController)
 def init(self,tag,keys):
+    """Attach to an outline and
+    
+    - add tags to widgets to indicate that they're essential
+      (tree, body, log-window-tabs) and
+      
+    - tag the log-window-tabs widget as the place to put widgets
+      from free-laout panes which are closed
+      
+    - register this FreeLayoutController as a provider of menu items
+      for NestedSplitter
+    """
 
     c = self.c
 
@@ -132,17 +142,9 @@ def init(self,tag,keys):
         # g.trace('no splitter!')
         return None
         
-    # Was in bindControlers function.
+    # by default NestedSplitter's context menus are disabled, needed
+    # once to globally enable them
     NestedSplitter.enabled = True
-
-    # DEPRECATED
-    if not hasattr(g,'free_layout_callbacks'):
-        g.free_layout_callbacks = []
-
-    # Register menu callbacks with the NestedSplitter.
-    splitter.register(self.offer_tabs)
-    splitter.register(self.from_g)
-    splitter.register(self.embed)
 
     # when NestedSplitter disposes of children, it will either close
     # them, or move them to another designated widget.  Here we set

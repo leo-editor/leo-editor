@@ -356,20 +356,21 @@ def update_rendering_pane (event):
 @g.command('viewrendered')
 def viewrendered(event):
     """Open render view for commander"""
+    
+    trace = True and not g.unitTesting
 
     c = event.get('c')
     if c:
         
         vr = ViewRenderedController(c)
         
-        if hasattr(c, 'free_layout'):
+        if hasattr(c,'free_layout'):
             
             vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
-            
             splitter = c.free_layout.get_top_splitter()
             # Careful: we may be unit testing.
             if splitter:
-                if not splitter.add_adjacent(vr, 'bodyFrame', 'right-of'):
+                if not splitter.add_adjacent(vr,'bodyFrame','right-of'):
                     splitter.insert(0, vr)
         else:
             vr.setWindowTitle("Rendered View")

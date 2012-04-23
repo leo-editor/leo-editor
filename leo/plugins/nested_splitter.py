@@ -8,7 +8,9 @@
 try:
     import leo.core.leoGlobals as g
 except ImportError:
-    pass  # this import should be removed anyway
+    g = None
+        # This will fail when run from main function.
+        # this import should be removed anyway
 
 import sys
 
@@ -85,7 +87,7 @@ class NestedSplitterChoice(QtGui.QWidget):
             Qt.SIGNAL('clicked()'),
             lambda: self.parent().choice_menu(self,button.pos()))
     #@-others
-#@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle
+#@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle (QSplitterHandle)
 class NestedSplitterHandle(QtGui.QSplitterHandle):
     """Show the context menu on a NestedSplitter splitter-handle to access
     NestedSplitter's special features"""
@@ -270,7 +272,11 @@ class NestedSplitter(QtGui.QSplitter):
         QtGui.QSplitter.__init__(self,orientation,parent)
             # This creates a NestedSplitterHandle.
             
-        # g.trace('(NestedSplitter)')
+        trace = False and g and not g.unitTesting
+            # The import of g will fail when run from main() function.
+            
+        if trace: g.trace('%s parent: %s orientation: %s' % (
+            self,parent,orientation))
 
         if root is None:
             root = self.top()
@@ -317,9 +323,15 @@ class NestedSplitter(QtGui.QSplitter):
     def add(self,side,w=None):
         """wrap a horizontal splitter in a vertical splitter, or
         visa versa"""
+        
+        trace = False and g and not g.unitTesting
+        
         orientation = self.other_orientation[self.orientation()]
         
         layout = self.parent().layout()
+        
+        if trace: g.trace('parent: %s side: %s orient: %s layout: %s' % (
+            parent,side,orientation,layout))
 
         if isinstance(self.parent(), NestedSplitter):
             # don't add new splitter if not needed, i.e. we're the
@@ -348,16 +360,21 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:tbrown.20110621120042.22675: *3* add_adjacent
     def add_adjacent(self, what, widget_id, side='right-of'):
         """add a widget relative to another already present widget"""
+        
+        trace = False and g and not g.unitTesting
+        
+        horizontal,vertical = QtConst.Horizontal,QtConst.Vertical
+
         layout = self.top().get_layout()
         
         def hunter(layout, id_):
             """Recursively look for this widget"""
             for n,i in enumerate(layout['content']):
                 if (i == id_ or
-                    (isinstance(i, QtGui.QWidget) and
-                     (i.objectName() == id_ or i.__class__.__name__ == id_)
+                        (isinstance(i, QtGui.QWidget) and
+                        (i.objectName() == id_ or i.__class__.__name__ == id_)
                     )
-                   ):
+                ):
                     return layout, n
                     
                 if not isinstance(i, QtGui.QWidget):
@@ -374,35 +391,46 @@ class NestedSplitter(QtGui.QSplitter):
             return False
         
         layout, pos = l
+
+        orient = layout['orientation']
         
-        if (layout['orientation'] == QtConst.Horizontal and
-            side in ('right-of', 'left-of')
-            or
-            layout['orientation'] == QtConst.Vertical and
-            side in ('above', 'below')):
-            # put it in existing splitter
-                
+        if trace:
+            print()
+            g.trace('widget_id: %s side: %s pos: %s orient: %s' % (widget_id,side,pos,orient))
+            # g.trace('before layout...\n%s' % (self.layout_to_text(layout)))
+
+        
+        if (orient == horizontal and side in ('right-of','left-of') or
+            orient == vertical   and side in ('above', 'below')
+        ):
+            if trace:
+                g.trace('** use existing splitter: orient %s side: %s' % (orient,side))
+
             if side in ('right-of', 'below'):
                 pos += 1
             
             layout['splitter'].insert(pos, what)
             
-        else:  # put it in a new splitter
+        else:
+            if trace:
+                g.trace('** create splitter: orient %s side: %s' % (orient,side))
         
             if side in ('right-of', 'left-of'):
                 ns = NestedSplitter(root=self.root)
             else:
-                ns = NestedSplitter(orientation=QtConst.Vertical,
-                    root=self.root)
+                ns = NestedSplitter(orientation=vertical,root=self.root)
                 
             old = layout['content'][pos]
             if not isinstance(old, QtGui.QWidget):  # see get_layout()
                 old = layout['splitter']
                 
             ns.insert(0, old)
-            ns.insert(1 if side in ('right-of', 'below') else 0, what)
+            ns.insert(1 if side in ('right-of','below') else 0, what)
             
             layout['splitter'].insert(pos, ns)
+            
+        if trace:
+            g.trace('after layout...\n%s' % (self.layout_to_text(layout)))
             
         return True
     #@+node:ekr.20110605121601.17972: *3* choice_menu
@@ -524,10 +552,15 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17975: *3* insert
     def insert(self,index,w=None):
         """insert a pane with a widget or, when w==None, Action button"""
+        
+        trace = False and g and not g.unitTesting
+        
         if w is None:  # do NOT use 'not w', fails in PyQt 4.8
             w = NestedSplitterChoice(self)
             # A QWidget, with self as parent.
             # This creates the menu.
+            
+        if trace: g.trace('index: %s w: %s' % (index,w))
 
         self.insertWidget(index,w)
         
@@ -687,6 +720,9 @@ class NestedSplitter(QtGui.QSplitter):
     def split(self,index,side,w=None,name=None):
         """replace the adjacent widget with a NestedSplitter containing
         the widget and an Action button"""
+        
+        trace = False and g and not g.unitTesting
+
         sizes = self.sizes()
 
         old = self.widget(index+side-1)
@@ -711,6 +747,9 @@ class NestedSplitter(QtGui.QSplitter):
             new.equalize_sizes()
             #X index = new.indexOf(w)
             #X return new,index # For viewrendered plugin.
+            
+        if trace: g.trace('name: %s index: %s side: %s w: %s' % (
+            name,index,side,w))
             
         self.setSizes(sizes)
     #@+node:ekr.20110605121601.17986: *3* swap
@@ -788,6 +827,10 @@ class NestedSplitter(QtGui.QSplitter):
         return self.get_layout(_saveable=True)
     #@+node:tbrown.20110628083641.21154: *3* load_layout
     def load_layout(self, layout, level=0):
+        
+        trace = False and g and not g.unitTesting
+        
+        if trace: g.trace('level: %s layout: %s' % (level,layout))
          
         self.setOrientation(layout['orientation'])
         found = 0

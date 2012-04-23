@@ -49,7 +49,7 @@ def init():
 #@+node:ekr.20120419095424.9925: ** no longer used
 if 0:
     # bindControllers is done in FreeLayoutController.__init__
-    # loadLayous is now a FreeLayoutController method.
+    # loadLayouts is now a FreeLayoutController method.
     #@+others
     #@+node:ekr.20110318080425.14391: *3* bindControllers
     def bindControllers(tag, keys):
