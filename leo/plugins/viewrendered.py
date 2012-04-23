@@ -213,7 +213,7 @@ QPlainTextEdit {
 # - (Failed) Make viewrendered-big work.
 #@@c
 
-# controllers = {}
+controllers = {}
     # Keys are c.hash(): values are PluginControllers
 
 #@+others
@@ -357,29 +357,31 @@ def update_rendering_pane (event):
 def viewrendered(event):
     """Open render view for commander"""
     
-    trace = True and not g.unitTesting
-
+    trace = False and not g.unitTesting
     c = event.get('c')
-    if c:
-        
-        vr = ViewRenderedController(c)
-        
+    if not c: return None
+   
+    global controllers
+    vr = controllers.get(c.hash())
+    if vr:
+        if trace: g.trace('** controller exists: %s' % (vr))
+        vr.show()
+    else:
+        controllers[c.hash()] = vr = ViewRenderedController(c)
+        if trace: g.trace('** new controller: %s' % (vr))
         if hasattr(c,'free_layout'):
-            
             vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
             splitter = c.free_layout.get_top_splitter()
             # Careful: we may be unit testing.
             if splitter:
-                if not splitter.add_adjacent(vr,'bodyFrame','right-of'):
+                ok = splitter.add_adjacent(vr,'bodyFrame','right-of')
+                if not ok:
                     splitter.insert(0, vr)
         else:
             vr.setWindowTitle("Rendered View")
             vr.resize(600, 600)
             vr.show()
-            
-        return vr
-    else:
-        return None
+    return vr
 #@+node:ekr.20110320120020.14475: *3* g.command('vr')
 @g.command('vr')
 def viewrendered_alias(event):
@@ -402,8 +404,14 @@ class ViewRenderedProvider:
         return[('Viewrendered', '_leo_viewrendered')]
     #@+node:tbrown.20110629084915.35151: *3* ns_provide
     def ns_provide(self, id_):
+        
+        global controllers
+        
         if id_ == '_leo_viewrendered':
-            return ViewRenderedController(self.c)
+            c = self.c
+            vr = controllers.get(c.hash()) or ViewRenderedController(c)
+            # return ViewRenderedController(self.c)
+            return vr
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController
 class ViewRenderedController(QtGui.QWidget):
