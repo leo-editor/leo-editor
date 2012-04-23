@@ -317,8 +317,28 @@ class NestedSplitter(QtGui.QSplitter):
             self.parent().addWidget(self.widget(0))
             self.deleteLater()
             
+        parent = self.parentWidget()
+        if parent:
+            layout = parent.layout()  # QLayout, not a NestedSplitter
+        else:
+            layout = None
+            
+        return
+        
+        # the else clause below isn't working, so just return and let the top
+        # splitter become a one item splitter, which is invisible to the user
+            
         if self.count() == 1 and self.top() == self:
-            self.insert(0)
+            if self.max_count() <= 1 or not layout:
+                # fairly sure this can't happen, but better safe than sorry
+                self.insert(0)
+                # at least shrink the added button
+                self.setSizes([0]+self.sizes()[1:])
+            else:
+                # replace ourselves in out parent's layout with our child
+                pos = layout.indexOf(self)
+                layout.takeAt(pos)
+                layout.insertWidget(pos, self.widget(0))
     #@+node:ekr.20110605121601.17971: *3* add
     def add(self,side,w=None):
         """wrap a horizontal splitter in a vertical splitter, or
@@ -336,9 +356,16 @@ class NestedSplitter(QtGui.QSplitter):
         if isinstance(self.parent(), NestedSplitter):
             # don't add new splitter if not needed, i.e. we're the
             # only child of a previosly more populated splitter
+            if w is None:
+                w = NestedSplitterChoice(self.parent())
+
             self.parent().insertWidget(
-                self.parent().indexOf(self) + side,
-                NestedSplitterChoice(self.parent()))
+                self.parent().indexOf(self) + side, w)
+                
+            # in this case, where the parent is a one child, no handle splitter,
+            # the (prior to this invisible) orientation may be wrong
+            # can't reproduce this now, but this guard is harmless
+            self.parent().setOrientation(orientation)
 
         elif layout:
             new = NestedSplitter(None,orientation=orientation,
