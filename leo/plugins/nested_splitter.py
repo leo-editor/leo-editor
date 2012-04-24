@@ -653,7 +653,22 @@ class NestedSplitter(QtGui.QSplitter):
         ns_do_context()
           should do something based on id_ and return True, or return False
           if the called thing is not the provider for this id_
+        ns_provider_id()
+          return a string identifying the provider (at class or instance level),
+          any providers with the same id will be removed before a new one is
+          added
         """
+        # drop any providers with the same id
+        if hasattr(provider, 'ns_provider_id'):
+            id_ = provider.ns_provider_id()
+            cull = []
+            for i in self.root.providers:
+                if (hasattr(i, 'ns_provider_id') and
+                    i.ns_provider_id() == id_):
+                    cull.append(i)
+            for i in cull:
+                self.root.providers.remove(i)
+                
         self.root.providers.append(provider)
     #@+node:ekr.20110605121601.17980: *3* remove & helper
     def remove(self, index, side):
