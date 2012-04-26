@@ -4,14 +4,30 @@ import QtQuick 1.1
 Rectangle {
     width: 360
     height: 360
-    Text {
-        anchors.centerIn: parent
-        text: "Hello World"
-    }
-    MouseArea {
+
+    Flickable {
         anchors.fill: parent
-        onClicked: {
-            Qt.quit();
+        Column {
+            anchors.fill: parent
+
+            Repeater {
+                model : 8
+                TextEdit {
+                    text: "Text " + index
+                    Rectangle {
+                        anchors.fill: parent
+                        border.color: "blue"
+                        border.width: 2
+                        z: parent.z - 1
+                    }
+                }
+
+
+            }
+
+
         }
+
     }
+
 }
