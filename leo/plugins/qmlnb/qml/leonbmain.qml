@@ -6,9 +6,13 @@ Rectangle {
     height: 360
 
     Flickable {
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
+        contentWidth:  parent.width
+        contentHeight: col.height
         Column {
-            anchors.fill: parent
+            id: col
+            //anchors.fill: parent
 
             Repeater {
                 model : 8
