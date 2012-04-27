@@ -743,8 +743,14 @@ class baseFileCommands:
 
         try:
             c.loading = True # disable c.changed
-            ok = fc.getLeoFileHelper(theFile,fileName,silent)
-                # Read the .leo file and create the outline.
+            ok = True if silent else g.app.checkForOpenFile(c,fileName)
+            if ok:
+                ok = fc.getLeoFileHelper(theFile,fileName,silent)
+                    # Read the .leo file and create the outline.
+                    
+            # Always remember the file, even if we are going to close it immediately.
+            g.app.rememberOpenFile(fileName)
+        
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
@@ -2239,7 +2245,7 @@ class baseFileCommands:
         self.write_Leo_file(self.mFileName,outlineOnlyFlag=True)
         g.es('done',color='blue')
     #@+node:ekr.20080805114146.2: ** Utils
-    #@+node:ekr.20031218072017.1570: *3* assignFileIndices & compactFileIndices
+    #@+node:ekr.20031218072017.1570: *3* fc.assignFileIndices & compactFileIndices
     def assignFileIndices (self):
 
         """Assign a file index to all tnodes"""
@@ -2248,7 +2254,7 @@ class baseFileCommands:
 
     # Indices are now immutable, so there is no longer any difference between these two routines.
     compactFileIndices = assignFileIndices
-    #@+node:ekr.20080805085257.1: *3* createUaList
+    #@+node:ekr.20080805085257.1: *3* fc.createUaList
     def createUaList (self,aList):
 
         '''Given aList of pairs (p,torv), return a list of pairs (torv,d)
@@ -2274,7 +2280,7 @@ class baseFileCommands:
                     result.append((torv,d),)
 
         return result
-    #@+node:ekr.20080805085257.2: *3* pickle
+    #@+node:ekr.20080805085257.2: *3* fc.pickle
     def pickle (self,torv,val,tag):
 
         '''Pickle val and return the hexlified result.'''
@@ -2299,7 +2305,7 @@ class baseFileCommands:
             g.es("fc.pickle: unexpected exception in",torv,color='red')
             g.es_exception()
             return ''
-    #@+node:ekr.20040701065235.2: *3* putDescendentAttributes
+    #@+node:ekr.20040701065235.2: *3* fc.putDescendentAttributes
     def putDescendentAttributes (self,p):
 
         nodeIndices = g.app.nodeIndices
@@ -2324,7 +2330,7 @@ class baseFileCommands:
                 result.append('\n%s="%s"' % (tag,s))
 
         return ''.join(result)
-    #@+node:ekr.20080805071954.2: *3* putDescendentVnodeUas
+    #@+node:ekr.20080805071954.2: *3* fc.putDescendentVnodeUas
     def putDescendentVnodeUas (self,p):
 
         '''Return the a uA field for descendent vnode attributes,
@@ -2358,7 +2364,7 @@ class baseFileCommands:
         # Pickle and hexlify d
         return d and self.pickle(
             torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-    #@+node:ekr.20050418161620.2: *3* putUaHelper
+    #@+node:ekr.20050418161620.2: *3* fc.putUaHelper
     def putUaHelper (self,torv,key,val):
 
         '''Put attribute whose name is key and value is val to the output stream.'''
@@ -2375,7 +2381,7 @@ class baseFileCommands:
                 return ''
         else:
             return self.pickle(torv=torv,val=val,tag=key)
-    #@+node:EKR.20040526202501: *3* putUnknownAttributes
+    #@+node:EKR.20040526202501: *3* fc.putUnknownAttributes
     def putUnknownAttributes (self,torv):
 
         """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
@@ -2388,7 +2394,7 @@ class baseFileCommands:
             val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
             # g.trace(torv,attrDict)
             return val
-    #@+node:ekr.20031218072017.3045: *3* setDefaultDirectoryForNewFiles (fileCommands)
+    #@+node:ekr.20031218072017.3045: *3* fc.setDefaultDirectoryForNewFiles (fileCommands)
     def setDefaultDirectoryForNewFiles (self,fileName):
 
         """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
@@ -2399,7 +2405,7 @@ class baseFileCommands:
             theDir = g.os_path_dirname(fileName)
             if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
                 c.openDirectory = c.frame.openDirectory = theDir
-    #@+node:ekr.20080412172151.2: *3* updateFixedStatus
+    #@+node:ekr.20080412172151.2: *3* fc.updateFixedStatus
     def updateFixedStatus (self):
 
         c = self.c

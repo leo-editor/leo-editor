@@ -94,14 +94,16 @@ class cacher:
 
         trace = False and not g.unitTesting
 
-        if g.enableDB:
+        # New in Leo 4.10.1.
+        # We always create the global db, even if caching is disabled.
+        try:
             dbdirname = g.app.homeLeoDir + "/db/global"
             self.db = db = PickleShareDB(dbdirname)
             if trace: g.trace(db,dbdirname)
             self.inited = True
             return db
-        else:
-            return {} # 2011/07/30: Use a plain dict as a dummy.
+        except Exception:
+            return {} # Use a plain dict as a dummy.
     #@+node:ekr.20100210163813.5747: *4* save (cacher)
     def save (self,fn,changeName):
 

@@ -113,6 +113,7 @@ class LeoApp:
         self.inScript = False           # True: executing a script.
         self.initing  = True            # True: we are initiing the app.
         self.killed   = False           # True: we are about to destroy the root window.
+        self.preReadFlag = False        # True: we are pre-reading a settings file.
         self.quitting = False           # True: quitting.  Locks out some events.
         
         #### To be moved to the LogManager.
@@ -569,6 +570,7 @@ class LeoApp:
         if frame in g.app.windowList:
             # g.trace(g.app.windowList)
             g.app.windowList.remove(frame)
+            g.app.forgetOpenFile(frame.c.fileName())
 
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
@@ -869,6 +871,56 @@ class LeoApp:
         # Essential when opening multiple files...
         
         g.app.setLog(None) 
+    #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
+    #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
+    def checkForOpenFile (self,c,fn):
+        
+        d,tag = g.app.db,'open-leo-files'
+
+        if d is None or g.app.unitTesting or g.app.batchMode:
+            return True
+        else:
+            aList = d.get(tag) or []
+            if fn in aList:
+                result = g.app.gui.runAskYesNoDialog(c,
+                    title='Open Leo File Again?',
+                    message='%s is already open.  Open it again?' % (fn),
+                )
+                return result == 'yes'
+            else:
+                return True
+    #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
+    def forgetOpenFile (self,fn):
+
+        trace = False and not g.unitTesting
+        d,tag = g.app.db,'open-leo-files'
+
+        if d is None or g.app.unitTesting or g.app.batchMode:
+            pass
+        else:
+            aList = d.get(tag) or []
+            if fn in aList:
+                if trace: g.trace('removing: %s' % (fn))
+                aList.remove(fn)
+                d[tag] = aList
+            else:
+                if trace: g.trace('did not remove: %s' % (fn))
+    #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
+    def rememberOpenFile(self,fn):
+        
+        trace = False and not g.unitTesting
+        d,tag = g.app.db,'open-leo-files'
+
+        if d is None or g.app.unitTesting or g.app.batchMode:
+            pass
+        elif g.app.preReadFlag:
+            pass
+        else:
+            aList = d.get(tag) or []
+            # It's proper to add duplicates to this list.
+            if trace: g.trace('adding: %s: %s' % (fn,aList))
+            aList.append(fn)
+            d[tag] = aList
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
@@ -1272,7 +1324,7 @@ class LoadManager:
         shortcutsDict,settingsDict = parser.traverse()
 
         return shortcutsDict,settingsDict
-    #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSetings
+    #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
     def getPreviousSettings (self,fn):
         
         '''Return the settings in effect for fn.  Typically,
@@ -1288,7 +1340,11 @@ class LoadManager:
 
         if fn and lm.isLeoFile(fn) and not isLeoSettings and g.os_path_exists(fn):
             # Open the file usinging a null gui.
-            c = lm.openSettingsFile(fn)
+            try:
+                g.app.preReadFlag = True
+                c = lm.openSettingsFile(fn)
+            finally:
+                g.app.preReadFlag = False
 
             # Merge the settings from c into *copies* of the global dicts.
             d1,d2 = lm.computeLocalSettings(c,
@@ -1919,17 +1975,18 @@ class LoadManager:
             for fn in lm.files:
                 c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
                     # Will give a "not found" message.
-                assert c
+                # This can fail if the file is open in another instance of Leo.
+                # assert c
                 if not c1: c1 = c
         else:
-            c1 = None
+            c = c1 = None
                 
         if g.app.restore_session:
             m = g.app.sessionManager
             if m:
                 aList = m.load_snapshot()
                 m.load_session(c1,aList)
-                c1 = g.app.windowList[0].c
+                c = c1 = g.app.windowList[0].c
             
         if not g.app.windowList:
             # Create an empty frame.

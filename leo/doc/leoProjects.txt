@@ -3195,6 +3195,244 @@ def setInsertPoint(self,i):
     
     # if trace: g.trace(i,v.h)
 
+#@+node:ekr.20120427064024.10062: *4* Fixed bug 711158: Warn if same .leo file open in another Leo instance
+@language python
+@language rest
+
+Warn if same .leo file open in another Leo instance
+https://bugs.launchpad.net/leo-editor/+bug/711158
+
+
+What I did:
+
+- The PickleShareDB object is created even if caching (of files) is disabled.
+  This allows us to used g.app.db even when --no-cache is in effect.
+  
+- Added the three methods in app.Detecting already-open files.
+#@+node:ekr.20100208082353.5920: *5* initGlobalDb
+def initGlobalDB (self):
+
+    trace = False and not g.unitTesting
+
+    # New in Leo 4.10.1.
+    # We always create the global db, even if caching is disabled.
+    try:
+        dbdirname = g.app.homeLeoDir + "/db/global"
+        self.db = db = PickleShareDB(dbdirname)
+        if trace: g.trace(db,dbdirname)
+        self.inited = True
+        return db
+    except Exception:
+        return {} # Use a plain dict as a dummy.
+#@+node:ekr.20031218072017.1553: *5* fc.getLeoFile & helpers
+# The caller should follow this with a call to c.redraw().
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    # g.trace('*****',fileName)
+    fc,c = self,self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    fc.warnOnReadOnlyFiles(fileName)
+    fc.checking = False
+    fc.mFileName = c.mFileName
+    fc.initReadIvars()
+
+    try:
+        c.loading = True # disable c.changed
+        ok = True if silent else g.app.checkForOpenFile(c,fileName)
+        if ok:
+            ok = fc.getLeoFileHelper(theFile,fileName,silent)
+                # Read the .leo file and create the outline.
+                
+        # Always remember the file, even if we are going to close it immediately.
+        g.app.rememberOpenFile(fileName)
+    
+        if ok:
+            fc.resolveTnodeLists()
+                # Do this before reading external files.
+            c.setFileTimeStamp(fileName)
+            
+            if readAtFileNodesFlag:
+                # Redraw before reading the @file nodes so the screen isn't blank.
+                # This is important for big files like LeoPy.leo.
+                c.redraw()
+                fc.readExternalFiles(fileName)
+            
+            if c.config.getBool('check_outline_after_read'):
+                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+    finally:
+        c.loading = False # reenable c.changed
+
+    if c.changed:
+        fc.propegateDirtyNodes()
+    c.setChanged(c.changed) # Refresh the changed marker.
+    fc.initReadIvars()
+    return ok, c.frame.ratio
+#@+node:ekr.20090526081836.5841: *6* fc.getLeoFileHelper
+def getLeoFileHelper(self,theFile,fileName,silent):
+
+    '''Read the .leo file and create the outline.'''
+
+    c,fc = self.c,self
+    try:
+        ok = True
+        v = fc.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            fc.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            fc.rootVnode = v
+            # c.setRootPosition()
+            c.changed = False
+    except BadLeoFile:
+        junk, message, junk = sys.exc_info()
+        if not silent:
+            g.es_exception()
+            c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    return ok
+#@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts & helper
+def handleNodeConflicts (self):
+
+    c = self.c
+    if not c.nodeConflictList: return
+
+    # Find the last top-level node.
+    sib = c.rootPosition()
+    while sib.hasNext():
+        sib.moveToNext()
+
+    # Create the 'Recovered Nodes' node.
+    root = sib.insertAfter()
+    root.setHeadString('Recovered Nodes')
+    root.expand()
+
+    # For each conflict, create one child and two grandchildren.
+    for bunch in c.nodeConflictList:
+        tag = bunch.get('tag') or ''
+        gnx = bunch.get('gnx') or ''
+        fn  = bunch.get('fileName') or ''
+        b1,h1 = bunch.get('b_old'),bunch.get('h_old')
+        b2,h2 = bunch.get('b_new'),bunch.get('h_new')
+        child = root.insertAsLastChild()
+        h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
+        child.setHeadString(h)
+        # child.setBodyString('%s %s' % (tag,gnx))
+        line1 = '%s %s\nDiff...\n' % (tag,gnx)
+        d = difflib.Differ().compare(g.splitLines(b2),g.splitLines(b1))
+        # d = difflib.unified_diff(g.splitLines(b2),g.splitLines(b1))
+        diffLines = [z for z in d]
+        lines = [line1]
+        lines.extend(diffLines)
+        # There is less need to show trailing newlines because
+        # we don't report changes involving only trailing newlines.
+        child.setBodyString(''.join(lines)) # .replace('\n','\\n\n'))
+        n1 = child.insertAsNthChild(0)
+        n2 = child.insertAsNthChild(1)
+        n1.setHeadString('old:'+h1)
+        n1.setBodyString(b1)
+        n2.setHeadString('new:'+h2)
+        n2.setBodyString(b2)
+
+    return root
+#@+node:ekr.20100701112151.5959: *7* getDiff
+def getDiff (self,s1,s2):
+
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+    diffLines = difflib.Differ.compare(lines1,lines2)
+    return diffLines
+#@+node:ekr.20100124110832.6212: *6* fc.propegateDirtyNodes
+def propegateDirtyNodes (self):
+
+    fc = self ; c = fc.c
+
+    aList = [z.copy() for z in c.all_positions() if z.isDirty()]
+    for p in aList:
+        p.setAllAncestorAtFileNodesDirty()
+#@+node:ekr.20120212220616.10537: *6* fc.readExternalFiles
+def readExternalFiles(self,fileName):
+
+    c,fc = self.c,self
+    
+    c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+    recoveryNode = fc.handleNodeConflicts()
+
+    # Do this after reading external files.
+    # The descendent nodes won't exist unless we have read the @thin nodes!
+    fc.restoreDescendentAttributes()
+
+    fc.setPositionsFromVnodes()
+    c.selectVnode(recoveryNode or c.p) # load body pane
+#@+node:ekr.20031218072017.1554: *6* fc.warnOnReadOnlyFiles
+def warnOnReadOnlyFiles (self,fileName):
+
+    # os.access may not exist on all platforms.
+
+    try:
+        self.read_only = not os.access(fileName,os.W_OK)
+    except AttributeError:
+        self.read_only = False
+    except UnicodeError:
+        self.read_only = False
+
+    if self.read_only and not g.unitTesting:
+        g.es("read only:",fileName,color="red")
+#@+node:ekr.20120427064024.10068: *5* app.Detecting already-open files
+#@+node:ekr.20120427064024.10064: *6* app.checkForOpenFile
+def checkForOpenFile (self,c,fn):
+    
+    d,tag = g.app.db,'open-leo-files'
+
+    if d is None or g.app.unitTesting or g.app.batchMode:
+        return True
+    else:
+        aList = d.get(tag) or []
+        if fn in aList:
+            result = g.app.gui.runAskYesNoDialog(c,
+                title='Open Leo File Again?',
+                message='%s is already open.  Open it again?' % (fn),
+            )
+            return result == 'yes'
+        else:
+            return True
+#@+node:ekr.20120427064024.10066: *6* app.forgetOpenFile
+def forgetOpenFile (self,fn):
+
+    trace = False and not g.unitTesting
+    d,tag = g.app.db,'open-leo-files'
+
+    if d is None or g.app.unitTesting or g.app.batchMode:
+        pass
+    else:
+        aList = d.get(tag) or []
+        if fn in aList:
+            if trace: g.trace('removing: %s' % (fn))
+            aList.remove(fn)
+            d[tag] = aList
+        else:
+            if trace: g.trace('did not remove: %s' % (fn))
+#@+node:ekr.20120427064024.10065: *6* app.rememberOpenFile
+def rememberOpenFile(self,fn):
+    
+    trace = False and not g.unitTesting
+    d,tag = g.app.db,'open-leo-files'
+
+    if d is None or g.app.unitTesting or g.app.batchMode:
+        pass
+    elif g.app.preReadFlag:
+        pass
+    else:
+        aList = d.get(tag) or []
+        # It's proper to add duplicates to this list.
+        if trace: g.trace('adding: %s: %s' % (fn,aList))
+        aList.append(fn)
+        d[tag] = aList
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node
@@ -3644,6 +3882,7 @@ def __init__(self):
     self.inScript = False           # True: executing a script.
     self.initing  = True            # True: we are initiing the app.
     self.killed   = False           # True: we are about to destroy the root window.
+    self.preReadFlag = False        # True: we are pre-reading a settings file.
     self.quitting = False           # True: quitting.  Locks out some events.
     
     #### To be moved to the LogManager.

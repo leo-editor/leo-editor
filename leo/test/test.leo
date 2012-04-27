@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="60" left="787" height="897" width="1007"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -652,6 +652,13 @@
 <v t="ekr.20120320072350.2731"><vh>@url ../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
 </v>
 </v>
+<v t="ekr.20120426175039.2682"><vh>Socket test</vh>
+<v t="ekr.20120426175039.2683"><vh>class Server</vh>
+<v t="ekr.20120426175039.2684"><vh>__init__</vh></v>
+<v t="ekr.20120426175039.2685"><vh>handle_accept</vh></v>
+</v>
+<v t="ekr.20120426175039.2686"><vh>class RequestHandler</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -952,7 +959,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -7417,7 +7424,7 @@ When True, the plugin will create a rendering pane automatically.
 <t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('toggle-rendering-pane')</t>
 <t tx="ekr.20110321073942.2490">c.executeMinibufferCommand('lock-unlock-rendering-pane')
 </t>
-<t tx="ekr.20110321213439.2493" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f6465526563747104752e">gs.clear()
+<t tx="ekr.20110321213439.2493" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
 gs.addText('\n%s\n%s' % (gv,gs))
 
 if 0:
@@ -8550,5 +8557,70 @@ timer.start(0)
 <t tx="ekr.20120311074029.2736"></t>
 <t tx="ekr.20120312075951.2740">print(c.openDirectory)</t>
 <t tx="ekr.20120320072350.2731"></t>
+<t tx="ekr.20120426175039.2682">import asyncore
+import socket
+
+@others
+
+host,port = '127.0.0.1',24
+
+try:
+    s = socket.socket(socket.AF_INET)
+    s.connect((host,port),)
+    print('Leo already running') #  at %s:%s' % (host,port))
+
+except socket.error:
+    s = None
+    
+if not s:
+    try:
+        s=Server(host,port,RequestHandler)
+        print('Starting Leo')
+    except socket.error:
+        g.es_exception()
+</t>
+<t tx="ekr.20120426175039.2683">class Server(asyncore.dispatcher):
+
+    @others
+</t>
+<t tx="ekr.20120426175039.2684">def __init__ (self, host, port, handler):
+
+    self.ip = host
+    self.port = port
+    self.handler=handler
+
+    asyncore.dispatcher.__init__ (self)
+    self.create_socket (socket.AF_INET,socket.SOCK_STREAM)
+
+    self.set_reuse_addr()
+    self.bind ((host,port),)
+    self.listen (2)
+    g.es_print('listening on %s:%s' % (host,port))
+</t>
+<t tx="ekr.20120426175039.2685">def handle_accept (self):
+    
+    try:
+        conn, addr = self.accept()
+        g.trace('accepted connection: %s' % (addr))
+    except socket.error:
+        self.log_info ('warning: server accept() threw an exception', 'warning')
+        return
+    except TypeError:
+        self.log_info ('warning: server accept() threw EWOULDBLOCK', 'warning')
+        return
+
+    # creates an instance of the handler class to handle the request/response
+    # on the incoming connexion
+    self.handler(conn,addr,self)
+</t>
+<t tx="ekr.20120426175039.2686">class RequestHandler:
+    
+    pass
+    
+    if 0:
+        def __init__(self,conn,addr,server):
+            g.es_print('RequestHandler.ctor conn: %s addr: %s server: %s' % (
+                conn,addr,server))
+</t>
 </tnodes>
 </leo_file>

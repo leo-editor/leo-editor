@@ -228,17 +228,18 @@ def doPostPluginsInit(self):
         for fn in lm.files:
             c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
                 # Will give a "not found" message.
-            assert c
+            # This can fail if the file is open in another instance of Leo.
+            # assert c
             if not c1: c1 = c
     else:
-        c1 = None
+        c = c1 = None
             
     if g.app.restore_session:
         m = g.app.sessionManager
         if m:
             aList = m.load_snapshot()
             m.load_session(c1,aList)
-            c1 = g.app.windowList[0].c
+            c = c1 = g.app.windowList[0].c
         
     if not g.app.windowList:
         # Create an empty frame.
@@ -6067,7 +6068,7 @@ it should be the _default._
 
 No big deal.
 .. @+node:ekr.20110415173840.6098: *7* Code related to uA's
-.. @+node:ekr.20040701065235.2: *8* putDescendentAttributes
+.. @+node:ekr.20040701065235.2: *8* fc.putDescendentAttributes
 def putDescendentAttributes (self,p):
 
     nodeIndices = g.app.nodeIndices
@@ -6092,7 +6093,7 @@ def putDescendentAttributes (self,p):
             result.append('\n%s="%s"' % (tag,s))
 
     return ''.join(result)
-.. @+node:ekr.20080805071954.2: *8* putDescendentVnodeUas
+.. @+node:ekr.20080805071954.2: *8* fc.putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -6126,7 +6127,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-.. @+node:EKR.20040526202501: *8* putUnknownAttributes
+.. @+node:EKR.20040526202501: *8* fc.putUnknownAttributes
 def putUnknownAttributes (self,torv):
 
     """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
@@ -7384,7 +7385,7 @@ it should be the _default._
 
 No big deal.
 .. @+node:ekr.20110415173840.6098: *7* Code related to uA's
-.. @+node:ekr.20040701065235.2: *8* putDescendentAttributes
+.. @+node:ekr.20040701065235.2: *8* fc.putDescendentAttributes
 def putDescendentAttributes (self,p):
 
     nodeIndices = g.app.nodeIndices
@@ -7409,7 +7410,7 @@ def putDescendentAttributes (self,p):
             result.append('\n%s="%s"' % (tag,s))
 
     return ''.join(result)
-.. @+node:ekr.20080805071954.2: *8* putDescendentVnodeUas
+.. @+node:ekr.20080805071954.2: *8* fc.putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
     '''Return the a uA field for descendent vnode attributes,
@@ -7443,7 +7444,7 @@ def putDescendentVnodeUas (self,p):
     # Pickle and hexlify d
     return d and self.pickle(
         torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
-.. @+node:EKR.20040526202501: *8* putUnknownAttributes
+.. @+node:EKR.20040526202501: *8* fc.putUnknownAttributes
 def putUnknownAttributes (self,torv):
 
     """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
