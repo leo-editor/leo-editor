@@ -884,7 +884,7 @@ class atFile:
         at.rememberReadPath(fn,p)
 
         if not g.unitTesting:
-            g.es("reading @edit:", g.shortFileName(fn))
+            g.es("reading: @edit %s" % (g.shortFileName(fn)))
 
         s,e = g.readFileIntoString(fn,kind='@edit')
         if s is None: return

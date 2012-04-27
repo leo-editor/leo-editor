@@ -72,7 +72,7 @@ class cacher:
 
         pth, bname = split(fn)
 
-        if pth and bname and g.enableDB:
+        if pth and bname: ### and g.enableDB:
             fn = fn.lower()
             fn = g.toEncodedString(fn) # Required for Python 3.x.
 
@@ -484,7 +484,7 @@ class PickleShareDB:
 
         if trace: g.trace('PickleShareDB',self.root)
 
-        if not isdir(self.root):
+        if not isdir(self.root) and not g.unitTesting:
             self._makedirs(self.root)
 
         self.cache = {}
