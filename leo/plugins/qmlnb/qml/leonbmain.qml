@@ -5,6 +5,39 @@ Rectangle {
     width: 360
     height: 360
 
+    Component {
+        id: nodeDelegate
+
+        Item {
+            height: childrenRect.height
+            width: parent.parent.width
+
+            Text {
+                id: htext
+                text: h
+                font.pixelSize: 12
+                anchors.right: btext.right
+                color: "gray"
+            }
+
+            TextEdit {
+                id: btext
+                text: b
+                anchors.top: htext.bottom
+                anchors.left: parent.left
+
+
+                Rectangle {
+                    anchors.fill: parent
+                    border.color: "blue"
+                    border.width: 1
+                    z: parent.z - 1
+                }
+            }
+        }
+
+    }
+
     Flickable {
         width: parent.width
         height: parent.height
@@ -15,16 +48,8 @@ Rectangle {
             //anchors.fill: parent
 
             Repeater {
-                model : 8
-                TextEdit {
-                    text: "Text " + index
-                    Rectangle {
-                        anchors.fill: parent
-                        border.color: "blue"
-                        border.width: 2
-                        z: parent.z - 1
-                    }
-                }
+                model : nodesModel
+                delegate: nodeDelegate
 
 
             }

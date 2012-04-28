@@ -13,6 +13,7 @@ def create_dv():
     # Display the user interface and allow the user to interact with it.
     view.setGeometry(100, 100, 400, 240)
     view.show()
+    
     rootObject = view.rootObject()
     return view
 
