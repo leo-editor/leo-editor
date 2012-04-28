@@ -15,9 +15,9 @@ Rectangle {
             //anchors.fill: parent
 
             Repeater {
-                model : 8
+                model : nodesModel
                 TextEdit {
-                    text: "Text " + index
+                    text: b
                     Rectangle {
                         anchors.fill: parent
                         border.color: "blue"
