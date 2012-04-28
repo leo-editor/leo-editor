@@ -7,13 +7,32 @@ Rectangle {
 
     Component {
         id: nodeDelegate
-        TextEdit {
-            text: b
-            Rectangle {
-                anchors.fill: parent
-                border.color: "blue"
-                border.width: 2
-                z: parent.z - 1
+
+        Item {
+            height: childrenRect.height
+            width: parent.parent.width
+
+            Text {
+                id: htext
+                text: h
+                font.pixelSize: 12
+                anchors.right: btext.right
+                color: "gray"
+            }
+
+            TextEdit {
+                id: btext
+                text: b
+                anchors.top: htext.bottom
+                anchors.left: parent.left
+
+
+                Rectangle {
+                    anchors.fill: parent
+                    border.color: "blue"
+                    border.width: 1
+                    z: parent.z - 1
+                }
             }
         }
 
