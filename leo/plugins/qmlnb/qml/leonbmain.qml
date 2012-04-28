@@ -26,7 +26,6 @@ Rectangle {
                 anchors.top: htext.bottom
                 anchors.left: parent.left
 
-
                 Rectangle {
                     anchors.fill: parent
                     border.color: "blue"
@@ -39,6 +38,7 @@ Rectangle {
     }
 
     Flickable {
+        id: flick
         width: parent.width
         height: parent.height
         contentWidth:  parent.width
