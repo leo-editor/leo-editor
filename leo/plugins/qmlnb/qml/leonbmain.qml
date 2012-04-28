@@ -5,6 +5,20 @@ Rectangle {
     width: 360
     height: 360
 
+    Component {
+        id: nodeDelegate
+        TextEdit {
+            text: b
+            Rectangle {
+                anchors.fill: parent
+                border.color: "blue"
+                border.width: 2
+                z: parent.z - 1
+            }
+        }
+
+    }
+
     Flickable {
         width: parent.width
         height: parent.height
@@ -16,15 +30,7 @@ Rectangle {
 
             Repeater {
                 model : nodesModel
-                TextEdit {
-                    text: b
-                    Rectangle {
-                        anchors.fill: parent
-                        border.color: "blue"
-                        border.width: 2
-                        z: parent.z - 1
-                    }
-                }
+                delegate: nodeDelegate
 
 
             }
