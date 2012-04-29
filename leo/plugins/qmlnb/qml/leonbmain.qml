@@ -16,7 +16,7 @@ Rectangle {
                 id: htext
                 text: h
                 font.pixelSize: 12
-                anchors.right: btext.right
+                anchors.left: btext.left
                 color: "gray"
             }
 
