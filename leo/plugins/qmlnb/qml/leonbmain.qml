@@ -17,6 +17,8 @@ Rectangle {
                 text: h
                 font.pixelSize: 12
                 anchors.left: btext.left
+                anchors.top: parent.top
+                anchors.topMargin: 4
                 color: "gray"
             }
 
@@ -26,12 +28,18 @@ Rectangle {
                 text: b
                 anchors.top: htext.bottom
                 anchors.left: parent.left
-                anchors.leftMargin: level * 20
+                anchors.leftMargin: 4 + level * 20
 
                 Rectangle {
                     anchors.fill: parent
-                    border.color: "blue"
-                    border.width: 1
+                    anchors {
+                        leftMargin: -2
+                        rightMargin: -2
+                        topMargin: -2
+                        bottomMargin: -2
+                    }
+                    border.color: parent.focus ? "blue" : "gray"
+                    border.width: parent.focus ? 2 : 1
                     z: parent.z - 1
                 }
             }
