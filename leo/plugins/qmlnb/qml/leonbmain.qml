@@ -9,7 +9,7 @@ Rectangle {
         id: nodeDelegate
 
         Item {
-            height: childrenRect.height
+            height: childrenRect.height + 10
             width: parent.parent.width
 
             Text {
@@ -29,6 +29,7 @@ Rectangle {
                 anchors.top: htext.bottom
                 anchors.left: parent.left
                 anchors.leftMargin: 4 + level * 20
+                anchors.topMargin: 4
 
                 Rectangle {
                     anchors.fill: parent
