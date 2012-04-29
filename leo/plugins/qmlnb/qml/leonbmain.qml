@@ -21,10 +21,12 @@ Rectangle {
             }
 
             TextEdit {
+
                 id: btext
                 text: b
                 anchors.top: htext.bottom
                 anchors.left: parent.left
+                anchors.leftMargin: level * 20
 
                 Rectangle {
                     anchors.fill: parent
