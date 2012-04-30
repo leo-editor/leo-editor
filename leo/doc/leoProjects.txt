@@ -3645,8 +3645,6 @@ def scanOptions(self,fileName,pymacs):
         help = 'disable all plugins')
     add('--no-splash',    action="store_true", dest='no_splash_screen',
         help = 'disable the splash screen')
-    add('--restore-session',action="store_true",dest='restore_session',
-        help = 'restore previously stored session tabs')
     add('--screen-shot',  dest='screenshot_fn',
         help = 'take a screen shot and then exit')
     add('--script',       dest="script",
@@ -3655,6 +3653,10 @@ def scanOptions(self,fileName,pymacs):
         help = 'open a window for scripts')
     add('--select',       dest='select',
         help='headline or gnx of node to select')
+    add('--session-restore',action="store_true",dest='session_restore',
+        help = 'restore previously stored session tabs')
+    add('--session-save',action="store_true",dest='session_save',
+        help = 'restore previously stored session tabs')
     add('--silent',       action="store_true", dest="silent",
         help = 'disable all log messages')
     add('--version',      action="store_true", dest="version",
@@ -3719,10 +3721,6 @@ def scanOptions(self,fileName,pymacs):
     # g.trace('--no-splash',options.no_splash_screen)
     g.app.use_splash_screen = not options.no_splash_screen
     
-    # --restore-session
-    if options.restore_session:
-        g.app.restore_session = True
-
     # --screen-shot=fn
     screenshot_fn = options.screenshot_fn
     if screenshot_fn:
@@ -3749,6 +3747,10 @@ def scanOptions(self,fileName,pymacs):
     if select:
         select = select.strip('"')
         if trace: print('scanOptions: select',repr(select))
+        
+    # --session-restore & --session-save
+    g.app.restore_session = bool(options.session_restore)
+    g.app.save_session = bool(options.session_save)
 
     # --silent
     g.app.silentMode = options.silent
@@ -4777,6 +4779,259 @@ def show_welcome(self):
         import IPython.utils.terminal as u
         u.toggle_set_term_title(True)
         u.set_term_title('ILeo')
+#@+node:ekr.20120419095424.9924: *4* Integrated free_layout into Leo's core
+#@+node:ekr.20120217070122.10470: *5* c.initObjects
+def initObjects(self,gui):
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    c = self
+    
+    if trace:
+        print('g.initObjects %s %s' % (
+            c.shortFileName(),g.app.gui))
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    
+    # Create the gui frame.
+    title = c.computeWindowTitle(c.mFileName)
+    
+    if not g.app.initing:
+        g.doHook("before-create-leo-frame",c=c)
+
+    self.frame = gui.createLeoFrame(c,title)
+    assert self.frame
+    assert self.frame.c == c
+    
+    self.nodeHistory = nodeHistory(c)
+    
+    self.initConfigSettings()
+
+    c.setWindowPosition() # Do this after initing settings.
+
+    # Break circular import dependencies by importing here.
+    # These imports take almost 3/4 sec in the leoBridge.
+    import leo.core.leoAtFile as leoAtFile
+    import leo.core.leoCache as leoCache
+    import leo.core.leoChapters as leoChapters
+    import leo.core.leoEditCommands as leoEditCommands
+    import leo.core.leoKeys as leoKeys
+    import leo.core.leoFileCommands as leoFileCommands
+    import leo.core.leoImport as leoImport
+    import leo.core.leoRst as leoRst
+    import leo.core.leoShadow as leoShadow
+    import leo.core.leoTangle as leoTangle
+    import leo.core.leoTest as leoTest
+    import leo.core.leoUndo as leoUndo
+    
+    self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
+    self.chapterController  = leoChapters.chapterController(c)
+    self.shadowController   = leoShadow.shadowController(c)
+    self.fileCommands       = leoFileCommands.fileCommands(c)
+    self.atFileCommands     = leoAtFile.atFile(c)
+    self.importCommands     = leoImport.leoImportCommands(c)
+    self.rstCommands        = leoRst.rstCommands(c)
+    self.tangleCommands     = leoTangle.tangleCommands(c)
+    self.testManager        = leoTest.TestManager(c)
+    
+    self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
+    self.editCommandsManager.createEditCommanders()
+
+    self.cacher = leoCache.cacher(c)
+    self.cacher.initFileDB(self.mFileName)
+    self.undoer = leoUndo.undoer(self)
+    
+    import leo.plugins.free_layout as free_layout
+    self.free_layout = free_layout.FreeLayoutController(c)
+#@+node:tbrown.20110203111907.5521: *5* init (free_layout.py)
+def init():
+    
+    if 1:
+        return g.app.gui.guiName() == "qt"
+    else:
+        # g.trace('free_layout.py')
+        if g.app.gui.guiName() != "qt":
+            return False
+    
+        g.registerHandler('after-create-leo-frame',bindControllers)
+        g.registerHandler('after-create-leo-frame2',loadLayouts)
+        g.plugin_signon(__name__)
+        
+        return True
+#@+node:ekr.20110318080425.14390: *5*  ctor (FreeLayoutController)
+def __init__ (self,c):
+    
+    # g.trace('(FreeLayoutController)',c) # ,g.callers(files=True))
+    
+    # if hasattr(c,'free_layout'):
+        # return
+    
+    self.c = c
+    
+    # c.free_layout = self
+        # To be removed
+    
+    self.windows = []  
+    # list of top level free-layout windows opened from 'Open Window'
+    # splitter handle context menu
+    
+    # g.registerHandler('after-create-leo-frame',self.bindControllers)
+    
+    # attach to an outline
+    g.registerHandler('after-create-leo-frame',self.init)
+    
+    # now that the outline's set up (plugins etc.), load layout for
+    # outline, can't do that sooner as plugins must be loaded first
+    # to provide their widgets in panels etc.
+    g.registerHandler('after-create-leo-frame2',self.loadLayouts)
+    
+    ### self.init()
+    
+#@+node:tbrown.20110203111907.5522: *5* init (FreeLayoutController)
+def init(self,tag,keys):
+    """Attach to an outline and
+    
+    - add tags to widgets to indicate that they're essential
+      (tree, body, log-window-tabs) and
+      
+    - tag the log-window-tabs widget as the place to put widgets
+      from free-laout panes which are closed
+      
+    - register this FreeLayoutController as a provider of menu items
+      for NestedSplitter
+    """
+
+    c = self.c
+
+    if c != keys.get('c'):
+        return
+        
+    # g.trace(c.frame.title)
+
+    # Careful: we could be unit testing.
+
+    splitter = self.get_top_splitter() # A NestedSplitter.
+    if not splitter:
+        # g.trace('no splitter!')
+        return None
+        
+    # by default NestedSplitter's context menus are disabled, needed
+    # once to globally enable them
+    NestedSplitter.enabled = True
+
+    # when NestedSplitter disposes of children, it will either close
+    # them, or move them to another designated widget.  Here we set
+    # up two designated widgets
+
+    logTabWidget = splitter.findChild(QtGui.QWidget, "logTabWidget")
+    splitter.root.holders['_is_from_tab'] = logTabWidget
+    splitter.root.holders['_is_permanent'] = 'TOP'
+
+    # allow body and tree widgets to be "removed" to tabs on the log tab panel    
+    bodyWidget = splitter.findChild(QtGui.QFrame, "bodyFrame")
+    bodyWidget._is_from_tab = "Body"
+
+    treeWidget = splitter.findChild(QtGui.QFrame, "outlineFrame")
+    treeWidget._is_from_tab = "Tree"
+    # also the other tabs will have _is_from_tab set on them by the
+    # offer_tabs menu callback above
+
+    # if the log tab panel is removed, move it back to the top splitter
+    logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
+    logWidget._is_permanent = True
+
+    # tag core Leo components (see ns_provides)
+    splitter.findChild(QtGui.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+    splitter.findChild(QtGui.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+    splitter.findChild(QtGui.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
+
+    splitter.register_provider(self)
+#@+node:ekr.20120419095424.9927: *5* loadLayouts (FreeLayoutController)
+def loadLayouts(self,tag,keys):
+    
+    c = self.c
+    
+    if c != keys.get('c'):
+        return
+        
+    # g.trace(c.frame.title)
+  
+    layout = c.config.getData("free-layout-layout")
+    
+    if layout:
+        layout = json.loads('\n'.join(layout))
+        
+    if '_ns_layout' in c.db:
+        name = c.db['_ns_layout']
+        if layout:
+            g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
+                "overrides saved layout "+name)
+        else:
+            layout = g.app.db['ns_layouts'][name]
+
+    if layout:
+        # Careful: we could be unit testing.
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.load_layout(layout)
+#@+node:ekr.20110605121601.18503: *5* runScrolledMessageDialog (qtGui)
+def runScrolledMessageDialog (self,
+    short_title= '',
+    title='Message',
+    label= '',
+    msg='',
+    c=None,**kw
+):
+
+    if g.unitTesting: return None
+
+    def send(title=title, label=label, msg=msg, c=c, kw=kw):
+        return g.doHook('scrolledMessage',
+            short_title=short_title,title=title,
+            label=label, msg=msg,c=c, **kw)
+
+    if not c or not c.exists:
+        << no c error>>
+    else:        
+        retval = send()
+        if retval: return retval
+        << load viewrendered plugin >>
+        retval = send()
+        if retval: return retval
+        << no dialog error >>
+
+    << emergency fallback >>
+#@+node:ekr.20110605121601.18504: *6* << no c error>>
+g.es_print_error('%s\n%s\n\t%s' % (
+    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+    "as a keyword argument",
+    g.callers()
+))
+#@+node:ekr.20110605121601.18505: *6* << load viewrendered plugin >>
+pc = g.app.pluginsController
+# 2011/10/20: load viewrendered (and call vr.onCreate)
+# *only* if not already loaded.
+if not pc.isLoaded('viewrendered.py'):
+    vr = pc.loadOnePlugin('viewrendered.py')
+    if vr:
+        g.es('viewrendered plugin loaded.', color='blue')
+        vr.onCreate('tag',{'c':c})
+#@+node:ekr.20110605121601.18506: *6* << no dialog error >>
+g.es_print_error(
+    'No handler for the "scrolledMessage" hook.\n\t%s' % (
+        g.callers()))
+#@+node:ekr.20110605121601.18507: *6* << emergency fallback >>
+b = QtGui.QMessageBox
+d = b(None) # c.frame.top)
+d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
+
+d.setWindowTitle(title)
+if msg: d.setText(msg)
+d.setIcon(b.Information)
+yes = d.addButton('Ok',b.YesRole)
+c.in_qt_dialog = True
+d.exec_()
+c.in_qt_dialog = False
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

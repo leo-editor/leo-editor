@@ -138,9 +138,7 @@ def session_refresh_command(event):
 #@+node:ekr.20120420054855.14386: *3* session-restore
 @g.command('session-restore')
 def session_restore_command(event):
-    
-    
-    
+
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:

@@ -5046,6 +5046,31 @@ class htmlScanner (xmlScanner):
     #@-others
 #@-<< class htmlScanner (xmlScanner) >>
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
+#@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
+@g.command('parse-body')
+def parse_body_command(event):
+    
+    c = event.get('c')
+    p = c and c.p
+    if not c or not p: return
+    ic = c.importCommands
+    ic.tab_width = ic.getTabWidth()
+    language = g.scanForAtLanguage(c,p)
+    ext = g.app.language_extension_dict.get(language)
+    if ext:
+        if not ext.startswith('.'): ext = '.' + ext
+        func = ic.importDispatchDict.get(ext)
+        if func:
+            bunch = c.undoer.beforeChangeTree(p)
+            s = p.b
+            p.b = ''
+            func(s,p,atAuto=False)
+            bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
+            c.validateOutline()
+            p.expand()
+            c.redraw()
+            return
+    g.es_print('unknown language')
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
 def headToPrevNode(event):

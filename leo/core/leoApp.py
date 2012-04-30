@@ -1799,8 +1799,6 @@ class LoadManager:
             help = 'disable all plugins')
         add('--no-splash',    action="store_true", dest='no_splash_screen',
             help = 'disable the splash screen')
-        add('--restore-session',action="store_true",dest='restore_session',
-            help = 'restore previously stored session tabs')
         add('--screen-shot',  dest='screenshot_fn',
             help = 'take a screen shot and then exit')
         add('--script',       dest="script",
@@ -1809,6 +1807,10 @@ class LoadManager:
             help = 'open a window for scripts')
         add('--select',       dest='select',
             help='headline or gnx of node to select')
+        add('--session-restore',action="store_true",dest='session_restore',
+            help = 'restore previously stored session tabs')
+        add('--session-save',action="store_true",dest='session_save',
+            help = 'restore previously stored session tabs')
         add('--silent',       action="store_true", dest="silent",
             help = 'disable all log messages')
         add('--version',      action="store_true", dest="version",
@@ -1873,10 +1875,6 @@ class LoadManager:
         # g.trace('--no-splash',options.no_splash_screen)
         g.app.use_splash_screen = not options.no_splash_screen
         
-        # --restore-session
-        if options.restore_session:
-            g.app.restore_session = True
-
         # --screen-shot=fn
         screenshot_fn = options.screenshot_fn
         if screenshot_fn:
@@ -1903,6 +1901,10 @@ class LoadManager:
         if select:
             select = select.strip('"')
             if trace: print('scanOptions: select',repr(select))
+            
+        # --session-restore & --session-save
+        g.app.restore_session = bool(options.session_restore)
+        g.app.save_session = bool(options.session_save)
 
         # --silent
         g.app.silentMode = options.silent
