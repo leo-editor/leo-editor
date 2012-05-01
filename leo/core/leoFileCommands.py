@@ -748,8 +748,11 @@ class baseFileCommands:
                 ok = fc.getLeoFileHelper(theFile,fileName,silent)
                     # Read the .leo file and create the outline.
                     
-            # Always remember the file, even if we are going to close it immediately.
-            g.app.rememberOpenFile(fileName)
+                # Remember the open file.
+                g.app.rememberOpenFile(fileName)
+            else:
+                fc.mFileName = c.mFileName = None
+                    # Bug fix. Clear the fileName so forgetOpenFile doesn't remove it.
         
             if ok:
                 fc.resolveTnodeLists()

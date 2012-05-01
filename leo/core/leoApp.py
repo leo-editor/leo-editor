@@ -900,8 +900,11 @@ class LeoApp:
         else:
             aList = d.get(tag) or []
             if fn in aList:
-                if trace: g.trace('removing: %s' % (fn))
                 aList.remove(fn)
+                if trace:
+                    g.trace('removed: %s' % (fn),g.callers())
+                    for z in aList:
+                        print('  %s' % (z))
                 d[tag] = aList
             else:
                 if trace: g.trace('did not remove: %s' % (fn))
@@ -918,8 +921,12 @@ class LeoApp:
         else:
             aList = d.get(tag) or []
             # It's proper to add duplicates to this list.
-            if trace: g.trace('adding: %s: %s' % (fn,aList))
             aList.append(fn)
+            if trace:
+                # Trace doesn't work well while initing.
+                print('rememberOpenFile:added: %s' % (fn))
+                for z in aList:
+                    print('  %s' % (z))
             d[tag] = aList
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
