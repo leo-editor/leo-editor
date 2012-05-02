@@ -7094,6 +7094,17 @@ class Commands (object):
         c.requestRedrawFlag = False
         c.requestedFocusWidget = None
         c.requestedIconify = ''
+        mods = g.childrenModifiedSet
+        if mods:
+            print mods
+            g.doHook("childrenModified",c=c, nodes = mods)
+            mods.clear()
+        mods = g.contentModifiedSet
+        if mods:
+            print mods
+            g.doHook("contentModified",c=c, nodes = mods)
+            mods.clear()
+            
 
         # g.trace('after')
     #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor

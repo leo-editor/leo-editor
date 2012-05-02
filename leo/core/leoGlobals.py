@@ -2500,6 +2500,9 @@ class command:
         return func
 
 
+#@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
+childrenModifiedSet = set()
+contentModifiedSet = set()
 #@+node:ekr.20100910075900.5950: *3* Wrappers for g.app.pluginController methods
 # Important: we can not define g.pc here!
 

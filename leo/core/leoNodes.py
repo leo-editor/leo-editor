@@ -2474,6 +2474,12 @@ class vnode (baseVnode):
         v = self
         v.selectionStart = start
         v.selectionLength = length
+    #@+node:ville.20120502221057.7498: *4* v.contentModified
+    def contentModified(self):
+        pass
+    #@+node:ville.20120502221057.7499: *4* v.childrenModified
+    def childrenModified(self):
+        pass
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
     #@+node:ekr.20090706110836.6135: *4* v._addLink & helper
     def _addLink (self,childIndex,parent_v,adjust=True):
@@ -2482,6 +2488,7 @@ class vnode (baseVnode):
         trace = False and not g.unitTesting
         v = self
 
+        g.childrenModifiedSet.add(parent_v)
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex,v)
         v.parents.append(parent_v)
@@ -2517,6 +2524,7 @@ class vnode (baseVnode):
         '''Adjust links after cutting a link to v.'''
         v = self
 
+        g.childrenModifiedSet.add(parent_v)
         assert parent_v.children[childIndex]==v
         del parent_v.children[childIndex]
         v.parents.remove(parent_v)
