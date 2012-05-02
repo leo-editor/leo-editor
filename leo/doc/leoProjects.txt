@@ -3567,6 +3567,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
         else:
             c.bodyWantsFocus()
 
+    p.v.contentModified()
     c.outerUpdate()
 #@+node:ekr.20120409185504.10028: *6* << truncate s if it has multiple lines >>
 # Remove trailing newlines before warning of truncation.
