@@ -918,6 +918,7 @@ class leoBody (HighLevelInterface):
         #@-<< recolor the body >>
         if not c.changed: c.setChanged(True)
         self.updateEditors()
+        p.v.contentModified()
         #@+<< update icons if necessary >>
         #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
 
@@ -1901,7 +1902,7 @@ class leoTree:
             c.treeEditFocusHelper()
         else:
             c.frame.tree.setSelectedLabelState(p)
-
+        
         g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
     #@+node:ekr.20040803072955.88: *5* onHeadlineKey
     def onHeadlineKey (self,event):

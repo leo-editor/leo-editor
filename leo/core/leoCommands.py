@@ -7096,12 +7096,12 @@ class Commands (object):
         c.requestedIconify = ''
         mods = g.childrenModifiedSet
         if mods:
-            print mods
+            #print(mods)
             g.doHook("childrenModified",c=c, nodes = mods)
             mods.clear()
         mods = g.contentModifiedSet
         if mods:
-            print mods
+            #print(mods)
             g.doHook("contentModified",c=c, nodes = mods)
             mods.clear()
             

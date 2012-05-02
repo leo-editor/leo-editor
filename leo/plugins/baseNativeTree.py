@@ -938,6 +938,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             else:
                 c.bodyWantsFocus()
 
+        p.v.contentModified()
         c.outerUpdate()
     #@+node:ekr.20110605121601.17913: *3* setItemForCurrentPosition (nativeTree)
     def setItemForCurrentPosition (self,scroll=True):
