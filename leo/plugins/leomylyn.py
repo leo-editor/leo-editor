@@ -84,6 +84,5 @@ def init ():
 
     return ok
 
-#@+node:ville.20120503224623.3580: ** handlers
 #@-others
 #@-leo
