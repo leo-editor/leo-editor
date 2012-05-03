@@ -25,7 +25,7 @@ expanded="ekr.20031218072017.434,ekr.20120330110655.9891,ekr.20120330110655.9955
 </v>
 <v t="ekr.20100120072650.6088" a="E"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089" a="E"
-expanded="ekr.20120329072206.9700,ekr.20120322073519.10402,ekr.20120327163022.9737,ekr.20120323124339.9722,ekr.20120324124808.9835,"><vh>@file ../doc/leoProjects.txt</vh></v>
+expanded="ekr.20120329072206.9700,ekr.20120322073519.10402,ekr.20120327163022.9737,ekr.20120323124339.9722,ekr.20120324124808.9835,ekr.20120329072206.9701,ekr.20120330040023.9781,ekr.20120409074150.9941,"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2" a="E"><vh>To do</vh>
 <v t="ekr.20100119205347.6015" a="E"
@@ -74,17 +74,19 @@ expanded="ekr.20031218072017.889,ekr.20040306212636,ekr.20080423062035.1,ekr.200
 <v t="ekr.20031218072017.3603" a="E"
 expanded="ekr.20031218072017.3605,ekr.20110519074734.6093,"><vh>@file leoUndo.py</vh></v>
 </v>
-<v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
+<v t="ekr.20031218072017.3625" a="E"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
+<v t="ekr.20031218072017.3655" a="E"
+expanded="ekr.20031218072017.3656,ekr.20061109173021,ekr.20031218072017.3704,ekr.20061109165848,ekr.20040803072955.90,"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
-<v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
-<v t="ekr.20110605121601.17863"><vh>@file ../plugins/baseNativeTree.py</vh></v>
+<v t="ekr.20110605121601.17862" a="E"><vh>Qt gui</vh>
+<v t="ekr.20110605121601.17863" a="E"
+expanded="ekr.20110605121601.17905,"><vh>@file ../plugins/baseNativeTree.py</vh></v>
 <v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
