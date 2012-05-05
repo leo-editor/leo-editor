@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="60" left="787" height="897" width="1007"/>
+	<global_window_position top="60" left="787" height="750" width="1007"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -659,6 +659,10 @@
 </v>
 <v t="ekr.20120426175039.2686"><vh>class RequestHandler</vh></v>
 </v>
+<v t="ekr.20120505111317.2735"><vh>Convert Leo outline to/from json</vh>
+<v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
+<v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -959,7 +963,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8621,6 +8625,65 @@ if not s:
         def __init__(self,conn,addr,server):
             g.es_print('RequestHandler.ctor conn: %s addr: %s server: %s' % (
                 conn,addr,server))
+</t>
+<t tx="ekr.20120505111317.2735">'''Write node &amp; links version of json.'''
+
+# from __future__ import print_function
+import json
+
+class JsonController:
+    @others
+
+g.cls()
+jc = JsonController()
+s = jc.to_json(c,p=None)
+d = json.loads(s)
+
+nodes = {}
+print('nodes...')
+for d2 in d.get('nodes'):
+    gnx = d2.get('gnx')
+    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
+    nodes[gnx] = d2
+    
+keys = sorted(list(nodes.keys()))
+
+if 0:
+    print()
+    print('keys',keys)
+
+aList = d.get('top')
+print()
+print('top...')
+for gnx in aList:
+    assert gnx in keys,gnx
+    d2 = nodes.get(gnx)
+    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
+</t>
+<t tx="ekr.20120505111317.2736">def to_json (self,c,p=None):
+    
+    '''Convert p's tree to JSON, or the entire outline if p is None.'''
+    
+    if p:
+        top = [p.v.gnx]
+        nodes = list(set([p.v for p in p.self_and_subtree()]))
+    else:
+        top = [v.gnx for v in c.hiddenRootNode.children]
+        nodes = [v for v in c.all_unique_nodes()]
+
+    nodes = [self.vnode_dict(v) for v in nodes]
+    d = {'top':top,'nodes':nodes}
+    s = json.dumps(d)
+    return s
+</t>
+<t tx="ekr.20120505111317.2737">def vnode_dict (self,v):
+    
+    return {
+        'gnx': v.gnx,
+        'h':v.h, 'b':v.b,
+        # 'ua': v.u,
+        'children': [z.gnx for z in v.children]
+    }
 </t>
 </tnodes>
 </leo_file>

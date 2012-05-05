@@ -1405,7 +1405,7 @@ for s in sorted(d.keys()):
 #@+node:ekr.20080412053100.5: *4* @settings
 #@+node:ekr.20080412053100.4: *5* @bool fixedWindow = False
 #@+node:ekr.20100902154544.5872: *5* @bool enable-abbreviations = True
-#@+node:ekr.20111123042248.12701: *5* @@@enabled-plugins
+#@+node:ekr.20111123042248.12701: *5* @enabled-plugins
 # Leo loads plugins in the order they appear here.
 
 # Highly-recommended plugins:
