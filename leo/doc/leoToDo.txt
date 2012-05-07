@@ -4176,7 +4176,7 @@ def createImportParent (self,current,files):
         current.initHeadString(name)
 
     return current
-.. @+node:ekr.20031218072017.3210: *6* ic.createOutline
+.. @+node:ekr.20031218072017.3210: *6* createOutline (leoImport)
 def createOutline (self,fileName,parent,
     atAuto=False,atShadow=False,s=None,ext=None):
 
@@ -5706,6 +5706,7 @@ def eventFilter(self, obj, event):
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
+    assert gui
     aList = []
 
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
@@ -5727,7 +5728,8 @@ def eventFilter(self, obj, event):
         self.keyIsActive = False
 
     if eventType == ev.WindowActivate:
-        gui.onActivateEvent(event,c,obj,self.tag)
+        if gui:
+            gui.onActivateEvent(event,c,obj,self.tag)
         override = False ; tkKey = None
     elif eventType == ev.WindowDeactivate:
         gui.onDeactivateEvent(event,c,obj,self.tag)
@@ -5748,18 +5750,18 @@ def eventFilter(self, obj, event):
             override = len(aList) > 0
     else:
         override = False ; tkKey = '<no key>'
-        if self.tag == 'body':
+        if gui and self.tag == 'body':
             if eventType == ev.FocusIn:
-                g.app.gui.add_border(c,obj)
+                gui.add_border(c,obj)
                 c.frame.body.onFocusIn(obj)
             elif eventType == ev.FocusOut:
-                g.app.gui.remove_border(c,obj)
+                gui.remove_border(c,obj)
                 c.frame.body.onFocusOut(obj)
-        if self.tag in ('tree','log'):
+        if gui and self.tag in ('tree','log'):
             if eventType == ev.FocusIn:
-                g.app.gui.add_border(c,obj)
+                gui.add_border(c,obj)
             elif eventType == ev.FocusOut:
-                g.app.gui.remove_border(c,obj)
+                gui.remove_border(c,obj)
 
     if self.keyIsActive:
         shortcut = self.toStroke(tkKey,ch) # ch is unused.
