@@ -1405,7 +1405,7 @@ for s in sorted(d.keys()):
 #@+node:ekr.20080412053100.5: *4* @settings
 #@+node:ekr.20080412053100.4: *5* @bool fixedWindow = False
 #@+node:ekr.20100902154544.5872: *5* @bool enable-abbreviations = True
-#@+node:ekr.20111123042248.12701: *5* @enabled-plugins
+#@+node:ekr.20111123042248.12701: *5* @@@enabled-plugins
 # Leo loads plugins in the order they appear here.
 
 # Highly-recommended plugins:
@@ -3401,6 +3401,17 @@ def checkForOpenFile (self,c,fn):
                 title='Open Leo File Again?',
                 message='%s is already open.  Open it again?' % (fn),
             )
+            if result == 'yes':
+                clear = g.app.gui.runAskYesNoDialog(c,
+                    title='Reset open count?',
+                    message='Reset open count for %s?' \
+                        "\nSay yes if you know this outline" \
+                        "\nis not really open elsewhere"% (fn),
+                )
+                if clear == 'yes':
+                    d[tag] = [i for i in d[tag] if i != fn]
+                    # IMPORTANT - rest of load process will add another
+                    # entry for this Leo instance, don't do it here
             return result == 'yes'
         else:
             return True

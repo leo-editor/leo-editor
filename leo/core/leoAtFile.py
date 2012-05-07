@@ -2076,8 +2076,11 @@ class atFile:
                     g.es("ignoring bad @comment sentinel:",line,color="red")
                 #@-<< handle @comment >>
 
-        # An @c ends the doc part when using new sentinels.
-        if at.readVersion5 and s2 in ('@c','@c\n','@code','@code\n'):
+        # An @c or @code ends the doc part when using new sentinels.
+        if (
+            at.readVersion5 and s2.startswith('@c') and
+            (g.match_word(s2,0,'@c') or g.match_word(s2,0,'@code'))
+        ):
             if at.docOut:
                 s = ''.join(at.docOut)
                 s = at.massageAtDocPart(s) # 2011/05/24
