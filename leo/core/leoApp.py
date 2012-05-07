@@ -886,6 +886,17 @@ class LeoApp:
                     title='Open Leo File Again?',
                     message='%s is already open.  Open it again?' % (fn),
                 )
+                if result == 'yes':
+                    clear = g.app.gui.runAskYesNoDialog(c,
+                        title='Reset open count?',
+                        message='Reset open count for %s?' \
+                            "\nSay yes if you know this outline" \
+                            "\nis not really open elsewhere"% (fn),
+                    )
+                    if clear == 'yes':
+                        d[tag] = [i for i in d[tag] if i != fn]
+                        # IMPORTANT - rest of load process will add another
+                        # entry for this Leo instance, don't do it here
                 return result == 'yes'
             else:
                 return True
