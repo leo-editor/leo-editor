@@ -106,6 +106,7 @@ import imp
 import inspect
 import operator
 import os
+import urllib
 
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
 # import pdb
@@ -4469,7 +4470,7 @@ def handleUrl(url,c=None,p=None):
 
     try:
         tag = 'file://'
-        if url.startswith(tag):
+        if url.startswith(tag) and not url.startswith(tag+'#'):
             # Finalize the path *before* parsing the url.
             url = g.computeFileUrl(url,c=c,p=p)
 
@@ -4500,12 +4501,11 @@ def handleUrl(url,c=None,p=None):
         if c and scheme in ('', 'file'):
             
             if not leo_path:
-                # local UNLs like "node-->subnode", "-->node", and "#node"
                 if '-->' in path:
-                    g.recursiveUNLSearch(path.split("-->"), c)
+                    g.recursiveUNLSearch(urllib.unquote(path).split("-->"), c)
                     return
                 if not path and fragment:
-                    g.recursiveUNLSearch(fragment.split("-->"), c)
+                    g.recursiveUNLSearch(urllib.unquote(fragment).split("-->"), c)
                     return
     
             # .leo file
