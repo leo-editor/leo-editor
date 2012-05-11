@@ -2,6 +2,19 @@
 #@+node:tbrown.20090206153748.1: * @file graphcanvas.py
 #@@language python
 #@@tabwidth -4
+"""
+Provides a widget for displaying graphs (networks) in Leo.
+Interacts with the backlinks.py plugin (same linkage data).
+
+Implementation notes
+--------------------
+
+There are various bindings for graphviz:
+http://blog.holkevisser.nl/2011/01/24/how-to-use-graphvize-with-python-on-windows/
+but pydot and pygraphviz are two of the more common and pydot is easier to install
+in windows.  This plugin started out supporting both, but it seems (TNB 20120511) to
+make sense to focus on pydot.
+"""
 #@+others
 #@+node:bob.20110119123023.7392: ** graphcanvas declarations
 """Adds a graph layout for nodes in a tab.
@@ -43,10 +56,12 @@ g.assertUi('qt')
 from PyQt4 import QtCore, QtGui, uic
 Qt = QtCore.Qt
 
-try:
-    import pygraphviz
-except ImportError:
-    pygraphviz = None
+pygraphviz = None
+if not pydot:
+    try:
+        import pygraphviz
+    except ImportError:
+        pygraphviz = None
     
 c_db_key = '_graph_canvas_gnx'
 #@+node:bob.20110119123023.7393: ** init
@@ -733,12 +748,14 @@ class graphcanvasController(object):
         
         if pygraphviz:
             return [
+                ('PyGraphViz:', lambda: None),
                 ('neato', lambda: self.layout('neato')),
                 ('dot', lambda: self.layout('dot')),
                 ('dot LR', lambda: self.layout('dot LR')),
             ]
         elif pydot:
             return [
+                ('PyDot:', lambda: None),
                 ('neato', lambda: self.layout('neato')),
                 ('dot', lambda: self.layout('dot')),
                 ('dot LR', lambda: self.layout('dot LR')),
