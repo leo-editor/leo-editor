@@ -660,27 +660,6 @@ out = 'c:/leo.repo/new-pylint/outString.txt'
 
 outStream = open(out,'w')
 u.AstDumper(brief=True).dumpFileAsString(fn,outStream)
-#@+node:ekr.20111116103733.9838: *4* @test speed of AstTraverser (one file)
-import leo.core.leoGlobals as g
-import leo.core.leoInspect as leoInspect
-import ast
-import time
-
-fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
-    
-t1 = time.clock()
-s = open(fn,'r').read()
-t2 = time.clock()
-tree = ast.parse(s,filename=fn,mode='exec')
-t3 = time.clock()
-leoInspect.AstTraverser(fn).visit(tree)
-t4 = time.clock()
-
-if 1:
-    print('read:     %2.3f sec.' % (t2-t1))
-    print('parse:    %2.3f sec.' % (t3-t2))
-    print('traverse: %2.3f sec.' % (t4-t3))
-    print('total:    %2.3f sec.' % (t4-t1))
 #@+node:ekr.20111128103520.10237: *3* Tests of @shadow from unitTest.leo
 #@+node:ekr.20111128103520.10238: *4* @@shadow ../test/unittest/at-shadow-test.py
 @language python
@@ -732,363 +711,6 @@ if not g.app.isExternalUnitTest:
     if 0:
         print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
             root and root.h,isRaw,n,len(lines)))
-#@+node:ekr.20111116103733.9818: *3* LeoInspect tests
-#@+node:ekr.20111116103733.10672: *4* @test leoInspect with multiple files
-import leo.core.leoInspect as inspect
-import os
-import time
-
-<< define old_s >>
-<< define s >>
-
-@others
-
-g.cls()
-
-aList = (
-    'leoAtFile.py',
-    'leoEditCommands.py',
-)
-test(files=aList,print_stats=False,s=None,print_times=True)
-#@+node:ekr.20111116103733.10451: *5* << define old_s >>
-# import leo.core.leoGlobals
-# import leo.core.leoGlobals as g
-# from leo.core.leoGlobals import pr as pr2
-# from leo.core.leoGlobals import trace
-
-s_old = '''\
-import sys
-
-aGlobal = 5
-# aGlobal2 is not explicitly defined.
-
-c = [z for z in 'abc']
-
-def myFunc():
-    n1,n2,n3,junk,junk=sys.version_info
-    a = self.b
-    for z in a:
-        print(z)
-    with A() as a:
-        print(a,b)
-        
-def test():
-    a = b # UnboundLocalError.
-    b = 1
-    c = 2 # Any def will do at present.
-    print(g)
-    print(c.frame.body)
-    print(c.frame.body.xxx.yyy)
-    print(b.yyy) # no check will be made.
-    print(xxx.yyy)
-    for c in 'abc':
-        print(c,b)
-        print(g)
-
-
-class myClass:
-    
-    def __init__(self,c):
-        self.a = True
-        self.b = None
-        c.frame.xxxx
-        
-    def spam(self,a,b,c=5,*args,**keys):
-        global aGlobal2
-        aGlobal2 = 'abc'
-        self.a = b
-        self.a = x
-        
-    def no_self(a):
-        pass
-        
-    def test_lambda(self):
-        f = lambda a,b: a
-
-    def test_comprehension(self):
-        z2 = [z for z in 'abc']
-        
-aGlobal3 = 4 # This should be defined everywhere.
-
-def test():
-    # a = ','.join(['a','b'])
-    p = 5
-    # print(p.parent().h)
-    # print(g.app.windowList[0])
-    print(p)
-    print(g)
-
-'''
-
-# import leo.core.leoCommands as leoCommands
-#@+node:ekr.20111116103733.10452: *5* << define s >>
-s = '''\
-
-import leo.core.leoGlobals as g
-
-def test(c):
-    a = 5
-    f = c.frame
-    c.frame.body.bodyCtrl = w
-
-'''
-
-s = g.adjustTripleString(s,-4)
-# print(s)
-#@+node:ekr.20111116103733.10450: *5* test
-def test(files,print_stats=True,s=None,print_times=True):
-   
-    t1 = time.clock()
-    sd = inspect.SemanticData(controller=None)
-
-    if s: # Use test string.
-        fn = '<test file>'
-        inspect.InspectTraverser(fn,sd).traverse(s)
-    else:
-        for fn in files:
-            print(g.shortFileName(fn))
-            s = inspect.LeoCoreFiles().get_source(fn)
-            if s:
-                inspect.InspectTraverser(fn,sd).traverse(s)
-            else:
-                print('file not found: %s' % (fn))
-           
-    sd.total_time = time.clock()-t1
-    
-    if print_times: sd.print_times()
-    if print_stats: sd.print_stats()
-#@+node:ekr.20111116103733.10449: *4* @test leoInspect.module.classes
-import leo.core.leoInspect as inspect
-
-dump_classes = False
-print_modules = True
-print_functions = True
-print_stats = False
-print_times = False
-
-# if dump_modules or print_stats:
-    # g.cls()
-
-m = inspect.module(fn='leoApp.py',sd=None,
-    print_stats=print_stats,print_times=print_times)
-    
-print(m)
-for o in m.classes():
-    if dump_classes:
-        o.dump(verbose=False)
-    if print_modules:
-        print(o)
-    if print_functions:
-        for f in o.functions():
-            print('  %s' % f)
-#@+node:ekr.20111116161118.10212: *4* @test leoInspect.module.classes 2
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-    
-for z in m.classes():
-    print(z)
-#@+node:ekr.20111116161118.10218: *4* @test leoInspect.module.defs
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-    
-print(m)
-    
-for z in m.classes():
-    print(z)
-    for z2 in z.defs():
-        name = z2._tree.name
-        aList = z2.call_args_of(name)
-        args = ','.join(aList)
-        print(' %s(%s)' % (name,args))
-#@+node:ekr.20111116161118.10181: *4* @test leoInspect.module.statements
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-
-print(m)
-for z in m.classes():
-    print(z)
-    for z2 in z.defs():
-        print(z2)
-#@+node:ekr.20111116161118.10230: *4* @test leoInspect (leoEditCommands.py)
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-
-def show(o):
-    print('%-5s %s' % (o.line_number(),o.format()))
-
-var = '.widget'
-func = 'w.insert'
-
-if 0:
-    
-    print('\nAssignments to %s...\n' % (var))
-    for o in m.assignments_to(var):
-        show(o)
-        
-    print('\nAssignments using %s...\n' % (var))
-    for o in m.assignments_using(var):
-        show(o)
-        
-    print('\nCalls to %s...\n' % (func))
-    for o in m.calls_to(func):
-        show(o)
-        
-    if 1:
-        classes = m.classes()
-        for d in classes[0].defs():
-            print('')
-            print(d)
-            for z in d.statements():
-                # print(z.tree())
-                # print(z.sd.dump_ast(z.tree()))
-                lines = g.splitLines(z.format())
-                for line in lines:
-                    print('  %s' % (line))
-#@+node:ekr.20111127153202.10231: *4* @test speed of AstTraverser (all Leo core files)
-import leo.core.leoGlobals as g
-import leo.core.leoInspect as inspect
-import ast
-import time
-
-read_time,parse_time,traverse_time = 0.0,0.0,0.0
-t_start = time.clock()
-count = 0
-for fn in inspect.LeoCoreFiles().files:
-    count += 1
-    t2 = time.clock()
-    s = open(fn,'r').read()
-    t3 = time.clock()
-    tree = ast.parse(s,filename=fn,mode='exec')
-    t4 = time.clock()
-    inspect.AstTraverser(fn).visit(tree)
-    t5 = time.clock()
-    read_time += t3-t2
-    parse_time += t4-t3
-    traverse_time += t5-t4
-t_end = time.clock()
-total_time = t_end-t_start
-if 1:
-    print('files:    %s' % (count))
-    print('read:     %2.3f sec.' % (read_time))
-    print('parse:    %2.3f sec.' % (parse_time))
-    print('traverse: %2.3f sec.' % (traverse_time))
-    print('total:    %2.3f sec.' % (total_time))
-#@+node:ekr.20111127090852.10227: *4* @test leoInspect (all core files)
-import leo.core.leoInspect as inspect
-import time
-
-sd = inspect.SemanticData()
-start_time = time.clock()
-
-count = 0
-for fn in inspect.LeoCoreFiles().files:
-    print(fn)
-    m = inspect.module(fn,sd=sd)
-    count += 1
-
-end_time = time.clock()
-total_time = end_time-start_time
-
-if 1:
-    print('files: %s' % (count))
-    print('total: %2.3f sec.' % (total_time))
-if 1:
-    sd.print_stats()
-#@+node:ekr.20111117031039.10762: *4* @test leoInspect.module (s)
-import leo.core.leoInspect as inspect
-
-g.cls()
-
-def show(o,indent):
-    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
-    print('%s%s' % (' '*4*indent,o.format()))
-
-<< define s >>
-print('Input...\n%s\n' % (s.rstrip()))
-
-m = inspect.module(s=s)
-
-if 1:
-    print(show(m,0))
-
-print('\nAssignments to a...\n')
-for o in m.assignments_to('a'):
-    print(o.format())
-    
-print('\nAssignments using d...\n')
-for o in m.assignments_using('d'):
-    print(o.format())
-    
-print('\nCalls to f...\n')
-for o in m.calls_to('f'):
-    print(o.format())
-
-if 1:
-    for s in m.statements():
-        show(s,0)
-    
-    for f in m.functions():
-        show(f,0)
-        for z in f.statements():
-            show(z,1)
-    
-    for cls in m.classes():
-        show(cls,0)
-        for d in cls.defs():
-            show(d,1)
-            for z in d.statements():
-                show(z,1)
-#@+node:ekr.20111117031039.10763: *5* << define s >>
-s = '''
-x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
-a=b+c
-f(a=1,b=2,*args,**keys)
-'''
-
-
-# def outer_function(a,b=99,c=88,*args,**keys):
-    # print('hello')
-    
-# class myClass:
-    # def method():
-        # pass
-    
-#@+node:ekr.20111116103733.9838: *4* @test speed of AstTraverser (one file)
-import leo.core.leoGlobals as g
-import leo.core.leoInspect as leoInspect
-import ast
-import time
-
-fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
-    
-t1 = time.clock()
-s = open(fn,'r').read()
-t2 = time.clock()
-tree = ast.parse(s,filename=fn,mode='exec')
-t3 = time.clock()
-leoInspect.AstTraverser(fn).visit(tree)
-t4 = time.clock()
-
-if 1:
-    print('read:     %2.3f sec.' % (t2-t1))
-    print('parse:    %2.3f sec.' % (t3-t2))
-    print('traverse: %2.3f sec.' % (t4-t3))
-    print('total:    %2.3f sec.' % (t4-t1))
 #@+node:ekr.20120116073928.10114: *3* Unit tests for settings
 #@+node:ekr.20120126050844.10386: *4* @ignore print dicts unit tests
 #@+node:ekr.20120117095916.10124: *5* @test printMenusList
@@ -5054,6 +4676,35 @@ yes = d.addButton('Ok',b.YesRole)
 c.in_qt_dialog = True
 d.exec_()
 c.in_qt_dialog = False
+#@+node:ekr.20120429125741.10056: *4* created parse-body command
+@nocolor-node
+
+Useful for re-parsing text that was not originally parsed properly.
+#@+node:ekr.20120429125741.10057: *5* @g.command(parse-body)
+@g.command('parse-body')
+def parse_body_command(event):
+    
+    c = event.get('c')
+    p = c and c.p
+    if not c or not p: return
+    ic = c.importCommands
+    ic.tab_width = ic.getTabWidth()
+    language = g.scanForAtLanguage(c,p)
+    ext = g.app.language_extension_dict.get(language)
+    if ext:
+        if not ext.startswith('.'): ext = '.' + ext
+        func = ic.importDispatchDict.get(ext)
+        if func:
+            bunch = c.undoer.beforeChangeTree(p)
+            s = p.b
+            p.b = ''
+            func(s,p,atAuto=False)
+            bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
+            c.validateOutline()
+            p.expand()
+            c.redraw()
+            return
+    g.es_print('unknown language')
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
