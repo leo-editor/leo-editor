@@ -16,15 +16,414 @@
 #     
 # - Append *all* statements to statements list.
 #     Including def, class, if, while, pass, with etc.
-# 
 #@@c
 
 #@+<< imports >>
 #@+node:ekr.20111116103733.10440: **  << imports >> (leoInspect)
-import leo.core.leoGlobals as g
+import sys
+isPython3 = sys.version_info >= (3,0,0)
+
+try:
+    import leo.core.leoGlobals as g
+except ImportError:
+    #@+<< define g object >>
+    #@+node:ekr.20120515183732.9993: *3* << define g object >> (leoInspect)
+    if 0: # Debugging. Make sure this is not a problem.
+
+        class LeoGlobals:
+
+            #@+others
+            #@+node:ekr.20120515183732.10013: *4* Most common functions (leoInspect)...
+            #@+node:ekr.20120515183732.10014: *5* LG.callers & _callerName (leoInspect)
+            def callers (self,n=4,count=0,excludeCaller=True,files=False):
+
+                '''Return a list containing the callers of the function that called g.callerList.
+
+                If the excludeCaller keyword is True (the default), g.callers is not on the list.
+
+                If the files keyword argument is True, filenames are included in the list.
+                '''
+
+                # sys._getframe throws ValueError in both cpython and jython if there are less than i entries.
+                # The jython stack often has less than 8 entries,
+                # so we must be careful to call g._callerName with smaller values of i first.
+                result = []
+                i = g.choose(excludeCaller,3,2)
+                while 1:
+                    s = g._callerName(i,files=files)
+                    if s:
+                        result.append(s)
+                    if not s or len(result) >= n: break
+                    i += 1
+
+                result.reverse()
+                if count > 0: result = result[:count]
+                sep = g.choose(files,'\n',',')
+                return sep.join(result)
+            #@+node:ekr.20120515183732.10015: *6* _callerName
+            def _callerName (n=1,files=False):
+
+                try: # get the function name from the call stack.
+                    f1 = sys._getframe(n) # The stack frame, n levels up.
+                    code1 = f1.f_code # The code object
+                    name = code1.co_name
+                    if name == '__init__':
+                        name = '__init__(%s,line %s)' % (
+                            g.shortFileName(code1.co_filename),code1.co_firstlineno)
+                    if files:
+                        return '%s:%s' % (g.shortFileName(code1.co_filename),name)
+                    else:
+                        return name # The code name
+                except ValueError:
+                    return '' # The stack is not deep enough.
+                except Exception:
+                    g.es_exception()
+                    return '' # "<no caller name>"
+            #@+node:ekr.20120515183732.10017: *5* LG.doKeywordArgs (leoInspect)
+            def doKeywordArgs(self,keys,d=None):
+
+                '''Return a result dict that is a copy of the keys dict
+                with missing items replaced by defaults in d dict.'''
+
+                if d is None: d = {}
+
+                result = {}
+                for key,default_val in d.items():
+                    isBool = default_val in (True,False)
+                    val = keys.get(key)
+                    if isBool and val in (True,'True','true'):
+                        result[key] = True
+                    elif isBool and val in (False,'False','false'):
+                        result[key] = False
+                    elif val is None:
+                        result[key] = default_val
+                    else:
+                        result[key] = val
+
+                return result 
+            #@+node:ekr.20120515183732.10018: *5* LG.pdb (leoInspect)
+            def pdb (self,message=''):
+
+                """Fall into pdb."""
+
+                import pdb # Required: we have just defined pdb as a method!
+
+                if message:
+                    print(message)
+                pdb.set_trace()
+            #@+node:ekr.20120515183732.10019: *5* LG.pr (leoInspect)
+            # see: http://www.diveintopython.org/xml_processing/unicode.html
+
+            pr_warning_given = False
+
+            def pr(self,*args,**keys): # (leoInspect!)
+
+                '''Print all non-keyword args, and put them to the log pane.
+                The first, third, fifth, etc. arg translated by g.translateString.
+                Supports color, comma, newline, spaces and tabName keyword arguments.
+                '''
+
+                # Compute the effective args.
+                d = {'commas':False,'newline':True,'spaces':True}
+                d = g.doKeywordArgs(keys,d)
+                newline = d.get('newline')
+                if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
+                    # sys.stdout is a TextIOWrapper with a particular encoding.
+                    encoding = sys.stdout.encoding
+                else:
+                    encoding = 'utf-8'
+
+                # Important:  Python's print statement *can* handle unicode.
+                # However, the following must appear in Python\Lib\sitecustomize.py:
+                #    sys.setdefaultencoding('utf-8')
+                s = g.translateArgs(args,d) # Translates everything to unicode.
+                if newline:
+                    s = s + '\n'
+
+                if isPython3:
+                    if encoding.lower() in ('utf-8','utf-16'):
+                        s2 = s # There can be no problem.
+                    else:
+                        # 2010/10/21: Carefully convert s to the encoding.
+                        s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
+                        s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
+                else:
+                    s2 = g.toEncodedString(s,encoding,reportErrors=False)
+
+                if 1: # Good for production: queues 'reading settings' until after signon.
+                    if app.logInited:
+                        sys.stdout.write(s2)
+                    else:
+                        app.printWaiting.append(s2)
+                else:
+                    # Good for debugging: prints messages immediately.
+                    print(s2)
+            #@+node:ekr.20120515183732.10020: *5* LG.trace (leoInspect)
+            # Convert all args to strings.
+
+            def trace (self,*args,**keys):
+
+                # Compute the effective args.
+                d = {'align':0,'newline':True}
+                d = g.doKeywordArgs(keys,d)
+                newline = d.get('newline')
+                align = d.get('align')
+                if align is None: align = 0
+
+                # Compute the caller name.
+                try: # get the function name from the call stack.
+                    f1 = sys._getframe(1) # The stack frame, one level up.
+                    code1 = f1.f_code # The code object
+                    name = code1.co_name # The code name
+                except Exception:
+                    name = ''
+                if name == "?":
+                    name = "<unknown>"
+
+                # Pad the caller name.
+                if align != 0 and len(name) < abs(align):
+                    pad = ' ' * (abs(align) - len(name))
+                    if align > 0: name = name + pad
+                    else:         name = pad + name
+
+                # Munge *args into s.
+                # print ('g.trace:args...')
+                # for z in args: print (g.isString(z),repr(z))
+                result = [name]
+                for arg in args:
+                    if g.isString(arg):
+                        pass
+                    elif g.isBytes(arg):
+                        arg = g.toUnicode(arg)
+                    else:
+                        arg = repr(arg)
+                    if result:
+                        result.append(" " + arg)
+                    else:
+                        result.append(arg)
+                s = ''.join(result)
+
+                # 'print s,' is not valid syntax in Python 3.x.
+                g.pr(s,newline=newline)
+            #@+node:ekr.20120515183732.10021: *5* LG.translateArgs (leoInspect)
+            def translateArgs(self,args,d):
+
+                '''Return the concatenation of all args, with odd args translated.'''
+
+                if not hasattr(g,'consoleEncoding'):
+                    e = sys.getdefaultencoding()
+                    g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
+                    # print 'translateArgs',g.consoleEncoding
+
+                result = [] ; n = 0 ; spaces = d.get('spaces')
+                for arg in args:
+                    n += 1
+
+                    # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
+
+                    # First, convert to unicode.
+                    if type(arg) == type('a'):
+                        arg = g.toUnicode(arg,g.consoleEncoding)
+
+                    # Just do this for the stand-alone version.
+                    if not g.isString(arg):
+                        arg = repr(arg)
+
+                    if arg:
+                        if result and spaces: result.append(' ')
+                        result.append(arg)
+
+                return ''.join(result)
+            #@+node:ekr.20120515183732.10033: *4* LG.match_word (leoInspect)
+            def match_word(self,s,i,pattern):
+
+                if pattern == None: return False
+                j = len(pattern)
+                if j == 0: return False
+                if s.find(pattern,i,i+j) != i:
+                    return False
+                if i+j >= len(s):
+                    return True
+                ch = s[i+j]
+                return not g.isWordChar(ch)
+            #@+node:ekr.20120515183732.10029: *4* LG.Path functions (leoInspect)...
+            def os_path_exists (self,fileName):
+                
+                return os.path.exists(fileName)
+                
+            def os_path_finalize_join (self,*args,**keys):
+
+                return os.path.normpath(os.path.abspath(
+                    os.path.join(*args,**keys)))
+                    
+            def os_path_join(self,*args,**keys):
+                return os.path.join(*args)
+
+
+            def shortFileName (self,fileName):
+
+                return os.path.basename(fileName)
+            #@+node:ekr.20120515183732.10022: *4* LG.Unicode utils (leoInspect)...
+            #@+node:ekr.20120515183732.10023: *5* LG.isBytes, isCallable, isChar, isString & isUnicode (leoInspect)
+            # The syntax of these functions must be valid on Python2K and Python3K.
+
+            def isBytes(self,s):
+                '''Return True if s is Python3k bytes type.'''
+                if isPython3:
+                    # Generates a pylint warning, but that can't be helped.
+                    return type(s) == type(bytes('a','utf-8'))
+                else:
+                    return False
+
+            def isCallable(self,obj):
+                if isPython3:
+                    return hasattr(obj, '__call__')
+                else:
+                    return callable(obj)
+
+            def isChar(self,s):
+                '''Return True if s is a Python2K character type.'''
+                if isPython3:
+                    return False
+                else:
+                    return type(s) == types.StringType
+
+            def isString(self,s):
+                '''Return True if s is any string, but not bytes.'''
+                if isPython3:
+                    return type(s) == type('a')
+                else:
+                    return type(s) in types.StringTypes
+
+            def isUnicode(self,s):
+                '''Return True if s is a unicode string.'''
+                if isPython3:
+                    return type(s) == type('a')
+                else:
+                    return type(s) == types.UnicodeType
+            #@+node:ekr.20120515183732.10024: *5* LG.isValidEncoding (leoInspect)
+            def isValidEncoding (self,encoding):
+
+                if not encoding:
+                    return False
+
+                if sys.platform == 'cli':
+                    return True
+
+                import codecs
+
+                try:
+                    codecs.lookup(encoding)
+                    return True
+                except LookupError: # Windows.
+                    return False
+                except AttributeError: # Linux.
+                    return False
+            #@+node:ekr.20120515183732.10025: *5* LG.reportBadChars (leoInspect)
+            def reportBadChars (self,s,encoding):
+
+                if isPython3:
+                    errors = 0
+                    if g.isUnicode(s):
+                        for ch in s:
+                            try: ch.encode(encoding,"strict")
+                            except UnicodeEncodeError:
+                                errors += 1
+                        if errors:
+                            s2 = "%d errors converting %s to %s" % (
+                                errors, s.encode(encoding,'replace'),
+                                encoding.encode('ascii','replace'))
+                            print(s2)
+                    elif g.isChar(s):
+                        for ch in s:
+                            # try: unicode(ch,encoding,"strict")
+                            # 2012/04/20: use str instead of str.
+                            try: str(ch)
+                            except Exception: errors += 1
+                        if errors:
+                            s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                                errors,str(encoding),
+                                # unicode(s,encoding,'replace'),
+                                encoding.encode('ascii','replace'))
+                            if not g.unitTesting:
+                                print(s2)
+                else:
+                    errors = 0
+                    if g.isUnicode(s):
+                        for ch in s:
+                            try: ch.encode(encoding,"strict")
+                            except UnicodeEncodeError:
+                                errors += 1
+                        if errors:
+                            print("%d errors converting %s to %s" % (
+                                errors, s.encode(encoding,'replace'),
+                                encoding.encode('ascii','replace')))
+                    elif g.isChar(s):
+                        for ch in s:
+                            try: unicode(ch,encoding,"strict")
+                            except Exception: errors += 1
+                        if errors:
+                            print("%d errors converting %s (%s encoding) to unicode" % (
+                                errors, unicode(s,encoding,'replace'),
+                                encoding.encode('ascii','replace')))
+            #@+node:ekr.20120515183732.10026: *5* LG.toEncodedString (leoInspect)
+            def toEncodedString (self,s,encoding='utf-8',reportErrors=False):
+
+                if encoding is None:
+                    encoding = 'utf-8'
+
+                if g.isUnicode(s):
+                    try:
+                        s = s.encode(encoding,"strict")
+                    except UnicodeError:
+                        if reportErrors: g.reportBadChars(s,encoding)
+                        s = s.encode(encoding,"replace")
+                return s
+            #@+node:ekr.20120515183732.10027: *5* LG.toUnicode (leoInspect)
+            def toUnicode (self,s,encoding='utf-8',reportErrors=False):
+
+                # The encoding is usually 'utf-8'
+                # but is may be different while importing or reading files.
+                if encoding is None:
+                    encoding = 'utf-8'
+
+                if isPython3:
+                    f,mustConvert = str,g.isBytes
+                else:
+                    f = unicode
+                    def mustConvert (s):
+                        return type(s) != types.UnicodeType
+
+                if not s:
+                    s = g.u('')
+                elif mustConvert(s):
+                    try:
+                        s = f(s,encoding,'strict')
+                    except (UnicodeError,Exception):
+                        s = f(s,encoding,'replace')
+                        if reportErrors: g.reportBadChars(s,encoding)
+                else:
+                    pass
+
+                return s
+            #@+node:ekr.20120515183732.10028: *5* LG.u & ue (leoInspect)
+            if isPython3: # g.not defined yet.
+                def u(s):
+                    return s
+                def ue(s,encoding):
+                    return str(s,encoding)
+            else:
+                def u(s):
+                    return unicode(s)
+                def ue(s,encoding):
+                    return unicode(s,encoding)
+            #@-others
+        
+        g = LeoGlobals()
+    #@-<< define g object >>
 
 # Used by ast-oriented code.
-if not g.isPython3:
+if not isPython3:
     import __builtin__
     
 import ast
@@ -32,11 +431,11 @@ import glob
 import imp
 import os
 import string
-import sys
+# import sys
 import time
 import types
 
-if g.isPython3:
+if isPython3:
     import io
     StringIO = io.StringIO
 else:
@@ -188,7 +587,7 @@ class AstTraverser(object):
             a.Yield: self.do_Yield,
         }
         
-        if g.isPython3:
+        if isPython3:
             d [a.arg]   = self.do_arg
             d [a.Bytes] = self.do_Bytes
         else:
@@ -357,7 +756,7 @@ class AstTraverser(object):
 
     def node_after_tree (self,tree):
         
-        trace = False and not g.unitTesting
+        trace = False
         tree1 = tree # For tracing
         
         def children(tree):
@@ -977,6 +1376,349 @@ class AstTraverser(object):
                     g.pr('%s %s' % (indent,kind))
     #@-others
 #@-<< define class AstTraverser >>
+#@+<< define class Context >>
+#@+node:ekr.20111116103733.10402: ** << define class Context >>
+class Context(object):
+
+    '''The base class of all context-related semantic data.
+
+    All types ultimately resolve to a context.'''
+
+    def __repr__ (self):
+        return 'Context: %s' % (self.context_kind)
+
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20111116103733.10403: *3* cx ctor
+    def __init__(self,tree,parent_context,sd,kind):
+
+        self.is_temp_context = kind in ['comprehension','for','lambda','with']
+        self.context_kind = kind
+        # assert kind in ('class','comprehension','def','for','lambda','module','with'),kind
+        self.formatter = sd.formatter
+        self.parent_context = parent_context
+        self.sd = sd
+        self.st = SymbolTable(context=self)
+
+        sd.n_contexts += 1
+
+        # Public semantic data: accessed via getters.
+        self._classes = [] # Classes defined in this context.
+        self._defs = [] # Functions defined in this context.
+        self._statements = [] # List of all statements in the context.
+        self._tree = tree
+        
+        # Private semantic data: no getters.
+        self.global_names = set() # Names that appear in a global statement in this context.
+        self.temp_contexts = [] # List of inner 'comprehension','for','lambda','with' contexts.
+        
+        # Record the name.ctx contexts.
+        self.del_names = set()      # Names with ctx == 'Del'
+        self.load_names = set()     # Names with ctx == 'Load'
+        self.param_names = set()    # Names with ctx == 'Param'
+        self.store_names = set()    # Names with ctx == 'Store'
+        
+        # Data for the resolution algorithm.
+        self.all_global_names = set() # Global names in all parent contexts.
+        
+        # Compute the class context.
+        if self.context_kind == 'module':
+            self.class_context = None
+        elif self.context_kind == 'class':
+            self.class_context = self
+        else:
+            self.class_context = parent_context.class_context
+            
+        # Compute the defining context.
+        if self.is_temp_context:
+            self.defining_context = parent_context.defining_context
+        else:
+            self.defining_context = self
+        
+        # Compute the module context.
+        if self.context_kind == 'module':
+            self.module_context = self
+        else:
+            self.module_context = parent_context.module_context
+    #@+node:ekr.20111116103733.10404: *3* cx.ast_kind
+    def ast_kind (self,tree):
+
+        return tree.__class__.__name__
+    #@+node:ekr.20111116103733.10405: *3* cx.description & name
+    def description (self):
+        
+        '''Return a description of this context and all parent contexts.'''
+        
+        if self.parent_context:
+            return  '%s:%s' % (
+                self.parent_context.description(),repr(self))
+        else:
+            return repr(self)
+
+    # All subclasses override name.
+    name = description
+    #@+node:ekr.20111116103733.10407: *3* cx.dump
+    def dump (self,level=0,verbose=False):
+
+        if 0: # Just print the context
+            print(repr(self))
+        else:
+            self.st.dump(level=level)
+
+        if verbose:
+            for z in self._classes:
+                z.dump(level+1)
+            for z in self._defs:
+                z.dump(level+1)
+            for z in self.temp_contexts:
+                z.dump(level+1)
+    #@+node:ekr.20111117031039.10099: *3* cx.format
+    def format(self,brief=True):
+        
+        cx = self
+        
+        # return cx.sd.dumper.dumpTreeAsString(cx._tree,brief=brief,outStream=None)
+        
+        # return ast.dump(cx._tree,annotate_fields=True,include_attributes=not brief)
+        
+        return AstFormatter().format(cx._tree)
+    #@+node:ekr.20111116161118.10113: *3* cx.getters
+    #@+node:ekr.20111116161118.10114: *4* cx.assignments & helper
+    def assignments (self,all=True):
+        
+        if all:
+            return self.all_assignments(result=None)
+        else:
+            return self.filter_assignments(self._statements)
+
+    def all_assignments(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_assignments(self._statements))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_assignments(result)
+        return result
+        
+    def filter_assignments(self,aList):
+        '''Return all the assignments in aList.'''
+        return [z for z in aList
+            if z.context_kind in ('assn','aug-assn')]
+    #@+node:ekr.20111116161118.10115: *4* cx.assignments_to
+    def assignments_to (self,s,all=True):
+        
+        format,result = self.formatter.format,[]
+
+        for assn in self.assignments(all=all):
+            tree = assn.tree()
+            kind = self.ast_kind(tree)
+            if kind == 'Assign':
+                for target in tree.targets:
+                    lhs = format(target)
+                    if s == lhs:
+                        result.append(assn)
+                        break
+            else:
+                assert kind == 'AugAssign',kind
+                lhs = format(tree.target)
+                if s == lhs:
+                    result.append(assn)
+
+        return result
+    #@+node:ekr.20111116161118.10116: *4* cx.assignments_using
+    def assignments_using (self,s,all=True):
+        
+        format,result = self.formatter.format,[]
+
+        for assn in self.assignments(all=all):
+            tree = assn.tree()
+            kind = self.ast_kind(tree)
+            assert kind in ('Assign','AugAssign'),kind
+            rhs = format(tree.value)
+            i = rhs.find(s,0)
+            while -1 < i < len(rhs):
+                if g.match_word(rhs,i,s):
+                    result.append(assn)
+                    break
+                else:
+                    i += len(s)
+
+        return result
+    #@+node:ekr.20111126074312.10386: *4* cx.calls & helpers
+    def calls (self,all=True):
+        
+        if all:
+            return self.all_calls(result=None)
+        else:
+            return self.filter_calls(self._statements)
+
+    def all_calls(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_calls(self._statements))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_calls(result)
+        return result
+        
+    def filter_calls(self,aList):
+        '''Return all the calls in aList.'''
+        return [z for z in aList
+            if z.context_kind == 'call']
+    #@+node:ekr.20111126074312.10384: *4* cx.call_to
+    def calls_to (self,s,all=True):
+        
+        format,result = self.formatter.format,[]
+
+        for call in self.calls(all=all):
+            tree = call.tree()
+            func = format(tree.func)
+            if s == func:
+                result.append(call)
+
+        return result
+    #@+node:ekr.20111126074312.10400: *4* cx.call_args_of
+    def call_args_of (self,s,all=True):
+        
+        format,result = self.formatter.format,[]
+
+        for call in self.calls(all=all):
+            tree = call.tree()
+            func = format(tree.func)
+            if s == func:
+                result.append(call)
+
+        return result
+    #@+node:ekr.20111116161118.10163: *4* cx.classes
+    def classes (self,all=True):
+        
+        if all:
+            return self.all_classes(result=None)
+        else:
+            return self._classes
+
+    def all_classes(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self._classes)
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_classes(result)
+        return result
+    #@+node:ekr.20111116161118.10164: *4* cx.defs
+    def defs (self,all=True):
+        
+        if all:
+            return self.all_defs(result=None)
+        else:
+            return self._defs
+
+    def all_defs(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self._defs)
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_defs(result)
+        return result
+    #@+node:ekr.20111116161118.10152: *4* cx.functions & helpers
+    def functions (self,all=True):
+        
+        if all:
+            return self.all_functions(result=None)
+        else:
+            return self.filter_functions(self._defs)
+
+    def all_functions(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_functions(self._defs))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_functions(result)
+        return result
+    #@+node:ekr.20111116161118.10223: *5* cx.filter_functions & is_function
+    def filter_functions(self,aList):
+        return [z for z in aList if self.is_function(z)]
+
+    def is_function(self,f):
+        '''Return True if f is a function, not a method.'''
+        return True
+    #@+node:ekr.20111126074312.10449: *4* cx.line_number
+    def line_number (self):
+        
+        return self._tree.lineno
+    #@+node:ekr.20111116161118.10153: *4* cx.methods & helpers
+    def methods (self,all=True):
+        
+        if all:
+            return self.all_methods(result=None)
+        else:
+            return self.filter_methods(self._defs)
+
+    def all_methods(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self.filter_methods(self._defs))
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_methods(result)
+        return result
+    #@+node:ekr.20111116161118.10225: *5* cx.filter_functions & is_function
+    def filter_methods(self,aList):
+        return [z for z in aList if self.is_method(z)]
+
+    def is_method(self,f):
+        '''Return True if f is a method, not a function.'''
+        return True
+    #@+node:ekr.20111116161118.10165: *4* cx.statements
+    def statements (self,all=True):
+        
+        if all:
+            return self.all_statements(result=None)
+        else:
+            return self._statements
+
+    def all_statements(self,result):
+
+        if result is None:
+            result = []
+        result.extend(self._statements)
+        for aList in (self._classes,self._defs):
+            for cx in aList:
+                cx.all_statements(result)
+        return result
+    #@+node:ekr.20111128103520.10259: *4* cx.token_range
+    def token_range (self):
+        
+        tree = self._tree
+        
+        # return (
+            # g.toUnicode(self.byte_array[:tree.col_offset]),
+            # g.toUnicode(self.byte_array[:tree_end_col_offset]),
+        # )
+        
+        if hasattr(tree,'col_offset') and hasattr(tree,'end_col_offset'):
+            return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
+        else:
+            return -1,-1
+    #@+node:ekr.20111116161118.10166: *4* cx.tree
+    def tree(self):
+        
+        '''Return the AST (Abstract Syntax Tree) associated with this query object
+        (Context Class).  This tree can be passed to the format method for printing.
+        '''
+        
+        return self._tree
+    #@-others
+#@-<< define class Context >>
 
 #@+others
 #@+node:ekr.20111116103733.10539: **  Top-level functions
@@ -1041,8 +1783,10 @@ class AstDumper(object):
     #@+others
     #@+node:ekr.20111116103733.10258: *3* setOptions
     def setOptions (self,
-        annotate_fields = True, # True: include attribute names.
-        include_attributes = False, # True: include lineno and col_offset attributes.
+        annotate_fields = True,
+            # True: include attribute names.
+        include_attributes = False,
+            # True: include lineno and col_offset attributes.
         stripBody = False,
         outStream = None
     ):
@@ -1097,7 +1841,7 @@ class AstDumper(object):
 
         '''Write the node representation the ast tree to outStream.'''
 
-        s = self._dumpTreeAsNodes(tree,brief=brief) # was visitTree
+        s = self._dumpTreeAsNodes(tree,brief=brief)
         if outStream:
             self._writeAndClose(s,outStream)
         return s
@@ -1115,7 +1859,6 @@ class AstDumper(object):
     def _dumpAstNode(self,node,fieldname):
 
         # Visit the node.
-        delta = 4 # The number of spaces for each indentation.
         self._put(repr(node))
         # put(node.__class__.__name__,'name') # valid
         fields = ['%s: %s' % (name,repr(val))
@@ -1127,6 +1870,7 @@ class AstDumper(object):
         self._putList(attrs,'_attrs')
        
         # Visit the children
+        delta = 4 # The number of spaces for each indentation.
         for child in ast.iter_child_nodes(node):
             self.level += delta
             self._dumpAstNode(child,'child')
@@ -1831,7 +2575,7 @@ class AstFormatter (AstTraverser):
         
     # Python 3.x only.
     def do_Bytes(self,tree,tag=''):
-        assert g.isPython3
+        assert isPython3
         self.append(str(tree.s))
 
     def do_int (self,s,tag=''):
@@ -2101,7 +2845,8 @@ class InspectTraverser (AstTraverser):
             self.formatter = g.nullObject()
         else:
             self.formatter = AstFormatter(fn)
-        self.formatter.trace = self.trace_flag
+
+        self.formatter.trace_flag = self.trace_flag
     #@+node:ekr.20111116103733.10354: *3* it.Contexts
     #@+node:ekr.20111116103733.10355: *4* ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
@@ -2258,7 +3003,7 @@ class InspectTraverser (AstTraverser):
 
         name = tree.id
 
-        if g.isPython3:
+        if isPython3:
             if name in self.sd.module_names:
                 return
         else:
@@ -2939,8 +3684,8 @@ class SymbolTableEntry(object):
         if self.name:
             n = self.st.max_name_length - len(self.name)
             pad = ' '*n
-            unbound = g.choose(self.load_before_store_flag,
-                ': <unbound>','')
+            # unbound = g.choose(self.load_before_store_flag,': <unbound>','')
+            unbound = ': <unbound>' if self.load_before_store_flag else ''
             if self.chains:
                 return '%s%s defined: %5s%s: %s' % (
                     pad,self.name,self.defined,unbound,self.show_chains())
@@ -2978,358 +3723,13 @@ class SymbolTableEntry(object):
         return 'ste: %s' % self.name
     #@-others
 #@+node:ekr.20111116103733.10401: ** Context classes
-#@+<< define class Context >>
-#@+node:ekr.20111116103733.10402: *3* << define class Context >>
-class Context(object):
-
-    '''The base class of all context-related semantic data.
-
-    All types ultimately resolve to a context.'''
-
-    def __repr__ (self):
-        return 'Context: %s' % (self.context_kind)
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20111116103733.10403: *4* cx ctor
-    def __init__(self,tree,parent_context,sd,kind):
-
-        self.is_temp_context = kind in ['comprehension','for','lambda','with']
-        self.context_kind = kind
-        # assert kind in ('class','comprehension','def','for','lambda','module','with'),kind
-        self.formatter = sd.formatter
-        self.parent_context = parent_context
-        self.sd = sd
-        self.st = SymbolTable(context=self)
-
-        sd.n_contexts += 1
-
-        # Public semantic data: accessed via getters.
-        self._classes = [] # Classes defined in this context.
-        self._defs = [] # Functions defined in this context.
-        self._statements = [] # List of all statements in the context.
-        self._tree = tree
-        
-        # Private semantic data: no getters.
-        self.global_names = set() # Names that appear in a global statement in this context.
-        self.temp_contexts = [] # List of inner 'comprehension','for','lambda','with' contexts.
-        
-        # Record the name.ctx contexts.
-        self.del_names = set()      # Names with ctx == 'Del'
-        self.load_names = set()     # Names with ctx == 'Load'
-        self.param_names = set()    # Names with ctx == 'Param'
-        self.store_names = set()    # Names with ctx == 'Store'
-        
-        # Data for the resolution algorithm.
-        self.all_global_names = set() # Global names in all parent contexts.
-        
-        # Compute the class context.
-        if self.context_kind == 'module':
-            self.class_context = None
-        elif self.context_kind == 'class':
-            self.class_context = self
-        else:
-            self.class_context = parent_context.class_context
-            
-        # Compute the defining context.
-        if self.is_temp_context:
-            self.defining_context = parent_context.defining_context
-        else:
-            self.defining_context = self
-        
-        # Compute the module context.
-        if self.context_kind == 'module':
-            self.module_context = self
-        else:
-            self.module_context = parent_context.module_context
-    #@+node:ekr.20111116103733.10404: *4* cx.ast_kind
-    def ast_kind (self,tree):
-
-        return tree.__class__.__name__
-    #@+node:ekr.20111116103733.10405: *4* cx.description & name
-    def description (self):
-        
-        '''Return a description of this context and all parent contexts.'''
-        
-        if self.parent_context:
-            return  '%s:%s' % (
-                self.parent_context.description(),repr(self))
-        else:
-            return repr(self)
-
-    # All subclasses override name.
-    name = description
-    #@+node:ekr.20111116103733.10407: *4* cx.dump
-    def dump (self,level=0,verbose=False):
-
-        if 0: # Just print the context
-            print(repr(self))
-        else:
-            self.st.dump(level=level)
-
-        if verbose:
-            for z in self._classes:
-                z.dump(level+1)
-            for z in self._defs:
-                z.dump(level+1)
-            for z in self.temp_contexts:
-                z.dump(level+1)
-    #@+node:ekr.20111117031039.10099: *4* cx.format
-    def format(self,brief=True):
-        
-        cx = self
-        
-        # return cx.sd.dumper.dumpTreeAsString(cx._tree,brief=brief,outStream=None)
-        
-        # return ast.dump(cx._tree,annotate_fields=True,include_attributes=not brief)
-        
-        return AstFormatter().format(cx._tree)
-    #@+node:ekr.20111116161118.10113: *4* cx.getters & setters
-    #@+node:ekr.20111116161118.10114: *5* cx.assignments & helper
-    def assignments (self,all=True):
-        
-        if all:
-            return self.all_assignments(result=None)
-        else:
-            return self.filter_assignments(self._statements)
-
-    def all_assignments(self,result):
-
-        if result is None:
-            result = []
-        result.extend(self.filter_assignments(self._statements))
-        for aList in (self._classes,self._defs):
-            for cx in aList:
-                cx.all_assignments(result)
-        return result
-        
-    def filter_assignments(self,aList):
-        '''Return all the assignments in aList.'''
-        return [z for z in aList
-            if z.context_kind in ('assn','aug-assn')]
-    #@+node:ekr.20111116161118.10115: *5* cx.assignments_to
-    def assignments_to (self,s,all=True):
-        
-        format,result = self.formatter.format,[]
-
-        for assn in self.assignments(all=all):
-            tree = assn.tree()
-            kind = self.ast_kind(tree)
-            if kind == 'Assign':
-                for target in tree.targets:
-                    lhs = format(target)
-                    if s == lhs:
-                        result.append(assn)
-                        break
-            else:
-                assert kind == 'AugAssign',kind
-                lhs = format(tree.target)
-                if s == lhs:
-                    result.append(assn)
-
-        return result
-    #@+node:ekr.20111116161118.10116: *5* cx.assignments_using
-    def assignments_using (self,s,all=True):
-        
-        format,result = self.formatter.format,[]
-
-        for assn in self.assignments(all=all):
-            tree = assn.tree()
-            kind = self.ast_kind(tree)
-            assert kind in ('Assign','AugAssign'),kind
-            rhs = format(tree.value)
-            i = rhs.find(s,0)
-            while -1 < i < len(rhs):
-                if g.match_word(rhs,i,s):
-                    result.append(assn)
-                    break
-                else:
-                    i += len(s)
-
-        return result
-    #@+node:ekr.20111126074312.10386: *5* cx.calls & helpers
-    def calls (self,all=True):
-        
-        if all:
-            return self.all_calls(result=None)
-        else:
-            return self.filter_calls(self._statements)
-
-    def all_calls(self,result):
-
-        if result is None:
-            result = []
-        result.extend(self.filter_calls(self._statements))
-        for aList in (self._classes,self._defs):
-            for cx in aList:
-                cx.all_calls(result)
-        return result
-        
-    def filter_calls(self,aList):
-        '''Return all the calls in aList.'''
-        return [z for z in aList
-            if z.context_kind == 'call']
-    #@+node:ekr.20111126074312.10384: *5* cx.call_to
-    def calls_to (self,s,all=True):
-        
-        format,result = self.formatter.format,[]
-
-        for call in self.calls(all=all):
-            tree = call.tree()
-            func = format(tree.func)
-            if s == func:
-                result.append(call)
-
-        return result
-    #@+node:ekr.20111126074312.10400: *5* cx.call_args_of
-    def call_args_of (self,s,all=True):
-        
-        format,result = self.formatter.format,[]
-
-        for call in self.calls(all=all):
-            tree = call.tree()
-            func = format(tree.func)
-            if s == func:
-                result.append(call)
-
-        return result
-    #@+node:ekr.20111116161118.10163: *5* cx.classes
-    def classes (self,all=True):
-        
-        if all:
-            return self.all_classes(result=None)
-        else:
-            return self._classes
-
-    def all_classes(self,result):
-
-        if result is None:
-            result = []
-        result.extend(self._classes)
-        for aList in (self._classes,self._defs):
-            for cx in aList:
-                cx.all_classes(result)
-        return result
-    #@+node:ekr.20111116161118.10164: *5* cx.defs
-    def defs (self,all=True):
-        
-        if all:
-            return self.all_defs(result=None)
-        else:
-            return self._defs
-
-    def all_defs(self,result):
-
-        if result is None:
-            result = []
-        result.extend(self._defs)
-        for aList in (self._classes,self._defs):
-            for cx in aList:
-                cx.all_defs(result)
-        return result
-    #@+node:ekr.20111116161118.10152: *5* cx.functions & helpers
-    def functions (self,all=True):
-        
-        if all:
-            return self.all_functions(result=None)
-        else:
-            return self.filter_functions(self._defs)
-
-    def all_functions(self,result):
-
-        if result is None:
-            result = []
-        result.extend(self.filter_functions(self._defs))
-        for aList in (self._classes,self._defs):
-            for cx in aList:
-                cx.all_functions(result)
-        return result
-    #@+node:ekr.20111116161118.10223: *6* cx.filter_functions & is_function
-    def filter_functions(self,aList):
-        return [z for z in aList if self.is_function(z)]
-
-    def is_function(self,f):
-        '''Return True if f is a function, not a method.'''
-        return True
-    #@+node:ekr.20111126074312.10449: *5* cx.line_number
-    def line_number (self):
-        
-        return self._tree.lineno
-    #@+node:ekr.20111116161118.10153: *5* cx.methods & helpers
-    def methods (self,all=True):
-        
-        if all:
-            return self.all_methods(result=None)
-        else:
-            return self.filter_methods(self._defs)
-
-    def all_methods(self,result):
-
-        if result is None:
-            result = []
-        result.extend(self.filter_methods(self._defs))
-        for aList in (self._classes,self._defs):
-            for cx in aList:
-                cx.all_methods(result)
-        return result
-    #@+node:ekr.20111116161118.10225: *6* cx.filter_functions & is_function
-    def filter_methods(self,aList):
-        return [z for z in aList if self.is_method(z)]
-
-    def is_method(self,f):
-        '''Return True if f is a method, not a function.'''
-        return True
-    #@+node:ekr.20111116161118.10165: *5* cx.statements
-    def statements (self,all=True):
-        
-        if all:
-            return self.all_statements(result=None)
-        else:
-            return self._statements
-
-    def all_statements(self,result):
-
-        if result is None:
-            result = []
-        result.extend(self._statements)
-        for aList in (self._classes,self._defs):
-            for cx in aList:
-                cx.all_statements(result)
-        return result
-    #@+node:ekr.20111128103520.10259: *5* cx.token_range
-    def token_range (self):
-        
-        tree = self._tree
-        
-        # return (
-            # g.toUnicode(self.byte_array[:tree.col_offset]),
-            # g.toUnicode(self.byte_array[:tree_end_col_offset]),
-        # )
-        
-        if hasattr(tree,'col_offset') and hasattr(tree,'end_col_offset'):
-            return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
-        else:
-            return -1,-1
-    #@+node:ekr.20111116161118.10166: *5* cx.tree
-    def tree(self):
-        
-        '''Return the AST (Abstract Syntax Tree) associated with this query object
-        (Context Class).  This tree can be passed to the format method for printing.
-        '''
-        
-        return self._tree
-    #@-others
-#@-<< define class Context >>
-
-#@+others
 #@+node:ekr.20111116103733.10413: *3* class ClassContext
 class ClassContext (Context):
 
     '''A class to hold semantic data about a class.'''
 
     def __init__(self,tree,parent_context,sd):
-
+        
         Context.__init__(self,tree,parent_context,sd,'class')
 
     def __repr__ (self):
@@ -3444,7 +3844,7 @@ class ModuleContext (Context):
 #@+node:ekr.20111116161118.10170: *3* class StatementContext
 class StatementContext (Context):
 
-    '''A class to any statement.'''
+    '''A class to hold semantic data about any statement.'''
 
     def __init__(self,tree,parent_context,sd,kind):
 
@@ -3474,6 +3874,5 @@ class WithContext (Context):
         return 'with statement context'
         
     __str__ = __repr__
-#@-others
 #@-others
 #@-leo
