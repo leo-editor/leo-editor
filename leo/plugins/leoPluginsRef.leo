@@ -162,8 +162,8 @@
 <v t="ville.20120503224623.3574" a="E"><vh>@file leomylyn.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
-<v t="ekr.20041001210557"><vh>Scripting</vh>
-<v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
+<v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
+<v t="tbrown.20100226095909.12777" a="E"><vh>@file leoscreen.py</vh></v>
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
