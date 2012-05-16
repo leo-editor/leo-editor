@@ -63,6 +63,15 @@ leoscreen-less-prompt
   Skip one more line at the end of output when fetching output into Leo
   Adjusts lines skipped to avoid pulling in the applications prompt line.
 
+leoscreen-jump-to-error
+  Jump to the python error reported in the shell window, if the file's
+  loaded in the current Leo session.  Just looks for a line::
+      
+      File "somefile.py", line NNN, in xxx
+
+  and looks for a node starting with "@" and ending with "somefile.py", then
+  jumps to line NNN in that file.
+
 **Settings**
 
 leoscreen_prefix
@@ -434,5 +443,24 @@ def cmd_more_prompt(c):
 def cmd_less_prompt(c):
     """call get_prefix"""
     c.leo_screen.first_line -= 1
+#@+node:tbrown.20120516075804.26095: ** cmd_jump_to_error
+def cmd_jump_to_error(c):
+    
+    import re
+    regex = re.compile(r'  File "(.*)", line (\d+), in')
+    
+    lines = c.leo_screen.get_all(c)
+    lines = lines.split('\n')
+    for i in reversed(lines):
+        match = regex.match(i)
+        if match:
+            g.es("Line %s in %s"%(match.group(2), match.group(1)))
+            for p in c.all_unique_positions():
+                if p.h.startswith('@') and p.h.endswith(match.group(1)):
+                    c.selectPosition(p)
+                    c.goToLineNumber(c).go(n=int(match.group(2)))
+                    c.bodyWantsFocusNow()
+                    break
+            break
 #@-others
 #@-leo
