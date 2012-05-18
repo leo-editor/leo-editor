@@ -174,6 +174,7 @@ class leoImportCommands (scanUtility):
             '.ini':     self.scanIniText,
             '.java':    self.scanJavaText,
             '.js':      self.scanJavaScriptText,
+            '.otl':     self.scanVimoutlinterText,
             '.php':     self.scanPHPText,
             '.pas':     self.scanPascalText,
             '.py':      self.scanPythonText,
@@ -1602,6 +1603,12 @@ class leoImportCommands (scanUtility):
 
         # Return the language even if there is no colorizer mode for it.
         return language
+    #@+node:ekr.20120517155536.10124: *4* scanVimoutlinterText
+    def scanVimoutlinterText(self,s,parent,atAuto=False):
+        
+        scanner = vimoutlinerScanner(importCommands=self,atAuto=atAuto)
+
+        scanner.run(s,parent)
     #@+node:ekr.20070713075450: *3* Unit tests (leoImport)
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
 
@@ -1684,7 +1691,10 @@ class leoImportCommands (scanUtility):
                 # checkTrialWrite returns *True* if the following match.
                 d.get('actualErrors') == d.get('expectedErrors') and
                 d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
-                (expectedErrorMessage is None or d.get('actualErrorMessage') == d.get('expectedErrorMessage'))
+                (
+                    expectedErrorMessage is None or
+                    d.get('actualErrorMessage') == d.get('expectedErrorMessage')
+                )
             ))
                 
         # Clean up.
@@ -4146,87 +4156,6 @@ class pythonScanner (baseScannerClass):
         to appear at the top level.'''
 
         return i # A rewrite is needed.
-
-        # Comment this out to keep pylint happy.
-
-        # trace = False # and not g.unitTesting
-        # c,found,i1 = self.c,False,i
-        # at_line_start,last_comment,last_nl = True,None,-1
-        # while i < len(s):
-            # progress = i
-            # if self.startsComment(s,i):
-                # # Break at underindented comments.
-                # if at_line_start:
-                    # if i == last_nl:
-                        # n = 0
-                    # else:
-                        # ws = s[last_nl+1:i]
-                        # n = g.computeWidth (ws,c.tab_width)
-                    # if n < lastIndent:
-                        # if trace: g.trace('underindented comment',
-                            # 'ws',repr(ws),'n',n,'lastIndent',lastIndent)
-                        # found = True ; break
-                    # else:
-                        # # Remember the start of a range of comments and whitespace.
-                        # if last_comment is None:
-                            # last_comment = i
-                        # last_nl = i = self.skipComment(s,i)
-                        # at_line_start = True
-                # else:
-                    # # An interior comment.
-                    # assert last_comment is None
-                    # last_nl = i = self.skipComment(s,i)
-                    # at_line_start = True
-            # elif self.startsString(s,i):
-                # at_line_start = False
-                # last_comment = None
-                # i = self.skipString(s,i)
-            # elif at_line_start and (
-                # g.match_word(s,i,'def') or
-                # g.match_word(s,i,'class')
-            # ):
-                # # Do not break for over-indent matches.
-                # # This allows something reasonable to happen for::
-                # # if 0:
-                # #     def spam():
-                # #         pass
-                # ws = s[last_nl+1:i]
-                # # g.trace('ws',repr(ws))
-                # n = g.computeWidth (ws,c.tab_width)
-                # if (not ws or ws.isspace()) and n <= lastIndent:
-                    # found = True ; break
-                # else: # Ignore the over-indented def.
-                    # if trace: g.trace('overindented','ws',repr(ws),
-                        # 'n',n,'lastIndent',lastIndent)
-                    # last_comment = None
-                    # last_nl = i = g.skip_to_end_of_line(s,i)
-                    # at_line_start = True
-            # elif s[i] == '@':
-                # # Leo directives will look like comments,
-                # # so we can safely assume we have a decorator
-                # if at_line_start and last_comment is None:
-                    # last_comment = i
-                # last_nl = i = g.skip_to_end_of_line(s,i)
-                # at_line_start = True
-            # elif s[i] ==  '\n':
-                # at_line_start = True
-                # last_nl = i
-                # i += 1
-            # elif s[i].isspace():
-                # i += 1
-            # else:
-                # at_line_start = False
-                # last_comment = None
-                # i += 1
-            # assert progress < i
-
-        # if found:
-            # if last_comment is None:
-                # return i
-            # else:
-                # return last_comment
-        # else:
-            # return i1
     #@+node:ekr.20070803101619: *4* skipSigTail
     # This must be overridden in order to handle newlines properly.
 
@@ -4540,6 +4469,128 @@ class rstScanner (baseScannerClass):
         line = line.strip()
 
         return i,j,nows,line
+    #@-others
+#@+node:ekr.20120517124200.9983: *3* class vimoutlinerScanner
+class vimoutlinerScanner(baseScannerClass):
+
+    #@+others
+    #@+node:ekr.20120517124200.9984: *4* ctor
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='plain')
+        
+        # Overrides of base-class ivars.
+        self.fullChecks = False
+        self.hasDecls = True
+        
+        # New ivars.
+        self.parents = []
+    #@+node:ekr.20120517155536.10131: *4* createNode 
+    def createNode (self,b,h,level):
+        
+        parent = self.findParent(level)
+        p = self.createFunctionNode(h,b,parent)
+        self.parents = self.parents[:level+1]
+        self.parents.append(p)
+    #@+node:ekr.20120517155536.10132: *4* findParent 
+    def findParent(self,level):
+        
+        assert level >= 0
+        
+        if not self.parents:
+            self.parents = [self.root]
+            
+        # g.trace(level,[z.h for z in self.parents])
+            
+        while level >= len(self.parents):
+            b,h = '','placeholder'
+            parent = self.parents[-1]
+            p = self.createFunctionNode(h,b,parent)
+            self.parents.append(p)
+            
+        return self.parents[level]
+    #@+node:ekr.20120517155536.10117: *4* isBodyLine
+    def isBodyLine(self,s,i):
+        
+        while i < len(s) and s[i] == '\t':
+            i += 1
+            
+        return i+1 < len(s) and s[i] == ':' and s[i+1] == ' '
+    #@+node:ekr.20120517155536.10134: *4* Overrides
+    #@+node:ekr.20120517155536.10123: *5* scanHelper (vimoutlinerScanner)
+    def scanHelper(self,s,i,end,parent,kind):
+        
+        '''Create Leo nodes for all node lines.'''
+
+        assert kind == 'outer'
+        assert end == len(s)
+        body,h,node_level,start = [],None,None,None
+        while i < end:
+            progress = i
+            
+            # Error checking.  Completely ignore blank lines.
+            k = g.skip_line(s,i)
+            if s[i:k].isspace():
+                g.trace('ignoring blank line: %s' % (repr(s[i:k])))
+                i = k
+                assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+                continue
+
+            # Skip leading hard tabs, ignore blanks & compute indent value of this line.
+            indent,j = 0,i
+            while j < len(s) and s[j].isspace():
+                if s[j] == '\t': indent += 1
+                j += 1
+
+            if j < len(s) and s[j] == ':':
+                if j+1 < len(s) and s[j+1] == ' ':
+                    # Skip the body line.
+                    body.append(s[j+2:k])
+                    i = k
+                else:
+                    g.trace('bad body line: <%s>' % (repr(s[i:k])))
+                    # Silently insert the space.
+                    body.append(s[j+1:k])
+                    i = k
+            else:
+                # Complete previous node.
+                if h is not None:
+                    b = ''.join(body)
+                    body,putRef = [],True
+                    self.createNode(b,h,node_level)
+                # Start the new node.
+                node_level = indent
+                h = s[j:k]
+                if h[0].isspace(): g.pdb()
+                if h.endswith('\n'): h = h[:-1]
+                i = start = k
+            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+            
+        # Finish the last node.
+        if h is not None:
+            putRef = True
+            b = ''.join(body)
+            self.createNode(b,h,node_level)
+
+        bodyIndent = 0
+        return len(s),putRef,bodyIndent
+    #@+node:ekr.20120517124200.10026: *5* skipDecls (vimoutlinerScanner)
+    def skipDecls (self,s,i,end,inClass):
+
+        '''Skip everything until the start of the next headline.'''
+
+        assert end == len(s)
+
+        while i < end:
+            progress = i
+            if self.isBodyLine(s,i):
+                putRef = True
+                i = start = g.skip_line(s,i)
+            else: break
+            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+        return i
     #@-others
 #@+node:ekr.20071214072145.1: *3* class xmlScanner & htmlScanner(xmlScanner)
 #@+<< class xmlScanner (baseScannerClass) >>

@@ -3539,7 +3539,7 @@ class atFile:
 
         """Do all writes except asis writes."""
         
-        # g.trace(self.encoding,'nosentinels',nosentinels,root.h,self.outputFile,g.callers())
+        # g.trace(self.encoding,'nosentinels',nosentinels,root.h,self.outputFile)
 
         at = self
         s = g.choose(fromString,fromString,root.v.b)

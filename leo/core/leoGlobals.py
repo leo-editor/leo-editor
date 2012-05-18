@@ -106,6 +106,7 @@ import imp
 import inspect
 import operator
 import os
+
 import urllib
 
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
@@ -4379,8 +4380,10 @@ def computeFileUrl(fn,c=None,p=None):
     '''Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.'''
     
+    unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+
     # First, replace special characters (especially %20, by their equivalent).
-    url = urlparse.unquote(fn)
+    url = unquote(fn)
 
     # Finalize the path *before* parsing the url.
     i = url.find('~')
@@ -4461,6 +4464,8 @@ def getUrlFromNode(p):
 
 def handleUrl(url,c=None,p=None):
     
+    unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+    
     trace = False and not g.unitTesting ; verbose = False
     if c and not p:
         p = c.p
@@ -4502,10 +4507,10 @@ def handleUrl(url,c=None,p=None):
             
             if not leo_path:
                 if '-->' in path:
-                    g.recursiveUNLSearch(urllib.unquote(path).split("-->"), c)
+                    g.recursiveUNLSearch(unquote(path).split("-->"), c)
                     return
                 if not path and fragment:
-                    g.recursiveUNLSearch(urllib.unquote(fragment).split("-->"), c)
+                    g.recursiveUNLSearch(unquote(fragment).split("-->"), c)
                     return
     
             # .leo file
@@ -4530,7 +4535,7 @@ def handleUrl(url,c=None,p=None):
         if scheme in ('', 'file'):
             if g.os_path_exists(leo_path):
                 if trace: g.trace('g.os_startfile(%s)' % (leo_path))
-                leo_path = urlparse.unquote(leo_path)
+                leo_path = unquote(leo_path)
                 g.os_startfile(leo_path)
             else:
                 g.es("File '%s' does not exist"%leo_path)
