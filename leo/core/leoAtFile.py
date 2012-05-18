@@ -3202,10 +3202,16 @@ class atFile:
             toString=toString)
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-        isAtAutoRst = root.isAtAutoRstNode()
+        
+        
         if ok:
+            isAtAutoOtl = root.isAtAutoOtlNode() # For traces.
+            isAtAutoRst = root.isAtAutoRstNode() # For traces.
             if isAtAutoRst:
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+                if not ok2: at.errors += 1
+            elif isAtAutoOtl:
+                ok2 = at.writeAtAutoOtlFile(root) #,fileName,self.outputFile)
                 if not ok2: at.errors += 1
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
@@ -3559,6 +3565,28 @@ class atFile:
         at.putAtLastLines(s)
         if not toString:
             at.warnAboutOrphandAndIgnoredNodes()
+    #@+node:ekr.20120518080359.10006: *4* at.writeAtAutoOtlFile
+    def writeAtAutoOtlFile (self,root):
+
+        """Write all the *descendants* of an @auto-otl node."""
+
+        at = self
+        
+        def put(s):
+            '''Take care with output newlines.'''
+            at.os(s[:-1] if s.endswith('\n') else s)
+            at.onl()
+
+        for child in root.children():
+            n = child.level()
+            for p in child.self_and_subtree():
+                indent = '\t'*(p.level()-n)
+                put('%s%s' % (indent,p.h))
+                for s in p.b.splitlines(False):
+                    put('%s: %s' % (indent,s))
+                
+        root.setVisited()
+        return True
     #@+node:ekr.20041005105605.160: *3* Writing 4.x
     #@+node:ekr.20041005105605.161: *4* at.putBody
     # oneNodeOnly is no longer used, but it might be used in the future?

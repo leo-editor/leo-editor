@@ -855,6 +855,11 @@ class leoImportCommands (scanUtility):
             if s is None: return None
             if e: self.encoding = e
 
+        if ext == '.otl':
+            self.treeType = '@auto-otl'
+            # atAuto = True
+            # kind = '@auto-otl'
+
         # Create the top-level headline.
         if atAuto:
             p = parent.copy()
@@ -865,6 +870,8 @@ class leoImportCommands (scanUtility):
 
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
+            elif self.treeType == "@auto-otl":
+                p.initHeadString("@auto-otl " + fileName)
             elif self.treeType is None:
                 # 2010/09/29: by convention, we use the short file name.
                 p.initHeadString(g.shortFileName(fileName))
@@ -879,6 +886,8 @@ class leoImportCommands (scanUtility):
 
         if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
             func = self.scanRstText
+        elif p.isAtAutoOtlNode():
+            func = self.scanVimoutlinterText
         else:
             func = self.importDispatchDict.get(ext)
 

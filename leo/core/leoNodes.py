@@ -423,6 +423,7 @@ class position (object):
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
+    def isAtAutoOtlNode         (self): return self.v.isAtAutoOtlNode()
     def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
     def isAtEditNode            (self): return self.v.isAtEditNode()
     def isAtFileNode            (self): return self.v.isAtFileNode()
@@ -1975,6 +1976,7 @@ class vnode (baseVnode):
 
         names = (
             "@auto",
+            "@auto-otl",
             "@auto-rst",
             "@edit",
             "@file",
@@ -1991,7 +1993,11 @@ class vnode (baseVnode):
     def atAutoNodeName (self,h=None):
         # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
         # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
-        names = ("@auto","@auto-rst",)
+        names = ("@auto","@auto-otl","@auto-rst",)
+        return self.findAtFileName(names,h=h)
+        
+    def atAutoOtlNodeName (self,h=None):
+        names = ("@auto-otl",)
         return self.findAtFileName(names,h=h)
 
     def atAutoRstNodeName (self,h=None):
@@ -2045,6 +2051,9 @@ class vnode (baseVnode):
     #@+node:ekr.20040325073709: *4* isAt...FileNode (vnode)
     def isAtAutoNode (self):
         return g.choose(self.atAutoNodeName(),True,False)
+        
+    def isAtAutoOtlNode (self):
+        return g.choose(self.atAutoOtlNodeName(),True,False)
 
     def isAtAutoRstNode (self):
         return g.choose(self.atAutoRstNodeName(),True,False)

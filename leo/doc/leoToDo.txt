@@ -10,6 +10,7 @@ This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do first
 # This should appear before any @file node.
 .. @+node:ekr.20120515193246.10082: *4* How can we link to leoGlobals.py in a stand-alone way?
+.. @+node:ekr.20120518080359.10004: *4* Why does the Python importer care about blank lines??
 .. @+node:ekr.20120515135938.9957: *4* Complete recent work on vim
 .. @+node:ekr.20111027103125.16538: *5* About the vim video
 @nocolor-node
@@ -4356,6 +4357,11 @@ def createOutline (self,fileName,parent,
         if s is None: return None
         if e: self.encoding = e
 
+    if ext == '.otl':
+        self.treeType = '@auto-otl'
+        # atAuto = True
+        # kind = '@auto-otl'
+
     # Create the top-level headline.
     if atAuto:
         p = parent.copy()
@@ -4366,6 +4372,8 @@ def createOutline (self,fileName,parent,
 
         if self.treeType == "@file":
             p.initHeadString("@file " + fileName)
+        elif self.treeType == "@auto-otl":
+            p.initHeadString("@auto-otl " + fileName)
         elif self.treeType is None:
             # 2010/09/29: by convention, we use the short file name.
             p.initHeadString(g.shortFileName(fileName))
@@ -4380,6 +4388,8 @@ def createOutline (self,fileName,parent,
 
     if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
         func = self.scanRstText
+    elif p.isAtAutoOtlNode():
+        func = self.scanVimoutlinterText
     else:
         func = self.importDispatchDict.get(ext)
 
