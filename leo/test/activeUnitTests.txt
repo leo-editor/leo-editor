@@ -12752,7 +12752,7 @@ def followingDef(): # comment
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4758: *6* @test scanPythonText: leoImportNosent.py
 @encoding utf-8
-# leoImport.py uses unicode characters, so *this* test must have the directive above.
+    # leoImport.py uses unicode characters, so *this* test must have the directive above.
 
 @tabwidth -4
     # Required when running unit tests externally.
