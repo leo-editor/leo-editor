@@ -4705,279 +4705,7 @@ def parse_body_command(event):
             c.redraw()
             return
     g.es_print('unknown language')
-#@+node:ekr.20120518080359.10005: *4* Supported @auto-otl
-Both import and @auto-otl.
-#@+node:ekr.20120518080359.10007: *5* Changed...
-#@+node:ekr.20040306211032: *6* p.Comparisons
-def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
-def atAutoNodeName            (self): return self.v.atAutoNodeName()
-def atEditNodeName            (self): return self.v.atEditNodeName()
-def atFileNodeName            (self): return self.v.atFileNodeName()
-def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
-# def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
-def atShadowFileNodeName      (self): return self.v.atShadowFileNodeName()
-def atSilentFileNodeName      (self): return self.v.atSilentFileNodeName()
-def atThinFileNodeName        (self): return self.v.atThinFileNodeName()
-
-# New names, less confusing
-atNoSentFileNodeName  = atNoSentinelsFileNodeName
-atAsisFileNodeName    = atSilentFileNodeName
-
-def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
-def isAtAllNode             (self): return self.v.isAtAllNode()
-def isAtAutoNode            (self): return self.v.isAtAutoNode()
-def isAtAutoOtlNode         (self): return self.v.isAtAutoOtlNode()
-def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
-def isAtEditNode            (self): return self.v.isAtEditNode()
-def isAtFileNode            (self): return self.v.isAtFileNode()
-def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
-def isAtNoSentinelsFileNode (self): return self.v.isAtNoSentinelsFileNode()
-def isAtOthersNode          (self): return self.v.isAtOthersNode()
-# def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
-def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
-def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
-def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
-
-# New names, less confusing:
-isAtNoSentFileNode = isAtNoSentinelsFileNode
-isAtAsisFileNode   = isAtSilentFileNode
-
-# Utilities.
-def matchHeadline (self,pattern): return self.v.matchHeadline(pattern)
-#@+node:ekr.20040325073709: *6* isAt...FileNode (vnode)
-def isAtAutoNode (self):
-    return g.choose(self.atAutoNodeName(),True,False)
-    
-def isAtAutoOtlNode (self):
-    return g.choose(self.atAutoOtlNodeName(),True,False)
-
-def isAtAutoRstNode (self):
-    return g.choose(self.atAutoRstNodeName(),True,False)
-
-def isAtEditNode (self):
-    return g.choose(self.atEditNodeName(),True,False)
-
-def isAtFileNode (self):
-    return g.choose(self.atFileNodeName(),True,False)
-
-def isAtNoSentinelsFileNode (self):
-    return g.choose(self.atNoSentinelsFileNodeName(),True,False)
-
-def isAtSilentFileNode (self): # @file-asis
-    return g.choose(self.atSilentFileNodeName(),True,False)
-
-def isAtShadowFileNode (self):
-    return g.choose(self.atShadowFileNodeName(),True,False)
-
-def isAtThinFileNode (self):
-    return g.choose(self.atThinFileNodeName(),True,False)
-
-# New names, less confusing:
-isAtNoSentFileNode = isAtNoSentinelsFileNode
-isAtAsisFileNode   = isAtSilentFileNode
-#@+node:ekr.20031218072017.3350: *6* anyAtFileNodeName
-def anyAtFileNodeName (self):
-
-    """Return the file name following an @file node or an empty string."""
-
-    names = (
-        "@auto",
-        "@auto-otl",
-        "@auto-rst",
-        "@edit",
-        "@file",
-        "@thin",   "@file-thin",   "@thinfile",
-        "@asis",   "@file-asis",   "@silentfile",
-        "@nosent", "@file-nosent", "@nosentinelsfile",
-        "@shadow",)
-
-    return self.findAtFileName(names)
-#@+node:ekr.20031218072017.3348: *6* at...FileNodeName
-# These return the filename following @xxx, in v.headString.
-# Return the the empty string if v is not an @xxx node.
-
-def atAutoNodeName (self,h=None):
-    # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
-    # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
-    names = ("@auto","@auto-otl","@auto-rst",)
-    return self.findAtFileName(names,h=h)
-    
-def atAutoOtlNodeName (self,h=None):
-    names = ("@auto-otl",)
-    return self.findAtFileName(names,h=h)
-
-def atAutoRstNodeName (self,h=None):
-    names = ("@auto-rst",)
-    return self.findAtFileName(names,h=h)
-
-def atEditNodeName (self):
-    names = ("@edit",)
-    return self.findAtFileName(names)
-
-def atFileNodeName (self):
-    names = ("@file",)
-    return self.findAtFileName(names)
-
-def atNoSentinelsFileNodeName (self):
-    names = ("@nosent", "@file-nosent", "@nosentinelsfile")
-    return self.findAtFileName(names)
-
-def atShadowFileNodeName (self):
-    names = ("@shadow",)
-    return self.findAtFileName(names)
-
-def atSilentFileNodeName (self):
-    names = ("@asis", "@file-asis", "@silentfile")
-    return self.findAtFileName(names)
-
-def atThinFileNodeName (self):
-    names = ("@thin", "@file-thin", "@thinfile")
-    return self.findAtFileName(names)
-
-# New names, less confusing
-atNoSentFileNodeName  = atNoSentinelsFileNodeName
-atAsisFileNodeName    = atSilentFileNodeName
-#@+node:ekr.20031218072017.3210: *6* ic.createOutline
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-    w = c.frame.body
-    at = c.atFileCommands
-
-    self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    fileName = fileName.replace('\\','/') # 2011/11/25
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        if atShadow: kind = '@shadow '
-        elif atAuto: kind = '@auto '
-        else: kind = ''
-        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
-        if s is None: return None
-        if e: self.encoding = e
-
-    if ext == '.otl':
-        self.treeType = '@auto-otl'
-        # atAuto = True
-        # kind = '@auto-otl'
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        elif self.treeType == "@auto-otl":
-            p.initHeadString("@auto-otl " + fileName)
-        elif self.treeType is None:
-            # 2010/09/29: by convention, we use the short file name.
-            p.initHeadString(g.shortFileName(fileName))
-        else:
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    if self.treeType == '@root': # 2010/09/29.
-        self.rootLine = "@root-code "+self.fileName+'\n'
-    else:
-        self.rootLine = ''
-
-    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
-        func = self.scanRstText
-    elif p.isAtAutoOtlNode():
-        func = self.scanVimoutlinterText
-    else:
-        func = self.importDispatchDict.get(ext)
-
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        s = s.replace('\r','')
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        s = s.replace('\r','')
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    if atAuto:
-        # Fix bug 488894: unsettling dialog when saving Leo file
-        # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(fileName,p)
-
-    p.contract()
-    w.setInsertPoint(0)
-    w.seeInsertPoint()
-    return p
-#@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode
-def writeOneAtAutoNode(self,p,toString,force):
-
-    '''Write p, an @auto node.
-
-    File indices *must* have already been assigned.'''
-
-    at = self ; c = at.c ; root = p.copy()
-
-    fileName = p.atAutoNodeName()
-    if not fileName and not toString: return False
-
-    at.default_directory = g.setDefaultDirectory(c,p,importing=True)
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-    if not toString and at.shouldPromptForDangerousWrite(fileName,root):
-        # Prompt if writing a new @auto node would overwrite the existing file.
-        ok = self.promptForDangerousWrite(fileName,kind='@auto')
-        if not ok:
-            g.es("not written:",fileName)
-            return
-
-    # Fix bug 889175: Remember the full fileName.
-    at.rememberReadPath(fileName,root)
-    
-    # This code is similar to code in at.write.
-    c.endEditing() # Capture the current headline.
-    at.targetFileName = g.choose(toString,"<string-file>",fileName)
-
-    at.initWriteIvars(root,at.targetFileName,
-        atAuto=True,
-        nosentinels=True,thinFile=False,scriptWrite=False,
-        toString=toString)
-
-    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-    
-    
-    if ok:
-        isAtAutoOtl = root.isAtAutoOtlNode() # For traces.
-        isAtAutoRst = root.isAtAutoRstNode() # For traces.
-        if isAtAutoRst:
-            ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
-            if not ok2: at.errors += 1
-        elif isAtAutoOtl:
-            ok2 = at.writeAtAutoOtlFile(root) #,fileName,self.outputFile)
-            if not ok2: at.errors += 1
-        else:
-            at.writeOpenFile(root,nosentinels=True,toString=toString)
-        at.closeWriteFile() # Sets stringOutput if toString is True.
-        # g.trace('at.errors',at.errors)
-        if at.errors == 0:
-            # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
-            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
-                # Sets/clears dirty and orphan bits.
-        else:
-            g.es("not written:",fileName)
-            root.setDirty() # New in Leo 4.4.8.
-            root.setOrphan() # 2010/10/22.
-
-    elif not toString:
-        root.setDirty() # Make _sure_ we try to rewrite this file.
-        root.setOrphan() # 2010/10/22.
-        g.es("not written:",fileName)
-
-    return ok
+#@+node:ekr.20120517124200.9985: *4* Support vimoutliner imports and @auto-otl
 #@+node:ekr.20120518080359.10006: *5* at.writeAtAutoOtlFile
 def writeAtAutoOtlFile (self,root):
 
@@ -5000,6 +4728,102 @@ def writeAtAutoOtlFile (self,root):
             
     root.setVisited()
     return True
+#@+node:ekr.20120517124200.9983: *5* class vimoutlinerScanner
+class vimoutlinerScanner(baseScannerClass):
+
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        baseScannerClass.__init__(self,
+            importCommands,atAuto=atAuto,language='plain')
+                # Use @language plain.
+
+        # Overrides of base-class ivars.
+        self.fullChecks = False
+        self.hasDecls = False
+
+        # The stack of valid parents at each level.
+        self.parents = []
+
+    @others
+#@+node:ekr.20120519091649.10016: *6* scanHelper & helpers
+# Override baseScannerClass.scanHelper.
+
+def scanHelper(self,s,i,end,parent,kind):
+    
+    '''Create Leo nodes for all vimoutliner lines.'''
+
+    trace = False and not g.unitTesting
+    assert kind == 'outer' and end == len(s)
+
+    while i < len(s):
+        # Set k to the end of the line.
+        progress = i
+        k = g.skip_line(s,i)
+        line = s[i:k] # For traces.
+
+        # Skip leading hard tabs, ignore blanks & compute the line's level.
+        level = 1 # The root has level 0.
+        while i < len(s) and s[i].isspace():
+            if s[i] == '\t': level += 1
+            i += 1
+
+        if i == k:
+            g.trace('ignoring blank line: %s' % (repr(line)))
+        elif i < len(s) and s[i] == ':':
+            # Append the line to the body.
+            i += 1
+            if i < len(s) and s[i] == ' ':
+                i += 1
+            else:
+                g.trace('missing space after colon: %s' % (repr(line)))
+            p = self.findParent(level)
+            p.b = p.b + s[i:k]
+        else:
+            putRef = True
+
+            # Cut back the stack, then allocate a new (placeholder) node.
+            self.parents = self.parents[:level]
+            p = self.findParent(level)
+
+            # Set the headline of the placeholder node.
+            h = s[i:k]
+            p.h = h[:-1] if h.endswith('\n') else h
+
+        # Move to the next line.
+        i = k
+        assert progress < i,'i: %s %s' % (i,repr(line))
+
+    return len(s),putRef,0 # bodyIndent not used.
+#@+node:ekr.20120517155536.10132: *7* findParent
+def findParent(self,level):
+    
+    '''Return the parent at the indicated level, allocating
+    place-holder nodes as necessary.'''
+    
+    trace = False and not g.unitTesting
+    assert level >= 0
+    
+    if not self.parents:
+        self.parents = [self.root]
+
+    if trace: g.trace(level,[z.h for z in self.parents])
+        
+    while level >= len(self.parents):
+        b = ''
+        h = 'placeholder' if level > 1 else 'declarations'
+        parent = self.parents[-1]
+        p = self.createHeadline(parent,b,h)
+        self.parents.append(p)
+        
+    return self.parents[level]
+#@+node:ekr.20120517155536.10131: *7* createNode
+def createNode (self,b,h,level):
+    
+    parent = self.findParent(level)
+    p = self.createHeadline(parent,b,h)
+    self.parents = self.parents[:level+1]
+    self.parents.append(p)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

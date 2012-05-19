@@ -3971,11 +3971,11 @@ class pythonScanner (baseScannerClass):
         self.lineCommentDelim = '#'
         self.classTags = ['class',]
         self.functionTags = ['def',]
+        self.ignoreBlankLines = True
         self.blockDelim1 = self.blockDelim2 = None
             # Suppress the check for the block delim.
             # The check is done in skipSigTail.
         self.strict = True
-
     #@+node:ekr.20071201073102.1: *4* adjustDefStart (pythonScanner)
     def adjustDefStart (self,s,i):
 
@@ -4546,7 +4546,7 @@ class vimoutlinerScanner(baseScannerClass):
             assert progress < i,'i: %s %s' % (i,repr(line))
 
         return len(s),putRef,0 # bodyIndent not used.
-    #@+node:ekr.20120517155536.10132: *5* findParent 
+    #@+node:ekr.20120517155536.10132: *5* findParent
     def findParent(self,level):
         
         '''Return the parent at the indicated level, allocating
@@ -4568,7 +4568,7 @@ class vimoutlinerScanner(baseScannerClass):
             self.parents.append(p)
             
         return self.parents[level]
-    #@+node:ekr.20120517155536.10131: *5* createNode 
+    #@+node:ekr.20120517155536.10131: *5* createNode
     def createNode (self,b,h,level):
         
         parent = self.findParent(level)

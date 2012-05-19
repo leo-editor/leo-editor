@@ -9,49 +9,23 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do first
 # This should appear before any @file node.
-.. @+node:ekr.20120515193246.10082: *4* How can we link to leoGlobals.py in a stand-alone way?
-.. @+node:ekr.20120518080359.10004: *4* Why does the Python importer care about blank lines??
-.. @+node:ekr.20120515135938.9957: *4* Complete recent work on vim
-.. @+node:ekr.20111027103125.16538: *5* About the vim video
+.. @+node:ekr.20120519114248.9886: *4* Use a thicker outline in the body for command mode
+This would be a good visual cue.
+
+There *must* be an easy-to-see indication of mode.
+
+A command should set the width of the border.
+.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
 @nocolor-node
 
-Steve Litt: the guy from New Trier
-http://video.google.com/videoplay?docid=8810772602188234059
+Leo's Alt-R and Alt-S commands could be improved.
 
-watched all
+- Return ends the search.  Should be documented.
+- Ctrl-g should abort the search and restore the cursor.
+- F2 and F3 should repeat the search, in the indicated direction.
+- If text is already highlighted, Alt-S or Alt-R should use that text.
 
-Products
-    enscript
-
-Must be fast.
-Text file format.  Extremely parsable.
-Features.
-    Auto-indent
-    Collapse/Expand
-    Promote/Demote.
-    Easy moves.
-    Inter-outline linking.
-    Body text.
-    Linking in other content.
-    Exporting.
-
-What vim doesn't have:
-    Clones
-    Not programmable: no Dom.
-.. @+node:ekr.20120515133437.10069: *5* To do, regardless of vim
-@language rest
-
-- Leo's Alt-R and Alt-S commands could be improved.
-    - Return ends the search.  Should be documented.
-    - Ctrl-g should abort the search and restore the cursor.
-    - F2 and F3 should repeat the search, in the indicated direction.
-    - If text is already highlighted, Alt-S or Alt-R should use that text.
-
-- Use thin red pane border for insert mode, thick red outline for command mode.
-  There *must* be an easy-to-see indication of mode.
-  A command should set the width of the border.
-  
-- There should be a way of setting the prompt in a mode.
+.. @+node:ekr.20120519114248.9887: *4* Create a way to set the mode prompt in @mode nodes.
 .. @+node:ekr.20120420095827.9947: *4* Complete the new support for sessions
 # complete the command-line args.
 .. @+node:ekr.20031218072017.2617: *5* app.onQuit
