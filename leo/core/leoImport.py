@@ -4482,74 +4482,43 @@ class rstScanner (baseScannerClass):
 #@+node:ekr.20120517124200.9983: *3* class vimoutlinerScanner
 class vimoutlinerScanner(baseScannerClass):
 
-    #@+others
-    #@+node:ekr.20120517124200.9984: *4*  ctor
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='plain')
-        
+        baseScannerClass.__init__(self,
+            importCommands,atAuto=atAuto,language='plain')
+                # Use @language plain.
+
         # Overrides of base-class ivars.
         self.fullChecks = False
-        self.hasDecls = True
-        
-        # New ivars.
-        self.parents = []
-    #@+node:ekr.20120517155536.10131: *4* createNode 
-    def createNode (self,b,h,level):
-        
-        parent = self.findParent(level)
-        p = self.createHeadline(parent,b,h)
-        self.parents = self.parents[:level+1]
-        self.parents.append(p)
-    #@+node:ekr.20120517155536.10132: *4* findParent 
-    def findParent(self,level):
-        
-        '''Return the parent at the indicated level, allocating
-        place-holder nodes as necessary.'''
-        
-        trace = False and not g.unitTesting
-        assert level >= 0
-        
-        if not self.parents:
-            self.parents = [self.root]
+        self.hasDecls = False
 
-        if trace: g.trace(level,[z.h for z in self.parents])
-            
-        while level >= len(self.parents):
-            b,h = '','placeholder'
-            parent = self.parents[-1]
-            p = self.createFunctionNode(h,b,parent)
-            self.parents.append(p)
-            
-        return self.parents[level]
-    #@+node:ekr.20120517155536.10117: *4* isBodyLine
-    def isBodyLine(self,s,i):
-        
-        while i < len(s) and s[i] == '\t':
-            i += 1
-            
-        return i+1 < len(s) and s[i] == ':' and s[i+1] == ' '
-    #@+node:ekr.20120519091649.10016: *4* scanHelper (vimoutlinerScanner)
+        # The stack of valid parents at each level.
+        self.parents = []
+
+    #@+others
+    #@+node:ekr.20120519091649.10016: *4* scanHelper & helpers
+    # Override baseScannerClass.scanHelper.
+
     def scanHelper(self,s,i,end,parent,kind):
         
-        '''Create Leo nodes for all node lines.'''
+        '''Create Leo nodes for all vimoutliner lines.'''
 
         trace = False and not g.unitTesting
         assert kind == 'outer' and end == len(s)
-        
+
         while i < len(s):
             # Set k to the end of the line.
             progress = i
             k = g.skip_line(s,i)
             line = s[i:k] # For traces.
-            
+
             # Skip leading hard tabs, ignore blanks & compute the line's level.
             level = 1 # The root has level 0.
             while i < len(s) and s[i].isspace():
                 if s[i] == '\t': level += 1
                 i += 1
-                
+
             if i == k:
                 g.trace('ignoring blank line: %s' % (repr(line)))
             elif i < len(s) and s[i] == ':':
@@ -4568,31 +4537,44 @@ class vimoutlinerScanner(baseScannerClass):
                 self.parents = self.parents[:level]
                 p = self.findParent(level)
 
-                # Set the headline text in the placeholder node.
+                # Set the headline of the placeholder node.
                 h = s[i:k]
                 p.h = h[:-1] if h.endswith('\n') else h
-                
+
             # Move to the next line.
             i = k
             assert progress < i,'i: %s %s' % (i,repr(line))
 
         return len(s),putRef,0 # bodyIndent not used.
-    #@+node:ekr.20120517124200.10026: *4* skipDecls (vimoutlinerScanner)
-    def skipDecls (self,s,i,end,inClass):
+    #@+node:ekr.20120517155536.10132: *5* findParent 
+    def findParent(self,level):
+        
+        '''Return the parent at the indicated level, allocating
+        place-holder nodes as necessary.'''
+        
+        trace = False and not g.unitTesting
+        assert level >= 0
+        
+        if not self.parents:
+            self.parents = [self.root]
 
-        '''Skip everything until the start of the next headline.'''
-
-        assert end == len(s)
-
-        while i < end:
-            progress = i
-            if self.isBodyLine(s,i):
-                putRef = True
-                i = start = g.skip_line(s,i)
-            else: break
-            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-        return i
+        if trace: g.trace(level,[z.h for z in self.parents])
+            
+        while level >= len(self.parents):
+            b = ''
+            h = 'placeholder' if level > 1 else 'declarations'
+            parent = self.parents[-1]
+            p = self.createHeadline(parent,b,h)
+            self.parents.append(p)
+            
+        return self.parents[level]
+    #@+node:ekr.20120517155536.10131: *5* createNode 
+    def createNode (self,b,h,level):
+        
+        parent = self.findParent(level)
+        p = self.createHeadline(parent,b,h)
+        self.parents = self.parents[:level+1]
+        self.parents.append(p)
     #@-others
 #@+node:ekr.20071214072145.1: *3* class xmlScanner & htmlScanner(xmlScanner)
 #@+<< class xmlScanner (baseScannerClass) >>

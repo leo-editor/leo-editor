@@ -6591,62 +6591,33 @@ def removeLeadingAtCode (self,aList):
     elif self.match_word(aList,i,"@c"):
         i = self.skip_ws_and_nl(aList,2)
         del aList[0:i]
-#@+node:ekr.20120517155536.10123: *3* OLDscanHelper (vimoutlinerScanner)
-def OldscanHelper(self,s,i,end,parent,kind):
-    
-    '''Create Leo nodes for all node lines.'''
+#@+node:ekr.20120519114248.9884: *3* Unused vimoutlineScanner
+#@+node:ekr.20120517124200.10026: *4* skipDecls (vimoutlinerScanner)
+def skipDecls (self,s,i,end,inClass):
 
-    assert kind == 'outer'
+    '''Skip everything until the start of the next headline.'''
+    
+    assert False
+    
+    return 0 #
+
     assert end == len(s)
-    body,h,node_level,start = [],None,None,None
+
     while i < end:
         progress = i
-        
-        # Error checking.  Completely ignore blank lines.
-        k = g.skip_line(s,i)
-        if s[i:k].isspace():
-            g.trace('ignoring blank line: %s' % (repr(s[i:k])))
-            i = k
-            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-            continue
-
-        # Skip leading hard tabs, ignore blanks & compute indent value of this line.
-        indent,j = 0,i
-        while j < len(s) and s[j].isspace():
-            if s[j] == '\t': indent += 1
-            j += 1
-
-        if j < len(s) and s[j] == ':':
-            if j+1 < len(s) and s[j+1] == ' ':
-                # Skip the body line.
-                body.append(s[j+2:k])
-                i = k
-            else:
-                g.trace('bad body line: <%s>' % (repr(s[i:k])))
-                # Silently insert the space.
-                body.append(s[j+1:k])
-                i = k
-        else:
-            # Complete previous node.
-            if h is not None:
-                b = ''.join(body)
-                body,putRef = [],True
-                self.createNode(b,h,node_level)
-            # Start the new node.
-            node_level = indent
-            h = s[j:k]
-            if h[0].isspace(): g.pdb()
-            if h.endswith('\n'): h = h[:-1]
-            i = start = k
+        if self.isBodyLine(s,i):
+            putRef = True
+            i = start = g.skip_line(s,i)
+        else: break
         assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-        
-    # Finish the last node.
-    if h is not None:
-        putRef = True
-        b = ''.join(body)
-        self.createNode(b,h,node_level)
 
-    bodyIndent = 0
-    return len(s),putRef,bodyIndent
+    return i
+#@+node:ekr.20120517155536.10117: *4* isBodyLine
+def isBodyLine(self,s,i):
+    
+    while i < len(s) and s[i] == '\t':
+        i += 1
+        
+    return i+1 < len(s) and s[i] == ':' and s[i+1] == ' '
 #@-all
 #@-leo
