@@ -4483,7 +4483,7 @@ class rstScanner (baseScannerClass):
 class vimoutlinerScanner(baseScannerClass):
 
     #@+others
-    #@+node:ekr.20120517124200.9984: *4* ctor
+    #@+node:ekr.20120517124200.9984: *4*  ctor
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -4499,18 +4499,22 @@ class vimoutlinerScanner(baseScannerClass):
     def createNode (self,b,h,level):
         
         parent = self.findParent(level)
-        p = self.createFunctionNode(h,b,parent)
+        p = self.createHeadline(parent,b,h)
         self.parents = self.parents[:level+1]
         self.parents.append(p)
     #@+node:ekr.20120517155536.10132: *4* findParent 
     def findParent(self,level):
         
+        '''Return the parent at the indicated level, allocating
+        place-holder nodes as necessary.'''
+        
+        trace = False and not g.unitTesting
         assert level >= 0
         
         if not self.parents:
             self.parents = [self.root]
-            
-        # g.trace(level,[z.h for z in self.parents])
+
+        if trace: g.trace(level,[z.h for z in self.parents])
             
         while level >= len(self.parents):
             b,h = '','placeholder'
@@ -4526,65 +4530,54 @@ class vimoutlinerScanner(baseScannerClass):
             i += 1
             
         return i+1 < len(s) and s[i] == ':' and s[i+1] == ' '
-    #@+node:ekr.20120517155536.10134: *4* Overrides
-    #@+node:ekr.20120517155536.10123: *5* scanHelper (vimoutlinerScanner)
+    #@+node:ekr.20120519091649.10016: *4* scanHelper (vimoutlinerScanner)
     def scanHelper(self,s,i,end,parent,kind):
         
         '''Create Leo nodes for all node lines.'''
 
-        assert kind == 'outer'
-        assert end == len(s)
-        body,h,node_level,start = [],None,None,None
-        while i < end:
+        trace = False and not g.unitTesting
+        assert kind == 'outer' and end == len(s)
+        
+        while i < len(s):
+            # Set k to the end of the line.
             progress = i
-            
-            # Error checking.  Completely ignore blank lines.
             k = g.skip_line(s,i)
-            if s[i:k].isspace():
-                g.trace('ignoring blank line: %s' % (repr(s[i:k])))
-                i = k
-                assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-                continue
-
-            # Skip leading hard tabs, ignore blanks & compute indent value of this line.
-            indent,j = 0,i
-            while j < len(s) and s[j].isspace():
-                if s[j] == '\t': indent += 1
-                j += 1
-
-            if j < len(s) and s[j] == ':':
-                if j+1 < len(s) and s[j+1] == ' ':
-                    # Skip the body line.
-                    body.append(s[j+2:k])
-                    i = k
-                else:
-                    g.trace('bad body line: <%s>' % (repr(s[i:k])))
-                    # Silently insert the space.
-                    body.append(s[j+1:k])
-                    i = k
-            else:
-                # Complete previous node.
-                if h is not None:
-                    b = ''.join(body)
-                    body,putRef = [],True
-                    self.createNode(b,h,node_level)
-                # Start the new node.
-                node_level = indent
-                h = s[j:k]
-                if h[0].isspace(): g.pdb()
-                if h.endswith('\n'): h = h[:-1]
-                i = start = k
-            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+            line = s[i:k] # For traces.
             
-        # Finish the last node.
-        if h is not None:
-            putRef = True
-            b = ''.join(body)
-            self.createNode(b,h,node_level)
+            # Skip leading hard tabs, ignore blanks & compute the line's level.
+            level = 1 # The root has level 0.
+            while i < len(s) and s[i].isspace():
+                if s[i] == '\t': level += 1
+                i += 1
+                
+            if i == k:
+                g.trace('ignoring blank line: %s' % (repr(line)))
+            elif i < len(s) and s[i] == ':':
+                # Append the line to the body.
+                i += 1
+                if i < len(s) and s[i] == ' ':
+                    i += 1
+                else:
+                    g.trace('missing space after colon: %s' % (repr(line)))
+                p = self.findParent(level)
+                p.b = p.b + s[i:k]
+            else:
+                putRef = True
 
-        bodyIndent = 0
-        return len(s),putRef,bodyIndent
-    #@+node:ekr.20120517124200.10026: *5* skipDecls (vimoutlinerScanner)
+                # Cut back the stack, then allocate a new (placeholder) node.
+                self.parents = self.parents[:level]
+                p = self.findParent(level)
+
+                # Set the headline text in the placeholder node.
+                h = s[i:k]
+                p.h = h[:-1] if h.endswith('\n') else h
+                
+            # Move to the next line.
+            i = k
+            assert progress < i,'i: %s %s' % (i,repr(line))
+
+        return len(s),putRef,0 # bodyIndent not used.
+    #@+node:ekr.20120517124200.10026: *4* skipDecls (vimoutlinerScanner)
     def skipDecls (self,s,i,end,inClass):
 
         '''Skip everything until the start of the next headline.'''
