@@ -7499,6 +7499,8 @@ class leoQtGui(leoGui.leoGui):
     def add_border(self,c,w):
 
         state = c.k and c.k.unboundKeyAction
+        
+        # g.trace(state,hasattr(w,'viewport'),w,g.callers())
 
         if state and c.use_focus_border and hasattr(w,'viewport'):
             w = w.viewport()
@@ -7507,15 +7509,13 @@ class leoQtGui(leoGui.leoGui):
                 'insert':   c.focus_border_color,
                 'overwrite':c.focus_border_overwrite_state_color,
             }
-            color = d.get(state)
-            if not color:
-                color = 'red'
-                g.trace('unknown state: %s' % (state))
-                # g.trace(state,w,hasattr(w,'viewport'))
+            color = d.get(state,c.focus_border_color)
             sheet = "border: %spx solid %s" % (c.focus_border_width,color)
             self.update_style_sheet(w,'border',sheet)
 
     def remove_border(self,c,w):
+        
+        # g.trace(hasattr(w,'viewport'),w)
 
         if c.use_focus_border and hasattr(w,'viewport'):
             w = w.viewport()
@@ -8566,6 +8566,8 @@ class leoQtEventFilter(QtCore.QObject):
         elif eventType == ev.WindowDeactivate:
             gui.onDeactivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
+            if self.tag in ('body','tree','log'):
+                g.app.gui.remove_border(c,obj)
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])

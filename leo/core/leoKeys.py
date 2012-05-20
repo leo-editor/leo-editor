@@ -2353,7 +2353,7 @@ class keyHandlerClass:
         '''Enter the 'command' editing state.'''
         # g.trace(g.callers())
         k = self
-        k.setInputState('command')
+        k.setInputState('command',set_border=True)
         # This command is also valid in headlines.
         # k.c.bodyWantsFocus()
         k.showStateAndMode()
@@ -2362,7 +2362,7 @@ class keyHandlerClass:
         '''Enter the 'insert' editing state.'''
         # g.trace(g.callers())
         k = self
-        k.setInputState('insert')
+        k.setInputState('insert',set_border=True)
         # This command is also valid in headlines.
         # k.c.bodyWantsFocus()
         k.showStateAndMode()
@@ -2371,7 +2371,7 @@ class keyHandlerClass:
         '''Enter the 'overwrite' editing state.'''
         # g.trace(g.callers())
         k = self
-        k.setInputState('overwrite')
+        k.setInputState('overwrite',set_border=True)
         # This command is also valid in headlines.
         # k.c.bodyWantsFocus()
         k.showStateAndMode()
@@ -3525,7 +3525,12 @@ class keyHandlerClass:
         modeName = k.inputModeName.replace('-',' ')
         if modeName.endswith('mode'):
             modeName = modeName[:-4].strip()
-        g.es('','%s mode\n\n' % modeName,tabName=tabName)
+            
+        prompt = d.get('*command-prompt*')
+        if prompt:
+            g.es('','%s\n\n' % (prompt.kind.strip()),tabName=tabName)
+        else:
+            g.es('','%s mode\n\n' % modeName,tabName=tabName)
 
         # This isn't perfect in variable-width fonts.
         for s1,s2 in data:
@@ -3622,7 +3627,6 @@ class keyHandlerClass:
             else:
                 g.trace('***** oops: no mode',modeName)
         else:
-
             d = g.app.config.modeCommandsDict.get('enter-'+modeName)
             if not d:
                 self.badMode(modeName)
@@ -3634,7 +3638,8 @@ class keyHandlerClass:
                     prompt = si.kind # A kludge.
                 else:
                     prompt = modeName
-                if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
+                if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
+                    modeName,prompt,sorted(list(d.keys()))))
         
             k.inputModeName = modeName
             k.silentMode = False
@@ -4302,12 +4307,12 @@ class keyHandlerClass:
         
         k.setInputState(state)
     #@+node:ekr.20061031131434.133: *4* setInputState
-    def setInputState (self,state):
+    def setInputState (self,state,set_border=False):
 
         c,k = self.c,self
         k.unboundKeyAction = state
 
-        if c.frame and c.frame.body:
+        if set_border and c.frame and c.frame.body:
             w = c.frame.body.bodyCtrl
             if hasattr(w,'widget'):
                 g.app.gui.add_border(c,w.widget)
