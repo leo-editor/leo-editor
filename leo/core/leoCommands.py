@@ -475,6 +475,7 @@ class Commands (object):
         c.fixed                     = getBool('fixedWindow',default=False)
         c.fixedWindowPosition       = getData('fixedWindowPosition')
         c.focus_border_color        = getColor('focus_border_color') or 'red'
+        c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
         c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
         c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
         # c.showMinibuffer            = getBool('useMinibuffer')

@@ -303,12 +303,6 @@ def make_screen_shot(self,fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
-.. @+node:ekr.20120519114248.9886: *4* Use a thicker outline in the body for command mode
-This would be a good visual cue.
-
-There *must* be an easy-to-see indication of mode.
-
-A command should set the width of the border.
 .. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
 @nocolor-node
 
@@ -2198,12 +2192,18 @@ Leo doesn't understand .jsp.  @shadow should refuse to work for unknown language
 .. @+node:ekr.20120318124102.9739: *5* Focus border doesn't work with Python 2.x!
 .. @+node:ekr.20111022215436.16685: *6* Borders (qtGui)
 def add_border(self,c,w):
+    
+    # g.trace(c.k and c.k.unboundKeyAction,w,hasattr(w,'viewport'))
 
     if c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
-        # g.trace(w)
-        sheet = "border: %spx solid %s" % (
-            c.focus_border_width,c.focus_border_color)
+        if c.k.unboundKeyAction == 'insert':
+            sheet = "border: %spx solid %s" % (
+                c.focus_border_width,c.focus_border_color)
+            self.update_style_sheet(w,'border',sheet)
+        else:
+            sheet = "border: %spx solid %s" % (
+                c.focus_border_width,c.focus_border_command_state_color)
         self.update_style_sheet(w,'border',sheet)
 
 def remove_border(self,c,w):

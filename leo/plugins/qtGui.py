@@ -7497,12 +7497,18 @@ class leoQtGui(leoGui.leoGui):
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
     def add_border(self,c,w):
+        
+        # g.trace(c.k and c.k.unboundKeyAction,w,hasattr(w,'viewport'))
 
         if c.use_focus_border and hasattr(w,'viewport'):
             w = w.viewport()
-            # g.trace(w)
-            sheet = "border: %spx solid %s" % (
-                c.focus_border_width,c.focus_border_color)
+            if c.k.unboundKeyAction == 'insert':
+                sheet = "border: %spx solid %s" % (
+                    c.focus_border_width,c.focus_border_color)
+                self.update_style_sheet(w,'border',sheet)
+            else:
+                sheet = "border: %spx solid %s" % (
+                    c.focus_border_width,c.focus_border_command_state_color)
             self.update_style_sheet(w,'border',sheet)
 
     def remove_border(self,c,w):
