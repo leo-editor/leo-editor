@@ -6619,5 +6619,397 @@ def isBodyLine(self,s,i):
         i += 1
         
     return i+1 < len(s) and s[i] == ':' and s[i+1] == ' '
+#@+node:ekr.20120515183732.9993: *3* << define g object >> (leoInspect)
+if 0: # Debugging. Make sure this is not a problem.
+
+    class LeoGlobals:
+
+        @others
+    
+    g = LeoGlobals()
+#@+node:ekr.20120515183732.10013: *4* Most common functions (leoInspect)...
+#@+node:ekr.20120515183732.10014: *5* LG.callers & _callerName (leoInspect)
+def callers (self,n=4,count=0,excludeCaller=True,files=False):
+
+    '''Return a list containing the callers of the function that called g.callerList.
+
+    If the excludeCaller keyword is True (the default), g.callers is not on the list.
+
+    If the files keyword argument is True, filenames are included in the list.
+    '''
+
+    # sys._getframe throws ValueError in both cpython and jython if there are less than i entries.
+    # The jython stack often has less than 8 entries,
+    # so we must be careful to call g._callerName with smaller values of i first.
+    result = []
+    i = g.choose(excludeCaller,3,2)
+    while 1:
+        s = g._callerName(i,files=files)
+        if s:
+            result.append(s)
+        if not s or len(result) >= n: break
+        i += 1
+
+    result.reverse()
+    if count > 0: result = result[:count]
+    sep = g.choose(files,'\n',',')
+    return sep.join(result)
+#@+node:ekr.20120515183732.10015: *6* _callerName
+def _callerName (n=1,files=False):
+
+    try: # get the function name from the call stack.
+        f1 = sys._getframe(n) # The stack frame, n levels up.
+        code1 = f1.f_code # The code object
+        name = code1.co_name
+        if name == '__init__':
+            name = '__init__(%s,line %s)' % (
+                g.shortFileName(code1.co_filename),code1.co_firstlineno)
+        if files:
+            return '%s:%s' % (g.shortFileName(code1.co_filename),name)
+        else:
+            return name # The code name
+    except ValueError:
+        return '' # The stack is not deep enough.
+    except Exception:
+        g.es_exception()
+        return '' # "<no caller name>"
+#@+node:ekr.20120515183732.10017: *5* LG.doKeywordArgs (leoInspect)
+def doKeywordArgs(self,keys,d=None):
+
+    '''Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.'''
+
+    if d is None: d = {}
+
+    result = {}
+    for key,default_val in d.items():
+        isBool = default_val in (True,False)
+        val = keys.get(key)
+        if isBool and val in (True,'True','true'):
+            result[key] = True
+        elif isBool and val in (False,'False','false'):
+            result[key] = False
+        elif val is None:
+            result[key] = default_val
+        else:
+            result[key] = val
+
+    return result 
+#@+node:ekr.20120515183732.10018: *5* LG.pdb (leoInspect)
+def pdb (self,message=''):
+
+    """Fall into pdb."""
+
+    import pdb # Required: we have just defined pdb as a method!
+
+    if message:
+        print(message)
+    pdb.set_trace()
+#@+node:ekr.20120515183732.10019: *5* LG.pr (leoInspect)
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+
+pr_warning_given = False
+
+def pr(self,*args,**keys): # (leoInspect!)
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+
+    # Compute the effective args.
+    d = {'commas':False,'newline':True,'spaces':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
+        # sys.stdout is a TextIOWrapper with a particular encoding.
+        encoding = sys.stdout.encoding
+    else:
+        encoding = 'utf-8'
+
+    # Important:  Python's print statement *can* handle unicode.
+    # However, the following must appear in Python\Lib\sitecustomize.py:
+    #    sys.setdefaultencoding('utf-8')
+    s = g.translateArgs(args,d) # Translates everything to unicode.
+    if newline:
+        s = s + '\n'
+
+    if isPython3:
+        if encoding.lower() in ('utf-8','utf-16'):
+            s2 = s # There can be no problem.
+        else:
+            # 2010/10/21: Carefully convert s to the encoding.
+            s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
+            s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
+    else:
+        s2 = g.toEncodedString(s,encoding,reportErrors=False)
+
+    if 1: # Good for production: queues 'reading settings' until after signon.
+        if app.logInited:
+            sys.stdout.write(s2)
+        else:
+            app.printWaiting.append(s2)
+    else:
+        # Good for debugging: prints messages immediately.
+        print(s2)
+#@+node:ekr.20120515183732.10020: *5* LG.trace (leoInspect)
+# Convert all args to strings.
+
+def trace (self,*args,**keys):
+
+    # Compute the effective args.
+    d = {'align':0,'newline':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    align = d.get('align')
+    if align is None: align = 0
+
+    # Compute the caller name.
+    try: # get the function name from the call stack.
+        f1 = sys._getframe(1) # The stack frame, one level up.
+        code1 = f1.f_code # The code object
+        name = code1.co_name # The code name
+    except Exception:
+        name = ''
+    if name == "?":
+        name = "<unknown>"
+
+    # Pad the caller name.
+    if align != 0 and len(name) < abs(align):
+        pad = ' ' * (abs(align) - len(name))
+        if align > 0: name = name + pad
+        else:         name = pad + name
+
+    # Munge *args into s.
+    # print ('g.trace:args...')
+    # for z in args: print (g.isString(z),repr(z))
+    result = [name]
+    for arg in args:
+        if g.isString(arg):
+            pass
+        elif g.isBytes(arg):
+            arg = g.toUnicode(arg)
+        else:
+            arg = repr(arg)
+        if result:
+            result.append(" " + arg)
+        else:
+            result.append(arg)
+    s = ''.join(result)
+
+    # 'print s,' is not valid syntax in Python 3.x.
+    g.pr(s,newline=newline)
+#@+node:ekr.20120515183732.10021: *5* LG.translateArgs (leoInspect)
+def translateArgs(self,args,d):
+
+    '''Return the concatenation of all args, with odd args translated.'''
+
+    if not hasattr(g,'consoleEncoding'):
+        e = sys.getdefaultencoding()
+        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
+        # print 'translateArgs',g.consoleEncoding
+
+    result = [] ; n = 0 ; spaces = d.get('spaces')
+    for arg in args:
+        n += 1
+
+        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
+
+        # First, convert to unicode.
+        if type(arg) == type('a'):
+            arg = g.toUnicode(arg,g.consoleEncoding)
+
+        # Just do this for the stand-alone version.
+        if not g.isString(arg):
+            arg = repr(arg)
+
+        if arg:
+            if result and spaces: result.append(' ')
+            result.append(arg)
+
+    return ''.join(result)
+#@+node:ekr.20120515183732.10033: *4* LG.match_word (leoInspect)
+def match_word(self,s,i,pattern):
+
+    if pattern == None: return False
+    j = len(pattern)
+    if j == 0: return False
+    if s.find(pattern,i,i+j) != i:
+        return False
+    if i+j >= len(s):
+        return True
+    ch = s[i+j]
+    return not g.isWordChar(ch)
+#@+node:ekr.20120515183732.10029: *4* LG.Path functions (leoInspect)...
+def os_path_exists (self,fileName):
+    
+    return os.path.exists(fileName)
+    
+def os_path_finalize_join (self,*args,**keys):
+
+    return os.path.normpath(os.path.abspath(
+        os.path.join(*args,**keys)))
+        
+def os_path_join(self,*args,**keys):
+    return os.path.join(*args)
+
+
+def shortFileName (self,fileName):
+
+    return os.path.basename(fileName)
+#@+node:ekr.20120515183732.10022: *4* LG.Unicode utils (leoInspect)...
+#@+node:ekr.20120515183732.10023: *5* LG.isBytes, isCallable, isChar, isString & isUnicode (leoInspect)
+# The syntax of these functions must be valid on Python2K and Python3K.
+
+def isBytes(self,s):
+    '''Return True if s is Python3k bytes type.'''
+    if isPython3:
+        # Generates a pylint warning, but that can't be helped.
+        return type(s) == type(bytes('a','utf-8'))
+    else:
+        return False
+
+def isCallable(self,obj):
+    if isPython3:
+        return hasattr(obj, '__call__')
+    else:
+        return callable(obj)
+
+def isChar(self,s):
+    '''Return True if s is a Python2K character type.'''
+    if isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
+
+def isString(self,s):
+    '''Return True if s is any string, but not bytes.'''
+    if isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+
+def isUnicode(self,s):
+    '''Return True if s is a unicode string.'''
+    if isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@+node:ekr.20120515183732.10024: *5* LG.isValidEncoding (leoInspect)
+def isValidEncoding (self,encoding):
+
+    if not encoding:
+        return False
+
+    if sys.platform == 'cli':
+        return True
+
+    import codecs
+
+    try:
+        codecs.lookup(encoding)
+        return True
+    except LookupError: # Windows.
+        return False
+    except AttributeError: # Linux.
+        return False
+#@+node:ekr.20120515183732.10025: *5* LG.reportBadChars (leoInspect)
+def reportBadChars (self,s,encoding):
+
+    if isPython3:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                print(s2)
+        elif g.isChar(s):
+            for ch in s:
+                # try: unicode(ch,encoding,"strict")
+                # 2012/04/20: use str instead of str.
+                try: str(ch)
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors,str(encoding),
+                    # unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    print(s2)
+    else:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                print("%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace')))
+        elif g.isChar(s):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                print("%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace')))
+#@+node:ekr.20120515183732.10026: *5* LG.toEncodedString (leoInspect)
+def toEncodedString (self,s,encoding='utf-8',reportErrors=False):
+
+    if encoding is None:
+        encoding = 'utf-8'
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+    return s
+#@+node:ekr.20120515183732.10027: *5* LG.toUnicode (leoInspect)
+def toUnicode (self,s,encoding='utf-8',reportErrors=False):
+
+    # The encoding is usually 'utf-8'
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = 'utf-8'
+
+    if isPython3:
+        f,mustConvert = str,g.isBytes
+    else:
+        f = unicode
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = g.u('')
+    elif mustConvert(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,Exception):
+            s = f(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@+node:ekr.20120515183732.10028: *5* LG.u & ue (leoInspect)
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
 #@-all
 #@-leo

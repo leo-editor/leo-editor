@@ -1,3 +1,9 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20120519121124.9919: * @file ../external/leosax.py
+#@@language python
+#@@tabwidth -4
+#@+others
+#@+node:ekr.20120519121124.9920: ** leosax declarations
 """Read .leo files into a simple python data structure with
 h, b, u (unknown attribs), gnx and children information.
 Clones and derived files are ignored.  Useful for scanning
@@ -11,6 +17,7 @@ from xml.sax import parse
 from pickle import loads
 from binascii import unhexlify
 
+#@+node:ekr.20120519121124.9921: ** class node
 class node:
     """Representation of a Leo node.  Root node has itself as parent.
     
@@ -30,7 +37,9 @@ class node:
         path
           list of nodes that lead to this one from root, including this one
     """
-    
+    #@+others
+    #@+node:ekr.20120519121124.9922: *3* __init__
+
     def __init__(self):
         """Set ivars"""
         self.children = []
@@ -41,6 +50,7 @@ class node:
         self.parent = self
         self.path = []
         
+    #@+node:ekr.20120519121124.9923: *3* __str__
     def __str__(self, level=0):
         """Return long text representation of node and
         descendents with indentation"""
@@ -54,10 +64,12 @@ class node:
             ans.append(c.__str__(level=level+1))
         return '\n'.join(ans)
         
+    #@+node:ekr.20120519121124.9924: *3* UNL
     def UNL(self):
         """Return the UNL string leading to this node"""
         return '-->'.join([i.h for i in self.path])
         
+    #@+node:ekr.20120519121124.9925: *3* flat
     def flat(self):
         """iterate this node and all its descendants in a flat list, 
         useful for finding things and building an UNL based view"""
@@ -67,6 +79,8 @@ class node:
             for j in i.flat():
                 yield j
 
+    #@-others
+#@+node:ekr.20120519121124.9926: ** class LeoReader
 class LeoReader(ContentHandler):
     """Read .leo files into a simple python data structure with
     h, b, u (unknown attribs), gnx and children information.
@@ -88,7 +102,9 @@ class LeoReader(ContentHandler):
           list of nodes leading to current node
         
     """
-    
+    #@+others
+    #@+node:ekr.20120519121124.9927: *3* __init__
+
 
     def __init__(self, *args, **kwargs):
         """Set ivars"""
@@ -104,6 +120,7 @@ class LeoReader(ContentHandler):
         self.in_attrs = {}
         self.path = []
 
+    #@+node:ekr.20120519121124.9928: *3* startElement
     def startElement(self, name, attrs):
         """collect information from v and t elements"""
         self.in_ = name
@@ -118,13 +135,14 @@ class LeoReader(ContentHandler):
             nd.gnx = attrs['t']
             self.path.append(nd)
             nd.path = self.path[:]
-    
+
         if name == 't':
             for k in attrs.keys():
                 if k == 'tx':
                     continue
                 self.idx[attrs['tx']].u[k] = attrs[k]
                 
+    #@+node:ekr.20120519121124.9929: *3* endElement
     def endElement(self, name):
         """decode unknownAttributes when t element is done"""
 
@@ -150,6 +168,7 @@ class LeoReader(ContentHandler):
                         
                 nd.u[k] = s
          
+    #@+node:ekr.20120519121124.9930: *3* characters
     def characters(self, content):
         """collect body text and headlines"""
         
@@ -159,12 +178,15 @@ class LeoReader(ContentHandler):
         if self.in_ == 't':
             self.idx[self.in_attrs['tx']].b.append(content)
 
+    #@-others
+#@+node:ekr.20120519121124.9931: ** get_leo_data
 def get_leo_data(source):
     """Return the root node for the specificed .leo file (path or file)"""
     parser = LeoReader()
     parse(source, parser)
     return parser.root
 
+#@-others
 if __name__ == '__main__':
     import sys
     import os
@@ -176,3 +198,4 @@ if __name__ == '__main__':
         )
     leo_data = get_leo_data(wb)
     print(leo_data)
+#@-leo

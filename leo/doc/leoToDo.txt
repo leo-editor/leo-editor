@@ -9,23 +9,6 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do first
 # This should appear before any @file node.
-.. @+node:ekr.20120519114248.9886: *4* Use a thicker outline in the body for command mode
-This would be a good visual cue.
-
-There *must* be an easy-to-see indication of mode.
-
-A command should set the width of the border.
-.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
-@nocolor-node
-
-Leo's Alt-R and Alt-S commands could be improved.
-
-- Return ends the search.  Should be documented.
-- Ctrl-g should abort the search and restore the cursor.
-- F2 and F3 should repeat the search, in the indicated direction.
-- If text is already highlighted, Alt-S or Alt-R should use that text.
-
-.. @+node:ekr.20120519114248.9887: *4* Create a way to set the mode prompt in @mode nodes.
 .. @+node:ekr.20120420095827.9947: *4* Complete the new support for sessions
 # complete the command-line args.
 .. @+node:ekr.20031218072017.2617: *5* app.onQuit
@@ -320,6 +303,23 @@ def make_screen_shot(self,fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
+.. @+node:ekr.20120519114248.9886: *4* Use a thicker outline in the body for command mode
+This would be a good visual cue.
+
+There *must* be an easy-to-see indication of mode.
+
+A command should set the width of the border.
+.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
+@nocolor-node
+
+Leo's Alt-R and Alt-S commands could be improved.
+
+- Return ends the search.  Should be documented.
+- Ctrl-g should abort the search and restore the cursor.
+- F2 and F3 should repeat the search, in the indicated direction.
+- If text is already highlighted, Alt-S or Alt-R should use that text.
+
+.. @+node:ekr.20120519114248.9887: *4* Create a way to set the mode prompt in @mode nodes.
 .. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
 .. @+node:ekr.20120515193246.10035: *5* To do
 @language rest
@@ -328,7 +328,11 @@ The leoInspect chapter has a good to-do list:
     
 http://webpages.charter.net/edreamleo/leoInspect.html#still-to-do
 
-The assignments_to, assignments_using and the new calls_to getters all specify a pattern to be matched against the the lhs of assignments (or against function names in the calls_to getter). At present, the pattern must match as a plain word match, but it would be more natural to use regex matches. That’s coming.
+The assignments_to, assignments_using and the new calls_to getters all
+specify a pattern to be matched against the the lhs of assignments (or
+against function names in the calls_to getter). At present, the pattern
+must match as a plain word match, but it would be more natural to use regex
+matches. That’s coming.
 
 Three new getters would give leoInspect the ability to replace refactored code:
 
@@ -820,10 +824,6 @@ if 1:
     print('parse:    %2.3f sec.' % (t3-t2))
     print('traverse: %2.3f sec.' % (t4-t3))
     print('total:    %2.3f sec.' % (t4-t1))
-.. @+node:ekr.20110518103946.18179: *4* Add external/leosax.py to leoPyRef.leo
-http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
-
-Would be ok with you if I pulled it into leoPy.leo, thereby adding sentinels to it? 
 .. @+node:ekr.20111021105253.9478: *3* Important
 .. @+node:ekr.20111021105253.9476: *4* Make sure all colorizer languages have entries in leoApp.py
 .. @+node:ekr.20111021035504.9469: *5* Script: get all comments from modes
