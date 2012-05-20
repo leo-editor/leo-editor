@@ -29,7 +29,7 @@ This module supports all versions of the IPython api:
 #@+node:ekr.20120402202350.10028: ** << globals >> (leoIPython.py)
 # Globals switches...
 
-g_trace_imports = True
+g_trace_imports = False
     # True: trace imports
 
 # Global vars...
