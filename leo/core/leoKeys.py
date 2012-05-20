@@ -3737,9 +3737,14 @@ class keyHandlerClass:
         c.frame.log.clearTab(tabName)
         
         if not k.mb_tabList and allow_empty_completion:
-            # Return *all* completions.
-            k.mb_tabList = sorted(defaultTabList)
-            common_prefix = ''
+            if command:
+                # 2012/05/20: Put up an *empty* list as a visual cue.
+                k.mb_tabList = []
+                g.es('','\n',tabName=tabName)
+            else:
+                # 2012/05/20: Return *all* completions if the command is empty.
+                k.mb_tabList = sorted(defaultTabList)
+                common_prefix = ''
 
         if k.mb_tabList:
             k.mb_tabListIndex = -1 # The next item will be item 0.

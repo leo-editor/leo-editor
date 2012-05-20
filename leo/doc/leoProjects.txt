@@ -3240,6 +3240,16 @@ def eventFilter(self, obj, event):
         self.traceEvent(obj,event,tkKey,override)
 
     return override
+#@+node:ekr.20120520055508.11874: *4* Fixed special cases of auto-completion of commands
+@nocolor-node
+
+If the user has not typed anything in the minibuffer, <alt-x><tab> returns *all* completions.
+
+Otherwise, if there are no completions, the "Completions" tab is empty, *not* all completions.
+
+This behavior is much more intuitive than the old behavior.
+
+The fix was a new special case in k.computeCompletionList.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -4182,9 +4192,14 @@ def computeCompletionList (self,defaultTabList,backspace,allow_empty_completion=
     c.frame.log.clearTab(tabName)
     
     if not k.mb_tabList and allow_empty_completion:
-        # Return *all* completions.
-        k.mb_tabList = sorted(defaultTabList)
-        common_prefix = ''
+        if command:
+            # 2012/05/20: Put up an *empty* list as a visual cue.
+            k.mb_tabList = []
+            g.es('','\n',tabName=tabName)
+        else:
+            # 2012/05/20: Return *all* completions if the command is empty.
+            k.mb_tabList = sorted(defaultTabList)
+            common_prefix = ''
 
     if k.mb_tabList:
         k.mb_tabListIndex = -1 # The next item will be item 0.
@@ -7764,9 +7779,14 @@ def computeCompletionList (self,defaultTabList,backspace,allow_empty_completion=
     c.frame.log.clearTab(tabName)
     
     if not k.mb_tabList and allow_empty_completion:
-        # Return *all* completions.
-        k.mb_tabList = sorted(defaultTabList)
-        common_prefix = ''
+        if command:
+            # 2012/05/20: Put up an *empty* list as a visual cue.
+            k.mb_tabList = []
+            g.es('','\n',tabName=tabName)
+        else:
+            # 2012/05/20: Return *all* completions if the command is empty.
+            k.mb_tabList = sorted(defaultTabList)
+            common_prefix = ''
 
     if k.mb_tabList:
         k.mb_tabListIndex = -1 # The next item will be item 0.
