@@ -5431,8 +5431,11 @@ class TypedDict:
     def replace(self,key,val):
         self._checkKeyType(key)
         if self.isList:
-            for z in val:
-                self._checkValType(z)
+            try:
+                for z in val:
+                    self._checkValType(z)
+            except TypeError:
+                self._checkValType(val) # val is not iterable.
             self.d[key] = val
         else:
             self._checkValType(val)
