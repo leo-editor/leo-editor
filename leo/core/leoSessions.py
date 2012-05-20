@@ -42,14 +42,15 @@ class SessionManager:
             if frame.c != c:
                 frame.c.close()
     #@+node:ekr.20120420054855.14417: *3* error
-    def error (self,s):
+    # def error (self,s):
         
-        g.es_print(s,color='red')
+        # # Do not use g.trace or g.es here.
+        # print(s)
     #@+node:ekr.20120420054855.14245: *3* get_session
     def get_session(self):
 
         '''Return a list of UNLs for open tabs.'''
-        
+
         result = []
         for frame in g.app.windowList:
             result.append(frame.c.p.get_UNL())
@@ -65,15 +66,18 @@ class SessionManager:
                 
         return None
     #@+node:ekr.20120420054855.14247: *3* load_session
-    def load_session(self,c,unls):
+    def load_session(self,c=None,unls=None):
 
         '''Open a tab for each item in UNLs & select the indicated node in each.'''
         
+        if unls is None: unls = []
+
         for unl in unls:
             if unl.strip():
-                fname,unl = unl.split("#")
-                if g.os_path_exists(fname):
-                    c2 = g.openWithFileName(fname,old_c=c)
+                fn,unl = unl.split("#")
+                if g.os_path_exists(fn):
+                    # g.trace(fn)
+                    c2 = g.app.loadManager.loadLocalFile(fn,gui=g.app.gui,old_c=c)
                     for p in c2.all_positions():
                         if p.get_UNL() == unl:
                             c2.setCurrentPosition(p)
@@ -89,20 +93,23 @@ class SessionManager:
                 session = json.loads(f.read())
             return session
         else:
-            self.error('can not load session: no leo.session file')  
+            print('can not load session: no leo.session file')  
             return None
     #@+node:ekr.20120420054855.14249: *3* save_snapshot
-    def save_snapshot(self,c):
+    def save_snapshot(self,c=None):
         
         '''Save a snapshot of the present session to the leo.session file.'''
 
         if self.path:
             session = self.get_session()
+            # print('save_snaphot: %s' % (len(session)))
             with open(self.path,'w') as f:
                 json.dump(session,f)
-                f.close()  
+                f.close()
+            # Do not use g.trace or g.es here.
+            print('wrote %s' % (self.path))
         else:
-            self.error('can not save session: no leo.session file')  
+            print('can not save session: no leo.session file')  
     #@-others
 #@+node:ekr.20120420054855.14375: ** Commands
 #@+node:ekr.20120420054855.14388: *3* session-clear
@@ -146,7 +153,7 @@ def session_restore_command(event):
             aList = c.p.b.split("\n")
             m.load_session(c,aList)
         else:
-            m.error('Please select an "@session" node')
+            print('Please select an "@session" node')
 #@+node:ekr.20120420054855.14390: *3* session-snapshot-load
 @g.command('session-snapshot-load')
 def session_snapshot_load_command(event):
@@ -163,6 +170,6 @@ def session_snapshot_save_command(event):
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:
-        m.save_snapshot(c)
+        m.save_snapshot(c=c)
 #@-others
 #@-leo

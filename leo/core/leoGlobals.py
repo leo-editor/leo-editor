@@ -2549,7 +2549,7 @@ def pluginIsLoaded(fn):
     pc = g.app.pluginsController
     return pc.isLoaded(fn)
 
-#@+node:ekr.20031218072017.3145: ** Most common functions...
+#@+node:ekr.20031218072017.3145: ** Most common functions... (leoGlobals.py)
 # These are guaranteed always to exist for scripts.
 #@+node:ekr.20031218072017.3147: *3* g.choose
 def choose(cond, a, b): # warning: evaluates all arguments
@@ -2609,14 +2609,16 @@ def es(*args,**keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-
+    
     trace = False
 
     if not app or app.killed: return
     log = app.log
     
     if trace: # Effective for debugging.
+        print()
         print('***es',args,keys)
+        print('***es','logInited',app.logInited,'log',log and id(log))
         print('***es',g.callers())
 
     # Compute the effective args.
@@ -2627,8 +2629,6 @@ def es(*args,**keys):
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args,d)
-    # print('g.es',app.logInited,log and id(log),args)
-    # print('g.es',g.callers())
 
     if app.batchMode:
         if app.log:
@@ -2645,8 +2645,9 @@ def es(*args,**keys):
             else: log.newlines = 0
         if newline:
             g.ecnl(tabName=tabName) # only valid here
-    elif app.logInited:
-        print(s.rstrip()) # Happens only rarely.
+    # 2012/05/20: Don't do this.
+    # elif app.logInited:
+        # print(s.rstrip()) # Happens only rarely.
     elif newline:
         app.logWaiting.append((s+'\n',color),)
     else:

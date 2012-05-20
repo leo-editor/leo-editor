@@ -51,6 +51,7 @@ class LeoApp:
         self.guiArgName = None          # The gui name given in --gui option.
         self.qt_use_tabs = False        # True: allow tabbed main window.
         self.restore_session = False    # True: restore session on startup.
+        self.save_session = False       # True: save session on close.
         self.silentMode = False         # True: no signon.
         self.start_fullscreen = False   # For qtGui plugin.
         self.start_maximized = False    # For qtGui plugin.
@@ -380,7 +381,7 @@ class LeoApp:
         trace = False and not g.unitTesting
         c = frame.c
 
-        if trace: g.trace(frame.c,g.callers(4))
+        if trace: g.trace(frame.c,g.callers())
 
         c.endEditing() # Commit any open edits.
 
@@ -633,7 +634,12 @@ class LeoApp:
         '''Exit Leo, prompting to save unsaved outlines first.'''
 
         g.app.quitting = True
-        # g.trace('True')
+        
+        # Don't use g.trace here.
+        # print('onQuit',g.app.save_session,g.app.sessionManager)
+        
+        if g.app.save_session and g.app.sessionManager:
+            g.app.sessionManager.save_snapshot()
 
         while g.app.windowList:
             w = g.app.windowList[0]
@@ -869,7 +875,6 @@ class LeoApp:
         app.logWaiting = []
 
         # Essential when opening multiple files...
-        
         g.app.setLog(None) 
     #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
     #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
@@ -1826,9 +1831,9 @@ class LoadManager:
         add('--select',       dest='select',
             help='headline or gnx of node to select')
         add('--session-restore',action="store_true",dest='session_restore',
-            help = 'restore previously stored session tabs')
+            help = 'restore previously saved session tabs at startup')
         add('--session-save',action="store_true",dest='session_save',
-            help = 'restore previously stored session tabs')
+            help = 'save session tabs on exit')
         add('--silent',       action="store_true", dest="silent",
             help = 'disable all log messages')
         add('--version',      action="store_true", dest="version",
@@ -2005,8 +2010,9 @@ class LoadManager:
             m = g.app.sessionManager
             if m:
                 aList = m.load_snapshot()
-                m.load_session(c1,aList)
-                c = c1 = g.app.windowList[0].c
+                if aList:
+                    m.load_session(c1,aList)
+                    c = c1 = g.app.windowList[0].c
             
         if not g.app.windowList:
             # Create an empty frame.
@@ -2030,6 +2036,8 @@ class LoadManager:
         g.app.logInited = True
         g.app.initComplete = True
         c.setLog()
+        # print('doPostPluginsInit: ***** set log')
+
         g.doHook("start2",c=c,p=c.p,v=c.p,fileName=fileName)
         g.enableIdleTimeHook(idleTimeDelay=500)
         lm.initFocusAndDraw(c,fileName)
@@ -2277,6 +2285,7 @@ class LoadManager:
         g.doHook("open1",old_c=None,c=c,new_c=c,fileName=fn)
         if theFile:
             readAtFileNodesFlag = bool(previousSettings)
+            ### The log is not set properly here. ###
             ok = lm.readOpenedLeoFile(c,gui,fn,readAtFileNodesFlag,theFile)
                 # Call c.fileCommands.openLeoFile to read the .leo file.
             if not ok: return None

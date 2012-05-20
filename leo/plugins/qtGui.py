@@ -1986,10 +1986,11 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSplitDirection(orientation)
         self.setStyleSheets()
         #self.setLeoWindowIcon()
-    #@+node:ekr.20110605121601.18140: *4* closeEvent (DynanicWindow)
+    #@+node:ekr.20110605121601.18140: *4* closeEvent (DynamicWindow)
     def closeEvent (self,event):
 
         trace = False and not g.unitTesting
+
         c = self.leo_c
 
         if not c.exists:
@@ -7048,6 +7049,12 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def closeEvent(self, event):
 
         noclose = False
+        
+        # g.trace('(leoTabbedTopLevel)',g.callers())
+        
+        if g.app.save_session and g.app.sessionManager:
+            g.app.sessionManager.save_snapshot()
+        
         for c in g.app.commanders():
             res = c.exists and g.app.closeLeoWindow(c.frame)
             if not res:

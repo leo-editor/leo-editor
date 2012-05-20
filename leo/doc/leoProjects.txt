@@ -3475,9 +3475,9 @@ def scanOptions(self,fileName,pymacs):
     add('--select',       dest='select',
         help='headline or gnx of node to select')
     add('--session-restore',action="store_true",dest='session_restore',
-        help = 'restore previously stored session tabs')
+        help = 'restore previously saved session tabs at startup')
     add('--session-save',action="store_true",dest='session_save',
-        help = 'restore previously stored session tabs')
+        help = 'save session tabs on exit')
     add('--silent',       action="store_true", dest="silent",
         help = 'disable all log messages')
     add('--version',      action="store_true", dest="version",
@@ -3643,6 +3643,7 @@ def __init__(self):
     self.guiArgName = None          # The gui name given in --gui option.
     self.qt_use_tabs = False        # True: allow tabbed main window.
     self.restore_session = False    # True: restore session on startup.
+    self.save_session = False       # True: save session on close.
     self.silentMode = False         # True: no signon.
     self.start_fullscreen = False   # For qtGui plugin.
     self.start_maximized = False    # For qtGui plugin.
@@ -8663,6 +8664,13 @@ Creates the enter-abc-mode command, but the prompt for the command is xyz.
 
 ParserBaseClass.createModeCommand creates this convention.
 Changed k.modeHelpHelper.
+#@+node:ekr.20120420095827.9947: *4* Completed the new support for sessions
+@nocolor-node
+
+(Done) Changed es so it always queues messages when g.app.log is None.
+(Done) complete the command-line args: --session-save and --session-restore.
+(Done) Write session info in leoTabbedTopLevel.closeEvent and g.app.onQuit.
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
