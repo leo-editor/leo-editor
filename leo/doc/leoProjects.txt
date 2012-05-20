@@ -3076,6 +3076,170 @@ def rememberOpenFile(self,fn):
             for z in aList:
                 print('  %s' % (z))
         d[tag] = aList
+#@+node:ekr.20120520055508.11872: *4* Clear previous focus-border after alt-tab
+@nocolor-node
+
+This was a recent problem.  Normally setInputState should *not* set the border.
+
+Added code to eventFilter to call remove_border on focus out.
+
+set-xxx-state commands call setInputState with set_border = True.
+#@+node:ekr.20061031131434.123: *5* set-xxx-State
+def setCommandState (self,event):
+    '''Enter the 'command' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('command',set_border=True)
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setInsertState (self,event):
+    '''Enter the 'insert' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('insert',set_border=True)
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+
+def setOverwriteState (self,event):
+    '''Enter the 'overwrite' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('overwrite',set_border=True)
+    # This command is also valid in headlines.
+    # k.c.bodyWantsFocus()
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.133: *5* setInputState
+def setInputState (self,state,set_border=False):
+
+    c,k = self.c,self
+    k.unboundKeyAction = state
+
+    if set_border and c.frame and c.frame.body:
+        w = c.frame.body.bodyCtrl
+        if hasattr(w,'widget'):
+            g.app.gui.add_border(c,w.widget)
+#@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
+def add_border(self,c,w):
+
+    state = c.k and c.k.unboundKeyAction
+    
+    # g.trace(state,hasattr(w,'viewport'),w,g.callers())
+
+    if state and c.use_focus_border and hasattr(w,'viewport'):
+        w = w.viewport()
+        d = {
+            'command':  c.focus_border_command_state_color,
+            'insert':   c.focus_border_color,
+            'overwrite':c.focus_border_overwrite_state_color,
+        }
+        color = d.get(state,c.focus_border_color)
+        sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+        self.update_style_sheet(w,'border',sheet)
+
+def remove_border(self,c,w):
+    
+    # g.trace(hasattr(w,'viewport'),w)
+
+    if c.use_focus_border and hasattr(w,'viewport'):
+        w = w.viewport()
+        # g.trace(w)
+        sheet = "border: %spx solid white" % c.focus_border_width
+        self.update_style_sheet(w,'border',sheet)
+#@+node:ekr.20110605121601.18540: *5* eventFilter
+def eventFilter(self, obj, event):
+
+    trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
+    verbose = True
+    traceEvent = False # True: call self.traceEvent.
+    traceKey = (True or g.trace_masterKeyHandler)
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    aList = []
+
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
+    lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
+
+    # Important:
+    # QLineEdit: ignore all key events except keyRelease events.
+    # QTextEdit: ignore all key events except keyPress events.
+    if eventType in lineEditKeyKinds:
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+        if self.tag in ('body','tree','log'):
+            g.app.gui.remove_border(c,obj)
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
+        if ignore:
+            override = False
+        # This is extremely bad.
+        # At present, it is needed to handle tab properly.
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+                c.frame.body.onFocusIn(obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+                c.frame.body.onFocusOut(obj)
+        if self.tag in ('tree','log'):
+            if eventType == ev.FocusIn:
+                g.app.gui.add_border(c,obj)
+            elif eventType == ev.FocusOut:
+                g.app.gui.remove_border(c,obj)
+
+    if self.keyIsActive:
+        shortcut = self.toStroke(tkKey,ch) # ch is unused.
+
+        if override:
+            # Essentially *all* keys get passed to masterKeyHandler.
+            if trace and traceKey:
+                g.trace('ignore',ignore,'bound',repr(shortcut),repr(aList))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            event = self.create_key_event(event,c,w,ch,tkKey,shortcut)
+            ret = k.masterKeyHandler(event)
+            c.outerUpdate()
+        else:
+            if trace and traceKey and verbose:
+                g.trace(self.tag,'unbound',tkKey,shortcut)
+        
+        if trace and traceEvent:
+            # Trace key events.
+            self.traceEvent(obj,event,tkKey,override)
+
+    elif trace and traceEvent:
+        # Trace non-key events.
+        self.traceEvent(obj,event,tkKey,override)
+
+    return override
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -4919,6 +5083,8 @@ def initConfigSettings (self):
 def add_border(self,c,w):
 
     state = c.k and c.k.unboundKeyAction
+    
+    # g.trace(state,hasattr(w,'viewport'),w,g.callers())
 
     if state and c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
@@ -4927,15 +5093,13 @@ def add_border(self,c,w):
             'insert':   c.focus_border_color,
             'overwrite':c.focus_border_overwrite_state_color,
         }
-        color = d.get(state)
-        if not color:
-            color = 'red'
-            g.trace('unknown state: %s' % (state))
-            # g.trace(state,w,hasattr(w,'viewport'))
+        color = d.get(state,c.focus_border_color)
         sheet = "border: %spx solid %s" % (c.focus_border_width,color)
         self.update_style_sheet(w,'border',sheet)
 
 def remove_border(self,c,w):
+    
+    # g.trace(hasattr(w,'viewport'),w)
 
     if c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
@@ -6219,7 +6383,7 @@ def setCommandState (self,event):
     '''Enter the 'command' editing state.'''
     # g.trace(g.callers())
     k = self
-    k.setInputState('command')
+    k.setInputState('command',set_border=True)
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
@@ -6228,7 +6392,7 @@ def setInsertState (self,event):
     '''Enter the 'insert' editing state.'''
     # g.trace(g.callers())
     k = self
-    k.setInputState('insert')
+    k.setInputState('insert',set_border=True)
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
@@ -6237,7 +6401,7 @@ def setOverwriteState (self,event):
     '''Enter the 'overwrite' editing state.'''
     # g.trace(g.callers())
     k = self
-    k.setInputState('overwrite')
+    k.setInputState('overwrite',set_border=True)
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
@@ -7388,7 +7552,12 @@ def modeHelpHelper (self,d):
     modeName = k.inputModeName.replace('-',' ')
     if modeName.endswith('mode'):
         modeName = modeName[:-4].strip()
-    g.es('','%s mode\n\n' % modeName,tabName=tabName)
+        
+    prompt = d.get('*command-prompt*')
+    if prompt:
+        g.es('','%s\n\n' % (prompt.kind.strip()),tabName=tabName)
+    else:
+        g.es('','%s mode\n\n' % modeName,tabName=tabName)
 
     # This isn't perfect in variable-width fonts.
     for s1,s2 in data:
@@ -7485,7 +7654,6 @@ def initMode (self,event,modeName):
         else:
             g.trace('***** oops: no mode',modeName)
     else:
-
         d = g.app.config.modeCommandsDict.get('enter-'+modeName)
         if not d:
             self.badMode(modeName)
@@ -7497,7 +7665,8 @@ def initMode (self,event,modeName):
                 prompt = si.kind # A kludge.
             else:
                 prompt = modeName
-            if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
+            if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
+                modeName,prompt,sorted(list(d.keys()))))
     
         k.inputModeName = modeName
         k.silentMode = False
@@ -8159,12 +8328,12 @@ def setEditingState (self):
     
     k.setInputState(state)
 #@+node:ekr.20061031131434.133: *7* setInputState
-def setInputState (self,state):
+def setInputState (self,state,set_border=False):
 
     c,k = self.c,self
     k.unboundKeyAction = state
 
-    if c.frame and c.frame.body:
+    if set_border and c.frame and c.frame.body:
         w = c.frame.body.bodyCtrl
         if hasattr(w,'widget'):
             g.app.gui.add_border(c,w.widget)
@@ -8429,7 +8598,7 @@ def setCommandState (self,event):
     '''Enter the 'command' editing state.'''
     # g.trace(g.callers())
     k = self
-    k.setInputState('command')
+    k.setInputState('command',set_border=True)
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
@@ -8438,7 +8607,7 @@ def setInsertState (self,event):
     '''Enter the 'insert' editing state.'''
     # g.trace(g.callers())
     k = self
-    k.setInputState('insert')
+    k.setInputState('insert',set_border=True)
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
@@ -8447,20 +8616,32 @@ def setOverwriteState (self,event):
     '''Enter the 'overwrite' editing state.'''
     # g.trace(g.callers())
     k = self
-    k.setInputState('overwrite')
+    k.setInputState('overwrite',set_border=True)
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
 #@+node:ekr.20061031131434.133: *5* setInputState
-def setInputState (self,state):
+def setInputState (self,state,set_border=False):
 
     c,k = self.c,self
     k.unboundKeyAction = state
 
-    if c.frame and c.frame.body:
+    if set_border and c.frame and c.frame.body:
         w = c.frame.body.bodyCtrl
         if hasattr(w,'widget'):
             g.app.gui.add_border(c,w.widget)
+#@+node:ekr.20120519114248.9887: *4* Fully support :: convention in @mode nodes
+@nocolor-node
+
+If the @mode headline contains ::, everything following
+the :: is the mode prompt. For example::
+    
+    @mode abc :: xyz
+    
+Creates the enter-abc-mode command, but the prompt for the command is xyz.
+
+ParserBaseClass.createModeCommand creates this convention.
+Changed k.modeHelpHelper.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

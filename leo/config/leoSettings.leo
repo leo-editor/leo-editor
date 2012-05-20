@@ -474,7 +474,7 @@
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
-<v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
+<v t="ekr.20080513095644.1"><vh>@mode quick-command :: quick command</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
@@ -3492,6 +3492,13 @@ creates the enter-quick-commands command. You can bind keys to such commands in
 
 Notes:
 
+- If the @mode headline contains ::, everything following the :: is the
+  mode prompt. For example::
+    
+    @mode abc :: xyz
+    
+creates the enter-abc-mode command, but the prompt for the command is xyz.
+
 - Pane specifiers are ignored in @mode nodes. Bindings apply only to a single
 mode.
 
@@ -5237,7 +5244,9 @@ scroll-down-page        ! tree = PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
 scroll-up-page          ! tree = PageUp         
 </t>
-<t tx="ekr.20080513095644.1"># Allows temporary rebindings without interfering with typical bindings.
+<t tx="ekr.20080513095644.1"># q in vim bindings.
+# The mode prompt is everything following the ::
+# Allows temporary rebindings without interfering with typical bindings.
 
 --&gt; set-silent-mode
 --&gt; mode-help

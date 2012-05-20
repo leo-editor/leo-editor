@@ -7,8 +7,10 @@
 @language rest
 
 This is the "will do" list.
-.. @+node:ekr.20120515133946.11416: *3* To do first
+.. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
+.. @+node:ekr.20120520055508.11874: *4* Fix auto-completion of *commands*
+.. @+node:ekr.20120520055508.11868: *4* Remove: Warning: unbound key ends mode
 .. @+node:ekr.20120420095827.9947: *4* Complete the new support for sessions
 # complete the command-line args.
 .. @+node:ekr.20031218072017.2617: *5* app.onQuit
@@ -303,6 +305,9 @@ def make_screen_shot(self,fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
+.. @+node:ekr.20120520055508.11873: *4* Add split-window commands
+.. @+node:ekr.20120520055508.11871: *4* Write about LeoInspect
+.. @+node:ekr.20120520055508.11870: *3* Next
 .. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
 @nocolor-node
 
@@ -313,7 +318,164 @@ Leo's Alt-R and Alt-S commands could be improved.
 - F2 and F3 should repeat the search, in the indicated direction.
 - If text is already highlighted, Alt-S or Alt-R should use that text.
 
-.. @+node:ekr.20120519114248.9887: *4* Create a way to set the mode prompt in @mode nodes.
+.. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes??
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
+
+A reminder, the opposite of "light" is "heavy", not "dark" :-)
+
+Leo's print-settings, print-commands and print-bindings commands
+create too much text.
+
+Suppose they created outline nodes instead, replacing existing nodes
+if they exist.  Something like this:
+
+- Reference (Anywhere you like)
+ - @print-settings
+    etc.
+ - @print-bindings
+   etc
+ - @print commands
+   etc
+
+Doh!  This uses Leo's power.  The subnodes can be as voluminous as
+desired, and there can be organizer nodes in each case.  The actual
+tree could be specified as in @menus.
+
+Etc., etc.  This could moot the need for separate apropos commands.
+Conversely, apropos commands could create their own trees, or
+subtrees.
+
+This could be the tip of an iceberg.
+
+The more I think about the light/heavy distinction, the more I think
+it is getting close to what makes Leo special.  For example, clones
+(and nodes, for that matter) drastically lighten the apparent
+complexity of programs or data.
+.. @+node:ekr.20111017102409.15875: *4* Create print-buttons command
+@nocolor-node
+
+Create print-buttons command, showing source of all @command and @button nodes.
+.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+Every command should have a **complete** docstring.
+.. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
+Leo must have a check-doc-strings script that will verify that all
+commands have non-trivial doc strings.
+
+.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
+.. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=4319363
+By: ktenney
+
+I think there is room for improvement in documenting Leo's
+API, making it easier to write these kind of scripts.
+I'm not sure of the best way to do that.
+
+Epydoc seems to be the most active project in this realm.
+http://epydoc.sourceforge.net/epydoc.html
+.. @+node:ekr.20111021105253.9476: *4* Make sure all colorizer languages have entries in leoApp.py
+.. @+node:ekr.20111021035504.9469: *5* Script: get all comments from modes
+import glob
+import imp
+@others
+
+keys = ("lineComment","commentStart","commentEnd",)
+d = {}
+    # Keys are language names.
+    # Values are a list of comment delims, in keys order.
+paths,modes_path = get_paths()
+for path in paths:
+    module_name = g.shortFileName(path)[:-3]
+    module = import_module(module_name,modes_path)
+    aList = []
+    for key in keys:
+        val = module.properties.get(key)
+        if val: aList.append(val)
+    d[module_name] = aList
+
+print('-'* 20)
+print('language_delims_dict')
+for key in sorted(d):
+    print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
+.. @+node:ekr.20111021035504.9470: *6* get_paths
+def get_paths():
+    
+    modes_path = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+    pattern = g.os_path_finalize_join(modes_path,'*.py')
+    paths = glob.glob(pattern)
+    paths = [z for z in paths if not z.endswith('__init__.py')]
+    return paths,modes_path
+.. @+node:ekr.20111021035504.9471: *6* import_module
+def import_module(module_name,modes_path):
+    
+    data = imp.find_module(module_name,[modes_path])
+        # This can open the file.
+    theFile,pathname,description = data
+    module = imp.load_module(module_name,theFile,pathname,description)
+    return module
+.. @+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages (waiting for requests)
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
+
+** Only c.getOpenWithExt uses app.language_extension_dict.
+
+I'll wait until I get requests for particular language.
+.. @+node:ekr.20110528103005.18319: *6* Script to create global data structures from in modes/*.py files
+@language python
+
+import glob
+import imp
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+aList = glob.glob(theDir)
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+
+print('-'*40,len(aList))
+known_keys = list(g.app.language_delims_dict.keys())
+known_keys.sort()
+known = []
+computed = {}
+for z in aList:
+    name = g.os_path_basename(z)
+    name2 = name[:-3]
+    if name2.startswith('__'): continue
+    # if name2 in known_keys:
+        # known.append(name)
+        # continue
+    try:
+        theFile, pathname, description = imp.find_module(name2,[theDir])
+        m = imp.load_module(name2, theFile, pathname, description)
+    except Exception:
+        g.es_exception()
+        m = None
+    if m:
+        aList2 = [m.properties.get(z)
+            for z in ('lineComment','commentStart','commentEnd')
+                if m.properties.get(z)]
+        print('%-20s : "%s",' % (
+            '"%s"' % (name2),
+            ' '.join(aList2)))
+        computed[name2] = ' '.join(aList2)
+mismatches = 0
+for z in known_keys:
+    val = g.app.language_delims_dict.get(z)
+    val2 = computed.get(z)
+    if not val:
+        print('oops: no val',z)
+    elif not val2:
+        print('oops: no val2',z)
+    elif val != val2:
+        mismatches += 1
+        print('mismatch for %s' % z)
+        print(repr(val))
+        print(repr(val2))
+print('%s total languages' % len(aList))
+print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
+print('%s mismatches' % mismatches)
+print('%s known language: %s' % (len(known_keys),known_keys))
 .. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
 .. @+node:ekr.20120515193246.10035: *5* To do
 @language rest
@@ -819,107 +981,6 @@ if 1:
     print('traverse: %2.3f sec.' % (t4-t3))
     print('total:    %2.3f sec.' % (t4-t1))
 .. @+node:ekr.20111021105253.9478: *3* Important
-.. @+node:ekr.20111021105253.9476: *4* Make sure all colorizer languages have entries in leoApp.py
-.. @+node:ekr.20111021035504.9469: *5* Script: get all comments from modes
-import glob
-import imp
-@others
-
-keys = ("lineComment","commentStart","commentEnd",)
-d = {}
-    # Keys are language names.
-    # Values are a list of comment delims, in keys order.
-paths,modes_path = get_paths()
-for path in paths:
-    module_name = g.shortFileName(path)[:-3]
-    module = import_module(module_name,modes_path)
-    aList = []
-    for key in keys:
-        val = module.properties.get(key)
-        if val: aList.append(val)
-    d[module_name] = aList
-
-print('-'* 20)
-print('language_delims_dict')
-for key in sorted(d):
-    print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
-.. @+node:ekr.20111021035504.9470: *6* get_paths
-def get_paths():
-    
-    modes_path = g.os_path_finalize_join(g.app.loadDir,'..','modes')
-    pattern = g.os_path_finalize_join(modes_path,'*.py')
-    paths = glob.glob(pattern)
-    paths = [z for z in paths if not z.endswith('__init__.py')]
-    return paths,modes_path
-.. @+node:ekr.20111021035504.9471: *6* import_module
-def import_module(module_name,modes_path):
-    
-    data = imp.find_module(module_name,[modes_path])
-        # This can open the file.
-    theFile,pathname,description = data
-    module = imp.load_module(module_name,theFile,pathname,description)
-    return module
-.. @+node:ekr.20090801103907.6018: *5* Add entries to global dicts for more languages (waiting for requests)
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-
-Especially languages in leo/modes.
-
-** Only c.getOpenWithExt uses app.language_extension_dict.
-
-I'll wait until I get requests for particular language.
-.. @+node:ekr.20110528103005.18319: *6* Script to create global data structures from in modes/*.py files
-@language python
-
-import glob
-import imp
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-aList = glob.glob(theDir)
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
-
-print('-'*40,len(aList))
-known_keys = list(g.app.language_delims_dict.keys())
-known_keys.sort()
-known = []
-computed = {}
-for z in aList:
-    name = g.os_path_basename(z)
-    name2 = name[:-3]
-    if name2.startswith('__'): continue
-    # if name2 in known_keys:
-        # known.append(name)
-        # continue
-    try:
-        theFile, pathname, description = imp.find_module(name2,[theDir])
-        m = imp.load_module(name2, theFile, pathname, description)
-    except Exception:
-        g.es_exception()
-        m = None
-    if m:
-        aList2 = [m.properties.get(z)
-            for z in ('lineComment','commentStart','commentEnd')
-                if m.properties.get(z)]
-        print('%-20s : "%s",' % (
-            '"%s"' % (name2),
-            ' '.join(aList2)))
-        computed[name2] = ' '.join(aList2)
-mismatches = 0
-for z in known_keys:
-    val = g.app.language_delims_dict.get(z)
-    val2 = computed.get(z)
-    if not val:
-        print('oops: no val',z)
-    elif not val2:
-        print('oops: no val2',z)
-    elif val != val2:
-        mismatches += 1
-        print('mismatch for %s' % z)
-        print(repr(val))
-        print(repr(val2))
-print('%s total languages' % len(aList))
-print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
-print('%s mismatches' % mismatches)
-print('%s known language: %s' % (len(known_keys),known_keys))
 .. @+node:ekr.20111125072438.10219: *4* Open file dialogs starting with @path directory
 @nocolor-node
 
@@ -1454,63 +1515,6 @@ def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,st
         else:
             s = QtGui.QFileDialog.getOpenFileName(parent,title,startpath,filter)
             return g.u(s)
-.. @+node:ekr.20111017102409.15875: *4* Create print-buttons command
-@nocolor-node
-
-- Create print-buttons command, showing source of all @command and @button nodes.
-.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
-Every command should have a **complete** docstring.
-.. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
-Leo must have a check-doc-strings script that will verify that all
-commands have non-trivial doc strings.
-
-.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
-.. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=4319363
-By: ktenney
-
-I think there is room for improvement in documenting Leo's
-API, making it easier to write these kind of scripts.
-I'm not sure of the best way to do that.
-
-Epydoc seems to be the most active project in this realm.
-http://epydoc.sourceforge.net/epydoc.html
-.. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
-
-A reminder, the opposite of "light" is "heavy", not "dark" :-)
-
-Leo's print-settings, print-commands and print-bindings commands
-create too much text.
-
-Suppose they created outline nodes instead, replacing existing nodes
-if they exist.  Something like this:
-
-- Reference (Anywhere you like)
- - @print-settings
-    etc.
- - @print-bindings
-   etc
- - @print commands
-   etc
-
-Doh!  This uses Leo's power.  The subnodes can be as voluminous as
-desired, and there can be organizer nodes in each case.  The actual
-tree could be specified as in @menus.
-
-Etc., etc.  This could moot the need for separate apropos commands.
-Conversely, apropos commands could create their own trees, or
-subtrees.
-
-This could be the tip of an iceberg.
-
-The more I think about the light/heavy distinction, the more I think
-it is getting close to what makes Leo special.  For example, clones
-(and nodes, for that matter) drastically lighten the apparent
-complexity of programs or data.
 .. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
 @language python
 @language rest
@@ -2194,6 +2198,8 @@ Leo doesn't understand .jsp.  @shadow should refuse to work for unknown language
 def add_border(self,c,w):
 
     state = c.k and c.k.unboundKeyAction
+    
+    # g.trace(state,hasattr(w,'viewport'),w,g.callers())
 
     if state and c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
@@ -2202,15 +2208,13 @@ def add_border(self,c,w):
             'insert':   c.focus_border_color,
             'overwrite':c.focus_border_overwrite_state_color,
         }
-        color = d.get(state)
-        if not color:
-            color = 'red'
-            g.trace('unknown state: %s' % (state))
-            # g.trace(state,w,hasattr(w,'viewport'))
+        color = d.get(state,c.focus_border_color)
         sheet = "border: %spx solid %s" % (c.focus_border_width,color)
         self.update_style_sheet(w,'border',sheet)
 
 def remove_border(self,c,w):
+    
+    # g.trace(hasattr(w,'viewport'),w)
 
     if c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
@@ -3467,7 +3471,12 @@ def modeHelpHelper (self,d):
     modeName = k.inputModeName.replace('-',' ')
     if modeName.endswith('mode'):
         modeName = modeName[:-4].strip()
-    g.es('','%s mode\n\n' % modeName,tabName=tabName)
+        
+    prompt = d.get('*command-prompt*')
+    if prompt:
+        g.es('','%s\n\n' % (prompt.kind.strip()),tabName=tabName)
+    else:
+        g.es('','%s mode\n\n' % modeName,tabName=tabName)
 
     # This isn't perfect in variable-width fonts.
     for s1,s2 in data:
@@ -3564,7 +3573,6 @@ def initMode (self,event,modeName):
         else:
             g.trace('***** oops: no mode',modeName)
     else:
-
         d = g.app.config.modeCommandsDict.get('enter-'+modeName)
         if not d:
             self.badMode(modeName)
@@ -3576,7 +3584,8 @@ def initMode (self,event,modeName):
                 prompt = si.kind # A kludge.
             else:
                 prompt = modeName
-            if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
+            if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
+                modeName,prompt,sorted(list(d.keys()))))
     
         k.inputModeName = modeName
         k.silentMode = False
