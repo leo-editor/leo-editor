@@ -4827,12 +4827,13 @@ def createNode (self,b,h,level):
     p = self.createHeadline(parent,b,h)
     self.parents = self.parents[:level+1]
     self.parents.append(p)
-#@+node:ekr.20120519114248.9886: *4* Use a thicker outline in the body for command mode
+#@+node:ekr.20120519114248.9886: *4* Change focus-border color depending on input state
 @nocolor-node
 
-Leo now supports a new setting, with the indicated default::
+Leo now supports two new setting, with the indicated default::
 
     @color focus_border_command_state_color = blue
+    @color focus_border_overwrite_state_color = green
 
 This works in conjunction with the existing border-color setting::
 
@@ -4863,11 +4864,6 @@ state command.
 As before, if you don't want any such colored borders, just do::
 
     @bool use_focus_border = False 
-#@+node:ekr.20120519193555.11200: *5* Focus border settings
-#@+node:ekr.20120519193555.11201: *6* @bool use_focus_border = True
-#@+node:ekr.20120519193555.11202: *6* @bool use_body_focus_border = True
-#@+node:ekr.20120519193555.11203: *6* @int focus_border_width = 1
-#@+node:ekr.20120519193555.11204: *6* @color focus_border_color = red
 #@+node:ekr.20090213065933.6: *5* c.initConfigSettings
 def initConfigSettings (self):
 
@@ -4894,7 +4890,10 @@ def initConfigSettings (self):
     c.fixed                     = getBool('fixedWindow',default=False)
     c.fixedWindowPosition       = getData('fixedWindowPosition')
     c.focus_border_color        = getColor('focus_border_color') or 'red'
-    c.focus_border_command_state_color = getColor('focus_border_command_state_color') or 'blue'
+    c.focus_border_command_state_color = getColor(
+        'focus_border_command_state_color') or 'blue'
+    c.focus_border_overwrite_state_color = getColor(
+        'focus_border_overwrite_state_color') or 'green'
     c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
     c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
     # c.showMinibuffer            = getBool('useMinibuffer')
@@ -4918,18 +4917,22 @@ def initConfigSettings (self):
     # g.trace(c.sparse_move)
 #@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
 def add_border(self,c,w):
-    
-    # g.trace(c.k and c.k.unboundKeyAction,w,hasattr(w,'viewport'))
 
-    if c.use_focus_border and hasattr(w,'viewport'):
+    state = c.k and c.k.unboundKeyAction
+
+    if state and c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
-        if c.k.unboundKeyAction == 'command':
-            sheet = "border: %spx solid %s" % (
-                c.focus_border_width,c.focus_border_command_state_color)
-        else:
-            sheet = "border: %spx solid %s" % (
-                c.focus_border_width,c.focus_border_color)
-
+        d = {
+            'command':  c.focus_border_command_state_color,
+            'insert':   c.focus_border_color,
+            'overwrite':c.focus_border_overwrite_state_color,
+        }
+        color = d.get(state)
+        if not color:
+            color = 'red'
+            g.trace('unknown state: %s' % (state))
+            # g.trace(state,w,hasattr(w,'viewport'))
+        sheet = "border: %spx solid %s" % (c.focus_border_width,color)
         self.update_style_sheet(w,'border',sheet)
 
 def remove_border(self,c,w):

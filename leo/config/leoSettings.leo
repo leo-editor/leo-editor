@@ -226,6 +226,7 @@
 <v t="ekr.20111023095357.16695"><vh>@int focus_border_width = 1</vh></v>
 <v t="ekr.20111023095357.16696"><vh>@color focus_border_color = red</vh></v>
 <v t="ekr.20120519193555.11830"><vh>@color focus_border_command_state_color = blue</vh></v>
+<v t="ekr.20120520053551.11241"><vh>@color focus_border_overwrite_state_color = green</vh></v>
 </v>
 <v t="ekr.20110611092035.16490"><vh>Windows</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
@@ -9444,6 +9445,7 @@ do-nothing = Shift-F10
 do-nothing = Shift-F11
 do-nothing = Shift-F12</t>
 <t tx="ekr.20120519193555.11830"></t>
+<t tx="ekr.20120520053551.11241"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
