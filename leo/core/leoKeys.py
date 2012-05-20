@@ -2993,7 +2993,8 @@ class keyHandlerClass:
             else:
                 # New in Leo 4.5: unbound keys end mode.
                 # if trace: g.trace('unbound key ends mode',stroke,state)
-                g.warning('unbound key ends mode',stroke) # 2011/02/02
+                if 0: # 2012/05/20: I dislike this warning.
+                    g.warning('unbound key ends mode',stroke) # 2011/02/02
                 k.endMode()
                 return False,None
         else:
