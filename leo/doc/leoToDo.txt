@@ -9,6 +9,7 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
+.. @+node:ekr.20120520055508.11871: *4* Write about LeoInspect
 .. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes??
 @language rest
 
@@ -48,8 +49,7 @@ complexity of programs or data.
 @nocolor-node
 
 Create print-buttons command, showing source of all @command and @button nodes.
-.. @+node:ekr.20120520055508.11871: *4* Write about LeoInspect
-.. @+node:ekr.20120520055508.11870: *3* Next 4
+.. @+node:ekr.20120520055508.11870: *3* Next
 .. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
 @nocolor-node
 
@@ -180,6 +180,61 @@ print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
 print('%s mismatches' % mismatches)
 print('%s known language: %s' % (len(known_keys),known_keys))
 .. @+node:ekr.20120520055508.11873: *4* Add split-window commands
+.. @+node:ekr.20031218072017.800: *4* Improve extract section command (has this been done?)
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1858824
+By: gilshwartz
+Open discusstion
+
+Currently Extract Section is only available if the first line in a selection
+is a section name <<x>>. I would like to propose a few enhancements I think
+should be useful, while I believe most of the code is already implemented in
+Leo.
+
+1. If the first line in a selection is not <<x>>, than Extract Section WILL
+make a section name from the first line (or a version of it, see below), leave
+the section name in the body, create a new node with that section name, and
+will copy the selection including the first line to the new node.
+
+Rational: this is useful when selecting a function or a class. Thus the section
+name becomes the function or the class definition. The section name can either
+be the full first line, or, knowing the language, Leo can make a nice section
+name like it does in import, e.g. "function foo", or "class bar", without the
+parameters list.
+
+2. Even better, when Extract Section is called WITHOUT a selection it will look
+for the first function/class definition before the cursor's position and will
+either use it as a selection and do 1 above, or just mark it as selection, which
+will enable 1 above upon a second Extract Section.
+
+Rational: Leo does it beautifully in import and when a node's code starts to
+build it is most convenient. Also, I think a variation on this was recently
+asked by another user.
+
+3. Add an option Merge Section, which when called from a named section will
+merge it back to all the sections containing it.
+
+Rational: make it easy (together with 2) to create/delete sections until the
+sections picture of a new code becomes clear.
+
+Gil
+
+--
+
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1859516
+By: nobody
+
+Simpler & more intutive:
+Mark text, select from menu - 'extract section', this presents a dialog box
+in which you fill in the section name. It is too much work to type <<name>>
+then select the whole thing...
+
+As an enhancement, the dialog can show the first line of the selection as the
+default section name, which obviously can be changed.
+
+- Rajiv Bhagwat
+.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
 .. @+node:ekr.20111021105253.9478: *3* Important
 .. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
 .. @+node:ekr.20120515193246.10035: *5* To do
@@ -2098,81 +2153,11 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
 Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
 .. @+node:ekr.20120516140545.9991: *3* Other
-.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
-.. @+node:ekr.20120226131923.10221: *4* Allow abbreviations in minibuffer
-@nocolor-node
-
-cfa=clone-find-all-flattened
-.. @+node:ekr.20031218072017.800: *4* Improve extract section command
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1858824
-By: gilshwartz
-Open discusstion
-
-Currently Extract Section is only available if the first line in a selection
-is a section name <<x>>. I would like to propose a few enhancements I think
-should be useful, while I believe most of the code is already implemented in
-Leo.
-
-1. If the first line in a selection is not <<x>>, than Extract Section WILL
-make a section name from the first line (or a version of it, see below), leave
-the section name in the body, create a new node with that section name, and
-will copy the selection including the first line to the new node.
-
-Rational: this is useful when selecting a function or a class. Thus the section
-name becomes the function or the class definition. The section name can either
-be the full first line, or, knowing the language, Leo can make a nice section
-name like it does in import, e.g. "function foo", or "class bar", without the
-parameters list.
-
-2. Even better, when Extract Section is called WITHOUT a selection it will look
-for the first function/class definition before the cursor's position and will
-either use it as a selection and do 1 above, or just mark it as selection, which
-will enable 1 above upon a second Extract Section.
-
-Rational: Leo does it beautifully in import and when a node's code starts to
-build it is most convenient. Also, I think a variation on this was recently
-asked by another user.
-
-3. Add an option Merge Section, which when called from a named section will
-merge it back to all the sections containing it.
-
-Rational: make it easy (together with 2) to create/delete sections until the
-sections picture of a new code becomes clear.
-
-Gil
-
---
-
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1859516
-By: nobody
-
-Simpler & more intutive:
-Mark text, select from menu - 'extract section', this presents a dialog box
-in which you fill in the section name. It is too much work to type <<name>>
-then select the whole thing...
-
-As an enhancement, the dialog can show the first line of the selection as the
-default section name, which obviously can be changed.
-
-- Rajiv Bhagwat
-.. @+node:ekr.20060227131611: *4* Two ideas from Kent
+.. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
 
-This work may or may not be related to a couple
-things which have been on my mind lately.
-
-When I have a traceback in the log pane, I'd love
-to be able to select an item and cause the file
-to appear in a node.
-It would be cool to have 'Next' and 'Prev' 
-capability while in this mode, effortlessly 
-traversing views of the source of the stack items.
-
-Also; 
 Zope3, with it's component based architecture,
 has machinery which hooks components together ..
 Interfaces, Adapters and ZCML, the configuration
@@ -2192,11 +2177,17 @@ I really don't know if this makes sense, but
 I see you moving in the direction of making Leo
 capable of doing some _explaining_ of the code 
 being written.
+.. @+node:ekr.20120520113447.9874: *4* Kent: select node from traceback
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
 
-I think this holds lots of promise.
-
-Thanks,
-Kent
+When I have a traceback in the log pane, I'd love
+to be able to select an item and cause the file
+to appear in a node.
+It would be cool to have 'Next' and 'Prev' 
+capability while in this mode, effortlessly 
+traversing views of the source of the stack items.
 .. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
 @nocolor-node
 

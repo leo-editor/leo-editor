@@ -8671,6 +8671,22 @@ Changed k.modeHelpHelper.
 (Done) complete the command-line args: --session-save and --session-restore.
 (Done) Write session info in leoTabbedTopLevel.closeEvent and g.app.onQuit.
 
+Rev 5324 finishes some session-related work. The existing
+session commands are unchanged, but Leo now fully supports
+two new command-line arguments::
+
+    --session-restore     restore previously saved session tabs at startup
+    --session-save        save session tabs on exit
+
+If you use both arguments, everything is automatic: Leo
+saves the tabs when you quit Leo, and restores tabs when you
+start Leo. Note that you can still specify file names on the
+command line in addition to whatever files --session-restore
+will open for you.
+
+If you use only --session-restore, it is up to you to save
+sessions "by hand" with one of the session commands, for
+instance, session-snapshot-save.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
