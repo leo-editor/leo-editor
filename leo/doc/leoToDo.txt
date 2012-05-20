@@ -10,7 +10,6 @@ This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
 .. @+node:ekr.20120520055508.11874: *4* Fix auto-completion of *commands*
-.. @+node:ekr.20120520055508.11875: *4* Update documentation of @mode nodes, esp. :: convention
 .. @+node:ekr.20120520055508.11868: *4* Remove: Warning: unbound key ends mode
 .. @+node:ekr.20120420095827.9947: *4* Complete the new support for sessions
 # complete the command-line args.

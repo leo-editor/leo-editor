@@ -345,6 +345,14 @@ separator.
 The children of this node should be @menu and @item nodes, used as with
 @menus.
 .. @+node:ekr.20090116094356.14: *5* \@mode
+Leo now allows you to specify input modes. You enter mode x with the
+enter-x-mode command. The purpose of a mode is to create different bindings
+for keys within a mode. Often plain keys are useful in input modes.
+
+You can specify modes with @mode nodes in leoSettings.leo. @mode nodes work
+just like @shortcuts nodes, but in addition they have the side effect of
+creating the enter-<mode name>-mode command.
+
 The form of this node is::
 
     @mode *<mode name>*
@@ -352,6 +360,39 @@ The form of this node is::
 The body text contains a list of shortcut specifiers. @mode nodes work just
 like @shortcuts nodes, but in addition they have the side effect of creating
 the enter-<mode name>-mode command.
+
+Notes:
+
+- You can exit any mode using the keyboard-quit (Control-g) command. This is the
+  **only** binding that is automatically created in each mode. All other bindings
+  must be specified in the @mode node. In particular, the bindings specified in
+  @shortcuts nodes are **not** in effect in mode (again, except for the
+  keyboard-quit binding).
+
+- Leo supports something akin to tab completion within modes: if you type a key
+  that isn't bound in a mode a 'Mode' tab will appear in the log pane. This tab
+  shows all the keys that you can type and the commands to which they are bound.
+  The mode-help command does the same thing.
+
+- @shortcuts nodes specify the bindings for what might be called the 'top-level'
+  mode. These are the bindings in effect when no internal state is present, for
+  example, just after executing the keyboard-quit command.
+
+- The top_level_unbound_key_action setting determines what happens to
+  unbound keys in the top-level mode. Leo ignores unbound keys in all other modes.
+  The possibilities are 'insert', 'replace' and 'ignore'.
+
+- The set-insert-mode, set-overwrite-mode and set-ignore-mode
+  commands alter what happens to unbound keys in the top-level mode.
+  
+- If the @mode headline contains ::, everything following
+  the :: is the mode prompt. For example::
+    
+    @mode abc :: xyz
+    
+Creates the enter-abc-mode command, but the prompt for the command is xyz.
+
+With all these options it should be possible to emulate the keyboard behavior of any other editor.
 .. @+node:ekr.20090116094356.13: *5* \@recentfiles
 The body text contains a list of paths of recently opened files, one path per
 line. Leo writes the list of recent files to .leoRecentFiles.txt in Leo's
@@ -390,6 +431,13 @@ Notes:
 
 - The set-insert-mode, set-overwrite-mode and set-ignore-mode
   commands alter what happens to unbound keys in the top-level mode.
+  
+- If the @mode headline contains ::, everything following
+  the :: is the mode prompt. For example::
+    
+    @mode abc :: xyz
+    
+Creates the enter-abc-mode command, but the prompt for the command is xyz.
 
 With all these options it should be possible to emulate the keyboard behavior of any other editor.
 .. @+node:ekr.20050306090601: *3* Adding extensible attributes to nodes and .leo files
