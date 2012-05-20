@@ -2197,13 +2197,13 @@ def add_border(self,c,w):
 
     if c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
-        if c.k.unboundKeyAction == 'insert':
-            sheet = "border: %spx solid %s" % (
-                c.focus_border_width,c.focus_border_color)
-            self.update_style_sheet(w,'border',sheet)
-        else:
+        if c.k.unboundKeyAction == 'command':
             sheet = "border: %spx solid %s" % (
                 c.focus_border_width,c.focus_border_command_state_color)
+        else:
+            sheet = "border: %spx solid %s" % (
+                c.focus_border_width,c.focus_border_color)
+
         self.update_style_sheet(w,'border',sheet)
 
 def remove_border(self,c,w):
