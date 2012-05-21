@@ -1825,7 +1825,12 @@ class Commands (object):
         fileName = c.mFileName ; c.mFileName = ""
 
         # Create a new frame before deleting this frame.
-        c2 = g.openWithFileName(fileName,old_c=c)
+        try:
+            g.app.reverting = True
+            c2 = g.openWithFileName(fileName,old_c=c)
+        finally:
+            g.app.reverting = False
+
         if c2:
             c2.frame.deiconify()
             g.doHook("close-frame",c=c)

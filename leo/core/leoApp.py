@@ -116,6 +116,7 @@ class LeoApp:
         self.killed   = False           # True: we are about to destroy the root window.
         self.preReadFlag = False        # True: we are pre-reading a settings file.
         self.quitting = False           # True: quitting.  Locks out some events.
+        self.reverting = False          # True: executing the revert command.
         
         #### To be moved to the LogManager.
 
@@ -882,7 +883,7 @@ class LeoApp:
         
         d,tag = g.app.db,'open-leo-files'
 
-        if d is None or g.app.unitTesting or g.app.batchMode:
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             return True
         else:
             aList = d.get(tag) or []
@@ -911,7 +912,7 @@ class LeoApp:
         trace = False and not g.unitTesting
         d,tag = g.app.db,'open-leo-files'
 
-        if d is None or g.app.unitTesting or g.app.batchMode:
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             pass
         else:
             aList = d.get(tag) or []
@@ -930,7 +931,7 @@ class LeoApp:
         trace = False and not g.unitTesting
         d,tag = g.app.db,'open-leo-files'
 
-        if d is None or g.app.unitTesting or g.app.batchMode:
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             pass
         elif g.app.preReadFlag:
             pass
