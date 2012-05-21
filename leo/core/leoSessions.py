@@ -87,9 +87,11 @@ class SessionManager:
     def load_snapshot(self):
         
         '''Load a snapshot of a session from the leo.session file.'''
+        
+        fn = self.path
 
-        if self.path:
-            with open(self.path) as f:
+        if fn and g.os_path_exists(fn):
+            with open(fn) as f:
                 session = json.loads(f.read())
             return session
         else:

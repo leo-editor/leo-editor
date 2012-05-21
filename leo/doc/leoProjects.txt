@@ -8723,6 +8723,172 @@ will open for you.
 If you use only --session-restore, it is up to you to save
 sessions "by hand" with one of the session commands, for
 instance, session-snapshot-save.
+#@+node:ekr.20111017102409.15875: *4* Created print-buttons command
+@nocolor-node
+
+Created print-buttons command, showing source of all @command and @button nodes.
+
+Changed ParserBaseClass.doButtons/doCommands so they return
+lists of (p.copy(),script) rather than (p.h,script)
+
+Added g.app.config.atLocalButtonsList & g.app.config.atLocalCommandsList
+for use by print-buttons command.
+#@+node:ekr.20041117062717.2: *5* gcm.ctor
+def __init__ (self):
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: print('g.app.config.__init__')
+    
+    # Set later.  To keep pylint happy.
+    if 0: # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
+        self.at_root_bodies_start_in_doc_mode = True
+        self.default_derived_file_encoding = 'utf-8'
+        self.output_newline = 'nl'
+        self.redirect_execute_script_output_to_log_pane = True
+        self.relative_path_base_directory = '!'
+
+    self.atCommonButtonsList = [] # List of info for common @buttons nodes.
+    self.atCommonCommandsList = [] # List of info for common @commands nodes.
+    self.atLocalButtonsList = [] # List of positions of @button nodes.
+    self.atLocalCommandsList = [] # List of positions of @command nodes.
+
+    self.buttonsFileName = ''
+    self.configsExist = False # True when we successfully open a setting file.
+    self.unitTestDict = {} # For unit testing: *not* the same as g.app.unitTestDict.
+    self.defaultFont = None # Set in gui.getDefaultConfigFont.
+    self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
+    self.enabledPluginsFileName = None
+    self.enabledPluginsString = '' 
+    self.inited = False
+    self.menusList = []
+    self.menusFileName = ''
+    if g.new_modes:
+        pass # Use k.ModeController instead.
+    else:
+        self.modeCommandsDict = g.TypedDict(
+            name = 'modeCommandsDict',
+            keyType = type('commandName'),valType = g.TypedDictOfLists)
+
+    # Inited later...
+    self.panes = None
+    self.sc = None
+    self.tree = None
+
+    self.initDicts()
+    self.initIvarsFromSettings()
+    self.initRecentFiles()
+#@+node:ekr.20070925144337: *5* doButtons
+def doButtons (self,p,kind,name,val):
+
+    '''Handle an @buttons tree.'''
+
+    trace = False and not g.unitTesting
+    aList = [] ; c = self.c ; tag = '@button'
+    seen = []
+    after = p.nodeAfterTree()
+    while p and p != after:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        elif p.isAtIgnoreNode():
+            seen.append(p.v)
+            p.moveToNodeAfterTree()
+        else:
+            seen.append(p.v)
+            if g.match_word(p.h,0,tag):
+                # We can not assume that p will be valid when it is used.
+                script = g.getScript(c,p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=True)
+                aList.append((p.copy(),script),)
+            p.moveToThreadNext()
+
+    # This setting is handled differently from most other settings,
+    # because the last setting must be retrieved before any commander exists.
+    if aList:
+        g.app.config.atCommonButtonsList.extend(aList)
+            # Bug fix: 2011/11/24: Extend the list, don't replace it.
+        g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
+
+    if trace: g.trace(len(aList),c.shortFileName())
+
+    d,key = g.app.config.unitTestDict,'config.doButtons-file-names'
+    aList = d.get(key,[])
+    aList.append(c.shortFileName())
+    d[key] = aList
+#@+node:ekr.20080312071248.6: *5* doCommands
+def doCommands (self,p,kind,name,val):
+
+    '''Handle an @commands tree.'''
+
+    trace = False and not g.unitTesting
+    aList = [] ; c = self.c ; tag = '@command'
+    seen = []
+    after = p.nodeAfterTree()
+    while p and p != after:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        elif p.isAtIgnoreNode():
+            seen.append(p.v)
+            p.moveToNodeAfterTree()
+        else:
+            seen.append(p.v)
+            if g.match_word(p.h,0,tag):
+                # We can not assume that p will be valid when it is used.
+                script = g.getScript(c,p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=True)
+                aList.append((p.copy(),script),)
+            p.moveToThreadNext()
+
+    # This setting is handled differently from most other settings,
+    # because the last setting must be retrieved before any commander exists.
+    if aList:
+        g.app.config.atCommonCommandsList.extend(aList)
+            # Bug fix: 2011/11/24: Extend the list, don't replace it.
+    if trace: g.trace(len(aList),c.shortFileName())
+    
+    d,key = g.app.config.unitTestDict,'config.doCommands-file-names'
+    aList = d.get(key,[])
+    aList.append(c.shortFileName())
+    d[key] = aList
+#@+node:ekr.20120520174745.9867: *5* k.printButtons
+def printButtons (self,event=None):
+
+    '''Print all @button and @command commands, their bindings and their source.'''
+
+    k = self ; c = k.c
+    tabName = '@buttons && @commands'
+    c.frame.log.clearTab(tabName)
+    
+    def put(s):
+        g.es('',s,tabName=tabName)
+        
+    data = []
+    for aList in [c.config.getButtons(),c.config.getCommands()]:
+        for z in aList:
+            p,script = z
+            c = p.v.context
+            tag = 'M' if c.shortFileName().endswith('myLeoSettings.leo') else 'G'
+            data.append((p.h,tag),)
+
+    for aList in [g.app.config.atLocalButtonsList,g.app.config.atLocalCommandsList]:
+        for p in aList:
+            data.append((p.h,'L'),)
+
+    result = ['%s %s' % (z[1],z[0]) for z in sorted(data)]
+    put('\n'.join(result))
+    
+    legend = '''\
+
+legend:
+G leoSettings.leo
+L local .leo File
+M myLeoSettings.leo
+'''
+    legend = g.adjustTripleString(legend,c.tab_width)
+    put(''.join(legend))
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

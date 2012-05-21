@@ -9,52 +9,6 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes??
-@language rest
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
-
-A reminder, the opposite of "light" is "heavy", not "dark" :-)
-
-Leo's print-settings, print-commands and print-bindings commands
-create too much text.
-
-Suppose they created outline nodes instead, replacing existing nodes
-if they exist.  Something like this:
-
-- Reference (Anywhere you like)
- - @print-settings
-    etc.
- - @print-bindings
-   etc
- - @print commands
-   etc
-
-Doh!  This uses Leo's power.  The subnodes can be as voluminous as
-desired, and there can be organizer nodes in each case.  The actual
-tree could be specified as in @menus.
-
-Etc., etc.  This could moot the need for separate apropos commands.
-Conversely, apropos commands could create their own trees, or
-subtrees.
-
-This could be the tip of an iceberg.
-
-The more I think about the light/heavy distinction, the more I think
-it is getting close to what makes Leo special.  For example, clones
-(and nodes, for that matter) drastically lighten the apparent
-complexity of programs or data.
-.. @+node:ekr.20120520055508.11870: *3* Next
-.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
-@nocolor-node
-
-Leo's Alt-R and Alt-S commands could be improved.
-
-- Return ends the search.  Should be documented.
-- Ctrl-g should abort the search and restore the cursor.
-- F2 and F3 should repeat the search, in the indicated direction.
-- If text is already highlighted, Alt-S or Alt-R should use that text.
-
 .. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
 Every command should have a **complete** docstring.
 .. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
@@ -180,6 +134,17 @@ print('%s total languages' % len(aList))
 print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
 print('%s mismatches' % mismatches)
 print('%s known language: %s' % (len(known_keys),known_keys))
+.. @+node:ekr.20120520055508.11870: *3* Next
+.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
+@nocolor-node
+
+Leo's Alt-R and Alt-S commands could be improved.
+
+- Return ends the search.  Should be documented.
+- Ctrl-g should abort the search and restore the cursor.
+- F2 and F3 should repeat the search, in the indicated direction.
+- If text is already highlighted, Alt-S or Alt-R should use that text.
+
 .. @+node:ekr.20120520055508.11873: *4* Add split-window commands
 .. @+node:ekr.20031218072017.800: *4* Improve extract section command (has this been done?)
 Read and respond to this message at: 
@@ -4680,6 +4645,41 @@ key, so you can probably retire the todo item.
 
 That is, make sure it works when called from within itself.
 .. @+node:ekr.20120229094652.15178: *3* Commands
+.. @+node:ekr.20111010122531.15569: *4* print-bindings/commands/settings create nodes??
+@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/d302b2715b3ace96
+
+A reminder, the opposite of "light" is "heavy", not "dark" :-)
+
+Leo's print-settings, print-commands and print-bindings commands
+create too much text.
+
+Suppose they created outline nodes instead, replacing existing nodes
+if they exist.  Something like this:
+
+- Reference (Anywhere you like)
+ - @print-settings
+    etc.
+ - @print-bindings
+   etc
+ - @print commands
+   etc
+
+Doh!  This uses Leo's power.  The subnodes can be as voluminous as
+desired, and there can be organizer nodes in each case.  The actual
+tree could be specified as in @menus.
+
+Etc., etc.  This could moot the need for separate apropos commands.
+Conversely, apropos commands could create their own trees, or
+subtrees.
+
+This could be the tip of an iceberg.
+
+The more I think about the light/heavy distinction, the more I think
+it is getting close to what makes Leo special.  For example, clones
+(and nodes, for that matter) drastically lighten the apparent
+complexity of programs or data.
 .. @+node:ekr.20120515193246.10083: *4* Find & spell
 .. @+node:ekr.20111018104244.15928: *5* Improve Find panel
 @nocolor-node

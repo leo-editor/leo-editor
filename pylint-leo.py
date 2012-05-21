@@ -46,6 +46,7 @@ def getCoreList():
         ('leoNodes',        ''),
         ('leoPlugins',      ''),
         ('leoRst',          ''),
+        ('leoSessions',     ''),
         ('leoShadow',       ''),
         ('leoTangle',       ''),
         ('leoTest',         ''),
