@@ -10,7 +10,13 @@ This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
 .. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+@language rest
+
 Every command should have a **complete** docstring.
+
+A script that gathers these docstrings for LeoDocs.leo would be good.
+
+@language python
 .. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
 Leo must have a check-doc-strings script that will verify that all
 commands have non-trivial doc strings.
