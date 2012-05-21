@@ -9,30 +9,6 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
-@language rest
-
-Every command should have a **complete** docstring.
-
-A script that gathers these docstrings for LeoDocs.leo would be good.
-
-@language python
-.. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
-Leo must have a check-doc-strings script that will verify that all
-commands have non-trivial doc strings.
-
-.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
-.. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=4319363
-By: ktenney
-
-I think there is room for improvement in documenting Leo's
-API, making it easier to write these kind of scripts.
-I'm not sure of the best way to do that.
-
-Epydoc seems to be the most active project in this realm.
-http://epydoc.sourceforge.net/epydoc.html
 .. @+node:ekr.20111025141618.16484: *4* Fix bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer
 @nocolor-node
 
@@ -43,32 +19,387 @@ that Leo "understands" the language.
 
 Supporting the language in the global tables in leoApp.py makes the
 illusion a reality.
-.. @+node:ekr.20111021035504.9469: *5* Script: get all comments from modes
+
+The following 35 languages are candidates to be supported:
+    
+.ada    "ada95"              : "--",
+.aj     "aspect_j"           : "// /* */",
+.scpt   "applescript"        : "-- (* *)",
+.asp    "asp"                : "<!-- -->",
+.awk    "awk"                : "#",
+.bib    "bibtex"             : "%",
+.c++    "cplusplus"          : "// /* */",
+.e      "eiffel"             : "--",
+.erl    "erlang"             : "%",
+.prg    "foxpro"             : "&&",
+.jsp    "jsp"                : "<%-- --%>",
+.mak    "makefile"           : "#",
+.mpl    "maple"              : "//",
+.ml     "ml"                 : "(* *)",
+.mod    "modula3"            : "(* *)",
+.nsi    "nsis2"              : ";",
+.m      "objective_c"        : "// /* */",
+.mm     "objective_c"        : "// /* */",
+.occ    "occam"              : "--",
+.fix    "patch"              : "",
+        "phpsection"         : "<!-- -->",
+.ps     "postscript"         : "%",
+.pro    "prolog"             : "% /* */",
+.psp    "psp"                : "<!-- -->",
+.r      "r"                  : "#",
+.rtf    "rtf"                : "",
+.scm    "scheme"             : "; #| |#",
+.sh     "shellscript"        : "#",
+.sm     "smalltalk"          : "" "",
+.i      "swig"               : "// /* */",
+.tcl    "tcl"                : "#",
+.info   "texinfo"            : "@c",
+.txt    "text"               : "",
+.vbs    "vbscript"           : "'",
+.xsl    "xsl"                : "<!-- -->",
+    
+    
+Here is the complete list:
+
+112 new languages
+
+"ada95"              : "--",
+"ahk"                : ";",
+"antlr"              : "// /* */",
+"apacheconf"         : "#",
+"apdl"               : "!",
+"applescript"        : "-- (* *)",
+"asp"                : "<!-- -->",
+"aspect_j"           : "// /* */",
+"assembly_macro32"   : ";",
+"assembly_mcs51"     : ";",
+"assembly_parrot"    : "#",
+"assembly_r2000"     : "",
+"assembly_x86"       : ";",
+"awk"                : "#",
+"b"                  : "// /* */",
+"bbj"                : "/* */",
+"bcel"               : "// /* */",
+"bibtex"             : "%",
+"chill"              : "/* */",
+"cobol"              : "*",
+"coldfusion"         : "<!-- -->",
+"cplusplus"          : "// /* */",
+"cvs_commit"         : "",
+"d"                  : "// /* */",
+"doxygen"            : "#",
+"dsssl"              : "; <!-- -->",
+"eiffel"             : "--",
+"embperl"            : "<!-- -->",
+"erlang"             : "%",
+"factor"             : "! ( )",
+"foxpro"             : "&&",
+"freemarker"         : "",
+"gettext"            : "# ",
+"groovy"             : "// /* */",
+"hex"                : "",
+"i4gl"               : "-- { }",
+"icon"               : "#",
+"idl"                : "// /* */",
+"inform"             : "!",
+"inno_setup"         : ";",
+"interlis"           : "/* */",
+"io"                 : "// */",
+"jcl"                : "",
+"jhtml"              : "<!-- -->",
+"jmk"                : "#",
+"jsp"                : "<%-- --%>",
+"lilypond"           : "% %{ %}",
+"lotos"              : "(* *)",
+"mail"               : ">",
+"makefile"           : "#",
+"maple"              : "//",
+"ml"                 : "(* *)",
+"modula3"            : "(* *)",
+"moin"               : "##",
+"mqsc"               : "*",
+"netrexx"            : "-- /* */",
+"nqc"                : "// /* */",
+"nsis2"              : ";",
+"objective_c"        : "// /* */",
+"objectrexx"         : "-- /* */",
+"occam"              : "--",
+"omnimark"           : ";",
+"patch"              : "",
+"phpsection"         : "<!-- -->",
+"pike"               : "// /* */",
+"pl1"                : "/* */",
+"pop11"              : ";;; /* */",
+"postscript"         : "%",
+"povray"             : "// /* */",
+"powerdynamo"        : "// <!-- -->",
+"progress"           : "&scop cmt  /* */",
+"prolog"             : "% /* */",
+"props"              : "#",
+"pseudoplain"        : "",
+"psp"                : "<!-- -->",
+"ptl"                : "#",
+"pvwave"             : ";",
+"pyrex"              : "#",
+"r"                  : "#",
+"redcode"            : ";",
+"relax_ng_compact"   : "#",
+"rhtml"              : "<%# %>",
+"rib"                : "#",
+"rpmspec"            : "#",
+"rtf"                : "",
+"rview"              : "// /* */",
+"sas"                : "",
+"scheme"             : "; #| |#",
+"sdl_pr"             : "/* */",
+"sgml"               : "<!-- -->",
+"shellscript"        : "#",
+"shtml"              : "<!-- -->",
+"smalltalk"          : "" "",
+"smi_mib"            : "--",
+"splus"              : "#",
+"sqr"                : "!",
+"squidconf"          : "#",
+"ssharp"             : "# " "",
+"svn_commit"         : "",
+"swig"               : "// /* */",
+"tcl"                : "#",
+"texinfo"            : "@c",
+"text"               : "",
+"tpl"                : "<!-- -->",
+"tsql"               : "-- /* */",
+"uscript"            : "// /* */",
+"vbscript"           : "'",
+"velocity"           : "## #* *#",
+"verilog"            : "// /* */",
+"vhdl"               : "--",
+"xsl"                : "<!-- -->",
+"zpt"                : "<!-- -->",
+.. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "cython"        : "#",
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lisp"          : ";", # EKR: 2010/09/29
+    "lua"           : "--",  # ddm 13/02/06
+    "matlab"        : "%", # EKR: 2011/10/21
+    "nsi"           : ";", # EKR: 2010/10/27
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "scala"         : "// /* */",
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--',
+        # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+# Used only by c.getOpenWithExt.
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    #"cython"        : "pyd",
+    #"cython"        : "pyi",
+    "cython"        : "pyx", # Only one extension is valid at present.
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+    "javaserverpage": "jsp", # EKR: 2011/11/25
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "matlab"        : "m", # EKR: 2011/10/21
+    "nsi"           : "nsi", # EKR: 2010/10/27
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    # "rst"           : "rst", # caught by pylint.
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "scala"         : "scala",
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
+    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "m"     : "matlab", # EKR 2011/10/21
+    "nsi"   : "nsi", # EKR: 2010/10/27
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "pyd"   : "cython",
+    "pyi"   : "cython",
+    "pyx"   : "cython",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "scala" : "scala",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nsi'   : 'none', # Leo 4.8.
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+.. @+node:ekr.20111021035504.9469: *5* Script: get all comments from modes (slow)
 @language python
+
+'''Slow script.'''
 
 import glob
 import imp
 
 @others
 
-keys = ("lineComment","commentStart","commentEnd",)
-d = {}
-    # Keys are language names.
-    # Values are a list of comment delims, in keys order.
-paths,modes_path = get_paths()
-for path in paths:
-    module_name = g.shortFileName(path)[:-3]
-    module = import_module(module_name,modes_path)
-    aList = []
-    for key in keys:
-        val = module.properties.get(key)
-        if val: aList.append(val)
-    d[module_name] = aList
-
-print('-'* 20)
-print('language_delims_dict')
-for key in sorted(d):
-    print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
+if 0: # The other script is much faster.
+    
+    keys = ("lineComment","commentStart","commentEnd",)
+    d = {}
+        # Keys are language names.
+        # Values are a list of comment delims, in keys order.
+    
+    paths,modes_path = get_paths()
+    for path in paths:
+        module_name = g.shortFileName(path)[:-3]
+        module = import_module(module_name,modes_path)
+        aList = []
+        for key in keys:
+            val = module.properties.get(key)
+            if val: aList.append(val)
+        d[module_name] = aList
+    
+    print('-'* 20)
+    print('language_delims_dict')
+    for key in sorted(d):
+        print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
 .. @+node:ekr.20111021035504.9470: *6* get_paths
 def get_paths():
     
@@ -85,6 +416,157 @@ def import_module(module_name,modes_path):
     theFile,pathname,description = data
     module = imp.load_module(module_name,theFile,pathname,description)
     return module
+.. @+node:ekr.20120521114035.9875: *5* Output of script
+@nocolor-node
+
+language_delims_dict
+
+  "actionscript": "// /* */"
+         "ada95": "--"
+           "ahk": ";"
+         "antlr": "// /* */"
+    "apacheconf": "#"
+          "apdl": "!"
+   "applescript": "-- (* *)"
+           "asp": "<!-- -->"
+      "aspect_j": "// /* */"
+"assembly_macro32": ";"
+"assembly_mcs51": ";"
+"assembly_parrot": "#"
+"assembly_r2000": ""
+  "assembly_x86": ";"
+           "awk": "#"
+             "b": "// /* */"
+         "batch": "rem"
+           "bbj": "/* */"
+          "bcel": "// /* */"
+        "bibtex": "%"
+             "c": "// /* */"
+         "chill": "/* */"
+         "cobol": "*"
+    "coldfusion": "<!-- -->"
+     "cplusplus": "// /* */"
+        "csharp": "// /* */"
+           "css": "/* */"
+    "cvs_commit": ""
+        "cython": "#"
+             "d": "// /* */"
+       "doxygen": "#"
+         "dsssl": "; <!-- -->"
+        "eiffel": "--"
+       "embperl": "<!-- -->"
+        "erlang": "%"
+        "factor": "! ( )"
+         "forth": "\"
+       "fortran": ""
+     "fortran90": ""
+        "foxpro": "&&"
+    "freemarker": ""
+       "gettext": "# "
+        "groovy": "// /* */"
+       "haskell": "-- {- -}"
+          "haxe": "// /* */"
+           "hex": ""
+          "html": "<!-- -->"
+          "i4gl": "-- { }"
+          "icon": "#"
+           "idl": "// /* */"
+        "inform": "!"
+           "ini": ";"
+    "inno_setup": ";"
+      "interlis": "/* */"
+            "io": "// */"
+          "java": "// /* */"
+    "javascript": "// /* */"
+           "jcl": ""
+         "jhtml": "<!-- -->"
+           "jmk": "#"
+           "jsp": "<%-- --%>"
+         "latex": "%"
+      "lilypond": "% %{ %}"
+          "lisp": "; #|   |#"
+         "lotos": "(* *)"
+           "lua": "-- --[[ ]]"
+          "mail": ">"
+      "makefile": "#"
+         "maple": "//"
+        "matlab": "%"
+            "ml": "(* *)"
+       "modula3": "(* *)"
+          "moin": "##"
+          "mqsc": "*"
+       "netrexx": "-- /* */"
+           "nqc": "// /* */"
+           "nsi": ";"
+         "nsis2": ";"
+   "objective_c": "// /* */"
+    "objectrexx": "-- /* */"
+         "occam": "--"
+      "omnimark": ";"
+        "pascal": "// { }"
+         "patch": ""
+          "perl": "#"
+           "php": "<!-- -->"
+    "phpsection": "<!-- -->"
+          "pike": "// /* */"
+           "pl1": "/* */"
+         "plain": ""
+         "plsql": "-- /* */"
+         "pop11": ";;; /* */"
+    "postscript": "%"
+        "povray": "// /* */"
+   "powerdynamo": "// <!-- -->"
+      "progress": "&scop cmt  /* */"
+        "prolog": "% /* */"
+         "props": "#"
+   "pseudoplain": ""
+           "psp": "<!-- -->"
+           "ptl": "#"
+        "pvwave": ";"
+         "pyrex": "#"
+        "python": "#"
+             "r": "#"
+         "rebol": "; comment { }"
+       "redcode": ";"
+"relax_ng_compact": "#"
+          "rest": ".."
+         "rhtml": "<%# %>"
+           "rib": "#"
+       "rpmspec": "#"
+           "rtf": ""
+          "ruby": "# =begin =end"
+         "rview": "// /* */"
+           "sas": ""
+         "scala": "// /* */"
+        "scheme": "; #| |#"
+        "sdl_pr": "/* */"
+          "sgml": "<!-- -->"
+         "shell": "#"
+   "shellscript": "#"
+         "shtml": "<!-- -->"
+     "smalltalk": "" ""
+       "smi_mib": "--"
+         "splus": "#"
+           "sqr": "!"
+     "squidconf": "#"
+        "ssharp": "# " ""
+    "svn_commit": ""
+          "swig": "// /* */"
+           "tcl": "#"
+           "tex": "%"
+       "texinfo": "@c"
+          "text": ""
+           "tpl": "<!-- -->"
+          "tsql": "-- /* */"
+       "uscript": "// /* */"
+      "vbscript": "'"
+      "velocity": "## #* *#"
+       "verilog": "// /* */"
+          "vhdl": "--"
+           "xml": "<!-- -->"
+           "xsl": "<!-- -->"
+           "zpt": "<!-- -->"
+    
 .. @+node:ekr.20110528103005.18319: *5* Script to create global data structures from in modes/*.py files
 @language python
 
@@ -93,53 +575,1080 @@ def import_module(module_name,modes_path):
 import glob
 import imp
 
+g.cls()
+
 theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
 aList = glob.glob(theDir)
+
 theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
 
-print('-'*40,len(aList))
+# print('-'*40)
 known_keys = list(g.app.language_delims_dict.keys())
-known_keys.sort()
-known = []
-computed = {}
+new_languages = {}
+
 for z in aList:
     name = g.os_path_basename(z)
     name2 = name[:-3]
-    if name2.startswith('__'): continue
-    # if name2 in known_keys:
-        # known.append(name)
-        # continue
-    try:
-        theFile, pathname, description = imp.find_module(name2,[theDir])
-        m = imp.load_module(name2, theFile, pathname, description)
-    except Exception:
-        g.es_exception()
-        m = None
-    if m:
-        aList2 = [m.properties.get(z)
-            for z in ('lineComment','commentStart','commentEnd')
-                if m.properties.get(z)]
-        print('%-20s : "%s",' % (
-            '"%s"' % (name2),
-            ' '.join(aList2)))
-        computed[name2] = ' '.join(aList2)
-mismatches = 0
-for z in known_keys:
-    val = g.app.language_delims_dict.get(z)
-    val2 = computed.get(z)
-    if not val:
-        print('oops: no val',z)
-    elif not val2:
-        print('oops: no val2',z)
-    elif val != val2:
-        mismatches += 1
-        print('mismatch for %s' % z)
-        print(repr(val))
-        print(repr(val2))
-print('%s total languages' % len(aList))
-print('%s new languages' % (len(list(computed.keys())) - len(known_keys)))
-print('%s mismatches' % mismatches)
-print('%s known language: %s' % (len(known_keys),known_keys))
+    if name2 in known_keys or name2.startswith('__'):
+        if 0: print('ignore: %s' % (name2))
+    else:
+        try:
+            theFile, pathname, description = imp.find_module(name2,[theDir])
+            m = imp.load_module(name2, theFile, pathname, description)
+            if hasattr(m,'properties'):
+                # new_languages.append(name2)
+                new_languages[name2] = m
+            else:
+                print('no properties: %s %s' % (name2,m))
+        except Exception:
+            g.es_exception()
+            
+print('%s new languages\n' % (len(list(new_languages.keys()))))
+    
+for key in sorted(new_languages.keys()):
+    m = new_languages.get(key)
+    aList2 = [m.properties.get(z)
+        for z in ('lineComment','commentStart','commentEnd')
+            if m.properties.get(z)]
+    print('%-20s : "%s",' % (
+        '"%s"' % (key),
+        ' '.join(aList2)))
+    # computed[name2] = ' '.join(aList2)
+       
+if 0:
+    mismatches = 0
+    print()
+    for z in known_keys:
+        val = g.app.language_delims_dict.get(z)
+        val2 = computed.get(z)
+        if not val:
+            print('no val',z)
+        elif not val2:
+            print('no val2',z)
+        elif val != val2:
+            mismatches += 1
+            print('mismatch for %s. expected %s got %s' % (z,repr(val),repr(val2)))
+            print(repr(val))
+            print(repr(val2))
+    print('%s mismatches' % mismatches)
+.. @+node:ekr.20120521114035.9873: *5* Output of script
+@nocolor-node
+
+---------------------------------------- 146
+"actionscript"       : "// /* */",
+"ada95"              : "--",
+"ahk"                : ";",
+"antlr"              : "// /* */",
+"apacheconf"         : "#",
+"apdl"               : "!",
+"applescript"        : "-- (* *)",
+"asp"                : "<!-- -->",
+"aspect_j"           : "// /* */",
+"assembly_macro32"   : ";",
+"assembly_mcs51"     : ";",
+"assembly_parrot"    : "#",
+"assembly_r2000"     : "",
+"assembly_x86"       : ";",
+"awk"                : "#",
+"b"                  : "// /* */",
+"batch"              : "rem",
+"bbj"                : "/* */",
+"bcel"               : "// /* */",
+"bibtex"             : "%",
+"c"                  : "// /* */",
+"chill"              : "/* */",
+"cobol"              : "*",
+"coldfusion"         : "<!-- -->",
+"cplusplus"          : "// /* */",
+"csharp"             : "// /* */",
+"css"                : "/* */",
+"cvs_commit"         : "",
+"cython"             : "#",
+"d"                  : "// /* */",
+"doxygen"            : "#",
+"dsssl"              : "; <!-- -->",
+"eiffel"             : "--",
+"embperl"            : "<!-- -->",
+"erlang"             : "%",
+"factor"             : "! ( )",
+"forth"              : "\",
+"fortran"            : "",
+"fortran90"          : "",
+"foxpro"             : "&&",
+"freemarker"         : "",
+"gettext"            : "# ",
+"groovy"             : "// /* */",
+"haskell"            : "-- {- -}",
+"haxe"               : "// /* */",
+"hex"                : "",
+"html"               : "<!-- -->",
+"i4gl"               : "-- { }",
+"icon"               : "#",
+"idl"                : "// /* */",
+"inform"             : "!",
+"ini"                : ";",
+"inno_setup"         : ";",
+"interlis"           : "/* */",
+"io"                 : "// */",
+"java"               : "// /* */",
+"javascript"         : "// /* */",
+"jcl"                : "",
+"jhtml"              : "<!-- -->",
+"jmk"                : "#",
+"jsp"                : "<%-- --%>",
+"latex"              : "%",
+"lilypond"           : "% %{ %}",
+"lisp"               : "; #|   |#",
+"lotos"              : "(* *)",
+"lua"                : "-- --[[ ]]",
+"mail"               : ">",
+"makefile"           : "#",
+"maple"              : "//",
+"matlab"             : "%",
+"ml"                 : "(* *)",
+"modula3"            : "(* *)",
+"moin"               : "##",
+"mqsc"               : "*",
+"netrexx"            : "-- /* */",
+"nqc"                : "// /* */",
+"nsi"                : ";",
+"nsis2"              : ";",
+"objective_c"        : "// /* */",
+"objectrexx"         : "-- /* */",
+"occam"              : "--",
+"omnimark"           : ";",
+"pascal"             : "// { }",
+"patch"              : "",
+"perl"               : "#",
+"php"                : "<!-- -->",
+"phpsection"         : "<!-- -->",
+"pike"               : "// /* */",
+"pl1"                : "/* */",
+"plain"              : "",
+"plsql"              : "-- /* */",
+"pop11"              : ";;; /* */",
+"postscript"         : "%",
+"povray"             : "// /* */",
+"powerdynamo"        : "// <!-- -->",
+"progress"           : "&scop cmt  /* */",
+"prolog"             : "% /* */",
+"props"              : "#",
+"pseudoplain"        : "",
+"psp"                : "<!-- -->",
+"ptl"                : "#",
+"pvwave"             : ";",
+"pyrex"              : "#",
+"python"             : "#",
+"r"                  : "#",
+"rebol"              : "; comment { }",
+"redcode"            : ";",
+"relax_ng_compact"   : "#",
+"rest"               : "..",
+"rhtml"              : "<%# %>",
+"rib"                : "#",
+"rpmspec"            : "#",
+"rtf"                : "",
+"ruby"               : "# =begin =end",
+"rview"              : "// /* */",
+"sas"                : "",
+"scala"              : "// /* */",
+"scheme"             : "; #| |#",
+"sdl_pr"             : "/* */",
+"sgml"               : "<!-- -->",
+"shell"              : "#",
+"shellscript"        : "#",
+"shtml"              : "<!-- -->",
+"smalltalk"          : "" "",
+"smi_mib"            : "--",
+"splus"              : "#",
+"sqr"                : "!",
+"squidconf"          : "#",
+"ssharp"             : "# " "",
+"svn_commit"         : "",
+"swig"               : "// /* */",
+"tcl"                : "#",
+"tex"                : "%",
+"texinfo"            : "@c",
+"text"               : "",
+"tpl"                : "<!-- -->",
+"tsql"               : "-- /* */",
+"uscript"            : "// /* */",
+"vbscript"           : "'",
+"velocity"           : "## #* *#",
+"verilog"            : "// /* */",
+"vhdl"               : "--",
+"xml"                : "<!-- -->",
+"xsl"                : "<!-- -->",
+"zpt"                : "<!-- -->",
+
+oops: no val2 ada
+oops: no val2 autohotkey
+mismatch for batch
+'REM_'
+'rem'
+oops: no val2 config
+oops: no val2 cpp
+oops: no val2 cweb
+oops: no val2 elisp
+mismatch for forth
+'\\_ _(_ _)'
+'\\'
+oops: no val2 fortran
+oops: no val2 fortran90
+mismatch for haskell
+'--_ {-_ _-}'
+'-- {- -}'
+mismatch for haxe
+'//'
+'// /* */'
+oops: no val2 javaserverpage
+oops: no val2 kshell
+mismatch for lisp
+';'
+'; #|   |#'
+mismatch for lua
+'--'
+'-- --[[ ]]'
+oops: no val2 noweb
+oops: no val2 perlpod
+mismatch for php
+'// /* */'
+'<!-- -->'
+oops: no val2 plain
+oops: no val2 rapidq
+mismatch for rebol
+';'
+'; comment { }'
+mismatch for rest
+'.._'
+'..'
+oops: no val2 rst
+mismatch for ruby
+'#'
+'# =begin =end'
+oops: no val2 tcltk
+oops: no val2 unknown
+oops: no val2 unknown_language
+oops: no val2 vim
+oops: no val2 vimoutline
+oops: no val2 xslt
+
+146 total languages
+94 new languages
+10 mismatches
+51 known language: [
+    'actionscript', 'ada', 'autohotkey', 'batch',
+    'c', 'config', 'cpp', 'csharp', 'css', 'cweb',
+    'cython', 'elisp', 'forth', 'fortran', 'fortran90',
+    'haskell', 'haxe', 'html', 'ini',
+    'java', 'javascript', 'javaserverpage',
+    'kshell', 'latex', 'lisp', 'lua',
+    'matlab', 'noweb', 'nsi',
+    'pascal', 'perl', 'perlpod', 'php', 'plain',
+    'plsql', 'python',
+    'rapidq', 'rebol', 'rest', 'rst', 'ruby',
+    'scala', 'shell', 'tcltk', 'tex',
+    'unknown', 'unknown_language',
+    'vim', 'vimoutline', 'xml', 'xslt']
+.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+@nocolor-node
+
+Every command should have a **complete** docstring.
+
+A script that gathers these docstrings for LeoDocs.leo would be good.
+
+An empty name should give instructions.
+.. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
+Leo must have a check-doc-strings script that will verify that all
+commands have non-trivial doc strings.
+
+.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
+.. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=4319363
+By: ktenney
+
+I think there is room for improvement in documenting Leo's
+API, making it easier to write these kind of scripts.
+I'm not sure of the best way to do that.
+
+Epydoc seems to be the most active project in this realm.
+http://epydoc.sourceforge.net/epydoc.html
+.. @+node:ekr.20110530082209.18250: *5* c.putApropos
+def putApropos (self,s):
+    
+    c = self
+    s = g.adjustTripleString(s.rstrip(),c.tab_width)
+
+    pc = g.app.pluginsController
+    vr = pc.loadOnePlugin('viewrendered.py')
+    assert vr # For unit testing.
+    if vr:
+        kw = {
+            'c':c,
+            'flags':'rst',
+            'label':'',
+            'msg':s,
+            'name':'Apropos',
+            'short_title':'',
+            'title':''}
+        vr.show_scrolled_message(tag='Apropos',kw=kw)
+        c.bodyWantsFocus()
+        if g.unitTesting:
+            vr.close_rendering_pane(event={'c':c})
+    else:
+        g.es(s)
+.. @+node:ekr.20060205164707: *5* helpCommandsClass
+class helpCommandsClass (baseEditCommandsClass):
+
+    '''A class to load files into buffers and save buffers to files.'''
+
+    @others
+.. @+node:ekr.20060205165501: *6* getPublicCommands (helpCommands)
+def getPublicCommands (self):
+
+    return {
+        'apropos-abbreviations':    self.aproposAbbreviations,
+        'apropos-autocompletion':   self.aproposAutocompletion,
+        'apropos-bindings':         self.aproposBindings,
+        'apropos-debugging-commands': self.aproposDebuggingCommands,
+        'apropos-find-commands':    self.aproposFindCommands,
+        'help-for-command':         self.helpForCommand,
+        'help-for-minibuffer':      self.helpForMinibuffer,
+        'help-for-python':          self.pythonHelp,
+        'print-settings':           self.printSettings,
+    }
+.. @+node:ekr.20051014170754: *6* helpForMinibuffer
+def helpForMinibuffer (self,event=None):
+
+    '''Print a messages telling you how to get started with Leo.'''
+
+    # A bug in Leo: triple quotes puts indentation before each line.
+    c = self.c
+    s = '''
+The mini-buffer is intended to be like the Emacs buffer:
+
+full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
+full command name, then hit <Return> to execute the command. Tab completion
+works, but not yet for file names.
+
+quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
+defined in leoSettings.leo. It is useful for commonly-used commands.
+
+universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
+count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
+unfinished.
+
+keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
+the focus in the body pane.
+
+Use the help-for-command command to see documentation for a particular command.
+'''
+
+    s = g.adjustTripleString(s,c.tab_width)
+        # Remove indentation from indentation of this function.
+    # s = s % (shortcuts[0],shortcuts[1],shortcuts[2],shortcuts[3])
+
+    if not g.app.unitTesting:
+        g.es_print('',s)
+.. @+node:ekr.20060417203717: *6* helpForCommand & helpers
+def helpForCommand (self,event):
+
+    '''Prompts for a command name and prints the help message for that command.'''
+
+    k = self.k
+    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
+
+.. @+node:ekr.20120521114035.9870: *7* getBindingsForCommand
+def getBindingsForCommand(self,commandName):
+
+    c = self.c ; k = c.k
+    data = [] ; n1 = 4 ; n2 = 20
+    d = k.bindingsDict
+    for stroke in sorted(d):
+        assert g.isStroke(stroke),repr(stroke)
+        aList = d.get(stroke,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            if si.commandName == commandName:
+                pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
+                s1 = pane
+                s2 = k.prettyPrintKey(stroke)
+                s3 = si.commandName
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+
+    data.sort(key=lambda x: x[1])
+    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
+.. @+node:ekr.20120521114035.9871: *7* helpForCommandFinisher
+def helpForCommandFinisher (self,commandName):
+
+    c = self.c ; s = None
+        
+    if commandName:
+        bindings = self.getBindingsForCommand(commandName)
+        func = c.commandsDict.get(commandName)
+        s = g.getDocStringForFunction(func)
+        if s:
+            s2 = '%s:%s' % (commandName,bindings) if bindings else commandName
+            s = s2 + '\n\n' + ''.join([
+                g.choose(line.strip(),line.lstrip(),'\n')
+                    for line in g.splitLines(s)])
+    if not s:
+        << set s to about help-for-command >>
+
+    c.putApropos(s) # calls g.adjustTripleString.
+.. @+node:ekr.20120521114035.9872: *8* << set s to about help-for-command >>
+s = '''\
+Invoke Leo's help-for-command as follows::
+    
+    <F1>
+    <Alt-X>help-for-command<return>
+
+Next, type the name of one of Leo's commands.
+You can use tab completion.  Examples::
+    
+    <F1><tab>           shows all commands.
+    <F1>apropos<tab>    shows all apropos commands.
+    
+Here are the apropos commands::
+
+    apropos-abbreviations
+    apropos-autocompletion
+    apropos-bindings
+    apropos-debugging-commands
+    apropos-find-commands
+'''
+.. @+node:ekr.20100901080826.5850: *6* aproposAbbreviations
+def aproposAbbreviations (self,event=None):
+    
+    '''Prints a discussion of abbreviations.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18251: *7* << define s >>
+# @pagewidth 45
+@language rest
+
+s = '''
++++++++++++++++++++
+About Abbreviations
++++++++++++++++++++
+
+When abbreviation mode is on (abbrev-mode
+toggles this mode) Leo will expand
+abbreviations as you type. Type the name of
+an abbreviation, followed by a space. As soon
+as you type the space, Leo will replace the
+name by the abbreviations value. You can undo
+the replacement as usual.
+
+Note that defining any abbreviation
+automatically turns on abbreviation mode.
+
+The add-global-abbreviation command
+(<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the
+abbreviation. The minibuffer prompts you for
+the name of the abbreviation.
+
+Settings
+========
+
+As usual, the following settings have effect
+only in @settings trees:
+
+@bool enable-abbreviations (default: False)
+
+When true, enables substitution of
+abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+In both cases, body text contains lines of
+the form::
+
+   name=value
+
+name is the abbreviation name, value is the
+substituted text. Whitespace is ignore around
+the name, but is significant in the value.
+Abbreviation names may contain only
+alphabetic characters, but may start with the
+'@' sign.
+
+By *convention* @data global-abbreviations
+setting should be defined in
+myLeoSettings.leo, while @data abbreviations
+should be defined in other .leo files.
+Regardless of where they are defined,
+abbreviations in @data abbreviation nodes
+will override settings (with the same name)
+in @data global-abbreviations nodes.
+
+Commands
+========
+
+apropos-abbreviations
+
+Prints this summary.
+
+dabbrev-completion
+
+Insert the common prefix of all dynamic
+abbreviations matching the present word.
+Similar C-M-/ in Emacs.
+
+dabbrev-expands
+
+Expand the word in the buffer before point as
+a dynamic abbrev, by searching in the buffer
+for words starting with that abbreviation
+(dabbrev-expand). Similar to M-/ in Emacs
+
+abbrev-mode
+
+Toggles abbreviation mode. Abbreviations are
+only active when this mode is on.
+
+add-global-abbrev
+
+Adds an abbreviation for the selected text.
+The minibuffer prompts for the abbreviation
+name.
+
+inverse-add-global-abbrev
+
+Adds an abbreviation. The selected text is
+the abbreviation name. The minibuffer prompts
+for the value of the abbreviation.
+
+kill-all-abbrevs
+
+Removes all abbreviations.
+
+list-abbrevs
+
+Lists all active abbreviations.
+
+read-abbrev-file
+
+Read an external file containing
+abbreviations.
+
+write-abbrev-file
+
+Writes abbreviations to an external file.
+
+Scripting
+=========
+
+Leo scripts may read abbreviations from a file with::
+
+    c.abbrevCommands.readAbbreviationsFromFile(fn)
+
+'''
+.. @+node:ekr.20060226131603.1: *6* aproposAutocompletion
+def aproposAutocompletion (self,event=None):
+
+    '''Prints a discussion of autocompletion.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18252: *7* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
++++++++++++++++++++++++++++++++++
+About Autocompletion and Calltips
++++++++++++++++++++++++++++++++++
+
+This documentation describes both
+autocompletion and calltips.
+
+Typing a period when @language python is
+in effect starts autocompletion. Typing
+'(' during autocompletion shows the
+calltip. Typing Return or Control-g
+(keyboard-quit) exits autocompletion or
+calltips.
+
+Autocompletion
+==============
+
+Autocompletion shows what may follow a
+period in code. For example, after
+typing g. Leo will show a list of all
+the global functions in leoGlobals.py.
+Autocompletion works much like tab
+completion in the minibuffer. Unlike the
+minibuffer, the presently selected
+completion appears directly in the body
+pane.
+
+A leading period brings up 'Autocomplete
+Modules'. (The period goes away.) You
+can also get any module by typing its
+name. If more than 25 items would appear
+in the Autocompleter tab, Leo shows only
+the valid starting characters. At this
+point, typing an exclamation mark shows
+the complete list. Thereafter, typing
+further exclamation marks toggles
+between full and abbreviated modes.
+
+If x is a list 'x.!' shows all its
+elements, and if x is a Python
+dictionary, 'x.!' shows list(x.keys()).
+For example, 'sys.modules.!' Again,
+further exclamation marks toggles
+between full and abbreviated modes.
+
+During autocompletion, typing a question
+mark shows the docstring for the object.
+For example: 'g.app?' shows the
+docstring for g.app. This doesn't work
+(yet) directly for Python globals, but
+'__builtin__.f?' does. Example:
+'__builtin__.pow?' shows the docstring
+for pow.
+
+Autocompletion works in the Find tab;
+you can use <Tab> to cycle through the
+choices. The 'Completion' tab appears
+while you are doing this; the Find tab
+reappears once the completion is
+finished.
+
+Calltips
+========
+
+Calltips appear after you type an open
+parenthesis in code. Calltips shows the
+expected arguments to a function or
+method. Calltips work for any Python
+function or method, including Python's
+global function. Examples:
+
+a) g.toUnicode(
+   gives:
+   g.toUnicode(s,encoding, reportErrors=False
+
+b) c.widgetWantsFocusNow
+   gives:
+   c.widgetWantsFocusNow(w
+
+c) reduce(
+   gives:
+   reduce(function, sequence[,initial]) -> value
+
+The calltips appear directly in the text
+and the argument list is highlighted so
+you can just type to replace it. The
+calltips appear also in the status line
+for reference after you have started to
+replace the args.
+
+Options
+=======
+
+Both autocompletion and calltips are
+initially enabled or disabled by the
+enable_autocompleter_initially and
+enable_calltips_initially settings in
+leoSettings.leo. You may enable or
+disable these features at any time with
+these commands: enable-autocompleter,
+enable-calltips, disable-autocompleter
+and disable-calltips. '''
+.. @+node:ekr.20060205170335: *6* aproposBindings
+def aproposBindings (self,event=None):
+
+    '''Prints a discussion of keyboard bindings.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18253: *7* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
+++++++++++++++++++
+About Key Bindings
+++++++++++++++++++
+
+A shortcut specification has the form:
+
+command-name = shortcutSpecifier
+
+or
+
+command-name ! pane = shortcutSpecifier
+
+The first form creates a binding for all
+panes except the minibuffer. The second
+form creates a binding for one or more
+panes. The possible values for 'pane'
+are:
+
+====    ===============
+pane    bound panes
+====    ===============
+all     body,log,tree
+body    body
+log     log
+mini    minibuffer
+text    body,log
+tree    tree
+====    ===============
+
+You may use None as the specifier.
+Otherwise, a shortcut specifier consists
+of a head followed by a tail. The head
+may be empty, or may be a concatenation
+of the following: (All entries in each
+row are equivalent)::
+
+    Shift+ Shift-
+    Alt+ or Alt-
+    Control+, Control-, Ctrl+ or Ctrl-
+
+Notes:
+
+1. The case of plain letters is significant:
+   a is not A.
+
+2. The Shift- (or Shift+) prefix can be
+   applied *only* to letters or
+   multi-letter tails. Leo will ignore
+   (with a warning) the shift prefix
+   applied to other single letters,
+   e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by
+   Ctrl-, Alt-, Key- or Shift- is *not*
+   significant.
+
+The following table illustrates these
+rules. In each row, the first entry is
+the key (for k.bindingsDict) and the
+other entries are equivalents that the
+user may specify in leoSettings.leo::
+
+    a, Key-a, Key-A
+    A, Shift-A
+    Alt-a, Alt-A
+    Alt-A, Alt-Shift-a, Alt-Shift-A
+    Ctrl-a, Ctrl-A
+    Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+    !, Key-!,Key-exclam,exclam
+
+'''
+.. @+node:ekr.20070501092655: *6* aproposDebuggingCommands
+def aproposDebuggingCommands (self,event=None):
+
+    '''Prints a discussion of of Leo's debugging commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20070501092655.1: *7* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
+++++++++++++++++++++++++
+About Debugging Commands
+++++++++++++++++++++++++
+
+The following commands are useful for debugging::
+
+    collect-garbage:   Invoke the garbage collector.
+    debug:             Start an external debugger in another process.
+    disable-gc-trace:  Disable tracing of the garbage collector.
+    dump-all-objects:  Print a summary of all existing Python objects.
+    dump-new-objects:  Print a summary of all newly-created Python objects.
+    enable-gc-trace:   Enable tracing of the garbage collector.
+    free-tree-widgets: Free all widgets used in Leo's outline pane.
+    print-focus:       Print information about the requested focus.
+    print-stats:       Print statistics about existing Python objects.
+    print-gc-summary:  Print a brief summary of all Python objects.
+    run-unit-tests:    Run unit tests in the presently selected tree.
+    verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+    
+Leo also has many debugging settings that enable and disable traces.
+For details, see the node: @settings-->Debugging in leoSettings.leo.
+'''
+.. @+node:ekr.20060205170335.1: *6* aproposFindCommands
+def aproposFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20060209082023.1: *7* << define s >>
+# @pagewidth 40
+@language rest
+
+s = '''
++++++++++++++++++++
+About Find Commands
++++++++++++++++++++
+
+Note: all bindings shown are the default
+bindings for these commands. You may
+change any of these bindings using
+@shortcuts nodes in leoSettings.leo.
+
+Settings
+========
+
+leoSettings.leo now contains several
+settings related to the Find tab:
+
+@bool show_only_find_tab_options = True
+
+  When True (recommended), the Find tab
+  does not show the 'Find', 'Change',
+  'Change, Then Find', 'Find All' and
+  'Change All' buttons.
+
+@bool minibufferSearchesShowFindTab = True
+
+  When True, Leo shows the Find tab when
+  executing most of the commands
+  discussed below.
+
+Basic find commands
+===================
+
+open-find-tab
+
+  Makes the Find tab visible. The Find
+  tab does **not** need to be visible to
+  execute any search command discussed
+  below.
+
+hide-find-tab
+
+  Hides the Find tab, but retains all
+  the present settings.
+
+search-with-present-options (Ctrl-F)
+
+  Prompts for a search string. Typing
+  the <Return> key puts the search
+  string in the Find tab and executes a
+  search based on all the settings in
+  the Find tab. This is a recommended
+  default search command.
+
+show-search-options
+
+  Shows the present search options in
+  the status line. This command also
+  makes the Find tab visible.
+
+find-next (F3)
+
+  Like search-with-present-options,
+  except that it uses the search string
+  in the find-tab. Recommended as the
+  default 'search again' command.
+
+find-previous (F2)
+
+  Repeats the command specified by the
+  Find tab, but in reverse.
+
+find-again
+
+  Like find-next if a search pattern is
+  not '<find pattern here>'. Otherwise,
+  like search-with-present-options.
+
+Setting find options
+====================
+
+Several minibuffer commands toggle the
+checkboxes and radio buttons in the Find
+tab, and thus affect the operation of
+the search-with-present-options command.
+You may bind these commands to keys or
+toggle these options in a mode.
+
+These commands toggle checkboxes::
+
+    toggle-find-ignore-case-option
+    toggle-find-in-body-option
+    toggle-find-in-headline-option
+    toggle-find-mark-changes-option
+    toggle-find-mark-finds-option
+    toggle-find-regex-option
+    toggle-find-word-option
+    toggle-find-wrap-around-option
+
+These commands set radio buttons::
+
+    set-find-everywhere,
+    set-find-node-only, and
+    set-find-suboutline-only.
+
+enter-find-options-mode (Ctrl-Shift-F)
+
+enters a mode in which you may change
+all checkboxes and radio buttons in the
+Find tab with plain keys. As always, you
+can use the mode-help (Tab) command to
+see a list of key bindings in effect for
+the mode.
+
+Search commands with side effects
+=================================
+
+The following commands set an option in
+the Find tab, then work exactly like the
+search-with-present-options command.
+
+- search-backward and search-forward set
+  the 'Whole Word' checkbox to False.
+
+- word-search-backward and
+  word-search-forward set the 'Whole
+  Word' checkbox to True.
+
+- re-search-forward and re-search-backward
+  set the 'Regexp' checkbox to True.
+
+Find all commands
+=================
+
+find-all
+
+  Prints all matches in the log pane.
+
+clone-find-all
+
+  Replaces the previous 'Clone Find'
+  checkbox. It prints all matches in the
+  log pane, and creates a node at the
+  beginning of the outline containing
+  clones of all nodes containing the
+  'find' string. Only one clone is made
+  of each node, regardless of how many
+  clones the node has, or of how many
+  matches are found in each node.
+
+Note: the radio buttons in the Find tab
+(Entire Outline, Suboutline Only and
+Node only) control how much of the
+outline is affected by the find-all and
+clone-find-all commands.
+
+Search and replace commands
+===========================
+
+replace-string
+
+  Prompts for a search string. Type
+  <Return> to end the search string. The
+  command will then prompt for the
+  replacement string. Typing a second
+  <Return> key will place both strings
+  in the Find tab and executes a
+  **find** command, that is,
+  search-with-present-options.
+
+So the only difference between
+replace-string and
+search-with-present-options is that
+replace-string has the side effect of
+setting 'change' string in the Find tab.
+However, this is an extremely useful
+side effect, because of the following
+commands...
+
+change (Ctrl-=)
+
+  Replaces the selected text with the
+  'change' text in the Find tab.
+
+change-then-find (Ctrl--)
+
+  Replaces the selected text with the
+  'change' text in the Find tab, then
+  executes the find command again.
+
+find-next, change and change-then-find
+can simulate any kind of query-replace
+command.
+
+change-all
+
+  Changes all occurrences of the 'find'
+  text with the 'change' text.
+  Important: the radio buttons in the
+  Find tab (Entire Outline, Suboutline
+  Only and Node only) control how much
+  of the outline is affected by this
+  command.
+
+Incremental search commands
+===========================
+
+Here are Leo's incremental find commands::
+
+    isearch-backward (Alt-R)
+    isearch-backward-regexp
+    isearch-forward (Alt-S)
+    isearch-forward-regexp
+
+You may use backspace to backtrack. To
+repeat an incremental search, type the
+shortcut for that command again.'''
+.. @+node:ekr.20060602154458: *6* pythonHelp
+def pythonHelp (self,event=None):
+
+    '''Prompt for a arg for Python's help function, and put it to the log pane.'''
+
+    c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
+
+    if state == 0:
+        c.minibufferWantsFocus()
+        k.setLabelBlue('Python help: ',protect=True)
+        k.getArg(event,tag,1,self.pythonHelp)
+    else:
+        k.clearState()
+        k.resetLabel()
+        s = k.arg.strip()
+        if s:
+            g.redirectStderr()
+            g.redirectStdout()
+            try: help(str(s))
+            except Exception: pass
+            g.restoreStderr()
+            g.restoreStdout()
+.. @+node:ekr.20070418074444: *6* printSettings
+def printSettings (self,event=None):
+    
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following shows where the active setting came from:
+
+    -     leoSettings.leo,
+    - [D] default settings.
+    - [F] indicates the file being loaded,
+    - [M] myLeoSettings.leo,
+
+    '''
+
+    self.c.config.printSettings()
 .. @+node:ekr.20120520055508.11870: *3* Next
 .. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
 @nocolor-node

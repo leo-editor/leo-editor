@@ -6853,7 +6853,7 @@ class helpCommandsClass (baseEditCommandsClass):
 
         if not g.app.unitTesting:
             g.es_print('',s)
-    #@+node:ekr.20060417203717: *3* helpForCommand
+    #@+node:ekr.20060417203717: *3* helpForCommand & helpers
     def helpForCommand (self,event):
 
         '''Prompts for a command name and prints the help message for that command.'''
@@ -6861,29 +6861,7 @@ class helpCommandsClass (baseEditCommandsClass):
         k = self.k
         k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
 
-    def helpForCommandFinisher (self,commandName):
-
-        c = self.c
-        bindings = self.getBindingsForCommand(commandName)
-        func = c.commandsDict.get(commandName)
-        s = g.getDocStringForFunction(func)
-        if s:
-            s = ''.join([
-                g.choose(line.strip(),line.lstrip(),'\n')
-                    for line in g.splitLines(s)])
-        # if func and func.__doc__:
-            # s = ''.join([
-                # g.choose(line.strip(),line.lstrip(),'\n')
-                    # for line in g.splitLines(func.__doc__)])
-        else:
-            s = '(no docstring)'
-        if bindings:
-            g.es('','%s:%s\n' % (commandName,bindings),color='blue')
-        else:
-            g.es('','%s\n' % (commandName),color='blue')
-        g.es('','%s\n' % (s))
-       
-
+    #@+node:ekr.20120521114035.9870: *4* getBindingsForCommand
     def getBindingsForCommand(self,commandName):
 
         c = self.c ; k = c.k
@@ -6905,6 +6883,46 @@ class helpCommandsClass (baseEditCommandsClass):
 
         data.sort(key=lambda x: x[1])
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
+    #@+node:ekr.20120521114035.9871: *4* helpForCommandFinisher
+    def helpForCommandFinisher (self,commandName):
+
+        c = self.c ; s = None
+            
+        if commandName:
+            bindings = self.getBindingsForCommand(commandName)
+            func = c.commandsDict.get(commandName)
+            s = g.getDocStringForFunction(func)
+            if s:
+                s2 = '%s:%s' % (commandName,bindings) if bindings else commandName
+                s = s2 + '\n\n' + ''.join([
+                    g.choose(line.strip(),line.lstrip(),'\n')
+                        for line in g.splitLines(s)])
+        if not s:
+            #@+<< set s to about help-for-command >>
+            #@+node:ekr.20120521114035.9872: *5* << set s to about help-for-command >>
+            s = '''\
+            Invoke Leo's help-for-command as follows::
+                
+                <F1>
+                <Alt-X>help-for-command<return>
+
+            Next, type the name of one of Leo's commands.
+            You can use tab completion.  Examples::
+                
+                <F1><tab>           shows all commands.
+                <F1>apropos<tab>    shows all apropos commands.
+                
+            Here are the apropos commands::
+
+                apropos-abbreviations
+                apropos-autocompletion
+                apropos-bindings
+                apropos-debugging-commands
+                apropos-find-commands
+            '''
+            #@-<< set s to about help-for-command >>
+
+        c.putApropos(s) # calls g.adjustTripleString.
     #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
     def aproposAbbreviations (self,event=None):
         

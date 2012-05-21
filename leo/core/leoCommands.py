@@ -1028,11 +1028,8 @@ class Commands (object):
     def putApropos (self,s):
         
         c = self
-        
-        # if g.unitTesting:
-            # return
-            
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
+
         pc = g.app.pluginsController
         vr = pc.loadOnePlugin('viewrendered.py')
         assert vr # For unit testing.
