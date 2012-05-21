@@ -275,7 +275,8 @@ class scriptingController:
         buttons = c.config.getButtons()
         if buttons:
             for z in buttons:
-                h,script = z
+                p,script = z
+                h = p.h
                 if trace: g.trace('global @button',h)
                 self.handleAtButtonSetting(h,script)
     #@+node:ekr.20070926084600: *5* handleAtButtonSetting & helper
@@ -357,7 +358,8 @@ class scriptingController:
         aList = c.config.getCommands()
         if aList:
             for z in aList:
-                h,script = z
+                p,script = z
+                h = p.h
                 args = self.getArgs(h)
         
                 def commonCommandCallback (event=None,script=script):
@@ -498,12 +500,13 @@ class scriptingController:
         statusLine = 'Local script button'
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
+            
+        g.app.config.atLocalButtonsList.append(p.copy())
+        # g.trace(c.config,p.h)
 
         # This helper is also called by the script-button callback.
         if trace: g.trace('local @command',h)
         b = self.createAtButtonHelper(p,h,statusLine,verbose=False)
-
-        # g.trace('p',p,'b',b)
     #@+node:ekr.20060328125248.10: *4* handleAtCommandNode @command (mod_scripting)
     def handleAtCommandNode (self,p):
 
@@ -521,6 +524,9 @@ class scriptingController:
             
         self.registerTwoCommands(h,func=atCommandCallback,
             pane='all',tag='local @command')
+            
+        g.app.config.atLocalCommandsList.append(p.copy())
+        # g.trace(c.config,p.h)
     #@+node:ekr.20060328125248.13: *4* handleAtPluginNode @plugin
     def handleAtPluginNode (self,p):
 

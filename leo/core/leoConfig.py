@@ -177,7 +177,7 @@ class ParserBaseClass:
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
-                    aList.append((p.h,script),)
+                    aList.append((p.copy(),script),)
                 p.moveToThreadNext()
 
         # This setting is handled differently from most other settings,
@@ -224,7 +224,7 @@ class ParserBaseClass:
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
-                    aList.append((p.h,script),)
+                    aList.append((p.copy(),script),)
                 p.moveToThreadNext()
 
         # This setting is handled differently from most other settings,
@@ -1257,6 +1257,9 @@ class GlobalConfigManager:
 
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
+        self.atLocalButtonsList = [] # List of positions of @button nodes.
+        self.atLocalCommandsList = [] # List of positions of @command nodes.
+
         self.buttonsFileName = ''
         self.configsExist = False # True when we successfully open a setting file.
         self.unitTestDict = {} # For unit testing: *not* the same as g.app.unitTestDict.
@@ -1700,6 +1703,7 @@ class LocalConfigManager:
         # The shortcuts and settings dicts, set in c.__init__
         # for local files.
         if previousSettings:
+            # g.trace('(c.config.ctor)',previousSettings)
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert g.isTypedDict(self.settingsDict)

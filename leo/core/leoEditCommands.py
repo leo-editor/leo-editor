@@ -7581,6 +7581,7 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
                 'number-command-8':         k.numberCommand8,
                 'number-command-9':         k.numberCommand9,
                 'print-bindings':           k.printBindings,
+                'print-buttons':            k.printButtons,
                 'print-commands':           k.printCommands,
                 'propagate-key-event':      k.propagateKeyEvent,
                 'repeat-complex-command':   k.repeatComplexCommand,

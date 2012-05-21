@@ -6342,6 +6342,42 @@ def printBindingsHelper (self,result,data,prefix):
 
     if data:
         result.append('\n')
+#@+node:ekr.20120520174745.9867: *7* k.printButtons
+def printButtons (self,event=None):
+
+    '''Print all @button and @command commands, their bindings and their source.'''
+
+    k = self ; c = k.c
+    tabName = '@buttons && @commands'
+    c.frame.log.clearTab(tabName)
+    
+    def put(s):
+        g.es('',s,tabName=tabName)
+        
+    data = []
+    for aList in [c.config.getButtons(),c.config.getCommands()]:
+        for z in aList:
+            p,script = z
+            c = p.v.context
+            tag = 'M' if c.shortFileName().endswith('myLeoSettings.leo') else 'G'
+            data.append((p.h,tag),)
+
+    for aList in [g.app.config.atLocalButtonsList,g.app.config.atLocalCommandsList]:
+        for p in aList:
+            data.append((p.h,'L'),)
+
+    result = ['%s %s' % (z[1],z[0]) for z in sorted(data)]
+    put('\n'.join(result))
+    
+    legend = '''\
+
+legend:
+G leoSettings.leo
+L local .leo File
+M myLeoSettings.leo
+'''
+    legend = g.adjustTripleString(legend,c.tab_width)
+    put(''.join(legend))
 #@+node:ekr.20061031131434.121: *7* k.printCommands
 def printCommands (self,event=None):
 
