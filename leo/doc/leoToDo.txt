@@ -20,161 +20,161 @@ that Leo "understands" the language.
 Supporting the language in the global tables in leoApp.py makes the
 illusion a reality.
 
-The following 35 languages are candidates to be supported:
+The following have known (or guessed) file extensions:
     
 .ada    "ada95"              : "--",
+.ahk    "ahk"                : ";",
+.g      "antlr"              : "// /* */",
+.conf   "apacheconf"         : "#",
 .aj     "aspect_j"           : "// /* */",
+.apdl   "apdl"               : "!",
 .scpt   "applescript"        : "-- (* *)",
 .asp    "asp"                : "<!-- -->",
 .awk    "awk"                : "#",
+
+.b      "b"                  : "// /* */",
+.bbj    "bbj"                : "/* */",
+.bcel   "bcel"               : "// /* */",
 .bib    "bibtex"             : "%",
+
+.c186   "chill"              : "/* */",
+.c286   "chill"              : "/* */",
+.ch     "chill"              : "/* */",
+.cob    "cobol"              : "*",
+.cbl    "cobol"              : "*",
+.cfm    "coldfusion"         : "<!-- -->",
 .c++    "cplusplus"          : "// /* */",
+
+.d      "d"                  : "// /* */",
+
 .e      "eiffel"             : "--",
 .erl    "erlang"             : "%",
+
+.factor "factor"             : "! ( )",
 .prg    "foxpro"             : "&&",
+
+.po     "gettext"            : "# ",            # Translation project.
+.groovy "groovy"             : "// /* */",
+
+.i4gl   "i4gl"               : "-- { }",        # Guess
+.icn    "icon"               : "#",
+.idl    "idl"                : "// /* */",
+.io     "io"                 : "// */",
+.inf    "inform"             : "!",
+.iss    "inno_setup"         : ";",             # Interesting installer.
+
+.jhtml  "jhtml"              : "<!-- -->",
+.jmk    "jmk"                : "#",
 .jsp    "jsp"                : "<%-- --%>",
+
+.ly     "lilypond"           : "% %{ %}",       # music engraving.
+.lotos  "lotos"              : "(* *)",         # Guess
+
+.eml    "mail"               : ">",
 .mak    "makefile"           : "#",
 .mpl    "maple"              : "//",
 .ml     "ml"                 : "(* *)",
 .mod    "modula3"            : "(* *)",
+.mqsc   "mqsc"               : "*",
+
+.nqc    "nqc"                : "// /* */",
 .nsi    "nsis2"              : ";",
+
 .m      "objective_c"        : "// /* */",
 .mm     "objective_c"        : "// /* */",
+.rex    "objectrexx"         : "-- /* */",
 .occ    "occam"              : "--",
+.xom    "omnimark"           : ";",
+
 .fix    "patch"              : "",
-        "phpsection"         : "<!-- -->",
+.pike   "pike"               : "// /* */",          # Guess
+.pl1    "pl1"                : "/* */",
 .ps     "postscript"         : "%",
 .pro    "prolog"             : "% /* */",
 .psp    "psp"                : "<!-- -->",
+.ptl    "ptl"                : "#",
+.pyx    "pyrex"              : "#",
+
 .r      "r"                  : "#",
+.rib    "rib"                : "#",
+.rhtml  "rhtml"              : "<%# %>",
 .rtf    "rtf"                : "",
+
 .scm    "scheme"             : "; #| |#",
+.sgml   "sgml"               : "<!-- -->",
+.ss     "ssharp"             : "# " "",             # Guess
 .sh     "shellscript"        : "#",
 .sm     "smalltalk"          : "" "",
+.splus  "splus"              : "#",                 # .s might be better.
+.sqr    "sqr"                : "!",
 .i      "swig"               : "// /* */",
+
 .tcl    "tcl"                : "#",
 .info   "texinfo"            : "@c",
 .txt    "text"               : "",
+.tpl    "tpl"                : "<!-- -->",
+.sql    "tsql"               : "-- /* */",          # Guess
+
+.uc     "uscript"            : "// /* */",
+
 .vbs    "vbscript"           : "'",
+.vtl    "velocity"           : "## #* *#",          # Guess
+.v      "verilog"            : "// /* */",
+.vhd    "vhdl"               : "--",
+.vhdl   "vhdl"               : "--",
+
 .xsl    "xsl"                : "<!-- -->",
-    
-    
-Here is the complete list:
 
-112 new languages
+.zpt    "zpt"                : "<!-- -->",
+    
+Here are the languages without known file extensions:
 
-"ada95"              : "--",
-"ahk"                : ";",
-"antlr"              : "// /* */",
-"apacheconf"         : "#",
-"apdl"               : "!",
-"applescript"        : "-- (* *)",
-"asp"                : "<!-- -->",
-"aspect_j"           : "// /* */",
+# These probably all have .asm file extensions...
 "assembly_macro32"   : ";",
 "assembly_mcs51"     : ";",
 "assembly_parrot"    : "#",
 "assembly_r2000"     : "",
 "assembly_x86"       : ";",
-"awk"                : "#",
-"b"                  : "// /* */",
-"bbj"                : "/* */",
-"bcel"               : "// /* */",
-"bibtex"             : "%",
-"chill"              : "/* */",
-"cobol"              : "*",
-"coldfusion"         : "<!-- -->",
-"cplusplus"          : "// /* */",
+
+# These aren't real languages, or have no delims...
 "cvs_commit"         : "",
-"d"                  : "// /* */",
-"doxygen"            : "#",
 "dsssl"              : "; <!-- -->",
-"eiffel"             : "--",
-"embperl"            : "<!-- -->",
-"erlang"             : "%",
-"factor"             : "! ( )",
-"foxpro"             : "&&",
 "freemarker"         : "",
-"gettext"            : "# ",
-"groovy"             : "// /* */",
-"hex"                : "",
-"i4gl"               : "-- { }",
-"icon"               : "#",
-"idl"                : "// /* */",
-"inform"             : "!",
-"inno_setup"         : ";",
-"interlis"           : "/* */",
-"io"                 : "// */",
 "jcl"                : "",
-"jhtml"              : "<!-- -->",
-"jmk"                : "#",
-"jsp"                : "<%-- --%>",
-"lilypond"           : "% %{ %}",
-"lotos"              : "(* *)",
-"mail"               : ">",
-"makefile"           : "#",
-"maple"              : "//",
-"ml"                 : "(* *)",
-"modula3"            : "(* *)",
-"moin"               : "##",
-"mqsc"               : "*",
-"netrexx"            : "-- /* */",
-"nqc"                : "// /* */",
-"nsis2"              : ";",
-"objective_c"        : "// /* */",
-"objectrexx"         : "-- /* */",
-"occam"              : "--",
-"omnimark"           : ";",
-"patch"              : "",
+"hex"                : "",
+"pseudoplain"        : "",
+"sas"                : "",
+"svn_commit"         : "",
+
+# These are internal colorizing states...
+"embperl"            : "<!-- -->",
 "phpsection"         : "<!-- -->",
-"pike"               : "// /* */",
-"pl1"                : "/* */",
+
+# The following languages have extensions which conflict with other languages.
+"squidconf"          : "#",
+"rpmspec"            : "#",
+
+# The following languages have unknown extensions
+"doxygen"            : "#",
+"interlis"           : "/* */",
+"netrexx"            : "-- /* */",
+"moin"               : "##",
+
+###################
 "pop11"              : ";;; /* */",
-"postscript"         : "%",
 "povray"             : "// /* */",
 "powerdynamo"        : "// <!-- -->",
 "progress"           : "&scop cmt  /* */",
-"prolog"             : "% /* */",
 "props"              : "#",
-"pseudoplain"        : "",
-"psp"                : "<!-- -->",
-"ptl"                : "#",
 "pvwave"             : ";",
-"pyrex"              : "#",
-"r"                  : "#",
+
 "redcode"            : ";",
 "relax_ng_compact"   : "#",
-"rhtml"              : "<%# %>",
-"rib"                : "#",
-"rpmspec"            : "#",
-"rtf"                : "",
 "rview"              : "// /* */",
-"sas"                : "",
-"scheme"             : "; #| |#",
+
 "sdl_pr"             : "/* */",
-"sgml"               : "<!-- -->",
-"shellscript"        : "#",
 "shtml"              : "<!-- -->",
-"smalltalk"          : "" "",
 "smi_mib"            : "--",
-"splus"              : "#",
-"sqr"                : "!",
-"squidconf"          : "#",
-"ssharp"             : "# " "",
-"svn_commit"         : "",
-"swig"               : "// /* */",
-"tcl"                : "#",
-"texinfo"            : "@c",
-"text"               : "",
-"tpl"                : "<!-- -->",
-"tsql"               : "-- /* */",
-"uscript"            : "// /* */",
-"vbscript"           : "'",
-"velocity"           : "## #* *#",
-"verilog"            : "// /* */",
-"vhdl"               : "--",
-"xsl"                : "<!-- -->",
-"zpt"                : "<!-- -->",
 .. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
