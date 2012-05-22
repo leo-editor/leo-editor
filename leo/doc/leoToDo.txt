@@ -90,6 +90,8 @@ The following have known (or guessed) file extensions:
 .pike   "pike"               : "// /* */",          # Guess
 .pl1    "pl1"                : "/* */",
 .ps     "postscript"         : "%",
+.pov    "povray"             : "// /* */",
+.p      "progress"           : "&scop cmt  /* */",
 .pro    "prolog"             : "% /* */",
 .psp    "psp"                : "<!-- -->",
 .ptl    "ptl"                : "#",
@@ -104,6 +106,8 @@ The following have known (or guessed) file extensions:
 .sgml   "sgml"               : "<!-- -->",
 .ss     "ssharp"             : "# " "",             # Guess
 .sh     "shellscript"        : "#",
+.shtml  "shtml"              : "<!-- -->",
+.ssi    "shtml"              : "<!-- -->",
 .sm     "smalltalk"          : "" "",
 .splus  "splus"              : "#",                 # .s might be better.
 .sqr    "sqr"                : "!",
@@ -126,55 +130,43 @@ The following have known (or guessed) file extensions:
 .xsl    "xsl"                : "<!-- -->",
 
 .zpt    "zpt"                : "<!-- -->",
-    
-Here are the languages without known file extensions:
 
-# These probably all have .asm file extensions...
-"assembly_macro32"   : ";",
-"assembly_mcs51"     : ";",
-"assembly_parrot"    : "#",
-"assembly_r2000"     : "",
-"assembly_x86"       : ";",
 
 # These aren't real languages, or have no delims...
 "cvs_commit"         : "",
 "dsssl"              : "; <!-- -->",
+"embperl"            : "<!-- -->",  # Internal colorizing state.
 "freemarker"         : "",
 "jcl"                : "",
 "hex"                : "",
 "pseudoplain"        : "",
+"phpsection"         : "<!-- -->",  # Internal colorizing state.
+"relax_ng_compact"   : "#",         # An xml schema.
 "sas"                : "",
 "svn_commit"         : "",
 
-# These are internal colorizing states...
-"embperl"            : "<!-- -->",
-"phpsection"         : "<!-- -->",
-
 # The following languages have extensions which conflict with other languages.
-"squidconf"          : "#",
-"rpmspec"            : "#",
+"assembly_macro32"   : ";",         # .asm or .a
+"assembly_mcs51"     : ";",         # .asm or .a
+"assembly_parrot"    : "#",         # .asm or .a
+"assembly_r2000"     : "",          # .asm or .a
+"assembly_x86"       : ";",         # .asm or .a
+"squidconf"          : "#",         # .conf
+"rpmspec"            : "#",         # .rpm
 
-# The following languages have unknown extensions
+# The following languages have unknown extensions. Any help would be appreciated.
 "doxygen"            : "#",
-"interlis"           : "/* */",
-"netrexx"            : "-- /* */",
-"moin"               : "##",
-
-###################
-"pop11"              : ";;; /* */",
-"povray"             : "// /* */",
+"interlis"           : "/* */",         # Not interlisp.
+"netrexx"            : "-- /* */",      # Careful: .rex is already taken.
+"moin"               : "##",            # Unknown language.
 "powerdynamo"        : "// <!-- -->",
-"progress"           : "&scop cmt  /* */",
-"props"              : "#",
+"pop11"              : ";;; /* */",
+"props"              : "#",             # Unknown language.
 "pvwave"             : ";",
-
-"redcode"            : ";",
-"relax_ng_compact"   : "#",
-"rview"              : "// /* */",
-
-"sdl_pr"             : "/* */",
-"shtml"              : "<!-- -->",
+"redcode"            : ";",             # .r3d is a binary format.
+"rview"              : "// /* */",      # Unknown language.
 "smi_mib"            : "--",
+"sdl_pr"             : "/* */",
 .. @+node:ekr.20031218072017.368: *5* << define global data structures >> (leoApp.py)
 # Internally, lower case is used for all language names.
 self.language_delims_dict = {
