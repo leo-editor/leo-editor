@@ -7532,69 +7532,67 @@ class helpCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20120522024827.9898: *4* << define s >> (aproposRegularExpressions)
         #@@language rest
 
-        s = '''\
+        # Using raw string is essential.
+        s = r'''\
+
+        .. _`regular expressions`: http://docs.python.org/library/re.html
+        .. _`quick reference`:     http://rgruet.free.fr/PQR26/PQR2.6.html
 
         +++++++++++++++++++++++++++
         About Regular expressions
         +++++++++++++++++++++++++++
 
-        Leo supports Python's regular expressions in find patterns.
-        For full details, see: ``http://docs.python.org/library/re.html``.
+        Leo supports Python's `regular expressions`_ in find patterns.
+        The following is taken from a `quick reference`_::
 
-        The following quick reference is taken from ``http://rgruet.free.fr/PQR26/PQR2.6.html``.
-
-        Regular Expression Syntax
-        ---------------------------
-
-        ::
-
-            .           Matches any character (including newline if DOTALL flag specified).
-            ^           Matches start of the string (of every line in MULTILINE mode).
-            $           Matches end of the string (of every line in MULTILINE mode).
-            *           0 or more of preceding regular expression (as many as possible).
-            +           1 or more of preceding regular expression (as many as possible).
-            ?           0 or 1 occurrence of preceding regular expression.
-            *?, +?, ??  Same as *, + and ? but matches as few characters as possible.
-            {m,n}       Matches from m to n repetitions of preceding RE.
-            {m,n}?      Same as {m,n}, but attempting to match as few repetitions as possible.
-            [ ]         Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
-            [^ ]        Defines complemented character set: matches if char is NOT in set.
-            \           Escapes special chars '*?+&$|()' and introduces special sequences (see below). Due to Python string rules, write as '\\' or r'\' in the pattern string.
-            \\          Matches a litteral '\'; due to Python string rules, write as '\\\\' in pattern string, or better using raw string: r'\\'.
-            |           Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
+            .               Matches any character (including newline if DOTALL flag specified).
+            ^               Matches start of the string (of every line in MULTILINE mode).
+            $               Matches end of the string (of every line in MULTILINE mode).
+            *               0 or more of preceding regular expression (as many as possible).
+            +               1 or more of preceding regular expression (as many as possible).
+            ?               0 or 1 occurrence of preceding regular expression.
+            *?, +?, ??      Same as *, + and ? but matches as few characters as possible.
+            {m,n}           Matches from m to n repetitions of preceding RE.
+            {m,n}?          Same as {m,n}, but attempting to match as few repetitions as possible.
+            [ ]             Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
+            [^ ]            Defines complemented character set: matches if char is NOT in set.
+            \\              Escapes special chars '*?+&$|()' and introduces special sequences (see below).
+                            Write as '\\' in the pattern string.  Even better, use raw Python strings.
+            \\\\            Matches a literal '\'.
+            |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
             (...)           Matches any RE inside (), and delimits a group.
             (?:...)         Mathces RE inside (), but doesn't delimit a group.
-            (?P<name>...)   Matches any RE inside (), and delimits a named group. r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
+            (?P<name>...)   Matches any RE inside (), and delimits a named group.
+                            r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
             (?P=name)       Matches whatever text was matched by the earlier group named name.
-            (?=...)         Matches if ... matches next, but doesn't consume any of the string e.g. 'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
+            (?=...)         Matches if ... matches next, but doesn't consume any of the string
+                            'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
             (?!...)         Matches if ... doesn't match next. Negative of (?=...).
-            (?<=...)        Matches if the current position in the string is preceded by a match for ... that ends at the current position. This is called a positive lookbehind assertion.
-            (?<!...)        Matches if the current position in the string is not preceded by a match for .... This is called a negative lookbehind assertion.
-            (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...) earlier in the expression. If the specified group matched, the regular expression pattern A will be tested against the string; if the group didn't match, the pattern B will be used instead.
+            (?<=...)        Matches if the current position in the string is preceded by a match
+                            for ... that ends at the current position.
+                            This is called a positive lookbehind assertion.
+            (?<!...)        Matches if the current position in the string is not preceded by a match for ...
+                            This is called a negative lookbehind assertion.
+            (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...)
+                            earlier in the expression.
+                            If the specified group matched, the regular expression pattern A will be tested
+                            against the string; if the group didn't match, the pattern B will be used instead.
             (?#...)         A comment; ignored.
-            (?letters)      letters is one or more of 'i','L', 'm', 's', 'u', 'x'.
-            
-        Sets the corresponding flags (re.I, re.L, re.M, re.S, re.U, re.X) for the entire RE.
-        See the compile() function for equivalent flags.
+            (?letters)      Each letter is in 'ilmsux' and sets the corresponding flag.
+                            re.I, re.L, re.M, re.S, re.U, re.X.
+            \number         Matches content of the group of the same number.     
+            \A              Matches only at the start of the string.
+            \b              Empty str at beginning or end of word:
+                            '\bis\b' matches 'is', but not 'his'.
+            \B              Empty str NOT at beginning or end of word.
+            \d              Any decimal digit:          [0-9]
+            \D              Any non-decimal digit char  [^0-9]).
+            \s              Any whitespace char         [ \t\n\r\f\v]
+            \S              Any non-whitespace char     [^ \t\n\r\f\v]
+            \w              Any alphaNumeric char (depends on LOCALE flag).
+            \W              Any non-alphaNumeric char (depends on LOCALE flag).
+            \Z              Matches only at the end of the string.
 
-        Special sequences
-        -----------------
-
-        ::
-
-            \number     Matches content of the group of the same number. groups are numbered starting from 1.
-            \A          Matches only at the start of the string.
-            \b          Empty str at beginning or end of word:
-                        '\bis\b' matches 'is', but not 'his'.
-            \B          Empty str NOT at beginning or end of word.
-            \d          Any decimal digit:          [0-9]
-            \D          Any non-decimal digit char  [^0-9]).
-            \s          Any whitespace char         [ \t\n\r\f\v]
-            \S          Any non-whitespace char     [^ \t\n\r\f\v]
-            \w          Any alphaNumeric char (depends on LOCALE flag).
-            \W          Any non-alphaNumeric char (depends on LOCALE flag).
-            \Z          Matches only at the end of the string.
-            
         '''
         #@-<< define s >>
 

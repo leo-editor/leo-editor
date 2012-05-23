@@ -1029,6 +1029,8 @@ class Commands (object):
         
         c = self
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
+        
+        # g.trace('\n',s)
 
         pc = g.app.pluginsController
         vr = pc.loadOnePlugin('viewrendered.py')
