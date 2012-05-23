@@ -302,7 +302,7 @@ class LeoApp:
             "rst"                : ".._",
             "ruby"               : "#", # thyrsus 2008-11-05
             "rview"              : "// /* */",
-            "sas"                : "#", # Must pick something.
+            "sas"                : "* /* */",
             "scala"              : "// /* */",
             "scheme"             : "; #| |#",
             "sdl_pr"             : "/* */",
