@@ -9467,6 +9467,108 @@ M myLeoSettings.leo
 '''
     legend = g.adjustTripleString(legend,c.tab_width)
     put(''.join(legend))
+#@+node:ekr.20120522160137.9907: *4* Completed apropos-regular-expressions command
+#@+node:ekr.20120522024827.9897: *5* aproposRegularExpressions
+def aproposRegularExpressions (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+#@+node:ekr.20120522024827.9898: *6* << define s >> (aproposRegularExpressions)
+@language rest
+
+# Using raw string is essential.
+s = r'''\
+
+.. _`regular expressions`: http://docs.python.org/library/re.html
+.. _`quick reference`:     http://rgruet.free.fr/PQR26/PQR2.6.html
+
++++++++++++++++++++++++++++
+About Regular expressions
++++++++++++++++++++++++++++
+
+Leo supports Python's regular expressionsin find patterns.
+Here is a quick reference::
+
+    .               Matches any character (including newline if DOTALL flag specified).
+    ^               Matches start of the string (of every line in MULTILINE mode).
+    $               Matches end of the string (of every line in MULTILINE mode).
+    *               0 or more of preceding regular expression (as many as possible).
+    +               1 or more of preceding regular expression (as many as possible).
+    ?               0 or 1 occurrence of preceding regular expression.
+    *?, +?, ??      Same as *, + and ? but matches as few characters as possible.
+    {m,n}           Matches from m to n repetitions of preceding RE.
+    {m,n}?          Same as {m,n}, but attempting to match as few repetitions as possible.
+    [ ]             Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
+    [^ ]            Defines complemented character set: matches if char is NOT in set.
+    \               Escapes special chars '*?+&$|()' and introduces special sequences (see below).
+                    If not using a raw string, write as '\\' in the pattern string.
+    \\              Matches a literal '\'.
+    |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
+    (...)           Matches any RE inside (), and delimits a group.
+    (?:...)         Mathces RE inside (), but doesn't delimit a group.
+    (?P<name>...)   Matches any RE inside (), and delimits a named group.
+                    r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
+    (?P=name)       Matches whatever text was matched by the earlier group named name.
+    (?=...)         Matches if ... matches next, but doesn't consume any of the string
+                    'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
+    (?!...)         Matches if ... doesn't match next. Negative of (?=...).
+    (?<=...)        Matches if the current position in the string is preceded by a match
+                    for ... that ends at the current position.
+                    This is called a positive lookbehind assertion.
+    (?<!...)        Matches if the current position in the string is not preceded by a match for ...
+                    This is called a negative lookbehind assertion.
+    (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...)
+                    earlier in the expression.
+                    If the specified group matched, the regular expression pattern A will be tested
+                    against the string; if the group didn't match, the pattern B will be used instead.
+    (?#...)         A comment; ignored.
+    (?letters)      Each letter is in 'ilmsux' and sets the corresponding flag.
+                    re.I, re.L, re.M, re.S, re.U, re.X.
+    \number         Matches content of the group of the same number.     
+    \A              Matches only at the start of the string.
+    \b              Empty str at beginning or end of word:
+                    '\bis\b' matches 'is', but not 'his'.
+    \B              Empty str NOT at beginning or end of word.
+    \d              Any decimal digit:          [0-9]
+    \D              Any non-decimal digit char  [^0-9]).
+    \s              Any whitespace char         [ \t\n\r\f\v]
+    \S              Any non-whitespace char     [^ \t\n\r\f\v]
+    \w              Any alphaNumeric char (depends on LOCALE flag).
+    \W              Any non-alphaNumeric char (depends on LOCALE flag).
+    \Z              Matches only at the end of the string.
+    
+For complete details, see: http://docs.python.org/library/re.html
+
+'''
+#@+node:ekr.20110530082209.18250: *5* c.putApropos
+def putApropos (self,s):
+    
+    c = self
+    s = g.adjustTripleString(s.rstrip(),c.tab_width)
+    
+    # g.trace('\n',s)
+
+    pc = g.app.pluginsController
+    vr = pc.loadOnePlugin('viewrendered.py')
+    assert vr # For unit testing.
+    if vr:
+        kw = {
+            'c':c,
+            'flags':'rst',
+            'label':'',
+            'msg':s,
+            'name':'Apropos',
+            'short_title':'',
+            'title':''}
+        vr.show_scrolled_message(tag='Apropos',kw=kw)
+        c.bodyWantsFocus()
+        if g.unitTesting:
+            vr.close_rendering_pane(event={'c':c})
+    else:
+        g.es(s)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

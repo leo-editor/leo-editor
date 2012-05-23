@@ -157,11 +157,11 @@ __version__ = '1.0'
 #@+node:tbrown.20100318101414.5993: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.plugins.qtGui as qtGui
+
 g.assertUi('qt')
 
 import os
-# import sys
-# import webbrowser
+
 
 try:
     from docutils.core import publish_string
@@ -179,7 +179,7 @@ try:
 except ImportError:
     phonon = None
 
-# import PyQt4.QtCore as QtCore
+import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 import PyQt4.QtSvg as QtSvg
 #@-<< imports >>
@@ -443,7 +443,7 @@ class ViewRenderedController(QtGui.QWidget):
         self.sizes = [] # Saved splitter sizes.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
-        self.text_class = QtGui.QTextEdit
+        self.text_class = QtGui.QTextBrowser # QtGui.QTextEdit # qtGui.LeoQTextBrowser 
         self.graphics_class = QtGui.QGraphicsWidget
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
@@ -591,6 +591,7 @@ class ViewRenderedController(QtGui.QWidget):
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
             wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
+            w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
               
@@ -893,7 +894,18 @@ class ViewRenderedController(QtGui.QWidget):
         
         if pc.must_change_widget(pc.text_class):
             w = pc.text_class()
-            pc.embed_widget(w)
+            
+            # Monkey patch a click handler.
+            def mouseReleaseEvent(event):
+                # Pass ctrl-clicks on.
+                if QtCore.Qt.ControlModifier & event.modifiers():
+                    event2 = {'c':self.c,'w':w.leo_wrapper}
+                    g.openUrlOnClick(event2)
+                else:
+                    QtGui.QTextBrowser.mouseReleaseEvent(w,event)
+            
+            w.mouseReleaseEvent = mouseReleaseEvent
+            pc.embed_widget(w) # Creates w.wrapper
             assert (w == pc.w)
             return pc.w
         else:

@@ -9,7 +9,6 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20120523133829.14118: *4* Support ctrl-clicks in vr panes
 .. @+node:ekr.20120523095917.9905: *4* Selected node not always saved properly
 @nocolor-node
 
@@ -801,8 +800,8 @@ s = r'''\
 About Regular expressions
 +++++++++++++++++++++++++++
 
-Leo supports Python's `regular expressions`_ in find patterns.
-The following is taken from a `quick reference`_::
+Leo supports Python's regular expressionsin find patterns.
+Here is a quick reference::
 
     .               Matches any character (including newline if DOTALL flag specified).
     ^               Matches start of the string (of every line in MULTILINE mode).
@@ -851,6 +850,8 @@ The following is taken from a `quick reference`_::
     \w              Any alphaNumeric char (depends on LOCALE flag).
     \W              Any non-alphaNumeric char (depends on LOCALE flag).
     \Z              Matches only at the end of the string.
+    
+For complete details, see: http://docs.python.org/library/re.html
 
 '''
 .. @+node:ekr.20060602154458: *6* pythonHelp

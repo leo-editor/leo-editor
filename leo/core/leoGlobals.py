@@ -4599,7 +4599,7 @@ def openUrlOnClick(event):
     '''Open the URL under the cursor.  Return it for unit testing.'''
     c = event.get('c')
     if not c: return None
-    w = c.frame.body.bodyCtrl
+    w = event.get('w') or c.frame.body.bodyCtrl
     s = w.getAllText()
     ins = w.getInsertPoint()
     i,j = w.getSelectionRange()

@@ -7542,8 +7542,8 @@ class helpCommandsClass (baseEditCommandsClass):
         About Regular expressions
         +++++++++++++++++++++++++++
 
-        Leo supports Python's `regular expressions`_ in find patterns.
-        The following is taken from a `quick reference`_::
+        Leo supports Python's regular expressionsin find patterns.
+        Here is a quick reference::
 
             .               Matches any character (including newline if DOTALL flag specified).
             ^               Matches start of the string (of every line in MULTILINE mode).
@@ -7592,6 +7592,8 @@ class helpCommandsClass (baseEditCommandsClass):
             \w              Any alphaNumeric char (depends on LOCALE flag).
             \W              Any non-alphaNumeric char (depends on LOCALE flag).
             \Z              Matches only at the end of the string.
+            
+        For complete details, see: http://docs.python.org/library/re.html
 
         '''
         #@-<< define s >>
