@@ -3250,6 +3250,1184 @@ Otherwise, if there are no completions, the "Completions" tab is empty, *not* al
 This behavior is much more intuitive than the old behavior.
 
 The fix was a new special case in k.computeCompletionList.
+#@+node:ekr.20111025141618.16484: *4* Fixed bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/879338
+
+Having the colorizer colorize a language properly gives the false illusion
+that Leo "understands" the language.
+
+Supporting the language in the global tables in leoApp.py makes the
+illusion a reality.
+#@+node:ekr.20120522160137.9908: *5* Notes
+@language python
+
+# These aren't real languages, or have no delims.
+"cvs_commit"         : "",
+"dsssl"              : "; <!-- -->",
+"embperl"            : "<!-- -->",  # Internal colorizing state.
+"freemarker"         : "",
+"jcl"                : "",
+"hex"                : "",
+"pseudoplain"        : "",
+"phpsection"         : "<!-- -->",  # Internal colorizing state.
+"relax_ng_compact"   : "#",         # An xml schema.
+"sas"                : "",
+"svn_commit"         : "",
+
+# The following languages have extensions which conflict with other languages.
+"assembly_macro32"   : ";",         # .asm or .a
+"assembly_mcs51"     : ";",         # .asm or .a
+"assembly_parrot"    : "#",         # .asm or .a
+"assembly_r2000"     : "",          # .asm or .a
+"assembly_x86"       : ";",         # .asm or .a
+"squidconf"          : "#",         # .conf
+"rpmspec"            : "#",         # .rpm
+
+# The following languages have unknown extensions.
+# They are all candidates to be removed.
+"doxygen"            : "#",
+"interlis"           : "/* */",         # Not interlisp.
+"lotos"              : "(* *)",
+"netrexx"            : "-- /* */",      # Careful: .rex is already taken.
+"moin"               : "##",            # Unknown language.
+"powerdynamo"        : "// <!-- -->",
+"pop11"              : ";;; /* */",
+"props"              : "#",             # Unknown language.
+"pvwave"             : ";",
+"redcode"            : ";",             # .r3d is a binary format.
+"rview"              : "// /* */",      # Unknown language.
+"smi_mib"            : "--",
+"sdl_pr"             : "/* */",
+#@+node:ekr.20120522024827.9900: *5* Scripts
+#@+node:ekr.20111021035504.9469: *6* Script: get all comments from modes (slow)
+@language python
+
+'''Slow script.'''
+
+import glob
+import imp
+
+@others
+
+if 0: # The other script is much faster.
+    
+    keys = ("lineComment","commentStart","commentEnd",)
+    d = {}
+        # Keys are language names.
+        # Values are a list of comment delims, in keys order.
+    
+    paths,modes_path = get_paths()
+    for path in paths:
+        module_name = g.shortFileName(path)[:-3]
+        module = import_module(module_name,modes_path)
+        aList = []
+        for key in keys:
+            val = module.properties.get(key)
+            if val: aList.append(val)
+        d[module_name] = aList
+    
+    print('-'* 20)
+    print('language_delims_dict')
+    for key in sorted(d):
+        print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
+#@+node:ekr.20111021035504.9470: *7* get_paths
+def get_paths():
+    
+    modes_path = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+    pattern = g.os_path_finalize_join(modes_path,'*.py')
+    paths = glob.glob(pattern)
+    paths = [z for z in paths if not z.endswith('__init__.py')]
+    return paths,modes_path
+#@+node:ekr.20111021035504.9471: *7* import_module
+def import_module(module_name,modes_path):
+    
+    data = imp.find_module(module_name,[modes_path])
+        # This can open the file.
+    theFile,pathname,description = data
+    module = imp.load_module(module_name,theFile,pathname,description)
+    return module
+#@+node:ekr.20120521114035.9875: *6* Output of script
+@nocolor-node
+
+language_delims_dict
+
+  "actionscript": "// /* */"
+         "ada95": "--"
+           "ahk": ";"
+         "antlr": "// /* */"
+    "apacheconf": "#"
+          "apdl": "!"
+   "applescript": "-- (* *)"
+           "asp": "<!-- -->"
+      "aspect_j": "// /* */"
+"assembly_macro32": ";"
+"assembly_mcs51": ";"
+"assembly_parrot": "#"
+"assembly_r2000": ""
+  "assembly_x86": ";"
+           "awk": "#"
+             "b": "// /* */"
+         "batch": "rem"
+           "bbj": "/* */"
+          "bcel": "// /* */"
+        "bibtex": "%"
+             "c": "// /* */"
+         "chill": "/* */"
+         "cobol": "*"
+    "coldfusion": "<!-- -->"
+     "cplusplus": "// /* */"
+        "csharp": "// /* */"
+           "css": "/* */"
+    "cvs_commit": ""
+        "cython": "#"
+             "d": "// /* */"
+       "doxygen": "#"
+         "dsssl": "; <!-- -->"
+        "eiffel": "--"
+       "embperl": "<!-- -->"
+        "erlang": "%"
+        "factor": "! ( )"
+         "forth": "\"
+       "fortran": ""
+     "fortran90": ""
+        "foxpro": "&&"
+    "freemarker": ""
+       "gettext": "# "
+        "groovy": "// /* */"
+       "haskell": "-- {- -}"
+          "haxe": "// /* */"
+           "hex": ""
+          "html": "<!-- -->"
+          "i4gl": "-- { }"
+          "icon": "#"
+           "idl": "// /* */"
+        "inform": "!"
+           "ini": ";"
+    "inno_setup": ";"
+      "interlis": "/* */"
+            "io": "// */"
+          "java": "// /* */"
+    "javascript": "// /* */"
+           "jcl": ""
+         "jhtml": "<!-- -->"
+           "jmk": "#"
+           "jsp": "<%-- --%>"
+         "latex": "%"
+      "lilypond": "% %{ %}"
+          "lisp": "; #|   |#"
+         "lotos": "(* *)"
+           "lua": "-- --[[ ]]"
+          "mail": ">"
+      "makefile": "#"
+         "maple": "//"
+        "matlab": "%"
+            "ml": "(* *)"
+       "modula3": "(* *)"
+          "moin": "##"
+          "mqsc": "*"
+       "netrexx": "-- /* */"
+           "nqc": "// /* */"
+           "nsi": ";"
+         "nsis2": ";"
+   "objective_c": "// /* */"
+    "objectrexx": "-- /* */"
+         "occam": "--"
+      "omnimark": ";"
+        "pascal": "// { }"
+         "patch": ""
+          "perl": "#"
+           "php": "<!-- -->"
+    "phpsection": "<!-- -->"
+          "pike": "// /* */"
+           "pl1": "/* */"
+         "plain": ""
+         "plsql": "-- /* */"
+         "pop11": ";;; /* */"
+    "postscript": "%"
+        "povray": "// /* */"
+   "powerdynamo": "// <!-- -->"
+      "progress": "&scop cmt  /* */"
+        "prolog": "% /* */"
+         "props": "#"
+   "pseudoplain": ""
+           "psp": "<!-- -->"
+           "ptl": "#"
+        "pvwave": ";"
+         "pyrex": "#"
+        "python": "#"
+             "r": "#"
+         "rebol": "; comment { }"
+       "redcode": ";"
+"relax_ng_compact": "#"
+          "rest": ".."
+         "rhtml": "<%# %>"
+           "rib": "#"
+       "rpmspec": "#"
+           "rtf": ""
+          "ruby": "# =begin =end"
+         "rview": "// /* */"
+           "sas": ""
+         "scala": "// /* */"
+        "scheme": "; #| |#"
+        "sdl_pr": "/* */"
+          "sgml": "<!-- -->"
+         "shell": "#"
+   "shellscript": "#"
+         "shtml": "<!-- -->"
+     "smalltalk": "" ""
+       "smi_mib": "--"
+         "splus": "#"
+           "sqr": "!"
+     "squidconf": "#"
+        "ssharp": "# " ""
+    "svn_commit": ""
+          "swig": "// /* */"
+           "tcl": "#"
+           "tex": "%"
+       "texinfo": "@c"
+          "text": ""
+           "tpl": "<!-- -->"
+          "tsql": "-- /* */"
+       "uscript": "// /* */"
+      "vbscript": "'"
+      "velocity": "## #* *#"
+       "verilog": "// /* */"
+          "vhdl": "--"
+           "xml": "<!-- -->"
+           "xsl": "<!-- -->"
+           "zpt": "<!-- -->"
+    
+#@+node:ekr.20110528103005.18319: *6* Script to create global data structures from in modes/*.py files
+@language python
+
+'''Script to create global data structures from modes/*.py files.'''
+
+import glob
+import imp
+
+g.cls()
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+aList = glob.glob(theDir)
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+
+# print('-'*40)
+known_keys = list(g.app.language_delims_dict.keys())
+new_languages = {}
+
+for z in aList:
+    name = g.os_path_basename(z)
+    name2 = name[:-3]
+    if name2 in known_keys or name2.startswith('__'):
+        if 0: print('ignore: %s' % (name2))
+    else:
+        try:
+            theFile, pathname, description = imp.find_module(name2,[theDir])
+            m = imp.load_module(name2, theFile, pathname, description)
+            if hasattr(m,'properties'):
+                # new_languages.append(name2)
+                new_languages[name2] = m
+            else:
+                print('no properties: %s %s' % (name2,m))
+        except Exception:
+            g.es_exception()
+            
+print('%s new languages\n' % (len(list(new_languages.keys()))))
+    
+for key in sorted(new_languages.keys()):
+    m = new_languages.get(key)
+    aList2 = [m.properties.get(z)
+        for z in ('lineComment','commentStart','commentEnd')
+            if m.properties.get(z)]
+    print('%-20s : "%s",' % (
+        '"%s"' % (key),
+        ' '.join(aList2)))
+    # computed[name2] = ' '.join(aList2)
+       
+if 0:
+    mismatches = 0
+    print()
+    for z in known_keys:
+        val = g.app.language_delims_dict.get(z)
+        val2 = computed.get(z)
+        if not val:
+            print('no val',z)
+        elif not val2:
+            print('no val2',z)
+        elif val != val2:
+            mismatches += 1
+            print('mismatch for %s. expected %s got %s' % (z,repr(val),repr(val2)))
+            print(repr(val))
+            print(repr(val2))
+    print('%s mismatches' % mismatches)
+#@+node:ekr.20120521114035.9873: *6* Output of script
+@nocolor-node
+
+---------------------------------------- 146
+"actionscript"       : "// /* */",
+"ada95"              : "--",
+"ahk"                : ";",
+"antlr"              : "// /* */",
+"apacheconf"         : "#",
+"apdl"               : "!",
+"applescript"        : "-- (* *)",
+"asp"                : "<!-- -->",
+"aspect_j"           : "// /* */",
+"assembly_macro32"   : ";",
+"assembly_mcs51"     : ";",
+"assembly_parrot"    : "#",
+"assembly_r2000"     : "",
+"assembly_x86"       : ";",
+"awk"                : "#",
+"b"                  : "// /* */",
+"batch"              : "rem",
+"bbj"                : "/* */",
+"bcel"               : "// /* */",
+"bibtex"             : "%",
+"c"                  : "// /* */",
+"chill"              : "/* */",
+"cobol"              : "*",
+"coldfusion"         : "<!-- -->",
+"cplusplus"          : "// /* */",
+"csharp"             : "// /* */",
+"css"                : "/* */",
+"cvs_commit"         : "",
+"cython"             : "#",
+"d"                  : "// /* */",
+"doxygen"            : "#",
+"dsssl"              : "; <!-- -->",
+"eiffel"             : "--",
+"embperl"            : "<!-- -->",
+"erlang"             : "%",
+"factor"             : "! ( )",
+"forth"              : "\",
+"fortran"            : "",
+"fortran90"          : "",
+"foxpro"             : "&&",
+"freemarker"         : "",
+"gettext"            : "# ",
+"groovy"             : "// /* */",
+"haskell"            : "-- {- -}",
+"haxe"               : "// /* */",
+"hex"                : "",
+"html"               : "<!-- -->",
+"i4gl"               : "-- { }",
+"icon"               : "#",
+"idl"                : "// /* */",
+"inform"             : "!",
+"ini"                : ";",
+"inno_setup"         : ";",
+"interlis"           : "/* */",
+"io"                 : "// */",
+"java"               : "// /* */",
+"javascript"         : "// /* */",
+"jcl"                : "",
+"jhtml"              : "<!-- -->",
+"jmk"                : "#",
+"jsp"                : "<%-- --%>",
+"latex"              : "%",
+"lilypond"           : "% %{ %}",
+"lisp"               : "; #|   |#",
+"lotos"              : "(* *)",
+"lua"                : "-- --[[ ]]",
+"mail"               : ">",
+"makefile"           : "#",
+"maple"              : "//",
+"matlab"             : "%",
+"ml"                 : "(* *)",
+"modula3"            : "(* *)",
+"moin"               : "##",
+"mqsc"               : "*",
+"netrexx"            : "-- /* */",
+"nqc"                : "// /* */",
+"nsi"                : ";",
+"nsis2"              : ";",
+"objective_c"        : "// /* */",
+"objectrexx"         : "-- /* */",
+"occam"              : "--",
+"omnimark"           : ";",
+"pascal"             : "// { }",
+"patch"              : "",
+"perl"               : "#",
+"php"                : "<!-- -->",
+"phpsection"         : "<!-- -->",
+"pike"               : "// /* */",
+"pl1"                : "/* */",
+"plain"              : "",
+"plsql"              : "-- /* */",
+"pop11"              : ";;; /* */",
+"postscript"         : "%",
+"povray"             : "// /* */",
+"powerdynamo"        : "// <!-- -->",
+"prolog"             : "% /* */",
+"props"              : "#",
+"pseudoplain"        : "",
+"psp"                : "<!-- -->",
+"ptl"                : "#",
+"pvwave"             : ";",
+"pyrex"              : "#",
+"python"             : "#",
+"r"                  : "#",
+"rebol"              : "; comment { }",
+"redcode"            : ";",
+"relax_ng_compact"   : "#",
+"rest"               : "..",
+"rhtml"              : "<%# %>",
+"rib"                : "#",
+"rpmspec"            : "#",
+"rtf"                : "",
+"ruby"               : "# =begin =end",
+"rview"              : "// /* */",
+"sas"                : "",
+"scala"              : "// /* */",
+"scheme"             : "; #| |#",
+"sdl_pr"             : "/* */",
+"sgml"               : "<!-- -->",
+"shell"              : "#",
+"shellscript"        : "#",
+"shtml"              : "<!-- -->",
+"smalltalk"          : "" "",
+"smi_mib"            : "--",
+"splus"              : "#",
+"sqr"                : "!",
+"squidconf"          : "#",
+"ssharp"             : "# " "",
+"svn_commit"         : "",
+"swig"               : "// /* */",
+"tcl"                : "#",
+"tex"                : "%",
+"texinfo"            : "@c",
+"text"               : "",
+"tpl"                : "<!-- -->",
+"tsql"               : "-- /* */",
+"uscript"            : "// /* */",
+"vbscript"           : "'",
+"velocity"           : "## #* *#",
+"verilog"            : "// /* */",
+"vhdl"               : "--",
+"xml"                : "<!-- -->",
+"xsl"                : "<!-- -->",
+"zpt"                : "<!-- -->",
+
+oops: no val2 ada
+oops: no val2 autohotkey
+mismatch for batch
+'REM_'
+'rem'
+oops: no val2 config
+oops: no val2 cpp
+oops: no val2 cweb
+oops: no val2 elisp
+mismatch for forth
+'\\_ _(_ _)'
+'\\'
+oops: no val2 fortran
+oops: no val2 fortran90
+mismatch for haskell
+'--_ {-_ _-}'
+'-- {- -}'
+mismatch for haxe
+'//'
+'// /* */'
+oops: no val2 javaserverpage
+oops: no val2 kshell
+mismatch for lisp
+';'
+'; #|   |#'
+mismatch for lua
+'--'
+'-- --[[ ]]'
+oops: no val2 noweb
+oops: no val2 perlpod
+mismatch for php
+'// /* */'
+'<!-- -->'
+oops: no val2 plain
+oops: no val2 rapidq
+mismatch for rebol
+';'
+'; comment { }'
+mismatch for rest
+'.._'
+'..'
+oops: no val2 rst
+mismatch for ruby
+'#'
+'# =begin =end'
+oops: no val2 tcltk
+oops: no val2 unknown
+oops: no val2 unknown_language
+oops: no val2 vim
+oops: no val2 vimoutline
+oops: no val2 xslt
+
+146 total languages
+94 new languages
+10 mismatches
+51 known language: [
+    'actionscript', 'ada', 'autohotkey', 'batch',
+    'c', 'config', 'cpp', 'csharp', 'css', 'cweb',
+    'cython', 'elisp', 'forth', 'fortran', 'fortran90',
+    'haskell', 'haxe', 'html', 'ini',
+    'java', 'javascript', 'javaserverpage',
+    'kshell', 'latex', 'lisp', 'lua',
+    'matlab', 'noweb', 'nsi',
+    'pascal', 'perl', 'perlpod', 'php', 'plain',
+    'plsql', 'python',
+    'rapidq', 'rebol', 'rest', 'rst', 'ruby',
+    'scala', 'shell', 'tcltk', 'tex',
+    'unknown', 'unknown_language',
+    'vim', 'vimoutline', 'xml', 'xslt']
+#@+node:ekr.20031218072017.1416: *5* app.__init__
+def __init__(self):
+    
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: print('leoApp.__init__')
+
+    # These ivars are Leo's global vars.
+    # leoGlobals.py contains global switches to be set by hand.
+    
+    # Command-line arguments...
+    self.batchMode = False          # True: run in batch mode.
+    self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
+    self.gui = None                 # The gui class.
+    self.guiArgName = None          # The gui name given in --gui option.
+    self.qt_use_tabs = False        # True: allow tabbed main window.
+    self.restore_session = False    # True: restore session on startup.
+    self.save_session = False       # True: save session on close.
+    self.silentMode = False         # True: no signon.
+    self.start_fullscreen = False   # For qtGui plugin.
+    self.start_maximized = False    # For qtGui plugin.
+    self.start_minimized = False    # For qtGui plugin.
+    self.translateToUpperCase = False # Never set to True.
+    self.useIpython = False         # True: add support for IPython.
+    self.use_psyco = False          # True: use psyco optimization.
+    self.use_splash_screen = True   # True: put up a splash screen.
+
+    # Debugging & statistics...
+    self.count = 0                  # General purpose debugging count.
+    self.debug = False              # Enable debugging. (Can be slow.)
+    self.debugSwitch = 0            # 0: Brief; 1: Full.
+    self.disableSave = False        # May be set by plugins.
+    self.positions = 0              # The number of positions generated.
+    self.scanErrors = 0             # The number of errors seen by g.scanError.
+    self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
+    
+    # Error messages...
+    self.atPathInBodyWarning = None # Set by get_directives_dict.
+    self.menuWarningsGiven = False  # True: supress warnings in menu code.
+    self.unicodeErrorGiven = True   # True: suppres unicode tracebacks.
+    
+    # Global directories...
+    self.extensionsDir = None   # The leo/extensions directory
+    self.globalConfigDir = None # leo/config directory
+    self.globalOpenDir = None   # The directory last used to open a file.
+    self.homeDir = None         # The user's home directory.
+    self.homeLeoDir = None      # The user's home/.leo directory.
+    self.loadDir = None         # The leo/core directory.
+    self.machineDir = None      # The machine-specific directory.
+    
+    # Global data...
+    self.globalKillBuffer = []      # The global kill buffer.
+    self.globalRegisters = {}       # The global register list.
+    self.leoID = None               # The id part of gnx's.
+    self.lossage = []               # List of last 100 keystrokes.
+    self.numberOfUntitledWindows=0  # Number of opened untitled windows.
+    self.windowList = []            # Global list of all frames.
+    self.realMenuNameDict = {}      # Translations of menu names.
+    
+    # Global controller/manager objects...
+    self.config = None              # The singleton leoConfig instance.
+    self.db = None                  # The singleton leoCacher instance.
+    self.loadManager = None         # The singleton LoadManager instance.
+    # self.logManager = None        # The singleton LogManager instance.
+    # self.openWithManager = None   # The singleton OpenWithManager instance.
+    self.nodeIndices = None         # The singleton nodeIndices instance.
+    self.pluginsController = None   # The singleton PluginsManager instance.
+    self.sessionManager = None      # The singleton SessionManager instance.
+    
+    # Global status vars...
+    
+    if 1: #### To be moved to the Commands class...
+        self.commandName = None         # The name of the command being executed.
+        self.commandInterruptFlag=False # True: command within a command.
+            
+    self.dragging = False           # True: dragging.
+    self.inBridge = False           # True: running from leoBridge module.
+    self.inScript = False           # True: executing a script.
+    self.initing  = True            # True: we are initiing the app.
+    self.killed   = False           # True: we are about to destroy the root window.
+    self.preReadFlag = False        # True: we are pre-reading a settings file.
+    self.quitting = False           # True: quitting.  Locks out some events.
+    self.reverting = False          # True: executing the revert command.
+    
+    #### To be moved to the LogManager.
+
+    # The global log...
+    self.log = None                 # The LeoFrame containing the present log.
+    self.logInited = False          # False: all log message go to logWaiting list.
+    self.logIsLocked = False        # True: no changes to log are allowed.
+    self.logWaiting = []            # List of messages waiting to go to a log.
+    self.printWaiting = []          # Queue of messages to be sent to the printer.
+    self.signon = ''
+    self.signon2 = ''
+    self.signon_printed = False
+    
+    # Global types.
+    import leo.core.leoFrame as leoFrame
+    import leo.core.leoGui as leoGui
+    self.nullGui = leoGui.nullGui()
+    self.nullLog = leoFrame.nullLog()
+    
+    #### To be moved to OpenWithManager.
+    
+    # Open with data...
+    self.hasOpenWithMenu = False    # True: open with plugin has been loaded.
+    self.openWithFiles = []         # List of data used by Open With command.
+    self.openWithFileNum = 0        # Number of Open-With temp file names.
+    self.openWithTable = None       # Passed to createOpenWithMenuFromTable.
+    
+    #### To be moved to to the pluginsController.
+
+    # Plugins and event handlers...
+    self.afterHandler = None
+    self.hookError = False      # True: suppress further calls to hooks.
+    self.hookFunction = None    # Application wide hook function.
+    self.idle_imported = False  # True: we have done an import idle
+    self.idleTimeDelay = 100    # Delay in msec between calls to "idle time" hook.
+    self.idleTimeHook = False   # True: the global idleTimeHookHandler will reshedule itself.
+    
+    # Support for scripting...
+    self.searchDict = {}    # For communication between find/change scripts.
+    self.scriptDict = {}    # For use by scripts.
+
+    # Unit testing...
+    self.isExternalUnitTest = False # True: we are running a unit test externally.
+    self.unitTestDict = {}          # For communication between unit tests and code.
+    self.unitTestGui = None         # A way to override the gui in external unit tests.
+    self.unitTesting = False        # True if unit testing.
+    self.unitTestMenusDict = {}
+        # Created in leoMenu.createMenuEntries for a unit test.
+        # keys are command names. values are sets of strokes.
+
+    # Define all global data.        
+    self.define_global_constants()
+    self.define_language_delims_dict()
+    self.define_language_extension_dict()
+    self.define_extension_dict()
+    self.global_commands_dict = {}
+#@+node:ekr.20031218072017.1417: *6* app.define_global_constants
+def define_global_constants(self):
+
+    # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    
+    self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+    self.prolog_postfix_string = "?>"
+    self.prolog_namespace_string = \
+        'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+#@+node:ekr.20120522160137.9909: *6* app.define_language_delims_dict
+def define_language_delims_dict(self):
+
+    self.language_delims_dict = {
+        # Internally, lower case is used for all language names.
+        # Keys are languages, values are 1,2 or 3-tuples of delims.
+        "actionscript"       : "// /* */", #jason 2003-07-03
+        "ada"                : "--",
+        "ada95"              : "--",
+        "ahk"                : ";",
+        "antlr"              : "// /* */",
+        "apacheconf"         : "#",
+        "apdl"               : "!",
+        "applescript"        : "-- (* *)",
+        "asp"                : "<!-- -->",
+        "aspect_j"           : "// /* */",
+        "assembly_macro32"   : ";",
+        "assembly_mcs51"     : ";",
+        "assembly_parrot"    : "#",
+        "assembly_r2000"     : "#",
+        "assembly_x86"       : ";",
+        "autohotkey"         : "; /* */", #TL - AutoHotkey language
+        "awk"                : "#",
+        "b"                  : "// /* */",
+        "batch"              : "REM_", # Use the REM hack.
+        "bbj"                : "/* */",
+        "bcel"               : "// /* */",
+        "bibtex"             : "%",
+        "c"                  : "// /* */", # C, C++ or objective C.
+        "chill"              : "/* */",
+        "cobol"              : "*",
+        "coldfusion"         : "<!-- -->",
+        "config"             : "#", # Leo 4.5.1
+        "cplusplus"          : "// /* */",
+        "cpp"                : "// /* */",# C++.
+        "csharp"             : "// /* */", # C#
+        "css"                : "/* */", # 4/1/04
+        "cweb"               : "@q@ @>", # Use the "cweb hack"
+        "cython"             : "#",
+        "d"                  : "// /* */",
+        "doxygen"            : "#",
+        "eiffel"             : "--",
+        "elisp"              : ";",
+        "erlang"             : "%",
+        "factor"             : "! ( )",
+        "forth"              : "\\_ _(_ _)", # Use the "REM hack"
+        "fortran"            : "C",
+        "fortran90"          : "!",
+        "foxpro"             : "&&",
+        "gettext"            : "# ",
+        "groovy"             : "// /* */",
+        "haskell"            : "--_ {-_ _-}",
+        "haxe"               : "// /* */",
+        "html"               : "<!-- -->",
+        "i4gl"               : "-- { }",
+        "icon"               : "#",
+        "idl"                : "// /* */",
+        "inform"             : "!",
+        "ini"                : ";",
+        "inno_setup"         : ";",
+        "interlis"           : "/* */",
+        "io"                 : "// */",
+        "java"               : "// /* */",
+        "javascript"         : "// /* */", # EKR: 2011/11/12: For javascript import test.
+        "javaserverpage"     : "<%-- --%>", # EKR: 2011/11/25 (See also, jsp)
+        "jhtml"              : "<!-- -->",
+        "jmk"                : "#",
+        "jsp"                : "<%-- --%>",
+        "kshell"             : "#", # Leo 4.5.1.
+        "latex"              : "%",
+        "lilypond"           : "% %{ %}",
+        "lisp"               : ";", # EKR: 2010/09/29
+        "lotos"              : "(* *)",
+        "lua"                : "--", # ddm 13/02/06
+        "mail"               : ">",
+        "makefile"           : "#",
+        "maple"              : "//",
+        "matlab"             : "%", # EKR: 2011/10/21
+        "ml"                 : "(* *)",
+        "modula3"            : "(* *)",
+        "mqsc"               : "*",
+        "netrexx"            : "-- /* */",
+        "noweb"              : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+        "nqc"                : "// /* */",
+        "nsi"                : ";", # EKR: 2010/10/27
+        "nsis2"              : ";",
+        "objective_c"        : "// /* */",
+        "objectrexx"         : "-- /* */",
+        "occam"              : "--",
+        "omnimark"           : ";",
+        "pascal"             : "// { }",
+        "perl"               : "#",
+        "perlpod"            : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+        "php"                : "// /* */", # 6/23/07: was "//",
+        "pike"               : "// /* */",
+        "pl1"                : "/* */",
+        "plain"              : "#", # We must pick something.
+        "plsql"              : "-- /* */", # SQL scripts qt02537 2005-05-27
+        "pop11"              : ";;; /* */",
+        "postscript"         : "%",
+        "povray"             : "// /* */",
+        "powerdynamo"        : "// <!-- -->",
+        "prolog"             : "% /* */",
+        "psp"                : "<!-- -->",
+        "ptl"                : "#",
+        "pvwave"             : ";",
+        "pyrex"              : "#",
+        "python"             : "#",
+        "r"                  : "#",
+        "rapidq"             : "'", # fil 2004-march-11
+        "rebol"              : ";", # jason 2003-07-03
+        "redcode"            : ";",
+        "rest"               : ".._",
+        "rhtml"              : "<%# %>",
+        "rib"                : "#",
+        "rpmspec"            : "#",
+        "rst"                : ".._",
+        "ruby"               : "#", # thyrsus 2008-11-05
+        "rview"              : "// /* */",
+        "scala"              : "// /* */",
+        "scheme"             : "; #| |#",
+        "sdl_pr"             : "/* */",
+        "sgml"               : "<!-- -->",
+        "shell"              : "#",     # shell scripts
+        "shellscript"        : "#",
+        "shtml"              : "<!-- -->",
+        "smalltalk"          : '" "', # Comments are enclosed in double quotes(!!)
+        "smi_mib"            : "--",
+        "splus"              : "#",
+        "sqr"                : "!",
+        "squidconf"          : "#",
+        "ssharp"             : "#",
+        "swig"               : "// /* */",
+        "tcl"                : "#",
+        "tcltk"              : "#",
+        "tex"                : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+        "text"               : "#", # We must pick something.
+        "texinfo"            : "@c",
+        "tpl"                : "<!-- -->",
+        "tsql"               : "-- /* */",
+        "unknown"            : "#", # Set when @comment is seen.
+        "unknown_language"   : '#--unknown-language--', # For unknown extensions in @shadow files.
+        "uscript"            : "// /* */",
+        "vbscript"           : "'",
+        "velocity"           : "## #* *#",
+        "verilog"            : "// /* */",
+        "vhdl"               : "--",
+        "vim"                : "\"",
+        "vimoutline"         : "#", #TL 8/25/08 Vim's outline plugin
+        "xml"                : "<!-- -->",
+        "xsl"                : "<!-- -->",
+        "xslt"               : "<!-- -->",
+        "zpt"                : "<!-- -->",
+        
+        # These aren't real languages, or have no delims...
+        # "cvs_commit"         : "",
+        # "dsssl"              : "; <!-- -->",
+        # "embperl"            : "<!-- -->",  # Internal colorizing state.
+        # "freemarker"         : "",
+        # "hex"                : "",
+        # "jcl"                : "",
+        # "moin"               : "##",
+        # "patch"              : "",
+        # "phpsection"         : "<!-- -->",  # Internal colorizing state.
+        # "props"              : "#",         # Unknown language.
+        # "pseudoplain"        : "",
+        # "relax_ng_compact"   : "#",         # An xml schema.
+        # "rtf"                : "",
+        # "sas"                : "",
+        # "svn_commit"         : "",
+    }
+#@+node:ekr.20120522160137.9910: *6* app.define_language_extension_dict
+def define_language_extension_dict (self):
+    
+    # Used only by c.getOpenWithExt.
+    
+    # Keys are languages, values are extensions.
+    self.language_extension_dict = {
+        "actionscript"  : "as", #jason 2003-07-03
+        "ada"           : "ada",
+        "ada95"         : "ada",
+        "ahk"           : "ahk",
+        "antlr"         : "g",
+        "apacheconf"    : "conf",
+        "apdl"          : "apdl",
+        "applescript"   : "scpt",
+        "asp"           : "asp",
+        "aspect_j"      : "aj",
+        "autohotkey"    : "ahk", #TL - AutoHotkey language
+        "awk"           : "awk",
+        "b"             : "b",
+        "batch"         : "bat", # Leo 4.5.1.
+        "bbj"           : "bbj",
+        "bcel"          : "bcel",
+        "bibtex"        : "bib",
+        "c"             : "c",
+        "chill"         : "ch",  # Only one extension is valid: .c186, .c286
+        "cobol"         : "cbl", # Only one extension is valid: .cob
+        "coldfusion"    : "cfm",
+        "config"        : "cfg",
+        "cplusplus"     : "c++",
+        "cpp"           : "cpp",
+        "css"           : "css", # 4/1/04
+        "cweb"          : "w",
+        "cython"        : "pyx", # Only one extension is valid at present: .pyi, .pyd.
+        "d"             : "d",
+        "eiffel"        : "e",
+        "elisp"         : "el",
+        "erlang"        : "erl",
+        "factor"        : "factor",
+        "forth"         : "forth",
+        "fortran"       : "f",
+        "fortran90"     : "f90",
+        "foxpro"        : "prg",
+        "gettext"       : "po",
+        "groovy"        : "groovy",
+        "haskell"       : "hs",
+        "haxe"          : "hx",
+        "html"          : "html",
+        "i4gl"          : "i4gl",
+        "icon"          : "icn",
+        "idl"           : "idl",
+        "inform"        : "inf",
+        "ini"           : "ini",
+        "inno_setup"    : "iss",
+        "io"            : "io",
+        "java"          : "java",
+        "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+        "javaserverpage": "jsp", # EKR: 2011/11/25
+        "jhtml"         : "jhtml",
+        "jmk"           : "jmk",
+        "jsp"           : "jsp",
+        "kshell"        : "ksh", # Leo 4.5.1.
+        "latex"         : "tex", # 1/8/04
+        "lilypond"      : "ly",
+        "lua"           : "lua", # ddm 13/02/06
+        "mail"          : "eml",
+        "makefile"      : "mak",
+        "maple"         : "mpl",
+        "matlab"        : "m",
+        "ml"            : "ml",
+        "modula3"       : "mod",
+        "mqsc"          : "mqsc",
+        "noweb"         : "nw",
+        "nqc"           : "nqc",
+        "nsi"           : "nsi", # EKR: 2010/10/27
+        "nsis2"         : "nsi",
+        "objective_c"   : "mm", # Only one extension is valid: .m
+        "objectrexx"    : "rex",
+        "occam"         : "occ",
+        "omnimark"      : "xom",
+        "pascal"        : "p",
+        "perl"          : "pl",
+        "perlpod"       : "pod",
+        "php"           : "php",
+        "pike"          : "pike",
+        "pl1"           : "pl1",
+        "plain"         : "txt",
+        "plsql"         : "sql", # qt02537 2005-05-27
+        "postscript"    : "ps",
+        "povray"        : "pov",
+        "prolog"        : "pro",
+        "psp"           : "psp",
+        "ptl"           : "ptl",
+        "pyrex"         : "pyx",
+        "python"        : "py",
+        "r"             : "r",
+        "rapidq"        : "bas", # fil 2004-march-11
+        "rebol"         : "r", # jason 2003-07-03
+        "rhtml"         : "rhtml",
+        "rib"           : "rib",
+        "rst"           : "rest",
+        "ruby"          : "rb", # thyrsus 2008-11-05
+        "scala"         : "scala",
+        "scheme"        : "scm",
+        "sgml"          : "sgml",
+        "shell"         : "sh", # DS 4/1/04
+        "shellscript"   : "sh",
+        "shtml"         : "shtml",
+        "shtml"         : "ssi",
+        "smalltalk"     : "sm",
+        "splus"         : "splus",
+        "sqr"           : "sqr",
+        "ssharp"        : "ss",
+        "swig"          : "i",
+        "tcl"           : "tcl",
+        "tcltk"         : "tcl",
+        "tex"           : "tex",
+        "texinfo"       : "info",
+        "text"          : "txt",
+        "tpl"           : "tpl",
+        "tsql"          : "sql", # A guess.
+        "unknown"       : "txt", # Set when @comment is seen.
+        "uscript"       : "uc",
+        "vbscript"      : "vbs",
+        "velocity"      : "vtl",
+        "verilog"       : "v",
+        "vhdl"          : "vhd",
+        "vhdl"          : "vhdl",
+        "vim"           : "vim",
+        "vimoutline"    : "otl", #TL 8/25/08 Vim's outline plugin
+        "xml"           : "xml",
+        "xsl"           : "xsl",
+        "xslt"          : "xsl",
+        "zpt"           : "zpt",
+    }
+
+    # These aren't real languages, or have no delims...
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+        # patch, phpsection, progress, props, pseudoplain,
+        # relax_ng_compact, rtf, sas, svn_commit.
+
+    # These have extensions which conflict with other languages.
+        # assembly_macro32: .asm or .a
+        # assembly_mcs51:   .asm or .a
+        # assembly_parrot:  .asm or .a
+        # assembly_r2000:   .asm or .a
+        # assembly_x86:     .asm or .a
+        # squidconf:        .conf
+        # rpmspec:          .rpm
+#@+node:ekr.20120522160137.9911: *6* app.define_extension_dict
+def define_extension_dict(self):
+    
+    # Keys are extensions, values are languages
+    self.extension_dict = {
+        # "ada":    "ada",
+        "ada":      "ada95", # modes/ada95.py exists.
+        "ahk":      "ahk",
+        "ahk":      "autohotkey",
+        "aj":       "aspect_j",
+        "apdl":     "apdl",
+        "as":       "actionscript", #jason 2003-07-03
+        "asp":      "asp",
+        "awk":      "awk",
+        "b":        "b",
+        "bas":      "rapidq", # fil 2004-march-11
+        "bat":      "batch",
+        "bbj":      "bbj",
+        "bcel":     "bcel",
+        "bib":      "bibtex",
+        "c":        "c",
+        "c++":      "cplusplus",
+        "cbl":      "cobol", # Only one extension is valid: .cob
+        "cfg":      "config",
+        "cfm":      "coldfusion",
+        "ch":       "chill", # Other extensions, .c186,.c286
+        "conf":     "apacheconf",
+        "cpp":      "cpp",
+        "css":      "css",
+        "d":        "d",
+        "e":        "eiffel",
+        "el":       "elisp",
+        "eml":      "mail",
+        "erl":      "erlang",
+        "f":        "fortran",
+        "f90":      "fortran90",
+        "factor":   "factor",
+        "forth":    "forth",
+        "g":        "antlr",
+        "groovy":   "groovy",
+        "h":        "c", # 2012/05/23.
+        "hs":       "haskell",
+        "html":     "html",
+        "hx":       "haxe",
+        "i":        "swig",
+        "i4gl":     "i4gl",
+        "icn":      "icon",
+        "idl":      "idl",
+        "inf":      "inform",
+        "info":     "texinfo",
+        "ini":      "ini",
+        "io":       "io",
+        "iss":      "inno_setup",
+        "java":     "java",
+        "jhtml":    "jhtml",
+        "jmk":      "jmk",
+        "js":       "javascript", # For javascript import test.
+        "jsp":      "javaserverpage",
+        "jsp":      "jsp",
+        "ksh":      "kshell", # Leo 4.5.1.
+        "lua":      "lua", # ddm 13/02/06
+        "ly":       "lilypond",
+        "m":        "matlab", # EKR: 2011/10/21
+        "mak":      "makefile",
+        "ml":       "ml",
+        "mm":       "objective_c", # Only one extension is valid: .m
+        "mod":      "modula3",
+        "mpl":      "maple",
+        "mqsc":     "mqsc",
+        "nqc":      "nqc",
+        "nsi":      "nsi", # EKR: 2010/10/27
+        "nsi":      "nsis2",
+        "nw":       "noweb",
+        "occ":      "occam",
+        "otl":      "vimoutline", #TL 8/25/08 Vim's outline plugin
+        "p":        "pascal",
+        "php":      "php",
+        "pike":     "pike",
+        "pl":       "perl",
+        "pl1":      "pl1",
+        "po":       "gettext",
+        "pod":      "perlpod",
+        "pov":      "povray",
+        "prg":      "foxpro",
+        "pro":      "prolog",
+        "ps":       "postscript",
+        "psp":      "psp",
+        "ptl":      "ptl",
+        "py":       "python",
+        "pyx":      "cython", # Other extensions, .pyd,.pyi
+        "pyx":      "pyrex",
+        # "r":      "r", # modes/r.py does not exist.
+        "r":        "rebol", # jason 2003-07-03
+        "rb":       "ruby", # thyrsus 2008-11-05
+        "rest":     "rst",
+        "rex":      "objectrexx",
+        "rhtml":    "rhtml",
+        "rib":      "rib",
+        "scala":    "scala",
+        "scm":      "scheme",
+        "scpt":     "applescript",
+        "sgml":     "sgml",
+        "sh":       "shell", # DS 4/1/04. modes/shell.py exists.
+        # "sh":     "shellscript",
+        "shtml":    "shtml",
+        "sm":       "smalltalk",
+        "splus":    "splus",
+        "sql":      "plsql", # qt02537 2005-05-27
+        "sql":      "tsql", # A guess.
+        "sqr":      "sqr",
+        "ss":       "ssharp",
+        "ssi":      "shtml",
+        "tcl":      "tcl", # modes/tcl.py exists.
+        # "tcl":    "tcltk",
+        "tex":      "latex",
+        "tex":      "tex",
+        "tpl":      "tpl",
+        "txt":      "plain",
+        "txt":      "text",
+        "txt":      "unknown", # Set when @comment is seen.
+        "uc":       "uscript",
+        "v":        "verilog",
+        "vbs":      "vbscript",
+        "vhd":      "vhdl",
+        "vhdl":     "vhdl",
+        "vim":      "vim",
+        "vtl":      "velocity",
+        "w":        "cweb",
+        "xml":      "xml",
+        "xom":      "omnimark",
+        "xsl":      "xsl",
+        "xsl":      "xslt",
+        "zpt":      "zpt",
+    }
+
+    # These aren't real languages, or have no delims...
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+        # patch, phpsection, progress, props, pseudoplain,
+        # relax_ng_compact, rtf, sas, svn_commit.
+
+    # These have extensions which conflict with other languages.
+        # assembly_macro32: .asm or .a
+        # assembly_mcs51:   .asm or .a
+        # assembly_parrot:  .asm or .a
+        # assembly_r2000:   .asm or .a
+        # assembly_x86:     .asm or .a
+        # squidconf:        .conf
+        # rpmspec:          .rpm
+        
+    # Extra language extensions, used to associate extensions with mode files.
+    # Used by importCommands.languageForExtension.
+    # Keys are extensions, values are corresponding mode file (without .py)
+    # A value of 'none' is a signal to unit tests that no extension file exists.
+    self.extra_extension_dict = {
+        'pod'   : 'perl',
+        'unknown_language': 'none',
+        'w'     : 'none', # cweb
+    }
+    
+#@+node:ekr.20120522160137.9914: *5* @test consistency of leoApp tables
+@
+language_delims_dict 
+    # Keys are languages, values are 1,2 or 3-tuples of delims. 
+language_extension_dict
+    # Keys are languages, values are extensions.
+extension_dict = {
+    # Keys are extensions, values are languages.
+@c
+
+delims_d    = g.app.language_delims_dict
+lang_d      = g.app.language_extension_dict
+ext_d       = g.app.extension_dict
+
+for lang in lang_d:
+    ext = lang_d.get(lang)
+    assert lang in delims_d,'fail 1: %s' % lang
+    assert ext in ext_d,'fail 2: %s' % ext
+for ext in ext_d:
+    lang = ext_d.get(ext)
+    assert lang in lang_d,'fail 3: %s' % lang
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -3627,341 +4805,6 @@ def computeFilesList(self,fileName):
             files.append(arg)
 
     return [lm.completeFileName(z) for z in files]
-#@+node:ekr.20031218072017.1416: *5* app.__init__
-def __init__(self):
-    
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: print('leoApp.__init__')
-
-    # These ivars are Leo's global vars.
-    # leoGlobals.py contains global switches to be set by hand.
-    
-    # Command-line arguments...
-    self.batchMode = False          # True: run in batch mode.
-    self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
-    self.gui = None                 # The gui class.
-    self.guiArgName = None          # The gui name given in --gui option.
-    self.qt_use_tabs = False        # True: allow tabbed main window.
-    self.restore_session = False    # True: restore session on startup.
-    self.save_session = False       # True: save session on close.
-    self.silentMode = False         # True: no signon.
-    self.start_fullscreen = False   # For qtGui plugin.
-    self.start_maximized = False    # For qtGui plugin.
-    self.start_minimized = False    # For qtGui plugin.
-    self.translateToUpperCase = False # Never set to True.
-    self.useIpython = False         # True: add support for IPython.
-    self.use_psyco = False          # True: use psyco optimization.
-    self.use_splash_screen = True   # True: put up a splash screen.
-
-    # Debugging & statistics...
-    self.count = 0                  # General purpose debugging count.
-    self.debug = False              # Enable debugging. (Can be slow.)
-    self.debugSwitch = 0            # 0: Brief; 1: Full.
-    self.disableSave = False        # May be set by plugins.
-    self.positions = 0              # The number of positions generated.
-    self.scanErrors = 0             # The number of errors seen by g.scanError.
-    self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
-    
-    # Error messages...
-    self.atPathInBodyWarning = None # Set by get_directives_dict.
-    self.menuWarningsGiven = False  # True: supress warnings in menu code.
-    self.unicodeErrorGiven = True   # True: suppres unicode tracebacks.
-    
-    # Global directories...
-    self.extensionsDir = None   # The leo/extensions directory
-    self.globalConfigDir = None # leo/config directory
-    self.globalOpenDir = None   # The directory last used to open a file.
-    self.homeDir = None         # The user's home directory.
-    self.homeLeoDir = None      # The user's home/.leo directory.
-    self.loadDir = None         # The leo/core directory.
-    self.machineDir = None      # The machine-specific directory.
-    
-    # Global data...
-    self.globalKillBuffer = []      # The global kill buffer.
-    self.globalRegisters = {}       # The global register list.
-    self.leoID = None               # The id part of gnx's.
-    self.lossage = []               # List of last 100 keystrokes.
-    self.numberOfUntitledWindows=0  # Number of opened untitled windows.
-    self.windowList = []            # Global list of all frames.
-    self.realMenuNameDict = {}      # Translations of menu names.
-    
-    # Global controller/manager objects...
-    self.config = None              # The singleton leoConfig instance.
-    self.db = None                  # The singleton leoCacher instance.
-    self.loadManager = None         # The singleton LoadManager instance.
-    # self.logManager = None        # The singleton LogManager instance.
-    # self.openWithManager = None   # The singleton OpenWithManager instance.
-    self.nodeIndices = None         # The singleton nodeIndices instance.
-    self.pluginsController = None   # The singleton PluginsManager instance.
-    self.sessionManager = None      # The singleton SessionManager instance.
-    
-    # Global status vars...
-    
-    if 1: #### To be moved to the Commands class...
-        self.commandName = None         # The name of the command being executed.
-        self.commandInterruptFlag=False # True: command within a command.
-            
-    self.dragging = False           # True: dragging.
-    self.inBridge = False           # True: running from leoBridge module.
-    self.inScript = False           # True: executing a script.
-    self.initing  = True            # True: we are initiing the app.
-    self.killed   = False           # True: we are about to destroy the root window.
-    self.preReadFlag = False        # True: we are pre-reading a settings file.
-    self.quitting = False           # True: quitting.  Locks out some events.
-    self.reverting = False          # True: executing the revert command.
-    
-    #### To be moved to the LogManager.
-
-    # The global log...
-    self.log = None                 # The LeoFrame containing the present log.
-    self.logInited = False          # False: all log message go to logWaiting list.
-    self.logIsLocked = False        # True: no changes to log are allowed.
-    self.logWaiting = []            # List of messages waiting to go to a log.
-    self.printWaiting = []          # Queue of messages to be sent to the printer.
-    self.signon = ''
-    self.signon2 = ''
-    self.signon_printed = False
-    
-    # Global types.
-    import leo.core.leoFrame as leoFrame
-    import leo.core.leoGui as leoGui
-    self.nullGui = leoGui.nullGui()
-    self.nullLog = leoFrame.nullLog()
-    
-    #### To be moved to OpenWithManager.
-    
-    # Open with data...
-    self.hasOpenWithMenu = False    # True: open with plugin has been loaded.
-    self.openWithFiles = []         # List of data used by Open With command.
-    self.openWithFileNum = 0        # Number of Open-With temp file names.
-    self.openWithTable = None       # Passed to createOpenWithMenuFromTable.
-    
-    #### To be moved to to the pluginsController.
-
-    # Plugins and event handlers...
-    self.afterHandler = None
-    self.hookError = False      # True: suppress further calls to hooks.
-    self.hookFunction = None    # Application wide hook function.
-    self.idle_imported = False  # True: we have done an import idle
-    self.idleTimeDelay = 100    # Delay in msec between calls to "idle time" hook.
-    self.idleTimeHook = False   # True: the global idleTimeHookHandler will reshedule itself.
-    
-    # Support for scripting...
-    self.searchDict = {}    # For communication between find/change scripts.
-    self.scriptDict = {}    # For use by scripts.
-
-    # Unit testing...
-    self.isExternalUnitTest = False # True: we are running a unit test externally.
-    self.unitTestDict = {}          # For communication between unit tests and code.
-    self.unitTestGui = None         # A way to override the gui in external unit tests.
-    self.unitTesting = False        # True if unit testing.
-    self.unitTestMenusDict = {}
-        # Created in leoMenu.createMenuEntries for a unit test.
-        # keys are command names. values are sets of strokes.
-
-    << Define global constants >>
-    << Define global data structures >>
-#@+node:ekr.20031218072017.1417: *6* << define global constants >>
-# self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-
-self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
-self.prolog_postfix_string = "?>"
-self.prolog_namespace_string = \
-    'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-#@+node:ekr.20031218072017.368: *6* << define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "cython"        : "#",
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "haxe"          : "//",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
-    "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lisp"          : ";", # EKR: 2010/09/29
-    "lua"           : "--",  # ddm 13/02/06
-    "matlab"        : "%", # EKR: 2011/10/21
-    "nsi"           : ";", # EKR: 2010/10/27
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "scala"         : "// /* */",
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--',
-        # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-# Used only by c.getOpenWithExt.
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    #"cython"        : "pyd",
-    #"cython"        : "pyi",
-    "cython"        : "pyx", # Only one extension is valid at present.
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "haxe"          : "hx",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
-    "javaserverpage": "jsp", # EKR: 2011/11/25
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "matlab"        : "m", # EKR: 2011/10/21
-    "nsi"           : "nsi", # EKR: 2010/10/27
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    # "rst"           : "rst", # caught by pylint.
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "scala"         : "scala",
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
-    "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "m"     : "matlab", # EKR 2011/10/21
-    "nsi"   : "nsi", # EKR: 2010/10/27
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "pyd"   : "cython",
-    "pyi"   : "cython",
-    "pyx"   : "cython",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "scala" : "scala",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-    "hx"    : "haxe",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'hx'    : 'none',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nsi'   : 'none', # Leo 4.8.
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
 #@+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
 @nocolor-node
 

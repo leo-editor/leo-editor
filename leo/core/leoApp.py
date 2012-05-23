@@ -167,211 +167,500 @@ class LeoApp:
             # Created in leoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
 
-        #@+<< Define global constants >>
-        #@+node:ekr.20031218072017.1417: *4* << define global constants >>
-        # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        # Define all global data.        
+        self.define_global_constants()
+        self.define_language_delims_dict()
+        self.define_language_extension_dict()
+        self.define_extension_dict()
+        self.global_commands_dict = {}
+    #@+node:ekr.20031218072017.1417: *4* app.define_global_constants
+    def define_global_constants(self):
 
+        # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
         self.prolog_namespace_string = \
             'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-        #@-<< Define global constants >>
-        #@+<< Define global data structures >>
-        #@+node:ekr.20031218072017.368: *4* << define global data structures >> (leoApp.py)
-        # Internally, lower case is used for all language names.
-        self.language_delims_dict = {
-            # Keys are languages, values are 1,2 or 3-tuples of delims.
-            "ada"           : "--",
-            "batch"         : "REM_", # Use the REM hack.
-            "actionscript"  : "// /* */", #jason 2003-07-03
-            "autohotkey"    : "; /* */", #TL - AutoHotkey language
-            "c"             : "// /* */", # C, C++ or objective C.
-            "config"        : "#", # Leo 4.5.1
-            "csharp"        : "// /* */", # C#
-            "cpp"           : "// /* */",# C++.
-            "css"           : "/* */", # 4/1/04
-            "cweb"          : "@q@ @>", # Use the "cweb hack"
-            "cython"        : "#",
-            "elisp"         : ";",
-            "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-            "fortran"       : "C",
-            "fortran90"     : "!",
-            "haskell"       : "--_ {-_ _-}",
-            "haxe"          : "//",
-            "html"          : "<!-- -->",
-            "ini"           : ";",
-            "java"          : "// /* */",
-            "javascript"    : "// /* */", # EKR: 2011/11/12: For javascript import test.
-            "javaserverpage": "<%-- --%>", # EKR: 2011/11/25
-            "kshell"        : "#", # Leo 4.5.1.
-            "latex"         : "%",
-            "lisp"          : ";", # EKR: 2010/09/29
-            "lua"           : "--",  # ddm 13/02/06
-            "matlab"        : "%", # EKR: 2011/10/21
-            "nsi"           : ";", # EKR: 2010/10/27
-            "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-            "pascal"        : "// { }",
-            "perl"          : "#",
-            "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-            "php"           : "// /* */", # 6/23/07: was "//",
-            "plain"         : "#", # We must pick something.
-            "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-            "python"        : "#",
-            "rapidq"        : "'", # fil 2004-march-11
-            "rebol"         : ";",  # jason 2003-07-03
-            "rest"          : ".._",
-            "rst"           : ".._",
-            "ruby"          : "#",  # thyrsus 2008-11-05
-            "scala"         : "// /* */",
-            "shell"         : "#",  # shell scripts
-            "tcltk"         : "#",
-            "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-            "unknown"       : "#", # Set when @comment is seen.
-            "unknown_language" : '#--unknown-language--',
-                # For unknown extensions in @shadow files.
-            "vim"           : "\"",
-            "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-            "xml"           : "<!-- -->",
-            "xslt"          : "<!-- -->",
-        }
+    #@+node:ekr.20120522160137.9909: *4* app.define_language_delims_dict
+    def define_language_delims_dict(self):
 
+        self.language_delims_dict = {
+            # Internally, lower case is used for all language names.
+            # Keys are languages, values are 1,2 or 3-tuples of delims.
+            "actionscript"       : "// /* */", #jason 2003-07-03
+            "ada"                : "--",
+            "ada95"              : "--",
+            "ahk"                : ";",
+            "antlr"              : "// /* */",
+            "apacheconf"         : "#",
+            "apdl"               : "!",
+            "applescript"        : "-- (* *)",
+            "asp"                : "<!-- -->",
+            "aspect_j"           : "// /* */",
+            "assembly_macro32"   : ";",
+            "assembly_mcs51"     : ";",
+            "assembly_parrot"    : "#",
+            "assembly_r2000"     : "#",
+            "assembly_x86"       : ";",
+            "autohotkey"         : "; /* */", #TL - AutoHotkey language
+            "awk"                : "#",
+            "b"                  : "// /* */",
+            "batch"              : "REM_", # Use the REM hack.
+            "bbj"                : "/* */",
+            "bcel"               : "// /* */",
+            "bibtex"             : "%",
+            "c"                  : "// /* */", # C, C++ or objective C.
+            "chill"              : "/* */",
+            "cobol"              : "*",
+            "coldfusion"         : "<!-- -->",
+            "config"             : "#", # Leo 4.5.1
+            "cplusplus"          : "// /* */",
+            "cpp"                : "// /* */",# C++.
+            "csharp"             : "// /* */", # C#
+            "css"                : "/* */", # 4/1/04
+            "cweb"               : "@q@ @>", # Use the "cweb hack"
+            "cython"             : "#",
+            "d"                  : "// /* */",
+            "doxygen"            : "#",
+            "eiffel"             : "--",
+            "elisp"              : ";",
+            "erlang"             : "%",
+            "factor"             : "! ( )",
+            "forth"              : "\\_ _(_ _)", # Use the "REM hack"
+            "fortran"            : "C",
+            "fortran90"          : "!",
+            "foxpro"             : "&&",
+            "gettext"            : "# ",
+            "groovy"             : "// /* */",
+            "haskell"            : "--_ {-_ _-}",
+            "haxe"               : "// /* */",
+            "html"               : "<!-- -->",
+            "i4gl"               : "-- { }",
+            "icon"               : "#",
+            "idl"                : "// /* */",
+            "inform"             : "!",
+            "ini"                : ";",
+            "inno_setup"         : ";",
+            "interlis"           : "/* */",
+            "io"                 : "// */",
+            "java"               : "// /* */",
+            "javascript"         : "// /* */", # EKR: 2011/11/12: For javascript import test.
+            "javaserverpage"     : "<%-- --%>", # EKR: 2011/11/25 (See also, jsp)
+            "jhtml"              : "<!-- -->",
+            "jmk"                : "#",
+            "jsp"                : "<%-- --%>",
+            "kshell"             : "#", # Leo 4.5.1.
+            "latex"              : "%",
+            "lilypond"           : "% %{ %}",
+            "lisp"               : ";", # EKR: 2010/09/29
+            "lotos"              : "(* *)",
+            "lua"                : "--", # ddm 13/02/06
+            "mail"               : ">",
+            "makefile"           : "#",
+            "maple"              : "//",
+            "matlab"             : "%", # EKR: 2011/10/21
+            "ml"                 : "(* *)",
+            "modula3"            : "(* *)",
+            "mqsc"               : "*",
+            "netrexx"            : "-- /* */",
+            "noweb"              : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+            "nqc"                : "// /* */",
+            "nsi"                : ";", # EKR: 2010/10/27
+            "nsis2"              : ";",
+            "objective_c"        : "// /* */",
+            "objectrexx"         : "-- /* */",
+            "occam"              : "--",
+            "omnimark"           : ";",
+            "pascal"             : "// { }",
+            "perl"               : "#",
+            "perlpod"            : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+            "php"                : "// /* */", # 6/23/07: was "//",
+            "pike"               : "// /* */",
+            "pl1"                : "/* */",
+            "plain"              : "#", # We must pick something.
+            "plsql"              : "-- /* */", # SQL scripts qt02537 2005-05-27
+            "pop11"              : ";;; /* */",
+            "postscript"         : "%",
+            "povray"             : "// /* */",
+            "powerdynamo"        : "// <!-- -->",
+            "prolog"             : "% /* */",
+            "psp"                : "<!-- -->",
+            "ptl"                : "#",
+            "pvwave"             : ";",
+            "pyrex"              : "#",
+            "python"             : "#",
+            "r"                  : "#",
+            "rapidq"             : "'", # fil 2004-march-11
+            "rebol"              : ";", # jason 2003-07-03
+            "redcode"            : ";",
+            "rest"               : ".._",
+            "rhtml"              : "<%# %>",
+            "rib"                : "#",
+            "rpmspec"            : "#",
+            "rst"                : ".._",
+            "ruby"               : "#", # thyrsus 2008-11-05
+            "rview"              : "// /* */",
+            "scala"              : "// /* */",
+            "scheme"             : "; #| |#",
+            "sdl_pr"             : "/* */",
+            "sgml"               : "<!-- -->",
+            "shell"              : "#",     # shell scripts
+            "shellscript"        : "#",
+            "shtml"              : "<!-- -->",
+            "smalltalk"          : '" "', # Comments are enclosed in double quotes(!!)
+            "smi_mib"            : "--",
+            "splus"              : "#",
+            "sqr"                : "!",
+            "squidconf"          : "#",
+            "ssharp"             : "#",
+            "swig"               : "// /* */",
+            "tcl"                : "#",
+            "tcltk"              : "#",
+            "tex"                : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+            "text"               : "#", # We must pick something.
+            "texinfo"            : "@c",
+            "tpl"                : "<!-- -->",
+            "tsql"               : "-- /* */",
+            "unknown"            : "#", # Set when @comment is seen.
+            "unknown_language"   : '#--unknown-language--', # For unknown extensions in @shadow files.
+            "uscript"            : "// /* */",
+            "vbscript"           : "'",
+            "velocity"           : "## #* *#",
+            "verilog"            : "// /* */",
+            "vhdl"               : "--",
+            "vim"                : "\"",
+            "vimoutline"         : "#", #TL 8/25/08 Vim's outline plugin
+            "xml"                : "<!-- -->",
+            "xsl"                : "<!-- -->",
+            "xslt"               : "<!-- -->",
+            "zpt"                : "<!-- -->",
+            
+            # These aren't real languages, or have no delims...
+            # "cvs_commit"         : "",
+            # "dsssl"              : "; <!-- -->",
+            # "embperl"            : "<!-- -->",  # Internal colorizing state.
+            # "freemarker"         : "",
+            # "hex"                : "",
+            # "jcl"                : "",
+            # "moin"               : "##",
+            # "patch"              : "",
+            # "phpsection"         : "<!-- -->",  # Internal colorizing state.
+            # "props"              : "#",         # Unknown language.
+            # "pseudoplain"        : "",
+            # "relax_ng_compact"   : "#",         # An xml schema.
+            # "rtf"                : "",
+            # "sas"                : "",
+            # "svn_commit"         : "",
+        }
+    #@+node:ekr.20120522160137.9910: *4* app.define_language_extension_dict
+    def define_language_extension_dict (self):
+        
         # Used only by c.getOpenWithExt.
+        
+        # Keys are languages, values are extensions.
         self.language_extension_dict = {
-            # Keys are languages, values are extensions.
-            "ada"           : "ada",
             "actionscript"  : "as", #jason 2003-07-03
+            "ada"           : "ada",
+            "ada95"         : "ada",
+            "ahk"           : "ahk",
+            "antlr"         : "g",
+            "apacheconf"    : "conf",
+            "apdl"          : "apdl",
+            "applescript"   : "scpt",
+            "asp"           : "asp",
+            "aspect_j"      : "aj",
             "autohotkey"    : "ahk", #TL - AutoHotkey language
+            "awk"           : "awk",
+            "b"             : "b",
             "batch"         : "bat", # Leo 4.5.1.
+            "bbj"           : "bbj",
+            "bcel"          : "bcel",
+            "bibtex"        : "bib",
             "c"             : "c",
+            "chill"         : "ch",  # Only one extension is valid: .c186, .c286
+            "cobol"         : "cbl", # Only one extension is valid: .cob
+            "coldfusion"    : "cfm",
             "config"        : "cfg",
+            "cplusplus"     : "c++",
             "cpp"           : "cpp",
             "css"           : "css", # 4/1/04
             "cweb"          : "w",
-            #"cython"        : "pyd",
-            #"cython"        : "pyi",
-            "cython"        : "pyx", # Only one extension is valid at present.
+            "cython"        : "pyx", # Only one extension is valid at present: .pyi, .pyd.
+            "d"             : "d",
+            "eiffel"        : "e",
             "elisp"         : "el",
+            "erlang"        : "erl",
+            "factor"        : "factor",
             "forth"         : "forth",
             "fortran"       : "f",
             "fortran90"     : "f90",
+            "foxpro"        : "prg",
+            "gettext"       : "po",
+            "groovy"        : "groovy",
             "haskell"       : "hs",
             "haxe"          : "hx",
             "html"          : "html",
+            "i4gl"          : "i4gl",
+            "icon"          : "icn",
+            "idl"           : "idl",
+            "inform"        : "inf",
             "ini"           : "ini",
+            "inno_setup"    : "iss",
+            "io"            : "io",
             "java"          : "java",
             "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
             "javaserverpage": "jsp", # EKR: 2011/11/25
+            "jhtml"         : "jhtml",
+            "jmk"           : "jmk",
+            "jsp"           : "jsp",
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
-            "lua"           : "lua",  # ddm 13/02/06
-            "matlab"        : "m", # EKR: 2011/10/21
-            "nsi"           : "nsi", # EKR: 2010/10/27
+            "lilypond"      : "ly",
+            "lua"           : "lua", # ddm 13/02/06
+            "mail"          : "eml",
+            "makefile"      : "mak",
+            "maple"         : "mpl",
+            "matlab"        : "m",
+            "ml"            : "ml",
+            "modula3"       : "mod",
+            "mqsc"          : "mqsc",
             "noweb"         : "nw",
+            "nqc"           : "nqc",
+            "nsi"           : "nsi", # EKR: 2010/10/27
+            "nsis2"         : "nsi",
+            "objective_c"   : "mm", # Only one extension is valid: .m
+            "objectrexx"    : "rex",
+            "occam"         : "occ",
+            "omnimark"      : "xom",
             "pascal"        : "p",
-            "perl"          : "pl",      # 11/7/05
-            "perlpod"       : "pod",  # 11/7/05
+            "perl"          : "pl",
+            "perlpod"       : "pod",
             "php"           : "php",
+            "pike"          : "pike",
+            "pl1"           : "pl1",
             "plain"         : "txt",
-            "python"        : "py",
             "plsql"         : "sql", # qt02537 2005-05-27
+            "postscript"    : "ps",
+            "povray"        : "pov",
+            "prolog"        : "pro",
+            "psp"           : "psp",
+            "ptl"           : "ptl",
+            "pyrex"         : "pyx",
+            "python"        : "py",
+            "r"             : "r",
             "rapidq"        : "bas", # fil 2004-march-11
-            "rebol"         : "r",    # jason 2003-07-03
-            # "rst"           : "rst", # caught by pylint.
+            "rebol"         : "r", # jason 2003-07-03
+            "rhtml"         : "rhtml",
+            "rib"           : "rib",
             "rst"           : "rest",
-            "ruby"          : "rb",   # thyrsus 2008-11-05
+            "ruby"          : "rb", # thyrsus 2008-11-05
             "scala"         : "scala",
-            "shell"         : "sh",   # DS 4/1/04
-            "tex"           : "tex",
+            "scheme"        : "scm",
+            "sgml"          : "sgml",
+            "shell"         : "sh", # DS 4/1/04
+            "shellscript"   : "sh",
+            "shtml"         : "shtml",
+            "shtml"         : "ssi",
+            "smalltalk"     : "sm",
+            "splus"         : "splus",
+            "sqr"           : "sqr",
+            "ssharp"        : "ss",
+            "swig"          : "i",
+            "tcl"           : "tcl",
             "tcltk"         : "tcl",
+            "tex"           : "tex",
+            "texinfo"       : "info",
+            "text"          : "txt",
+            "tpl"           : "tpl",
+            "tsql"          : "sql", # A guess.
             "unknown"       : "txt", # Set when @comment is seen.
+            "uscript"       : "uc",
+            "vbscript"      : "vbs",
+            "velocity"      : "vtl",
+            "verilog"       : "v",
+            "vhdl"          : "vhd",
+            "vhdl"          : "vhdl",
             "vim"           : "vim",
-            "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+            "vimoutline"    : "otl", #TL 8/25/08 Vim's outline plugin
             "xml"           : "xml",
+            "xsl"           : "xsl",
             "xslt"          : "xsl",
+            "zpt"           : "zpt",
         }
 
+        # These aren't real languages, or have no delims...
+            # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+            # patch, phpsection, progress, props, pseudoplain,
+            # relax_ng_compact, rtf, sas, svn_commit.
+
+        # These have extensions which conflict with other languages.
+            # assembly_macro32: .asm or .a
+            # assembly_mcs51:   .asm or .a
+            # assembly_parrot:  .asm or .a
+            # assembly_r2000:   .asm or .a
+            # assembly_x86:     .asm or .a
+            # squidconf:        .conf
+            # rpmspec:          .rpm
+    #@+node:ekr.20120522160137.9911: *4* app.define_extension_dict
+    def define_extension_dict(self):
+        
+        # Keys are extensions, values are languages
         self.extension_dict = {
-            # Keys are extensions, values are languages.
-            "ada"   : "ada",
-            "adb"   : "ada",
-            "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-            "as"    : "actionscript",
-            "bas"   : "rapidq",
-            "bat"   : "batch",
-            "c"     : "c",
-            "cfg"   : "config",
-            "cpp"   : "cpp",
-            "css"   : "css",
-            "el"    : "elisp",
-            "forth" : "forth",
-            "f"     : "fortran",
-            "f90"   : "fortran90",
-            "h"     : "c",
-            "html"  : "html",
-            "hs"    : "haskell",
-            "ini"   : "ini",
-            "java"  : "java",
-            "js"    : "javascript", # EKR: 2011/11/12: For javascript import test.
-            "jsp"   : "javaserverpage", # EKR: 2011/11/25: For @shadow.
-            "ksh"   : "kshell", # Leo 4.5.1.
-            "lua"   : "lua",  # ddm 13/02/06
-            "m"     : "matlab", # EKR 2011/10/21
-            "nsi"   : "nsi", # EKR: 2010/10/27
-            "nw"    : "noweb",
-            "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-            "p"     : "pascal",
-            "pl"    : "perl",   # 11/7/05
-            "pod"   : "perlpod", # 11/7/05
-            "php"   : "php",
-            "py"    : "python",
-            "pyd"   : "cython",
-            "pyi"   : "cython",
-            "pyx"   : "cython",
-            "sql"   : "plsql", # qt02537 2005-05-27
-            "r"     : "rebol",
-            "rb"    : "ruby", # thyrsus 2008-11-05
-            "rest"  : "rst",
-            "rst"   : "rst",
-            "scala" : "scala",
-            "sh"    : "shell",
-            "tex"   : "tex",
-            "txt"   : "plain",
-            "tcl"   : "tcltk",
-            "vim"   : "vim",
-            "w"     : "cweb",
-            "xml"   : "xml",
-            "xsl"   : "xslt",
-            "hx"    : "haxe",
+            # "ada":    "ada",
+            "ada":      "ada95", # modes/ada95.py exists.
+            "ahk":      "ahk",
+            "ahk":      "autohotkey",
+            "aj":       "aspect_j",
+            "apdl":     "apdl",
+            "as":       "actionscript", #jason 2003-07-03
+            "asp":      "asp",
+            "awk":      "awk",
+            "b":        "b",
+            "bas":      "rapidq", # fil 2004-march-11
+            "bat":      "batch",
+            "bbj":      "bbj",
+            "bcel":     "bcel",
+            "bib":      "bibtex",
+            "c":        "c",
+            "c++":      "cplusplus",
+            "cbl":      "cobol", # Only one extension is valid: .cob
+            "cfg":      "config",
+            "cfm":      "coldfusion",
+            "ch":       "chill", # Other extensions, .c186,.c286
+            "conf":     "apacheconf",
+            "cpp":      "cpp",
+            "css":      "css",
+            "d":        "d",
+            "e":        "eiffel",
+            "el":       "elisp",
+            "eml":      "mail",
+            "erl":      "erlang",
+            "f":        "fortran",
+            "f90":      "fortran90",
+            "factor":   "factor",
+            "forth":    "forth",
+            "g":        "antlr",
+            "groovy":   "groovy",
+            "h":        "c", # 2012/05/23.
+            "hs":       "haskell",
+            "html":     "html",
+            "hx":       "haxe",
+            "i":        "swig",
+            "i4gl":     "i4gl",
+            "icn":      "icon",
+            "idl":      "idl",
+            "inf":      "inform",
+            "info":     "texinfo",
+            "ini":      "ini",
+            "io":       "io",
+            "iss":      "inno_setup",
+            "java":     "java",
+            "jhtml":    "jhtml",
+            "jmk":      "jmk",
+            "js":       "javascript", # For javascript import test.
+            "jsp":      "javaserverpage",
+            "jsp":      "jsp",
+            "ksh":      "kshell", # Leo 4.5.1.
+            "lua":      "lua", # ddm 13/02/06
+            "ly":       "lilypond",
+            "m":        "matlab", # EKR: 2011/10/21
+            "mak":      "makefile",
+            "ml":       "ml",
+            "mm":       "objective_c", # Only one extension is valid: .m
+            "mod":      "modula3",
+            "mpl":      "maple",
+            "mqsc":     "mqsc",
+            "nqc":      "nqc",
+            "nsi":      "nsi", # EKR: 2010/10/27
+            "nsi":      "nsis2",
+            "nw":       "noweb",
+            "occ":      "occam",
+            "otl":      "vimoutline", #TL 8/25/08 Vim's outline plugin
+            "p":        "pascal",
+            "php":      "php",
+            "pike":     "pike",
+            "pl":       "perl",
+            "pl1":      "pl1",
+            "po":       "gettext",
+            "pod":      "perlpod",
+            "pov":      "povray",
+            "prg":      "foxpro",
+            "pro":      "prolog",
+            "ps":       "postscript",
+            "psp":      "psp",
+            "ptl":      "ptl",
+            "py":       "python",
+            "pyx":      "cython", # Other extensions, .pyd,.pyi
+            "pyx":      "pyrex",
+            # "r":      "r", # modes/r.py does not exist.
+            "r":        "rebol", # jason 2003-07-03
+            "rb":       "ruby", # thyrsus 2008-11-05
+            "rest":     "rst",
+            "rex":      "objectrexx",
+            "rhtml":    "rhtml",
+            "rib":      "rib",
+            "scala":    "scala",
+            "scm":      "scheme",
+            "scpt":     "applescript",
+            "sgml":     "sgml",
+            "sh":       "shell", # DS 4/1/04. modes/shell.py exists.
+            # "sh":     "shellscript",
+            "shtml":    "shtml",
+            "sm":       "smalltalk",
+            "splus":    "splus",
+            "sql":      "plsql", # qt02537 2005-05-27
+            "sql":      "tsql", # A guess.
+            "sqr":      "sqr",
+            "ss":       "ssharp",
+            "ssi":      "shtml",
+            "tcl":      "tcl", # modes/tcl.py exists.
+            # "tcl":    "tcltk",
+            "tex":      "latex",
+            "tex":      "tex",
+            "tpl":      "tpl",
+            "txt":      "plain",
+            "txt":      "text",
+            "txt":      "unknown", # Set when @comment is seen.
+            "uc":       "uscript",
+            "v":        "verilog",
+            "vbs":      "vbscript",
+            "vhd":      "vhdl",
+            "vhdl":     "vhdl",
+            "vim":      "vim",
+            "vtl":      "velocity",
+            "w":        "cweb",
+            "xml":      "xml",
+            "xom":      "omnimark",
+            "xsl":      "xsl",
+            "xsl":      "xslt",
+            "zpt":      "zpt",
         }
 
+        # These aren't real languages, or have no delims...
+            # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+            # patch, phpsection, progress, props, pseudoplain,
+            # relax_ng_compact, rtf, sas, svn_commit.
+
+        # These have extensions which conflict with other languages.
+            # assembly_macro32: .asm or .a
+            # assembly_mcs51:   .asm or .a
+            # assembly_parrot:  .asm or .a
+            # assembly_r2000:   .asm or .a
+            # assembly_x86:     .asm or .a
+            # squidconf:        .conf
+            # rpmspec:          .rpm
+            
         # Extra language extensions, used to associate extensions with mode files.
         # Used by importCommands.languageForExtension.
         # Keys are extensions, values are corresponding mode file (without .py)
         # A value of 'none' is a signal to unit tests that no extension file exists.
         self.extra_extension_dict = {
-            'actionscript': 'actionscript',
-            'ada'   : 'ada95',
-            'adb'   : 'none', # ada??
-            'awk'   : 'awk',
-            'bas'   : 'none', # rapidq
-            'bat'   : 'none', # batch
-            'cfg'   : 'none', # Leo 4.5.1
-            'cpp'   : 'c',
-            'el'    : 'lisp',
-            'f'     : 'fortran90',
-            'hx'    : 'none',
-            'ksh'   : 'none', # Leo 4.5.1
-            'nsi'   : 'none', # Leo 4.8.
-            'nw'    : 'none', # noweb.
-            'otl'   : 'none', # vimoutline.
             'pod'   : 'perl',
-            'tcl'   : 'tcl',
             'unknown_language': 'none',
             'w'     : 'none', # cweb
         }
-
-        self.global_commands_dict = {}
-        #@-<< Define global data structures >>
+        
     #@+node:ekr.20031218072017.2609: *3* app.closeLeoWindow
     def closeLeoWindow (self,frame,new_c=None):
 

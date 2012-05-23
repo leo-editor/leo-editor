@@ -127,7 +127,14 @@ commands that might need to prompt for parameters, be interactive, etc.
   All editor commands should be named and can be bound to keys by name
 or executed by name in this way.
 
-* (done) Regex search.  Emacs has support for regular expression search modes
+* (done) def aproposFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+ search.  Emacs has support for regular expression search modes
 for all of the search types, incremental search, search/replace,
 although I don't use it that much.
 
