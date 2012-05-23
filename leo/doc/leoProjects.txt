@@ -3261,45 +3261,126 @@ that Leo "understands" the language.
 Supporting the language in the global tables in leoApp.py makes the
 illusion a reality.
 #@+node:ekr.20120522160137.9908: *5* Notes
-@language python
+@language rest
 
-# These aren't real languages, or have no delims.
-"cvs_commit"         : "",
-"dsssl"              : "; <!-- -->",
-"embperl"            : "<!-- -->",  # Internal colorizing state.
-"freemarker"         : "",
-"jcl"                : "",
-"hex"                : "",
-"pseudoplain"        : "",
-"phpsection"         : "<!-- -->",  # Internal colorizing state.
-"relax_ng_compact"   : "#",         # An xml schema.
-"sas"                : "",
-"svn_commit"         : "",
+Rev 5334 is a first draft of a fix of bug 879338:
+Global tables in leoApp.py should describe all languages known to the colorizer
+https://bugs.launchpad.net/leo-editor/+bug/879338
 
-# The following languages have extensions which conflict with other languages.
-"assembly_macro32"   : ";",         # .asm or .a
-"assembly_mcs51"     : ";",         # .asm or .a
-"assembly_parrot"    : "#",         # .asm or .a
-"assembly_r2000"     : "",          # .asm or .a
-"assembly_x86"       : ";",         # .asm or .a
-"squidconf"          : "#",         # .conf
-"rpmspec"            : "#",         # .rpm
+The essence of the bug fix is that Leo's language-description tables should
+contain entries for all .py files in the leo/modes folder. These files
+control the colorizer. If Leo's colorizer knows about a language, then Leo
+should know as much as possible about the language.
 
-# The following languages have unknown extensions.
-# They are all candidates to be removed.
-"doxygen"            : "#",
-"interlis"           : "/* */",         # Not interlisp.
-"lotos"              : "(* *)",
-"netrexx"            : "-- /* */",      # Careful: .rex is already taken.
-"moin"               : "##",            # Unknown language.
-"powerdynamo"        : "// <!-- -->",
-"pop11"              : ";;; /* */",
-"props"              : "#",             # Unknown language.
-"pvwave"             : ";",
-"redcode"            : ";",             # .r3d is a binary format.
-"rview"              : "// /* */",      # Unknown language.
-"smi_mib"            : "--",
-"sdl_pr"             : "/* */",
+In concept, this is a fairly straightforward process, but there were *many*
+details to handle. If you aren't a Leo developer, you might want to stop
+reading now...
+
+===== Tables
+
+Fixing this bug required non-trivial changes to the following tables::
+
+    g.app.language_delims_dict
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+
+    g.app.language_extension_dict
+    # Keys are language names, values are extensions.
+
+    g.app.self.extension_dict
+    # Keys are extensions, values are language names
+
+I used scripts to generate new entries for these tables, but these scripts
+can not possibly deal with the all the complications...
+
+Leo uses these tables as follows:
+
+1.  To generate the comment delimiters in sentinels for each language.
+
+Happily, getting the comment delimiters correct was probably the easiest
+part, so Leo should continue to write sentinels properly for
+previously-know languages. However, I had to take care to preserve the REM,
+CWEB, forth and perlpod hacks, so that comment delims would include the
+necessary spaces.
+
+2. To associate file extensions with importers.
+
+Knowing about new file extensions doesn't actually allow Leo to import any
+new languages. For all languages without an official importer Leo will
+simply copy the entire text of the file into a single node, as it always
+has.
+
+3. To colorize code.
+
+Leo's colorizer mostly doesn't use these tables: to colorize language x,
+the colorizer looks for the file leo/modes/x.py. Thus, these changes
+probably do not affect the colorizer at all.
+
+===== Special cases
+
+I did a lot of googling in order to determine the proper file extensions to
+use for various language. In the process, I learned that *almost* all
+languages described in the leo/modes folder are real, interesting and
+useful languages.
+
+However, there at least 5 categories of special cases that affect the
+tables:
+
+1. Languages that are really just colorizer modes:
+
+These include embperl, pseudoplain and phpsection. We need entries in
+leo/modes for these, but they aren't real languages and thus they should
+not appear in the language-description tables.
+
+2. Things that might be colorized but aren't real languages.
+
+Afaik, the following are not real languages, and Leo would never have to
+generate files in these languages::
+
+    cvs_commit
+    dsssl
+    relax_ng_compact: An xml schema.
+    rtf
+    svn_commit
+
+In particular, the rtf colorizer is *not* a colorizer for binary .rtf file
+format, is a colorizer for .rtf sources. It probably won't do too much harm
+to retain the colorizer data for these languages, but I wouldn't mind
+eliminating them either.
+
+3.  Unknown languages.
+
+A few languages seem not really to exist:
+
+    freemarker
+    hex
+    jcl
+    moin
+    progress
+    props
+    sas
+
+I'll consider retaining the mode files for these languages only if somebody
+can explain what these languages are.
+
+4. Languages without real comment delimiters.
+
+Patch annotations are *not* real comment delimiters, so Leo could not
+generate patch (.fix or .patch) files from an outline. Happily, there is no
+need to do so.
+
+5. Conflicting file extensions.
+
+There are two separate kinds of problems:
+
+A. Leo contains colorizers for several assembly languages. Typically,
+assembly languages have .asm or .a file extensions. However, a particular
+extension can only be associated with a single language name. Thus, Leo has
+no way of knowing what language to associate with .asm or .a files. So I
+just punted and didn't make any association at all.
+
+B. Both the rebol and r languages use the .r file extension. One of Leo's
+users previously created an entry for rebol, so that's the language that
+takes precedence.
 #@+node:ekr.20120522024827.9900: *5* Scripts
 #@+node:ekr.20111021035504.9469: *6* Script: get all comments from modes (slow)
 @language python
@@ -4008,6 +4089,7 @@ def define_language_delims_dict(self):
         "matlab"             : "%", # EKR: 2011/10/21
         "ml"                 : "(* *)",
         "modula3"            : "(* *)",
+        "moin"               : "##",
         "mqsc"               : "*",
         "netrexx"            : "-- /* */",
         "noweb"              : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
@@ -4047,6 +4129,7 @@ def define_language_delims_dict(self):
         "rst"                : ".._",
         "ruby"               : "#", # thyrsus 2008-11-05
         "rview"              : "// /* */",
+        "sas"                : "#", # Must pick something.
         "scala"              : "// /* */",
         "scheme"             : "; #| |#",
         "sdl_pr"             : "/* */",
@@ -4089,14 +4172,12 @@ def define_language_delims_dict(self):
         # "freemarker"         : "",
         # "hex"                : "",
         # "jcl"                : "",
-        # "moin"               : "##",
         # "patch"              : "",
         # "phpsection"         : "<!-- -->",  # Internal colorizing state.
         # "props"              : "#",         # Unknown language.
         # "pseudoplain"        : "",
         # "relax_ng_compact"   : "#",         # An xml schema.
         # "rtf"                : "",
-        # "sas"                : "",
         # "svn_commit"         : "",
     }
 #@+node:ekr.20120522160137.9910: *6* app.define_language_extension_dict
@@ -4170,6 +4251,7 @@ def define_language_extension_dict (self):
         "matlab"        : "m",
         "ml"            : "ml",
         "modula3"       : "mod",
+        "moin"          : "wiki",
         "mqsc"          : "mqsc",
         "noweb"         : "nw",
         "nqc"           : "nqc",
@@ -4201,6 +4283,7 @@ def define_language_extension_dict (self):
         "rib"           : "rib",
         "rst"           : "rest",
         "ruby"          : "rb", # thyrsus 2008-11-05
+        "sas"           : "sas",
         "scala"         : "scala",
         "scheme"        : "scm",
         "sgml"          : "sgml",
@@ -4236,9 +4319,9 @@ def define_language_extension_dict (self):
     }
 
     # These aren't real languages, or have no delims...
-        # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
         # patch, phpsection, progress, props, pseudoplain,
-        # relax_ng_compact, rtf, sas, svn_commit.
+        # relax_ng_compact, rtf, svn_commit.
 
     # These have extensions which conflict with other languages.
         # assembly_macro32: .asm or .a
@@ -4346,6 +4429,7 @@ def define_extension_dict(self):
         "rex":      "objectrexx",
         "rhtml":    "rhtml",
         "rib":      "rib",
+        "sas":      "sas",
         "scala":    "scala",
         "scm":      "scheme",
         "scpt":     "applescript",
@@ -4376,6 +4460,7 @@ def define_extension_dict(self):
         "vim":      "vim",
         "vtl":      "velocity",
         "w":        "cweb",
+        "wiki":     "moin",
         "xml":      "xml",
         "xom":      "omnimark",
         "xsl":      "xsl",
@@ -4384,9 +4469,9 @@ def define_extension_dict(self):
     }
 
     # These aren't real languages, or have no delims...
-        # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
         # patch, phpsection, progress, props, pseudoplain,
-        # relax_ng_compact, rtf, sas, svn_commit.
+        # relax_ng_compact, rtf, svn_commit.
 
     # These have extensions which conflict with other languages.
         # assembly_macro32: .asm or .a

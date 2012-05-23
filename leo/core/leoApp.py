@@ -262,6 +262,7 @@ class LeoApp:
             "matlab"             : "%", # EKR: 2011/10/21
             "ml"                 : "(* *)",
             "modula3"            : "(* *)",
+            "moin"               : "##",
             "mqsc"               : "*",
             "netrexx"            : "-- /* */",
             "noweb"              : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
@@ -301,6 +302,7 @@ class LeoApp:
             "rst"                : ".._",
             "ruby"               : "#", # thyrsus 2008-11-05
             "rview"              : "// /* */",
+            "sas"                : "#", # Must pick something.
             "scala"              : "// /* */",
             "scheme"             : "; #| |#",
             "sdl_pr"             : "/* */",
@@ -343,14 +345,12 @@ class LeoApp:
             # "freemarker"         : "",
             # "hex"                : "",
             # "jcl"                : "",
-            # "moin"               : "##",
             # "patch"              : "",
             # "phpsection"         : "<!-- -->",  # Internal colorizing state.
             # "props"              : "#",         # Unknown language.
             # "pseudoplain"        : "",
             # "relax_ng_compact"   : "#",         # An xml schema.
             # "rtf"                : "",
-            # "sas"                : "",
             # "svn_commit"         : "",
         }
     #@+node:ekr.20120522160137.9910: *4* app.define_language_extension_dict
@@ -424,6 +424,7 @@ class LeoApp:
             "matlab"        : "m",
             "ml"            : "ml",
             "modula3"       : "mod",
+            "moin"          : "wiki",
             "mqsc"          : "mqsc",
             "noweb"         : "nw",
             "nqc"           : "nqc",
@@ -455,6 +456,7 @@ class LeoApp:
             "rib"           : "rib",
             "rst"           : "rest",
             "ruby"          : "rb", # thyrsus 2008-11-05
+            "sas"           : "sas",
             "scala"         : "scala",
             "scheme"        : "scm",
             "sgml"          : "sgml",
@@ -490,9 +492,9 @@ class LeoApp:
         }
 
         # These aren't real languages, or have no delims...
-            # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+            # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
             # patch, phpsection, progress, props, pseudoplain,
-            # relax_ng_compact, rtf, sas, svn_commit.
+            # relax_ng_compact, rtf, svn_commit.
 
         # These have extensions which conflict with other languages.
             # assembly_macro32: .asm or .a
@@ -600,6 +602,7 @@ class LeoApp:
             "rex":      "objectrexx",
             "rhtml":    "rhtml",
             "rib":      "rib",
+            "sas":      "sas",
             "scala":    "scala",
             "scm":      "scheme",
             "scpt":     "applescript",
@@ -630,6 +633,7 @@ class LeoApp:
             "vim":      "vim",
             "vtl":      "velocity",
             "w":        "cweb",
+            "wiki":     "moin",
             "xml":      "xml",
             "xom":      "omnimark",
             "xsl":      "xsl",
@@ -638,9 +642,9 @@ class LeoApp:
         }
 
         # These aren't real languages, or have no delims...
-            # cvs_commit, dsssl, embperl, freemarker, hex, jcl, moin,
+            # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
             # patch, phpsection, progress, props, pseudoplain,
-            # relax_ng_compact, rtf, sas, svn_commit.
+            # relax_ng_compact, rtf, svn_commit.
 
         # These have extensions which conflict with other languages.
             # assembly_macro32: .asm or .a
