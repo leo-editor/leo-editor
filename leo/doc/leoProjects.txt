@@ -3368,6 +3368,35 @@ just punted and didn't make any association at all.
 B. Both the rebol and r languages use the .r file extension. One of Leo's
 users previously created an entry for rebol, so that's the language that
 takes precedence.
+#@+node:ekr.20120523114117.10885: *5* Remove unused files from leo/modes directory
+@language rest
+
+Remove all .xml files in the leo/modes directory.
+
+Imo, this should have been done long ago, for at least the following
+reasons:
+
+- These files are part of the jEdit project.
+- They are used only by the jedit2py script in scripts.leo.
+- The colorizer doesn't use them.
+- Bug fixes to the colorizer are made to the .py files, not to the .xml files.
+- We can always get updated versions of the .xml files from the jEdit
+  project in the unlikely event that we ever need them again.
+
+2. Remove the following .py files from the leo/modes directory:
+cvs_commit.py, dsssl.py, freemarker.py, hex.py, jcl.py, progress.py,
+props.py and svn_commit.py.
+
+Notes:
+
+- embperl.py, phpsection.py and pseudoplain.py will *not* be removed;
+they are internal colorizer states.
+
+- relax_ng_compact.py will be removed if it is not used by any other
+colorizer.
+
+- patch.py and rtf.py colorizers will be retained, even though Leo can
+never generate such files. 
 #@+node:ekr.20120522024827.9900: *5* Scripts
 #@+node:ekr.20111021035504.9469: *6* Script: get all comments from modes (slow)
 @language python
@@ -3887,6 +3916,7 @@ def define_language_extension_dict (self):
         "pl1"           : "pl1",
         "plain"         : "txt",
         "plsql"         : "sql", # qt02537 2005-05-27
+        # "pop11"       : "p", # Conflicts with pascall.
         "postscript"    : "ps",
         "povray"        : "pov",
         "prolog"        : "pro",
@@ -4025,6 +4055,7 @@ def define_extension_dict(self):
         "occ":      "occam",
         "otl":      "vimoutline", #TL 8/25/08 Vim's outline plugin
         "p":        "pascal",
+        # "p":      "pop11", # Conflicts with pascal.
         "php":      "php",
         "pike":     "pike",
         "pl":       "perl",

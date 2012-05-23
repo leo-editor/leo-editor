@@ -442,6 +442,7 @@ class LeoApp:
             "pl1"           : "pl1",
             "plain"         : "txt",
             "plsql"         : "sql", # qt02537 2005-05-27
+            # "pop11"       : "p", # Conflicts with pascall.
             "postscript"    : "ps",
             "povray"        : "pov",
             "prolog"        : "pro",
@@ -580,6 +581,7 @@ class LeoApp:
             "occ":      "occam",
             "otl":      "vimoutline", #TL 8/25/08 Vim's outline plugin
             "p":        "pascal",
+            # "p":      "pop11", # Conflicts with pascal.
             "php":      "php",
             "pike":     "pike",
             "pl":       "perl",
