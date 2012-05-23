@@ -7556,9 +7556,9 @@ class helpCommandsClass (baseEditCommandsClass):
             {m,n}?          Same as {m,n}, but attempting to match as few repetitions as possible.
             [ ]             Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
             [^ ]            Defines complemented character set: matches if char is NOT in set.
-            \\              Escapes special chars '*?+&$|()' and introduces special sequences (see below).
-                            Write as '\\' in the pattern string.  Even better, use raw Python strings.
-            \\\\            Matches a literal '\'.
+            \               Escapes special chars '*?+&$|()' and introduces special sequences (see below).
+                            If not using a raw string, write as '\\' in the pattern string.
+            \\              Matches a literal '\'.
             |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
             (...)           Matches any RE inside (), and delimits a group.
             (?:...)         Mathces RE inside (), but doesn't delimit a group.
