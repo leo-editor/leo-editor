@@ -6815,6 +6815,7 @@ class helpCommandsClass (baseEditCommandsClass):
             'apropos-bindings':         self.aproposBindings,
             'apropos-debugging-commands': self.aproposDebuggingCommands,
             'apropos-find-commands':    self.aproposFindCommands,
+            'apropos-regular-expressions': self.aproposRegularExpressions,
             'help-for-command':         self.helpForCommand,
             'help-for-minibuffer':      self.helpForMinibuffer,
             'help-for-python':          self.pythonHelp,
@@ -6827,32 +6828,38 @@ class helpCommandsClass (baseEditCommandsClass):
 
         # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c
-        s = '''
-    The mini-buffer is intended to be like the Emacs buffer:
+        
+        #@+<< define s >>
+        #@+node:ekr.20120522024827.9899: *4* << define s >> (helpForMinibuffer)
+        #@@language rest
 
-    full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
-    full command name, then hit <Return> to execute the command. Tab completion
-    works, but not yet for file names.
+        s = '''\
 
-    quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
-    defined in leoSettings.leo. It is useful for commonly-used commands.
+        ++++++++++++++++++++
+        About the Minibuffer
+        ++++++++++++++++++++
 
-    universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
-    count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
-    unfinished.
+        The mini-buffer is intended to be like the Emacs buffer:
 
-    keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
-    the focus in the body pane.
+        full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
+        full command name, then hit <Return> to execute the command. Tab completion
+        works, but not yet for file names.
 
-    Use the help-for-command command to see documentation for a particular command.
-    '''
+        quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
+        defined in leoSettings.leo. It is useful for commonly-used commands.
 
-        s = g.adjustTripleString(s,c.tab_width)
-            # Remove indentation from indentation of this function.
-        # s = s % (shortcuts[0],shortcuts[1],shortcuts[2],shortcuts[3])
+        universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
+        count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
+        unfinished.
 
-        if not g.app.unitTesting:
-            g.es_print('',s)
+        keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
+        the focus in the body pane.
+
+        Use the help-for-command command to see documentation for a particular command.
+        '''
+        #@-<< define s >>
+        
+        self.c.putApropos(s)
     #@+node:ekr.20060417203717: *3* helpForCommand & helpers
     def helpForCommand (self,event):
 
@@ -6929,37 +6936,32 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of abbreviations.'''
         
         #@+<< define s >>
-        #@+node:ekr.20110530082209.18251: *4* << define s >>
-        # @pagewidth 45
+        #@+node:ekr.20110530082209.18251: *4* << define s >> (helpForAbbreviations)
         #@@language rest
 
-        s = '''
+        s = '''\
+
         +++++++++++++++++++
         About Abbreviations
         +++++++++++++++++++
 
-        When abbreviation mode is on (abbrev-mode
-        toggles this mode) Leo will expand
-        abbreviations as you type. Type the name of
-        an abbreviation, followed by a space. As soon
-        as you type the space, Leo will replace the
-        name by the abbreviations value. You can undo
-        the replacement as usual.
+        When abbreviation mode is on (abbrev-mode toggles this mode) Leo will
+        expand abbreviations as you type. Type the name of an abbreviation,
+        followed by a space. As soon as you type the space, Leo will replace the
+        name by the abbreviations value. You can undo the replacement as usual.
 
-        Note that defining any abbreviation
-        automatically turns on abbreviation mode.
+        Note that defining any abbreviation automatically turns on abbreviation
+        mode.
 
-        The add-global-abbreviation command
-        (<alt-x>add-gl<tab><return>) takes the
-        selected text as the replacement value of the
-        abbreviation. The minibuffer prompts you for
-        the name of the abbreviation.
+        The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
+        selected text as the replacement value of the abbreviation. The minibuffer
+        prompts you for the name of the abbreviation.
 
         Settings
         ========
 
         As usual, the following settings have effect
-        only in @settings trees:
+        only in @settings trees...
 
         @bool enable-abbreviations (default: False)
 
@@ -7061,7 +7063,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of autocompletion.'''
         
         #@+<< define s >>
-        #@+node:ekr.20110530082209.18252: *4* << define s >>
+        #@+node:ekr.20110530082209.18252: *4* << define s >> (aproposAutocompletion)
         # @pagewidth 40
         #@@language rest
 
@@ -7177,7 +7179,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of keyboard bindings.'''
         
         #@+<< define s >>
-        #@+node:ekr.20110530082209.18253: *4* << define s >>
+        #@+node:ekr.20110530082209.18253: *4* << define s >> (aproposBindings)
         # @pagewidth 40
         #@@language rest
 
@@ -7262,7 +7264,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of of Leo's debugging commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20070501092655.1: *4* << define s >>
+        #@+node:ekr.20070501092655.1: *4* << define s >> (aproposDebuggingCommands)
         # @pagewidth 40
         #@@language rest
 
@@ -7298,7 +7300,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of of Leo's find commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20060209082023.1: *4* << define s >>
+        #@+node:ekr.20060209082023.1: *4* << define s >> (aproposFindCommands)_
         # @pagewidth 40
         #@@language rest
 
@@ -7518,6 +7520,82 @@ class helpCommandsClass (baseEditCommandsClass):
         You may use backspace to backtrack. To
         repeat an incremental search, type the
         shortcut for that command again.'''
+        #@-<< define s >>
+
+        self.c.putApropos(s)
+    #@+node:ekr.20120522024827.9897: *3* aproposRegularExpressions
+    def aproposRegularExpressions (self, event=None):
+
+        '''Prints a discussion of of Leo's find commands.'''
+
+        #@+<< define s >>
+        #@+node:ekr.20120522024827.9898: *4* << define s >> (aproposRegularExpressions)
+        #@@language rest
+
+        s = '''\
+
+        +++++++++++++++++++++++++++
+        About Regular expressions
+        +++++++++++++++++++++++++++
+
+        Leo supports Python's regular expressions in find patterns.
+        For full details, see: ``http://docs.python.org/library/re.html``.
+
+        The following quick reference is taken from ``http://rgruet.free.fr/PQR26/PQR2.6.html``.
+
+        Regular Expression Syntax
+        ---------------------------
+
+        ::
+
+            .           Matches any character (including newline if DOTALL flag specified).
+            ^           Matches start of the string (of every line in MULTILINE mode).
+            $           Matches end of the string (of every line in MULTILINE mode).
+            *           0 or more of preceding regular expression (as many as possible).
+            +           1 or more of preceding regular expression (as many as possible).
+            ?           0 or 1 occurrence of preceding regular expression.
+            *?, +?, ??  Same as *, + and ? but matches as few characters as possible.
+            {m,n}       Matches from m to n repetitions of preceding RE.
+            {m,n}?      Same as {m,n}, but attempting to match as few repetitions as possible.
+            [ ]         Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
+            [^ ]        Defines complemented character set: matches if char is NOT in set.
+            \           Escapes special chars '*?+&$|()' and introduces special sequences (see below). Due to Python string rules, write as '\\' or r'\' in the pattern string.
+            \\          Matches a litteral '\'; due to Python string rules, write as '\\\\' in pattern string, or better using raw string: r'\\'.
+            |           Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
+            (...)           Matches any RE inside (), and delimits a group.
+            (?:...)         Mathces RE inside (), but doesn't delimit a group.
+            (?P<name>...)   Matches any RE inside (), and delimits a named group. r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
+            (?P=name)       Matches whatever text was matched by the earlier group named name.
+            (?=...)         Matches if ... matches next, but doesn't consume any of the string e.g. 'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
+            (?!...)         Matches if ... doesn't match next. Negative of (?=...).
+            (?<=...)        Matches if the current position in the string is preceded by a match for ... that ends at the current position. This is called a positive lookbehind assertion.
+            (?<!...)        Matches if the current position in the string is not preceded by a match for .... This is called a negative lookbehind assertion.
+            (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...) earlier in the expression. If the specified group matched, the regular expression pattern A will be tested against the string; if the group didn't match, the pattern B will be used instead.
+            (?#...)         A comment; ignored.
+            (?letters)      letters is one or more of 'i','L', 'm', 's', 'u', 'x'.
+            
+        Sets the corresponding flags (re.I, re.L, re.M, re.S, re.U, re.X) for the entire RE.
+        See the compile() function for equivalent flags.
+
+        Special sequences
+        -----------------
+
+        ::
+
+            \number     Matches content of the group of the same number. groups are numbered starting from 1.
+            \A          Matches only at the start of the string.
+            \b          Empty str at beginning or end of word:
+                        '\bis\b' matches 'is', but not 'his'.
+            \B          Empty str NOT at beginning or end of word.
+            \d          Any decimal digit:          [0-9]
+            \D          Any non-decimal digit char  [^0-9]).
+            \s          Any whitespace char         [ \t\n\r\f\v]
+            \S          Any non-whitespace char     [^ \t\n\r\f\v]
+            \w          Any alphaNumeric char (depends on LOCALE flag).
+            \W          Any non-alphaNumeric char (depends on LOCALE flag).
+            \Z          Matches only at the end of the string.
+            
+        '''
         #@-<< define s >>
 
         self.c.putApropos(s)
