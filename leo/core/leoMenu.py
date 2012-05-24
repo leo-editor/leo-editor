@@ -1067,7 +1067,7 @@ class leoMenu:
             # &: a,b,c,d,e,f,h,l,m,n,o,p,r,s,t,u
             ('&About Leo...',           'about-leo'),
             ('Online &Home Page',       'open-online-home'),
-            '*open-online-&tutorial',
+            # '*open-online-&tutorial',
             '*open-&users-guide',
             '-',
             ('Open Leo&Docs.leo',       'open-leoDocs-leo'),
