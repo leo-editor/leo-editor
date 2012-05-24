@@ -4162,6 +4162,7 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
+#@+node:ekr.20120524082434.9920: *4* Fixed crash after viewrendered-hide
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -9569,6 +9570,8 @@ def putApropos (self,s):
             vr.close_rendering_pane(event={'c':c})
     else:
         g.es(s)
+#@+node:ekr.20120523133829.14118: *4* Supported ctrl-clicks in vr panes
+#@+node:ekr.20120524082434.9923: *4* All viewrended commands now start with vr
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

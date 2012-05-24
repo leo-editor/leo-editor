@@ -9,6 +9,7 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
+.. @+node:ekr.20120524082434.9921: *4* use vr pane for help-for-command
 .. @+node:ekr.20120523095917.9905: *4* Selected node not always saved properly
 @nocolor-node
 
