@@ -4163,6 +4163,10 @@ for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
 #@+node:ekr.20120524082434.9920: *4* Fixed crash after viewrendered-hide
+#@+node:ekr.20120523095917.9905: *4* Fixed bug: elected node was not always restored properly
+@nocolor-node
+
+The bug was in chapter.findPositionInChapter.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893

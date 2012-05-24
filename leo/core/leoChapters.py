@@ -955,8 +955,9 @@ class chapter:
         trace = False and not g.unitTesting
         c = self.c ; cc = self.cc ; name = self.name
 
-        if trace: g.trace('*** %s p: %s' % (
-            name,repr(self.p and self.p.h)))
+        if trace:
+            g.trace('%s exists: %s p: %s' % (
+                name,c.positionExists(self.p),self.p))
 
         cc.selectedChapter = self
         
@@ -972,9 +973,11 @@ class chapter:
             assert w == c.frame.body.bodyCtrl
             assert w.leo_p
             self.p = p = self.findPositionInChapter(w.leo_p) or self.root()
+            if trace: g.trace('recomputed: %s' % (self.p))
         else:
             # This must be done *after* switching roots.
             self.p = p = self.findPositionInChapter(p) or self.root()
+            if trace: g.trace('recomputed: %s' % (self.p))
 
             if selectEditor:
                 c.selectPosition(p) ##
@@ -1004,6 +1007,14 @@ class chapter:
         trace = False and not g.unitTesting ; verbose = False
 
         c,cc = self.c,self.cc
+        
+        if trace:
+            g.trace('%s exists: %s p: %s' % (
+                self.name,c.positionExists(p1),p1))
+                
+        # Bug fix: 2012/05/24: Search without root arg in the main chapter.
+        if self.name == 'main' and c.positionExists(p1):
+            return p1
         
         if not p1:
             if trace and verbose: g.trace('*** no p')

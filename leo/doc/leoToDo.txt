@@ -9,18 +9,168 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20120523095917.9905: *4* Selected node not always saved properly
+.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
 @nocolor-node
 
-The first node found with the desired vnode is selected, rather than the desired position.
-.. @+node:ekr.20120321174708.9743: *4* Improve help-for-command
+Leo's Alt-R and Alt-S commands could be improved.
+
+- Return ends the search.  Should be documented.
+- Ctrl-g should abort the search and restore the cursor.
+- F2 and F3 should repeat the search, in the indicated direction.
+- If text is already highlighted, Alt-S or Alt-R should use that text.
+
+.. @+node:ekr.20031218072017.800: *4* Improve extract section command (has this been done?)
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1858824
+By: gilshwartz
+Open discusstion
+
+Currently Extract Section is only available if the first line in a selection
+is a section name <<x>>. I would like to propose a few enhancements I think
+should be useful, while I believe most of the code is already implemented in
+Leo.
+
+1. If the first line in a selection is not <<x>>, than Extract Section WILL
+make a section name from the first line (or a version of it, see below), leave
+the section name in the body, create a new node with that section name, and
+will copy the selection including the first line to the new node.
+
+Rational: this is useful when selecting a function or a class. Thus the section
+name becomes the function or the class definition. The section name can either
+be the full first line, or, knowing the language, Leo can make a nice section
+name like it does in import, e.g. "function foo", or "class bar", without the
+parameters list.
+
+2. Even better, when Extract Section is called WITHOUT a selection it will look
+for the first function/class definition before the cursor's position and will
+either use it as a selection and do 1 above, or just mark it as selection, which
+will enable 1 above upon a second Extract Section.
+
+Rational: Leo does it beautifully in import and when a node's code starts to
+build it is most convenient. Also, I think a variation on this was recently
+asked by another user.
+
+3. Add an option Merge Section, which when called from a named section will
+merge it back to all the sections containing it.
+
+Rational: make it easy (together with 2) to create/delete sections until the
+sections picture of a new code becomes clear.
+
+Gil
+
+--
+
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1859516
+By: nobody
+
+Simpler & more intutive:
+Mark text, select from menu - 'extract section', this presents a dialog box
+in which you fill in the section name. It is too much work to type <<name>>
+then select the whole thing...
+
+As an enhancement, the dialog can show the first line of the selection as the
+default section name, which obviously can be changed.
+
+- Rajiv Bhagwat
+.. @+node:ekr.20120523092521.9904: *3* Easy bugs (5)
+.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
+.. @+node:ekr.20120308120323.9864: *4* Fix bug 903640: Import of Python files containing the strings "<<" and ">>" does not work
+@nocolor-node
+
+See: https://bugs.launchpad.net/leo-editor/+bug/903640
+Import of Python files containing the strings "<<" and ">>" does not work
+
+When I tried to import a Python file using @auto, the importer didn't
+like the following statement:
+
+    self.cprint("<<" + ret + ">>\n")
+
+The respective error message reads:
+
+undefined section: <<" + ret + ">>
+referenced from: @file [...]
+
+=====
+
+If you can't change the external file, you won't be able to use @auto,
+at least until Leo's @auto import mechanism supports other delimiters
+for section references.
+
+As discussed in a recent thread, there is no way to allow escape
+conventions for section references: the approach used by noweb will
+not work in Leo.
+
+I'll leave this bug open as an important wish-list item reminding me
+that it would be good to allow *different* delimiters for section
+references on an external-file-by-external-file basis.
+
+=====
+
+Import (and @auto) are a separate matter from the main read code used
+for @file. The @file read code knows *nothing* about syntax, except
+for comment delimiters. That makes the @file read code simple and
+robust.
+
+It *would* be possible to have a Leo directive change (or disable)
+delimiters for section references. The code would be straightforward,
+similar to the code for the @delims directive. This is what I intend
+to do.
+
+.. @+node:ekr.20120415174008.10059: *4* Cancelling save of dirty untitled commander doesn't work
+Only happens with --ipython.
+.. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
+
+g.openWithFileName needs
+
+   fileName = g.os_path_realpath(fileName)
+
+at the start of it, otherwise
+
+g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
+instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
+because it doesn't recognize them as being the same.
+
+It would be nice if the original attempt to open
+"/home/tbrown/.leo/.todo.leo" was not converted to
+"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
+spec. insists on giving CPython the real path form, so this is hard to
+avoid.  You see this when selecting a file using a file dialog, in the
+dialog you choose /home/me/myfile.txt, but the return
+is /mnt/usr1/usr1/home/me/myfile.txt.
+
+Anyway, let me know if and when I can push that to trunk, impacts seem
+to be limited to (a) not failing to detect an already opened file in
+g.openWithFileName, which is a bug, and (b) sometimes less attractive
+apparent paths, which is annoying, but I think better than the bug.
+
+(this of course trips up UNLs
+if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
+UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
+.. @+node:ekr.20110621085435.6531: *4* Fix bug: Improve the find panel and find menu
+@nocolor-node
+
+Recently, perhaps it was today, there was a remark made about Leo's
+Find panel being confusing for newbies.  I have some sympathy for the
+remarks.
+
+1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
+a search/replace operation.  I'll fix this soon after 4.9 final.
+
+2.  The Find tab should make it clearer that it is a summary/status
+tab only--not a way of actually initiating or continuing searches.
+Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
+for the find/change patterns would help a bit.
+.. @+node:ekr.20120520055508.11870: *3* Next
+.. @+node:ekr.20120321174708.9743: *4* Add docstrings for all commands
 @nocolor-node
 
 Every command should have a **complete** docstring.
 
 A script that gathers these docstrings for LeoDocs.leo would be good.
-
-An empty name should give instructions.
 .. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
 Leo must have a check-doc-strings script that will verify that all
 commands have non-trivial doc strings.
@@ -906,187 +1056,7 @@ def printSettings (self,event=None):
     '''
 
     self.c.config.printSettings()
-.. @+node:ekr.20120522153511.9905: *4* Fix viewrendered crash
-@nocolor-node
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 8616, in eventFilter
-    ret = k.masterKeyHandler(event)
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2932, in masterKeyHandler
-    done,val = k.doMode(event,state,stroke)
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 3010, in doMode
-    val = k.callStateFunction(event) # Calls end-command.
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2984, in callStateFunction
-    val = k.state.handler(event)
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2036, in fullCommand
-    k.callAltXFunction(k.mb_event)
-  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2082, in callAltXFunction
-    func(event)
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 1089, in minibufferCallback
-    retval = function(keywords)
-  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 390, in viewrendered_alias
-    viewrendered(event)
-  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 368, in viewrendered
-    vr.show()
-RuntimeError: underlying C/C++ object has been deleted
-.. @+node:ekr.20120520055508.11870: *3* Next
-.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
-@nocolor-node
-
-Leo's Alt-R and Alt-S commands could be improved.
-
-- Return ends the search.  Should be documented.
-- Ctrl-g should abort the search and restore the cursor.
-- F2 and F3 should repeat the search, in the indicated direction.
-- If text is already highlighted, Alt-S or Alt-R should use that text.
-
 .. @+node:ekr.20120520055508.11873: *4* Add split-window commands
-.. @+node:ekr.20031218072017.800: *4* Improve extract section command (has this been done?)
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1858824
-By: gilshwartz
-Open discusstion
-
-Currently Extract Section is only available if the first line in a selection
-is a section name <<x>>. I would like to propose a few enhancements I think
-should be useful, while I believe most of the code is already implemented in
-Leo.
-
-1. If the first line in a selection is not <<x>>, than Extract Section WILL
-make a section name from the first line (or a version of it, see below), leave
-the section name in the body, create a new node with that section name, and
-will copy the selection including the first line to the new node.
-
-Rational: this is useful when selecting a function or a class. Thus the section
-name becomes the function or the class definition. The section name can either
-be the full first line, or, knowing the language, Leo can make a nice section
-name like it does in import, e.g. "function foo", or "class bar", without the
-parameters list.
-
-2. Even better, when Extract Section is called WITHOUT a selection it will look
-for the first function/class definition before the cursor's position and will
-either use it as a selection and do 1 above, or just mark it as selection, which
-will enable 1 above upon a second Extract Section.
-
-Rational: Leo does it beautifully in import and when a node's code starts to
-build it is most convenient. Also, I think a variation on this was recently
-asked by another user.
-
-3. Add an option Merge Section, which when called from a named section will
-merge it back to all the sections containing it.
-
-Rational: make it easy (together with 2) to create/delete sections until the
-sections picture of a new code becomes clear.
-
-Gil
-
---
-
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1859516
-By: nobody
-
-Simpler & more intutive:
-Mark text, select from menu - 'extract section', this presents a dialog box
-in which you fill in the section name. It is too much work to type <<name>>
-then select the whole thing...
-
-As an enhancement, the dialog can show the first line of the selection as the
-default section name, which obviously can be changed.
-
-- Rajiv Bhagwat
-.. @+node:ekr.20120523092521.9904: *4* Easy easy bugs (5)
-.. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
-.. @+node:ekr.20120308120323.9864: *5* Fix bug 903640: Import of Python files containing the strings "<<" and ">>" does not work
-@nocolor-node
-
-See: https://bugs.launchpad.net/leo-editor/+bug/903640
-Import of Python files containing the strings "<<" and ">>" does not work
-
-When I tried to import a Python file using @auto, the importer didn't
-like the following statement:
-
-    self.cprint("<<" + ret + ">>\n")
-
-The respective error message reads:
-
-undefined section: <<" + ret + ">>
-referenced from: @file [...]
-
-=====
-
-If you can't change the external file, you won't be able to use @auto,
-at least until Leo's @auto import mechanism supports other delimiters
-for section references.
-
-As discussed in a recent thread, there is no way to allow escape
-conventions for section references: the approach used by noweb will
-not work in Leo.
-
-I'll leave this bug open as an important wish-list item reminding me
-that it would be good to allow *different* delimiters for section
-references on an external-file-by-external-file basis.
-
-=====
-
-Import (and @auto) are a separate matter from the main read code used
-for @file. The @file read code knows *nothing* about syntax, except
-for comment delimiters. That makes the @file read code simple and
-robust.
-
-It *would* be possible to have a Leo directive change (or disable)
-delimiters for section references. The code would be straightforward,
-similar to the code for the @delims directive. This is what I intend
-to do.
-
-.. @+node:ekr.20120415174008.10059: *5* Cancelling save of dirty untitled commander doesn't work
-Only happens with --ipython.
-.. @+node:ekr.20110619173515.14895: *5* Fix bug: realpath in g.openWithFileName
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/cd5e2125c9e13d8f
-
-g.openWithFileName needs
-
-   fileName = g.os_path_realpath(fileName)
-
-at the start of it, otherwise
-
-g.openWithFileName("/home/tbrown/.leo/.todo.leo", c) will open another
-instance of an already open "/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo"
-because it doesn't recognize them as being the same.
-
-It would be nice if the original attempt to open
-"/home/tbrown/.leo/.todo.leo" was not converted to
-"/mnt/usr1/usr1/home/tbrown/.leo/.todo.leo", but I think the POSIX
-spec. insists on giving CPython the real path form, so this is hard to
-avoid.  You see this when selecting a file using a file dialog, in the
-dialog you choose /home/me/myfile.txt, but the return
-is /mnt/usr1/usr1/home/me/myfile.txt.
-
-Anyway, let me know if and when I can push that to trunk, impacts seem
-to be limited to (a) not failing to detect an already opened file in
-g.openWithFileName, which is a bug, and (b) sometimes less attractive
-apparent paths, which is annoying, but I think better than the bug.
-
-(this of course trips up UNLs
-if /mnt/usr1/usr1/home/tbrown/.leo/.todo.leo is already loaded and the
-UNL is /home/tbrown/.leo/.todo.leo#Home-->Paint roof)
-.. @+node:ekr.20110621085435.6531: *5* Fix bug: Improve the find panel and find menu
-@nocolor-node
-
-Recently, perhaps it was today, there was a remark made about Leo's
-Find panel being confusing for newbies.  I have some sympathy for the
-remarks.
-
-1.  Looking at Leo's Edit:Find menu, there is no obvious way of doing
-a search/replace operation.  I'll fix this soon after 4.9 final.
-
-2.  The Find tab should make it clearer that it is a summary/status
-tab only--not a way of actually initiating or continuing searches.
-Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
-for the find/change patterns would help a bit.
-.. @+node:ekr.20111021105253.9478: *3* Important
 .. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
 @nocolor-node
 
@@ -1605,6 +1575,7 @@ if 1:
     print('parse:    %2.3f sec.' % (t3-t2))
     print('traverse: %2.3f sec.' % (t4-t3))
     print('total:    %2.3f sec.' % (t4-t1))
+.. @+node:ekr.20111021105253.9478: *3* Important
 .. @+node:ekr.20111125072438.10219: *4* Open file dialogs starting with @path directory
 @nocolor-node
 

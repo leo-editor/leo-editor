@@ -1353,7 +1353,7 @@ class baseFileCommands:
 
         if dump: fc.dumpSaxTree(saxRoot,dummy=True)
 
-        # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
+        # Pass two: create the tree of vnodes from the intermediate nodes.
         if saxRoot:
             parent_v = c.hiddenRootNode
             children = fc.createSaxChildren(saxRoot,parent_v)
@@ -1384,7 +1384,7 @@ class baseFileCommands:
                     p.v.tnodeList = result
                     # g.trace('*** tnodeList for',p.h,result)
                 delattr(p.v,'tempTnodeList')
-    #@+node:ekr.20080805132422.3: *4* resolveArchivedPosition  (New in Leo 4.5)
+    #@+node:ekr.20080805132422.3: *4* resolveArchivedPosition
     def resolveArchivedPosition(self,archivedPosition,root_v):
 
         '''Return a vnode corresponding to the archived position relative to root node root_v.'''
