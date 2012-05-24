@@ -9572,6 +9572,8 @@ def putApropos (self,s):
         g.es(s)
 #@+node:ekr.20120523133829.14118: *4* Supported ctrl-clicks in vr panes
 #@+node:ekr.20120524082434.9923: *4* All viewrended commands now start with vr
+#@+node:ekr.20120524082434.12620: *4* help-for-command executes apropos commands
+Instead of just printing their docstrings.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

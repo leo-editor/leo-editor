@@ -6894,42 +6894,58 @@ class helpCommandsClass (baseEditCommandsClass):
     def helpForCommandFinisher (self,commandName):
 
         c = self.c ; s = None
-            
-        if commandName:
-            bindings = self.getBindingsForCommand(commandName)
-            func = c.commandsDict.get(commandName)
-            s = g.getDocStringForFunction(func)
-            if s:
+        
+        if commandName and commandName.startswith('apropos-'):
+            # Execute the command itself.
+            c.k.simulateCommand(commandName)
+        else:
+            if commandName:
+                bindings = self.getBindingsForCommand(commandName)
+                func = c.commandsDict.get(commandName)
+                s = g.getDocStringForFunction(func)
+                if not s:
+                    s = 'no docstring available'
+                    
+                # Create the title.
                 s2 = '%s:%s' % (commandName,bindings) if bindings else commandName
-                s = s2 + '\n\n' + ''.join([
+                underline = '+' * len(s2)
+                title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
+
+                # Fixes bug 618570:
+                s = title + ''.join([
                     g.choose(line.strip(),line.lstrip(),'\n')
                         for line in g.splitLines(s)])
-        if not s:
-            #@+<< set s to about help-for-command >>
-            #@+node:ekr.20120521114035.9872: *5* << set s to about help-for-command >>
-            s = '''\
-            Invoke Leo's help-for-command as follows::
-                
-                <F1>
-                <Alt-X>help-for-command<return>
+            else:
+                #@+<< set s to about help-for-command >>
+                #@+node:ekr.20120521114035.9872: *5* << set s to about help-for-command >>
+                s = '''\
 
-            Next, type the name of one of Leo's commands.
-            You can use tab completion.  Examples::
-                
-                <F1><tab>           shows all commands.
-                <F1>apropos<tab>    shows all apropos commands.
-                
-            Here are the apropos commands::
+                ++++++++++++++++++++++++
+                About Leo's help command
+                ++++++++++++++++++++++++
 
-                apropos-abbreviations
-                apropos-autocompletion
-                apropos-bindings
-                apropos-debugging-commands
-                apropos-find-commands
-            '''
-            #@-<< set s to about help-for-command >>
+                Invoke Leo's help-for-command as follows::
+                    
+                    <F1>
+                    <Alt-X>help-for-command<return>
 
-        c.putApropos(s) # calls g.adjustTripleString.
+                Next, type the name of one of Leo's commands.
+                You can use tab completion.  Examples::
+                    
+                    <F1><tab>           shows all commands.
+                    <F1>apropos<tab>    shows all apropos commands.
+                    
+                Here are the apropos commands::
+
+                    apropos-abbreviations
+                    apropos-autocompletion
+                    apropos-bindings
+                    apropos-debugging-commands
+                    apropos-find-commands
+                '''
+                #@-<< set s to about help-for-command >>
+        
+            c.putApropos(s) # calls g.adjustTripleString.
     #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
     def aproposAbbreviations (self,event=None):
         
