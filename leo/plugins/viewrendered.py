@@ -320,13 +320,6 @@ def pause_play_movie(event):
                     vp.pause()
                 else:
                     vp.play()
-#@+node:ekr.20110917103917.3637: *3* g.command('vr-show')
-@g.command('vr-show')
-def show_rendering_pane (event):
-    
-    '''A synonym for viewrendered.'''
-    
-    viewrendered(event)
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show-toggle')
 @g.command('vr-show-toggle')
 def toggle_rendering_pane(event):

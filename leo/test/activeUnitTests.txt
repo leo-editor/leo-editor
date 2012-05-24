@@ -9381,7 +9381,10 @@ for val in (True,False):
     # assert word == 'targetWord', 'got: %s' % word
 
 #@+node:ekr.20071113145804.15: *5* @test helpForMinibuffer
-c.helpCommands.helpForMinibuffer()
+if g.app.isExternalUnitTest:
+    pass
+else:
+    c.helpCommands.helpForMinibuffer()
 #@+node:ekr.20061104172236.6: *5* @test moveToHelper
 ec = c.editCommands ; w = c.frame.body.bodyCtrl
 
