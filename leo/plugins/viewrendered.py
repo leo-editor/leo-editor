@@ -266,8 +266,8 @@ def show_scrolled_message(tag, kw):
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
-@g.command('vr-close')
-def close_rendering_pane(event):
+@g.command('vr-hide')
+def hide_rendering_pane(event):
     
     '''Close the rendering pane.'''
 
@@ -285,6 +285,8 @@ def close_rendering_pane(event):
             else:
                 g.trace('Can not happen: no controller for %s' % (c))
             
+# Compatibility
+close_rendering_pane = hide_rendering_pane
 #@+node:ekr.20110321072702.14507: *3* g.command('vr-lock-toggle')
 @g.command('vr-lock-toggle')
 def lock_unlock_rendering_pane(event):
