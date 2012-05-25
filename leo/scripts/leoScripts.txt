@@ -12480,26 +12480,76 @@ def setToBeTranslated (self,s,n):
 
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
-#@+node:ekr.20110609184334.16461: *3* Print missing docstrings
-@color
+#@+node:ekr.20120525155800.10867: *3* Print missing docstrings
+'''print all commands that lack docstrings.'''
 
-'''Find all commands that lack docstrings, and
-append the corresponding function name to the end of this node.'''
+d = c.commandsDict
+    # Keys are command names; values are functions
 
-d = c.commandsDict # Keys are command names; values are functions,
 ignore = ['minibufferCallback','enterModeCallback',]
-aList = [ d.get(z).__name__ for z in d
-    if not d.get(z).__doc__ and not d.get(z).__name__ in ignore]
-aList.sort()
-tag = '@nocolor\n@\n'
-i = p.b.find(tag)
-if i > -1:
-    p.b = p.b[:i+len(tag)]
-s = '\n'.join(aList)
-p.b = p.b + s
 
-@nocolor
-@
+aList = [ d.get(z).__name__ for z in d
+    if (not d.get(z).__doc__ or not d.get(z).__doc__.strip())
+        and not d.get(z).__name__ in ignore]
+
+# g.cls()
+print()
+for z in sorted(aList):
+    print(z)
+    
+print('done')
+#@+node:ekr.20120525155800.10870: *3* print all docstrings from a module
+# This is a Python 2.x script.
+
+import leoTest
+import types
+
+specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
+
+def printDoc(x,s):
+    if hasattr(x,"__doc__") and x.__doc__:
+        g.pr("%4d %s" % (len(x.__doc__),s))
+    else:
+        g.pr("%4s %s" % (' ',s))
+
+g.pr('-' * 60)
+g.pr("%4d %s" % (len(leoTest.__doc__),"leoTest"))
+
+if 1:
+    for s in leoTest.__dict__:
+        if s not in specialDictNames:
+            x = getattr(leoTest,s)
+            if type(x) != types.ModuleType:
+                printDoc(x,s)
+                if type(x) == types.ClassType:
+                    for s2 in x.__dict__:
+                        x2 = getattr(x,s2)
+                        if s2 not in specialDictNames:
+                            g.pr(' '*4,)
+                            printDoc(x2,s2)
+else:
+    << print names sorted by type >>
+#@+node:ekr.20120525155800.10871: *4* << print names sorted by type >>
+for theType,typeName in (
+    (types.ModuleType,"modules"),
+    (types.ClassType,"classes"),
+    (types.FunctionType,"functions"),
+):
+
+    g.pr("\n%s..." % typeName)
+    for s in leoTest.__dict__:
+
+        if s not in specialDictNames:
+            x = getattr(leoTest,s)
+            if type(x) == theType:
+                printDoc(x,s)
+                if theType == types.ClassType:
+                    g.pr("\tmethods...")
+                    for s2 in x.__dict__:
+                        x2 = getattr(x,s2)
+                        if s2 not in specialDictNames:
+                            g.pr("\t",newline=False)
+                            printDoc(x2,s2)
 #@+node:ekr.20110916103731.2459: *3* Recursive create @auto nodes
 import os
 

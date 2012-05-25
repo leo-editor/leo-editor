@@ -1695,6 +1695,8 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20110916215321.6708: *4* selectToMatchingBracket (leoEditCommands)
     def selectToMatchingBracket (self,event):
         
+        '''Select text that matches the bracket near the cursor.'''
+        
         c = self.c ; k = c.k ; w = self.editWidget(event)
         if not w: return
         
@@ -3110,6 +3112,7 @@ class editCommandsClass (baseEditCommandsClass):
     # These call the actual event handlers so as to trigger hooks.
 
     def ctrlClickIconBox(self,event=None):
+        '''Simulate a ctrl-click in the icon box of the presently selected node.'''
         c = self.c
         c.frame.tree.OnIconCtrlClick(c.p)
             # Calls the base leoTree method.
@@ -9887,17 +9890,24 @@ class searchCommandsClass (baseEditCommandsClass):
         also creates a node at the beginning of the outline containing clones of all
         nodes containing the 'find' string. Only one clone is made of each node,
         regardless of how many clones the node has, or of how many matches are found
-        in each node.'''
+        in each node. Nodes that are descendants of previously added nodes are not
+        added again.'''
         self.getHandler().cloneFindAll(event)
         
     def cloneFindAllFlattened (self,event):
+        '''Do search-with-present-options and print all matches in the log pane. It
+        also creates a node at the beginning of the outline containing clones of all
+        nodes containing the 'find' string. Only one clone is made of each node,
+        regardless of how many clones the node has, or of how many matches are found
+        in each node. Nodes that are descendants of previously added nodes **are**
+        added again at the top level.'''
         self.getHandler().cloneFindAllFlattened(event)
 
-    def findAll            (self,event):
+    def findAll (self,event):
         '''Do search-with-present-options and print all matches in the log pane.'''
         self.getHandler().findAll(event)
 
-    def replaceString      (self,event):
+    def replaceString (self,event):
         '''Prompts for a search string. Type <Return> to end the search string. The
         command will then prompt for the replacement string. Typing a second
         <Return> key will place both strings in the Find tab and executes a **find**
