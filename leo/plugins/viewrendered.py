@@ -885,14 +885,20 @@ class ViewRenderedController(QtGui.QWidget):
         if pc.must_change_widget(pc.text_class):
             w = pc.text_class()
             
-            # Monkey patch a click handler.
-            def mouseReleaseEvent(event):
-                # Pass ctrl-clicks on.
+            def mouseReleaseHelper(w,event):
                 if QtCore.Qt.ControlModifier & event.modifiers():
                     event2 = {'c':self.c,'w':w.leo_wrapper}
                     g.openUrlOnClick(event2)
                 else:
                     QtGui.QTextBrowser.mouseReleaseEvent(w,event)
+            
+            # Monkey patch a click handler.
+            if g.isPython3:
+                def mouseReleaseEvent(event):
+                    mouseReleaseHelper(w,event)
+            else:
+                def mouseReleaseEvent(w,event):
+                    mouseReleaseHelper(w,event)
             
             w.mouseReleaseEvent = mouseReleaseEvent
             pc.embed_widget(w) # Creates w.wrapper
