@@ -9946,7 +9946,7 @@ class searchCommandsClass (baseEditCommandsClass):
         if not h.findAgain(event):
             h.searchWithPresentOptions(event)
     #@+node:ekr.20050920084036.261: *4* incremental search...
-    #@+node:ekr.20120524151127.9879: *5* Top-level (help-for-command docstrings)
+    #@+node:ekr.20120524151127.9879: *5* Top-level incremental search
     #@+node:ekr.20120524151127.9880: *6* isearchForward
     def isearchForward (self,event):
         
@@ -9954,7 +9954,10 @@ class searchCommandsClass (baseEditCommandsClass):
             
         - Plain characters extend the search.
         - !<isearch-forward>! repeats the search.
-        - Esc or !<keyboard-quit>! abort the search and restore the original cursor.
+        - Esc or any non-plain key ends the search.
+        - Backspace reverses the search.
+        - Backspacing to an empty search pattern 
+          completely undoes the effect of the search.
         '''
 
         self.startIncremental(event,'isearch-forward',
@@ -9966,7 +9969,10 @@ class searchCommandsClass (baseEditCommandsClass):
             
         - Plain characters extend the search backward.
         - !<isearch-forward>! repeats the search.
-        - Esc or !<keyboard-quit>! the search and restore the original cursor.
+        - Esc or any non-plain key ends the search.
+        - Backspace reverses the search.
+        - Backspacing to an empty search pattern 
+          completely undoes the effect of the search.
         '''
 
         self.startIncremental(event,'isearch-backward',
@@ -9978,19 +9984,42 @@ class searchCommandsClass (baseEditCommandsClass):
             
         - Plain characters extend the search.
         - !<isearch-forward-regexp>! repeats the search.
-        - Esc or !<keyboard-quit>! aborts the search and restore the original cursor.
+        - Esc or any non-plain key ends the search.
+        - Backspace reverses the search.
+        - Backspacing to an empty search pattern 
+          completely undoes the effect of the search.
         '''
         
         self.startIncremental(event,'isearch-forward-regexp',
             forward=True,ignoreCase=False,regexp=True)
     #@+node:ekr.20120524151127.9883: *6* isearchBackwardRegexp
     def isearchBackwardRegexp (self,event):
-        '''Begin a backard incremental regexp search.'''
+
+        '''Begin a backward incremental regexp search.
+            
+        - Plain characters extend the search.
+        - !<isearch-forward-regexp>! repeats the search.
+        - Esc or any non-plain key ends the search.
+        - Backspace reverses the search.
+        - Backspacing to an empty search pattern 
+          completely undoes the effect of the search.
+        '''
+
         self.startIncremental(event,'isearch-backward-regexp',
             forward=False,ignoreCase=False,regexp=True)
     #@+node:ekr.20120524151127.9884: *6* isearchWithPresentOptions
     def isearchWithPresentOptions (self,event):
-        '''Begin an incremental regexp search using find panel options.'''
+
+        '''Begin an incremental search using find panel options.
+        
+        - Plain characters extend the search.
+        - !<isearch-forward-regexp>! repeats the search.
+        - Esc or any non-plain key ends the search.
+        - Backspace reverses the search.
+        - Backspacing to an empty search pattern 
+          completely undoes the effect of the search.
+        '''
+
         self.startIncremental(event,'isearch-with-present-options',
             forward=None,ignoreCase=None,regexp=None)
     #@+node:ekr.20120524151127.9885: *5* Utils
@@ -10066,9 +10095,11 @@ class searchCommandsClass (baseEditCommandsClass):
             # else: g.trace('****')
             if not again: self.push(c.p,i,j,ifinder.in_headline)
         elif ifinder.wrapping:
-            g.es("end of wrapped search")
+            # g.es("end of wrapped search")
+            k.setLabelRed('end of wrapped search')
         else:
-            g.es("not found","'%s'" % (pattern))
+            # k.setLabelRed("not found: %s" % (pattern))
+            # g.es("not found","'%s'" % (pattern))
             event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
             k.updateLabel(event)
     #@+node:ekr.20050920084036.264: *6* iSearchStateHandler
@@ -10197,9 +10228,9 @@ class searchCommandsClass (baseEditCommandsClass):
         getOption = self.minibufferFindHandler.getOption
 
         self.event = event
-        self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
-        self.ignoreCase = g.choose(ignoreCase is None,getOption('ignore_case'),ignoreCase)
-        self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
+        self.forward    = not getOption('reverse') if forward is None else forward
+        self.ignoreCase = getOption('ignore_case') if ignoreCase is None else ignoreCase
+        self.regexp     = getOption('pattern_match') if regexp is None else regexp
         # Note: the word option can't be used with isearches!
 
         self.w = w = c.frame.body.bodyCtrl

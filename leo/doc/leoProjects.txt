@@ -3937,8 +3937,7 @@ def define_language_extension_dict (self):
         "sgml"          : "sgml",
         "shell"         : "sh", # DS 4/1/04
         "shellscript"   : "sh",
-        "shtml"         : "shtml",
-        "shtml"         : "ssi",
+        "shtml"         : "ssi", # Only one extension is valid: .shtml
         "smalltalk"     : "sm",
         "splus"         : "splus",
         "sqr"           : "sqr",
@@ -3956,8 +3955,7 @@ def define_language_extension_dict (self):
         "vbscript"      : "vbs",
         "velocity"      : "vtl",
         "verilog"       : "v",
-        "vhdl"          : "vhd",
-        "vhdl"          : "vhdl",
+        "vhdl"          : "vhd", # Only one extension is valid: .vhdl
         "vim"           : "vim",
         "vimoutline"    : "otl", #TL 8/25/08 Vim's outline plugin
         "xml"           : "xml",
@@ -3986,7 +3984,6 @@ def define_extension_dict(self):
     self.extension_dict = {
         # "ada":    "ada",
         "ada":      "ada95", # modes/ada95.py exists.
-        "ahk":      "ahk",
         "ahk":      "autohotkey",
         "aj":       "aspect_j",
         "apdl":     "apdl",
@@ -4037,7 +4034,7 @@ def define_extension_dict(self):
         "jmk":      "jmk",
         "js":       "javascript", # For javascript import test.
         "jsp":      "javaserverpage",
-        "jsp":      "jsp",
+        # "jsp":      "jsp",
         "ksh":      "kshell", # Leo 4.5.1.
         "lua":      "lua", # ddm 13/02/06
         "ly":       "lilypond",
@@ -4050,7 +4047,7 @@ def define_extension_dict(self):
         "mqsc":     "mqsc",
         "nqc":      "nqc",
         "nsi":      "nsi", # EKR: 2010/10/27
-        "nsi":      "nsis2",
+        # "nsi":      "nsis2",
         "nw":       "noweb",
         "occ":      "occam",
         "otl":      "vimoutline", #TL 8/25/08 Vim's outline plugin
@@ -4070,7 +4067,7 @@ def define_extension_dict(self):
         "ptl":      "ptl",
         "py":       "python",
         "pyx":      "cython", # Other extensions, .pyd,.pyi
-        "pyx":      "pyrex",
+        # "pyx":    "pyrex",
         # "r":      "r", # modes/r.py does not exist.
         "r":        "rebol", # jason 2003-07-03
         "rb":       "ruby", # thyrsus 2008-11-05
@@ -4089,18 +4086,17 @@ def define_extension_dict(self):
         "sm":       "smalltalk",
         "splus":    "splus",
         "sql":      "plsql", # qt02537 2005-05-27
-        "sql":      "tsql", # A guess.
         "sqr":      "sqr",
         "ss":       "ssharp",
         "ssi":      "shtml",
         "tcl":      "tcl", # modes/tcl.py exists.
         # "tcl":    "tcltk",
         "tex":      "latex",
-        "tex":      "tex",
+        # "tex":      "tex",
         "tpl":      "tpl",
         "txt":      "plain",
-        "txt":      "text",
-        "txt":      "unknown", # Set when @comment is seen.
+        # "txt":      "text",
+        # "txt":      "unknown", # Set when @comment is seen.
         "uc":       "uscript",
         "v":        "verilog",
         "vbs":      "vbscript",
@@ -4113,7 +4109,6 @@ def define_extension_dict(self):
         "xml":      "xml",
         "xom":      "omnimark",
         "xsl":      "xsl",
-        "xsl":      "xslt",
         "zpt":      "zpt",
     }
 
@@ -9683,6 +9678,15 @@ What I did:
    Note: a good unit test for reportMismatch already exists.
    
 3. Added a unit test for clean-lines.
+#@+node:ekr.20120519114248.9885: *4* Improved incremental search commands
+@nocolor-node
+
+- Documented that return ends the search.
+- Documented that deleting the entire search pattern aborts the search.
+- Removed annoying status messages printed to log.
+
+- (Can't do) If text is already highlighted, Alt-S or Alt-R should use that text.
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
