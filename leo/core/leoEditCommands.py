@@ -6889,7 +6889,7 @@ class helpCommandsClass (baseEditCommandsClass):
                     data.append((s1,s2,s3),)
 
         data.sort(key=lambda x: x[1])
-        return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
+        return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data]).strip()
     #@+node:ekr.20120521114035.9871: *4* helpForCommandFinisher
     def helpForCommandFinisher (self,commandName):
 
@@ -6903,11 +6903,13 @@ class helpCommandsClass (baseEditCommandsClass):
                 bindings = self.getBindingsForCommand(commandName)
                 func = c.commandsDict.get(commandName)
                 s = g.getDocStringForFunction(func)
-                if not s:
+                if s:
+                    s = self.replaceBindingPatterns(s)
+                else:
                     s = 'no docstring available'
                     
                 # Create the title.
-                s2 = '%s:%s' % (commandName,bindings) if bindings else commandName
+                s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
                 underline = '+' * len(s2)
                 title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
 
@@ -6946,6 +6948,27 @@ class helpCommandsClass (baseEditCommandsClass):
                 #@-<< set s to about help-for-command >>
         
             c.putApropos(s) # calls g.adjustTripleString.
+    #@+node:ekr.20120524151127.9886: *4* replaceBindingPatterns
+    def replaceBindingPatterns (self,s):
+        
+        '''For each instance of the pattern !<command-name>! is s,
+        replace the pattern by the key binding for command-name.'''
+        
+        c = self.c
+        pattern = re.compile('!<(.*)>!')
+        while True:
+            m = pattern.search(s,0)
+            if m is None: break
+            name = m.group(1)
+            junk,aList = c.config.getShortcut(name)
+            for si in aList:
+                if si.pane == 'all':
+                    key = c.k.prettyPrintKey(si.stroke.s)
+                    break
+            else: key = '<Alt-X>%s<Return>' % name
+            s = s[:m.start()] + key + s[m.end():]
+        return s
+
     #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
     def aproposAbbreviations (self,event=None):
         
@@ -9923,31 +9946,55 @@ class searchCommandsClass (baseEditCommandsClass):
         if not h.findAgain(event):
             h.searchWithPresentOptions(event)
     #@+node:ekr.20050920084036.261: *4* incremental search...
+    #@+node:ekr.20120524151127.9879: *5* Top-level (help-for-command docstrings)
+    #@+node:ekr.20120524151127.9880: *6* isearchForward
     def isearchForward (self,event):
-        '''Begin a forward incremental search.'''
+        
+        '''Begin a forward incremental search.
+            
+        - Plain characters extend the search.
+        - !<isearch-forward>! repeats the search.
+        - Esc or !<keyboard-quit>! abort the search and restore the original cursor.
+        '''
+
         self.startIncremental(event,'isearch-forward',
             forward=True,ignoreCase=False,regexp=False)
-
+    #@+node:ekr.20120524151127.9881: *6* isearchBackward
     def isearchBackward (self,event):
-        '''Begin a backward incremental search.'''
+        
+        '''Begin a backward incremental search.
+            
+        - Plain characters extend the search backward.
+        - !<isearch-forward>! repeats the search.
+        - Esc or !<keyboard-quit>! the search and restore the original cursor.
+        '''
+
         self.startIncremental(event,'isearch-backward',
             forward=False,ignoreCase=False,regexp=False)
-
+    #@+node:ekr.20120524151127.9882: *6* isearchForwardRegexp
     def isearchForwardRegexp (self,event):
-        '''Begin a forward incremental regexp search.'''
+         
+        '''Begin a forward incremental regexp search.
+            
+        - Plain characters extend the search.
+        - !<isearch-forward-regexp>! repeats the search.
+        - Esc or !<keyboard-quit>! aborts the search and restore the original cursor.
+        '''
+        
         self.startIncremental(event,'isearch-forward-regexp',
             forward=True,ignoreCase=False,regexp=True)
-
+    #@+node:ekr.20120524151127.9883: *6* isearchBackwardRegexp
     def isearchBackwardRegexp (self,event):
         '''Begin a backard incremental regexp search.'''
         self.startIncremental(event,'isearch-backward-regexp',
             forward=False,ignoreCase=False,regexp=True)
-
+    #@+node:ekr.20120524151127.9884: *6* isearchWithPresentOptions
     def isearchWithPresentOptions (self,event):
         '''Begin an incremental regexp search using find panel options.'''
         self.startIncremental(event,'isearch-with-present-options',
             forward=None,ignoreCase=None,regexp=None)
-    #@+node:ekr.20090204084607.1: *5* abortSearch
+    #@+node:ekr.20120524151127.9885: *5* Utils
+    #@+node:ekr.20090204084607.1: *6* abortSearch
     def abortSearch (self):
 
         '''Restore the original position and selection.'''
@@ -9965,7 +10012,7 @@ class searchCommandsClass (baseEditCommandsClass):
         w.setSelectionRange(i,j)
 
         # g.trace(p.h,i,j)
-    #@+node:ekr.20060203072636: *5* endSearch
+    #@+node:ekr.20060203072636: *6* endSearch
     def endSearch (self):
 
         c,k = self.c,self.k
@@ -9973,7 +10020,7 @@ class searchCommandsClass (baseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
-    #@+node:ekr.20090204084607.2: *5* iSearch
+    #@+node:ekr.20090204084607.2: *6* iSearch
     def iSearch (self,again=False):
 
         '''Handle the actual incremental search.'''
@@ -10024,7 +10071,7 @@ class searchCommandsClass (baseEditCommandsClass):
             g.es("not found","'%s'" % (pattern))
             event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
             k.updateLabel(event)
-    #@+node:ekr.20050920084036.264: *5* iSearchStateHandler
+    #@+node:ekr.20050920084036.264: *6* iSearchStateHandler
     # Called from the state manager when the state is 'isearch'
 
     def iSearchStateHandler (self,event):
@@ -10057,7 +10104,7 @@ class searchCommandsClass (baseEditCommandsClass):
             if trace: g.trace('event',event)
             k.updateLabel(event)
             self.iSearch()
-    #@+node:ekr.20090204084607.4: *5* iSearchBackspace
+    #@+node:ekr.20090204084607.4: *6* iSearchBackspace
     def iSearchBackspace (self):
 
         trace = False and not g.unitTesting
@@ -10091,14 +10138,14 @@ class searchCommandsClass (baseEditCommandsClass):
 
 
 
-    #@+node:ekr.20090204084607.6: *5* getStrokes
+    #@+node:ekr.20090204084607.6: *6* getStrokes
     def getStrokes (self,commandName):
 
         c = self.c
 
         aList = self.inverseBindingDict.get(commandName,[])
         return [key for pane,key in aList]
-    #@+node:ekr.20090204084607.5: *5* push & pop
+    #@+node:ekr.20090204084607.5: *6* push & pop
     def push (self,p,i,j,in_headline):
 
         data = p.copy(),i,j,in_headline
@@ -10109,7 +10156,7 @@ class searchCommandsClass (baseEditCommandsClass):
         data = self.stack.pop()
         p,i,j,in_headline = data
         return p,i,j,in_headline
-    #@+node:ekr.20090205085858.1: *5* setWidget
+    #@+node:ekr.20090205085858.1: *6* setWidget
     def setWidget (self):
 
         c = self.c ; p = c.currentPosition()
@@ -10132,7 +10179,7 @@ class searchCommandsClass (baseEditCommandsClass):
         if w == bodyCtrl:
             c.bodyWantsFocus()
         return w
-    #@+node:ekr.20050920084036.262: *5* startIncremental
+    #@+node:ekr.20050920084036.262: *6* startIncremental
     def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
         c = self.c ; k = self.k

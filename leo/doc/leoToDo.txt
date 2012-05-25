@@ -9,72 +9,6 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
-@nocolor-node
-
-Leo's Alt-R and Alt-S commands could be improved.
-
-- Return ends the search.  Should be documented.
-- Ctrl-g should abort the search and restore the cursor.
-- F2 and F3 should repeat the search, in the indicated direction.
-- If text is already highlighted, Alt-S or Alt-R should use that text.
-
-.. @+node:ekr.20031218072017.800: *4* Improve extract section command (has this been done?)
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1858824
-By: gilshwartz
-Open discusstion
-
-Currently Extract Section is only available if the first line in a selection
-is a section name <<x>>. I would like to propose a few enhancements I think
-should be useful, while I believe most of the code is already implemented in
-Leo.
-
-1. If the first line in a selection is not <<x>>, than Extract Section WILL
-make a section name from the first line (or a version of it, see below), leave
-the section name in the body, create a new node with that section name, and
-will copy the selection including the first line to the new node.
-
-Rational: this is useful when selecting a function or a class. Thus the section
-name becomes the function or the class definition. The section name can either
-be the full first line, or, knowing the language, Leo can make a nice section
-name like it does in import, e.g. "function foo", or "class bar", without the
-parameters list.
-
-2. Even better, when Extract Section is called WITHOUT a selection it will look
-for the first function/class definition before the cursor's position and will
-either use it as a selection and do 1 above, or just mark it as selection, which
-will enable 1 above upon a second Extract Section.
-
-Rational: Leo does it beautifully in import and when a node's code starts to
-build it is most convenient. Also, I think a variation on this was recently
-asked by another user.
-
-3. Add an option Merge Section, which when called from a named section will
-merge it back to all the sections containing it.
-
-Rational: make it easy (together with 2) to create/delete sections until the
-sections picture of a new code becomes clear.
-
-Gil
-
---
-
-Read and respond to this message at: 
-https://sourceforge.net/forum/message.php?msg_id=1859516
-By: nobody
-
-Simpler & more intutive:
-Mark text, select from menu - 'extract section', this presents a dialog box
-in which you fill in the section name. It is too much work to type <<name>>
-then select the whole thing...
-
-As an enhancement, the dialog can show the first line of the selection as the
-default section name, which obviously can be changed.
-
-- Rajiv Bhagwat
-.. @+node:ekr.20120523092521.9904: *3* Easy bugs (5)
-.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
 .. @+node:ekr.20120308120323.9864: *4* Fix bug 903640: Import of Python files containing the strings "<<" and ">>" does not work
 @nocolor-node
 
@@ -119,6 +53,32 @@ to do.
 
 .. @+node:ekr.20120415174008.10059: *4* Cancelling save of dirty untitled commander doesn't work
 Only happens with --ipython.
+.. @+node:ekr.20120321174708.9743: *4* Add docstrings for all commands
+@nocolor-node
+
+Every command should have a **complete** docstring.
+
+Help-for command should translate **key<command-name>** in the docstring to the binding for command-name.
+
+A script that gathers these docstrings for LeoDocs.leo would be good.
+.. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
+Leo must have a check-doc-strings script that will verify that all
+commands have non-trivial doc strings.
+
+.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
+.. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=4319363
+By: ktenney
+
+I think there is room for improvement in documenting Leo's
+API, making it easier to write these kind of scripts.
+I'm not sure of the best way to do that.
+
+Epydoc seems to be the most active project in this realm.
+http://epydoc.sourceforge.net/epydoc.html
+.. @+node:ekr.20120523092521.9904: *3* Easy bugs (3)
+.. @+node:ekr.20111008073427.15595: *4* Must have a shortcut for macro-call-last
 .. @+node:ekr.20110619173515.14895: *4* Fix bug: realpath in g.openWithFileName
 @nocolor-node
 
@@ -164,900 +124,7 @@ a search/replace operation.  I'll fix this soon after 4.9 final.
 tab only--not a way of actually initiating or continuing searches.
 Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
-.. @+node:ekr.20120520055508.11870: *3* Next
-.. @+node:ekr.20120321174708.9743: *4* Add docstrings for all commands
-@nocolor-node
-
-Every command should have a **complete** docstring.
-
-A script that gathers these docstrings for LeoDocs.leo would be good.
-.. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
-Leo must have a check-doc-strings script that will verify that all
-commands have non-trivial doc strings.
-
-.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
-.. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=4319363
-By: ktenney
-
-I think there is room for improvement in documenting Leo's
-API, making it easier to write these kind of scripts.
-I'm not sure of the best way to do that.
-
-Epydoc seems to be the most active project in this realm.
-http://epydoc.sourceforge.net/epydoc.html
-.. @+node:ekr.20110530082209.18250: *5* c.putApropos
-def putApropos (self,s):
-    
-    c = self
-    s = g.adjustTripleString(s.rstrip(),c.tab_width)
-    
-    # g.trace('\n',s)
-
-    pc = g.app.pluginsController
-    vr = pc.loadOnePlugin('viewrendered.py')
-    assert vr # For unit testing.
-    if vr:
-        kw = {
-            'c':c,
-            'flags':'rst',
-            'label':'',
-            'msg':s,
-            'name':'Apropos',
-            'short_title':'',
-            'title':''}
-        vr.show_scrolled_message(tag='Apropos',kw=kw)
-        c.bodyWantsFocus()
-        if g.unitTesting:
-            vr.close_rendering_pane(event={'c':c})
-    else:
-        g.es(s)
-.. @+node:ekr.20060205164707: *5* helpCommandsClass
-class helpCommandsClass (baseEditCommandsClass):
-
-    '''A class to load files into buffers and save buffers to files.'''
-
-    @others
-.. @+node:ekr.20060205165501: *6* getPublicCommands (helpCommands)
-def getPublicCommands (self):
-
-    return {
-        'apropos-abbreviations':    self.aproposAbbreviations,
-        'apropos-autocompletion':   self.aproposAutocompletion,
-        'apropos-bindings':         self.aproposBindings,
-        'apropos-debugging-commands': self.aproposDebuggingCommands,
-        'apropos-find-commands':    self.aproposFindCommands,
-        'apropos-regular-expressions': self.aproposRegularExpressions,
-        'help-for-command':         self.helpForCommand,
-        'help-for-minibuffer':      self.helpForMinibuffer,
-        'help-for-python':          self.pythonHelp,
-        'print-settings':           self.printSettings,
-    }
-.. @+node:ekr.20051014170754: *6* helpForMinibuffer
-def helpForMinibuffer (self,event=None):
-
-    '''Print a messages telling you how to get started with Leo.'''
-
-    # A bug in Leo: triple quotes puts indentation before each line.
-    c = self.c
-    
-    << define s >>
-    
-    self.c.putApropos(s)
-.. @+node:ekr.20120522024827.9899: *7* << define s >> (helpForMinibuffer)
-@language rest
-
-s = '''\
-
-++++++++++++++++++++
-About the Minibuffer
-++++++++++++++++++++
-
-The mini-buffer is intended to be like the Emacs buffer:
-
-full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
-full command name, then hit <Return> to execute the command. Tab completion
-works, but not yet for file names.
-
-quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
-defined in leoSettings.leo. It is useful for commonly-used commands.
-
-universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
-count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
-unfinished.
-
-keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
-the focus in the body pane.
-
-Use the help-for-command command to see documentation for a particular command.
-'''
-.. @+node:ekr.20060417203717: *6* helpForCommand & helpers
-def helpForCommand (self,event):
-
-    '''Prompts for a command name and prints the help message for that command.'''
-
-    k = self.k
-    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
-
-.. @+node:ekr.20120521114035.9870: *7* getBindingsForCommand
-def getBindingsForCommand(self,commandName):
-
-    c = self.c ; k = c.k
-    data = [] ; n1 = 4 ; n2 = 20
-    d = k.bindingsDict
-    for stroke in sorted(d):
-        assert g.isStroke(stroke),repr(stroke)
-        aList = d.get(stroke,[])
-        for si in aList:
-            assert g.isShortcutInfo(si),si
-            if si.commandName == commandName:
-                pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
-                s1 = pane
-                s2 = k.prettyPrintKey(stroke)
-                s3 = si.commandName
-                n1 = max(n1,len(s1))
-                n2 = max(n2,len(s2))
-                data.append((s1,s2,s3),)
-
-    data.sort(key=lambda x: x[1])
-    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
-.. @+node:ekr.20120521114035.9871: *7* helpForCommandFinisher
-def helpForCommandFinisher (self,commandName):
-
-    c = self.c ; s = None
-    
-    if commandName and commandName.startswith('apropos-'):
-        # Execute the command itself.
-        c.k.simulateCommand(commandName)
-    else:
-        if commandName:
-            bindings = self.getBindingsForCommand(commandName)
-            func = c.commandsDict.get(commandName)
-            s = g.getDocStringForFunction(func)
-            if not s:
-                s = 'no docstring available'
-                
-            # Create the title.
-            s2 = '%s:%s' % (commandName,bindings) if bindings else commandName
-            underline = '+' * len(s2)
-            title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
-
-            # Fixes bug 618570:
-            s = title + ''.join([
-                g.choose(line.strip(),line.lstrip(),'\n')
-                    for line in g.splitLines(s)])
-        else:
-            << set s to about help-for-command >>
-    
-        c.putApropos(s) # calls g.adjustTripleString.
-.. @+node:ekr.20120521114035.9872: *8* << set s to about help-for-command >>
-s = '''\
-
-++++++++++++++++++++++++
-About Leo's help command
-++++++++++++++++++++++++
-
-Invoke Leo's help-for-command as follows::
-    
-    <F1>
-    <Alt-X>help-for-command<return>
-
-Next, type the name of one of Leo's commands.
-You can use tab completion.  Examples::
-    
-    <F1><tab>           shows all commands.
-    <F1>apropos<tab>    shows all apropos commands.
-    
-Here are the apropos commands::
-
-    apropos-abbreviations
-    apropos-autocompletion
-    apropos-bindings
-    apropos-debugging-commands
-    apropos-find-commands
-'''
-.. @+node:ekr.20100901080826.5850: *6* aproposAbbreviations
-def aproposAbbreviations (self,event=None):
-    
-    '''Prints a discussion of abbreviations.'''
-    
-    << define s >>
-
-    self.c.putApropos(s)
-.. @+node:ekr.20110530082209.18251: *7* << define s >> (helpForAbbreviations)
-@language rest
-
-s = '''\
-
-+++++++++++++++++++
-About Abbreviations
-+++++++++++++++++++
-
-When abbreviation mode is on (abbrev-mode toggles this mode) Leo will
-expand abbreviations as you type. Type the name of an abbreviation,
-followed by a space. As soon as you type the space, Leo will replace the
-name by the abbreviations value. You can undo the replacement as usual.
-
-Note that defining any abbreviation automatically turns on abbreviation
-mode.
-
-The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
-selected text as the replacement value of the abbreviation. The minibuffer
-prompts you for the name of the abbreviation.
-
-Settings
-========
-
-As usual, the following settings have effect
-only in @settings trees...
-
-@bool enable-abbreviations (default: False)
-
-When true, enables substitution of
-abbreviations.
-
-@data global-abbreviations
-@data abbreviations
-
-In both cases, body text contains lines of
-the form::
-
-   name=value
-
-name is the abbreviation name, value is the
-substituted text. Whitespace is ignore around
-the name, but is significant in the value.
-Abbreviation names may contain only
-alphabetic characters, but may start with the
-'@' sign.
-
-By *convention* @data global-abbreviations
-setting should be defined in
-myLeoSettings.leo, while @data abbreviations
-should be defined in other .leo files.
-Regardless of where they are defined,
-abbreviations in @data abbreviation nodes
-will override settings (with the same name)
-in @data global-abbreviations nodes.
-
-Commands
-========
-
-apropos-abbreviations
-
-Prints this summary.
-
-dabbrev-completion
-
-Insert the common prefix of all dynamic
-abbreviations matching the present word.
-Similar C-M-/ in Emacs.
-
-dabbrev-expands
-
-Expand the word in the buffer before point as
-a dynamic abbrev, by searching in the buffer
-for words starting with that abbreviation
-(dabbrev-expand). Similar to M-/ in Emacs
-
-abbrev-mode
-
-Toggles abbreviation mode. Abbreviations are
-only active when this mode is on.
-
-add-global-abbrev
-
-Adds an abbreviation for the selected text.
-The minibuffer prompts for the abbreviation
-name.
-
-inverse-add-global-abbrev
-
-Adds an abbreviation. The selected text is
-the abbreviation name. The minibuffer prompts
-for the value of the abbreviation.
-
-kill-all-abbrevs
-
-Removes all abbreviations.
-
-list-abbrevs
-
-Lists all active abbreviations.
-
-read-abbrev-file
-
-Read an external file containing
-abbreviations.
-
-write-abbrev-file
-
-Writes abbreviations to an external file.
-
-Scripting
-=========
-
-Leo scripts may read abbreviations from a file with::
-
-    c.abbrevCommands.readAbbreviationsFromFile(fn)
-
-'''
-.. @+node:ekr.20060226131603.1: *6* aproposAutocompletion
-def aproposAutocompletion (self,event=None):
-
-    '''Prints a discussion of autocompletion.'''
-    
-    << define s >>
-
-    self.c.putApropos(s)
-.. @+node:ekr.20110530082209.18252: *7* << define s >> (aproposAutocompletion)
-# @pagewidth 40
-@language rest
-
-s = '''
-+++++++++++++++++++++++++++++++++
-About Autocompletion and Calltips
-+++++++++++++++++++++++++++++++++
-
-This documentation describes both
-autocompletion and calltips.
-
-Typing a period when @language python is
-in effect starts autocompletion. Typing
-'(' during autocompletion shows the
-calltip. Typing Return or Control-g
-(keyboard-quit) exits autocompletion or
-calltips.
-
-Autocompletion
-==============
-
-Autocompletion shows what may follow a
-period in code. For example, after
-typing g. Leo will show a list of all
-the global functions in leoGlobals.py.
-Autocompletion works much like tab
-completion in the minibuffer. Unlike the
-minibuffer, the presently selected
-completion appears directly in the body
-pane.
-
-A leading period brings up 'Autocomplete
-Modules'. (The period goes away.) You
-can also get any module by typing its
-name. If more than 25 items would appear
-in the Autocompleter tab, Leo shows only
-the valid starting characters. At this
-point, typing an exclamation mark shows
-the complete list. Thereafter, typing
-further exclamation marks toggles
-between full and abbreviated modes.
-
-If x is a list 'x.!' shows all its
-elements, and if x is a Python
-dictionary, 'x.!' shows list(x.keys()).
-For example, 'sys.modules.!' Again,
-further exclamation marks toggles
-between full and abbreviated modes.
-
-During autocompletion, typing a question
-mark shows the docstring for the object.
-For example: 'g.app?' shows the
-docstring for g.app. This doesn't work
-(yet) directly for Python globals, but
-'__builtin__.f?' does. Example:
-'__builtin__.pow?' shows the docstring
-for pow.
-
-Autocompletion works in the Find tab;
-you can use <Tab> to cycle through the
-choices. The 'Completion' tab appears
-while you are doing this; the Find tab
-reappears once the completion is
-finished.
-
-Calltips
-========
-
-Calltips appear after you type an open
-parenthesis in code. Calltips shows the
-expected arguments to a function or
-method. Calltips work for any Python
-function or method, including Python's
-global function. Examples:
-
-a) g.toUnicode(
-   gives:
-   g.toUnicode(s,encoding, reportErrors=False
-
-b) c.widgetWantsFocusNow
-   gives:
-   c.widgetWantsFocusNow(w
-
-c) reduce(
-   gives:
-   reduce(function, sequence[,initial]) -> value
-
-The calltips appear directly in the text
-and the argument list is highlighted so
-you can just type to replace it. The
-calltips appear also in the status line
-for reference after you have started to
-replace the args.
-
-Options
-=======
-
-Both autocompletion and calltips are
-initially enabled or disabled by the
-enable_autocompleter_initially and
-enable_calltips_initially settings in
-leoSettings.leo. You may enable or
-disable these features at any time with
-these commands: enable-autocompleter,
-enable-calltips, disable-autocompleter
-and disable-calltips. '''
-.. @+node:ekr.20060205170335: *6* aproposBindings
-def aproposBindings (self,event=None):
-
-    '''Prints a discussion of keyboard bindings.'''
-    
-    << define s >>
-
-    self.c.putApropos(s)
-.. @+node:ekr.20110530082209.18253: *7* << define s >> (aproposBindings)
-# @pagewidth 40
-@language rest
-
-s = '''
-++++++++++++++++++
-About Key Bindings
-++++++++++++++++++
-
-A shortcut specification has the form:
-
-command-name = shortcutSpecifier
-
-or
-
-command-name ! pane = shortcutSpecifier
-
-The first form creates a binding for all
-panes except the minibuffer. The second
-form creates a binding for one or more
-panes. The possible values for 'pane'
-are:
-
-====    ===============
-pane    bound panes
-====    ===============
-all     body,log,tree
-body    body
-log     log
-mini    minibuffer
-text    body,log
-tree    tree
-====    ===============
-
-You may use None as the specifier.
-Otherwise, a shortcut specifier consists
-of a head followed by a tail. The head
-may be empty, or may be a concatenation
-of the following: (All entries in each
-row are equivalent)::
-
-    Shift+ Shift-
-    Alt+ or Alt-
-    Control+, Control-, Ctrl+ or Ctrl-
-
-Notes:
-
-1. The case of plain letters is significant:
-   a is not A.
-
-2. The Shift- (or Shift+) prefix can be
-   applied *only* to letters or
-   multi-letter tails. Leo will ignore
-   (with a warning) the shift prefix
-   applied to other single letters,
-   e.g., Ctrl-Shift-(
-
-3. The case of letters prefixed by
-   Ctrl-, Alt-, Key- or Shift- is *not*
-   significant.
-
-The following table illustrates these
-rules. In each row, the first entry is
-the key (for k.bindingsDict) and the
-other entries are equivalents that the
-user may specify in leoSettings.leo::
-
-    a, Key-a, Key-A
-    A, Shift-A
-    Alt-a, Alt-A
-    Alt-A, Alt-Shift-a, Alt-Shift-A
-    Ctrl-a, Ctrl-A
-    Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-    !, Key-!,Key-exclam,exclam
-
-'''
-.. @+node:ekr.20070501092655: *6* aproposDebuggingCommands
-def aproposDebuggingCommands (self,event=None):
-
-    '''Prints a discussion of of Leo's debugging commands.'''
-
-    << define s >>
-
-    self.c.putApropos(s)
-.. @+node:ekr.20070501092655.1: *7* << define s >> (aproposDebuggingCommands)
-# @pagewidth 40
-@language rest
-
-s = '''
-++++++++++++++++++++++++
-About Debugging Commands
-++++++++++++++++++++++++
-
-The following commands are useful for debugging::
-
-    collect-garbage:   Invoke the garbage collector.
-    debug:             Start an external debugger in another process.
-    disable-gc-trace:  Disable tracing of the garbage collector.
-    dump-all-objects:  Print a summary of all existing Python objects.
-    dump-new-objects:  Print a summary of all newly-created Python objects.
-    enable-gc-trace:   Enable tracing of the garbage collector.
-    free-tree-widgets: Free all widgets used in Leo's outline pane.
-    print-focus:       Print information about the requested focus.
-    print-stats:       Print statistics about existing Python objects.
-    print-gc-summary:  Print a brief summary of all Python objects.
-    run-unit-tests:    Run unit tests in the presently selected tree.
-    verbose-dump-objects: Print a more verbose listing of all existing Python objects.
-    
-Leo also has many debugging settings that enable and disable traces.
-For details, see the node: @settings-->Debugging in leoSettings.leo.
-'''
-.. @+node:ekr.20060205170335.1: *6* aproposFindCommands
-def aproposFindCommands (self, event=None):
-
-    '''Prints a discussion of of Leo's find commands.'''
-
-    << define s >>
-
-    self.c.putApropos(s)
-.. @+node:ekr.20060209082023.1: *7* << define s >> (aproposFindCommands)_
-# @pagewidth 40
-@language rest
-
-s = '''
-+++++++++++++++++++
-About Find Commands
-+++++++++++++++++++
-
-Note: all bindings shown are the default
-bindings for these commands. You may
-change any of these bindings using
-@shortcuts nodes in leoSettings.leo.
-
-Settings
-========
-
-leoSettings.leo now contains several
-settings related to the Find tab:
-
-@bool show_only_find_tab_options = True
-
-  When True (recommended), the Find tab
-  does not show the 'Find', 'Change',
-  'Change, Then Find', 'Find All' and
-  'Change All' buttons.
-
-@bool minibufferSearchesShowFindTab = True
-
-  When True, Leo shows the Find tab when
-  executing most of the commands
-  discussed below.
-
-Basic find commands
-===================
-
-open-find-tab
-
-  Makes the Find tab visible. The Find
-  tab does **not** need to be visible to
-  execute any search command discussed
-  below.
-
-hide-find-tab
-
-  Hides the Find tab, but retains all
-  the present settings.
-
-search-with-present-options (Ctrl-F)
-
-  Prompts for a search string. Typing
-  the <Return> key puts the search
-  string in the Find tab and executes a
-  search based on all the settings in
-  the Find tab. This is a recommended
-  default search command.
-
-show-search-options
-
-  Shows the present search options in
-  the status line. This command also
-  makes the Find tab visible.
-
-find-next (F3)
-
-  Like search-with-present-options,
-  except that it uses the search string
-  in the find-tab. Recommended as the
-  default 'search again' command.
-
-find-previous (F2)
-
-  Repeats the command specified by the
-  Find tab, but in reverse.
-
-find-again
-
-  Like find-next if a search pattern is
-  not '<find pattern here>'. Otherwise,
-  like search-with-present-options.
-
-Setting find options
-====================
-
-Several minibuffer commands toggle the
-checkboxes and radio buttons in the Find
-tab, and thus affect the operation of
-the search-with-present-options command.
-You may bind these commands to keys or
-toggle these options in a mode.
-
-These commands toggle checkboxes::
-
-    toggle-find-ignore-case-option
-    toggle-find-in-body-option
-    toggle-find-in-headline-option
-    toggle-find-mark-changes-option
-    toggle-find-mark-finds-option
-    toggle-find-regex-option
-    toggle-find-word-option
-    toggle-find-wrap-around-option
-
-These commands set radio buttons::
-
-    set-find-everywhere,
-    set-find-node-only, and
-    set-find-suboutline-only.
-
-enter-find-options-mode (Ctrl-Shift-F)
-
-enters a mode in which you may change
-all checkboxes and radio buttons in the
-Find tab with plain keys. As always, you
-can use the mode-help (Tab) command to
-see a list of key bindings in effect for
-the mode.
-
-Search commands with side effects
-=================================
-
-The following commands set an option in
-the Find tab, then work exactly like the
-search-with-present-options command.
-
-- search-backward and search-forward set
-  the 'Whole Word' checkbox to False.
-
-- word-search-backward and
-  word-search-forward set the 'Whole
-  Word' checkbox to True.
-
-- re-search-forward and re-search-backward
-  set the 'Regexp' checkbox to True.
-
-Find all commands
-=================
-
-find-all
-
-  Prints all matches in the log pane.
-
-clone-find-all
-
-  Replaces the previous 'Clone Find'
-  checkbox. It prints all matches in the
-  log pane, and creates a node at the
-  beginning of the outline containing
-  clones of all nodes containing the
-  'find' string. Only one clone is made
-  of each node, regardless of how many
-  clones the node has, or of how many
-  matches are found in each node.
-
-Note: the radio buttons in the Find tab
-(Entire Outline, Suboutline Only and
-Node only) control how much of the
-outline is affected by the find-all and
-clone-find-all commands.
-
-Search and replace commands
-===========================
-
-replace-string
-
-  Prompts for a search string. Type
-  <Return> to end the search string. The
-  command will then prompt for the
-  replacement string. Typing a second
-  <Return> key will place both strings
-  in the Find tab and executes a
-  **find** command, that is,
-  search-with-present-options.
-
-So the only difference between
-replace-string and
-search-with-present-options is that
-replace-string has the side effect of
-setting 'change' string in the Find tab.
-However, this is an extremely useful
-side effect, because of the following
-commands...
-
-change (Ctrl-=)
-
-  Replaces the selected text with the
-  'change' text in the Find tab.
-
-change-then-find (Ctrl--)
-
-  Replaces the selected text with the
-  'change' text in the Find tab, then
-  executes the find command again.
-
-find-next, change and change-then-find
-can simulate any kind of query-replace
-command.
-
-change-all
-
-  Changes all occurrences of the 'find'
-  text with the 'change' text.
-  Important: the radio buttons in the
-  Find tab (Entire Outline, Suboutline
-  Only and Node only) control how much
-  of the outline is affected by this
-  command.
-
-Incremental search commands
-===========================
-
-Here are Leo's incremental find commands::
-
-    isearch-backward (Alt-R)
-    isearch-backward-regexp
-    isearch-forward (Alt-S)
-    isearch-forward-regexp
-
-You may use backspace to backtrack. To
-repeat an incremental search, type the
-shortcut for that command again.'''
-.. @+node:ekr.20120522024827.9897: *6* aproposRegularExpressions
-def aproposRegularExpressions (self, event=None):
-
-    '''Prints a discussion of of Leo's find commands.'''
-
-    << define s >>
-
-    self.c.putApropos(s)
-.. @+node:ekr.20120522024827.9898: *7* << define s >> (aproposRegularExpressions)
-@language rest
-
-# Using raw string is essential.
-s = r'''\
-
-.. _`regular expressions`: http://docs.python.org/library/re.html
-.. _`quick reference`:     http://rgruet.free.fr/PQR26/PQR2.6.html
-
-+++++++++++++++++++++++++++
-About Regular expressions
-+++++++++++++++++++++++++++
-
-Leo supports Python's regular expressionsin find patterns.
-Here is a quick reference::
-
-    .               Matches any character (including newline if DOTALL flag specified).
-    ^               Matches start of the string (of every line in MULTILINE mode).
-    $               Matches end of the string (of every line in MULTILINE mode).
-    *               0 or more of preceding regular expression (as many as possible).
-    +               1 or more of preceding regular expression (as many as possible).
-    ?               0 or 1 occurrence of preceding regular expression.
-    *?, +?, ??      Same as *, + and ? but matches as few characters as possible.
-    {m,n}           Matches from m to n repetitions of preceding RE.
-    {m,n}?          Same as {m,n}, but attempting to match as few repetitions as possible.
-    [ ]             Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
-    [^ ]            Defines complemented character set: matches if char is NOT in set.
-    \               Escapes special chars '*?+&$|()' and introduces special sequences (see below).
-                    If not using a raw string, write as '\\' in the pattern string.
-    \\              Matches a literal '\'.
-    |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
-    (...)           Matches any RE inside (), and delimits a group.
-    (?:...)         Mathces RE inside (), but doesn't delimit a group.
-    (?P<name>...)   Matches any RE inside (), and delimits a named group.
-                    r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
-    (?P=name)       Matches whatever text was matched by the earlier group named name.
-    (?=...)         Matches if ... matches next, but doesn't consume any of the string
-                    'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
-    (?!...)         Matches if ... doesn't match next. Negative of (?=...).
-    (?<=...)        Matches if the current position in the string is preceded by a match
-                    for ... that ends at the current position.
-                    This is called a positive lookbehind assertion.
-    (?<!...)        Matches if the current position in the string is not preceded by a match for ...
-                    This is called a negative lookbehind assertion.
-    (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...)
-                    earlier in the expression.
-                    If the specified group matched, the regular expression pattern A will be tested
-                    against the string; if the group didn't match, the pattern B will be used instead.
-    (?#...)         A comment; ignored.
-    (?letters)      Each letter is in 'ilmsux' and sets the corresponding flag.
-                    re.I, re.L, re.M, re.S, re.U, re.X.
-    \number         Matches content of the group of the same number.     
-    \A              Matches only at the start of the string.
-    \b              Empty str at beginning or end of word:
-                    '\bis\b' matches 'is', but not 'his'.
-    \B              Empty str NOT at beginning or end of word.
-    \d              Any decimal digit:          [0-9]
-    \D              Any non-decimal digit char  [^0-9]).
-    \s              Any whitespace char         [ \t\n\r\f\v]
-    \S              Any non-whitespace char     [^ \t\n\r\f\v]
-    \w              Any alphaNumeric char (depends on LOCALE flag).
-    \W              Any non-alphaNumeric char (depends on LOCALE flag).
-    \Z              Matches only at the end of the string.
-    
-For complete details, see: http://docs.python.org/library/re.html
-
-'''
-.. @+node:ekr.20060602154458: *6* pythonHelp
-def pythonHelp (self,event=None):
-
-    '''Prompt for a arg for Python's help function, and put it to the log pane.'''
-
-    c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
-
-    if state == 0:
-        c.minibufferWantsFocus()
-        k.setLabelBlue('Python help: ',protect=True)
-        k.getArg(event,tag,1,self.pythonHelp)
-    else:
-        k.clearState()
-        k.resetLabel()
-        s = k.arg.strip()
-        if s:
-            g.redirectStderr()
-            g.redirectStdout()
-            try: help(str(s))
-            except Exception: pass
-            g.restoreStderr()
-            g.restoreStdout()
-.. @+node:ekr.20070418074444: *6* printSettings
-def printSettings (self,event=None):
-    
-    '''Prints the value of every setting, except key bindings and commands and open-with tables.
-    The following shows where the active setting came from:
-
-    -     leoSettings.leo,
-    - [D] default settings.
-    - [F] indicates the file being loaded,
-    - [M] myLeoSettings.leo,
-
-    '''
-
-    self.c.config.printSettings()
-.. @+node:ekr.20120520055508.11873: *4* Add split-window commands
-.. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
+.. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
 @nocolor-node
 
 2012/05/20: ideas for LeoInspect
@@ -1072,7 +139,7 @@ def printSettings (self,event=None):
 - The assertions for TypedDict and TypedDictOfLists are ugly. We would like
   a lint-like tool to do away with them.
     
-.. @+node:ekr.20120515193246.10035: *5* To do
+.. @+node:ekr.20120515193246.10035: *4* To do
 @language rest
 
 The leoInspect chapter has a good to-do list:
@@ -1092,19 +159,19 @@ Three new getters would give leoInspect the ability to replace refactored code:
     o.text_range: Returns the starting and ending offsets of the text in the file.
 
 These getters are non-trivial to do, but a reasonable design is in place.
-.. @+node:ekr.20120515183732.10136: *5* What I did
+.. @+node:ekr.20120515183732.10136: *4* What I did
 @language rest
 
 - Made leoInspect a stand-alone module.
     The code attempts to import leo.core.leoGlobals.
     If that fails, it uses an internal LeoGlobals class.
-.. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
+.. @+node:ekr.20111128103520.10245: *4* Finish leoInspect.token_range
 @language python
 
 Traverse the tree, setting N.end_lineno and N.end_col_offset.
 
 See the notes below.
-.. @+node:ekr.20111128103520.10257: *6* @test leoInspect.token_range (s)
+.. @+node:ekr.20111128103520.10257: *5* @test leoInspect.token_range (s)
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -1153,7 +220,7 @@ if 0:
             show(d,1)
             for z in d.statements():
                 show(z,1)
-.. @+node:ekr.20111128103520.10258: *7* << define s >>
+.. @+node:ekr.20111128103520.10258: *6* << define s >>
 s = '''
 # x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
 a=b+c
@@ -1168,7 +235,7 @@ a=b+c
     # def method():
         # pass
     
-.. @+node:ekr.20111129084537.10357: *6* Notes
+.. @+node:ekr.20111129084537.10357: *5* Notes
 @language rest
 
 > All this means that it would likely be too expensive (or just too
@@ -1213,11 +280,11 @@ token_range will then call ast.walk(N) to discover all of N's nodes,
 sort the list, and return the last element of the list!
 
 In short, token_range is clean and bullet-proof--a happy result.
-.. @+node:ekr.20111116103733.9818: *5* LeoInspect unit tests
+.. @+node:ekr.20111116103733.9818: *4* LeoInspect unit tests
 @language python
-.. @+node:ekr.20120515193246.10058: *6* @test g.cls
+.. @+node:ekr.20120515193246.10058: *5* @test g.cls
 g.cls()
-.. @+node:ekr.20111116103733.10672: *6* @test leoInspect with multiple files
+.. @+node:ekr.20111116103733.10672: *5* @test leoInspect with multiple files
 import leo.core.leoInspect as inspect
 import os
 import time
@@ -1234,7 +301,7 @@ aList = (
     'leoEditCommands.py',
 )
 test(files=aList,print_stats=False,s=None,print_times=True)
-.. @+node:ekr.20111116103733.10451: *7* << define old_s >>
+.. @+node:ekr.20111116103733.10451: *6* << define old_s >>
 # import leo.core.leoGlobals
 # import leo.core.leoGlobals as g
 # from leo.core.leoGlobals import pr as pr2
@@ -1305,7 +372,7 @@ def test():
 '''
 
 # import leo.core.leoCommands as leoCommands
-.. @+node:ekr.20111116103733.10452: *7* << define s >>
+.. @+node:ekr.20111116103733.10452: *6* << define s >>
 s = '''\
 
 import leo.core.leoGlobals as g
@@ -1319,7 +386,7 @@ def test(c):
 
 s = g.adjustTripleString(s,-4)
 # print(s)
-.. @+node:ekr.20111116103733.10450: *7* test
+.. @+node:ekr.20111116103733.10450: *6* test
 def test(files,print_stats=True,s=None,print_times=True):
    
     t1 = time.clock()
@@ -1341,7 +408,7 @@ def test(files,print_stats=True,s=None,print_times=True):
     
     if print_times: sd.print_times()
     if print_stats: sd.print_stats()
-.. @+node:ekr.20111116103733.10449: *6* @test leoInspect.module.classes
+.. @+node:ekr.20111116103733.10449: *5* @test leoInspect.module.classes
 import leo.core.leoInspect as inspect
 
 dump_classes = False
@@ -1365,7 +432,7 @@ for o in m.classes():
     if print_functions:
         for f in o.functions():
             print('  %s' % f)
-.. @+node:ekr.20111116161118.10212: *6* @test leoInspect.module.classes 2
+.. @+node:ekr.20111116161118.10212: *5* @test leoInspect.module.classes 2
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -1375,7 +442,7 @@ m = inspect.module(fn='leoEditCommands.py')
     
 for z in m.classes():
     print(z)
-.. @+node:ekr.20111116161118.10218: *6* @test leoInspect.module.defs
+.. @+node:ekr.20111116161118.10218: *5* @test leoInspect.module.defs
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -1392,7 +459,7 @@ for z in m.classes():
         aList = z2.call_args_of(name)
         args = ','.join(aList)
         print(' %s(%s)' % (name,args))
-.. @+node:ekr.20111116161118.10181: *6* @test leoInspect.module.statements
+.. @+node:ekr.20111116161118.10181: *5* @test leoInspect.module.statements
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -1405,7 +472,7 @@ for z in m.classes():
     print(z)
     for z2 in z.defs():
         print(z2)
-.. @+node:ekr.20111116161118.10230: *6* @test leoInspect (leoEditCommands.py)
+.. @+node:ekr.20111116161118.10230: *5* @test leoInspect (leoEditCommands.py)
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -1443,7 +510,7 @@ if 0:
                 lines = g.splitLines(z.format())
                 for line in lines:
                     print('  %s' % (line))
-.. @+node:ekr.20111127153202.10231: *6* @test speed of AstTraverser (all Leo core files)
+.. @+node:ekr.20111127153202.10231: *5* @test speed of AstTraverser (all Leo core files)
 import leo.core.leoGlobals as g
 import leo.core.leoInspect as inspect
 import ast
@@ -1472,7 +539,7 @@ if 1:
     print('parse:    %2.3f sec.' % (parse_time))
     print('traverse: %2.3f sec.' % (traverse_time))
     print('total:    %2.3f sec.' % (total_time))
-.. @+node:ekr.20111127090852.10227: *6* @test leoInspect (all core files)
+.. @+node:ekr.20111127090852.10227: *5* @test leoInspect (all core files)
 import leo.core.leoInspect as inspect
 import time
 
@@ -1493,7 +560,7 @@ if 1:
     print('total: %2.3f sec.' % (total_time))
 if 1:
     sd.print_stats()
-.. @+node:ekr.20111117031039.10762: *6* @test leoInspect.module (s)
+.. @+node:ekr.20111117031039.10762: *5* @test leoInspect.module (s)
 import leo.core.leoInspect as inspect
 
 # g.cls()
@@ -1537,7 +604,7 @@ if 1:
             show(d,1)
             for z in d.statements():
                 show(z,1)
-.. @+node:ekr.20111117031039.10763: *7* << define s >>
+.. @+node:ekr.20111117031039.10763: *6* << define s >>
 s = '''
 x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
 a=b+c
@@ -1552,7 +619,7 @@ f(a=1,b=2,*args,**keys)
     # def method():
         # pass
     
-.. @+node:ekr.20111116103733.9838: *6* @test speed of AstTraverser (one file)
+.. @+node:ekr.20111116103733.9838: *5* @test speed of AstTraverser (one file)
 import leo.core.leoGlobals as g
 import leo.core.leoInspect as leoInspect
 import ast
@@ -1575,7 +642,8 @@ if 1:
     print('parse:    %2.3f sec.' % (t3-t2))
     print('traverse: %2.3f sec.' % (t4-t3))
     print('total:    %2.3f sec.' % (t4-t1))
-.. @+node:ekr.20111021105253.9478: *3* Important
+.. @+node:ekr.20111021105253.9478: *3* Important (7)
+.. @+node:ekr.20120520055508.11873: *4* Add split-window commands
 .. @+node:ekr.20111125072438.10219: *4* Open file dialogs starting with @path directory
 @nocolor-node
 
@@ -2142,52 +1210,6 @@ This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
 Solid, simple implementation of one of the standard template engines
 providing intuitive template nodes, variable definitions, and rendering options.
 
-.. @+node:ekr.20120516140545.9991: *3* Other
-.. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-Zope3, with it's component based architecture,
-has machinery which hooks components together ..
-Interfaces, Adapters and ZCML, the configuration
-language.
-
-It sounds like the autocompleter code is able
-to build indexes of classes and methods. It would
-be cool if that capability could be extensible,
-allowing building indexes of the couplings between
-components.
-
-I think this might look like some kind of automatic
-hyperlinking, providing access to related code,
-as defined for that application.
-
-I really don't know if this makes sense, but
-I see you moving in the direction of making Leo
-capable of doing some _explaining_ of the code 
-being written.
-.. @+node:ekr.20120520113447.9874: *4* Kent: select node from traceback
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love
-to be able to select an item and cause the file
-to appear in a node.
-It would be cool to have 'Next' and 'Prev' 
-capability while in this mode, effortlessly 
-traversing views of the source of the stack items.
-.. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
-@nocolor-node
-
-Like @color html::tags_markup_color = blue
-.. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
-Withdraw claim that Leo supports solarized.
-.. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
-http://ethanschoonover.com/solarized
-
-.. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
 .. @+node:ekr.20100828074347.5827: *4* Better support for vim
 @language rest
 
@@ -2406,6 +1428,52 @@ cursor to the 20th line in the file.
 The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
+.. @+node:ekr.20120516140545.9991: *3* Other (6)
+.. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+Zope3, with it's component based architecture,
+has machinery which hooks components together ..
+Interfaces, Adapters and ZCML, the configuration
+language.
+
+It sounds like the autocompleter code is able
+to build indexes of classes and methods. It would
+be cool if that capability could be extensible,
+allowing building indexes of the couplings between
+components.
+
+I think this might look like some kind of automatic
+hyperlinking, providing access to related code,
+as defined for that application.
+
+I really don't know if this makes sense, but
+I see you moving in the direction of making Leo
+capable of doing some _explaining_ of the code 
+being written.
+.. @+node:ekr.20120520113447.9874: *4* Kent: select node from traceback
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+When I have a traceback in the log pane, I'd love
+to be able to select an item and cause the file
+to appear in a node.
+It would be cool to have 'Next' and 'Prev' 
+capability while in this mode, effortlessly 
+traversing views of the source of the stack items.
+.. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
+@nocolor-node
+
+Like @color html::tags_markup_color = blue
+.. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
+Withdraw claim that Leo supports solarized.
+.. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
+http://ethanschoonover.com/solarized
+
+.. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
 .. @+node:ekr.20110620083705.14901: *4* Fix or disable curses gui
 leoBridge.py requires the nullGui.
 .. @+node:ekr.20120226183512.10195: *3* Bugs
