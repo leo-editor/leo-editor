@@ -463,8 +463,7 @@ class LeoApp:
             "sgml"          : "sgml",
             "shell"         : "sh", # DS 4/1/04
             "shellscript"   : "sh",
-            "shtml"         : "shtml",
-            "shtml"         : "ssi",
+            "shtml"         : "ssi", # Only one extension is valid: .shtml
             "smalltalk"     : "sm",
             "splus"         : "splus",
             "sqr"           : "sqr",
@@ -482,8 +481,7 @@ class LeoApp:
             "vbscript"      : "vbs",
             "velocity"      : "vtl",
             "verilog"       : "v",
-            "vhdl"          : "vhd",
-            "vhdl"          : "vhdl",
+            "vhdl"          : "vhd", # Only one extension is valid: .vhdl
             "vim"           : "vim",
             "vimoutline"    : "otl", #TL 8/25/08 Vim's outline plugin
             "xml"           : "xml",
@@ -512,7 +510,6 @@ class LeoApp:
         self.extension_dict = {
             # "ada":    "ada",
             "ada":      "ada95", # modes/ada95.py exists.
-            "ahk":      "ahk",
             "ahk":      "autohotkey",
             "aj":       "aspect_j",
             "apdl":     "apdl",
@@ -563,7 +560,7 @@ class LeoApp:
             "jmk":      "jmk",
             "js":       "javascript", # For javascript import test.
             "jsp":      "javaserverpage",
-            "jsp":      "jsp",
+            # "jsp":      "jsp",
             "ksh":      "kshell", # Leo 4.5.1.
             "lua":      "lua", # ddm 13/02/06
             "ly":       "lilypond",
@@ -576,7 +573,7 @@ class LeoApp:
             "mqsc":     "mqsc",
             "nqc":      "nqc",
             "nsi":      "nsi", # EKR: 2010/10/27
-            "nsi":      "nsis2",
+            # "nsi":      "nsis2",
             "nw":       "noweb",
             "occ":      "occam",
             "otl":      "vimoutline", #TL 8/25/08 Vim's outline plugin
@@ -596,7 +593,7 @@ class LeoApp:
             "ptl":      "ptl",
             "py":       "python",
             "pyx":      "cython", # Other extensions, .pyd,.pyi
-            "pyx":      "pyrex",
+            # "pyx":    "pyrex",
             # "r":      "r", # modes/r.py does not exist.
             "r":        "rebol", # jason 2003-07-03
             "rb":       "ruby", # thyrsus 2008-11-05
@@ -615,18 +612,17 @@ class LeoApp:
             "sm":       "smalltalk",
             "splus":    "splus",
             "sql":      "plsql", # qt02537 2005-05-27
-            "sql":      "tsql", # A guess.
             "sqr":      "sqr",
             "ss":       "ssharp",
             "ssi":      "shtml",
             "tcl":      "tcl", # modes/tcl.py exists.
             # "tcl":    "tcltk",
             "tex":      "latex",
-            "tex":      "tex",
+            # "tex":      "tex",
             "tpl":      "tpl",
             "txt":      "plain",
-            "txt":      "text",
-            "txt":      "unknown", # Set when @comment is seen.
+            # "txt":      "text",
+            # "txt":      "unknown", # Set when @comment is seen.
             "uc":       "uscript",
             "v":        "verilog",
             "vbs":      "vbscript",
@@ -639,7 +635,6 @@ class LeoApp:
             "xml":      "xml",
             "xom":      "omnimark",
             "xsl":      "xsl",
-            "xsl":      "xslt",
             "zpt":      "zpt",
         }
 
