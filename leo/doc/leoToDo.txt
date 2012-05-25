@@ -17,10 +17,6 @@ Every command should have a **complete** docstring.
 Help-for command should translate **key<command-name>** in the docstring to the binding for command-name.
 
 A script that gathers these docstrings for LeoDocs.leo would be good.
-.. @+node:ekr.20111018104244.15931: *5* Add @command print-cmd-docstrings
-Leo must have a check-doc-strings script that will verify that all
-commands have non-trivial doc strings.
-
 .. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
 .. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
 @nocolor
