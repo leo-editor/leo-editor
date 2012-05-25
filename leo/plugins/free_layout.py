@@ -83,66 +83,6 @@ if 0:
                 if splitter:
                     splitter.load_layout(layout)
     #@-others
-#@+node:tbrown.20120418121002.25711: ** class TopLevelFreeLayout
-class TopLevelFreeLayout(QtGui.QWidget):
-    """A QWidget to wrap a NestedSplitter to allow it to live in a top
-    level window and handle close events properly.
-    
-    These windows are opened by the free-layout splitter handle
-    context-menu item 'Open Window'.
-    
-    The NestedSplitter itself can't be the top-level widget/window,
-    because it assumes it can wrap itself in another NestedSplitter
-    when the user wants to "Add Above/Below/Left/Right".  I.e. wrap
-    a vertical nested splitter in a horizontal nested splitter, or
-    visa versa.  Parent->SplitterOne becomes Parent->SplitterTwo->SplitterOne,
-    where parent is either Leo's main window's QWidget 'centralwidget',
-    or one of these TopLevelFreeLayout "window frames".
-    """
-    #@+others
-    #@+node:tbrown.20120418121002.25713: *3* __init__
-    def __init__(self, *args, **kargs):
-        """Init. taking note of the FreeLayoutController which owns this"""
-        self.owner = kargs['owner']
-        del kargs['owner']
-        QtGui.QWidget.__init__(self, *args, **kargs)
-    #@+node:tbrown.20120418121002.25714: *3* closeEvent
-    def closeEvent(self, event):
-        """A top-level free-layout window has been closed, check all the
-        panes for widgets which must be preserved, and move any found
-        back into the main Leo window for this outline."""
-        
-        widget = self.findChild(NestedSplitter)  
-        # top level NestedSplitter in window being closed
-        
-        other_top = self.owner.get_top_splitter()
-        # top level NestedSplitter in main Leo window for this outline
-        
-        # adapted from NestedSplitter.remove()
-        count = widget.count()
-        all_ok = True
-
-        to_close = []
-
-        # get list of widgets to close so index based access isn't
-        # derailed by closing widgets in the same loop
-        for splitter in widget.self_and_descendants():
-            for i in range(splitter.count()-1, -1, -1):
-                
-                to_close.append(splitter.widget(i))
-                
-        for w in to_close:
-                
-            all_ok &= (widget.close_or_keep(w, other_top=other_top) is not False)
-
-        # it should always be ok to close the window, because it should always
-        # be possible to move widgets which must be preserved back to the
-        # ain Leo window for this outline, but if not, keep this window open
-        if all_ok or count <= 0:
-            self.owner.closing(self)
-        else:
-            event.ignore()
-    #@-others
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
@@ -181,10 +121,6 @@ class FreeLayoutController:
         
         # c.free_layout = self
             # To be removed
-        
-        self.windows = []  
-        # list of top level free-layout windows opened from 'Open Window'
-        # splitter handle context menu
         
         # g.registerHandler('after-create-leo-frame',self.bindControllers)
         
@@ -319,7 +255,8 @@ class FreeLayoutController:
         ans = []
         
         # list of things in tab widget
-        logTabWidget = self.find_child(QtGui.QWidget, "logTabWidget")
+        logTabWidget = self.get_top_splitter().find_child(QtGui.QWidget, "logTabWidget")
+          
         for n in range(logTabWidget.count()):
             text = str(logTabWidget.tabText(n))  # not QString
             if text in ('Body', 'Tree'):
@@ -327,8 +264,7 @@ class FreeLayoutController:
             if text == 'Log':
                 # if Leo can't find Log in tab pane, it creates another
                 continue
-            ans.append((text, 
-                        '_leo_tab:'+text))
+            ans.append((text, '_leo_tab:'+text))
 
         ans.append(('Tree', '_leo_pane:outlineFrame'))
         ans.append(('Body', '_leo_pane:bodyFrame'))
@@ -342,7 +278,7 @@ class FreeLayoutController:
         
             id_ = id_.split(':', 1)[1]
         
-            logTabWidget = self.find_child(QtGui.QWidget, "logTabWidget")
+            logTabWidget = self.get_top_splitter().find_child(QtGui.QWidget, "logTabWidget")
                 
             for n in range(logTabWidget.count()):
                 if logTabWidget.tabText(n) == id_:
@@ -358,7 +294,7 @@ class FreeLayoutController:
         if id_.startswith('_leo_pane:'):
         
             id_ = id_.split(':', 1)[1]
-            w = self.find_child(QtGui.QWidget, id_)
+            w = self.get_top_splitter().find_child(QtGui.QWidget, id_)
             if w:
                 w.setHidden(False)  # may be from Tab holder
                 w.setMinimumSize(20,20)
@@ -372,7 +308,6 @@ class FreeLayoutController:
         ans = [
             ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
-            ('Open window', '_fl_open_window'),
         ]
         
         d = g.app.db.get('ns_layouts', {})
@@ -387,10 +322,6 @@ class FreeLayoutController:
         
         if id_.startswith('_fl_embed_layout'):
             self.embed()
-            return True
-
-        if id_.startswith('_fl_open_window'):
-            self.open_window()
             return True
 
         if id_ == '_fl_save_layout':
@@ -472,50 +403,6 @@ class FreeLayoutController:
                 "under an active @settings node")
         
         c.redraw()
-    #@+node:tbrown.20120418121002.25438: *3* open_window
-    def open_window(self):
-        """open a top-level window, a TopLevelFreeLayout instance, to hold a
-        free-layout in addition to the one in the outline's main window"""
-        
-        window = TopLevelFreeLayout(owner=self)
-        window.setStyleSheet(
-            '\n'.join(self.c.config.getData('qt-gui-plugin-style-sheet')))
-        hbox = QtGui.QHBoxLayout()
-        window.setLayout(hbox)
-        hbox.setContentsMargins(0,0,0,0)
-        window.resize(400,300)
-        
-        ns = NestedSplitter(root=self.get_top_splitter().root)
-        hbox.addWidget(ns)
-        
-        # NestedSplitters must have two widgets so the handle carrying
-        # the all important context menu exists
-        ns.addWidget(NestedSplitterChoice(ns))
-        ns.addWidget(NestedSplitterChoice(ns))
-        ns.setSizes([0,1])  # but hide one initially
-
-        self.windows.append(window)
-        
-        window.show()
-    #@+node:tbrown.20120418121002.25712: *3* closing
-    def closing(self, window):
-        """forget a top-level additional layout which was closed"""
-        self.windows.remove(window)
-    #@+node:tbrown.20120418121002.25439: *3* find_child
-    def find_child(self, child_class, child_name=None):
-        """Like QObject.findChild, except search self.get_top_splitter()
-        *AND* each window in self.windows
-        """
-        
-        child = self.get_top_splitter().findChild(child_class, child_name)
-        
-        if not child:
-            for window in self.windows:
-                child = window.findChild(child_class, child_name)
-                if child:
-                    break
-        
-        return child
     #@-others
 #@-others
 #@-leo
