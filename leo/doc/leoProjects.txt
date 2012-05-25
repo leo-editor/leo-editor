@@ -4167,6 +4167,71 @@ for ext in ext_d:
 @nocolor-node
 
 The bug was in chapter.findPositionInChapter.
+#@+node:ekr.20120525051746.9982: *4* Fixed bug 998090: save file as doesn't remove entry from open file list
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/998090
+save file as doesn't remove entry from open file list
+
+Save file as leaves the file's previous path in g.app.db.openFiles, so
+that next time the original file's opened you get a "already open"
+message.
+#@+node:ekr.20031218072017.2835: *5* c.saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ; p = c.p
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+        
+    c.init_error_dialogs()
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        # Fix bug 998090: save file as doesn't remove entry from open file list.
+        if c.mFileName:
+            g.app.forgetOpenFile(c.mFileName)
+        # Don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+            # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+            c.frame.top.leo_master.setTabName(c,c.mFileName)
+        c.fileCommands.saveAs(c.mFileName)
+        g.app.recentFilesManager.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+
+    # Done in fileCommands.saveAs.
+    # c.redraw_after_icons_changed()
+    
+    c.raise_error_dialogs(kind='write')
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocus()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocus()
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
