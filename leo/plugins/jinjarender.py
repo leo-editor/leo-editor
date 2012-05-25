@@ -39,17 +39,24 @@ import leo.core.leoGlobals as g
 
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
-
-from jinja2 import Template
+    
+try:
+    from jinja2 import Template
+except ImportError:
+    Template = None
 #@-<< imports >>
 
 #@+others
 #@+node:ville.20110409151021.5703: ** init
 def init ():
-    g.plugin_signon(__name__)
-    jinja_install()
+    
+    ok = bool(Template)
+    
+    if ok:
+        g.plugin_signon(__name__)
+        jinja_install()
 
-    return True
+    return ok
 #@+node:ville.20110409151021.5705: ** install & act-on-node
 #@+node:ekr.20120525090541.10863: *3* untangle
 def untangle(c,p):
