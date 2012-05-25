@@ -1732,7 +1732,10 @@ class Commands (object):
         c.bringToFront()
 
         if fileName:
-            # 7/2/02: don't change mFileName until the dialog has suceeded.
+            # Fix bug 998090: save file as doesn't remove entry from open file list.
+            if c.mFileName:
+                g.app.forgetOpenFile(c.mFileName)
+            # Don't change mFileName until the dialog has suceeded.
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
             c.frame.setTitle(g.computeWindowTitle(c.mFileName))

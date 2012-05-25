@@ -51,6 +51,2457 @@ delimiters for section references. The code would be straightforward,
 similar to the code for the @delims directive. This is what I intend
 to do.
 
+.. @+node:ekr.20120519114248.9885: *4* Improve incremental search commands
+@nocolor-node
+
+Leo's Alt-R and Alt-S commands could be improved.
+
+- Return ends the search.  Should be documented.
+- Ctrl-g should abort the search and restore the cursor.
+- F2 and F3 should repeat the search, in the indicated direction.
+- If text is already highlighted, Alt-S or Alt-R should use that text.
+
+.. @+node:ekr.20051023094009: *5* Search classes
+.. @+node:ekr.20060123125256: *6* class minibufferFind (the findHandler)
+class minibufferFind (baseEditCommandsClass):
+
+    '''An adapter class that implements minibuffer find commands using the (hidden) Find Tab.'''
+
+    @others
+.. @+node:ekr.20060123125317.2: *7*  ctor (minibufferFind)
+def __init__(self,c,finder):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    # g.trace('minibufferFind: finder',finder)
+
+    self.c = c
+    self.k = k = c.k
+    self.w = None
+    self.finder = finder
+    self.findTextList = []
+    self.changeTextList = []
+
+    commandName = 'replace-string'
+    s = k.getShortcutForCommandName(commandName)
+    s = k.prettyPrintKey(s)
+    s = k.strokeFromSetting(s)
+    # g.trace('replaceStringShortcut',s)
+    self.replaceStringShortcut = s
+.. @+node:ekr.20090126063121.1: *7* editWidget (minibufferFind)
+def editWidget (self,event,forceFocus=True):
+
+    '''An override of baseEditCommands.editWidget
+
+    that does *not* set focus when using anything other than the tk gui.
+
+    This prevents this class from caching an edit widget
+    that is about to be deallocated.'''
+
+    c = self.c ; w = event and event.widget
+    bodyCtrl = self.c.frame.body and self.c.frame.body.bodyCtrl
+     
+    # Do not cache a pointer to a headline!
+    # It will die when the minibuffer is selected.
+    self.w = bodyCtrl
+
+    return self.w
+.. @+node:ekr.20060124140114: *7*  Options (minibufferFind)
+.. @+node:ekr.20060124123133: *8* setFindScope
+def setFindScope(self,where):
+
+    '''Set the find-scope radio buttons.
+
+    `where` must be in ('node-only','entire-outline','suboutline-only'). '''
+
+    h = self.finder
+
+    if where in ('node-only','entire-outline','suboutline-only'):
+        var = h.svarDict['radio-search-scope'].get()
+        if var:
+            h.svarDict["radio-search-scope"].set(where)
+    else:
+        g.trace('oops: bad `where` value: %s' % where)
+.. @+node:ekr.20060124122844: *8* get/set/toggleOption (minibufferFind)
+# This redirection is required to remove gui-dependencies.
+
+def getOption (self,ivar):          return self.finder.getOption(ivar)
+def setOption (self,ivar,val):      self.finder.setOption(ivar,val)
+def toggleOption (self,ivar):       self.finder.toggleOption(ivar)
+.. @+node:ekr.20060125074939: *8* showFindOptions
+def showFindOptions (self):
+
+    '''Show the present find options in the status line.'''
+
+    frame = self.c.frame ; z = []
+    # Set the scope field.
+    head  = self.getOption('search_headline')
+    body  = self.getOption('search_body')
+    scope = self.getOption('radio-search-scope')
+    d = {'entire-outline':'all','suboutline-only':'tree','node-only':'node'}
+    scope = d.get(scope) or ''
+    head = g.choose(head,'head','')
+    body = g.choose(body,'body','')
+    sep = g.choose(head and body,'+','')
+
+    frame.clearStatusLine()
+    s = '%s%s%s %s  ' % (head,sep,body,scope)
+    frame.putStatusLine(s,color='blue')
+
+    # Set the type field.
+    script = self.getOption('script_search')
+    regex  = self.getOption('pattern_match')
+    change = self.getOption('script_change')
+    if script:
+        s1 = '*Script-find'
+        s2 = g.choose(change,'-change*','*')
+        z.append(s1+s2)
+    elif regex: z.append('regex')
+
+    table = (
+        ('reverse',         'reverse'),
+        ('ignore_case',     'noCase'),
+        ('whole_word',      'word'),
+        ('wrap',            'wrap'),
+        ('mark_changes',    'markChg'),
+        ('mark_finds',      'markFnd'),
+    )
+
+    for ivar,s in table:
+        val = self.getOption(ivar)
+        if val: z.append(s)
+
+    frame.putStatusLine(' '.join(z))
+.. @+node:ekr.20060205105950: *8* setupChangePattern
+def setupChangePattern (self,pattern):
+
+    # g.trace('pattern',g.callers(4))
+
+    h = self.finder ; w = h.change_ctrl
+
+    s = g.toUnicode(pattern)
+
+    w.delete(0,'end')
+    w.insert(0,s)
+
+    h.update_ivars()
+.. @+node:ekr.20060125091234: *8* setupSearchPattern
+def setupSearchPattern (self,pattern):
+
+    h = self.finder ; w = h.find_ctrl
+
+    # g.trace(pattern)
+
+    s = g.toUnicode(pattern)
+
+    w.delete(0,'end')
+    w.insert(0,s)
+
+    h.update_ivars()
+.. @+node:ekr.20060210180352: *7* addChangeStringToLabel
+def addChangeStringToLabel (self,protect=True):
+
+    c = self.c ; k = c.k ; h = self.finder ; w = h.change_ctrl
+
+    c.frame.log.selectTab('Find')
+    c.minibufferWantsFocus()
+
+    s = w.getAllText()
+
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+
+    k.extendLabel(s,select=True,protect=protect)
+.. @+node:ekr.20060210164421: *7* addFindStringToLabel
+def addFindStringToLabel (self,protect=True):
+
+    c = self.c ; k = c.k ; h = self.finder ; w = h.find_ctrl
+
+    c.frame.log.selectTab('Find')
+    c.minibufferWantsFocus()
+
+    s = w.getAllText()
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+
+    k.extendLabel(s,select=True,protect=protect)
+.. @+node:ekr.20070105123800: *7* changeAll (minibufferFind)
+def changeAll (self,event):
+
+    k = self.k ; tag = 'change-all' ; state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        # Bug fix: 2009-5-31.
+        # None denotes that we use the present value of the option.
+        self.setupArgs(forward=None,regexp=None,word=None)
+        k.setLabelBlue('Change All From: ',protect=True)
+        k.getArg(event,tag,1,self.changeAll)
+    elif state == 1:
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = 'Change All: %s With: ' % (self._sString)
+        k.setLabelBlue(s,protect=True)
+        self.addChangeStringToLabel()
+        k.getArg(event,tag,2,self.changeAll,completion=False,prefix=s)
+    elif state == 2:
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString,k.arg,changeAll=True)
+.. @+node:ekr.20060128080201: *7* cloneFindAll (minibufferFind)
+def cloneFindAll (self,event):
+
+    c = self.c ; k = self.k ; tag = 'clone-find-all'
+    state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=None,regexp=None,word=None)
+        # Init the pattern from the search pattern.
+        self.stateZeroHelper(
+            event,tag,'Clone Find All: ',self.cloneFindAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,cloneFindAll=True)
+        c.treeWantsFocus()
+        
+.. @+node:ekr.20120226131923.10220: *7* cloneFindAllFlattened (minibufferFind)
+def cloneFindAllFlattened (self,event):
+
+    c = self.c ; k = self.k ; tag = 'clone-find-all-flattened'
+    state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=None,regexp=None,word=None)
+        # Init the pattern from the search pattern.
+        self.stateZeroHelper(
+            event,tag,'Clone Find All Flattened: ',self.cloneFindAllFlattened)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,cloneFindAllFlattened=True)
+        c.treeWantsFocus()
+.. @+node:ekr.20060204120158: *7* findAgain (minibufferFind)
+def findAgain (self,event):
+
+    f = self.finder
+
+    f.p = self.c.p
+    f.v = self.finder.p.v
+
+    # This handles the reverse option.
+    return f.findAgainCommand()
+.. @+node:ekr.20060209064140: *7* findAll (minibufferFind)
+def findAll (self,event):
+
+    k = self.k ; state = k.getState('find-all')
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=True,regexp=False,word=True)
+        k.setLabelBlue('Find All: ',protect=True)
+        k.getArg(event,'find-all',1,self.findAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,findAll=True)
+.. @+node:ekr.20060205105950.1: *7* generalChangeHelper (minibufferFind)
+def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
+
+    # g.trace(repr(change_pattern))
+
+    c = self.c
+
+    self.setupSearchPattern(find_pattern)
+    self.setupChangePattern(change_pattern)
+
+    c.widgetWantsFocusNow(self.w)
+
+    self.finder.p = self.c.p
+    self.finder.v = self.finder.p.v
+
+    # Bug fix: 2007-12-14: remove call to self.finder.findNextCommand.
+    # This was the cause of replaces not starting in the right place!
+
+    if changeAll:
+        self.finder.changeAllCommand()
+    else:
+        # This handles the reverse option.
+        self.finder.findNextCommand()
+.. @+node:ekr.20060124181213.4: *7* generalSearchHelper (minibufferFind)
+def generalSearchHelper (self,pattern,cloneFindAll=False,cloneFindAllFlattened=False,findAll=False):
+
+    c = self.c
+
+    self.setupSearchPattern(pattern)
+
+    c.widgetWantsFocusNow(self.w)
+
+    self.finder.p = self.c.p
+    self.finder.v = self.finder.p.v
+
+    if findAll:
+        self.finder.findAllCommand()
+    elif cloneFindAll:
+        self.finder.cloneFindAllCommand()
+    elif cloneFindAllFlattened:
+        self.finder.cloneFindAllFlattenedCommand()
+    else:
+        # This handles the reverse option.
+        self.finder.findNextCommand()
+.. @+node:ekr.20060210174441: *7* lastStateHelper
+def lastStateHelper (self):
+
+    k = self.k
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+.. @+node:ekr.20050920084036.113: *7* replaceString
+def replaceString (self,event):
+
+    k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
+    pattern_match = self.getOption ('pattern_match')
+    prompt = 'Replace ' + g.choose(pattern_match,'Regex','String')
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        prefix = '%s: ' % prompt
+        self.stateZeroHelper(event,tag,prefix,self.replaceString)
+    elif state == 1:
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = '%s: %s With: ' % (prompt,self._sString)
+        k.setLabelBlue(s,protect=True)
+        self.addChangeStringToLabel()
+        k.getArg(event,'replace-string',2,self.replaceString,completion=False,prefix=s)
+    elif state == 2:
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString,k.arg)
+.. @+node:ekr.20060124140224.3: *7* reSearchBackward/Forward
+def reSearchBackward (self,event):
+
+    k = self.k ; tag = 're-search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=True,word=None)
+        self.stateZeroHelper(
+            event,tag,'Regexp Search Backward:',self.reSearchBackward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def reSearchForward (self,event):
+
+    k = self.k ; tag = 're-search-forward' ; state = k.getState(tag)
+    if state == 0:
+        self.setupArgs(forward=True,regexp=True,word=None)
+        self.stateZeroHelper(
+            event,tag,'Regexp Search:',self.reSearchForward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+.. @+node:ekr.20060124140224.1: *7* seachForward/Backward
+def searchBackward (self,event):
+
+    k = self.k ; tag = 'search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=False,word=False)
+        self.stateZeroHelper(
+            event,tag,'Search Backward: ',self.searchBackward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def searchForward (self,event):
+
+    k = self.k ; tag = 'search-forward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=True,regexp=False,word=False)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchForward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+.. @+node:ekr.20060125093807: *7* searchWithPresentOptions
+def searchWithPresentOptions (self,event):
+
+    trace = False and not g.unitTesting
+    k = self.k ; tag = 'search-with-present-options'
+    state = k.getState(tag)
+
+    if trace: g.trace('state',state)
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchWithPresentOptions,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg)
+.. @+node:ekr.20060124134356: *7* setupArgs
+def setupArgs (self,forward=False,regexp=False,word=False):
+
+    h = self.finder ; k = self.k
+
+    if forward is None:
+        reverse = None
+    else:
+        reverse = not forward
+
+    for ivar,val,in (
+        ('reverse', reverse),
+        ('pattern_match',regexp),
+        ('whole_word',word),
+    ):
+        if val is not None:
+            self.setOption(ivar,val)
+
+    h.p = p = self.c.p
+    h.v = p.v
+    h.update_ivars()
+    self.showFindOptions()
+.. @+node:ekr.20060210173041: *7* stateZeroHelper
+def stateZeroHelper (self,event,tag,prefix,handler,escapes=None):
+
+    k = self.k
+    self.w = self.editWidget(event)
+    if not self.w: return
+
+    k.setLabelBlue(prefix,protect=True)
+    self.addFindStringToLabel(protect=False)
+
+    # g.trace(escapes,g.callers())
+    if escapes is None: escapes = []
+    k.getArgEscapes = escapes
+    k.getArgEscape = None # k.getArg may set this.
+    k.getArg(event,tag,1,handler, # enter state 1
+        tabList=self.findTextList,completion=True,prefix=prefix)
+.. @+node:ekr.20060224171851: *7* updateChange/FindList
+def updateChangeList (self,s):
+
+    if s not in self.changeTextList:
+        self.changeTextList.append(s)
+
+def updateFindList (self,s):
+
+    if s not in self.findTextList:
+        self.findTextList.append(s)
+.. @+node:ekr.20060124140224.2: *7* wordSearchBackward/Forward
+def wordSearchBackward (self,event):
+
+    k = self.k ; tag = 'word-search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=False,word=True)
+        self.stateZeroHelper(event,tag,'Word Search Backward: ',self.wordSearchBackward)
+    else:
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def wordSearchForward (self,event):
+
+    k = self.k ; tag = 'word-search-forward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=True,regexp=False,word=True)
+        self.stateZeroHelper(event,tag,'Word Search: ',self.wordSearchForward)
+    else:
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+.. @+node:ekr.20050920084036.257: *6* class searchCommandsClass
+class searchCommandsClass (baseEditCommandsClass):
+
+    '''Implements many kinds of searches.'''
+
+    @others
+.. @+node:ekr.20050920084036.258: *7*  ctor (searchCommandsClass)
+def __init__ (self,c):
+
+    # g.trace('searchCommandsClass')
+
+    baseEditCommandsClass.__init__(self,c)
+        # init the base class.
+        # sets self.c
+
+    self.findTabHandler = None
+    self.minibufferFindHandler = None
+    self.inited = False
+
+    # For isearch commands.
+    self.ifinder = None
+    self.stack = [] # Entries are (p,sel)
+    self.ignoreCase = None
+    self.forward = None
+    self.regexp = None
+.. @+node:ekr.20050920084036.259: *7* getPublicCommands (searchCommandsClass)
+def getPublicCommands (self):
+
+    return {
+        'clone-find-all':                       self.cloneFindAll,
+        'clone-find-all-flattened':             self.cloneFindAllFlattened,
+        
+        'change':                               self.findTabChange,
+        'change-all':                           self.changeAll,
+        'change-then-find':                     self.findTabChangeThenFind,
+        
+        'find-all':                             self.findAll,
+        'find-clone-all':                       self.cloneFindAll, # Synonym.
+        'find-clone-all-flattened':             self.cloneFindAllFlattened, # Synonym.
+        'find-next':                            self.findTabFindNext,
+        'find-prev':                            self.findTabFindPrev,
+
+        'find-tab-hide':                        self.hideFindTab, # new name
+        'find-tab-open':                        self.openFindTab, # new name
+
+        'isearch-forward':                      self.isearchForward,
+        'isearch-backward':                     self.isearchBackward,
+        'isearch-forward-regexp':               self.isearchForwardRegexp,
+        'isearch-backward-regexp':              self.isearchBackwardRegexp,
+        'isearch-with-present-options':         self.isearchWithPresentOptions,
+
+        'replace-string':                       self.replaceString,
+
+        're-search-forward':                    self.reSearchForward,
+        're-search-backward':                   self.reSearchBackward,
+
+        'search-again':                         self.findAgain,
+        'search-forward':                       self.searchForward,
+        'search-backward':                      self.searchBackward,
+        'search-with-present-options':          self.searchWithPresentOptions,
+
+        'set-find-everywhere':                  self.setFindScopeEveryWhere,
+        'set-find-node-only':                   self.setFindScopeNodeOnly,
+        'set-find-suboutline-only':             self.setFindScopeSuboutlineOnly,
+
+        'show-find-options':                    self.showFindOptions,
+
+        'toggle-find-collapses-nodes':          self.toggleFindCollapesNodes,
+
+        'toggle-find-ignore-case-option':       self.toggleIgnoreCaseOption,
+        'toggle-find-in-body-option':           self.toggleSearchBodyOption,
+        'toggle-find-in-headline-option':       self.toggleSearchHeadlineOption,
+        'toggle-find-mark-changes-option':      self.toggleMarkChangesOption,
+        'toggle-find-mark-finds-option':        self.toggleMarkFindsOption,
+        'toggle-find-regex-option':             self.toggleRegexOption,
+        # 'toggle-find-reverse-option':           self.toggleReverseOption,
+        'toggle-find-word-option':              self.toggleWholeWordOption,
+        'toggle-find-wrap-around-option':       self.toggleWrapSearchOption,
+
+        'word-search-forward':                  self.wordSearchForward,
+        'word-search-backward':                 self.wordSearchBackward,
+    }
+.. @+node:ekr.20060123131421: *7* Top-level methods
+.. @+node:ekr.20051020120306: *8* openFindTab
+def openFindTab (self,event=None,show=True):
+
+    '''Open the Find tab in the log pane.'''
+
+    c = self.c ; log = c.frame.log ; tabName = 'Find'
+
+    wasOpen = self.inited
+
+    if self.inited:
+        log.selectTab(tabName)
+    else:
+        self.inited = True
+        log.selectTab(tabName,createText=False)
+        f = log.frameDict.get(tabName)
+        self.findTabHandler = g.app.gui.createFindTab(c,f)
+
+    if show or wasOpen or c.config.getBool('minibufferSearchesShowFindTab'):
+        pass # self.findTabHandler.bringToFront()
+    else:
+        log.hideTab(tabName)
+.. @+node:ekr.20051022212004: *8* Find Tab commands
+# Just open the Find tab if it has never been opened.
+# For minibuffer commands, it would be good to force the Find tab to be visible.
+# However, this leads to unfortunate confusion when executed from a shortcut.
+
+def findTabChange(self,event=None):
+    '''Execute the 'Change' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeCommand()
+    else:
+        self.openFindTab()
+
+def findTabChangeThenFind(self,event=None):
+    '''Execute the 'Replace, Find' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeThenFindCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindAll(self,event=None):
+    '''Execute the 'Find All' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findAllCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindNext (self,event=None):
+    '''Execute the 'Find Next' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findNextCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindPrev (self,event=None):
+    '''Execute the 'Find Previous' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findPrevCommand()
+    else:
+        self.openFindTab()
+
+def hideFindTab (self,event=None):
+    '''Hide the Find tab.'''
+    if self.findTabHandler:
+        self.c.frame.log.selectTab('Log')
+.. @+node:ekr.20060124115801: *8* getHandler
+def getHandler(self,show=False):
+
+    '''Return the minibuffer handler, creating it if necessary.'''
+
+    c = self.c
+
+    self.openFindTab(show=show)
+        # sets self.findTabHandler,
+        # but *not* minibufferFindHandler.
+
+    if not self.minibufferFindHandler:
+        self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+
+    return self.minibufferFindHandler
+.. @+node:ekr.20060123115459: *8* Find options wrappers
+def setFindScopeEveryWhere (self, event):
+    '''Set the 'Entire Outline' radio button in the Find tab.'''
+    return self.setFindScope('entire-outline')
+def setFindScopeNodeOnly  (self, event):
+    '''Set the 'Node Only' radio button in the Find tab.'''
+    return self.setFindScope('node-only')
+def setFindScopeSuboutlineOnly (self, event):
+    '''Set the 'Suboutline Only' radio button in the Find tab.'''
+    return self.setFindScope('suboutline-only')
+def showFindOptions (self,event):
+    '''Show all Find options in the minibuffer label area.'''
+    self.getHandler().showFindOptions()
+def toggleFindCollapesNodes(self,event):
+    '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
+    c = self.c
+    c.sparse_find = not c.sparse_find
+    if not g.unitTesting:
+        g.es('sparse_find',c.sparse_find)
+def toggleIgnoreCaseOption     (self, event):
+    '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
+    return self.toggleOption('ignore_case')
+def toggleMarkChangesOption (self, event):
+    '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
+    return self.toggleOption('mark_changes')
+def toggleMarkFindsOption (self, event):
+    '''Toggle the 'Mark Finds' checkbox in the Find tab.'''
+    return self.toggleOption('mark_finds')
+def toggleRegexOption (self, event):
+    '''Toggle the 'Regexp' checkbox in the Find tab.'''
+    return self.toggleOption('pattern_match')
+# def toggleReverseOption        (self, event):
+    # '''Toggle the 'Reverse' checkbox in the Find tab.'''
+    # return self.toggleOption('reverse')
+def toggleSearchBodyOption (self, event):
+    '''Set the 'Search Body' checkbox in the Find tab.'''
+    return self.toggleOption('search_body')
+def toggleSearchHeadlineOption (self, event):
+    '''Toggle the 'Search Headline' checkbox in the Find tab.'''
+    return self.toggleOption('search_headline')
+def toggleWholeWordOption (self, event):
+    '''Toggle the 'Whole Word' checkbox in the Find tab.'''
+    return self.toggleOption('whole_word')
+def toggleWrapSearchOption (self, event):
+    '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
+    return self.toggleOption('wrap')
+def setFindScope (self, where):
+    self.getHandler().setFindScope(where)
+def toggleOption (self, ivar):
+    self.getHandler().toggleOption(ivar)
+.. @+node:ekr.20060124093828: *8* Find wrappers
+def changeAll(self,event=None):
+    '''Execute the 'Change All' command with the settings shown in the Find tab.'''
+    self.getHandler().changeAll(event)
+
+def cloneFindAll (self,event):
+    '''Do search-with-present-options and print all matches in the log pane. It
+    also creates a node at the beginning of the outline containing clones of all
+    nodes containing the 'find' string. Only one clone is made of each node,
+    regardless of how many clones the node has, or of how many matches are found
+    in each node.'''
+    self.getHandler().cloneFindAll(event)
+    
+def cloneFindAllFlattened (self,event):
+    self.getHandler().cloneFindAllFlattened(event)
+
+def findAll            (self,event):
+    '''Do search-with-present-options and print all matches in the log pane.'''
+    self.getHandler().findAll(event)
+
+def replaceString      (self,event):
+    '''Prompts for a search string. Type <Return> to end the search string. The
+    command will then prompt for the replacement string. Typing a second
+    <Return> key will place both strings in the Find tab and executes a **find**
+    command, that is, the search-with-present-options command.'''
+    self.getHandler().replaceString(event)
+
+def reSearchBackward   (self,event):
+    '''Do a reverse regex search.'''
+    self.getHandler().reSearchBackward(event)
+
+def reSearchForward    (self,event):
+    '''Do a forward regex search.'''
+    self.getHandler().reSearchForward(event)
+
+def searchBackward     (self,event):
+    '''Do a backward plain search.'''
+    self.getHandler().searchBackward(event)
+
+def searchForward      (self,event):
+    '''Do a forward plain search.'''
+    self.getHandler().searchForward(event)
+
+def wordSearchBackward (self,event):
+    '''Do a backward word-only search.'''
+    self.getHandler().wordSearchBackward(event)
+
+def wordSearchForward  (self,event):
+    '''Do a forward word-only search.'''
+    self.getHandler().wordSearchForward(event)
+
+def searchWithPresentOptions (self,event):
+    '''Prompts for a search string. Typing the <Return> key puts the search
+    string in the Find tab and executes a search based on all the settings in
+    the Find tab. Recommended as the default search command.'''
+    self.getHandler().searchWithPresentOptions(event)
+.. @+node:ekr.20060204120158.2: *8* findAgain
+def findAgain (self,event):
+
+    '''The find-again command is the same as the find-next command
+    if the search pattern in the Find tab is not '<find pattern here>'
+    Otherwise, the find-again is the same as the search-with-present-options command.'''
+
+    h = self.getHandler()
+
+    # h.findAgain returns False if there is no search pattern.
+    # In that case, we revert to search-with-present-options.
+    if not h.findAgain(event):
+        h.searchWithPresentOptions(event)
+.. @+node:ekr.20050920084036.261: *7* incremental search...
+.. @+node:ekr.20120524151127.9879: *8* Top-level (help-for-command docstrings)
+.. @+node:ekr.20120524151127.9880: *9* isearchForward
+def isearchForward (self,event):
+    
+    '''Begin a forward incremental search.
+        
+    - Plain characters extend the search.
+    - !<isearch-forward>! repeats the search.
+    - Esc or !<keyboard-quit>! abort the search and restore the original cursor.
+    '''
+
+    self.startIncremental(event,'isearch-forward',
+        forward=True,ignoreCase=False,regexp=False)
+.. @+node:ekr.20120524151127.9881: *9* isearchBackward
+def isearchBackward (self,event):
+    
+    '''Begin a backward incremental search.
+        
+    - Plain characters extend the search backward.
+    - !<isearch-forward>! repeats the search.
+    - Esc or !<keyboard-quit>! the search and restore the original cursor.
+    '''
+
+    self.startIncremental(event,'isearch-backward',
+        forward=False,ignoreCase=False,regexp=False)
+.. @+node:ekr.20120524151127.9882: *9* isearchForwardRegexp
+def isearchForwardRegexp (self,event):
+     
+    '''Begin a forward incremental regexp search.
+        
+    - Plain characters extend the search.
+    - !<isearch-forward-regexp>! repeats the search.
+    - Esc or !<keyboard-quit>! aborts the search and restore the original cursor.
+    '''
+    
+    self.startIncremental(event,'isearch-forward-regexp',
+        forward=True,ignoreCase=False,regexp=True)
+.. @+node:ekr.20120524151127.9883: *9* isearchBackwardRegexp
+def isearchBackwardRegexp (self,event):
+    '''Begin a backard incremental regexp search.'''
+    self.startIncremental(event,'isearch-backward-regexp',
+        forward=False,ignoreCase=False,regexp=True)
+.. @+node:ekr.20120524151127.9884: *9* isearchWithPresentOptions
+def isearchWithPresentOptions (self,event):
+    '''Begin an incremental regexp search using find panel options.'''
+    self.startIncremental(event,'isearch-with-present-options',
+        forward=None,ignoreCase=None,regexp=None)
+.. @+node:ekr.20120524151127.9885: *8* Utils
+.. @+node:ekr.20090204084607.1: *9* abortSearch
+def abortSearch (self):
+
+    '''Restore the original position and selection.'''
+
+    c = self.c ; k = self.k ; w = c.frame.body.bodyCtrl
+
+    k.clearState()
+    k.resetLabel()
+
+    p,i,j,in_headline = self.stack[0]
+    self.ifinder.in_headline = in_headline
+    c.selectPosition(p)
+    c.redraw_after_select(p)
+    c.bodyWantsFocus()
+    w.setSelectionRange(i,j)
+
+    # g.trace(p.h,i,j)
+.. @+node:ekr.20060203072636: *9* endSearch
+def endSearch (self):
+
+    c,k = self.c,self.k
+
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocus()
+.. @+node:ekr.20090204084607.2: *9* iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k ; p = c.p
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    ifinder.c = c ; ifinder.p = p.copy()
+    # Get the base ivars from the find tab.
+    ifinder.update_ivars()
+    # Save
+    oldPattern = ifinder.find_text
+    oldRegexp  = ifinder.pattern_match
+    oldReverse = ifinder.reverse
+    oldWord =  ifinder.whole_word
+    # Override
+    ifinder.pattern_match = self.regexp
+    ifinder.reverse = reverse
+    ifinder.find_text = pattern
+    ifinder.whole_word = False # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) <= 1: ifinder.in_headline = False
+    w = self.setWidget()
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if again:   ins = g.choose(reverse,i,j+len(pattern))
+    else:       ins = g.choose(reverse,j+len(pattern),i)
+    ifinder.init_s_ctrl(s,ins)
+    # Do the search!
+    pos, newpos = ifinder.findNextMatch()
+    # Restore.
+    ifinder.find_text = oldPattern
+    ifinder.pattern_match = oldRegexp
+    ifinder.reverse = oldReverse
+    ifinder.whole_word = oldWord
+    # Handle the results of the search.
+    if pos is not None: # success.
+        w = ifinder.showSuccess(pos,newpos,showState=False)
+        if w: i,j = w.getSelectionRange(sort=False)
+        # else: g.trace('****')
+        if not again: self.push(c.p,i,j,ifinder.in_headline)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
+        k.updateLabel(event)
+.. @+node:ekr.20050920084036.264: *9* iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = self.k
+    
+    stroke = event and event.stroke or None
+    s = stroke.s if stroke else ''
+        
+    if trace: g.trace('s',repr(s))
+
+    # No need to recognize ctrl-z.
+    if s in ('Escape','\n','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif s in ('\b','BackSpace'):
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif (
+        s.startswith('Ctrl+') or
+        s.startswith('Alt+') or
+        k.isFKey(s) # 2011/06/13.
+    ):
+        # End the search.
+        self.endSearch()
+        k.masterKeyHandler(event)
+    else:
+        if trace: g.trace('event',event)
+        k.updateLabel(event)
+        self.iSearch()
+.. @+node:ekr.20090204084607.4: *9* iSearchBackspace
+def iSearchBackspace (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; ifinder = self.ifinder
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+        return
+
+    # Reduce the stack by net 1.
+    junk = self.pop()
+    p,i,j,in_headline = self.pop()
+    self.push(p,i,j,in_headline)
+    if trace: g.trace(p.h,i,j,in_headline)
+
+    if in_headline:
+        # Like ifinder.showSuccess.
+        selection = i,j,i
+        c.redrawAndEdit(p,selectAll=False,
+            selection=selection,
+            keepMinibuffer=True)
+    else:
+        c.selectPosition(p)
+        w = c.frame.body.bodyCtrl
+        c.bodyWantsFocus()
+        if i > j: i,j = j,i
+        w.setSelectionRange(i,j)
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+.. @+node:ekr.20090204084607.6: *9* getStrokes
+def getStrokes (self,commandName):
+
+    c = self.c
+
+    aList = self.inverseBindingDict.get(commandName,[])
+    return [key for pane,key in aList]
+.. @+node:ekr.20090204084607.5: *9* push & pop
+def push (self,p,i,j,in_headline):
+
+    data = p.copy(),i,j,in_headline
+    self.stack.append(data)
+
+def pop (self):
+
+    data = self.stack.pop()
+    p,i,j,in_headline = data
+    return p,i,j,in_headline
+.. @+node:ekr.20090205085858.1: *9* setWidget
+def setWidget (self):
+
+    c = self.c ; p = c.currentPosition()
+    bodyCtrl = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+
+    if ifinder.in_headline:
+        w = c.edit_widget(p)
+        if not w:
+            # Selecting the minibuffer can kill the edit widget.
+            selection = 0,0,0
+            c.redrawAndEdit(p,selectAll=False,
+                selection=selection,keepMinibuffer=True)
+            w = c.edit_widget(p)
+        if not w: # Should never happen.
+            g.trace('**** no edit widget!')
+            ifinder.in_headline = False ; w = bodyCtrl
+    else:
+        w = bodyCtrl
+    if w == bodyCtrl:
+        c.bodyWantsFocus()
+    return w
+.. @+node:ekr.20050920084036.262: *9* startIncremental
+def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
+
+    c = self.c ; k = self.k
+
+    # None is a signal to get the option from the find tab.
+
+    if forward is None or not self.findTabHandler:
+        self.openFindTab(show=False)
+
+    self.ifinder = self.findTabHandler
+
+    if not self.minibufferFindHandler:
+        self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+
+    getOption = self.minibufferFindHandler.getOption
+
+    self.event = event
+    self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
+    self.ignoreCase = g.choose(ignoreCase is None,getOption('ignore_case'),ignoreCase)
+    self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
+    # Note: the word option can't be used with isearches!
+
+    self.w = w = c.frame.body.bodyCtrl
+    self.p1 = c.p.copy()
+    self.sel1 = w.getSelectionRange(sort=False)
+    i,j = self.sel1
+    self.push(c.p,i,j,self.ifinder.in_headline)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.getStrokes(commandName)
+
+    k.setLabelBlue('Isearch%s%s%s: ' % (
+            g.choose(self.forward,'',' Backward'),
+            g.choose(self.regexp,' Regexp',''),
+            g.choose(self.ignoreCase,' NoCase',''),
+        ),protect=True)
+
+    k.setState('isearch',1,handler=self.iSearchStateHandler)
+    c.minibufferWantsFocus()
+.. @+node:ekr.20060205164707: *5* helpCommandsClass
+class helpCommandsClass (baseEditCommandsClass):
+
+    '''A class to load files into buffers and save buffers to files.'''
+
+    @others
+.. @+node:ekr.20060205165501: *6* getPublicCommands (helpCommands)
+def getPublicCommands (self):
+
+    return {
+        'apropos-abbreviations':    self.aproposAbbreviations,
+        'apropos-autocompletion':   self.aproposAutocompletion,
+        'apropos-bindings':         self.aproposBindings,
+        'apropos-debugging-commands': self.aproposDebuggingCommands,
+        'apropos-find-commands':    self.aproposFindCommands,
+        'apropos-regular-expressions': self.aproposRegularExpressions,
+        'help-for-command':         self.helpForCommand,
+        'help-for-minibuffer':      self.helpForMinibuffer,
+        'help-for-python':          self.pythonHelp,
+        'print-settings':           self.printSettings,
+    }
+.. @+node:ekr.20051014170754: *6* helpForMinibuffer
+def helpForMinibuffer (self,event=None):
+
+    '''Print a messages telling you how to get started with Leo.'''
+
+    # A bug in Leo: triple quotes puts indentation before each line.
+    c = self.c
+    
+    << define s >>
+    
+    self.c.putApropos(s)
+.. @+node:ekr.20120522024827.9899: *7* << define s >> (helpForMinibuffer)
+@language rest
+
+s = '''\
+
+++++++++++++++++++++
+About the Minibuffer
+++++++++++++++++++++
+
+The mini-buffer is intended to be like the Emacs buffer:
+
+full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
+full command name, then hit <Return> to execute the command. Tab completion
+works, but not yet for file names.
+
+quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
+defined in leoSettings.leo. It is useful for commonly-used commands.
+
+universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
+count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
+unfinished.
+
+keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
+the focus in the body pane.
+
+Use the help-for-command command to see documentation for a particular command.
+'''
+.. @+node:ekr.20060417203717: *6* helpForCommand & helpers
+def helpForCommand (self,event):
+
+    '''Prompts for a command name and prints the help message for that command.'''
+
+    k = self.k
+    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
+
+.. @+node:ekr.20120521114035.9870: *7* getBindingsForCommand
+def getBindingsForCommand(self,commandName):
+
+    c = self.c ; k = c.k
+    data = [] ; n1 = 4 ; n2 = 20
+    d = k.bindingsDict
+    for stroke in sorted(d):
+        assert g.isStroke(stroke),repr(stroke)
+        aList = d.get(stroke,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            if si.commandName == commandName:
+                pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
+                s1 = pane
+                s2 = k.prettyPrintKey(stroke)
+                s3 = si.commandName
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+
+    data.sort(key=lambda x: x[1])
+    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data]).strip()
+.. @+node:ekr.20120521114035.9871: *7* helpForCommandFinisher
+def helpForCommandFinisher (self,commandName):
+
+    c = self.c ; s = None
+    
+    if commandName and commandName.startswith('apropos-'):
+        # Execute the command itself.
+        c.k.simulateCommand(commandName)
+    else:
+        if commandName:
+            bindings = self.getBindingsForCommand(commandName)
+            func = c.commandsDict.get(commandName)
+            s = g.getDocStringForFunction(func)
+            if s:
+                s = self.replaceBindingPatterns(s)
+            else:
+                s = 'no docstring available'
+                
+            # Create the title.
+            s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
+            underline = '+' * len(s2)
+            title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
+
+            # Fixes bug 618570:
+            s = title + ''.join([
+                g.choose(line.strip(),line.lstrip(),'\n')
+                    for line in g.splitLines(s)])
+        else:
+            << set s to about help-for-command >>
+    
+        c.putApropos(s) # calls g.adjustTripleString.
+.. @+node:ekr.20120521114035.9872: *8* << set s to about help-for-command >>
+s = '''\
+
+++++++++++++++++++++++++
+About Leo's help command
+++++++++++++++++++++++++
+
+Invoke Leo's help-for-command as follows::
+    
+    <F1>
+    <Alt-X>help-for-command<return>
+
+Next, type the name of one of Leo's commands.
+You can use tab completion.  Examples::
+    
+    <F1><tab>           shows all commands.
+    <F1>apropos<tab>    shows all apropos commands.
+    
+Here are the apropos commands::
+
+    apropos-abbreviations
+    apropos-autocompletion
+    apropos-bindings
+    apropos-debugging-commands
+    apropos-find-commands
+'''
+.. @+node:ekr.20120524151127.9886: *7* replaceBindingPatterns
+def replaceBindingPatterns (self,s):
+    
+    '''For each instance of the pattern !<command-name>! is s,
+    replace the pattern by the key binding for command-name.'''
+    
+    c = self.c
+    pattern = re.compile('!<(.*)>!')
+    while True:
+        m = pattern.search(s,0)
+        if m is None: break
+        name = m.group(1)
+        junk,aList = c.config.getShortcut(name)
+        for si in aList:
+            if si.pane == 'all':
+                key = c.k.prettyPrintKey(si.stroke.s)
+                break
+        else: key = '<Alt-X>%s<Return>' % name
+        s = s[:m.start()] + key + s[m.end():]
+    return s
+
+.. @+node:ekr.20100901080826.5850: *6* aproposAbbreviations
+def aproposAbbreviations (self,event=None):
+    
+    '''Prints a discussion of abbreviations.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18251: *7* << define s >> (helpForAbbreviations)
+@language rest
+
+s = '''\
+
++++++++++++++++++++
+About Abbreviations
++++++++++++++++++++
+
+When abbreviation mode is on (abbrev-mode toggles this mode) Leo will
+expand abbreviations as you type. Type the name of an abbreviation,
+followed by a space. As soon as you type the space, Leo will replace the
+name by the abbreviations value. You can undo the replacement as usual.
+
+Note that defining any abbreviation automatically turns on abbreviation
+mode.
+
+The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the abbreviation. The minibuffer
+prompts you for the name of the abbreviation.
+
+Settings
+========
+
+As usual, the following settings have effect
+only in @settings trees...
+
+@bool enable-abbreviations (default: False)
+
+When true, enables substitution of
+abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+In both cases, body text contains lines of
+the form::
+
+   name=value
+
+name is the abbreviation name, value is the
+substituted text. Whitespace is ignore around
+the name, but is significant in the value.
+Abbreviation names may contain only
+alphabetic characters, but may start with the
+'@' sign.
+
+By *convention* @data global-abbreviations
+setting should be defined in
+myLeoSettings.leo, while @data abbreviations
+should be defined in other .leo files.
+Regardless of where they are defined,
+abbreviations in @data abbreviation nodes
+will override settings (with the same name)
+in @data global-abbreviations nodes.
+
+Commands
+========
+
+apropos-abbreviations
+
+Prints this summary.
+
+dabbrev-completion
+
+Insert the common prefix of all dynamic
+abbreviations matching the present word.
+Similar C-M-/ in Emacs.
+
+dabbrev-expands
+
+Expand the word in the buffer before point as
+a dynamic abbrev, by searching in the buffer
+for words starting with that abbreviation
+(dabbrev-expand). Similar to M-/ in Emacs
+
+abbrev-mode
+
+Toggles abbreviation mode. Abbreviations are
+only active when this mode is on.
+
+add-global-abbrev
+
+Adds an abbreviation for the selected text.
+The minibuffer prompts for the abbreviation
+name.
+
+inverse-add-global-abbrev
+
+Adds an abbreviation. The selected text is
+the abbreviation name. The minibuffer prompts
+for the value of the abbreviation.
+
+kill-all-abbrevs
+
+Removes all abbreviations.
+
+list-abbrevs
+
+Lists all active abbreviations.
+
+read-abbrev-file
+
+Read an external file containing
+abbreviations.
+
+write-abbrev-file
+
+Writes abbreviations to an external file.
+
+Scripting
+=========
+
+Leo scripts may read abbreviations from a file with::
+
+    c.abbrevCommands.readAbbreviationsFromFile(fn)
+
+'''
+.. @+node:ekr.20060226131603.1: *6* aproposAutocompletion
+def aproposAutocompletion (self,event=None):
+
+    '''Prints a discussion of autocompletion.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18252: *7* << define s >> (aproposAutocompletion)
+# @pagewidth 40
+@language rest
+
+s = '''
++++++++++++++++++++++++++++++++++
+About Autocompletion and Calltips
++++++++++++++++++++++++++++++++++
+
+This documentation describes both
+autocompletion and calltips.
+
+Typing a period when @language python is
+in effect starts autocompletion. Typing
+'(' during autocompletion shows the
+calltip. Typing Return or Control-g
+(keyboard-quit) exits autocompletion or
+calltips.
+
+Autocompletion
+==============
+
+Autocompletion shows what may follow a
+period in code. For example, after
+typing g. Leo will show a list of all
+the global functions in leoGlobals.py.
+Autocompletion works much like tab
+completion in the minibuffer. Unlike the
+minibuffer, the presently selected
+completion appears directly in the body
+pane.
+
+A leading period brings up 'Autocomplete
+Modules'. (The period goes away.) You
+can also get any module by typing its
+name. If more than 25 items would appear
+in the Autocompleter tab, Leo shows only
+the valid starting characters. At this
+point, typing an exclamation mark shows
+the complete list. Thereafter, typing
+further exclamation marks toggles
+between full and abbreviated modes.
+
+If x is a list 'x.!' shows all its
+elements, and if x is a Python
+dictionary, 'x.!' shows list(x.keys()).
+For example, 'sys.modules.!' Again,
+further exclamation marks toggles
+between full and abbreviated modes.
+
+During autocompletion, typing a question
+mark shows the docstring for the object.
+For example: 'g.app?' shows the
+docstring for g.app. This doesn't work
+(yet) directly for Python globals, but
+'__builtin__.f?' does. Example:
+'__builtin__.pow?' shows the docstring
+for pow.
+
+Autocompletion works in the Find tab;
+you can use <Tab> to cycle through the
+choices. The 'Completion' tab appears
+while you are doing this; the Find tab
+reappears once the completion is
+finished.
+
+Calltips
+========
+
+Calltips appear after you type an open
+parenthesis in code. Calltips shows the
+expected arguments to a function or
+method. Calltips work for any Python
+function or method, including Python's
+global function. Examples:
+
+a) g.toUnicode(
+   gives:
+   g.toUnicode(s,encoding, reportErrors=False
+
+b) c.widgetWantsFocusNow
+   gives:
+   c.widgetWantsFocusNow(w
+
+c) reduce(
+   gives:
+   reduce(function, sequence[,initial]) -> value
+
+The calltips appear directly in the text
+and the argument list is highlighted so
+you can just type to replace it. The
+calltips appear also in the status line
+for reference after you have started to
+replace the args.
+
+Options
+=======
+
+Both autocompletion and calltips are
+initially enabled or disabled by the
+enable_autocompleter_initially and
+enable_calltips_initially settings in
+leoSettings.leo. You may enable or
+disable these features at any time with
+these commands: enable-autocompleter,
+enable-calltips, disable-autocompleter
+and disable-calltips. '''
+.. @+node:ekr.20060205170335: *6* aproposBindings
+def aproposBindings (self,event=None):
+
+    '''Prints a discussion of keyboard bindings.'''
+    
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18253: *7* << define s >> (aproposBindings)
+# @pagewidth 40
+@language rest
+
+s = '''
+++++++++++++++++++
+About Key Bindings
+++++++++++++++++++
+
+A shortcut specification has the form:
+
+command-name = shortcutSpecifier
+
+or
+
+command-name ! pane = shortcutSpecifier
+
+The first form creates a binding for all
+panes except the minibuffer. The second
+form creates a binding for one or more
+panes. The possible values for 'pane'
+are:
+
+====    ===============
+pane    bound panes
+====    ===============
+all     body,log,tree
+body    body
+log     log
+mini    minibuffer
+text    body,log
+tree    tree
+====    ===============
+
+You may use None as the specifier.
+Otherwise, a shortcut specifier consists
+of a head followed by a tail. The head
+may be empty, or may be a concatenation
+of the following: (All entries in each
+row are equivalent)::
+
+    Shift+ Shift-
+    Alt+ or Alt-
+    Control+, Control-, Ctrl+ or Ctrl-
+
+Notes:
+
+1. The case of plain letters is significant:
+   a is not A.
+
+2. The Shift- (or Shift+) prefix can be
+   applied *only* to letters or
+   multi-letter tails. Leo will ignore
+   (with a warning) the shift prefix
+   applied to other single letters,
+   e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by
+   Ctrl-, Alt-, Key- or Shift- is *not*
+   significant.
+
+The following table illustrates these
+rules. In each row, the first entry is
+the key (for k.bindingsDict) and the
+other entries are equivalents that the
+user may specify in leoSettings.leo::
+
+    a, Key-a, Key-A
+    A, Shift-A
+    Alt-a, Alt-A
+    Alt-A, Alt-Shift-a, Alt-Shift-A
+    Ctrl-a, Ctrl-A
+    Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+    !, Key-!,Key-exclam,exclam
+
+'''
+.. @+node:ekr.20070501092655: *6* aproposDebuggingCommands
+def aproposDebuggingCommands (self,event=None):
+
+    '''Prints a discussion of of Leo's debugging commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20070501092655.1: *7* << define s >> (aproposDebuggingCommands)
+# @pagewidth 40
+@language rest
+
+s = '''
+++++++++++++++++++++++++
+About Debugging Commands
+++++++++++++++++++++++++
+
+The following commands are useful for debugging::
+
+    collect-garbage:   Invoke the garbage collector.
+    debug:             Start an external debugger in another process.
+    disable-gc-trace:  Disable tracing of the garbage collector.
+    dump-all-objects:  Print a summary of all existing Python objects.
+    dump-new-objects:  Print a summary of all newly-created Python objects.
+    enable-gc-trace:   Enable tracing of the garbage collector.
+    free-tree-widgets: Free all widgets used in Leo's outline pane.
+    print-focus:       Print information about the requested focus.
+    print-stats:       Print statistics about existing Python objects.
+    print-gc-summary:  Print a brief summary of all Python objects.
+    run-unit-tests:    Run unit tests in the presently selected tree.
+    verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+    
+Leo also has many debugging settings that enable and disable traces.
+For details, see the node: @settings-->Debugging in leoSettings.leo.
+'''
+.. @+node:ekr.20060205170335.1: *6* aproposFindCommands
+def aproposFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20060209082023.1: *7* << define s >> (aproposFindCommands)_
+# @pagewidth 40
+@language rest
+
+s = '''
++++++++++++++++++++
+About Find Commands
++++++++++++++++++++
+
+Note: all bindings shown are the default
+bindings for these commands. You may
+change any of these bindings using
+@shortcuts nodes in leoSettings.leo.
+
+Settings
+========
+
+leoSettings.leo now contains several
+settings related to the Find tab:
+
+@bool show_only_find_tab_options = True
+
+  When True (recommended), the Find tab
+  does not show the 'Find', 'Change',
+  'Change, Then Find', 'Find All' and
+  'Change All' buttons.
+
+@bool minibufferSearchesShowFindTab = True
+
+  When True, Leo shows the Find tab when
+  executing most of the commands
+  discussed below.
+
+Basic find commands
+===================
+
+open-find-tab
+
+  Makes the Find tab visible. The Find
+  tab does **not** need to be visible to
+  execute any search command discussed
+  below.
+
+hide-find-tab
+
+  Hides the Find tab, but retains all
+  the present settings.
+
+search-with-present-options (Ctrl-F)
+
+  Prompts for a search string. Typing
+  the <Return> key puts the search
+  string in the Find tab and executes a
+  search based on all the settings in
+  the Find tab. This is a recommended
+  default search command.
+
+show-search-options
+
+  Shows the present search options in
+  the status line. This command also
+  makes the Find tab visible.
+
+find-next (F3)
+
+  Like search-with-present-options,
+  except that it uses the search string
+  in the find-tab. Recommended as the
+  default 'search again' command.
+
+find-previous (F2)
+
+  Repeats the command specified by the
+  Find tab, but in reverse.
+
+find-again
+
+  Like find-next if a search pattern is
+  not '<find pattern here>'. Otherwise,
+  like search-with-present-options.
+
+Setting find options
+====================
+
+Several minibuffer commands toggle the
+checkboxes and radio buttons in the Find
+tab, and thus affect the operation of
+the search-with-present-options command.
+You may bind these commands to keys or
+toggle these options in a mode.
+
+These commands toggle checkboxes::
+
+    toggle-find-ignore-case-option
+    toggle-find-in-body-option
+    toggle-find-in-headline-option
+    toggle-find-mark-changes-option
+    toggle-find-mark-finds-option
+    toggle-find-regex-option
+    toggle-find-word-option
+    toggle-find-wrap-around-option
+
+These commands set radio buttons::
+
+    set-find-everywhere,
+    set-find-node-only, and
+    set-find-suboutline-only.
+
+enter-find-options-mode (Ctrl-Shift-F)
+
+enters a mode in which you may change
+all checkboxes and radio buttons in the
+Find tab with plain keys. As always, you
+can use the mode-help (Tab) command to
+see a list of key bindings in effect for
+the mode.
+
+Search commands with side effects
+=================================
+
+The following commands set an option in
+the Find tab, then work exactly like the
+search-with-present-options command.
+
+- search-backward and search-forward set
+  the 'Whole Word' checkbox to False.
+
+- word-search-backward and
+  word-search-forward set the 'Whole
+  Word' checkbox to True.
+
+- re-search-forward and re-search-backward
+  set the 'Regexp' checkbox to True.
+
+Find all commands
+=================
+
+find-all
+
+  Prints all matches in the log pane.
+
+clone-find-all
+
+  Replaces the previous 'Clone Find'
+  checkbox. It prints all matches in the
+  log pane, and creates a node at the
+  beginning of the outline containing
+  clones of all nodes containing the
+  'find' string. Only one clone is made
+  of each node, regardless of how many
+  clones the node has, or of how many
+  matches are found in each node.
+
+Note: the radio buttons in the Find tab
+(Entire Outline, Suboutline Only and
+Node only) control how much of the
+outline is affected by the find-all and
+clone-find-all commands.
+
+Search and replace commands
+===========================
+
+replace-string
+
+  Prompts for a search string. Type
+  <Return> to end the search string. The
+  command will then prompt for the
+  replacement string. Typing a second
+  <Return> key will place both strings
+  in the Find tab and executes a
+  **find** command, that is,
+  search-with-present-options.
+
+So the only difference between
+replace-string and
+search-with-present-options is that
+replace-string has the side effect of
+setting 'change' string in the Find tab.
+However, this is an extremely useful
+side effect, because of the following
+commands...
+
+change (Ctrl-=)
+
+  Replaces the selected text with the
+  'change' text in the Find tab.
+
+change-then-find (Ctrl--)
+
+  Replaces the selected text with the
+  'change' text in the Find tab, then
+  executes the find command again.
+
+find-next, change and change-then-find
+can simulate any kind of query-replace
+command.
+
+change-all
+
+  Changes all occurrences of the 'find'
+  text with the 'change' text.
+  Important: the radio buttons in the
+  Find tab (Entire Outline, Suboutline
+  Only and Node only) control how much
+  of the outline is affected by this
+  command.
+
+Incremental search commands
+===========================
+
+Here are Leo's incremental find commands::
+
+    isearch-backward (Alt-R)
+    isearch-backward-regexp
+    isearch-forward (Alt-S)
+    isearch-forward-regexp
+
+You may use backspace to backtrack. To
+repeat an incremental search, type the
+shortcut for that command again.'''
+.. @+node:ekr.20120522024827.9897: *6* aproposRegularExpressions
+def aproposRegularExpressions (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20120522024827.9898: *7* << define s >> (aproposRegularExpressions)
+@language rest
+
+# Using raw string is essential.
+s = r'''\
+
+.. _`regular expressions`: http://docs.python.org/library/re.html
+.. _`quick reference`:     http://rgruet.free.fr/PQR26/PQR2.6.html
+
++++++++++++++++++++++++++++
+About Regular expressions
++++++++++++++++++++++++++++
+
+Leo supports Python's regular expressionsin find patterns.
+Here is a quick reference::
+
+    .               Matches any character (including newline if DOTALL flag specified).
+    ^               Matches start of the string (of every line in MULTILINE mode).
+    $               Matches end of the string (of every line in MULTILINE mode).
+    *               0 or more of preceding regular expression (as many as possible).
+    +               1 or more of preceding regular expression (as many as possible).
+    ?               0 or 1 occurrence of preceding regular expression.
+    *?, +?, ??      Same as *, + and ? but matches as few characters as possible.
+    {m,n}           Matches from m to n repetitions of preceding RE.
+    {m,n}?          Same as {m,n}, but attempting to match as few repetitions as possible.
+    [ ]             Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
+    [^ ]            Defines complemented character set: matches if char is NOT in set.
+    \               Escapes special chars '*?+&$|()' and introduces special sequences (see below).
+                    If not using a raw string, write as '\\' in the pattern string.
+    \\              Matches a literal '\'.
+    |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
+    (...)           Matches any RE inside (), and delimits a group.
+    (?:...)         Mathces RE inside (), but doesn't delimit a group.
+    (?P<name>...)   Matches any RE inside (), and delimits a named group.
+                    r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
+    (?P=name)       Matches whatever text was matched by the earlier group named name.
+    (?=...)         Matches if ... matches next, but doesn't consume any of the string
+                    'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
+    (?!...)         Matches if ... doesn't match next. Negative of (?=...).
+    (?<=...)        Matches if the current position in the string is preceded by a match
+                    for ... that ends at the current position.
+                    This is called a positive lookbehind assertion.
+    (?<!...)        Matches if the current position in the string is not preceded by a match for ...
+                    This is called a negative lookbehind assertion.
+    (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...)
+                    earlier in the expression.
+                    If the specified group matched, the regular expression pattern A will be tested
+                    against the string; if the group didn't match, the pattern B will be used instead.
+    (?#...)         A comment; ignored.
+    (?letters)      Each letter is in 'ilmsux' and sets the corresponding flag.
+                    re.I, re.L, re.M, re.S, re.U, re.X.
+    \number         Matches content of the group of the same number.     
+    \A              Matches only at the start of the string.
+    \b              Empty str at beginning or end of word:
+                    '\bis\b' matches 'is', but not 'his'.
+    \B              Empty str NOT at beginning or end of word.
+    \d              Any decimal digit:          [0-9]
+    \D              Any non-decimal digit char  [^0-9]).
+    \s              Any whitespace char         [ \t\n\r\f\v]
+    \S              Any non-whitespace char     [^ \t\n\r\f\v]
+    \w              Any alphaNumeric char (depends on LOCALE flag).
+    \W              Any non-alphaNumeric char (depends on LOCALE flag).
+    \Z              Matches only at the end of the string.
+    
+For complete details, see: http://docs.python.org/library/re.html
+
+'''
+.. @+node:ekr.20060602154458: *6* pythonHelp
+def pythonHelp (self,event=None):
+
+    '''Prompt for a arg for Python's help function, and put it to the log pane.'''
+
+    c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
+
+    if state == 0:
+        c.minibufferWantsFocus()
+        k.setLabelBlue('Python help: ',protect=True)
+        k.getArg(event,tag,1,self.pythonHelp)
+    else:
+        k.clearState()
+        k.resetLabel()
+        s = k.arg.strip()
+        if s:
+            g.redirectStderr()
+            g.redirectStdout()
+            try: help(str(s))
+            except Exception: pass
+            g.restoreStderr()
+            g.restoreStdout()
+.. @+node:ekr.20070418074444: *6* printSettings
+def printSettings (self,event=None):
+    
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following shows where the active setting came from:
+
+    -     leoSettings.leo,
+    - [D] default settings.
+    - [F] indicates the file being loaded,
+    - [M] myLeoSettings.leo,
+
+    '''
+
+    self.c.config.printSettings()
+.. @+node:ekr.20120123115816.10209: *5* g.ShortcutInfo & isShortcutInfo
+# bindKey:            ShortcutInfo(kind,commandName,func,pane)
+# bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
+# createModeBindings: ShortcutInfo(kind,commandName,func,nextMode,stroke)
+
+# Important: The startup code uses this class,
+# so it is convenient to define it in leoGlobals.py.
+class ShortcutInfo:
+    
+    '''A class representing any kind of key binding line.
+    
+    This includes other information besides just the KeyStroke.'''
+        
+    @others
+
+def isShortcutInfo(obj):
+    return isinstance(obj,ShortcutInfo)
+.. @+node:ekr.20120129040823.10254: *6*  ctor (ShortcutInfo)
+def __init__ (self,kind,commandName='',func=None,nextMode=None,pane=None,stroke=None):
+    
+    trace = False and commandName=='new' and not g.unitTesting
+
+    if not (stroke is None or g.isStroke(stroke)):
+        g.trace('***** (ShortcutInfo) oops',repr(stroke))
+
+    self.kind = kind
+    self.commandName = commandName
+    self.func = func
+    self.nextMode = nextMode
+    self.pane = pane
+    self.stroke = stroke
+        # The *caller* must canonicalize the shortcut.
+
+    if trace: g.trace('(ShortcutInfo)',commandName,stroke,g.callers())
+.. @+node:ekr.20120203153754.10031: *6* __hash__ (ShortcutInfo)
+def __hash__ (self):
+    
+    return self.stroke.__hash__() if self.stroke else 0
+.. @+node:ekr.20120125045244.10188: *6* __repr__ & ___str_& dump (ShortcutInfo)
+def __repr__ (self):
+    
+    return self.dump()
+
+__str__ = __repr__
+
+def dump (self):
+    si = self    
+    result = ['ShortcutInfo %17s' % (si.kind)]
+    # Print all existing ivars.
+    table = ('commandName','func','nextMode','pane','stroke')
+    for ivar in table:
+        if hasattr(si,ivar):
+            val =  getattr(si,ivar)
+            if val not in (None,'none','None',''):
+                if ivar == 'func': val = val.__name__
+                s = '%s %s' % (ivar,val)
+                result.append(s)
+    return '[%s]' % ' '.join(result).strip()
+.. @+node:ekr.20120129040823.10226: *6* isModeBinding
+def isModeBinding (self):
+    
+    return self.kind.startswith('*mode')
+.. @+node:ekr.20120201164453.10090: *5* g.KeyStroke & isStroke/OrNone
+class KeyStroke:
+    
+    '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
+    
+    This allows type-checking assertions in the code.'''
+    
+    @others
+
+def isStroke(obj):
+    return isinstance(obj,KeyStroke)
+    
+def isStrokeOrNone(obj):
+    return obj is None or isinstance(obj,KeyStroke)
+.. @+node:ekr.20120204061120.10066: *6*  ks.ctor
+def __init__ (self,s):
+    
+    trace = False and not g.unitTesting and s == 'name'
+    if trace: g.trace('(KeyStroke)',s,g.callers())
+
+    assert s,repr(s)
+    assert g.isString(s)
+        # type('s') does not work in Python 3.x.
+    self.s = s
+.. @+node:ekr.20120204061120.10068: *6*  Special methods
+.. @+node:ekr.20120203053243.10118: *7* ks.__hash__
+# Allow KeyStroke objects to be keys in dictionaries.
+
+def __hash__ (self):
+
+    return self.s.__hash__() if self.s else 0
+.. @+node:ekr.20120204061120.10067: *7* ks.__repr___ & __str__
+def __str__ (self):
+
+    return '<KeyStroke: %s>' % (self.s)
+    
+__repr__ = __str__
+.. @+node:ekr.20120203053243.10117: *7* ks.rich comparisons
+@ All these must be defined in order to say, for example:
+    for key in sorted(d)
+where the keys of d are KeyStroke objects.
+@c
+
+def __eq__ (self,other): 
+    if not other:               return False
+    elif hasattr(other,'s'):    return self.s == other.s
+    else:                       return self.s == other
+    
+def __lt__ (self,other):
+    if not other:               return False
+    elif hasattr(other,'s'):    return self.s < other.s
+    else:                       return self.s < other
+        
+def __le__ (self,other): return self.__lt__(other) or self.__eq__(other)    
+def __ne__ (self,other): return not self.__eq__(other)
+def __gt__ (self,other): return not self.__lt__(other) and not self.__eq__(other)  
+def __ge__ (self,other): return not self.__lt__(other)
+.. @+node:ekr.20120203053243.10124: *6* ks.find, lower & startswith
+# These may go away later, but for now they make conversion of string strokes easier.
+
+def find (self,pattern):
+    
+    return self.s.find(pattern)
+    
+def lower (self):
+
+    return self.s.lower()
+
+def startswith(self,s):
+    
+    return self.s.startswith(s)
+.. @+node:ekr.20120203053243.10121: *6* ks.isFKey
+def isFKey (self):
+
+    s = self.s.lower()
+
+    return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+.. @+node:ekr.20120203053243.10125: *6* ks.toGuiChar
+def toGuiChar (self):
+    
+    '''Replace special chars by the actual gui char.'''
+    
+    s = self.s.lower()
+    if s in ('\n','return'):        s = '\n'
+    elif s in ('\t','tab'):         s = '\t'
+    elif s in ('\b','backspace'):   s = '\b'
+    elif s in ('.','period'):       s = '.'
+    return s
+.. @+node:ekr.20050920084036.261: *5* incremental search...
+.. @+node:ekr.20120524151127.9879: *6* Top-level (help-for-command docstrings)
+.. @+node:ekr.20120524151127.9880: *7* isearchForward
+def isearchForward (self,event):
+    
+    '''Begin a forward incremental search.
+        
+    - Plain characters extend the search.
+    - !<isearch-forward>! repeats the search.
+    - Esc or !<keyboard-quit>! abort the search and restore the original cursor.
+    '''
+
+    self.startIncremental(event,'isearch-forward',
+        forward=True,ignoreCase=False,regexp=False)
+.. @+node:ekr.20120524151127.9881: *7* isearchBackward
+def isearchBackward (self,event):
+    
+    '''Begin a backward incremental search.
+        
+    - Plain characters extend the search backward.
+    - !<isearch-forward>! repeats the search.
+    - Esc or !<keyboard-quit>! the search and restore the original cursor.
+    '''
+
+    self.startIncremental(event,'isearch-backward',
+        forward=False,ignoreCase=False,regexp=False)
+.. @+node:ekr.20120524151127.9882: *7* isearchForwardRegexp
+def isearchForwardRegexp (self,event):
+     
+    '''Begin a forward incremental regexp search.
+        
+    - Plain characters extend the search.
+    - !<isearch-forward-regexp>! repeats the search.
+    - Esc or !<keyboard-quit>! aborts the search and restore the original cursor.
+    '''
+    
+    self.startIncremental(event,'isearch-forward-regexp',
+        forward=True,ignoreCase=False,regexp=True)
+.. @+node:ekr.20120524151127.9883: *7* isearchBackwardRegexp
+def isearchBackwardRegexp (self,event):
+    '''Begin a backard incremental regexp search.'''
+    self.startIncremental(event,'isearch-backward-regexp',
+        forward=False,ignoreCase=False,regexp=True)
+.. @+node:ekr.20120524151127.9884: *7* isearchWithPresentOptions
+def isearchWithPresentOptions (self,event):
+    '''Begin an incremental regexp search using find panel options.'''
+    self.startIncremental(event,'isearch-with-present-options',
+        forward=None,ignoreCase=None,regexp=None)
+.. @+node:ekr.20120524151127.9885: *6* Utils
+.. @+node:ekr.20090204084607.1: *7* abortSearch
+def abortSearch (self):
+
+    '''Restore the original position and selection.'''
+
+    c = self.c ; k = self.k ; w = c.frame.body.bodyCtrl
+
+    k.clearState()
+    k.resetLabel()
+
+    p,i,j,in_headline = self.stack[0]
+    self.ifinder.in_headline = in_headline
+    c.selectPosition(p)
+    c.redraw_after_select(p)
+    c.bodyWantsFocus()
+    w.setSelectionRange(i,j)
+
+    # g.trace(p.h,i,j)
+.. @+node:ekr.20060203072636: *7* endSearch
+def endSearch (self):
+
+    c,k = self.c,self.k
+
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocus()
+.. @+node:ekr.20090204084607.2: *7* iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k ; p = c.p
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    ifinder.c = c ; ifinder.p = p.copy()
+    # Get the base ivars from the find tab.
+    ifinder.update_ivars()
+    # Save
+    oldPattern = ifinder.find_text
+    oldRegexp  = ifinder.pattern_match
+    oldReverse = ifinder.reverse
+    oldWord =  ifinder.whole_word
+    # Override
+    ifinder.pattern_match = self.regexp
+    ifinder.reverse = reverse
+    ifinder.find_text = pattern
+    ifinder.whole_word = False # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) <= 1: ifinder.in_headline = False
+    w = self.setWidget()
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if again:   ins = g.choose(reverse,i,j+len(pattern))
+    else:       ins = g.choose(reverse,j+len(pattern),i)
+    ifinder.init_s_ctrl(s,ins)
+    # Do the search!
+    pos, newpos = ifinder.findNextMatch()
+    # Restore.
+    ifinder.find_text = oldPattern
+    ifinder.pattern_match = oldRegexp
+    ifinder.reverse = oldReverse
+    ifinder.whole_word = oldWord
+    # Handle the results of the search.
+    if pos is not None: # success.
+        w = ifinder.showSuccess(pos,newpos,showState=False)
+        if w: i,j = w.getSelectionRange(sort=False)
+        # else: g.trace('****')
+        if not again: self.push(c.p,i,j,ifinder.in_headline)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
+        k.updateLabel(event)
+.. @+node:ekr.20050920084036.264: *7* iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = self.k
+    
+    stroke = event and event.stroke or None
+    s = stroke.s if stroke else ''
+        
+    if trace: g.trace('s',repr(s))
+
+    # No need to recognize ctrl-z.
+    if s in ('Escape','\n','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif s in ('\b','BackSpace'):
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif (
+        s.startswith('Ctrl+') or
+        s.startswith('Alt+') or
+        k.isFKey(s) # 2011/06/13.
+    ):
+        # End the search.
+        self.endSearch()
+        k.masterKeyHandler(event)
+    else:
+        if trace: g.trace('event',event)
+        k.updateLabel(event)
+        self.iSearch()
+.. @+node:ekr.20090204084607.4: *7* iSearchBackspace
+def iSearchBackspace (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; ifinder = self.ifinder
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+        return
+
+    # Reduce the stack by net 1.
+    junk = self.pop()
+    p,i,j,in_headline = self.pop()
+    self.push(p,i,j,in_headline)
+    if trace: g.trace(p.h,i,j,in_headline)
+
+    if in_headline:
+        # Like ifinder.showSuccess.
+        selection = i,j,i
+        c.redrawAndEdit(p,selectAll=False,
+            selection=selection,
+            keepMinibuffer=True)
+    else:
+        c.selectPosition(p)
+        w = c.frame.body.bodyCtrl
+        c.bodyWantsFocus()
+        if i > j: i,j = j,i
+        w.setSelectionRange(i,j)
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+.. @+node:ekr.20090204084607.6: *7* getStrokes
+def getStrokes (self,commandName):
+
+    c = self.c
+
+    aList = self.inverseBindingDict.get(commandName,[])
+    return [key for pane,key in aList]
+.. @+node:ekr.20090204084607.5: *7* push & pop
+def push (self,p,i,j,in_headline):
+
+    data = p.copy(),i,j,in_headline
+    self.stack.append(data)
+
+def pop (self):
+
+    data = self.stack.pop()
+    p,i,j,in_headline = data
+    return p,i,j,in_headline
+.. @+node:ekr.20090205085858.1: *7* setWidget
+def setWidget (self):
+
+    c = self.c ; p = c.currentPosition()
+    bodyCtrl = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+
+    if ifinder.in_headline:
+        w = c.edit_widget(p)
+        if not w:
+            # Selecting the minibuffer can kill the edit widget.
+            selection = 0,0,0
+            c.redrawAndEdit(p,selectAll=False,
+                selection=selection,keepMinibuffer=True)
+            w = c.edit_widget(p)
+        if not w: # Should never happen.
+            g.trace('**** no edit widget!')
+            ifinder.in_headline = False ; w = bodyCtrl
+    else:
+        w = bodyCtrl
+    if w == bodyCtrl:
+        c.bodyWantsFocus()
+    return w
+.. @+node:ekr.20050920084036.262: *7* startIncremental
+def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
+
+    c = self.c ; k = self.k
+
+    # None is a signal to get the option from the find tab.
+
+    if forward is None or not self.findTabHandler:
+        self.openFindTab(show=False)
+
+    self.ifinder = self.findTabHandler
+
+    if not self.minibufferFindHandler:
+        self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+
+    getOption = self.minibufferFindHandler.getOption
+
+    self.event = event
+    self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
+    self.ignoreCase = g.choose(ignoreCase is None,getOption('ignore_case'),ignoreCase)
+    self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
+    # Note: the word option can't be used with isearches!
+
+    self.w = w = c.frame.body.bodyCtrl
+    self.p1 = c.p.copy()
+    self.sel1 = w.getSelectionRange(sort=False)
+    i,j = self.sel1
+    self.push(c.p,i,j,self.ifinder.in_headline)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.getStrokes(commandName)
+
+    k.setLabelBlue('Isearch%s%s%s: ' % (
+            g.choose(self.forward,'',' Backward'),
+            g.choose(self.regexp,' Regexp',''),
+            g.choose(self.ignoreCase,' NoCase',''),
+        ),protect=True)
+
+    k.setState('isearch',1,handler=self.iSearchStateHandler)
+    c.minibufferWantsFocus()
+.. @+node:ekr.20060417203717: *5* helpForCommand & helpers
+def helpForCommand (self,event):
+
+    '''Prompts for a command name and prints the help message for that command.'''
+
+    k = self.k
+    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
+
+.. @+node:ekr.20120521114035.9870: *6* getBindingsForCommand
+def getBindingsForCommand(self,commandName):
+
+    c = self.c ; k = c.k
+    data = [] ; n1 = 4 ; n2 = 20
+    d = k.bindingsDict
+    for stroke in sorted(d):
+        assert g.isStroke(stroke),repr(stroke)
+        aList = d.get(stroke,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            if si.commandName == commandName:
+                pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
+                s1 = pane
+                s2 = k.prettyPrintKey(stroke)
+                s3 = si.commandName
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+
+    data.sort(key=lambda x: x[1])
+    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data]).strip()
+.. @+node:ekr.20120521114035.9871: *6* helpForCommandFinisher
+def helpForCommandFinisher (self,commandName):
+
+    c = self.c ; s = None
+    
+    if commandName and commandName.startswith('apropos-'):
+        # Execute the command itself.
+        c.k.simulateCommand(commandName)
+    else:
+        if commandName:
+            bindings = self.getBindingsForCommand(commandName)
+            func = c.commandsDict.get(commandName)
+            s = g.getDocStringForFunction(func)
+            if s:
+                s = self.replaceBindingPatterns(s)
+            else:
+                s = 'no docstring available'
+                
+            # Create the title.
+            s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
+            underline = '+' * len(s2)
+            title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
+
+            # Fixes bug 618570:
+            s = title + ''.join([
+                g.choose(line.strip(),line.lstrip(),'\n')
+                    for line in g.splitLines(s)])
+        else:
+            << set s to about help-for-command >>
+    
+        c.putApropos(s) # calls g.adjustTripleString.
+.. @+node:ekr.20120521114035.9872: *7* << set s to about help-for-command >>
+s = '''\
+
+++++++++++++++++++++++++
+About Leo's help command
+++++++++++++++++++++++++
+
+Invoke Leo's help-for-command as follows::
+    
+    <F1>
+    <Alt-X>help-for-command<return>
+
+Next, type the name of one of Leo's commands.
+You can use tab completion.  Examples::
+    
+    <F1><tab>           shows all commands.
+    <F1>apropos<tab>    shows all apropos commands.
+    
+Here are the apropos commands::
+
+    apropos-abbreviations
+    apropos-autocompletion
+    apropos-bindings
+    apropos-debugging-commands
+    apropos-find-commands
+'''
+.. @+node:ekr.20120524151127.9886: *6* replaceBindingPatterns
+def replaceBindingPatterns (self,s):
+    
+    '''For each instance of the pattern !<command-name>! is s,
+    replace the pattern by the key binding for command-name.'''
+    
+    c = self.c
+    pattern = re.compile('!<(.*)>!')
+    while True:
+        m = pattern.search(s,0)
+        if m is None: break
+        name = m.group(1)
+        junk,aList = c.config.getShortcut(name)
+        for si in aList:
+            if si.pane == 'all':
+                key = c.k.prettyPrintKey(si.stroke.s)
+                break
+        else: key = '<Alt-X>%s<Return>' % name
+        s = s[:m.start()] + key + s[m.end():]
+    return s
+
 .. @+node:ekr.20120415174008.10059: *4* Cancelling save of dirty untitled commander doesn't work
 Only happens with --ipython.
 .. @+node:ekr.20120321174708.9743: *4* Add docstrings for all commands

@@ -2397,7 +2397,7 @@ class baseFileCommands:
             val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
             # g.trace(torv,attrDict)
             return val
-    #@+node:ekr.20031218072017.3045: *3* fc.setDefaultDirectoryForNewFiles (fileCommands)
+    #@+node:ekr.20031218072017.3045: *3* fc.setDefaultDirectoryForNewFiles
     def setDefaultDirectoryForNewFiles (self,fileName):
 
         """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
