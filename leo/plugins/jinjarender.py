@@ -51,17 +51,20 @@ def init ():
 
     return True
 #@+node:ville.20110409151021.5705: ** install & act-on-node
+#@+node:ekr.20120525090541.10863: *3* untangle
 def untangle(c,p):
     
     return g.getScript(c,p,
         useSelectedText=False,
         useSentinels=False)
 
+#@+node:ekr.20120525090541.10864: *3* jinja_render
 def jinja_render(template, fname, d):    
     tmpl = Template(template)
     out = tmpl.render(d)
     open(fname,"w").write(out)
      
+#@+node:ekr.20120525090541.10865: *3* jinja_act_on_node
 def jinja_act_on_node(c,p, event):
     h = p.h
     
@@ -77,12 +80,17 @@ def jinja_act_on_node(c,p, event):
     body = untangle(c,p)
     jinja_render(body, fullpath, c.vs)
         
+#@+node:ekr.20120525090541.10866: *3* jinja_install
 def jinja_install():
     g.act_on_node.add(jinja_act_on_node, 50)
 
+#@+node:ekr.20120525090541.10867: *3* class JinjaCl
 class JinjaCl:
+    #@+others
+    #@+node:ekr.20120525090541.10868: *4* __init__
     def __init__(self, c):
         self.c = c
+    #@+node:ekr.20120525090541.10869: *4* __call__
     def __call__(self,body):
         """ Render body through jinja
         
@@ -93,5 +101,6 @@ class JinjaCl:
         out = tmpl.render(self.c.vs)
         return out
             
+    #@-others
 #@-others
 #@-leo
