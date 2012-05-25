@@ -4034,7 +4034,8 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20060415112257: *4* cleanLines
     def cleanLines (self,event):
 
-        '''Removes leading whitespace from otherwise blanks lines.'''
+        '''Removes trailing whitespace from all lines, preserving newlines.
+        '''
 
         k = self.k ; w = self.editWidget(event)
         if not w: return
@@ -4044,27 +4045,26 @@ class editCommandsClass (baseEditCommandsClass):
         else:
             s = w.getAllText()
 
-        lines = [] ; changed = False
+        lines = []
         for line in g.splitlines(s):
-            if line.strip():
-                lines.append(line)
-            else:
-                if line.endswith('\n'):
-                    lines.append('\n')
-                changed = changed or '\n' != line
+            if line.rstrip():
+                lines.append(line.rstrip())
+            if line.endswith('\n'): lines.append('\n')
 
-        if changed:
+        result = ''.join(lines)
+        if s != result:
             self.beginCommand(undoType='clean-lines')
-            result = ''.join(lines)
             if w.hasSelection():
                 i,j = w.getSelectionRange()
                 w.delete(i,j)
                 w.insert(i,result)
                 w.setSelectionRange(i,j+len(result))
             else:
+                i = w.getInsertPoint()
                 w.delete(0,'end')
                 w.insert(0,result)
-            self.endCommand(changed=changed,setLabel=True)
+                w.setInsertPoint(i)
+            self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20060414085834: *4* clearSelectedText
     def clearSelectedText (self,event):
 

@@ -6311,6 +6311,38 @@ first line
 line    line b
 line c
 last line
+#@+node:ekr.20120525072421.3889: *5* @test clean-lines
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20120525072421.3890: *6* work
+# Should remove all trailing whitespace.
+
+a = 2
+
+    b = 3
+    c  = 4
+d = 5
+e = 6
+x
+#@+node:ekr.20120525072421.3891: *6* before sel=1.0,1.0
+# Should remove all trailing whitespace.
+
+a = 2   
+    
+    b = 3
+    c  = 4  
+d = 5
+e = 6  
+x
+#@+node:ekr.20120525072421.3892: *6* after sel=1.0,1.0
+# Should remove all trailing whitespace.
+
+a = 2
+
+    b = 3
+    c  = 4
+d = 5
+e = 6
+x
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if not g.app.isExternalUnitTest:
     

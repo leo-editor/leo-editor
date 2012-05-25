@@ -2056,9 +2056,10 @@ class baseScannerClass (scanUtility):
         n1,n2 = len(lines1),len(lines2)
         s1 = '%s did not import %s perfectly\n' % (
             kind,self.root.h)
-        s2 = 'first mismatched line: %s (original) = %s (imported)' % (
+        s2 = 'The clean-all-lines command may help fix whitespace problems\n'
+        s3 = 'first mismatched line: %s (original) = %s (imported)' % (
             bad_i1,bad_i2)
-        s = s1 + s2
+        s = s1 + s2 + s3
         
         if trace: g.trace(s)
         else:     self.error(s)
