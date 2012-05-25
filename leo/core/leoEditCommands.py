@@ -6911,7 +6911,8 @@ class helpCommandsClass (baseEditCommandsClass):
                 # Create the title.
                 s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
                 underline = '+' * len(s2)
-                title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
+                # title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
+                title = '%s\n%s\n\n' % (s2,underline)
 
                 # Fixes bug 618570:
                 s = title + ''.join([
