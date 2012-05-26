@@ -9687,6 +9687,10 @@ What I did:
 
 - (Can't do) If text is already highlighted, Alt-S or Alt-R should use that text.
 
+#@+node:ekr.20120321174708.9743: *4* Added docstrings for all commands
+@nocolor-node
+
+Help-for command translate !<command-name>! in the docstring to the binding for command-name.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

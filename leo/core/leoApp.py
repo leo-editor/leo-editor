@@ -2020,11 +2020,11 @@ class LoadManager:
 
         This method is no longer needed:
 
-        1. g.importModule will import from the
-           'external' or 'extensions' folders as needed
-           without altering sys.path.
+            1. g.importModule will import from the
+               'external' or 'extensions' folders as needed
+               without altering sys.path.
 
-        2  Plugins now do fully qualified imports.
+            2.  Plugins now do fully qualified imports.
         '''
 
         pass
@@ -2504,15 +2504,17 @@ class LoadManager:
             
         '''Completely read a file, creating the corresonding outline.
         
-        1. If fn is a an existing .leo file (possibly zipped), read it twice:
-        - the first time with a nullGui to discover settings,
-        - the second time with the requested gui to create the outline.
+        1. If fn is an existing .leo file (possibly zipped), read it twice:
+        the first time with a nullGui to discover settings,
+        the second time with the requested gui to create the outline.
+
         2. If fn is an external file:
-        - Get settings from the leoSettings.leo and myLeoSetting.leo
-        - Create a "wrapper" outline continain an @file node for the external file.
+        get settings from the leoSettings.leo and myLeoSetting.leo, then
+        create a "wrapper" outline continain an @file node for the external file.
+
         3. If fn is empty:
-        - Get settings from the leoSettings.leo and myLeoSetting.leo or default settings.
-        - Open an empty outline.
+        get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
+        or open an empty outline.
         '''
         
         trace = (False or g.trace_startup) and not g.unitTesting

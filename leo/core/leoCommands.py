@@ -1319,8 +1319,8 @@ class Commands (object):
         are set from the body text of @openwith nodes.
         
         d.get('ext'):   The temp file's extension.
-        d.get('kind'):  The method used to open the file.  One of:
-            ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
+        d.get('kind'):  The method used to open the file.
+        One of: ('os.startfile','exec','os.spawnl':'os.spawnv'.'subprocess.Popen')
         d.get('args'):  A list of arguments specified by the arg tag.
         '''
         
@@ -2520,15 +2520,17 @@ class Commands (object):
 
             Return (p,i,n,effective_lines,found)
             found: True if the line was found.
-            if found:
+            if found::
+            
                 p:              The found node.
                 i:              The offset of the line within the node.
                 effective_lines:-1 (not used)
-            if not found:
+                
+            if not found::
+            
                 p:              The original node.
                 i:              -1 (not used)
-                effective_lines:The number of lines in this node and
-                                all descendant nodes.
+                effective_lines:The number of lines in this node and all descendant nodes.
             '''
             if trace: g.trace('='*10,n,p.h)
             c = self.c ; ao = None
@@ -3434,14 +3436,13 @@ class Commands (object):
 
         '''
         Converts all selected lines to comment lines using
-        the comment delimiters given by the applicable
-         @language directive.
+        the comment delimiters given by the applicable @language directive.
 
         Inserts single-line comments if possible; inserts
         block comments for languages like html that lack
         single-line comments.
 
-         @bool indent_added_comments
+        @bool indent_added_comments
 
         If True (the default), inserts opening comment
         delimiters just before the first non-whitespace

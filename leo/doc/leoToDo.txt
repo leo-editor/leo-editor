@@ -9,26 +9,9 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20120321174708.9743: *4* Add docstrings for all commands
-@nocolor-node
-
-Every command should have a **complete** docstring.
-
-Help-for command should translate **key<command-name>** in the docstring to the binding for command-name.
-
-A script that gathers these docstrings for LeoDocs.leo would be good.
-.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
-.. @+node:ekr.20070521105645: *5* epydoc creates API docs from docstrings
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=4319363
-By: ktenney
-
-I think there is room for improvement in documenting Leo's
-API, making it easier to write these kind of scripts.
-I'm not sure of the best way to do that.
-
-Epydoc seems to be the most active project in this realm.
-http://epydoc.sourceforge.net/epydoc.html
+.. @+node:ekr.20111019104425.15893: *4* Finish discussion of Templating
+ocPost: Should Leo support a standard template tool?
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
 .. @+node:ekr.20120523092521.9904: *4* Easy bugs (4)
 .. @+node:ekr.20120415174008.10059: *5* Cancelling save of dirty untitled commander doesn't work
 Only happens with --ipython.
@@ -78,6 +61,32 @@ tab only--not a way of actually initiating or continuing searches.
 Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
 .. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
+.. @+node:ekr.20120526040453.10117: *3* Docs (2)
+.. @+node:ekr.20111019104425.15865: *4* Make sure docstrings include present documentation
+Every command should have a **complete** docstring.
+.. @+node:ekr.20070521105645: *4* check files with epydoc
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=4319363
+By: ktenney
+
+I think there is room for improvement in documenting Leo's
+API, making it easier to write these kind of scripts.
+I'm not sure of the best way to do that.
+
+Epydoc seems to be the most active project in this realm.
+http://epydoc.sourceforge.net/epydoc.html
+
+The easy solution, as revealed on StackOverflow is to edit the offending
+line to catch the error:
+
+# markup/restructuredtext.py, line 307
+<   m = self._SUMMARY_RE.match(child.data)
+---
+>   try:
+>      m = self._SUMMARY_RE.match(child.data)
+>   except AttributeError:
+>      m = None
+
 .. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
 @nocolor-node
 
@@ -596,7 +605,7 @@ if 1:
     print('parse:    %2.3f sec.' % (t3-t2))
     print('traverse: %2.3f sec.' % (t4-t3))
     print('total:    %2.3f sec.' % (t4-t1))
-.. @+node:ekr.20111021105253.9478: *3* Important (7)
+.. @+node:ekr.20111021105253.9478: *3* Important (6)
 .. @+node:ekr.20120520055508.11873: *4* Add split-window commands
 .. @+node:ekr.20111125072438.10219: *4* Open file dialogs starting with @path directory
 @nocolor-node
@@ -1160,34 +1169,6 @@ stylesheet issues.  Consider the following commands::
 .. @+node:ekr.20111019104425.15868: *4* Render to tex, pdf, rst, etc.
 .. @+node:ekr.20111003232155.6988: *4* Use c.db for marks & expansion bits
 This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
-.. @+node:ekr.20111019104425.15893: *4* Templating
-Post: Should Leo support a standard template tool?
-http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
-
-About a year ago at the Ashland sprint Kent (iirc) made the following
-suggestion: solid, simple implementation of one of the standard
-template engines providing intuitive template nodes, variable
-definitions, and rendering options.
-
-This is moving up the to-do list and yesterday's docstring hack
-brought this item to mind.
-
-My question is, how would this work in Leo? Presumably, this can be
-done by creating template-oriented commands.
-
-Your comments and suggestions, please, Amigos.
-
-Edward
-
-P.S. Templates must have exactly *zero* impact on the code that reads
-and writes either .leo files or external files.  I shall reject any
-scheme for integrating templates into Leo's read/write code. Don't
-even think about trying to change my mind about this.  Experience with
-earlier versions of Leo convinced me that avoiding noweb escape
-sequences was essential.  I have never regretted that choice.
-
-EKR 
-
 .. @+node:ekr.20100828074347.5827: *4* Better support for vim
 @language rest
 
@@ -2200,16 +2181,10 @@ Just noticed the autocompleter pop-up is modal globally, not just for
 the Leo windows.  Probably should only block the Leo windows.
 .. @+node:ekr.20111019104425.15861: *3* Scripts
 .. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
+This requires real type inference!
+
+We can avoid this if there is only one global def or a name.
 .. @+node:ekr.20111017132257.15888: *4* diff 2 Leo files & create a tree (Don't we have this?)
-.. @+node:ekr.20111019104425.15869: *4* Convert @command nodes to official commands
-@nocolor-node
-
-May require command-related settings.
-
-Example:
-    @path create-at-auto-nodes-path=C:\apps\pygments\pygments
-    @string create-at-auto-nodes-types=.py,
-    @bool create-at-auto-nodes-is-recursive=True
 .. @+node:ekr.20110918204546.6809: *4* convert-to-class
 .. @+node:ekr.20111018104244.15932: *4* create-command-docs script
 @language rest

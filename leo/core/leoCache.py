@@ -667,8 +667,7 @@ class PickleShareDB:
     def _fn_match(self,s, pattern):
         """ Return True if self.name matches the given pattern.
 
-        pattern - A filename pattern with wildcards,
-            for example '*.py'.
+        pattern - A filename pattern with wildcards, for example '*.py'.
         """
 
         return fnmatch.fnmatch(basename(s), pattern)
