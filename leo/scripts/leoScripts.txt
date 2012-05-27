@@ -12499,10 +12499,14 @@ for z in sorted(aList):
     
 print('done')
 #@+node:ekr.20120525155800.10870: *3* print all docstrings from a module
-# This is a Python 2.x script.
-
-import leoTest
+import leo.core.leoTest as leoTest
 import types
+
+def isClass(obj):
+    if g.isPython3:
+        return isinstance(obj,type)
+    else:
+        return type(obj) == types.ClassType
 
 specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
 
@@ -12521,7 +12525,8 @@ if 1:
             x = getattr(leoTest,s)
             if type(x) != types.ModuleType:
                 printDoc(x,s)
-                if type(x) == types.ClassType:
+                # if type(x) == types.ClassType:
+                if isClass(x):
                     for s2 in x.__dict__:
                         x2 = getattr(x,s2)
                         if s2 not in specialDictNames:
@@ -12550,7 +12555,7 @@ for theType,typeName in (
                         if s2 not in specialDictNames:
                             g.pr("\t",newline=False)
                             printDoc(x2,s2)
-#@+node:ekr.20120527100809.12771: *3* Prototype of jinja @command notes
+#@+node:ekr.20120527100809.12771: *3* Prototype of jinja @command nodes
 #@+node:ekr.20120527100809.12797: *4* jinja test
 @others
 #@+node:ekr.20120527100809.12798: *5* node 1
