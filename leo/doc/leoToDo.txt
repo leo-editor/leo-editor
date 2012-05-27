@@ -16,37 +16,9 @@ The find-def command (with ctrl-click support) would do
 the hyperlinking.
 
 It shouldn't be too hard: create an auto-completion-like popup if there are
-multiple possibilities.
-
-How do sphinx/epydoc do it?
-.. @+node:ekr.20111019104425.15893: *4* Finish discussion of Templating
-ocPost: Should Leo support a standard template tool?
-http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
+multiple possibilities.  Use leoInspect.
 .. @+node:ekr.20111019104425.15865: *4* Make sure docstrings include present documentation
 Every command should have a **complete** docstring.
-.. @+node:ekr.20070521105645: *4* check files with epydoc
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=4319363
-By: ktenney
-
-I think there is room for improvement in documenting Leo's
-API, making it easier to write these kind of scripts.
-I'm not sure of the best way to do that.
-
-Epydoc seems to be the most active project in this realm.
-http://epydoc.sourceforge.net/epydoc.html
-
-The easy solution, as revealed on StackOverflow is to edit the offending
-line to catch the error:
-
-# markup/restructuredtext.py, line 307
-<   m = self._SUMMARY_RE.match(child.data)
----
->   try:
->      m = self._SUMMARY_RE.match(child.data)
->   except AttributeError:
->      m = None
-
 .. @+node:ekr.20120523092521.9904: *4* Easy bugs (4)
 .. @+node:ekr.20120415174008.10059: *5* Cancelling save of dirty untitled commander doesn't work
 Only happens with --ipython.

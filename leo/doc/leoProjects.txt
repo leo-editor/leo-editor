@@ -9691,6 +9691,36 @@ What I did:
 @nocolor-node
 
 Help-for command translate !<command-name>! in the docstring to the binding for command-name.
+#@+node:ekr.20070521105645: *4* investigated epydoc
+@language rest
+
+http://sourceforge.net/forum/message.php?msg_id=4319363
+
+http://epydoc.sourceforge.net/epydoc.html
+By: ktenney
+
+epydoc doesn't seem active.  It produces interesting web sites,
+but a find-def function in Leo itself would be more useful.
+
+#@+node:ekr.20120527053550.10118: *5* Fixed epydoc crash
+The easy solution, as revealed on StackOverflow is to edit the offending
+line to catch the error:
+
+# markup/restructuredtext.py, line 307
+<   m = self._SUMMARY_RE.match(child.data)
+---
+>   try:
+>      m = self._SUMMARY_RE.match(child.data)
+>   except AttributeError:
+>      m = None
+
+#@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
+Should Leo support a standard template tool?
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
+
+Added a jinja2 templating example.  See:
+    
+file://../scripts/scripts.leo#Scripts-->@thin%20leoScripts.txt-->Important-->Prototype%20of%20jinja%20@command%20nodes
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
