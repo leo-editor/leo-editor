@@ -12550,6 +12550,30 @@ for theType,typeName in (
                         if s2 not in specialDictNames:
                             g.pr("\t",newline=False)
                             printDoc(x2,s2)
+#@+node:ekr.20120527100809.12771: *3* Prototype of jinja @command notes
+#@+node:ekr.20120527100809.12797: *4* jinja test
+@others
+#@+node:ekr.20120527100809.12798: *5* node 1
+Hello again, {{ name }}.
+
+Your rank is {{rank}} and your tag number is {{serial_number}}.
+#@+node:ekr.20120527100809.12804: *4* @common jinja code
+def run(fn,h,d):
+    '''Write the template in node with headline h
+    using data in dict d to the file whose name is fn.
+    '''
+    from jinja2 import Template
+    p = g.findNodeAnywhere(c,h)
+    if p:
+        s = g.getScript(c,p,useSelectedText=False,useSentinels=False)
+        s = Template(s).render(d)
+        g.trace(s)
+    else:
+        g.trace('not found',h)
+#@+node:ekr.20120527100809.12805: *4* write jinja (prototype of @command node)
+exec(g.findTestScript(c,'@common jinja code'))
+d = {'name':'Fred','rank':'colonel','serial_number':'3.14159'}
+run('fn','jinja test',d)
 #@+node:ekr.20110916103731.2459: *3* Recursive create @auto nodes
 import os
 
