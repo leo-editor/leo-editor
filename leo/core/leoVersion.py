@@ -26,9 +26,9 @@ except ImportError:
     bzr_version = None
 #@-<< imports >>
 
-static_version = 5216
-static_date = "2012-03-29"
-version = "4.10 final"
+static_version = 5360
+static_date = "2012-05-28"
+version = "4.11 devel"
 
 theDir = os.path.dirname(__file__)
 path = os.path.join(theDir,'..','..','.bzr','branch','last-revision')

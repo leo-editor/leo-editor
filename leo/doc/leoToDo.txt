@@ -3,7 +3,7 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20110921094450.6956: ** To do: 4.10.1
+.. @+node:ekr.20110921094450.6956: ** To do: 4.11
 @language rest
 
 This is the "will do" list.
@@ -1000,6 +1000,8 @@ Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
 .. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
 .. @+node:ekr.20120527053550.12058: *3* Fun
+.. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
+This can be done now that gui's are created on the command line.
 .. @+node:ekr.20120527053550.10117: *4* Create find-def command
 @nocolor-node
 
@@ -2334,7 +2336,7 @@ cursor to the 20th line in the file.
 The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
-.. @+node:ekr.20120516140545.9991: *3* Other
+.. @+node:ekr.20120516140545.9991: *3* Maybe
 .. @+node:ekr.20120527053550.12057: *4* Kent: salt: remote execution manager
 .. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
 @nocolor
@@ -2376,11 +2378,11 @@ traversing views of the source of the stack items.
 
 Like @color html::tags_markup_color = blue
 .. @+node:ekr.20120322073519.10403: *4* Investigate solarized colors
-Withdraw claim that Leo supports solarized.
+The claim that Leo supports solarized has been withdrawn.
+
 .. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
 http://ethanschoonover.com/solarized
 
-.. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
 .. @+node:ekr.20120226183512.10195: *3* Bugs
 @language rest
 .. @+node:ekr.20120523092521.9905: *4* Hard (4)
