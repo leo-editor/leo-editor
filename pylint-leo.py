@@ -124,7 +124,7 @@ def getRecentCoreList():
         # 'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
-        # 'leoGui',
+        'leoGui',
         # 'leoImport',
         # 'leoIPython',
         # 'leoKeys',
@@ -199,9 +199,7 @@ def run(theDir,fn,rpython=False):
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
 
-    '''Handle all options, remove them from sys.argv and set lm.options.'''
-
-    # print('scanOptions 1',sys.argv)
+    '''Handle all options, remove them from sys.argv.'''
 
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
@@ -219,8 +217,6 @@ def scanOptions():
     
     # Parse the options.
     options, args = parser.parse_args()
-    # sys.argv = [sys.argv[0]]
-    # sys.argv.extend(args)
     
     if   options.a: return 'all'
     elif options.c: return 'core'
