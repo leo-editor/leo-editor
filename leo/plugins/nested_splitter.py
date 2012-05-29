@@ -63,6 +63,66 @@ class DemoWidget(QtGui.QWidget):
         if color:
             self.setStyleSheet("background-color: %s;"%color)
     #@-others
+#@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel
+class NestedSplitterTopLevel(QtGui.QWidget):
+    """A QWidget to wrap a NestedSplitter to allow it to live in a top
+    level window and handle close events properly.
+    
+    These windows are opened by the splitter handle context-menu item
+    'Open Window'.
+    
+    The NestedSplitter itself can't be the top-level widget/window,
+    because it assumes it can wrap itself in another NestedSplitter
+    when the user wants to "Add Above/Below/Left/Right".  I.e. wrap
+    a vertical nested splitter in a horizontal nested splitter, or
+    visa versa.  Parent->SplitterOne becomes Parent->SplitterTwo->SplitterOne,
+    where parent is either Leo's main window's QWidget 'centralwidget',
+    or one of these NestedSplitterTopLevel "window frames".
+    """
+    #@+others
+    #@+node:tbrown.20120418121002.25713: *3* __init__
+    def __init__(self, *args, **kargs):
+        """Init. taking note of the FreeLayoutController which owns this"""
+        self.owner = kargs['owner']
+        del kargs['owner']
+        QtGui.QWidget.__init__(self, *args, **kargs)
+    #@+node:tbrown.20120418121002.25714: *3* closeEvent
+    def closeEvent(self, event):
+        """A top-level NestedSplitter window has been closed, check all the
+        panes for widgets which must be preserved, and move any found
+        back into the main splitter."""
+        
+        widget = self.findChild(NestedSplitter)  
+        # top level NestedSplitter in window being closed
+        
+        other_top = self.owner.top()
+        # top level NestedSplitter in main splitter
+        
+        # adapted from NestedSplitter.remove()
+        count = widget.count()
+        all_ok = True
+
+        to_close = []
+
+        # get list of widgets to close so index based access isn't
+        # derailed by closing widgets in the same loop
+        for splitter in widget.self_and_descendants():
+            for i in range(splitter.count()-1, -1, -1):
+                
+                to_close.append(splitter.widget(i))
+                
+        for w in to_close:
+                
+            all_ok &= (widget.close_or_keep(w, other_top=other_top) is not False)
+
+        # it should always be ok to close the window, because it should always
+        # be possible to move widgets which must be preserved back to the
+        # main splitter, but if not, keep this window open
+        if all_ok or count <= 0:
+            self.owner.closing(self)
+        else:
+            event.ignore()
+    #@-others
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
 class NestedSplitterChoice(QtGui.QWidget):
     """When a new pane is opened in a nested splitter layout, this widget
@@ -224,6 +284,29 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             splitter.equalize_sizes(recurse=True)
         self.add_item(eq, menu, 'Equalize all')
 
+        # open window
+        if splitter.top().parent().__class__ != NestedSplitterTopLevel:
+            # don't open windows from windows, only from main splitter
+            # so owner is not a window which might close.  Could instead
+            # set owner to main splitter explicitly.  Not sure how right now.
+            submenu = menu.addMenu('Open window')
+            
+            self.add_item(lambda: splitter.open_window(),
+                submenu, "Empty")    
+                
+            # adapted from choice_menu()
+            if (splitter.root.marked and
+                splitter.top().max_count() > 1):
+                self.add_item(lambda: splitter.open_window(action="_move_marked_there"),
+                    submenu, "Move marked there") 
+        
+            for provider in splitter.root.providers:
+                if hasattr(provider, 'ns_provides'):
+                    for title, id_ in provider.ns_provides():
+                        def cb(id_=id_):
+                            splitter.open_window(action=id_)
+                        self.add_item(cb, submenu, title)
+
         if True:
             submenu = menu.addMenu('Debug')
             act = QtGui.QAction("Print splitter layout", self)
@@ -282,12 +365,16 @@ class NestedSplitter(QtGui.QSplitter):
             self,parent,orientation))
 
         if root is None:
-            root = self.top()
+            root = self.top(local=True)
             if root == self:
                 root.marked = None # Tuple: self,index,side-1,widget
                 root.providers = []
                 root.holders = {}
-
+                root.windows = []
+                root._main = self.parent()  # holder of the main splitter
+                # list of top level NestedSplitter windows opened from 'Open Window'
+                # splitter handle context menu
+        
         self.root = root
     #@+node:ekr.20110605121601.17968: *3* __repr__
     def __repr__ (self):
@@ -316,30 +403,31 @@ class NestedSplitter(QtGui.QSplitter):
             return
 
         # don't leave a one widget splitter
-        if self.count() == 1 and self.top() != self:
+        if self.count() == 1 and self.top(local=True) != self:
             self.parent().addWidget(self.widget(0))
             self.deleteLater()
-
-        # the else clause below isn't working, so just return and let the top
-        # splitter become a one item splitter, which is invisible to the user
-        if 0:
-            parent = self.parentWidget()
-            if parent:
-                layout = parent.layout()  # QLayout, not a NestedSplitter
+            
+        parent = self.parentWidget()
+        if parent:
+            layout = parent.layout()  # QLayout, not a NestedSplitter
+        else:
+            layout = None
+        
+        if self.count() == 1 and self.top(local=True) == self:
+            if self.max_count() <= 1 or not layout:
+                # maintain at least two items
+                self.insert(0)
+                # shrink the added button
+                self.setSizes([0]+self.sizes()[1:])
             else:
-                layout = None
+                # replace ourselves in out parent's layout with our child
+                pos = layout.indexOf(self)
+                child = self.widget(0)
+                layout.insertWidget(pos, child)
+                pos = layout.indexOf(self)
+                layout.takeAt(pos)
+                self.setParent(None)
 
-            if self.count() == 1 and self.top() == self:
-                if self.max_count() <= 1 or not layout:
-                    # fairly sure this can't happen, but better safe than sorry
-                    self.insert(0)
-                    # at least shrink the added button
-                    self.setSizes([0]+self.sizes()[1:])
-                else:
-                    # replace ourselves in out parent's layout with our child
-                    pos = layout.indexOf(self)
-                    layout.takeAt(pos)
-                    layout.insertWidget(pos, self.widget(0))
     #@+node:ekr.20110605121601.17971: *3* add
     def add(self,side,w=None):
         """wrap a horizontal splitter in a vertical splitter, or
@@ -497,6 +585,10 @@ class NestedSplitter(QtGui.QSplitter):
             menu.addAction(act)
 
         menu.exec_(button.mapToGlobal(pos))
+    #@+node:tbrown.20120418121002.25712: *3* closing
+    def closing(self, window):
+        """forget a top-level additional layout which was closed"""
+        self.windows.remove(window)
     #@+node:tbrown.20110628083641.11723: *3* place_provided
     def place_provided(self, id_, index):
         """replace Action button with provided widget"""
@@ -534,6 +626,21 @@ class NestedSplitter(QtGui.QSplitter):
                     return True
 
         return False
+    #@+node:tbrown.20120418121002.25439: *3* find_child
+    def find_child(self, child_class, child_name=None):
+        """Like QObject.findChild, except search self.top()
+        *AND* each window in self.root.windows
+        """
+        
+        child = self.top().findChild(child_class, child_name)
+        
+        if not child:
+            for window in self.root.windows:
+                child = window.findChild(child_class, child_name)
+                if child:
+                    break
+        
+        return child
     #@+node:ekr.20110605121601.17974: *3* handle_context
     def handle_context(self, index):
         """for a handle, return (widget, neighbour, count)
@@ -630,6 +737,38 @@ class NestedSplitter(QtGui.QSplitter):
 
         return max(counts)
 
+    #@+node:tbrown.20120418121002.25438: *3* open_window
+    def open_window(self, action=None):
+        """open a top-level window, a TopLevelFreeLayout instance, to hold a
+        free-layout in addition to the one in the outline's main window"""
+        
+        window = NestedSplitterTopLevel(owner=self.root)
+        # window.setStyleSheet(
+        #     '\n'.join(self.c.config.getData('qt-gui-plugin-style-sheet')))
+        hbox = QtGui.QHBoxLayout()
+        window.setLayout(hbox)
+        hbox.setContentsMargins(0,0,0,0)
+        window.resize(400,300)
+        
+        ns = NestedSplitter(root=self.root)
+        hbox.addWidget(ns)
+        
+        # NestedSplitters must have two widgets so the handle carrying
+        # the all important context menu exists
+        ns.addWidget(NestedSplitterChoice(ns))  
+        button = NestedSplitterChoice(ns)
+        ns.addWidget(button)
+        
+        if action == '_move_marked_there':
+            ns.replace_widget(button, ns.root.marked[3])
+        elif action is not None:
+            ns.place_provided(action, 1)
+        
+        ns.setSizes([0,1])  # but hide one initially
+
+        self.root.windows.append(window)
+        
+        window.show()
     #@+node:tbrown.20110627201141.11744: *3* register_provider
     def register_provider(self, provider):
         """Register something which provides some of the ns_* methods.
@@ -826,14 +965,19 @@ class NestedSplitter(QtGui.QSplitter):
         self.equalize_sizes()
         osplitter.equalize_sizes()
     #@+node:ekr.20110605121601.17988: *3* top
-    def top(self):
+    def top(self, local=False):
 
         """find top (outer) widget, which is not necessarily root"""
 
-        top = self
-        while isinstance(top.parent(), NestedSplitter):
-            top = top.parent()
-
+        if local:
+        
+            top = self
+            
+            while isinstance(top.parent(), NestedSplitter):
+                top = top.parent()
+        else:
+            top = self.root._main.findChild(NestedSplitter)
+        
         return top
     #@+node:ekr.20110605121601.17989: *3* get_layout
     def get_layout(self, _saveable=False):
