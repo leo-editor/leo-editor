@@ -5399,10 +5399,6 @@ def __init__ (self,c):
     # c.free_layout = self
         # To be removed
     
-    self.windows = []  
-    # list of top level free-layout windows opened from 'Open Window'
-    # splitter handle context menu
-    
     # g.registerHandler('after-create-leo-frame',self.bindControllers)
     
     # attach to an outline
