@@ -9,23 +9,6 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20120528063627.10135: *4* Post
-@nocolor-node
-
-A momentous day. Many good ideas:
-    
-1. Use bzr when altering code to ensure it doesn't change drastically:
-        
-    Examples: 2to3, pylint, rope, etc.
-    
-2. Use a tracing debugger, tdb, based on coverage or my own "EKR debugger" that
-   I used to debug a bad bug in pylint.  tdb will gather enough statistics
-   to create truly informative diagrams and other information.
-   
-   The goal will be to understand 2to3, pylint, rope and coverage at least as
-   well as the original authors.
-   
-3. Type inference is turning up everywhere.  It's *essential* when doing refactorings.
 .. @+node:ekr.20111019104425.15865: *4* Make sure docstrings include present documentation
 Every command should have a **complete** docstring.
 .. @+node:ekr.20120527053550.12055: *5* print all docstrings from a module
@@ -1572,10 +1555,15 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
 .. @+node:ekr.20120528063627.10134: *3* Studying other programs
-The intension is to understand 2to3, coverage, pylint and rope as well as I do leoInspect.
+Type inference is turning up everywhere.  It's *essential* when doing refactorings.
 
-The general idea will be to use a tracer: based either on my own EKR debugger or coverage,
-that will gather enough statistics to create truly meaningful diagrams and other info.
+The goal is to understand 2to3, coverage, pylint and rope as well as I do leoInspect.
+
+The general idea will be to use a tracing debugger, tdb. tdb will gather
+enough statistics to create truly informative diagrams and other
+information.
+
+Aha: Use bzr before importing code to ensure it doesn't change in unintended ways.
 .. @+node:ekr.20120528062901.10132: *4* import rope
 import rope.base.project
 path = g.os_path_finalize_join(g.app.loadDir,'..')

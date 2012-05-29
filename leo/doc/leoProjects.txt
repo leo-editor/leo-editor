@@ -4255,6 +4255,10 @@ separate wishlist item will be appropriate.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+#@+node:ekr.20120529040553.10140: *4* Added local pylint suppressions
+The format of such local suppressions is::
+
+    # pylint: disable=<message-number>
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node
