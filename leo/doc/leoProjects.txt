@@ -4259,6 +4259,33 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
 The format of such local suppressions is::
 
     # pylint: disable=<message-number>
+#@+node:ekr.20120529083658.11110: *3* Docs
+#@+node:ekr.20120529083658.11109: *4* For the FAQ: create a bzr repository before importing it into Leo
+@language rest
+
+When I study a program, I like to import it into Leo.  I have several
+scripts that do this:  some create @auto nodes; others create @file
+nodes.
+
+Either way, the import process has the potential to change many
+files.  Usually, I just change @auto and @file to @@auto or @@file, so
+that any changes I make while studying the code won't affect the
+originals.
+
+But this "safety first" approach means that I can't actually use Leo
+to insert tracing statements (or for any other changes.)  A few days
+ago, I found a way to import "live" code into Leo safely:
+
+   Create a bzr repository for the code before importing it
+
+The Aha is to create the repository *wherever the code is*, including,
+say, python/Lib/site-packages.
+
+- bzr qdiff ensures that import hasn't significantly altered the code,
+- bzr revert undoes any unwise or unwanted changes.
+
+This is exactly what I need:  I can make changes to important tools
+*safely* within Leo.
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node

@@ -11,126 +11,8 @@ This is the "will do" list.
 # This should appear before any @file node.
 .. @+node:ekr.20111019104425.15865: *4* Make sure docstrings include present documentation
 Every command should have a **complete** docstring.
-.. @+node:ekr.20120527053550.12055: *5* print all docstrings from a module
-import leo.core.leoTest as leoTest
-import types
-
-def isClass(obj):
-    if g.isPython3:
-        return isinstance(obj,type)
-    else:
-        return type(obj) == types.ClassType
-
-specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
-
-def printDoc(x,s):
-    if hasattr(x,"__doc__") and x.__doc__:
-        g.pr("%4d %s" % (len(x.__doc__),s))
-    else:
-        g.pr("%4s %s" % (' ',s))
-
-g.pr('-' * 60)
-g.pr("%4d %s" % (len(leoTest.__doc__),"leoTest"))
-
-if 1:
-    for s in leoTest.__dict__:
-        if s not in specialDictNames:
-            x = getattr(leoTest,s)
-            if type(x) != types.ModuleType:
-                printDoc(x,s)
-                if isClass(x):
-                    for s2 in x.__dict__:
-                        x2 = getattr(x,s2)
-                        if s2 not in specialDictNames:
-                            g.pr(' '*4,)
-                            printDoc(x2,s2)
-else:
-    << print names sorted by type >>
-.. @+node:ekr.20120527053550.12056: *6* << print names sorted by type >>
-for theType,typeName in (
-    (types.ModuleType,"modules"),
-    (types.ClassType,"classes"),
-    (types.FunctionType,"functions"),
-):
-
-    g.pr("\n%s..." % typeName)
-    for s in leoTest.__dict__:
-
-        if s not in specialDictNames:
-            x = getattr(leoTest,s)
-            if type(x) == theType:
-                printDoc(x,s)
-                if theType == types.ClassType:
-                    g.pr("\tmethods...")
-                    for s2 in x.__dict__:
-                        x2 = getattr(x,s2)
-                        if s2 not in specialDictNames:
-                            g.pr("\t",newline=False)
-                            printDoc(x2,s2)
-.. @+node:ekr.20120527143117.11091: *5* Print all missing docstrings
-'''print all commands that lack docstrings.'''
-
-d = c.commandsDict
-    # Keys are command names; values are functions
-
-ignore = [] # ['minibufferCallback','enterModeCallback',]
-
-aList = [ d.get(z).__name__ for z in d
-    if (not d.get(z).__doc__ or not d.get(z).__doc__.strip())]
-
-# g.cls()
-print()
-n = 0
-for z in sorted(aList):
-    if z == 'minibufferCallback':
-        n += 1
-    else:
-        print(z)
-        
-print('%s instances of minibufferCallback' % n)
-    
-print('done')
-.. @+node:ekr.20120527150031.10131: *5* Unused code
-d2 = {
-    'abbrevCommandsClass':      'abbrev',
-    'atFile':                   'at',
-    'AutoCompleterClass':       'ac',
-    'bufferCommandsClass':      'buffer',
-    'chapterController':        'cc',
-    'Commands':                 'c',
-    'controlCommandsClass':     'control',
-    'debugCommandsClass':       'db',
-    'editCommandsClass':        'ed',
-    'editFileCommandsClass':    'ef',
-    'fileCommands':             'fc',
-    'helpCommandsClass':        'help',
-    'keyHandlerClass':          'k',
-    'killBufferCommandsClass':  'kill',
-    'leoQtFrame':               'qframe',
-    'macroCommandsClass':       'macro',
-    'registerCommandsClass':    'reg',
-    'rectangleCommandsClass':   'rect',
-    'rstCommands':              'rst',
-    'searchCommandsClass':      'sc',
-    'spellCommandsClass':       'sp',
-    'undoer':                   'u',
-}
-
-if 0:
-    # Sort by function name.
-    for key in sorted(d.keys()):
-        f = d.get(key)
-        fname = f and f.__name__
-        doc = f and f.__doc__ or ''
-        if hasattr(f,'__self__'):
-            cn = f.__self__.__class__.__name__
-            cn2 = d2.get(cn,cn)
-            print('%40s:%4s %s.%s' % (key,len(doc),cn2,fname))
-        else:
-            if fname == 'minibufferCallback': fname = ''
-            print('%40s:%4s %s' % (key,len(doc),fname))
 .. @+node:ekr.20120527143117.11089: *5* Print commands & docstrings
-'''print all commands that lack docstrings.'''
+'''print a summary, sorted by class, of commands & their docstrings.'''
 
 d = c.commandsDict
     # Keys are command names; values are functions
@@ -157,92 +39,6 @@ for group in sorted(groups.keys()):
 
 
 print('%s commands' % (len(list(d.keys()))))
-.. @+node:ekr.20120527143117.11094: *5* Missing docstrings
-no docstrings...
-  minibufferCallback: @command-align-eq-signs
-  minibufferCallback: @command-c-to-python-clean-docs
-  minibufferCallback: @command-clean-all-blank-lines
-  minibufferCallback: @command-clean-body
-  minibufferCallback: @command-clean-diff
-  minibufferCallback: @command-clean-spellpyx
-  minibufferCallback: @command-cls
-  minibufferCallback: @command-count-pages
-  minibufferCallback: @command-create-@auto-nodes
-  minibufferCallback: @command-create-def-list
-  minibufferCallback: @command-flatten-script
-  minibufferCallback: @command-join-node-above
-  minibufferCallback: @command-join-node-below
-  minibufferCallback: @command-join-selection-to-node-below
-  minibufferCallback: @command-load-all-leo-files
-  minibufferCallback: @command-preview-node
-  minibufferCallback: @command-preview-tree
-  minibufferCallback: @command-print-cmd-docstrings
-  minibufferCallback: @command-promote-bodies
-  minibufferCallback: @command-remove-newlines
-  minibufferCallback: @command-split-defs
-  minibufferCallback: align-eq-signs
-  minibufferCallback: bookmarks-open-bookmark
-  minibufferCallback: bookmarks-open-node
-  minibufferCallback: bookmarks-show
-  minibufferCallback: c-to-python-clean-docs
-  minibufferCallback: clean-all-blank-lines
-  minibufferCallback: clean-body
-  minibufferCallback: clean-diff
-  minibufferCallback: clean-spellpyx
-  minibufferCallback: close-others
-  minibufferCallback: cls
-  minibufferCallback: count-pages
-  minibufferCallback: create-@auto-nodes
-  minibufferCallback: create-def-list
-  minibufferCallback: ctrl-click-at-cursor
-  minibufferCallback: delete-script-button-button
-   enterModeCallback: enter-quick-command-mode
-  minibufferCallback: find-quick
-  minibufferCallback: find-quick-selected
-  minibufferCallback: find-quick-test-failures
-  minibufferCallback: find-quick-timeline
-  minibufferCallback: flatten-script
-  minibufferCallback: focus-to-nav
-  minibufferCallback: graph-toggle-autoload
-  minibufferCallback: history
-  minibufferCallback: join-node-above
-  minibufferCallback: join-node-below
-  minibufferCallback: join-selection-to-node-below
-  minibufferCallback: leoserv-start
-  minibufferCallback: load-all-leo-files
-  minibufferCallback: open-url
-  minibufferCallback: open-with-idle
-  minibufferCallback: open-with-open office
-  minibufferCallback: open-with-scite
-  minibufferCallback: parse-body
-  minibufferCallback: preview-node
-  minibufferCallback: preview-tree
-  minibufferCallback: print-cmd-docstrings
-  minibufferCallback: promote-bodies
-  minibufferCallback: quickmove_bookmark_to_first_child
-  minibufferCallback: quickmove_bookmark_to_last_child
-  minibufferCallback: quickmove_clone_to_first_child
-  minibufferCallback: quickmove_clone_to_last_child
-  minibufferCallback: quickmove_copy_to_first_child
-  minibufferCallback: quickmove_copy_to_last_child
-  minibufferCallback: quickmove_jump_to
-  minibufferCallback: quickmove_link_from
-  minibufferCallback: quickmove_link_to
-  minibufferCallback: quickmove_move_to_first_child
-  minibufferCallback: quickmove_move_to_last_child
-  minibufferCallback: remove-newlines
-  minibufferCallback: session-clear
-  minibufferCallback: session-create
-  minibufferCallback: session-refresh
-  minibufferCallback: session-restore
-  minibufferCallback: session-snapshot-load
-  minibufferCallback: session-snapshot-save
-  minibufferCallback: split-defs
-  minibufferCallback: tabula-show
-  minibufferCallback: todo-dec-pri
-  minibufferCallback: todo-inc-pri
-  minibufferCallback: vs-reset
-  minibufferCallback: vs-update
 .. @+node:ekr.20120527150031.10130: *5* output
 @killcolor
 
@@ -1555,6 +1351,11 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
 .. @+node:ekr.20120528063627.10134: *3* Studying other programs
+@language rest
+
+A juicy new project that benefits Leo
+http://groups.google.com/group/leo-editor/browse_thread/thread/69d4d33bb3c2bf6c
+
 Type inference is turning up everywhere.  It's *essential* when doing refactorings.
 
 The goal is to understand 2to3, coverage, pylint and rope as well as I do leoInspect.
@@ -1564,6 +1365,91 @@ enough statistics to create truly informative diagrams and other
 information.
 
 Aha: Use bzr before importing code to ensure it doesn't change in unintended ways.
+.. @+node:ekr.20120529040553.10141: *4* Announcement of project
+@language rest
+
+The last several days have produced some unexpected Ahas, and have
+yielded a plan for a major new project.  This project is something
+I've always wanted to do, and it will benefit Leo.
+
+===== Motivation
+
+The genesis of the plan lies in the observation that type inference
+keeps cropping up in unexpected places.  Indeed, sitting in the
+bathtub a few days ago I realized that essentially any kind of
+refactoring in Python requires type inference.  Without it, it's not
+possible to rename members of classes that might be referenced outside
+the class definition itself.  Leo has lots of such variables.  For
+example, all members of the chain c.frame.body.bodyCtrl.widget.
+
+Sure enough, when I looked at the source code for rope, http://rope.sourceforge.net/,
+I saw type inference machinery that rivals that found in pylint.
+
+Recall that yesterday I said that epydoc appears to use type
+inference, but it's a fake: it simply shows a guess of the type on
+roll-over, but produces a (buggy) dialog requiring the user to know
+the type.
+
+===== The plan
+
+I want to study at least the following packages: coverage, 2to3,
+pylint and rope, with the goal of understanding them at least as well
+as their authors do.
+
+This is an ambitious plan.  pylint and rope in particular use elegant
+tree traversals of AST trees in order to deduce type information.  The
+elegance of the traversals actually makes the task of understanding
+harder, imo.  coverage and 2to3 also traverse AST trees, but for
+completely different purposes.
+
+I need "deep" understanding of these products in order to truly
+understand the choices their designers made.  At a certain point,
+which I have already reached, re-reading the code provides little new
+insight.  After that point, one must actually run the programs to
+understand more fully how they work.
+
+So an alternate statement of the plan is to create a framework for
+understanding python programs in detail.  I plan to do this by
+creating a **tracing debugger**, tdb, based, of course, on pdb.
+
+As you may know, I have some experience doing this kind of thing.  In
+order to find a nasty pylint bug, I created a small subclass of pdb
+that stopped executing when the stack had reached 200 levels deep. (I
+chose 200 by a process of trial and error.)  This allowed me to catch
+a truly complex stack overflow bug as early as possible.
+
+===== Schedule
+
+At this point, it's not entirely clear what tdb will do, except that
+it will gather whatever information and print whatever traces that I
+want.  It may take days, weeks or months of experimentation before I
+can discover exactly what makes each program tick.
+
+This is the kind of puzzle I truly enjoy.  More importantly, the
+programs that I shall be studying are some of the most important tools
+in the Python world.  I think it would help the Python community to be
+able to tell people exactly how and why they work.
+
+
+Second post:
+
+Otoh, the experimentation will yield immediate results.
+
+A new module, say leoTools.py, will probably contain support classes
+for rope and coverage and maybe even 2to3 and pylint.  These classes
+will handle common tasks for @command nodes.
+
+For example, one can imaging a set of @command nodes that users could
+write that will allow refactoring of a set of files defined in each
+@command node.  rope has a "virtual file interface" that would allow
+refactorings to be done directly in Leo outlines.  leoTools.py would
+be the place to define the virtual file interface.
+
+Similarly, leoTools.py could provide common code used in, say, "@test
+coverage" in unitTest.py.
+
+Finally, Leo could offer a set of 2to3 commands for converting
+selected nodes of a Leo outline.
 .. @+node:ekr.20120528062901.10132: *4* import rope
 import rope.base.project
 path = g.os_path_finalize_join(g.app.loadDir,'..')
