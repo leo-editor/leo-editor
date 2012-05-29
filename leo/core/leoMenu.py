@@ -34,6 +34,9 @@ class leoMenu:
     #@+node:ekr.20120124042346.12937: *4* define_enable_table
     def define_enable_dict (self):
         
+        # pylint: disable=W0108
+        # W0108: Lambda may not be necessary (It is).
+        
         c = self.c
         
         if not c.commandsDict:
@@ -1560,7 +1563,7 @@ class leoMenu:
     def getMacHelpMenu (self,table):
         return None
 
-    def getMenuLabel (self,menu):
+    def getMenuLabel (self,menu,name):
         self.oops()
 
     def setMenuLabel (self,menu,name,label,underline=-1):

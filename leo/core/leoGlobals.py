@@ -107,6 +107,8 @@ import inspect
 import operator
 import os
 
+# pylint: disable=E0611
+# Module 'urllib' has no 'parse' member.
 import urllib
 
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
@@ -2455,6 +2457,7 @@ def doHook(tag,*args,**keywords):
         g.pr("***ignoring args param.  tag = %s" % tag)
 
     if not g.app.config.use_plugins:
+        
         if tag in ('open0','start1'):
             s = "Plugins disabled: use_plugins is 0 in a leoSettings.leo file."
             g.es_print(s,color="blue")
@@ -4381,6 +4384,9 @@ def computeFileUrl(fn,c=None,p=None):
     '''Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.'''
     
+    # pylint: disable=E1101
+    # Module 'urllib' has no 'parse' member.
+    
     unquote = urllib.parse.unquote if isPython3 else urllib.unquote
 
     # First, replace special characters (especially %20, by their equivalent).
@@ -4464,6 +4470,11 @@ def getUrlFromNode(p):
 #@@c
 
 def handleUrl(url,c=None,p=None):
+    
+    # pylint: disable=E1101
+    # pylint: disable=E1103
+    # E1101: Module 'urllib' has no 'parse' member
+    # E1103: Instance of 'ParseResult' has no 'fragment' member
     
     unquote = urllib.parse.unquote if isPython3 else urllib.unquote
     
@@ -4558,6 +4569,9 @@ def handleUrl(url,c=None,p=None):
 def isValidUrl(url):
     
     '''Return true if url *looks* like a valid url.'''
+    
+    # pylint: disable=E1103
+    # E1103: Instance of 'ParseResult' has no 'scheme' member.
     
     table = (
         'file','ftp','gopher','hdl','http','https','imap',

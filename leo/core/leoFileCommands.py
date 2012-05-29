@@ -849,6 +849,9 @@ class baseFileCommands:
         return root
     #@+node:ekr.20100701112151.5959: *6* getDiff
     def getDiff (self,s1,s2):
+        
+        # pylint: disable=E1120
+        # E1120:getDiff: No value passed for parameter 'b' in function call
 
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
@@ -1072,6 +1075,9 @@ class baseFileCommands:
 
         '''Clean control characters from s.
         s may be a bytes or a (unicode) string.'''
+        
+        # pylint: disable=E1101
+        # E1101:cleanSaxInputString: Class 'str' has no 'maketrans' member
 
         # Note: form-feed ('\f') is 12 decimal.
         badchars = [chr(ch) for ch in range(32)]

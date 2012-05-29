@@ -7,51 +7,51 @@ import os
 import sys
 from pylint import lint
 
-all_suppressions = 'C0111,C0301,C0321,C0322,C0323,C0324,\
-F0401,\
-R0201,R0903,\
-W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,\
-W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111'
-
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
 
     return (
-
-        ('runLeo',          ''),
-        ('leoApp',          ''),
-        ('leoAtFile',       ''),
-        ('leoBridge',       ''),
-        ('leoCache',        ''),
-        ('leoChapters',     ''),
-        ('leoCommands',     ''),
-        ('leoConfig',       ''),
-        ('leoEditCommands', ''),
-        ('leoFileCommands', 'E1120,E1101'),
+        'runLeo',
+        'leoApp',
+        'leoAtFile',
+        'leoBridge',
+        'leoCache',
+        'leoChapters',
+        'leoCommands',
+        'leoConfig',
+        'leoEditCommands',
+        'leoFileCommands',
             # E1120: no value passed for param.
-            # E1101: (dangerous) Class 'str' has no 'maketrans' member
-        ('leoFind',         ''),
-        ('leoFrame',        'R0923'),
+            # E1101: Class 'str' has no 'maketrans' member
+        'leoFind',
+        'leoFrame',
             # R0923: Interface not implemented.
-        ('leoGlobals',      'E0611,E1103'), 
+        'leoGlobals', 
             # E0611: no name 'parse' in urllib.
-            # E1103: (dangerous) Instance of 'ParseResult' has no 'xxx' member,
-            # (but some types could not be inferred)
-        ('leoGui',          ''),
-        ('leoImport',       ''),
-        ('leoKeys',         ''),
-        ('leoMenu',         'W0108'),
+            # E1103: Instance of 'ParseResult' has no 'xxx' member,
+        'leoGui',
+        'leoImport',
+        'leoKeys',
+        'leoMenu',
             # W0108: Lambda may not be necessary (it is).
-        ('leoNodes',        ''),
-        ('leoPlugins',      ''),
-        ('leoRst',          ''),
-        ('leoSessions',     ''),
-        ('leoShadow',       ''),
-        ('leoTangle',       ''),
-        ('leoTest',         ''),
-        ('leoUndo',         'W0511'),
+        'leoNodes',
+        'leoPlugins',
+        'leoRst', 
+        'leoSessions',
+        'leoShadow',
+        'leoTangle',
+        'leoTest',
+        'leoUndo',
             # WO511: TODO 
+    )
+#@+node:ekr.20120528063627.10138: ** getGuiPluginsList
+def getGuiPluginsList ():
+    
+    return (
+        'baseNativeTree',
+        'nested_splitter',
+        'qtGui',
     )
 #@+node:ekr.20100221142603.5641: ** getPassList
 def getPassList():
@@ -87,75 +87,75 @@ def getPassList():
 def getPluginsList():
 
     return (
-        ('bookmarks',       ''),
-        # ('mod_http',      ''),
-        ('mod_scripting',   'E0611'),
-            # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
+        'baseNativeTree',
+        'bookmarks',
+        # 'mod_http',
+        'mod_scripting',
+            # E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
-            
-        ('vim.py',          ''),
-        ('viewrendered.py', 'E1103'),
-            # Dangerous: PyQt4.phonon has no x member.
-        ('xemacs.py',       ''),
-
-        # ('toolbar','E1101,W0221,W0511'),
+        'nested_splitter',
+        'qtGui',
+            # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
+            # E0611: No name 'xxx' in module 'urllib'
+            # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
+            # R0923: Interface not implemented
+        # 'toolbar',
             # Dangerous: many erroneous E1101 errors
             # Harmless: W0221: Arguments number differs from overridden method
             # Harmless: W0511: Fixme and to-do.
+        'vim.py',
+        'viewrendered.py',
+            # Dangerous: PyQt4.phonon has no x member.
+        'xemacs.py',
     )
 #@+node:ekr.20120225032124.17089: ** getRecentCoreList
 def getRecentCoreList():
     
     return (
-        # ('runLeo',            ''),
-        # ('leoApp',            ''),
-        # ('leoAtFile',         ''),
-        # ('leoBridge',       ''),
-        # ('leoCache',          ''),
-        # ('leoChapters',       ''),
-        # ('leoCommands',       ''),
-        # ('leoConfig',           ''),
-        # ('leoEditCommands',   ''),
-        # ('leoFind',           ''),
-        # ('leoFrame',          'R0923'),
-            # R0923: Interface not implemented.
-
-        # ('leoGlobals',          'E0611,E1103'),
-            # E0611: no name 'parse' in urllib.
-            # E1103: Instance of 'ParseResult' has no 'xxx' member
-            # (but some types could not be inferred)
-
-        # ('leoGui',            ''),
-        # ('leoImport',         ''),
-
-        # ('leoIPython',           'E0611,W0108,R0923'),
-            # E0611: No name 'x' in module 'y'
-                # Not serious: the imports will find any problems.
-            # W0108: Lambda may not be necessary (who cares).
-            # R0923: Interface not implemented.
-    
-        # ('leoKeys',           ''),
-        # ('leoMenu',           'W0108'),
-            # W0108: Lambda may not be necessary (it is).
-        # ('leoNodes',          ''),
-        # ('leoPlugins',        ''),
-        # ('leoFileCommands',   'E1120,E1101'),
-            # E1120: no value passed for param.
-            # E1101: (dangerous) Class 'str' has no 'maketrans' member
-        # ('leoRst',            ''),
-        ('leoSessions',         ''),
-        # ('leoShadow',         ''),
-        # ('leoTangle',         ''),
-        # ('leoTest',           ''),
-        # ('leoUndo',           'W0511'),
-            # WO511: TODO 
+        # 'runLeo',
+        # 'leoApp',
+        # 'leoAtFile',
+        # 'leoBridge',
+        # 'leoCache',
+        # 'leoChapters',
+        # 'leoCommands',
+        # 'leoConfig',
+        # 'leoEditCommands',
+        # 'leoFind',
+        # 'leoFrame',
+        # 'leoGlobals',
+        # 'leoGui',
+        # 'leoImport',
+        # 'leoIPython',
+        # 'leoKeys',
+        # 'leoMenu',
+        # 'leoNodes',
+        # 'leoPlugins',
+        # 'leoFileCommands',
+        # 'leoRst',
+        # 'leoSessions',
+        # 'leoShadow',
+        # 'leoTangle',
+        # 'leoTest',
+        # 'leoUndo',
 )
+#@+node:ekr.20120528063627.10137: ** getRecentPluginsList
+def getRecentPluginsList ():
+    
+    return (
+        # 'baseNativeTree',
+        # 'contextmenu',
+        # 'codewisecompleter',
+        # 'mod_scripting',
+        # 'nested_splitter',
+        # 'qtGui',
+        # 'plugins_menu',
+        # 'viewrendered',
+    )
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
     
-    return []
-
-    # return (
+    return (
         # 'EditAttributes','Library',
         # 'URLloader','UniversalScrolling','UASearch',
         # 'autotrees','chapter_hoist','cleo','dump_globals',
@@ -171,32 +171,28 @@ def getTkPass():
         # 'script_io_to_body',
         # 'templates','textnode','tkGui','toolbar',
         # 'xcc_nodes',
-    # )
+   )
 #@+node:ekr.20100221142603.5644: ** run
 # Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
 # From: sys.exit(self.linter.msg_status)
 # To:   print('EKR: exit status',self.linter.msg_status)
 
-def run(theDir,fn,suppress,rpython=False):
+def run(theDir,fn,rpython=False):
+
     fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
     assert os.path.exists(rc_fn)
     
     args = ['--rcfile=%s' % (rc_fn)]
-    if suppress:
-        args.append('--disable=%s' % (suppress))
+    args.append('--disable=I0011')
+        # We never want to see the I0011 message: locally disabling n.
     # if rpython: args.append('--rpython-mode') # Probably does not exist.
-
     fn = os.path.abspath(fn)
-    # print('run: theDir',theDir,'fn',fn)
     if not fn.endswith('.py'): fn = fn+'.py'
     args.append(fn)
 
     if os.path.exists(fn):
-        if suppress:
-            print('pylint-leo.py: %s suppress: %s' % (fn,suppress))
-        else:
-            print('pylint-leo.py: %s' % fn)
+        print('pylint-leo.py: %s' % fn)
         lint.Run(args)
     else:
         print('file not found:',fn)
@@ -238,44 +234,27 @@ def scanOptions():
 
 scope = scanOptions()
 
-coreList = getCoreList()
-externalList = ('ipy_leo','lproto',)
-passList = getPassList()
-pluginsList = getPluginsList()
-recentCoreList = getRecentCoreList()
-tkPass = getTkPass()
-
-onlySupressionsList = (z for z in coreList if z[1])
-
-guiPluginsList = (
-    ('baseNativeTree',  ''),
-    # ('nested_splitter', ''),
-    ('qtGui','E0611,E1101,R0923,W0221,W0233'),
-        # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
-        # E0611: No name 'xxx' in module 'urllib'
-        # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
-        # R0923: Interface not implemented
-)
-
-recentPluginsList = (
-    # 'screenshots',
-    # 'codewisecompleter',
-    # 'baseNativeTree','contextmenu',
-    # 'mod_scripting','plugins_menu','projectwizard',
-    # 'trace_gc_plugin',
-)
+coreList            = getCoreList()
+externalList        = ('ipy_leo','lproto',)
+guiPluginsList      = getGuiPluginsList()
+passList            = getPassList()
+pluginsList         = getPluginsList()
+recentCoreList      = getRecentCoreList()
+recentPluginsList   = getRecentPluginsList()
+tkPass              = getTkPass()
 
 if scope == 'all':
     tables_table = (
         (coreList,'core'),
-        (guiPluginsList,'plugins'),
-        # (pluginsList,'plugins'),
+        # (guiPluginsList,'plugins'),
+        (pluginsList,'plugins'),
         (externalList,'external'),
     )
 elif scope == 'core':
     tables_table =  (
         (coreList,'core'),
         (guiPluginsList,'plugins'),
+        (externalList,'external'),
     )
 elif scope == 'external':
     tables_table = (
@@ -295,25 +274,14 @@ elif scope == 'recent':
         (recentCoreList,'core'),
         (recentPluginsList,'plugins'),
     )
-elif scope == 'suppressions':
-    # These tests are run *without* suppressions.
-    tables_table = (
-        (onlySupressionsList,'core'),
-    )
 else:
     print('bad scope',scope)
     tables_table = ()
+    
+if tables_table and sys.platform.startswith('win'):
+    os.system('cls')
 
 for table,theDir in tables_table:
-    if table in (coreList,pluginsList,guiPluginsList,recentCoreList):
-        # These tables have suppressions.
-        for fn,suppress in table:
-            run(theDir,fn,suppress)
-    elif table == onlySupressionsList:
-        # Run *without suppressions.
-        for fn,suppress in table:
-            run(theDir,fn,suppress='')
-    else:
-        for fn in table:
-            run(theDir,fn,suppress='')
+    for fn in table:
+        run(theDir,fn)
 #@-leo

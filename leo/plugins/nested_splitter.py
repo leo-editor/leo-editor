@@ -14,7 +14,7 @@ except ImportError:
 
 import sys
 
-from inspect import isclass
+# from inspect import isclass
 
 from PyQt4 import QtGui, QtCore, Qt
 
@@ -37,6 +37,9 @@ class DemoWidget(QtGui.QWidget):
     #@+others
     #@+node:ekr.20110605121601.17958: *3* __init__(DemoWidget)
     def __init__(self, parent=None, color=None):
+        
+        # pylint: disable=E1101
+        # E1101: 53:DemoWidget.__init__: Module 'PyQt4.QtCore' has no 'QMargins' member
 
         QtGui.QWidget.__init__(self, parent)
 
@@ -316,29 +319,27 @@ class NestedSplitter(QtGui.QSplitter):
         if self.count() == 1 and self.top() != self:
             self.parent().addWidget(self.widget(0))
             self.deleteLater()
-            
-        parent = self.parentWidget()
-        if parent:
-            layout = parent.layout()  # QLayout, not a NestedSplitter
-        else:
-            layout = None
-            
-        return
-        
+
         # the else clause below isn't working, so just return and let the top
         # splitter become a one item splitter, which is invisible to the user
-            
-        if self.count() == 1 and self.top() == self:
-            if self.max_count() <= 1 or not layout:
-                # fairly sure this can't happen, but better safe than sorry
-                self.insert(0)
-                # at least shrink the added button
-                self.setSizes([0]+self.sizes()[1:])
+        if 0:
+            parent = self.parentWidget()
+            if parent:
+                layout = parent.layout()  # QLayout, not a NestedSplitter
             else:
-                # replace ourselves in out parent's layout with our child
-                pos = layout.indexOf(self)
-                layout.takeAt(pos)
-                layout.insertWidget(pos, self.widget(0))
+                layout = None
+
+            if self.count() == 1 and self.top() == self:
+                if self.max_count() <= 1 or not layout:
+                    # fairly sure this can't happen, but better safe than sorry
+                    self.insert(0)
+                    # at least shrink the added button
+                    self.setSizes([0]+self.sizes()[1:])
+                else:
+                    # replace ourselves in out parent's layout with our child
+                    pos = layout.indexOf(self)
+                    layout.takeAt(pos)
+                    layout.insertWidget(pos, self.widget(0))
     #@+node:ekr.20110605121601.17971: *3* add
     def add(self,side,w=None):
         """wrap a horizontal splitter in a vertical splitter, or
@@ -349,9 +350,9 @@ class NestedSplitter(QtGui.QSplitter):
         orientation = self.other_orientation[self.orientation()]
         
         layout = self.parent().layout()
-        
+
         if trace: g.trace('parent: %s side: %s orient: %s layout: %s' % (
-            parent,side,orientation,layout))
+            self.parent(),side,orientation,layout))
 
         if isinstance(self.parent(), NestedSplitter):
             # don't add new splitter if not needed, i.e. we're the
@@ -984,7 +985,7 @@ class NestedSplitter(QtGui.QSplitter):
         
         orientation = 'vertical'
         if layout['orientation'] == QtConst.Horizontal:
-             orientation = 'horizontal'
+            orientation = 'horizontal'
              
         _ans.append("%s%s (%s) - %s" % (
             '   '*_depth,
@@ -1023,12 +1024,14 @@ def main():
     class DemoProvider:
         def ns_provides(self):
             return[('Add demo widget', '_add_demo_widget')] 
-        def ns_provide(seld, id_):
+        def ns_provide(self,id_):
             if id_ == '_add_demo_widget':
                 return DemoWidget()
 
     splitter.register_provider(DemoProvider())
 
+    # pylint: disable=E1101
+    # E1101:main: Module 'PyQt4.QtCore' has no 'QMargins' member
     holder = QtGui.QWidget()
     holder.setLayout(QtGui.QVBoxLayout())
     holder.layout().setContentsMargins(QtCore.QMargins(0,0,0,0))

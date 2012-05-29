@@ -2654,6 +2654,9 @@ class DynamicWindow(QtGui.QMainWindow):
 class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
+    
+    # pylint: disable=R0923
+    # R0923:leoQtBody: Interface not implemented
 
     #@+others
     #@+node:ekr.20110605121601.18181: *4*  Birth
@@ -4951,6 +4954,9 @@ class leoQtFrame (leoFrame.leoFrame):
 class leoQtLog (leoFrame.leoLog):
 
     """A class that represents the log pane of a Qt window."""
+    
+    # pylint: disable=R0923
+    # R0923:leoQtLog: Interface not implemented
 
     #@+others
     #@+node:ekr.20110605121601.18313: *4* leoQtLog Birth
@@ -5132,7 +5138,8 @@ class leoQtLog (leoFrame.leoLog):
         if w:
             w.clear() # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *5* createTab (leoQtLog)
-    def createTab (self,tabName,widget=None,wrap='none'):
+    def createTab (self,tabName,createText=True,widget=None,wrap='none'):
+
         """ Create a new tab in tab widget
 
         if widget is None, Create a QTextBrowser,
@@ -5241,7 +5248,7 @@ class leoQtLog (leoFrame.leoLog):
 
         self.selectTab('Log')
     #@+node:ekr.20111122080923.10185: *5* orderedTabNames (leoQtLog)
-    def orderedTabNames (self):
+    def orderedTabNames (self,leoLog=None): # Unused: leoLog
         
         '''Return a list of tab names in the order in which they appear in the QTabbedWidget.'''
         
@@ -5256,6 +5263,7 @@ class leoQtLog (leoFrame.leoLog):
             # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *5* selectTab & helper (leoQtLog)
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
+
         # createText is used by leoLog.selectTab.
 
         '''Create the tab if necessary and make it active.'''
@@ -5568,7 +5576,7 @@ class leoQtMenu (leoMenu.leoMenu):
         menu = qtMenuWrapper(c,leoFrame,parent,label)
 
         return menu
-    #@+node:ekr.20110605121601.18354: *5* Methods with other spellings (Qtmenu)
+    #@+node:ekr.20110605121601.18354: *5* Methods with other spellings (leoQtmenu)
     #@+node:ekr.20110605121601.18355: *6* clearAccel
     def clearAccel(self,menu,name):
 
@@ -5581,14 +5589,14 @@ class leoQtMenu (leoMenu.leoMenu):
         # realName = realName.replace("&","")
 
         # menu.entryconfig(realName,accelerator='')
-    #@+node:ekr.20110605121601.18356: *6* createMenuBar (Qtmenu)
+    #@+node:ekr.20110605121601.18356: *6* createMenuBar (leoQtmenu)
     def createMenuBar(self,frame):
 
         '''Create all top-level menus.
         The menuBar itself has already been created.'''
 
         self.createMenusFromTables()
-    #@+node:ekr.20110605121601.18357: *6* createOpenWithMenu (QtMenu)
+    #@+node:ekr.20110605121601.18357: *6* createOpenWithMenu (leoQtMenu)
     def createOpenWithMenu(self,parent,label,index,amp_index):
 
         '''Create the File:Open With submenu.
@@ -8064,7 +8072,7 @@ class leoQtGui(leoGui.leoGui):
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
     #@+node:ekr.20110605121601.18511: *4* getFullVersion
-    def getFullVersion (self):
+    def getFullVersion (self,c=None):
 
         try:
             qtLevel = 'version %s' % QtCore.QT_VERSION_STR

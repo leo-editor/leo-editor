@@ -180,6 +180,8 @@ class LProtoClient:
        
         if hasattr(socket,'AF_UNIX'):
             try:
+                # pylint: disable=E1101
+                # E1101:LProtoClient.connect: Module 'socket' has no 'AF_UNIX' member
                 self.socket = socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
                 self.socket.connect(fname)
                 return True

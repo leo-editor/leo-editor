@@ -2967,6 +2967,9 @@ def handleNodeConflicts (self):
     return root
 #@+node:ekr.20100701112151.5959: *7* getDiff
 def getDiff (self,s1,s2):
+    
+    # pylint: disable=E1120
+    # E1120:getDiff: No value passed for parameter 'b' in function call
 
     lines1 = g.splitLines(s1)
     lines2 = g.splitLines(s2)
@@ -5264,6 +5267,8 @@ def show_welcome(self):
     print("Try %leoref for quick reference.")
 
     if g_legacy:
+        # pylint: disable=E0611
+        # E0611:GlobalIPythonManager.show_welcome: No name 'platutils' in module 'IPython'
         import IPython.platutils as u
         u.set_term_title('ILeo')
         u.freeze_term_title()
@@ -9411,6 +9416,9 @@ def __init__ (self):
         self.output_newline = 'nl'
         self.redirect_execute_script_output_to_log_pane = True
         self.relative_path_base_directory = '!'
+        
+    self.use_plugins = False # Required to keep pylint happy.
+    self.create_nonexistent_directories = False # Required to keep pylint happy.
 
     self.atCommonButtonsList = [] # List of info for common @buttons nodes.
     self.atCommonCommandsList = [] # List of info for common @commands nodes.

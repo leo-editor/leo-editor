@@ -454,6 +454,8 @@ class scriptingController:
                 finally:
                     if f: f.close()
                 #@-<< create leoScriptModule >>
+                # pylint: disable=E0611
+                # E0611:runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
                 g.app.scriptDict ['c'] = c
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules ['leoScriptModule'] # Essential.

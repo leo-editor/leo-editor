@@ -1254,6 +1254,9 @@ class GlobalConfigManager:
             self.output_newline = 'nl'
             self.redirect_execute_script_output_to_log_pane = True
             self.relative_path_base_directory = '!'
+            
+        self.use_plugins = False # Required to keep pylint happy.
+        self.create_nonexistent_directories = False # Required to keep pylint happy.
 
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.

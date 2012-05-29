@@ -192,7 +192,7 @@ class leoGui:
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
     #@+node:ekr.20031218072017.3731: *4* app.gui file dialogs
-    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
+    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
 
         """Create and run an open file dialog ."""
 
@@ -472,7 +472,7 @@ class nullGui(leoGui):
     def runCompareDialog(self,c):
         return self.simulateDialog("compareDialog",'')
 
-    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
+    def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False,startpath=None):
         return self.simulateDialog("openFileDialog")
 
     def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):

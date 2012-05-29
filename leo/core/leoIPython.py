@@ -62,6 +62,8 @@ import time
 import textwrap
 
 if g.isPython3:
+    # pylint: disable=E0611
+    # E0611:No name 'UserDict' in module 'collections'
     from collections import UserDict
     UserDictMixin = UserDict
 else:
@@ -71,6 +73,13 @@ else:
 #@+<< attempt to import new version of IPython >>
 #@+node:ekr.20120413094617.12250: *3* << attempt to import new version of IPython >>
 try:
+    # pylint: disable=E0611
+    # E0611:No name 'generics' in module 'IPython'
+    # E0611:No name 'genutils' in module 'IPython'
+    # E0611:No name 'hooks' in module 'IPython'
+    # E0611:No name 'ipapi' in module 'IPython'
+    # E0611:No name 'macro' in module 'IPython'
+
     # Either of these works.
     import IPython.frontend.terminal.ipapp as ipapp
     import IPython.utils.generics as generics
@@ -99,6 +108,13 @@ if not g_import_ok:
     #@+<< attempt to import legacy IPython >>
     #@+node:ekr.20120413094617.12251: *3* << attempt to import legacy IPython >>
     try:
+        # pylint: disable=E0611
+        # E0611:No name 'generics' in module 'IPython'
+        # E0611:No name 'genutils' in module 'IPython'
+        # E0611:No name 'hooks' in module 'IPython'
+        # E0611:No name 'ipapi' in module 'IPython'
+        # E0611:No name 'macro' in module 'IPython'
+
         import IPython.ipapi as ipapi
         # import IPython.genutils as genutils
         import IPython.generics as generics
@@ -238,7 +254,7 @@ if g_import_ok:
             '''Run the Qt main loop using IPython if possible.'''
             
             if not g_import_ok:
-                sys.exit(self.qtApp.exec_())
+                sys.exit(g.app.gui.qtApp.exec_())
                     # Just run the Qt main loop.
             elif g_legacy:
                 self.start_legacy_api()
@@ -529,6 +545,8 @@ if g_import_ok:
             print("Try %leoref for quick reference.")
 
             if g_legacy:
+                # pylint: disable=E0611
+                # E0611:GlobalIPythonManager.show_welcome: No name 'platutils' in module 'IPython'
                 import IPython.platutils as u
                 u.set_term_title('ILeo')
                 u.freeze_term_title()
@@ -597,6 +615,9 @@ if g_import_ok:
 
         An instance of this class called leox is typically injected
         into IPython's user_ns namespace by the init-ipython-command.'''
+        
+        # pylint: disable=R0923
+        # R0923:LeoInterface: Interface not implemented
 
         def __init__(self,c,g,tag='@ipython-results'):
             self.c = c
@@ -666,9 +687,13 @@ if g_import_ok:
         #@+node:ekr.20120401063816.10194: *3* __set_val
         def __set_val(self, val):        
             self.b = format_for_leo(val)
+            
+        if 1:
+            # pylint: disable=W0108
+            # W0108:LeoNode.<lambda>: Lambda may not be necessary
 
-        v = property(lambda self: eval_node(self), __set_val,
-            doc = "Node evaluated value")
+            v = property(lambda self: eval_node(self), __set_val,
+                doc = "Node evaluated value")
         #@+node:ekr.20120401063816.10195: *3* __set_l
         def __set_l(self,val):
             self.b = '\n'.join(val )
@@ -862,6 +887,9 @@ if g_import_ok:
     #@+node:ekr.20120401144849.10076: *3* add_var
     def add_var(varname):
         
+        # pylint: disable=E1101
+        # E1101:add_var: Class 'LeoNode' has no 'p' member
+        
         c = g_ipm.c
         g.trace(varname)
         if not c:
@@ -888,6 +916,9 @@ if g_import_ok:
             c.redraw()
     #@+node:ekr.20120401144849.10077: *3* all_cells
     def all_cells():
+        
+        # pylint: disable=E1101
+        # E1101:all_cells: Class 'LeoNode' has no 'p' member
 
         c = g_ipm.c
         d = {}
@@ -915,13 +946,16 @@ if g_import_ok:
             d[h] = p.copy()
         return d    
     #@+node:ekr.20120401144849.10078: *3* edit_macro
-    @edit_object_in_leo.when_type(macro.Macro)
-    def edit_macro(obj,varname):
-
-        bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
-        node = add_var('Macro_' + varname)
-        node.b = bod
-        node.go()
+    if 1:
+        # pylint: disable=E1101
+        # E1101:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
+        @edit_object_in_leo.when_type(macro.Macro)
+        def edit_macro(obj,varname):
+        
+            bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
+            node = add_var('Macro_' + varname)
+            node.b = bod
+            node.go()
     #@+node:ekr.20120401144849.10080: *3* es
     def es(s):
             
@@ -1028,6 +1062,9 @@ if g_import_ok:
         Note that the root is the *first* @ipy-root item found    
         """
         
+        # pylint: disable=E1101
+        # E1101:rootnode: Class 'LeoNode' has no 'p' member
+        
         c = g_ipm.c
         n = g_ipm.root_node
 
@@ -1098,11 +1135,14 @@ if g_import_ok:
     def valid_attribute(s):
         return attribute_re.match(s)    
     #@+node:ekr.20120401144849.10108: *3* workbook_complete
-    @generics.complete_object.when_type(LeoWorkbook)
-    def workbook_complete(self,obj,prev):
-
-        return list(all_cells().keys()) + [
-            s for s in prev if not s.startswith('_')]
+    if 1:
+        # pylint: disable=E1103
+        # E1103:workbook_complete: Function 'complete_object' has no 'when_type' member
+        @generics.complete_object.when_type(LeoWorkbook)
+        def workbook_complete(self,obj,prev):
+        
+            return list(all_cells().keys()) + [
+                s for s in prev if not s.startswith('_')]
     #@+node:ekr.20120401144849.10109: ** Top-level IPython magic functions
     # By IPython convention, these must have "self" as the first argument.
     #@+node:ekr.20120401144849.10085: *3* ileo_pre_prompt_hook

@@ -715,6 +715,11 @@ class ViewRenderedController(QtGui.QWidget):
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
         
+        # pylint: disable=E1103
+        # E1103:update_movie: Module 'PyQt4.phonon' has no 'VideoPlayer' member
+        # E1103:update_movie: Module 'PyQt4.phonon' has no 'VideoCategory' member
+        # E1103:update_movie: Module 'PyQt4.phonon' has no 'MediaSource' member
+
         pc = self
         
         ok,path = pc.get_fn(s,'@movie')

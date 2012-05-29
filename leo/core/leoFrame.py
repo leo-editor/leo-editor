@@ -49,6 +49,9 @@ class DummyHighLevelInterface (object):
     
     '''A class to support a do-nothing HighLevelInterface.'''
     
+    # pylint: disable=R0923
+    # Interface not implemented.
+    
     def __init__(self,c):
         self.c = c
 
@@ -1719,7 +1722,8 @@ class leoLog (HighLevelInterface):
     def renameTab (self,oldName,newName):
         pass
     #@+node:ekr.20070302094848.11: *4* selectTab (leoLog)
-    def selectTab (self,tabName,createText=True,wrap='none'):
+    def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
+        # widget unused.
 
         '''Create the tab if necessary and make it active.'''
 
@@ -2285,6 +2289,9 @@ class leoTreeTab:
 #@+node:ekr.20031218072017.2191: ** class nullBody (leoBody:HighLevelInterface)
 class nullBody (leoBody):
     # LeoBody is a subclass of HighLevelInterface.
+    
+    # pylint: disable=R0923
+    # Interface not implemented.
 
     #@+others
     #@+node:ekr.20031218072017.2192: *3*  nullBody.__init__
@@ -2563,6 +2570,9 @@ class nullIconBarClass:
     #@-others
 #@+node:ekr.20031218072017.2232: ** class nullLog (leoLog)
 class nullLog (leoLog):
+    
+    # pylint: disable=R0923
+    # Interface not implemented.
 
     #@+others
     #@+node:ekr.20070302095500: *3* Birth
@@ -2624,7 +2634,7 @@ class nullLog (leoLog):
     def lowerTab        (self,tabName):                         pass
     def raiseTab        (self,tabName):                         pass
     def renameTab (self,oldName,newName):                       pass
-    def selectTab (self,tabName,createText=True,wrap='none'):   pass
+    def selectTab (self,tabName,createText=True,widget=None,wrap='none'):   pass
     def setTabBindings  (self,tabName):                         pass
     #@-others
 #@+node:ekr.20070302171509: ** class nullStatusLineClass
