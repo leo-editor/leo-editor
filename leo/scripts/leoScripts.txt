@@ -12480,7 +12480,7 @@ def setToBeTranslated (self,s,n):
 
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
-#@+node:ekr.20120525155800.10867: *3* Print missing docstrings
+#@+node:ekr.20120525155800.10867: *3* Print missing docstrings (obsolete)
 '''print all commands that lack docstrings.'''
 
 d = c.commandsDict
@@ -12498,7 +12498,7 @@ for z in sorted(aList):
     print(z)
     
 print('done')
-#@+node:ekr.20120525155800.10870: *3* print all docstrings from a module
+#@+node:ekr.20120525155800.10870: *3* print all docstrings from a module (obsolete)
 import leo.core.leoTest as leoTest
 import types
 
@@ -12555,6 +12555,34 @@ for theType,typeName in (
                         if s2 not in specialDictNames:
                             g.pr("\t",newline=False)
                             printDoc(x2,s2)
+#@+node:ekr.20120529083658.11108: *3* Print commands & docstrings
+'''print a summary, sorted by class, of commands & their docstrings.'''
+
+d = c.commandsDict
+    # Keys are command names; values are functions
+
+g.cls()
+
+# Group commands by class.
+groups = {}
+for command in sorted(d.keys()):
+    f = d.get(command)
+    key = f.__self__.__class__.__name__ if hasattr(f,'__self__') else f.__name__
+    aList = groups.get(key,[])
+    aList.append((command,f),)
+    groups[key] = aList
+
+# Print groups.
+for group in sorted(groups.keys()):
+    print('%s...' % (group))
+    aList = groups.get(group)
+    for command,f in sorted(aList):
+        fname = f.__name__ or ''
+        doc = f.__doc__ or ''
+        print('%40s:%4s %s' % (command,len(doc),fname))
+
+
+print('%s commands' % (len(list(d.keys()))))
 #@+node:ekr.20120527100809.12771: *3* Prototype of jinja @command nodes
 #@+node:ekr.20120527100809.12797: *4* jinja test
 @others
