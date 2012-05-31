@@ -1296,11 +1296,11 @@ class leoFind:
         '''Display the result of a successful find operation.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; p = self.p
+        c = self.c ; p = self.p.copy() ###
         if not p:
             return g.trace('can not happen: self.p is None')
 
-        current = c.p
+        ### current = c.p
         c.frame.bringToFront() # Needed on the Mac
 
         # Expand ancestors and set redraw if a redraw is needed.
@@ -1310,8 +1310,10 @@ class leoFind:
             for p2 in c.p.self_and_parents():
                 if p2.isAncestorOf(p):
                     break
-                p2.contract()
-                redraw1 = True # Important bug fix. Was redraw = True.
+                # 2012/05/29: don't redraw unless we actually contract something.
+                if p2.isExpanded(): 
+                    p2.contract()
+                    redraw1 = True # Important bug fix. Was redraw = True.
 
         redraw2 = c.expandAllAncestors(self.p)
         redraw = redraw1 or redraw2
@@ -1323,6 +1325,7 @@ class leoFind:
             self.wrapPosition = self.p
 
         if trace: g.trace('in_headline',self.in_headline)
+        
         if self.in_headline:
             c.endEditing() # 2011/06/10: A major bug fix.
             selection = pos,newpos,insert
@@ -1341,9 +1344,11 @@ class leoFind:
             c.bodyWantsFocus()
             if showState:
                 c.k.showStateAndMode(w)
-            # g.trace(pos,newpos,insert)
+            if trace: g.trace('redraw:',redraw,pos,newpos,insert,p.h) ###,'body...\n',p.b)
+            c.bodyWantsFocusNow()
+            assert w.getAllText() == p.b
             w.setSelectionRange(pos,newpos,insert=insert)
-            w.seeInsertPoint()
+            ### w.seeInsertPoint()
             c.outerUpdate()
         return w # Support for isearch.
     #@+node:ekr.20031218072017.1460: *4* update_ivars (leoFind)

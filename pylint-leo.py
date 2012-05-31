@@ -5,7 +5,7 @@
 import optparse
 import os
 import sys
-from pylint import lint
+from pylint import lint # Use the version of pylint in python26/Lib/site-packages.
 
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
@@ -276,6 +276,8 @@ else:
     
 if tables_table and sys.platform.startswith('win'):
     os.system('cls')
+    
+# print(lint)
 
 for table,theDir in tables_table:
     for fn in table:

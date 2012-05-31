@@ -9089,7 +9089,7 @@ class leoQtColorizer:
 
         '''The main colorizer entry point.'''
 
-        trace = False and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting ; verbose = True
 
         self.count += 1 # For unit testing.
         if not incremental:
@@ -9124,7 +9124,7 @@ class leoQtColorizer:
                     self.language = language
                
             if fullRecolor:
-                if trace: g.trace('** calling rehighlight')
+                if trace: g.trace('** calling rehighlight',g.callers())
                 self.oldLanguageList = self.languageList[:]
                 self.oldV = p.v
                 self.highlighter.rehighlight(p)
@@ -11247,8 +11247,7 @@ class jEditColorizer:
             aList = self.rulesDict.get('<')
             for f in aList:
                 g.trace(f.__name__)
-            
-            
+
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i],[])

@@ -7083,7 +7083,7 @@ class Commands (object):
             c.frame.tree.redraw_now(forceDraw=True)
 
         if c.requestRecolorFlag:
-            if verbose: aList.append('%srecolor' % (
+            aList.append('%srecolor' % (
                 g.choose(c.incrementalRecolorFlag,'','full ')))
             # This should be the only call to c.recolor_now.
             c.recolor_now(incremental=c.incrementalRecolorFlag)
