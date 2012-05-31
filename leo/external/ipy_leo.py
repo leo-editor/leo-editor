@@ -47,13 +47,11 @@ def init_ipython(ipy):
     Leo still needs to run update_commander() after this.
 
     """
-    
-    # pylint: disable=E1101
-    # E1101: init_ipython: Module 'IPython' has no 'Shell' member
 
     global ip
     ip = ipy
-    IPython.Shell.hijack_tk()
+    IPython.Shell.hijack_tk() # pylint: disable=E1101
+        # E1101: init_ipython: Module 'IPython' has no 'Shell' member
     ip.set_hook('complete_command', mb_completer, str_key = '%mb')
     ip.expose_magic('mb',mb_f)
     ip.expose_magic('lee',lee_f)
@@ -110,10 +108,9 @@ from IPython.external.simplegeneric import generic
 import pprint
 
 def es(s):
-    # pylint: disable=W0107
-    # W0107: es: Unnecessary pass statement
     g.es(s, tabName = 'IPython')
-    pass
+    pass # pylint: disable=W0107
+         # W0107: es: Unnecessary pass statement
 #@+node:ekr.20100120092047.6092: ** format_for_leo
 @generic
 def format_for_leo(obj):
@@ -253,23 +250,23 @@ class LeoNode(object, UserDict.DictMixin):
     #@+node:ekr.20100120092047.6104: *3* __set_val
     def __set_val(self, val):        
         self.b = format_for_leo(val)
-        
-    if 1:
+
+    v = property(
         # pylint: disable=W0108
         # W0108: LeoNode.<lambda>: Lambda may not be necessary
-        v = property(lambda self: eval_node(self), __set_val,
-            doc = "Node evaluated value")
+        lambda self: eval_node(self), __set_val,
+        doc = "Node evaluated value")
     #@+node:ekr.20100120092047.6105: *3* __set_l
     def __set_l(self,val):
         self.b = '\n'.join(val )
         
-    if 1:
+    l = property(
         # pylint: disable=W0108,E1101
         # E1101: LeoNode.<lambda>: Module 'IPython' has no 'genutils' member
         # W0108: LeoNode.<lambda>: Lambda may not be necessary
 
-        l = property(lambda self : IPython.genutils.SList(self.b.splitlines()), 
-                     __set_l, doc = "Node value as string list")
+        lambda self : IPython.genutils.SList(self.b.splitlines()), 
+        __set_l, doc = "Node value as string list")
     #@+node:ekr.20100120092047.6106: *3* __iter__
     def __iter__(self):
         """ Iterate through nodes direct children """
@@ -427,12 +424,10 @@ class LeoWorkbook:
         cells = all_cells()
         return (LeoNode(p) for p in c.allNodes_iter())
     #@+node:ekr.20100120092047.6152: *3* current
-    if 1:
-        # pylint: disable=W1001
+    current = property( # pylint: disable=W1001
         # W1001:LeoWorkbook: Use of "property" on an old style class
-        current = property(
-            lambda self: LeoNode(c.currentPosition()),
-            doc = "Currently selected node")
+        lambda self: LeoNode(c.currentPosition()),
+        doc = "Currently selected node")
     #@+node:ekr.20100120092047.6122: *3* match_h
     def match_h(self, regex):
         cmp = re.compile(regex)
@@ -470,15 +465,12 @@ class PosList(list):
                     res.append(LeoNode(chi_p))
         return res
 #@+node:ekr.20100120092047.6126: ** workbook_complete
-if 1:
-    # pylint: disable=E1101
-    # E1101: workbook_complete: Module 'IPython' has no 'generics' member
-
-    @IPython.generics.complete_object.when_type(LeoWorkbook)
-    def workbook_complete(obj, prev):
-        # 2010/02/04: per 2to3
-        return list(all_cells().keys()) + [
-            s for s in prev if not s.startswith('_')]
+# E1101: workbook_complete: Module 'IPython' has no 'generics' member
+@IPython.generics.complete_object.when_type(LeoWorkbook) # pylint: disable=E1101
+def workbook_complete(obj, prev):
+    # 2010/02/04: per 2to3
+    return list(all_cells().keys()) + [
+        s for s in prev if not s.startswith('_')]
 #@+node:ekr.20100120092047.6127: ** add_var
 def add_var(varname):
     r = rootnode()
@@ -545,15 +537,13 @@ def push_ipython_script(node):
         c.redraw()
 #@+node:ekr.20100120092047.6131: ** eval_body
 def eval_body(body):
-    
-    # pylint: disable=E1101
-    # E1101: eval_body: Module 'IPython' has no 'genutils' member
 
     try:
         val = ip.ev(body)
     except:
         # just use stringlist if it's not completely legal python expression
-        val = IPython.genutils.SList(body.splitlines())
+        val = IPython.genutils.SList(body.splitlines()) # pylint: disable=E1101
+            # E1101: eval_body: Module 'IPython' has no 'genutils' member
     return val 
 
 #@+node:ekr.20100120092047.6132: ** push_plain_python
@@ -629,17 +619,15 @@ def edit_object_in_leo(obj, varname):
     node.go()
 
 #@+node:ekr.20100120092047.6138: ** edit_macro
-if 1:
-    # pylint: disable=E1101
-    # E1101: edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
-    # E1101: edit_macro: Module 'IPython' has no 'macro' member
+# E1101: edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
+# E1101: edit_macro: Module 'IPython' has no 'macro' member
 
-    @edit_object_in_leo.when_type(IPython.macro.Macro)
-    def edit_macro(obj,varname):
-        bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
-        node = add_var('Macro_' + varname)
-        node.b = bod
-        node.go()
+@edit_object_in_leo.when_type(IPython.macro.Macro) # pylint: disable=E1101
+def edit_macro(obj,varname):
+    bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
+    node = add_var('Macro_' + varname)
+    node.b = bod
+    node.go()
 #@+node:ekr.20100120092047.6139: ** get_history
 def get_history(hstart = 0):
     res = []
@@ -757,10 +745,9 @@ def show_welcome():
     print("Welcome to Leo-enabled IPython session!")
     print("Try %leoref for quick reference.")
     
-    # pylint: disable=E1101,E0611
     # E1101:show_welcome: Module 'IPython' has no 'platutils' member
     # E0611:show_welcome: No name 'platutils' in module 'IPython'
-
+    # pylint: disable=E1101,E0611
     import IPython.platutils
     IPython.platutils.set_term_title('ILeo')
     IPython.platutils.freeze_term_title()

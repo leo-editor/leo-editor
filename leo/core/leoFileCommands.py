@@ -1075,9 +1075,6 @@ class baseFileCommands:
 
         '''Clean control characters from s.
         s may be a bytes or a (unicode) string.'''
-        
-        # pylint: disable=E1101
-        # E1101:cleanSaxInputString: Class 'str' has no 'maketrans' member
 
         # Note: form-feed ('\f') is 12 decimal.
         badchars = [chr(ch) for ch in range(32)]
@@ -1088,6 +1085,8 @@ class baseFileCommands:
         flatten = ''.join(badchars)
         pad = ' ' * len(flatten)
 
+        # pylint: disable=E1101
+        # E1101:cleanSaxInputString: Class 'str' has no 'maketrans' member
         if g.isPython3:
             flatten = bytes(flatten,'utf-8')
             pad = bytes(pad,'utf-8')

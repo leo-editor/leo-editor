@@ -687,13 +687,12 @@ if g_import_ok:
         #@+node:ekr.20120401063816.10194: *3* __set_val
         def __set_val(self, val):        
             self.b = format_for_leo(val)
-            
-        if 1:
+
+        v = property(
             # pylint: disable=W0108
             # W0108:LeoNode.<lambda>: Lambda may not be necessary
-
-            v = property(lambda self: eval_node(self), __set_val,
-                doc = "Node evaluated value")
+            lambda self: eval_node(self), __set_val,
+            doc = "Node evaluated value")
         #@+node:ekr.20120401063816.10195: *3* __set_l
         def __set_l(self,val):
             self.b = '\n'.join(val )
@@ -891,7 +890,7 @@ if g_import_ok:
         # E1101:add_var: Class 'LeoNode' has no 'p' member
         
         c = g_ipm.c
-        g.trace(varname)
+        # g.trace(varname)
         if not c:
             return
 
@@ -946,16 +945,14 @@ if g_import_ok:
             d[h] = p.copy()
         return d    
     #@+node:ekr.20120401144849.10078: *3* edit_macro
-    if 1:
-        # pylint: disable=E1101
-        # E1101:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
-        @edit_object_in_leo.when_type(macro.Macro)
-        def edit_macro(obj,varname):
-        
-            bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
-            node = add_var('Macro_' + varname)
-            node.b = bod
-            node.go()
+    # E1101:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
+    @edit_object_in_leo.when_type(macro.Macro) # pylint: disable=E1101
+    def edit_macro(obj,varname):
+
+        bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
+        node = add_var('Macro_' + varname)
+        node.b = bod
+        node.go()
     #@+node:ekr.20120401144849.10080: *3* es
     def es(s):
             
@@ -1135,14 +1132,12 @@ if g_import_ok:
     def valid_attribute(s):
         return attribute_re.match(s)    
     #@+node:ekr.20120401144849.10108: *3* workbook_complete
-    if 1:
-        # pylint: disable=E1103
-        # E1103:workbook_complete: Function 'complete_object' has no 'when_type' member
-        @generics.complete_object.when_type(LeoWorkbook)
-        def workbook_complete(self,obj,prev):
-        
-            return list(all_cells().keys()) + [
-                s for s in prev if not s.startswith('_')]
+    # E1103:workbook_complete: Function 'complete_object' has no 'when_type' member
+    @generics.complete_object.when_type(LeoWorkbook) # pylint: disable=E1103
+    def workbook_complete(self,obj,prev):
+
+        return list(all_cells().keys()) + [
+            s for s in prev if not s.startswith('_')]
     #@+node:ekr.20120401144849.10109: ** Top-level IPython magic functions
     # By IPython convention, these must have "self" as the first argument.
     #@+node:ekr.20120401144849.10085: *3* ileo_pre_prompt_hook

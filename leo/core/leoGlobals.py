@@ -107,9 +107,8 @@ import inspect
 import operator
 import os
 
-# pylint: disable=E0611
 # Module 'urllib' has no 'parse' member.
-import urllib
+import urllib # pylint: disable=E0611
 
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
 # import pdb
@@ -125,7 +124,8 @@ import traceback
 import types
 
 if isPython3:
-    import urllib.parse as urlparse
+    # E0611: No name 'parse' in urllib.
+    import urllib.parse as urlparse # pylint: disable=E0611
 else:
     import urlparse
 
@@ -4384,10 +4384,9 @@ def computeFileUrl(fn,c=None,p=None):
     '''Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.'''
     
-    # pylint: disable=E1101
-    # Module 'urllib' has no 'parse' member.
     
-    unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+    # Module 'urllib' has no 'parse' member.
+    unquote = urllib.parse.unquote if isPython3 else urllib.unquote # pylint: disable=E1101
 
     # First, replace special characters (especially %20, by their equivalent).
     url = unquote(fn)
@@ -4471,12 +4470,8 @@ def getUrlFromNode(p):
 
 def handleUrl(url,c=None,p=None):
     
-    # pylint: disable=E1101
-    # pylint: disable=E1103
     # E1101: Module 'urllib' has no 'parse' member
-    # E1103: Instance of 'ParseResult' has no 'fragment' member
-    
-    unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+    unquote = urllib.parse.unquote if isPython3 else urllib.unquote # pylint: disable=E1101
     
     trace = False and not g.unitTesting ; verbose = False
     if c and not p:
@@ -4492,7 +4487,13 @@ def handleUrl(url,c=None,p=None):
             url = g.computeFileUrl(url,c=c,p=p)
 
         parsed   = urlparse.urlparse(url)
-        fragment = parsed.fragment
+
+        # pylint: disable=E1103
+        # E1103: Instance of 'ParseResult' has no 'fragment' member
+        # E1103: Instance of 'ParseResult' has no 'netloc' member
+        # E1103: Instance of 'ParseResult' has no 'path' member
+        # E1103: Instance of 'ParseResult' has no 'scheme' member
+        fragment = parsed.fragment 
         netloc   = parsed.netloc
         path     = parsed.path
         scheme   = parsed.scheme
@@ -4570,9 +4571,6 @@ def isValidUrl(url):
     
     '''Return true if url *looks* like a valid url.'''
     
-    # pylint: disable=E1103
-    # E1103: Instance of 'ParseResult' has no 'scheme' member.
-    
     table = (
         'file','ftp','gopher','hdl','http','https','imap',
         'mailto','mms','news','nntp','prospero','rsync','rtsp','rtspu',
@@ -4586,8 +4584,8 @@ def isValidUrl(url):
         return False
     else:
         parsed = urlparse.urlparse(url)
-        scheme = parsed.scheme
-        # g.trace(scheme)
+        # E1103: Instance of 'ParseResult' has no 'scheme' member.
+        scheme = parsed.scheme # pylint: disable=E1103
         for s in table:
             if scheme.startswith(s):
                 return True

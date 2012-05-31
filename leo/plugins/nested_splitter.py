@@ -39,7 +39,7 @@ class DemoWidget(QtGui.QWidget):
     def __init__(self, parent=None, color=None):
         
         # pylint: disable=E1101
-        # E1101: 53:DemoWidget.__init__: Module 'PyQt4.QtCore' has no 'QMargins' member
+        # E1101: DemoWidget.__init__: Module 'PyQt4.QtCore' has no 'QMargins' member
 
         QtGui.QWidget.__init__(self, parent)
 
@@ -291,9 +291,8 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             # set owner to main splitter explicitly.  Not sure how right now.
             submenu = menu.addMenu('Open window')
 
-            # pylint: disable=W0108
             # W0108: Lambda may not be necessary.        
-            self.add_item(lambda: splitter.open_window(),
+            self.add_item(lambda: splitter.open_window(), # pylint: disable=W0108
                 submenu, "Empty")    
                 
             # adapted from choice_menu()
@@ -312,9 +311,9 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         if True:
             submenu = menu.addMenu('Debug')
             act = QtGui.QAction("Print splitter layout", self)
-            # pylint: disable=E0102
+
             # E0102: function already defined.
-            def cb(splitter=splitter):
+            def cb(splitter=splitter): # pylint: disable=E0102
                 print("\n%s\n" % 
                     splitter.layout_to_text(splitter.top().get_layout()))
             act.connect(act, Qt.SIGNAL('triggered()'), cb)
