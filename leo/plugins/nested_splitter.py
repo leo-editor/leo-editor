@@ -290,7 +290,9 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             # so owner is not a window which might close.  Could instead
             # set owner to main splitter explicitly.  Not sure how right now.
             submenu = menu.addMenu('Open window')
-            
+
+            # pylint: disable=W0108
+            # W0108: Lambda may not be necessary.        
             self.add_item(lambda: splitter.open_window(),
                 submenu, "Empty")    
                 
@@ -310,6 +312,8 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         if True:
             submenu = menu.addMenu('Debug')
             act = QtGui.QAction("Print splitter layout", self)
+            # pylint: disable=E0102
+            # E0102: function already defined.
             def cb(splitter=splitter):
                 print("\n%s\n" % 
                     splitter.layout_to_text(splitter.top().get_layout()))
