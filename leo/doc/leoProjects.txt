@@ -1536,134 +1536,6 @@ The fix was:
 1. Use the "slow" code in leoQTextEditWidget.get.
 2. Use w.get/setAllText in leoFrame.pasteText.
 #@+node:ekr.20120413152012.10048: *4* Minimize scrolling during paste-text
-#@+node:ekr.20120418065452.10029: *4* Fixed bug 981849: incorrect body content shown
-@language python
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/981849
-
-The original fix was misguided. It attempted to use more careful code in
-setSelectionRangeHelper & lengthHelper.
-    
-The new fix avoids messing with the viewport entirely:
-
-leo-editor thread: opening new top level windows
-http://groups.google.com/group/leo-editor/browse_thread/thread/8f5f6c72d8716b33
-
-The key is to use a descriptor in LeoQTextBrowser stylesheets.  Example::
-
-'LeoQTextBrowser { << the actual stylesheet >> }
-
-See http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
-
-
-    
-#@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
-def add_border(self,c,w):
-
-    state = c.k and c.k.unboundKeyAction
-    
-    # g.trace(state,hasattr(w,'viewport'),w,g.callers())
-
-    if state and c.use_focus_border and hasattr(w,'viewport'):
-        w = w.viewport()
-        d = {
-            'command':  c.focus_border_command_state_color,
-            'insert':   c.focus_border_color,
-            'overwrite':c.focus_border_overwrite_state_color,
-        }
-        color = d.get(state,c.focus_border_color)
-        sheet = "border: %spx solid %s" % (c.focus_border_width,color)
-        self.update_style_sheet(w,'border',sheet)
-
-def remove_border(self,c,w):
-    
-    # g.trace(hasattr(w,'viewport'),w,g.callers())
-
-    if c.use_focus_border and hasattr(w,'viewport'):
-        w = w.viewport()
-        # g.trace(w)
-        sheet = "border: %spx solid white" % c.focus_border_width
-        self.update_style_sheet(w,'border',sheet)
-#@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget)
-def setEditorColors(self,bg,fg):
-    
-    obj = self.widget # A QLineEdit
-    
-    # g.trace('(leoQtHeadlineWidget)',bg,fg)
-
-    def check(color,kind,default):
-        if not QtGui.QColor(color).isValid():
-            if color not in self.badFocusColors:
-                self.badFocusColors.append(color)
-                g.es_print('invalid head %s color: %s' % (
-                    kind,color),color='blue')
-            color = default
-        return color
-
-    bg = check(bg,'background','white')
-    fg = check(fg,'foreground','black')
-
-    # if hasattr(obj,'viewport'):
-        # obj = obj.viewport()
-    
-    obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
-#@+node:ekr.20110605121601.18187: *5* setEditorColors (qtBody)
-def setEditorColors (self,bg,fg):
-    
-    trace = False and not g.unitTesting
-    
-    obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
-    
-    class_name = obj.__class__.__name__
-    if  class_name != 'LeoQTextBrowser':
-        if trace: g.trace('unexpected object',obj)
-        return
-    
-    def check(color,kind,default):
-        if color in ('none','None',None):
-            return default
-        if QtGui.QColor(color).isValid():
-            return color
-        if color not in self.badFocusColors:
-            self.badFocusColors.append(color)
-            g.es_print('invalid body %s color: %s' % (
-                kind,color),color='blue')
-        return default
-
-    bg = check(bg,'background','white')
-    fg = check(fg,'foreground','black')
-    
-    if trace: g.trace(bg,fg)
-
-    # Set the stylesheet only for the QTextBrowser itself,
-    # *not* the other child widgets:
-    # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
-        
-    sheet = 'background-color: %s; color: %s' % (bg,fg)
-    g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
-#@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
-def update_style_sheet (self,w,key,value,selector=None):
-    
-    trace = False and not g.unitTesting
-    
-    # Step one: update the dict.
-    d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
-
-    d[key] = value
-    aList = [d.get(key) for key in list(d.keys())]
-    w.leo_styles_dict = d
-    
-    # Step two: update the stylesheet.
-    s = '; '.join(aList)
-    
-    if selector:
-        s = '%s { %s }' % (selector,s)
-
-    if trace:
-        g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
-
-    w.setStyleSheet(s)
 #@+node:ekr.20120427064024.10062: *4* Fixed bug 711158: Warn if same .leo file open in another Leo instance
 @language python
 @language rest
@@ -2012,6 +1884,128 @@ section called << ret >> is undefined.
 I am going to close this item. I see no real need to support other section
 delimiters in external files. If there ever becomes a real need to do so, a
 separate wishlist item will be appropriate.
+#@+node:ekr.20120418065452.10029: *4* Fixed bug 981849: incorrect body content shown
+@language python
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/981849
+
+The original fix was misguided. It attempted to use more careful code in
+setSelectionRangeHelper & lengthHelper.
+    
+The new fix avoids messing with the viewport in both setEditorColors methods:
+
+leo-editor thread: opening new top level windows
+http://groups.google.com/group/leo-editor/browse_thread/thread/8f5f6c72d8716b33
+
+The key is to use a descriptor in LeoQTextBrowser stylesheets.  Example::
+
+'LeoQTextBrowser { << the actual stylesheet >> }
+
+See http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
+
+
+    
+#@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
+def add_border(self,c,w):
+
+    trace = True and not g.unitTesting
+    state = c.k and c.k.unboundKeyAction
+    
+    if state and c.use_focus_border:
+        d = {
+            'command':  c.focus_border_command_state_color,
+            'insert':   c.focus_border_color,
+            'overwrite':c.focus_border_overwrite_state_color,
+        }
+        color = d.get(state,c.focus_border_color)
+        sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+        self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+
+def remove_border(self,c,w):
+
+    if c.use_focus_border:
+        sheet = "border: %spx solid white" % c.focus_border_width
+        self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget)
+def setEditorColors(self,bg,fg):
+    
+    obj = self.widget # A QLineEdit
+    
+    # g.trace('(leoQtHeadlineWidget)',bg,fg)
+
+    def check(color,kind,default):
+        if not QtGui.QColor(color).isValid():
+            if color not in self.badFocusColors:
+                self.badFocusColors.append(color)
+                g.es_print('invalid head %s color: %s' % (
+                    kind,color),color='blue')
+            color = default
+        return color
+
+    bg = check(bg,'background','white')
+    fg = check(fg,'foreground','black')
+
+    # if hasattr(obj,'viewport'):
+        # obj = obj.viewport()
+    
+    obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
+#@+node:ekr.20110605121601.18187: *5* setEditorColors (qtBody)
+def setEditorColors (self,bg,fg):
+    
+    trace = False and not g.unitTesting
+    
+    obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
+    
+    class_name = obj.__class__.__name__
+    if  class_name != 'LeoQTextBrowser':
+        if trace: g.trace('unexpected object',obj)
+        return
+    
+    def check(color,kind,default):
+        if color in ('none','None',None):
+            return default
+        if QtGui.QColor(color).isValid():
+            return color
+        if color not in self.badFocusColors:
+            self.badFocusColors.append(color)
+            g.es_print('invalid body %s color: %s' % (
+                kind,color),color='blue')
+        return default
+
+    bg = check(bg,'background','white')
+    fg = check(fg,'foreground','black')
+    
+    if trace: g.trace(bg,fg)
+
+    # Set the stylesheet only for the QTextBrowser itself,
+    # *not* the other child widgets:
+    # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
+        
+    sheet = 'background-color: %s; color: %s' % (bg,fg)
+    g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
+#@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
+def update_style_sheet (self,w,key,value,selector=None):
+    
+    trace = False and not g.unitTesting
+    
+    # Step one: update the dict.
+    d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+
+    d[key] = value
+    aList = [d.get(key) for key in list(d.keys())]
+    w.leo_styles_dict = d
+    
+    # Step two: update the stylesheet.
+    s = '; '.join(aList)
+    
+    if selector:
+        s = '%s { %s }' % (selector,s)
+
+    if trace:
+        g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
+
+    w.setStyleSheet(s)
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893

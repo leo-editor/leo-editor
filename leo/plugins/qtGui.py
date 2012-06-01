@@ -7522,12 +7522,10 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
     def add_border(self,c,w):
 
+        trace = True and not g.unitTesting
         state = c.k and c.k.unboundKeyAction
         
-        # g.trace(state,hasattr(w,'viewport'),w,g.callers())
-
-        if state and c.use_focus_border and hasattr(w,'viewport'):
-            w = w.viewport()
+        if state and c.use_focus_border:
             d = {
                 'command':  c.focus_border_command_state_color,
                 'insert':   c.focus_border_color,
@@ -7535,17 +7533,13 @@ class leoQtGui(leoGui.leoGui):
             }
             color = d.get(state,c.focus_border_color)
             sheet = "border: %spx solid %s" % (c.focus_border_width,color)
-            self.update_style_sheet(w,'border',sheet)
+            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
 
     def remove_border(self,c,w):
-        
-        # g.trace(hasattr(w,'viewport'),w,g.callers())
 
-        if c.use_focus_border and hasattr(w,'viewport'):
-            w = w.viewport()
-            # g.trace(w)
+        if c.use_focus_border:
             sheet = "border: %spx solid white" % c.focus_border_width
-            self.update_style_sheet(w,'border',sheet)
+            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
 
