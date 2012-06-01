@@ -3224,7 +3224,7 @@ def add_border(self,c,w):
 
 def remove_border(self,c,w):
     
-    # g.trace(hasattr(w,'viewport'),w)
+    # g.trace(hasattr(w,'viewport'),w,g.callers())
 
     if c.use_focus_border and hasattr(w,'viewport'):
         w = w.viewport()
@@ -3232,21 +3232,25 @@ def remove_border(self,c,w):
         sheet = "border: %spx solid white" % c.focus_border_width
         self.update_style_sheet(w,'border',sheet)
 .. @+node:ekr.20111026115337.16528: *6* update_style_sheet (qtGui)
-def update_style_sheet (self,w,key,value):
+def update_style_sheet (self,w,key,value,selector=None):
     
     trace = False and not g.unitTesting
     
     # Step one: update the dict.
     d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+
     d[key] = value
     aList = [d.get(key) for key in list(d.keys())]
     w.leo_styles_dict = d
     
     # Step two: update the stylesheet.
     s = '; '.join(aList)
+    
+    if selector:
+        s = '%s { %s }' % (selector,s)
 
-    if trace: g.trace('\nold: %s\nnew: %s' % (
-        str(w.styleSheet()),s))
+    if trace:
+        g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
 
     w.setStyleSheet(s)
 .. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect

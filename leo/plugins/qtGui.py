@@ -1744,12 +1744,12 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
 
         w = self.widget
         w.setText(s)
-    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget) (no longer called)
+    #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget)
     def setEditorColors(self,bg,fg):
         
         obj = self.widget # A QLineEdit
         
-        # g.trace('(leoQtHeadlineWidget)',bg,fg,g.callers())
+        # g.trace('(leoQtHeadlineWidget)',bg,fg)
 
         def check(color,kind,default):
             if not QtGui.QColor(color).isValid():
@@ -1762,9 +1762,9 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
 
         bg = check(bg,'background','white')
         fg = check(fg,'foreground','black')
-        
-        if hasattr(obj,'viewport'):
-            obj = obj.viewport()
+
+        # if hasattr(obj,'viewport'):
+            # obj = obj.viewport()
         
         obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     #@+node:ekr.20110605121601.18128: *5* setFocus
@@ -2767,28 +2767,37 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
         
+        trace = False and not g.unitTesting
+        
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
-
+        
+        class_name = obj.__class__.__name__
+        if  class_name != 'LeoQTextBrowser':
+            if trace: g.trace('unexpected object',obj)
+            return
+        
         def check(color,kind,default):
-            if not QtGui.QColor(color).isValid():
-                if color in ( 'none','None',None):
-                    pass
-                elif color not in self.badFocusColors:
-                    self.badFocusColors.append(color)
-                    g.es_print('invalid body %s color: %s' % (
-                        kind,color),color='blue')
-                color = default
-            return color
+            if color in ('none','None',None):
+                return default
+            if QtGui.QColor(color).isValid():
+                return color
+            if color not in self.badFocusColors:
+                self.badFocusColors.append(color)
+                g.es_print('invalid body %s color: %s' % (
+                    kind,color),color='blue')
+            return default
 
         bg = check(bg,'background','white')
         fg = check(fg,'foreground','black')
         
-        if hasattr(obj,'viewport'):
-            obj = obj.viewport()
+        if trace: g.trace(bg,fg)
 
+        # Set the stylesheet only for the QTextBrowser itself,
+        # *not* the other child widgets:
+        # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
+            
         sheet = 'background-color: %s; color: %s' % (bg,fg)
-        g.app.gui.update_style_sheet(obj,'colors',sheet)
-      
+        g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
     #@+node:ekr.20110605121601.18190: *4* oops (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -7530,7 +7539,7 @@ class leoQtGui(leoGui.leoGui):
 
     def remove_border(self,c,w):
         
-        # g.trace(hasattr(w,'viewport'),w)
+        # g.trace(hasattr(w,'viewport'),w,g.callers())
 
         if c.use_focus_border and hasattr(w,'viewport'):
             w = w.viewport()
@@ -8356,21 +8365,25 @@ class leoQtGui(leoGui.leoGui):
             g.es_print('bad widget color %s for %s' % (
                 colorName,widgetKind),color='blue')
     #@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
-    def update_style_sheet (self,w,key,value):
+    def update_style_sheet (self,w,key,value,selector=None):
         
         trace = False and not g.unitTesting
         
         # Step one: update the dict.
         d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+
         d[key] = value
         aList = [d.get(key) for key in list(d.keys())]
         w.leo_styles_dict = d
         
         # Step two: update the stylesheet.
         s = '; '.join(aList)
+        
+        if selector:
+            s = '%s { %s }' % (selector,s)
 
-        if trace: g.trace('\nold: %s\nnew: %s' % (
-            str(w.styleSheet()),s))
+        if trace:
+            g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
 
         w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18526: *4* toUnicode (qtGui)
