@@ -9,6 +9,226 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
+.. @+node:ekr.20120601122042.10714: *4* @button cleanup @key=alt-7
+'''A script to clean Python imports.
+'''
+
+class CleanPython:
+    @others
+    
+h = 'Coverage (live)'
+p = g.findNodeAnywhere(c,h)
+if p:
+    CleanPython().run(c,p)
+else:
+    print('not found: %s' % (h))
+.. @+node:ekr.20120601122042.10715: *5* run
+def run(self,c,p):
+    
+    self.changed = 0
+    self.trace = True
+
+    if self.trace: g.cls()
+    p1 = p.copy()
+    
+    # Don't set any nodes dirty here.
+    for p in c.all_unique_positions():
+        if p.isMarked():
+            p.v.clearMarked()
+            
+    bunch = c.undoer.beforeChangeTree(p1)
+   
+    for p in p1.children():
+        if self.trace: print('\n***** %s' % (p.h))
+        self.clean(c,p)
+        
+    if self.changed:
+        c.undoer.afterChangeTree(p1,'clean-python-code',bunch)
+        c.redraw()
+
+    g.trace('done: %s nodes changed' % (self.changed))
+.. @+node:ekr.20120601122042.10716: *5* clean & helpers
+def clean(self,c,p):
+    
+    '''
+    - Move a shebang line from the first child to the root.
+    - Move a leading docstring in the first child to the root.
+    - Use a section reference for declarations.
+    - Remove leading and trailing blank lines from all nodes.
+    - Merge a node containing nothing but comments with the next node.
+    - Merge a node containing no class or def lines with the previous node.
+    '''
+
+    root = p.copy()
+    assert p.h.startswith('@@file') or p.h.startswith('@file'),p.h
+    
+    self.move_shebang_line(c,root)
+    self.move_doc_string(c,root)
+    self.rename_decls(c,root)
+
+    for p in root.self_and_subtree():
+        self.clean_blank_lines(c,p)
+    for p in root.subtree():
+        self.merge_comment_nodes(c,p)
+    for p in root.subtree():
+        self.merge_extra_nodes(c,p)
+.. @+node:ekr.20120601122042.10722: *6* move_shebang_line
+def move_shebang_line (self,c,root):
+    
+    '''Move a shebang line from the first child to the root.'''
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not s.startswith('#!'):
+        return
+        
+    lines = g.splitLines(s)
+    nl = '\n\n' if root.b.strip() else ''
+    root.b = lines[0] + nl + root.b
+    p.b = lines[1:]
+    p.setDirty()
+    p.setMarked()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+.. @+node:ekr.20120601122042.10717: *6* move_doc_string
+def move_doc_string(self,c,root):
+
+    '''Move a leading docstring in the first child to the root node.'''
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not (s.startswith('"""') or s.startswith("'''")):
+        return
+        
+    delim = '"""' if s.startswith('"""') else "'''"
+    i = s.find(delim,3)
+    if i == -1:
+        return
+        
+    doc = s[:i+3]
+    p.b = s[i+3:].lstrip()
+    
+    # Move docstring to front of root.b, but after any shebang line.
+    nl = '\n\n' if root.b.strip() else ''
+    if root.b.startswith('#!'):
+        lines = g.splitLines(root.b)
+        root.b = lines[0] + doc + nl + lines[1:]
+    else:
+        root.b = doc + nl + root.b
+        
+    p.setDirty()
+    p.setMarked()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+.. @+node:ekr.20120601122042.10718: *6* rename_decls (test)
+def rename_decls (self,c,root):
+    
+    '''Use a section reference for declarations.'''
+    
+    p = root.firstChild()
+    h = p and p.h or ''
+    
+    tag = 'declarations'
+    if not h.endswith(tag):
+        return
+
+    name = h[:-len(tag)].strip()
+    decls = g.angleBrackets(tag)
+    p.h = '%s (%s)' % (decls,name)
+    
+    i = root.b.find('@others')
+    if i == -1:
+        g.trace('can not happen')
+        return
+    else:
+        nl = '' if i == 0 else '\n'
+        root.b = root.b[:i] + nl + decls + '\n' + root.b[i:]
+
+    p.setDirty()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+.. @+node:ekr.20120601122042.10719: *6* clean_blank_lines
+def clean_blank_lines(self,c,p):
+    
+    '''Remove leading and trailing blank lines from all nodes.
+    '''
+    
+    s = p.b
+    if not s.strip():
+        return
+    
+    result = g.splitLines(s)
+    for i in 0,-1:
+        while result:
+            if result[i].strip():
+                break
+            else:
+                del result[i]
+        
+    s = ''.join(result)
+    if not s.endswith('\n'): s = s + '\n'
+    if s != p.b:
+        p.b = s
+        p.setDirty()
+        # p.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        # if self.trace: g.trace(p.h)
+        
+.. @+node:ekr.20120601122042.10720: *6* merge_comment_nodes
+def merge_comment_nodes(self,c,p):
+    
+    '''Merge a node containing nothing but comments with the next node.'''
+
+    h = p.h
+    
+    if p.hasChildren() or not h.strip().startswith('#'):
+        return
+        
+    p2 = p.next()
+    if p2:
+        b = p.b.lstrip()
+        b = b + ('\n' if b.endswith('\n') else '\n\n')
+        p2.b = b + p2.b
+        p.doDelete(p2)
+        p2.setDirty()
+        # p2.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        if self.trace: g.trace(h,' --> ',p2.h)
+.. @+node:ekr.20120601122042.10721: *6* merge_extra_nodes
+def merge_extra_nodes(self,c,p):
+    
+    '''Merge a node containing no class or def lines with the previous node'''
+    
+    s = p.b
+    if p.hasChildren() or p.h.strip().startswith('<<') or not s.strip():
+        return
+        
+    for s2 in g.splitLines(s):
+        if s2.strip().startswith('class') or s2.strip().startswith('def'):
+            return
+
+    p2 = p.back()
+    if p2:
+        nl = '\n' if s.endswith('\n') else '\n\n'
+        p2.b = p2.b + nl + s
+        h = p.h
+        p.doDelete(p2)
+        p2.setDirty()
+        # p2.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        if self.trace: g.trace(h,' --> ',p2.h)
 .. @+node:ekr.20111019104425.15865: *4* Make sure docstrings include present documentation
 Every command should have a **complete** docstring.
 .. @+node:ekr.20120527143117.11089: *5* Print commands & docstrings
