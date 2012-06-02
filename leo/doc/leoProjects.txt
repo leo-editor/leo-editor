@@ -2523,6 +2523,7 @@ line to catch the error:
 >   except AttributeError:
 >      m = None
 
+#@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
 http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
@@ -2530,6 +2531,27 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
 Added a jinja2 templating example.  See:
     
 file://../scripts/scripts.leo#Scripts-->@thin%20leoScripts.txt-->Important-->Prototype%20of%20jinja%20@command%20nodes
+#@+node:ekr.20120531092617.10141: *4* Added cleanup-imported-nodes script to scripts.leo
+@nocolor-node
+
+The script itself is in scripts.leo: cleanup-imported-nodes
+
+- Put docstring in root node.
+- Use section reference for declarations.
+- Remove leading and trailing blank lines from all nodes, leaving only a trailing newline.
+- If a new contains nothing but comments, merge it with the next node.
+- If a node contains nothing but a property, merge it with the previous node.
+
+The holy grail would be to do all this in the Python importer, but a post-processing script suffices.
+
+Workflow:
+    
+1. bzr checkin of all *unchanged* file.
+2. Import all files and save.
+3. bzr commit all changed files.
+4. Run cleanup script.
+5. bzr qdiff then shows all cleanups.
+6. bzr commit if all goes well.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

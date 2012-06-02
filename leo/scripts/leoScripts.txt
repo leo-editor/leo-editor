@@ -2893,6 +2893,99 @@ for p in p.self_and_subtree():
     if change and result != p.b:
         c.setBodyString(p,result)
 
+#@+node:ekr.20120328102352.6945: *3* @@button fac
+@language python
+
+<< documentation >>
+
+from leo.plugins.mod_scripting import scriptingController
+
+sc = scriptingController(c)
+
+if c.frame.body.hasSelection():
+    code = c.frame.body.getSelectedText()
+    heading = 'fix'
+else:
+    code,heading = p.b,p.h
+
+def transform(c=c,code=code):
+    w = c.frame.body
+    s = w.getSelectedText()
+    g.es(s)
+    exec(code)
+    g.es(s)
+    w.deleteTextSelection()
+    i = w.getInsertPoint()
+    w.insert(i,s)
+    p.b = w.getAllText()
+    w.setInsertPoint(i)
+
+sc.createIconButton(
+    heading,
+    command = transform,
+    shortcut = None,
+    statusLine = 'Make filter button',
+    bg = "LightBlue"
+)
+#@+node:ekr.20120328102352.6949: *4* << documentation >>
+@nocolor-node
+@
+http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
+
+Ever find that you have a whole lot of:
+
+.. sourcecode:: py
+
+  rec[f['analyte']] ... rec[f['sample_type']] ...
+
+expressions in your code, and now things have changed and you want them all
+to be:
+
+.. sourcecode:: py
+
+  row.Analyte ... row.Sample_Type ...
+
+basically if str variable s was::
+
+  rec[f['analyte']]
+
+then you want to perform:
+
+.. sourcecode:: py
+
+  s = "row."+s.split("'")[1].title()
+
+on each one. In general it would be nice to be able to use a python
+expression when search and replace doesn't cut it.
+
+The button code below creates a button, ``fac``, which, when pressed,
+creates another button, with some name you choose, which, when pressed,
+executes some python code to fix the selected text in the body.
+
+You can define the code to be executed in two ways, either in its own node:
+
+ - insert a new node with a headline which describes the refactor
+ - enter code in the node which modifies the string variable ``s``,
+   which is initially set to the selected text in the body
+ - press the ``fac`` button, which creates a new button named
+   after this code node
+ - select each offending piece of text and press the button created
+   in the previous step to fix
+
+or
+
+ - type some code modifying ``s`` right in the body you're working on
+ - press the ``fac`` button, which creates a new button named "fix"
+ - select each offending piece of text and press the button created
+   in the previous step to fix
+
+Notes:
+
+ - unlike regular button nodes, changing the code after the
+   button's created (first option above) doesn't change the code
+   executed by the button
+ - replacing selection text makes Leo reposition the insert point at
+   the top of the window, this is annoying but unrelated to this code
 #@+node:ekr.20080221113205: *3* @@button print g.es stats
 @first # -*- coding: utf-8 -*-
 
@@ -3221,6 +3314,25 @@ def setToBeTranslated (self,s,n):
 
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
+#@+node:ekr.20120328102352.6948: *3* @@button set-style
+@language rest
+
+@
+http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
+Here's a one line @button node you can add to myLeoSettings.leo
+
+Important:  setStyleSheet *replaces* the previous stylesheet with the
+new stylesheet, so you had best set all the attributes of Leo's
+default stylesheet.
+
+As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
+set the stylesheet for that widget only: the top-level stylesheet (the
+stylesheet for c.frame.top.leo_ui) remains unchanged.
+@c
+
+@language python
+
+c.frame.top.leo_ui.setStyleSheet(p.b)
 #@+node:ekr.20051110105027.34: *3* c2py  Convert C code to Python syntax
 @first
 @language python
@@ -4778,6 +4890,318 @@ def setNode (p,data):
         p.initHeadString('@item ' + head.strip())
     if body and body.strip():
         p.setTnodeText(body.strip())
+#@+node:ekr.20111004090723.15496: *3* Create pdf from LaTeX
+<< docstring >>
+
+@language python
+@tabwidth -4
+
+import os
+import subprocess
+
+@others
+
+log = g.es_print
+
+exe = r'C:\apps\MiKTeX 2.9\miktex\bin\pdflatex.exe'
+    # The full path to the executable.
+
+d = get_options(exe)
+
+makePDF(d,open_out=True,trace=True)
+#@+node:ekr.20111004185540.15535: *4* << docstring >>
+@nocolor-node
+'''
+
+A script for creating a pdf from a latex file.
+
+*Important: you must run Leo from a console when using this script, at least
+until the script can drive pdflatex in some kind of unattended mode. As it is
+now, pdflatex is likely to hang, waiting for console input. The typical (only?)
+response is to hit carriage returns until pdflatex finishes.
+
+There are two modes of operation, static and dynamic, determined by the contents
+of **d**, the **option dictionary**, returned by get_options.
+
+**Important**: change get_options as described below to meet your needs.
+
+If d.get('in_fn') exists, the script operates in static mode. Otherwise, the
+script operates in dynamic mode.
+
+Static mode
+===========
+
+d.get('in_fn') must be the full path to the input file.
+
+If d.get('out_dir') exists, it must be the full path to the output directory.
+The out_dir setting is optional. If omitted, output goes to the directory
+containing the input file.
+
+Dynamic mode
+============
+
+Rather than use d.get('in_fn'), the script finds the nearest @<file> node in
+c.p.self_and_parents(). This node, *whatever it is*, is assumed to contain LaTeX
+text.
+
+**Important**: if in_fn is a relative path, it is converted to an absolute path
+by taking account of any ancestor @path directive. If the resulting path is
+still relative, it is taken to be a path relative to the directory containing
+the .leo file. Here is the actual code::
+    
+    c_dir = g.os_path_dirname(c.fileName())
+    fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
+    
+If d.get('out_dir') exists, it may be either an absolute or relative path. If it
+is a relative path, it is taken to be a path relative to the path given by the
+@<file> node. That is::
+    
+    out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
+
+Other settings
+==============
+
+- exe:  The full path to the pdf creation program.
+        'pdflatex' is part of MikTex.
+
+- open_out: True: open the output file automatically after it is created.
+
+- trace: True: output log messages using g.es_print.
+
+The exe setting is a global variable.  The open_out and trace settings
+are arguments to the makePDF function.
+
+To do
+=====
+
+- Add an argument to the command that would have pdflatex run without user input.
+
+- determine if the node held a rst file and first turn this into Latex.
+
+- open the log file or read it into a node if there is a compiling error.
+
+- It might be useful to have some settings in the file node that let the script
+  automatically basic latex packages, items and definitions for a particular
+  type of document (Title page, TOC, set date, use the beamer package to create
+  slides, etc.)
+
+- It would be really cool to be able to render TEX to PDF in real time like
+  viewrendered handles HTML and ReST.
+  
+Acknowledgements
+================
+
+The original script by M.D.Boldin.  Rewritten by EKR.
+'''
+
+#@+node:ekr.20111004185540.15537: *4* get_options
+def get_options(exe):
+    
+    '''Return the user options in a dict.'''
+    
+    if 0: # Static options...
+        return {
+            'exe': exe,
+            'in_fn':    r'C:\Users\edreamleo\Latex\sample.tex',
+                # The full path to the input file.
+            'out_dir':  r'C:\Users\edreamleo\Latex\out',
+                # The full path to the output directory.
+        }
+    else : # Dynamic options...
+        '''The nearest @<file> gives the input file.
+        
+        If all paths are relative, the result is relative
+        to the directory containing this .leo file.
+        '''
+    
+        return {
+            'exe': exe,
+            'out_dir': 'out',
+                # The output directory,
+                # relative to the directory of the input file.
+                # None is valid.
+        }
+#@+node:ekr.20111004185540.15540: *4* log
+def log (s):
+    
+    '''Write a message to the log.'''
+    
+    g.es_print(s,color='red')
+#@+node:ekr.20111004090723.15502: *4* makePDF
+def makePDF (d,open_out,trace):
+    
+    command,out_fn = setup(d)
+    if not command: return
+    
+    # Save the outline to save the file.
+    c.save()
+
+    if trace:
+        log('\nMakePDF: command...')
+        for arg in command:
+            log('  %s' % arg)
+        log('')
+
+    # Execute the command and wait for it to finish.
+    subprocess.Popen(command).wait()
+
+    if open_out:
+        if trace: log('Opening: %s' % out_fn)
+        os.startfile(out_fn)
+    
+    if trace: log('Done')
+#@+node:ekr.20111004182631.15511: *4* setup & helpers
+def setup (d):
+    
+    '''Return the command to execute and the name of the output file.'''
+
+    exe = d.get('exe')
+    in_fn,out_dir = compute_file_names(d)
+
+    if in_fn and out_dir:
+        command = [
+            exe,
+            '-output-directory=%s' % (out_dir),
+            in_fn
+        ]
+        out_fn = g.os_path_join(
+            out_dir,g.shortFileName(in_fn[:-4]))+'.pdf'
+        return command,out_fn
+    else:
+        return None,None
+#@+node:ekr.20111004185540.15538: *5* compute_file_names
+def compute_file_names (d):
+    
+    '''Return the absolute paths to the input file and the output directory.'''
+    
+    fn = d.get('in_fn')
+    if fn:
+        # Static, absolute paths.
+        out_dir = d.get('out_dir') or g.os_path_dirname(fn)
+        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
+            return fn,out_dir
+        elif not g.os_path_exists(fn):
+            log('File not found: %s' % fn)
+            return None,None
+        else:
+            log('Directory not found: %s' % out_dir)
+            return None,None
+    else:
+        # Dynamic file name from the nearest @<file> node.
+        for p in c.p.self_and_parents():
+            if p.isAnyAtFileNode():
+                fn = p.anyAtFileNodeName()
+                break
+        else:
+            log('no <@file> node found at: "%s"' % c.p.h)
+            return None,None
+        
+        # Compute the absolute path to the filename,
+        # taking into account any relevant @path directives.
+        c_dir = g.os_path_dirname(c.fileName())
+        fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
+        out_dir = d.get('out_dir') or ''
+        out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
+        
+        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
+            return fn,out_dir
+        else:
+            log('not found: %s' % fn)
+            return None,None
+#@+node:ekr.20120328102352.6937: *3* Display a call hierarchy in Leo
+@language python
+@language rest
+
+From Brian Theado
+
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
+
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+#@+node:ekr.20120328102352.6938: *4* call tree
+import trace
+
+@language python
+@others
+
+# http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
+
+# Trace a minibuffer command.
+
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
+
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
+
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+#@+node:ekr.20120328102352.6939: *5* displayCalltree
+def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
+
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) > 0:
+       while len(levels[-1]) > 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+#@+node:ekr.20120328102352.6940: *5* trace session
 #@+node:ekr.20051103072643: *3* Export to treepad
 # simple script to export current node and children as a treepad document
 # the file format for treepad 2.x is simple.
@@ -5347,6 +5771,392 @@ _colors = {
     '_LeoSen':        ['#BC8F8F','LeoSen','font-size:x-large;'], #sentinal, tan fade comment
     'bg':             ['#FFFAFA','bg',' '], #snow
 }
+#@+node:ekr.20120602062004.12340: *3* Import scripts...
+# I use these most of all.
+#@+node:ekr.20041126035448: *4* Script to import a file
+# Note: the source files contain mixed tabs/blanks, and that's very hard for Leo's imports to handle.
+
+@tabwidth 8
+@language python
+
+path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\lib\PmwPanedWidget.py"
+
+path = r"c:\prog\PmwPanedWidget.py" # The same file with tabs converted to 8 blanks.
+
+path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\demos\All.py"
+
+assert g.os_path_exists(path)
+
+c.importCommands.importFilesCommand([path],"@file")
+#@+node:ekr.20110916103731.2459: *4* Recursive create @auto nodes
+import os
+
+@others
+
+types = ('.py',)
+theDir =  r'c:\leo.repo\trunk\leo\core'
+
+if  g.os_path_exists(theDir):
+    importFiles(theDir,types,recursive=True)
+    g.es("done",color="blue")
+else:
+    g.es("directory does not exist: " + theDir)
+#@+node:ekr.20111217090057.12360: *5* cleanEmptyDirs & helper
+def cleanEmptyDirs(root):
+    
+    '''Remove all @path nodes not containing any @auto nodes.'''
+    p = root.copy()
+    while p:
+        if p.h.startswith('@path') and isEmpty(p):
+            next = p.nodeAfterTree()
+            p.doDelete()
+            p = next
+        else:
+            p.moveToThreadNext()
+#@+node:ekr.20111217090057.13163: *6* isEmpty
+def isEmpty(p):
+    
+    for p in p.subtree():
+        if p.h.startswith('@auto'):
+            return False
+    else:
+        return True
+#@+node:ekr.20111217090057.12361: *5* computeFiles
+def computeFiles (theDir,recursive):
+    
+    '''Compute the lists of all directories and files to be added.'''
+    
+    dirs,files = [],[]
+    for f in os.listdir(theDir):
+        path = g.os_path_join(theDir,f)
+        if g.os_path_isfile(path):
+            name, ext = g.os_path_splitext(f)
+            if not types or ext in types:
+                files.append(path)
+        elif recursive:
+            dirs.append(path)
+        
+    return dirs,files
+#@+node:ekr.20110916103731.2462: *5* createLastChildOf
+def createLastChildOf (p,headline):
+
+    child = p.insertAsLastChild()
+    child.h = headline.replace('\\','/')
+    return child
+#@+node:ekr.20110916103731.2461: *5* importDir
+def importDir (theDir,types,recursive,root,level=0):
+
+    # g.es("theDir: " + theDir,color="blue")
+
+    dirs,files = computeFiles(theDir,recursive)
+    if not dirs and not files: return
+    
+    path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
+    root = createLastChildOf(root,'@path %s' % (path_part))
+    c.selectPosition(root)
+    
+    for fn in files:
+        p2 = createLastChildOf(root,'@auto %s' % (
+            g.shortFileName(fn)))
+            
+    # dirs.sort()
+    for theDir in sorted(dirs):
+        importDir(theDir,types,recursive,root,level+1)
+#@+node:ekr.20110916103731.2460: *5* importFiles (top-level)
+def importFiles (theDir,type=None,recursive=False):
+    
+    root = c.p.insertAfter()
+    root.h = "imported files"
+    try:
+        importDir (theDir,type,recursive,root)
+        cleanEmptyDirs(root)
+        c.contractAllHeadlines()
+        c.selectPosition(root)
+        root.expand()
+        for p in root.subtree():
+            p.clearDirty() # Important: don't write automatically.
+        c.redraw()
+    except Exception:
+        g.es("exception in importFiles script")
+        g.es_exception()
+    
+#@+node:ekr.20120602062004.12350: *4* cleanup-imported-nodes
+'''A script to clean Python imports.
+'''
+
+h = 'Coverage (live)'
+    # The headline of the tree to be converted.
+
+class CleanPython:
+    def __init__ (self):
+        self.trace = True
+    @others
+
+p = g.findNodeAnywhere(c,h)
+if p:
+    CleanPython().run(c,p)
+else:
+    print('not found: %s' % (h))
+#@+node:ekr.20120602062004.12351: *5* run
+def run(self,c,p):
+
+    if self.trace: g.cls()
+    
+    self.changed = 0
+    p1 = p.copy()
+    
+    # Don't set any nodes dirty here.
+    for p in p1.self_and_subtree():
+        if p.isMarked():
+            p.v.clearMarked()
+            
+    bunch = c.undoer.beforeChangeTree(p1)
+   
+    for p in p1.children():
+        if self.trace: print('\n***** %s' % (p.h))
+        self.clean(c,p)
+        
+    if self.changed:
+        c.undoer.afterChangeTree(p1,'clean-python-code',bunch)
+        c.redraw()
+
+    g.trace('done: %s nodes changed' % (self.changed))
+#@+node:ekr.20120602062004.12352: *5* clean & helpers
+def clean(self,c,p):
+    
+    '''
+    - Move a shebang line from the first child to the root.
+    - Move a leading docstring in the first child to the root.
+    - Use a section reference for declarations.
+    - Remove leading and trailing blank lines from all nodes.
+    - Merge a node containing nothing but comments with the next node.
+    - Merge a node containing no class or def lines with the previous node.
+    '''
+
+    root = p.copy()
+    assert p.h.startswith('@@file') or p.h.startswith('@file'),p.h
+    
+    self.move_shebang_line(c,root)
+    self.move_doc_string(c,root)
+    self.rename_decls(c,root)
+
+    for p in root.self_and_subtree():
+        self.clean_blank_lines(c,p)
+    for p in root.subtree():
+        self.merge_comment_nodes(c,p)
+    for p in root.subtree():
+        self.merge_extra_nodes(c,p)
+#@+node:ekr.20120602062004.12353: *6* move_shebang_line
+def move_shebang_line (self,c,root):
+    
+    '''Move a shebang line from the first child to the root.'''
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not s.startswith('#!'):
+        return
+        
+    lines = g.splitLines(s)
+    nl = '\n\n' if root.b.strip() else ''
+    root.b = lines[0] + nl + root.b
+    p.b = lines[1:]
+    p.setDirty()
+    p.setMarked()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+#@+node:ekr.20120602062004.12354: *6* move_doc_string
+def move_doc_string(self,c,root):
+
+    '''Move a leading docstring in the first child to the root node.'''
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not (s.startswith('"""') or s.startswith("'''")):
+        return
+        
+    delim = '"""' if s.startswith('"""') else "'''"
+    i = s.find(delim,3)
+    if i == -1:
+        return
+        
+    doc = s[:i+3]
+    p.b = s[i+3:].lstrip()
+    
+    # Move docstring to front of root.b, but after any shebang line.
+    nl = '\n\n' if root.b.strip() else ''
+    if root.b.startswith('#!'):
+        lines = g.splitLines(root.b)
+        root.b = lines[0] + doc + nl + lines[1:]
+    else:
+        root.b = doc + nl + root.b
+        
+    p.setDirty()
+    p.setMarked()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+#@+node:ekr.20120602062004.12355: *6* rename_decls (test)
+def rename_decls (self,c,root):
+    
+    '''Use a section reference for declarations.'''
+    
+    p = root.firstChild()
+    h = p and p.h or ''
+    
+    tag = 'declarations'
+    if not h.endswith(tag):
+        return
+
+    name = h[:-len(tag)].strip()
+    decls = g.angleBrackets(tag)
+    p.h = '%s (%s)' % (decls,name)
+    
+    i = root.b.find('@others')
+    if i == -1:
+        g.trace('can not happen')
+        return
+    else:
+        nl = '' if i == 0 else '\n'
+        root.b = root.b[:i] + nl + decls + '\n' + root.b[i:]
+
+    p.setDirty()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+#@+node:ekr.20120602062004.12356: *6* clean_blank_lines
+def clean_blank_lines(self,c,p):
+    
+    '''Remove leading and trailing blank lines from all nodes.
+    '''
+    
+    s = p.b
+    if not s.strip():
+        return
+    
+    result = g.splitLines(s)
+    for i in 0,-1:
+        while result:
+            if result[i].strip():
+                break
+            else:
+                del result[i]
+        
+    s = ''.join(result)
+    if not s.endswith('\n'): s = s + '\n'
+    if s != p.b:
+        p.b = s
+        p.setDirty()
+        # p.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        # if self.trace: g.trace(p.h)
+        
+#@+node:ekr.20120602062004.12357: *6* merge_comment_nodes
+def merge_comment_nodes(self,c,p):
+    
+    '''Merge a node containing nothing but comments with the next node.'''
+
+    h = p.h
+    
+    if p.hasChildren() or not h.strip().startswith('#'):
+        return
+        
+    p2 = p.next()
+    if p2:
+        b = p.b.lstrip()
+        b = b + ('\n' if b.endswith('\n') else '\n\n')
+        p2.b = b + p2.b
+        p.doDelete(p2)
+        p2.setDirty()
+        # p2.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        if self.trace: g.trace(h,' --> ',p2.h)
+#@+node:ekr.20120602062004.12358: *6* merge_extra_nodes
+def merge_extra_nodes(self,c,p):
+    
+    '''Merge a node containing no class or def lines with the previous node'''
+    
+    s = p.b
+    if p.hasChildren() or p.h.strip().startswith('<<') or not s.strip():
+        return
+        
+    for s2 in g.splitLines(s):
+        if s2.strip().startswith('class') or s2.strip().startswith('def'):
+            return
+
+    p2 = p.back()
+    if p2:
+        nl = '\n' if s.endswith('\n') else '\n\n'
+        p2.b = p2.b + nl + s
+        h = p.h
+        p.doDelete(p2)
+        p2.setDirty()
+        # p2.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        if self.trace: g.trace(h,' --> ',p2.h)
+#@+node:ekr.20110929185034.15716: *4* import-org-mode
+'''Import each file in the files list after the presently selected node.'''
+
+
+files = (
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+)
+
+@others
+
+for fn in files:
+    try:
+        root = c.p.copy()
+        f = open(fn)
+        s = f.read()
+        scan(c,fn,s)
+        c.selectPosition(root)
+    except IOError:
+        print('can not open %s' % fn)
+#@+node:ekr.20110929185034.15717: *5* scan
+def scan (c,fn,s):
+
+    last = root = c.p.insertAsLastChild()
+    last.h = g.shortFileName(fn)
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1 ; level += 1
+            if level > len(stack):
+                g.trace('bad level',repr(s))
+            elif level == len(stack):
+                last.b = ''.join(body)
+            else:
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            last = parent.insertAsLastChild()
+            last.h = s.strip()
+            stack.append(last)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        last.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
 #@+node:ekr.20060824111500: *3* jEdit2Py
 #@+node:ekr.20060824111500.1: *4* Colorizing test scripts
 #@+node:ekr.20060824111500.2: *5* @@button colorize
@@ -11934,225 +12744,7 @@ def get_jsonfile(self, fname='codehash'):
 
 
 
-#@+node:ekr.20111004090723.15496: *3* @@button MakePDF
-<< docstring >>
-
-@language python
-@tabwidth -4
-
-import os
-import subprocess
-
-@others
-
-log = g.es_print
-
-exe = r'C:\apps\MiKTeX 2.9\miktex\bin\pdflatex.exe'
-    # The full path to the executable.
-
-d = get_options(exe)
-
-makePDF(d,open_out=True,trace=True)
-#@+node:ekr.20111004185540.15535: *4* << docstring >>
-@nocolor-node
-'''
-
-A script for creating a pdf from a latex file.
-
-*Important: you must run Leo from a console when using this script, at least
-until the script can drive pdflatex in some kind of unattended mode. As it is
-now, pdflatex is likely to hang, waiting for console input. The typical (only?)
-response is to hit carriage returns until pdflatex finishes.
-
-There are two modes of operation, static and dynamic, determined by the contents
-of **d**, the **option dictionary**, returned by get_options.
-
-**Important**: change get_options as described below to meet your needs.
-
-If d.get('in_fn') exists, the script operates in static mode. Otherwise, the
-script operates in dynamic mode.
-
-Static mode
-===========
-
-d.get('in_fn') must be the full path to the input file.
-
-If d.get('out_dir') exists, it must be the full path to the output directory.
-The out_dir setting is optional. If omitted, output goes to the directory
-containing the input file.
-
-Dynamic mode
-============
-
-Rather than use d.get('in_fn'), the script finds the nearest @<file> node in
-c.p.self_and_parents(). This node, *whatever it is*, is assumed to contain LaTeX
-text.
-
-**Important**: if in_fn is a relative path, it is converted to an absolute path
-by taking account of any ancestor @path directive. If the resulting path is
-still relative, it is taken to be a path relative to the directory containing
-the .leo file. Here is the actual code::
-    
-    c_dir = g.os_path_dirname(c.fileName())
-    fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
-    
-If d.get('out_dir') exists, it may be either an absolute or relative path. If it
-is a relative path, it is taken to be a path relative to the path given by the
-@<file> node. That is::
-    
-    out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
-
-Other settings
-==============
-
-- exe:  The full path to the pdf creation program.
-        'pdflatex' is part of MikTex.
-
-- open_out: True: open the output file automatically after it is created.
-
-- trace: True: output log messages using g.es_print.
-
-The exe setting is a global variable.  The open_out and trace settings
-are arguments to the makePDF function.
-
-To do
-=====
-
-- Add an argument to the command that would have pdflatex run without user input.
-
-- determine if the node held a rst file and first turn this into Latex.
-
-- open the log file or read it into a node if there is a compiling error.
-
-- It might be useful to have some settings in the file node that let the script
-  automatically basic latex packages, items and definitions for a particular
-  type of document (Title page, TOC, set date, use the beamer package to create
-  slides, etc.)
-
-- It would be really cool to be able to render TEX to PDF in real time like
-  viewrendered handles HTML and ReST.
-  
-Acknowledgements
-================
-
-The original script by M.D.Boldin.  Rewritten by EKR.
-'''
-
-#@+node:ekr.20111004185540.15537: *4* get_options
-def get_options(exe):
-    
-    '''Return the user options in a dict.'''
-    
-    if 0: # Static options...
-        return {
-            'exe': exe,
-            'in_fn':    r'C:\Users\edreamleo\Latex\sample.tex',
-                # The full path to the input file.
-            'out_dir':  r'C:\Users\edreamleo\Latex\out',
-                # The full path to the output directory.
-        }
-    else : # Dynamic options...
-        '''The nearest @<file> gives the input file.
-        
-        If all paths are relative, the result is relative
-        to the directory containing this .leo file.
-        '''
-    
-        return {
-            'exe': exe,
-            'out_dir': 'out',
-                # The output directory,
-                # relative to the directory of the input file.
-                # None is valid.
-        }
-#@+node:ekr.20111004185540.15540: *4* log
-def log (s):
-    
-    '''Write a message to the log.'''
-    
-    g.es_print(s,color='red')
-#@+node:ekr.20111004090723.15502: *4* makePDF
-def makePDF (d,open_out,trace):
-    
-    command,out_fn = setup(d)
-    if not command: return
-    
-    # Save the outline to save the file.
-    c.save()
-
-    if trace:
-        log('\nMakePDF: command...')
-        for arg in command:
-            log('  %s' % arg)
-        log('')
-
-    # Execute the command and wait for it to finish.
-    subprocess.Popen(command).wait()
-
-    if open_out:
-        if trace: log('Opening: %s' % out_fn)
-        os.startfile(out_fn)
-    
-    if trace: log('Done')
-#@+node:ekr.20111004182631.15511: *4* setup & helpers
-def setup (d):
-    
-    '''Return the command to execute and the name of the output file.'''
-
-    exe = d.get('exe')
-    in_fn,out_dir = compute_file_names(d)
-
-    if in_fn and out_dir:
-        command = [
-            exe,
-            '-output-directory=%s' % (out_dir),
-            in_fn
-        ]
-        out_fn = g.os_path_join(
-            out_dir,g.shortFileName(in_fn[:-4]))+'.pdf'
-        return command,out_fn
-    else:
-        return None,None
-#@+node:ekr.20111004185540.15538: *5* compute_file_names
-def compute_file_names (d):
-    
-    '''Return the absolute paths to the input file and the output directory.'''
-    
-    fn = d.get('in_fn')
-    if fn:
-        # Static, absolute paths.
-        out_dir = d.get('out_dir') or g.os_path_dirname(fn)
-        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
-            return fn,out_dir
-        elif not g.os_path_exists(fn):
-            log('File not found: %s' % fn)
-            return None,None
-        else:
-            log('Directory not found: %s' % out_dir)
-            return None,None
-    else:
-        # Dynamic file name from the nearest @<file> node.
-        for p in c.p.self_and_parents():
-            if p.isAnyAtFileNode():
-                fn = p.anyAtFileNodeName()
-                break
-        else:
-            log('no <@file> node found at: "%s"' % c.p.h)
-            return None,None
-        
-        # Compute the absolute path to the filename,
-        # taking into account any relevant @path directives.
-        c_dir = g.os_path_dirname(c.fileName())
-        fn = g.os_path_join(c_dir,c.getNodePath(p),fn)
-        out_dir = d.get('out_dir') or ''
-        out_dir = g.os_path_join(g.os_path_dirname(fn),out_dir)
-        
-        if g.os_path_exists(fn) and g.os_path_exists(out_dir):
-            return fn,out_dir
-        else:
-            log('not found: %s' % fn)
-            return None,None
-#@+node:ekr.20110328173745.3249: *3* @@button Print g.es
+#@+node:ekr.20110328173745.3249: *3* Print all calls to g.es
 @first # -*- coding: utf-8 -*-
 
 # To do: put list of to-be-translated strings in a doc part.
@@ -12480,24 +13072,6 @@ def setToBeTranslated (self,s,n):
 
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
-#@+node:ekr.20120525155800.10867: *3* Print missing docstrings (obsolete)
-'''print all commands that lack docstrings.'''
-
-d = c.commandsDict
-    # Keys are command names; values are functions
-
-ignore = ['minibufferCallback','enterModeCallback',]
-
-aList = [ d.get(z).__name__ for z in d
-    if (not d.get(z).__doc__ or not d.get(z).__doc__.strip())
-        and not d.get(z).__name__ in ignore]
-
-# g.cls()
-print()
-for z in sorted(aList):
-    print(z)
-    
-print('done')
 #@+node:ekr.20120525155800.10870: *3* print all docstrings from a module (obsolete)
 import leo.core.leoTest as leoTest
 import types
@@ -12583,6 +13157,24 @@ for group in sorted(groups.keys()):
 
 
 print('%s commands' % (len(list(d.keys()))))
+#@+node:ekr.20120525155800.10867: *3* Print missing docstrings (obsolete)
+'''print all commands that lack docstrings.'''
+
+d = c.commandsDict
+    # Keys are command names; values are functions
+
+ignore = ['minibufferCallback','enterModeCallback',]
+
+aList = [ d.get(z).__name__ for z in d
+    if (not d.get(z).__doc__ or not d.get(z).__doc__.strip())
+        and not d.get(z).__name__ in ignore]
+
+# g.cls()
+print()
+for z in sorted(aList):
+    print(z)
+    
+print('done')
 #@+node:ekr.20120527100809.12771: *3* Prototype of jinja @command nodes
 #@+node:ekr.20120527100809.12797: *4* jinja test
 @others
@@ -12607,98 +13199,6 @@ def run(fn,h,d):
 exec(g.findTestScript(c,'@common jinja code'))
 d = {'name':'Fred','rank':'colonel','serial_number':'3.14159'}
 run('fn','jinja test',d)
-#@+node:ekr.20110916103731.2459: *3* Recursive create @auto nodes
-import os
-
-@others
-
-types = ('.py',)
-theDir =  r'c:\leo.repo\trunk\leo\core'
-
-if  g.os_path_exists(theDir):
-    importFiles(theDir,types,recursive=True)
-    g.es("done",color="blue")
-else:
-    g.es("directory does not exist: " + theDir)
-#@+node:ekr.20111217090057.12360: *4* cleanEmptyDirs & helper
-def cleanEmptyDirs(root):
-    
-    '''Remove all @path nodes not containing any @auto nodes.'''
-    p = root.copy()
-    while p:
-        if p.h.startswith('@path') and isEmpty(p):
-            next = p.nodeAfterTree()
-            p.doDelete()
-            p = next
-        else:
-            p.moveToThreadNext()
-#@+node:ekr.20111217090057.13163: *5* isEmpty
-def isEmpty(p):
-    
-    for p in p.subtree():
-        if p.h.startswith('@auto'):
-            return False
-    else:
-        return True
-#@+node:ekr.20111217090057.12361: *4* computeFiles
-def computeFiles (theDir,recursive):
-    
-    '''Compute the lists of all directories and files to be added.'''
-    
-    dirs,files = [],[]
-    for f in os.listdir(theDir):
-        path = g.os_path_join(theDir,f)
-        if g.os_path_isfile(path):
-            name, ext = g.os_path_splitext(f)
-            if not types or ext in types:
-                files.append(path)
-        elif recursive:
-            dirs.append(path)
-        
-    return dirs,files
-#@+node:ekr.20110916103731.2462: *4* createLastChildOf
-def createLastChildOf (p,headline):
-
-    child = p.insertAsLastChild()
-    child.h = headline.replace('\\','/')
-    return child
-#@+node:ekr.20110916103731.2461: *4* importDir
-def importDir (theDir,types,recursive,root,level=0):
-
-    # g.es("theDir: " + theDir,color="blue")
-
-    dirs,files = computeFiles(theDir,recursive)
-    if not dirs and not files: return
-    
-    path_part = g.choose(level==0,theDir,g.os_path_basename(theDir))
-    root = createLastChildOf(root,'@path %s' % (path_part))
-    c.selectPosition(root)
-    
-    for fn in files:
-        p2 = createLastChildOf(root,'@auto %s' % (
-            g.shortFileName(fn)))
-            
-    # dirs.sort()
-    for theDir in sorted(dirs):
-        importDir(theDir,types,recursive,root,level+1)
-#@+node:ekr.20110916103731.2460: *4* importFiles (top-level)
-def importFiles (theDir,type=None,recursive=False):
-    
-    root = c.p.insertAfter()
-    root.h = "imported files"
-    try:
-        importDir (theDir,type,recursive,root)
-        cleanEmptyDirs(root)
-        c.contractAllHeadlines()
-        c.selectPosition(root)
-        root.expand()
-        for p in root.subtree():
-            p.clearDirty() # Important: don't write automatically.
-        c.redraw()
-    except Exception:
-        g.es("exception in importFiles script")
-        g.es_exception()
-    
 #@+node:ekr.20060209173725: *3* rst-to-leo
 '''A script to import rst files into Leo.
 
@@ -13149,21 +13649,6 @@ return [expr $x*10]
 # This is a comment
 set x 50 +
 return [expr $x*10]
-#@+node:ekr.20041126035448: *3* Script to import a file
-# Note: the source files contain mixed tabs/blanks, and that's very hard for Leo's imports to handle.
-
-@tabwidth 8
-@language python
-
-path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\lib\PmwPanedWidget.py"
-
-path = r"c:\prog\PmwPanedWidget.py" # The same file with tabs converted to 8 blanks.
-
-path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\demos\All.py"
-
-assert g.os_path_exists(path)
-
-c.importCommands.importFilesCommand([path],"@file")
 #@+node:ekr.20050219075759: *3* Scripts demonstrating how to do anything with Leo menus
 #@+node:ekr.20050219071503: *4* Test of createMenuItemsFromTable
 def callback(*args,**keys): g.trace()
@@ -13620,267 +14105,6 @@ try:
 finally:
     get_transaction().commit()
     connection.close()
-#@+node:ekr.20120328102352.6934: ** Important new scripts in Leo 4.10
-#@+node:ekr.20110929185034.15716: *3* @@button import-org-mode
-'''Import each file in the files list after the presently selected node.'''
-
-
-files = (
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-)
-
-@others
-
-for fn in files:
-    try:
-        root = c.p.copy()
-        f = open(fn)
-        s = f.read()
-        scan(c,fn,s)
-        c.selectPosition(root)
-    except IOError:
-        print('can not open %s' % fn)
-#@+node:ekr.20110929185034.15717: *4* scan
-def scan (c,fn,s):
-
-    last = root = c.p.insertAsLastChild()
-    last.h = g.shortFileName(fn)
-    level,stack = 0,[root]
-    body = ['@others\n']
-    
-    for s in g.splitLines(s):
-        if s.startswith('*'):
-            i,level = 0,0
-            while s[i] == '*':
-                i += 1 ; level += 1
-            if level > len(stack):
-                g.trace('bad level',repr(s))
-            elif level == len(stack):
-                last.b = ''.join(body)
-            else:
-                last.b = ''.join(body)
-                stack = stack[:level]
-            parent = stack[-1]
-            last = parent.insertAsLastChild()
-            last.h = s.strip()
-            stack.append(last)
-            body = []
-        else:
-            body.append(s)
-            
-    # Finish any trailing lines.
-    if body:
-        last.b = ''.join(body)
-        
-    root.contract()
-    c.redraw(root)
-#@+node:ekr.20120328102352.6937: *3* Code for displaying a function call hierarchy in Leo
-@language python
-@language rest
-
-From Brian Theado
-
-The other day I stumbled across Ville's code in scripts.leo which displays the
-output of python's trace module in a leo outline. The output of the trace module
-is not very friendly and I didn't find the result very usable. I was inspired to
-write some code to translate the output so the tree of function calls is
-displayed via Leo headlines. Thanks to Ville for sharing that code. I never
-would have figure this out without that starting point.
-
-Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
-the "call tree" node. The execution tree of the 'scroll-outline-up-line'
-minibuffer command will be displayed to stdout and also as a tree of leo
-headlines.
-#@+node:ekr.20120328102352.6938: *4* call tree
-import trace
-
-@language python
-@others
-
-# http://docs.python.org/library/trace.html for documentation
-# on the trace module
-tracer = trace.Trace(countcallers=1)
-
-# Trace a minibuffer command.
-
-# Any function call will work. Leo's minibuffer commands are easily discoverable
-# via tab completion and the 'print-commands' command.
-
-#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
-tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
-
-top = p.insertAsLastChild().copy()
-top.h = 'trace session'
-displayCalltree(top, tracer.results().callers.keys())
-c.redraw()
-#@+node:ekr.20120328102352.6939: *5* displayCalltree
-def displayCalltree(p, callinfo):
-   '''
-   Converts the function call hierarchy in 'callinfo' into a tree of function
-   calls.  The function call tree is displayed to stdout as indented text
-   and is inserted as a tree of leo nodes rooted at the given position 'p'
-   '''
-   callers = [k[0] for k in callinfo]
-   callees = [k[1] for k in callinfo]
-
-   # The first set of children will be those that don't have any callers
-   # listed in callinfo
-   toplevels = list(set(callers) - set(callees))
-   positions = {}
-   path = []
-
-   # Depth-first traversal of the call hierarchy represented by 'callinfo'
-   # 'levels' is a stack which grows during descend and shrinks
-   # during ascend.  Each element of 'levels' is a list of unprocessed
-   # siblings of each other
-   levels = [toplevels]
-   while len(levels) > 0:
-       while len(levels[-1]) > 0:
-           # Process the first element in the 'deepest' (i.e. last) list of siblings
-           cur = levels[-1][0]
-           levels[-1] = levels[-1][1:]
-           indent = " " * 4 * (len(levels)-1)
-           if cur not in path:
-               if cur in positions.keys():
-                   # Function already seen, so make a clone
-                   clone = positions[cur].clone()
-                   clone.moveToLastChildOf(p)
-                   print (indent + "%s %s ..." % cur[1:])
-               else:
-                   # Haven't seen this function, so insert a new headline
-                   p = p.insertAsLastChild().copy()
-                   p.h = "%s %s" % cur[1:]
-                   print (indent + p.h)
-
-                   # Remember the position so it can be cloned if seen again
-                   positions[cur] = p
-
-                   # Find all callees of this function and descend
-                   levels.append([c[1] for c in callinfo if c[0] == cur])
-                   path.append(cur)
-           else:
-               r = p.insertAsLastChild().copy()
-               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
-               print(indent + r.h + "...")
-
-       # Ascend back up one level
-       path = path[0:-1]
-       p = p.parent()
-       levels = levels[0:-1]
-#@+node:ekr.20120328102352.6940: *5* trace session
-#@+node:ekr.20120328102352.6948: *3* @@button set-style
-@language rest
-
-@
-http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
-Here's a one line @button node you can add to myLeoSettings.leo
-
-Important:  setStyleSheet *replaces* the previous stylesheet with the
-new stylesheet, so you had best set all the attributes of Leo's
-default stylesheet.
-
-As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
-set the stylesheet for that widget only: the top-level stylesheet (the
-stylesheet for c.frame.top.leo_ui) remains unchanged.
-@c
-
-@language python
-
-c.frame.top.leo_ui.setStyleSheet(p.b)
-#@+node:ekr.20120328102352.6945: *3* @@button fac
-@language python
-
-<< documentation >>
-
-from leo.plugins.mod_scripting import scriptingController
-
-sc = scriptingController(c)
-
-if c.frame.body.hasSelection():
-    code = c.frame.body.getSelectedText()
-    heading = 'fix'
-else:
-    code,heading = p.b,p.h
-
-def transform(c=c,code=code):
-    w = c.frame.body
-    s = w.getSelectedText()
-    g.es(s)
-    exec(code)
-    g.es(s)
-    w.deleteTextSelection()
-    i = w.getInsertPoint()
-    w.insert(i,s)
-    p.b = w.getAllText()
-    w.setInsertPoint(i)
-
-sc.createIconButton(
-    heading,
-    command = transform,
-    shortcut = None,
-    statusLine = 'Make filter button',
-    bg = "LightBlue"
-)
-#@+node:ekr.20120328102352.6949: *4* << documentation >>
-@nocolor-node
-@
-http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
-
-Ever find that you have a whole lot of:
-
-.. sourcecode:: py
-
-  rec[f['analyte']] ... rec[f['sample_type']] ...
-
-expressions in your code, and now things have changed and you want them all
-to be:
-
-.. sourcecode:: py
-
-  row.Analyte ... row.Sample_Type ...
-
-basically if str variable s was::
-
-  rec[f['analyte']]
-
-then you want to perform:
-
-.. sourcecode:: py
-
-  s = "row."+s.split("'")[1].title()
-
-on each one. In general it would be nice to be able to use a python
-expression when search and replace doesn't cut it.
-
-The button code below creates a button, ``fac``, which, when pressed,
-creates another button, with some name you choose, which, when pressed,
-executes some python code to fix the selected text in the body.
-
-You can define the code to be executed in two ways, either in its own node:
-
- - insert a new node with a headline which describes the refactor
- - enter code in the node which modifies the string variable ``s``,
-   which is initially set to the selected text in the body
- - press the ``fac`` button, which creates a new button named
-   after this code node
- - select each offending piece of text and press the button created
-   in the previous step to fix
-
-or
-
- - type some code modifying ``s`` right in the body you're working on
- - press the ``fac`` button, which creates a new button named "fix"
- - select each offending piece of text and press the button created
-   in the previous step to fix
-
-Notes:
-
- - unlike regular button nodes, changing the code after the
-   button's created (first option above) doesn't change the code
-   executed by the button
- - replacing selection text makes Leo reposition the insert point at
-   the top of the window, this is annoying but unrelated to this code
 #@+node:ekr.20051104082605: ** Others
 #@+node:ekr.20050310082013: *3* AutoIt script from e
 @ http://sourceforge.net/forum/message.php?msg_id=3039793
