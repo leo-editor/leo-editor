@@ -10,7 +10,7 @@ Rectangle {
 
         Item {
             height: childrenRect.height + 10
-            width: parent.parent.width
+            width: flick.width
 
             Text {
                 id: htext
