@@ -5784,7 +5784,7 @@ def isStroke(obj):
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj,KeyStroke)
 #@+node:ekr.20031218072017.3197: ** Whitespace...
-#@+node:ekr.20031218072017.3198: *3* computeLeadingWhitespace
+#@+node:ekr.20031218072017.3198: *3* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
 
 def computeLeadingWhitespace (width, tab_width):
@@ -5797,7 +5797,21 @@ def computeLeadingWhitespace (width, tab_width):
         return ('\t' * tabs) + (' ' * blanks)
     else: # 7/3/02: negative tab width always gets converted to blanks.
         return (' ' * width)
-#@+node:ekr.20031218072017.3199: *3* computeWidth
+#@+node:ekr.20120605172139.10263: *3* g.computeLeadingWhitespaceWidth (new)
+# Returns optimized whitespace corresponding to width with the indicated tab_width.
+
+def computeLeadingWhitespaceWidth (s,tab_width):
+
+    w = 0
+    for ch in s:
+        if ch == ' ':
+            w += 1
+        elif ch == '\t':
+            w += (abs(tab_width) - (w % abs(tab_width)))
+        else:
+            break
+    return w
+#@+node:ekr.20031218072017.3199: *3* g.computeWidth (changed)
 # Returns the width of s, assuming s starts a line, with indicated tab_width.
 
 def computeWidth (s, tab_width):
@@ -5806,6 +5820,8 @@ def computeWidth (s, tab_width):
     for ch in s:
         if ch == '\t':
             w += (abs(tab_width) - (w % abs(tab_width)))
+        elif ch == '\n': # Bug fix: 2012/06/05.
+            break
         else:
             w += 1
     return w
@@ -5943,7 +5959,7 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
         result.append(line)
     # g.trace(result)
     return result
-#@+node:ekr.20031218072017.3200: *3* get_leading_ws
+#@+node:ekr.20031218072017.3200: *3* g.get_leading_ws
 def get_leading_ws(s):
 
     """Returns the leading whitespace of 's'."""
@@ -5952,7 +5968,7 @@ def get_leading_ws(s):
     while i < n and s[i] in (' ','\t'):
         i += 1
     return s[0:i]
-#@+node:ekr.20031218072017.3201: *3* optimizeLeadingWhitespace
+#@+node:ekr.20031218072017.3201: *3* g.optimizeLeadingWhitespace
 # Optimize leading whitespace in s with the given tab_width.
 
 def optimizeLeadingWhitespace (line,tab_width):
@@ -5960,7 +5976,7 @@ def optimizeLeadingWhitespace (line,tab_width):
     i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
     s = g.computeLeadingWhitespace(width,tab_width) + line[i:]
     return s
-#@+node:ekr.20040723093558: *3* regularizeTrailingNewlines
+#@+node:ekr.20040723093558: *3* g.regularizeTrailingNewlines
 #@+at The caller should call g.stripBlankLines before calling this routine
 # if desired.
 # 
@@ -5974,13 +5990,13 @@ def regularizeTrailingNewlines(s,kind):
     """Kind is 'asis', 'zero' or 'one'."""
 
     pass
-#@+node:ekr.20091229090857.11698: *3* removeBlankLines
+#@+node:ekr.20091229090857.11698: *3* g.removeBlankLines
 def removeBlankLines (s):
 
     lines = g.splitLines(s)
     lines = [z for z in lines if z.strip()]
     return ''.join(lines)
-#@+node:ekr.20091229075924.6235: *3* removeLeadingBlankLines
+#@+node:ekr.20091229075924.6235: *3* g.removeLeadingBlankLines
 def removeLeadingBlankLines (s):
 
     lines = g.splitLines(s)
@@ -5994,7 +6010,7 @@ def removeLeadingBlankLines (s):
             result.append(line)
 
     return ''.join(result)
-#@+node:ekr.20031218072017.3202: *3* removeLeadingWhitespace
+#@+node:ekr.20031218072017.3202: *3* g.removeLeadingWhitespace
 # Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
 
 def removeLeadingWhitespace (s,first_ws,tab_width):
@@ -6011,7 +6027,7 @@ def removeLeadingWhitespace (s,first_ws,tab_width):
     if j > 0:
         s = s[j:]
     return s
-#@+node:ekr.20031218072017.3203: *3* removeTrailingWs
+#@+node:ekr.20031218072017.3203: *3* g.removeTrailingWs
 # Warning: string.rstrip also removes newlines!
 
 def removeTrailingWs(s):
@@ -6020,7 +6036,7 @@ def removeTrailingWs(s):
     while j >= 0 and (s[j] == ' ' or s[j] == '\t'):
         j -= 1
     return s[:j+1]
-#@+node:ekr.20031218072017.3204: *3* skip_leading_ws
+#@+node:ekr.20031218072017.3204: *3* g.skip_leading_ws
 # Skips leading up to width leading whitespace.
 
 def skip_leading_ws(s,i,ws,tab_width):
@@ -6037,7 +6053,7 @@ def skip_leading_ws(s,i,ws,tab_width):
         else: break
 
     return i
-#@+node:ekr.20031218072017.3205: *3* skip_leading_ws_with_indent
+#@+node:ekr.20031218072017.3205: *3* g.skip_leading_ws_with_indent
 def skip_leading_ws_with_indent(s,i,tab_width):
 
     """Skips leading whitespace and returns (i, indent), 
@@ -6057,7 +6073,7 @@ def skip_leading_ws_with_indent(s,i,tab_width):
         else: break
 
     return i, count
-#@+node:ekr.20040723093558.1: *3* stripBlankLines
+#@+node:ekr.20040723093558.1: *3* g.stripBlankLines
 def stripBlankLines(s):
 
     lines = g.splitLines(s)

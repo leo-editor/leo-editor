@@ -1177,7 +1177,7 @@ class atFile:
     #@+node:ekr.20041005105605.73: *4* at.findChild4
     def findChild4 (self,headline):
 
-        """Return the next vnode in at.root.tnodeLisft.
+        """Return the next vnode in at.root.tnodeList.
         This is called only for **legacy** @file nodes"""
 
         # tnodeLists are used *only* when reading @file (not @thin) nodes.
@@ -1293,7 +1293,16 @@ class atFile:
 
         if at.inCode:
             if not at.raw:
-                s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
+                # 2012/06/05: Major bug fix: insert \\-n. for underindented lines.
+                n = g.computeLeadingWhitespaceWidth(s,at.tab_width)
+                if n < at.indent:
+                    # g.trace('n: %s at.indent: %s\n%s' % (n,at.indent,repr(s)))
+                    if s.strip():
+                        s = r'\\-%s.%s' % (at.indent-n,s.lstrip())
+                    else:
+                        s = '\n' if s.endswith('\n') else ''
+                else: # Legacy
+                    s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
             at.appendToOut(s)
         else:
             at.appendToDocPart(s)
@@ -3952,6 +3961,7 @@ class atFile:
                 at.putIndent(at.indent,line)
 
             if line[-1:]=='\n':
+                # g.trace(repr(line))
                 at.os(line[:-1])
                 at.onl()
             else:
@@ -4956,7 +4966,8 @@ class atFile:
             elif n > 0: n -= n2
             else:       n += n2
 
-        if n != 0:
+        ### if n != 0:
+        if n > 0:
             w = self.tab_width
             if w > 1:
                 q,r = divmod(n,w) 
