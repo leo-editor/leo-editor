@@ -6,6 +6,8 @@
 
 Edit several nodes at once, in a pannable "notebook" view.
 
+Use <Alt-x>nb-<tab> to see the list of commands.
+
 
 '''
 #@-<< docstring >>
