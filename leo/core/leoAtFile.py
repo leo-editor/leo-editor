@@ -274,10 +274,12 @@ class atFile:
     #@+node:ekr.20041005105605.15: *3* at.initWriteIvars
     def initWriteIvars(self,root,targetFileName,
         atAuto=False,atEdit=False,atShadow=False,
-        noref = False,
-        nosentinels=False,thinFile=False,
-        scriptWrite=False,toString=False,
         forcePythonSentinels=None,
+        nosentinels=False,
+        perfectImportFlag = False,
+        scriptWrite=False,
+        thinFile=False,
+        toString=False,
     ):
         at,c = self,self.c
         assert root
@@ -313,7 +315,7 @@ class atFile:
         # at.outputFileName:    set below.
         # at.output_newline:    set by scanAllDirectives() below.
         # at.page_width:        set by scanAllDirectives() below.
-        at.noref = noref
+        at.perfectImportFlag = perfectImportFlag
         at.sentinels = not nosentinels
         at.shortFileName = ""   # For messages.
         at.root = root
@@ -2900,10 +2902,10 @@ class atFile:
     #@+node:ekr.20041005105605.144: *4* at.write & helper
     def write (self,root,
         kind = '@unknown', # Should not happen.
-        noref = False,
         nosentinels = False,
-        thinFile = False,
+        perfectImportFlag = False,
         scriptWrite = False,
+        thinFile = False,
         toString = False,
     ):
         """Write a 4.x derived file.
@@ -2928,7 +2930,7 @@ class atFile:
             at.targetFileName = root.atFileNodeName()
         #@-<< set at.targetFileName >>
         at.initWriteIvars(root,at.targetFileName,
-            noref = noref,
+            perfectImportFlag = perfectImportFlag,
             nosentinels = nosentinels,
             thinFile = thinFile,
             scriptWrite = scriptWrite,
@@ -3652,9 +3654,8 @@ class atFile:
             if kind == at.noDirective:
                 if not oneNodeOnly:
                     if inCode:
-                        if at.raw or at.atAuto: # 2011/12/14: Ignore references in @auto.
-                            at.putCodeLine(s,i)
-                        elif at.noref:
+                        if at.raw or at.atAuto or at.perfectImportFlag:
+                            # 2011/12/14: Ignore references in @auto.
                             # 2012/06/02: Needed for import checks.
                             at.putCodeLine(s,i)
                         else:
@@ -3666,7 +3667,7 @@ class atFile:
                     else:
                         at.putDocLine(s,i)
             elif at.raw:
-                if kind == at.endRawDirective:
+                if kind == at.endRawDirective and not at.perfectImportFlag:
                     at.raw = False
                     at.putSentinel("@@end_raw")
                     i = g.skip_line(s,i)
@@ -3711,7 +3712,7 @@ class atFile:
                 if g.unitTesting:
                     # A hack: unit tests for @shadow use @verbatim as a kind of directive.
                     pass
-                else:
+                elif not at.perfectImportFlag:
                     g.trace(at.atShadow)
                     at.error('@verbatim is not a Leo directive: %s' % p.h)
                 if 0: # Old code.  This is wrong: @verbatim is not a directive!
@@ -5335,6 +5336,10 @@ class atFile:
 
         if i > 0:
             n = int(s2[:i])
+            # Bug fix: 2012/06/05: remove any period following the count.
+            # This is a new convention.
+            if i < len(s2) and s2[i] == '.':
+                i += 1
             return n,s2[i:]
         else:
             return 0,s

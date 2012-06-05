@@ -1874,9 +1874,11 @@ class baseScannerClass (scanUtility):
                 # 2011/11/09: We must write sentinels in s2 to handle @others correctly.
                 # But we should not handle section references.
                 at.write(self.root,
-                    noref=True,
-                    nosentinels=False,thinFile=True,
-                    scriptWrite=False,toString=True,
+                    nosentinels=False,
+                    perfectImportFlag=True,
+                    scriptWrite=False,
+                    thinFile=True,
+                    toString=True,
                 )
                 s1,s2 = self.file_s, at.stringOutput
                 
@@ -2618,7 +2620,9 @@ class baseScannerClass (scanUtility):
             if self.strict and s.strip() and lws < undentVal:
                 if trace: g.trace('undentVal: %s, lws: %s, %s' % (
                     undentVal,lws,repr(line)))
-                result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
+                # Bug fix 2012/06/05: end the underindent count with a period,
+                # to protect against lines that start with a digit!
+                result.append("%s%s.%s" % (tag,undentVal-lws,s.lstrip()))
             else:
                 if trace: g.trace(repr(s))
                 result.append(s)
