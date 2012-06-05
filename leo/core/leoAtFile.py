@@ -274,6 +274,7 @@ class atFile:
     #@+node:ekr.20041005105605.15: *3* at.initWriteIvars
     def initWriteIvars(self,root,targetFileName,
         atAuto=False,atEdit=False,atShadow=False,
+        noref = False,
         nosentinels=False,thinFile=False,
         scriptWrite=False,toString=False,
         forcePythonSentinels=None,
@@ -312,6 +313,7 @@ class atFile:
         # at.outputFileName:    set below.
         # at.output_newline:    set by scanAllDirectives() below.
         # at.page_width:        set by scanAllDirectives() below.
+        at.noref = noref
         at.sentinels = not nosentinels
         at.shortFileName = ""   # For messages.
         at.root = root
@@ -2898,6 +2900,7 @@ class atFile:
     #@+node:ekr.20041005105605.144: *4* at.write & helper
     def write (self,root,
         kind = '@unknown', # Should not happen.
+        noref = False,
         nosentinels = False,
         thinFile = False,
         scriptWrite = False,
@@ -2925,8 +2928,11 @@ class atFile:
             at.targetFileName = root.atFileNodeName()
         #@-<< set at.targetFileName >>
         at.initWriteIvars(root,at.targetFileName,
-            nosentinels = nosentinels, thinFile = thinFile,
-            scriptWrite = scriptWrite, toString = toString,
+            noref = noref,
+            nosentinels = nosentinels,
+            thinFile = thinFile,
+            scriptWrite = scriptWrite,
+            toString = toString,
         )
 
         # "look ahead" computation of eventual fileName.
@@ -3647,6 +3653,9 @@ class atFile:
                 if not oneNodeOnly:
                     if inCode:
                         if at.raw or at.atAuto: # 2011/12/14: Ignore references in @auto.
+                            at.putCodeLine(s,i)
+                        elif at.noref:
+                            # 2012/06/02: Needed for import checks.
                             at.putCodeLine(s,i)
                         else:
                             hasRef,n1,n2 = at.findSectionName(s,i)

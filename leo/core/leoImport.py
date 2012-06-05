@@ -979,7 +979,7 @@ class leoImportCommands (scanUtility):
         c.redraw(current)
         return p
     #@+node:ekr.20031218072017.3212: *4* importFilesCommand & helper
-    def importFilesCommand (self,files=None,treeType=None):
+    def importFilesCommand (self,files=None,treeType=None,redrawFlag=True):
         # Not a command.  It must *not* have an event arg.
         c = self.c ; current = c.p
         if not c or not current or not files: return
@@ -997,7 +997,8 @@ class leoImportCommands (scanUtility):
                 c.setChanged(True)
         c.validateOutline()
         current.expand()
-        c.redraw(current)
+        if redrawFlag:
+            c.redraw(current)
     #@+node:ekr.20031218072017.3213: *5* createImportParent (importCommands)
     def createImportParent (self,current,files):
         
@@ -1871,8 +1872,9 @@ class baseScannerClass (scanUtility):
                 s1,s2 = self.file_s,at.stringOutput
             else:
                 # 2011/11/09: We must write sentinels in s2 to handle @others correctly.
+                # But we should not handle section references.
                 at.write(self.root,
-                    # nosentinels=True,thinFile=False,
+                    noref=True,
                     nosentinels=False,thinFile=True,
                     scriptWrite=False,toString=True,
                 )

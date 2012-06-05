@@ -65,6 +65,7 @@ class LeoApp:
         self.count = 0                  # General purpose debugging count.
         self.debug = False              # Enable debugging. (Can be slow.)
         self.debugSwitch = 0            # 0: Brief; 1: Full.
+        self.disable_redraw = False     # True: disable all redraws.
         self.disableSave = False        # May be set by plugins.
         self.positions = 0              # The number of positions generated.
         self.scanErrors = 0             # The number of errors seen by g.scanError.

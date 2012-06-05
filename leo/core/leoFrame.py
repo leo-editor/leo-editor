@@ -1785,9 +1785,6 @@ class leoTree:
             # New in 3.12: keys vnodes, values are edit_widgets.
             # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
 
-        # Debugging.
-        self.redrawCount = 0
-
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self._editPosition = None

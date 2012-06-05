@@ -9,6 +9,7 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
+.. @+node:ekr.20120604071051.10187: *4* Add multiple body editors to session machinery
 .. @+node:ekr.20111019104425.15865: *4* Make sure docstrings include present documentation
 Every command should have a **complete** docstring.
 .. @+node:ekr.20120527143117.11089: *5* Print commands & docstrings
