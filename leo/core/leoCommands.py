@@ -8200,7 +8200,7 @@ class Commands (object):
             # # Recolor the *body* text, **not** the headline.
             # k.showStateAndMode(w=c.frame.body.bodyCtrl)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
-    def selectPosition(self,p):
+    def selectPosition(self,p,enableRedrawFlag=True):
 
         """Select a new position."""
         
@@ -8235,7 +8235,7 @@ class Commands (object):
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
             
-        if redraw_flag:
+        if redraw_flag and enableRedrawFlag:
             c.redraw()
 
     selectVnode = selectPosition

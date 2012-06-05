@@ -4302,7 +4302,7 @@ def toUnicode (s,encoding='utf-8',reportErrors=False):
                 s = f(s,encoding,'replace')
                 if reportErrors: g.reportBadChars(s,encoding)
             except Exception:
-                g.error('can not convert to unicode!')
+                g.error('can not convert to unicode!',g.callers())
                 s = ''
     else:
         pass

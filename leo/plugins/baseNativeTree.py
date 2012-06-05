@@ -148,9 +148,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         trace = False and not g.app.unitTesting
         verbose = False
         c = self.c
+        
+        if g.app.disable_redraw:
+            if trace: g.trace('*** disabled',g.callers())
+            return
 
         if self.busy():
-            return g.trace('*** full_redraw: busy!',g.callers(5))
+            return g.trace('*** full_redraw: busy!',g.callers())
 
         if p is None:
             p = c.currentPosition()
@@ -163,8 +167,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             c.setCurrentPosition(p)
         else:
             c.setCurrentPosition(p)
-
-        # if trace: g.trace('root',c.rootPosition())
 
         self.redrawCount += 1
         if trace: t1 = g.getTime()
@@ -182,7 +184,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if trace:
             theTime = g.timeSince(t1)
             g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
-                self.redrawCount,scroll,self.nodeDrawCount,theTime)) # ,g.callers(3))
+                self.redrawCount,scroll,self.nodeDrawCount,theTime),g.callers())
                 
         return p # Return the position, which may have changed.
 
