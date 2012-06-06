@@ -2006,6 +2006,157 @@ def update_style_sheet (self,w,key,value,selector=None):
         g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
 
     w.setStyleSheet(s)
+#@+node:ekr.20120602154454.10193: *4* Fixed import problems discovered by importing 2to3
+@language rest
+
+** Not all import problems can be fixed automatically! **
+
+- Added perfectImportFlag. (There was already an importing flag).
+
+- Fixed bug in Fixed underindent convention:
+
+    undentBy adds a period; parseUnderindentTag removes the period.
+    
+- @file read code must *regenerate* the \\- convention.
+
+    This is done by readNormalLine.
+    
+    - Fixed an unrelated bug in g.computeWidth.  All unit tests pass.
+
+    - Created g.computeLeadingWhitespaceWidth.
+    
+- some docstrings are not imported properly in py2_test_grammar.py
+
+    The must be fixed by hand, using @raw and @end_raw.
+
+- escapeFalseSectionReferences now is a do-nothing:
+    
+    It never generates @verbatim sentinels during import.
+#@+node:ekr.20120605185352.10283: *5*  Notes: do not delete
+@language rest
+
+Rev 5378: cleanup-imported-nodes script in scripts.leo & an Aha
+http://groups.google.com/group/leo-editor/browse_thread/thread/77b9df4f4ed6dba0
+
+> The third (and I think last) import fail involves not generating
+> @verbatim sentinels when importing files.
+
+Fixed in the trunk at rev 5386.
+
+This is (to me) a really interesting dark corner of Leo's import code.
+
+By searching for @verbatim, I discovered a method called
+escapeFalseSectionReferences.  This method inserts an @verbatim
+"directive" before lines that look like section references.
+
+This is wrong for multiple reasons.  It confuses the importer, there
+is no such thing as an @verbatim directive, and worst, it fails to
+solve the essential problem, which is that before the imported file is
+saved, the **user** must fix the problem!
+
+For example, when importing a line like::
+
+  a = x << y >> z
+
+The user, and *only* the user, should change this to something like::
+
+   a = x << y \
+   >> z # EKR
+
+I suppose each importer could figure out a language-specific
+workaround, but imo this isn't particularly important, for reasons
+which will become clearer below.
+
+So now escapeFalseSectionReferences is a do-nothing.
+
+With this explanation, perhaps the checkin log will make sense::
+
+QQQQQ
+Fixed another import fail in an "interesting" way: the import code no
+longer inserts @verbatim. This means a later write of the imported
+will fail. This is correct!
+
+Indeed, the failed write is the only way to alert the user that the
+code must be revised by hand.
+
+Note that another import fail, involving a leading '@' on a line in a
+docstring, must also be fixed by hand. In lib2to3/pgen/grammar.py the
+*only* possible fix is to enclose the entire docstring at the end of
+the file by @raw and @end_raw.
+
+All unit tests pass, but no new tests have been added so far.
+QQQQQ
+
+The other import fail mentioned in the checkin log is a truly
+fascinating case, one that no amount of AI could possibly discover the
+correct fix.
+
+At the very end of lib2to3/pgen/grammar.py the following code
+(shortened a bit) appears at the top level::
+
+   opmap_raw = """
+   ( LPAR
+   ) RPAR
+   [snip]
+   @ AT
+   [snip]
+   == EQEQUAL
+   != NOTEQUAL
+   """
+   opmap = {}
+   for line in opmap_raw.splitlines():
+       if line:
+           op, name = line.split()
+           opmap[op] = getattr(token, name)
+
+There are several things to notice about this code:
+
+1. It contains a line starting with '@'.  Sooner or later, this is
+going to cause problems for either Leo's import code or Leo's write
+code.
+
+2. It's overly clever, but it's overly clever for a reason: it's
+testing tokenizing logic.
+
+3. The code at the end of the file assumes that all lines of the
+docstring are 2-tuples.
+
+For these reasons, the one and *only* possible way to make Leo write
+this code correctly is to enclose the *entire* docstring in @raw and
+@end_raw directives.  Like this::
+
+   @raw
+   opmap_raw = """
+   ( LPAR
+   ) RPAR
+   [snip]
+   @ AT
+   [snip]
+   == EQEQUAL
+   != NOTEQUAL
+   """
+  @end_raw
+
+In particular, surrounding the line "@ AT" with @raw/@end_raw
+directives will cause 2to3 to fail on startup:  the Leo sentinel lines
+will not be 2-tuples!
+
+===== Important Conclusions
+
+All this picky detail illustrates a crucial fact.  No matter how good
+Leo's importers are, (and they are now quite good), there will
+*always* be cases where thoughtful human intervention will be
+required.
+
+Furthermore, the simplest thing that could possibly work is for the
+importers to allow some constructions that are guaranteed to cause
+problems later, when the user attempts to write the file.  We hope
+that Leo will complain about certain constructions, but Leo may not be
+able to complain about all constructions.
+
+Thus, some import mistakes can *only* be found by running tests.  For
+complex programs like 2to3, the only truly safe way to check imports
+is by running the 2to3 test suite.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
