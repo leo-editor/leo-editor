@@ -27,7 +27,7 @@ else:
 #@-<< imports >>
 
 #@+others
-#@+node:ekr.20120209051836.10241: ** class leoApp
+#@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp:
 
     """A class representing the Leo application itself.

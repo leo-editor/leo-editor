@@ -115,7 +115,13 @@ class scanUtility:
 
     #@+others
     #@+node:sps.20081111154528.5: *3* escapeFalseSectionReferences
+    ### Probably a bad idea.  Keep the apparent section references.
+    ### The perfect-import write code no longer attempts to expand references
+    ### when the perfectImportFlag is set.
+
     def escapeFalseSectionReferences(self,s):
+        
+        return s #####
 
         result = []
         for line in g.splitLines(s):

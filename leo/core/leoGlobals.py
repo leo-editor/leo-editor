@@ -5811,7 +5811,7 @@ def computeLeadingWhitespaceWidth (s,tab_width):
         else:
             break
     return w
-#@+node:ekr.20031218072017.3199: *3* g.computeWidth (changed)
+#@+node:ekr.20031218072017.3199: *3* g.computeWidth
 # Returns the width of s, assuming s starts a line, with indicated tab_width.
 
 def computeWidth (s, tab_width):
