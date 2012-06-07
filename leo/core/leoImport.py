@@ -123,16 +123,16 @@ class scanUtility:
         
         return s #####
 
-        result = []
-        for line in g.splitLines(s):
-            r1 = line.find('<<')
-            r2 = line.find('>>')
-            if r1>=0 and r2>=0 and r1<r2:
-                result.append("@verbatim\n")
-                result.append(line)
-            else:
-                result.append(line)
-        return ''.join(result)
+        # result = []
+        # for line in g.splitLines(s):
+            # r1 = line.find('<<')
+            # r2 = line.find('>>')
+            # if r1>=0 and r2>=0 and r1<r2:
+                # result.append("@verbatim\n")
+                # result.append(line)
+            # else:
+                # result.append(line)
+        # return ''.join(result)
     #@-others
 #@-<< class scanUtility >>
 #@+<< class leoImportCommands >>
