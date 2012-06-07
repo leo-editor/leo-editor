@@ -9,7 +9,6 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
-.. @+node:ekr.20120604071051.10187: *4* Add multiple body editors to session machinery
 .. @+node:ekr.20111019104425.15865: *4* Make sure docstrings include present documentation
 Every command should have a **complete** docstring.
 .. @+node:ekr.20120527143117.11089: *5* Print commands & docstrings
@@ -748,6 +747,9 @@ undoer...
                                     undo:  52 undo
 676 commands
 .. @+node:ekr.20120415133744.10050: *4* Make sure tab completion only happens on explicit tab
+@language python
+
+# Don't show full completion list when the minibuffer becomes empty.
 .. @+node:ekr.20061031131434.111: *5* fullCommand (alt-x) & helper
 def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
 
@@ -1052,6 +1054,8 @@ tab only--not a way of actually initiating or continuing searches.
 Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
 .. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
+.. @+node:ekr.20120604071051.10187: *4* Add multiple body editors to session machinery
+# Terry will do this, or help with it.
 .. @+node:ekr.20120527053550.12058: *3* Fun
 .. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
 This can be done now that gui's are created on the command line.

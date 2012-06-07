@@ -2207,6 +2207,9 @@ to only issue warnings once.
 A simple change to k.computeCompletionList was all that was needed.
 
 #@+node:ekr.20120415133744.10050: *4* Make sure tab completion only happens on explicit tab
+@language python
+
+# Don't show full completion list when the minibuffer becomes empty.
 #@+node:ekr.20061031131434.111: *5* fullCommand (alt-x) & helper
 def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
 
