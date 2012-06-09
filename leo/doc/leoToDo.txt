@@ -9,6 +9,619 @@
 This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
+.. @+node:ekr.20120608083208.10175: *4* Run all unit tests externally, except in @local-tests tree
+.. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
+@nocolor-node
+
+2012/05/20: ideas for LeoInspect
+
+- Want hints/cheats that make computations simpler.
+    
+- A few hours spent on hints/cheats will pay off because such hints are
+  descriptive and useful. They are like unit tests in that regards.
+    
+- Focus on difficult modules: qtGui.py and leoKeys.py.
+    
+- The assertions for TypedDict and TypedDictOfLists are ugly. We would like
+  a lint-like tool to do away with them.
+    
+.. @+node:ekr.20120515193246.10035: *5* To do
+@language rest
+
+The leoInspect chapter has a good to-do list:
+    
+http://webpages.charter.net/edreamleo/leoInspect.html#still-to-do
+
+The assignments_to, assignments_using and the new calls_to getters all
+specify a pattern to be matched against the the lhs of assignments (or
+against function names in the calls_to getter). At present, the pattern
+must match as a plain word match, but it would be more natural to use regex
+matches. That’s coming.
+
+Three new getters would give leoInspect the ability to replace refactored code:
+
+    o.token_range: Returns pointers the list of tokens comprising o.
+    o.text: Returns o’s source text (a string).
+    o.text_range: Returns the starting and ending offsets of the text in the file.
+
+These getters are non-trivial to do, but a reasonable design is in place.
+.. @+node:ekr.20120515183732.10136: *5* What I did
+@language rest
+
+- Made leoInspect a stand-alone module.
+    The code attempts to import leo.core.leoGlobals.
+    If that fails, it uses an internal LeoGlobals class.
+.. @+node:ekr.20111116103733.9818: *5* LeoInspect unit tests
+@language python
+.. @+node:ekr.20120609070048.11429: *6* Basic tests
+.. @+node:ekr.20111116103733.10672: *7* @test leoInspect with multiple files
+import leo.core.leoInspect as leoInspect
+import os
+import time
+
+<< define old_s >>
+<< define s >>
+
+@others
+
+# g.cls()
+
+aList = (
+    'leoAtFile.py',
+    'leoEditCommands.py',
+)
+test(files=aList,print_stats=False,s=None,print_times=True)
+.. @+node:ekr.20111116103733.10451: *8* << define old_s >>
+# import leo.core.leoGlobals
+# import leo.core.leoGlobals as g
+# from leo.core.leoGlobals import pr as pr2
+# from leo.core.leoGlobals import trace
+
+s_old = '''\
+import sys
+
+aGlobal = 5
+# aGlobal2 is not explicitly defined.
+
+c = [z for z in 'abc']
+
+def myFunc():
+    n1,n2,n3,junk,junk=sys.version_info
+    a = self.b
+    for z in a:
+        print(z)
+    with A() as a:
+        print(a,b)
+        
+def test():
+    a = b # UnboundLocalError.
+    b = 1
+    c = 2 # Any def will do at present.
+    print(g)
+    print(c.frame.body)
+    print(c.frame.body.xxx.yyy)
+    print(b.yyy) # no check will be made.
+    print(xxx.yyy)
+    for c in 'abc':
+        print(c,b)
+        print(g)
+
+
+class myClass:
+    
+    def __init__(self,c):
+        self.a = True
+        self.b = None
+        c.frame.xxxx
+        
+    def spam(self,a,b,c=5,*args,**keys):
+        global aGlobal2
+        aGlobal2 = 'abc'
+        self.a = b
+        self.a = x
+        
+    def no_self(a):
+        pass
+        
+    def test_lambda(self):
+        f = lambda a,b: a
+
+    def test_comprehension(self):
+        z2 = [z for z in 'abc']
+        
+aGlobal3 = 4 # This should be defined everywhere.
+
+def test():
+    # a = ','.join(['a','b'])
+    p = 5
+    # print(p.parent().h)
+    # print(g.app.windowList[0])
+    print(p)
+    print(g)
+
+'''
+
+# import leo.core.leoCommands as leoCommands
+.. @+node:ekr.20111116103733.10452: *8* << define s >>
+s = '''\
+
+import leo.core.leoGlobals as g
+
+def test(c):
+    a = 5
+    f = c.frame
+    c.frame.body.bodyCtrl = w
+
+'''
+
+s = g.adjustTripleString(s,-4)
+# print(s)
+.. @+node:ekr.20111116103733.10450: *8* test
+def test(files,print_stats=True,s=None,print_times=True):
+   
+    t1 = time.clock()
+    sd = leoInspect.SemanticData(controller=None)
+
+    if s: # Use test string.
+        fn = '<test file>'
+        leoInspect.InspectTraverser(fn,sd).traverse(s)
+    else:
+        for fn in files:
+            print(g.shortFileName(fn))
+            s = leoInspect.LeoCoreFiles().get_source(fn)
+            if s:
+                leoInspect.InspectTraverser(fn,sd).traverse(s)
+            else:
+                print('file not found: %s' % (fn))
+           
+    sd.total_time = time.clock()-t1
+    
+    if print_times: sd.print_times()
+    if print_stats: sd.print_stats()
+.. @+node:ekr.20111116103733.10449: *7* @test leoInspect.module.classes
+import leo.core.leoInspect as leoInspect
+
+dump_classes = False
+print_modules = True
+print_functions = True
+print_stats = False
+print_times = False
+
+# if dump_modules or print_stats:
+    # g.cls()
+
+m = leoInspect.module(fn='leoApp.py',sd=None,
+    print_stats=print_stats,print_times=print_times)
+    
+print(m)
+for o in m.classes():
+    if dump_classes:
+        o.dump(verbose=False)
+    if print_modules:
+        print(o)
+    if print_functions:
+        for f in o.functions():
+            print('  %s' % f)
+.. @+node:ekr.20111116161118.10218: *7* @test leoInspect.module.defs
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+print(m)
+    
+for z in m.classes():
+    print(z)
+    for z2 in z.defs():
+        name = z2._tree.name
+        aList = z2.call_args_of(name)
+        args = ','.join(aList)
+        print(' %s(%s)' % (name,args))
+.. @+node:ekr.20111116161118.10212: *7* @test leoInspect.module.classes 2
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+for z in m.classes():
+    print(z)
+.. @+node:ekr.20111116161118.10181: *7* @test leoInspect.module.statements
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+
+print(m)
+for z in m.classes():
+    print(z)
+    for z2 in z.defs():
+        print(z2)
+.. @+node:ekr.20111116161118.10230: *7* @test leoInspect (leoEditCommands.py)
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+
+def show(o):
+    print('%-5s %s' % (o.line_number(),o.format()))
+
+var = '.widget'
+func = 'w.insert'
+
+if 0:
+    
+    print('\nAssignments to %s...\n' % (var))
+    for o in m.assignments_to(var):
+        show(o)
+        
+    print('\nAssignments using %s...\n' % (var))
+    for o in m.assignments_using(var):
+        show(o)
+        
+    print('\nCalls to %s...\n' % (func))
+    for o in m.calls_to(func):
+        show(o)
+        
+    if 1:
+        classes = m.classes()
+        for d in classes[0].defs():
+            print('')
+            print(d)
+            for z in d.statements():
+                # print(z.tree())
+                # print(z.sd.dump_ast(z.tree()))
+                lines = g.splitLines(z.format())
+                for line in lines:
+                    print('  %s' % (line))
+.. @+node:ekr.20120609070048.10224: *6* leoInspect speed tests
+.. @+node:ekr.20111127090852.10227: *7* @test speed of leoInspect.module (all core files)
+import leo.core.leoInspect as leoInspect
+import time
+
+t1 = time.clock()
+
+sd = leoInspect.SemanticData()
+count = 0
+for fn in leoInspect.LeoCoreFiles().files:
+    # print(fn)
+    m = leoInspect.module(fn,sd=sd)
+    count += 1
+
+t2 = time.clock()
+
+print('file: %s time: %2.2f sec' % (count,t2-t1))
+
+if 0:
+    sd.print_stats()
+.. @+node:ekr.20111127153202.10231: *7* @test speed of AstTraverser (all Leo core files)
+import leo.core.leoGlobals as g
+import leo.core.leoInspect as leoInspect
+import ast
+import time
+
+read_time,parse_time,traverse_time = 0.0,0.0,0.0
+t_start = time.clock()
+count = 0
+for fn in leoInspect.LeoCoreFiles().files:
+    count += 1
+    t2 = time.clock()
+    s = open(fn,'r').read()
+    t3 = time.clock()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    t4 = time.clock()
+    leoInspect.AstTraverser(fn).visit(tree)
+    t5 = time.clock()
+
+    read_time += t3-t2
+    parse_time += t4-t3
+    traverse_time += t5-t4
+t_end = time.clock()
+total_time = t_end-t_start
+if 1:
+    print('files:     %s' % (count))
+    print('read:      %2.3f sec.' % (read_time))
+    print('ast.parse: %2.3f sec.' % (parse_time))
+    print('traverse:  %2.3f sec.' % (traverse_time))
+    print('total:     %2.3f sec.' % (total_time))
+.. @+node:ekr.20111116103733.9838: *7* @test speed of AstTraverser (one file)
+import leo.core.leoGlobals as g
+import leo.core.leoInspect as leoInspect
+import ast
+import time
+
+# g.cls()
+
+fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
+
+t1 = time.clock()
+s = open(fn,'r').read()
+t2 = time.clock()
+tree = ast.parse(s,filename=fn,mode='exec')
+t3 = time.clock()
+leoInspect.AstTraverser(fn).visit(tree)
+t4 = time.clock()
+
+if 1:
+    print('read:     %2.3f sec.' % (t2-t1))
+    print('parse:    %2.3f sec.' % (t3-t2))
+    print('traverse: %2.3f sec.' % (t4-t3))
+    print('total:    %2.3f sec.' % (t4-t1))
+.. @+node:ekr.20111117031039.10762: *6* @test leoInspect.module (s)
+import leo.core.leoInspect as leoInspect
+
+def show(o,indent=0):
+    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
+    print('%s%s' % (' '*4*indent,o.format()))
+
+<< define s >>
+print('Input...\n%s\n' % (s.rstrip()))
+
+m = leoInspect.module(s=s)
+
+# print(show(m,0))
+
+print('\nStatements...\n')
+for o in m.statements():
+    print(o.format())
+    
+if 0:
+    print('\nAssignments...\n')
+    for o in m.assignments():
+        print(o.format())
+
+print('\nAssignments to a...\n')
+for o in m.assignments_to('a'):
+    print(o.format())
+    
+print('\nAssignments using d...\n')
+for o in m.assignments_using('d'):
+    print(o.format())
+    
+print('\nCalls to f...\n')
+for o in m.calls_to('f'):
+    print(o.format())
+
+if 0:
+    for f in m.functions():
+        show(f,0)
+        for z in f.statements():
+            show(z,1)
+    
+    for cls in m.classes():
+        show(cls,0)
+        for d in cls.defs():
+            show(d,1)
+            for z in d.statements():
+                show(z,1)
+.. @+node:ekr.20111117031039.10763: *7* << define s >>
+s = '''
+x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
+a=b+c
+p,d,q[5]=f(a=1,b=2,*args,**keys)
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
+.. @+node:ekr.20120607172857.10155: *6* @test compute all ivars in all classes
+import leo.core.leoInspect as leoInspect
+from leoInspect import g_dump_tree, g_format_tree, g_tree_kind
+import time
+
+t1 = time.time()
+
+# Globals...
+sd = leoInspect.SemanticData(controller=None)
+g_d = {} # Keys are ivars, values are lists of classes.
+n_files = 0
+
+for fn in leoInspect.LeoCoreFiles().files:
+
+    # Most of the time is spent creating the context objects.
+    m = leoInspect.module(fn=fn,sd=sd)
+    n_files += 1
+    
+    ### To do: create global assignments list.
+    
+    if 1: # Look for all targets. Takes about 0.15 sec.
+        for class_ in m.classes():
+            for def_ in class_.defs():
+                for a in def_.assignments():
+                    tree = a.tree()
+                    kind = g_tree_kind(tree)
+                    # if g_tree_kind(tree.value) == 'ListComp':
+                        # print(a.format())
+                        # print(g_dump_tree(tree.value))
+                    print(a.format())
+                    if kind == 'Assign':
+                        for target in tree.targets:
+                            # if False and g_tree_kind(target) not in ('Attribute','Name','Tuple','Subscript'):
+                                # print('assn target: %s' % g_format_tree(target))
+                                # print('assn target: %s' % g_dump_tree(target))
+                            name = g_format_tree(target)
+                            if name.startswith('self.'):
+                                name = name[5:]
+                            i = name.find('[')
+                            if i > -1:
+                                name = name[:i]
+                            aList = g_d.get(name,[])
+                            if class_.name() not in aList:
+                                aList.append(class_.name())
+                                g_d[name] = aList
+                    else:
+                        assert kind == 'AugAssign',kind
+                        name = g_format_tree(tree.target)
+                        aList = g_d.get(name,[])
+                        if class_.name() not in aList:
+                            aList.append(class_.name())
+                            g_d[name] = aList
+
+    # Takes about 0.1 sec. cumulative.
+    if 0: # Look for all ivars.
+        for class_ in m.classes():
+            for def_ in class_.defs():
+                if def_.name() == '__init__':
+                    for a in def_.assignments_to('self'):
+                        # Not all targets are ivars.
+                        for target in a.tree().targets:
+                            name = g_format(target)
+                            if name.startswith('self.'):
+                                name = name[5:]
+                                aList = g_d.get(name,[])
+                                if class_.name() not in aList:
+                                    aList.append(class_.name())
+                                    g_d[name] = aList
+                       
+
+t2 = time.time()
+
+print('files: %s time: %2.2f sec, total ivars: %s' % (
+    n_files,t2-t1,len(list(g_d.keys()))))
+
+if 0:
+    ambiguous,total = 0,0
+    for key in sorted(g_d.keys()):
+        aList = sorted(g_d.get(key))
+        if False: #  or len(aList) > 1:
+            if total == 0: print('Global ivars dict...')
+            if len(key) + 3 > 25: key = key[:22]+'...'
+            aList2 = aList[:3]
+            if len(aList2) < len(aList): aList2.append('...')
+            print('%25s %2s %s' % (key,len(aList),aList2))
+        total += 1
+        if len(aList) > 1: ambiguous += 1
+    print('total ivars: %s ambiguous: %s' % (total,ambiguous))
+
+if 0:
+    sd.print_stats()
+.. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
+@language python
+
+Traverse the tree, setting N.end_lineno and N.end_col_offset.
+
+See the notes below.
+.. @+node:ekr.20111129084537.10357: *6* Notes
+@language rest
+
+> All this means that it would likely be too expensive (or just too
+> ugly) to compute the data needed for token_range in the base
+> AstTraverser class.  Such computations will be performed by traversing
+> the module's entire AST the first time "token_range" is called.
+
+There are two parts to the problem.  Happily, neither requires a
+separate tree-traversal class.
+
+A token-info prepass
+====================
+
+For each node N of a module's tree, we want to inject the following
+two new ivars:
+
+- N.end_lineno: the line number of the last character of the token.
+- N.end_col_offset: the (byte) offset of the last character of the
+token.
+
+After experimenting with a few traversals last night I suddenly
+realized tree structure is irrelevant when computing these fields: we
+simply want a **sorted** list of (N.lineno,No.col_offset, N) tuples!
+
+The prepass will use ast.walk(root), to generate the list.  After
+sorting the list, the prepass will inject inject N.end_lineno and
+N.end_col_offset ivars into each node N by stepping through the list.
+The ending values of the previous node on the list are the the same as
+the beginning values of the next node on the list.
+
+This prepass need only be done once per module.
+
+token_range
+===========
+
+To compute token_range for a *particular* N, we want to discover
+values M.end_lineno and M.end_col_offset for M, the **last** token in
+N's entire tree.
+
+token_range will do the prepass on the modules tree if necessary.
+token_range will then call ast.walk(N) to discover all of N's nodes,
+sort the list, and return the last element of the list!
+
+In short, token_range is clean and bullet-proof--a happy result.
+.. @+node:ekr.20111128103520.10257: *6* @test leoInspect.token_range (s)
+import leo.core.leoInspect as inspect
+
+# g.cls()
+
+def show(o,indent=0):
+    pad = ' '*4*indent
+    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
+    print('%s%s' % (pad,o.format()))
+    print('token range: %s' % (repr(o.token_range())))
+
+<< define s >>
+print('Input...\n%s\n' % (s.rstrip()))
+
+m = inspect.module(s=s)
+
+if 0:
+    show(m,0)
+    
+if 1:
+    print('\nAssignments to a...\n')
+    for o in m.assignments_to('a'):
+        # print(o.format())
+        show(o)
+if 0:
+    print('\nAssignments using d...\n')
+    for o in m.assignments_using('d'):
+        # print(o.format())
+        show(o)
+if 0:    
+    print('\nCalls to f...\n')
+    for o in m.calls_to('f'):
+        # print(o.format())
+        show(o)
+if 0:
+    for s in m.statements():
+        show(s)
+    
+    for f in m.functions():
+        show(f,0)
+        for z in f.statements():
+            show(z,1)
+    
+    for cls in m.classes():
+        show(cls,0)
+        for d in cls.defs():
+            show(d,1)
+            for z in d.statements():
+                show(z,1)
+.. @+node:ekr.20111128103520.10258: *7* << define s >>
+s = '''
+# x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
+a=b+c
+# f(a=1,b=2,*args,**keys)
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
+.. @+node:ekr.20120607172857.10153: *3* Next
 .. @+node:ekr.20120523092521.9904: *4* Easy bugs
 .. @+node:ekr.20110621085435.6531: *5* Fix bug: Improve the find panel and find menu
 @nocolor-node
@@ -775,524 +1388,6 @@ the hyperlinking.
 
 It shouldn't be too hard: create an auto-completion-like popup if there are
 multiple possibilities.  Use leoInspect.
-.. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
-@nocolor-node
-
-2012/05/20: ideas for LeoInspect
-
-- Want hints/cheats that make computations simpler.
-    
-- A few hours spent on hints/cheats will pay off because such hints are
-  descriptive and useful. They are like unit tests in that regards.
-    
-- Focus on difficult modules: qtGui.py and leoKeys.py.
-    
-- The assertions for TypedDict and TypedDictOfLists are ugly. We would like
-  a lint-like tool to do away with them.
-    
-.. @+node:ekr.20120515193246.10035: *5* To do
-@language rest
-
-The leoInspect chapter has a good to-do list:
-    
-http://webpages.charter.net/edreamleo/leoInspect.html#still-to-do
-
-The assignments_to, assignments_using and the new calls_to getters all
-specify a pattern to be matched against the the lhs of assignments (or
-against function names in the calls_to getter). At present, the pattern
-must match as a plain word match, but it would be more natural to use regex
-matches. That’s coming.
-
-Three new getters would give leoInspect the ability to replace refactored code:
-
-    o.token_range: Returns pointers the list of tokens comprising o.
-    o.text: Returns o’s source text (a string).
-    o.text_range: Returns the starting and ending offsets of the text in the file.
-
-These getters are non-trivial to do, but a reasonable design is in place.
-.. @+node:ekr.20120515183732.10136: *5* What I did
-@language rest
-
-- Made leoInspect a stand-alone module.
-    The code attempts to import leo.core.leoGlobals.
-    If that fails, it uses an internal LeoGlobals class.
-.. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
-@language python
-
-Traverse the tree, setting N.end_lineno and N.end_col_offset.
-
-See the notes below.
-.. @+node:ekr.20111128103520.10257: *6* @test leoInspect.token_range (s)
-import leo.core.leoInspect as inspect
-
-# g.cls()
-
-def show(o,indent=0):
-    pad = ' '*4*indent
-    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
-    print('%s%s' % (pad,o.format()))
-    print('token range: %s' % (repr(o.token_range())))
-
-<< define s >>
-print('Input...\n%s\n' % (s.rstrip()))
-
-m = inspect.module(s=s)
-
-if 0:
-    show(m,0)
-    
-if 1:
-    print('\nAssignments to a...\n')
-    for o in m.assignments_to('a'):
-        # print(o.format())
-        show(o)
-if 0:
-    print('\nAssignments using d...\n')
-    for o in m.assignments_using('d'):
-        # print(o.format())
-        show(o)
-if 0:    
-    print('\nCalls to f...\n')
-    for o in m.calls_to('f'):
-        # print(o.format())
-        show(o)
-if 0:
-    for s in m.statements():
-        show(s)
-    
-    for f in m.functions():
-        show(f,0)
-        for z in f.statements():
-            show(z,1)
-    
-    for cls in m.classes():
-        show(cls,0)
-        for d in cls.defs():
-            show(d,1)
-            for z in d.statements():
-                show(z,1)
-.. @+node:ekr.20111128103520.10258: *7* << define s >>
-s = '''
-# x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
-a=b+c
-# f(a=1,b=2,*args,**keys)
-'''
-
-
-# def outer_function(a,b=99,c=88,*args,**keys):
-    # print('hello')
-    
-# class myClass:
-    # def method():
-        # pass
-    
-.. @+node:ekr.20111129084537.10357: *6* Notes
-@language rest
-
-> All this means that it would likely be too expensive (or just too
-> ugly) to compute the data needed for token_range in the base
-> AstTraverser class.  Such computations will be performed by traversing
-> the module's entire AST the first time "token_range" is called.
-
-There are two parts to the problem.  Happily, neither requires a
-separate tree-traversal class.
-
-A token-info prepass
-====================
-
-For each node N of a module's tree, we want to inject the following
-two new ivars:
-
-- N.end_lineno: the line number of the last character of the token.
-- N.end_col_offset: the (byte) offset of the last character of the
-token.
-
-After experimenting with a few traversals last night I suddenly
-realized tree structure is irrelevant when computing these fields: we
-simply want a **sorted** list of (N.lineno,No.col_offset, N) tuples!
-
-The prepass will use ast.walk(root), to generate the list.  After
-sorting the list, the prepass will inject inject N.end_lineno and
-N.end_col_offset ivars into each node N by stepping through the list.
-The ending values of the previous node on the list are the the same as
-the beginning values of the next node on the list.
-
-This prepass need only be done once per module.
-
-token_range
-===========
-
-To compute token_range for a *particular* N, we want to discover
-values M.end_lineno and M.end_col_offset for M, the **last** token in
-N's entire tree.
-
-token_range will do the prepass on the modules tree if necessary.
-token_range will then call ast.walk(N) to discover all of N's nodes,
-sort the list, and return the last element of the list!
-
-In short, token_range is clean and bullet-proof--a happy result.
-.. @+node:ekr.20111116103733.9818: *5* LeoInspect unit tests
-@language python
-.. @+node:ekr.20120515193246.10058: *6* @test g.cls
-g.cls()
-.. @+node:ekr.20111116103733.10672: *6* @test leoInspect with multiple files
-import leo.core.leoInspect as inspect
-import os
-import time
-
-<< define old_s >>
-<< define s >>
-
-@others
-
-# g.cls()
-
-aList = (
-    'leoAtFile.py',
-    'leoEditCommands.py',
-)
-test(files=aList,print_stats=False,s=None,print_times=True)
-.. @+node:ekr.20111116103733.10451: *7* << define old_s >>
-# import leo.core.leoGlobals
-# import leo.core.leoGlobals as g
-# from leo.core.leoGlobals import pr as pr2
-# from leo.core.leoGlobals import trace
-
-s_old = '''\
-import sys
-
-aGlobal = 5
-# aGlobal2 is not explicitly defined.
-
-c = [z for z in 'abc']
-
-def myFunc():
-    n1,n2,n3,junk,junk=sys.version_info
-    a = self.b
-    for z in a:
-        print(z)
-    with A() as a:
-        print(a,b)
-        
-def test():
-    a = b # UnboundLocalError.
-    b = 1
-    c = 2 # Any def will do at present.
-    print(g)
-    print(c.frame.body)
-    print(c.frame.body.xxx.yyy)
-    print(b.yyy) # no check will be made.
-    print(xxx.yyy)
-    for c in 'abc':
-        print(c,b)
-        print(g)
-
-
-class myClass:
-    
-    def __init__(self,c):
-        self.a = True
-        self.b = None
-        c.frame.xxxx
-        
-    def spam(self,a,b,c=5,*args,**keys):
-        global aGlobal2
-        aGlobal2 = 'abc'
-        self.a = b
-        self.a = x
-        
-    def no_self(a):
-        pass
-        
-    def test_lambda(self):
-        f = lambda a,b: a
-
-    def test_comprehension(self):
-        z2 = [z for z in 'abc']
-        
-aGlobal3 = 4 # This should be defined everywhere.
-
-def test():
-    # a = ','.join(['a','b'])
-    p = 5
-    # print(p.parent().h)
-    # print(g.app.windowList[0])
-    print(p)
-    print(g)
-
-'''
-
-# import leo.core.leoCommands as leoCommands
-.. @+node:ekr.20111116103733.10452: *7* << define s >>
-s = '''\
-
-import leo.core.leoGlobals as g
-
-def test(c):
-    a = 5
-    f = c.frame
-    c.frame.body.bodyCtrl = w
-
-'''
-
-s = g.adjustTripleString(s,-4)
-# print(s)
-.. @+node:ekr.20111116103733.10450: *7* test
-def test(files,print_stats=True,s=None,print_times=True):
-   
-    t1 = time.clock()
-    sd = inspect.SemanticData(controller=None)
-
-    if s: # Use test string.
-        fn = '<test file>'
-        inspect.InspectTraverser(fn,sd).traverse(s)
-    else:
-        for fn in files:
-            print(g.shortFileName(fn))
-            s = inspect.LeoCoreFiles().get_source(fn)
-            if s:
-                inspect.InspectTraverser(fn,sd).traverse(s)
-            else:
-                print('file not found: %s' % (fn))
-           
-    sd.total_time = time.clock()-t1
-    
-    if print_times: sd.print_times()
-    if print_stats: sd.print_stats()
-.. @+node:ekr.20111116103733.10449: *6* @test leoInspect.module.classes
-import leo.core.leoInspect as inspect
-
-dump_classes = False
-print_modules = True
-print_functions = True
-print_stats = False
-print_times = False
-
-# if dump_modules or print_stats:
-    # g.cls()
-
-m = inspect.module(fn='leoApp.py',sd=None,
-    print_stats=print_stats,print_times=print_times)
-    
-print(m)
-for o in m.classes():
-    if dump_classes:
-        o.dump(verbose=False)
-    if print_modules:
-        print(o)
-    if print_functions:
-        for f in o.functions():
-            print('  %s' % f)
-.. @+node:ekr.20111116161118.10212: *6* @test leoInspect.module.classes 2
-import leo.core.leoInspect as inspect
-
-# g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-    
-for z in m.classes():
-    print(z)
-.. @+node:ekr.20111116161118.10218: *6* @test leoInspect.module.defs
-import leo.core.leoInspect as inspect
-
-# g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-    
-print(m)
-    
-for z in m.classes():
-    print(z)
-    for z2 in z.defs():
-        name = z2._tree.name
-        aList = z2.call_args_of(name)
-        args = ','.join(aList)
-        print(' %s(%s)' % (name,args))
-.. @+node:ekr.20111116161118.10181: *6* @test leoInspect.module.statements
-import leo.core.leoInspect as inspect
-
-# g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-
-print(m)
-for z in m.classes():
-    print(z)
-    for z2 in z.defs():
-        print(z2)
-.. @+node:ekr.20111116161118.10230: *6* @test leoInspect (leoEditCommands.py)
-import leo.core.leoInspect as inspect
-
-# g.cls()
-
-m = inspect.module(fn='leoEditCommands.py')
-
-def show(o):
-    print('%-5s %s' % (o.line_number(),o.format()))
-
-var = '.widget'
-func = 'w.insert'
-
-if 0:
-    
-    print('\nAssignments to %s...\n' % (var))
-    for o in m.assignments_to(var):
-        show(o)
-        
-    print('\nAssignments using %s...\n' % (var))
-    for o in m.assignments_using(var):
-        show(o)
-        
-    print('\nCalls to %s...\n' % (func))
-    for o in m.calls_to(func):
-        show(o)
-        
-    if 1:
-        classes = m.classes()
-        for d in classes[0].defs():
-            print('')
-            print(d)
-            for z in d.statements():
-                # print(z.tree())
-                # print(z.sd.dump_ast(z.tree()))
-                lines = g.splitLines(z.format())
-                for line in lines:
-                    print('  %s' % (line))
-.. @+node:ekr.20111127153202.10231: *6* @test speed of AstTraverser (all Leo core files)
-import leo.core.leoGlobals as g
-import leo.core.leoInspect as inspect
-import ast
-import time
-
-read_time,parse_time,traverse_time = 0.0,0.0,0.0
-t_start = time.clock()
-count = 0
-for fn in inspect.LeoCoreFiles().files:
-    count += 1
-    t2 = time.clock()
-    s = open(fn,'r').read()
-    t3 = time.clock()
-    tree = ast.parse(s,filename=fn,mode='exec')
-    t4 = time.clock()
-    inspect.AstTraverser(fn).visit(tree)
-    t5 = time.clock()
-    read_time += t3-t2
-    parse_time += t4-t3
-    traverse_time += t5-t4
-t_end = time.clock()
-total_time = t_end-t_start
-if 1:
-    print('files:    %s' % (count))
-    print('read:     %2.3f sec.' % (read_time))
-    print('parse:    %2.3f sec.' % (parse_time))
-    print('traverse: %2.3f sec.' % (traverse_time))
-    print('total:    %2.3f sec.' % (total_time))
-.. @+node:ekr.20111127090852.10227: *6* @test leoInspect (all core files)
-import leo.core.leoInspect as inspect
-import time
-
-sd = inspect.SemanticData()
-start_time = time.clock()
-
-count = 0
-for fn in inspect.LeoCoreFiles().files:
-    print(fn)
-    m = inspect.module(fn,sd=sd)
-    count += 1
-
-end_time = time.clock()
-total_time = end_time-start_time
-
-if 1:
-    print('files: %s' % (count))
-    print('total: %2.3f sec.' % (total_time))
-if 1:
-    sd.print_stats()
-.. @+node:ekr.20111117031039.10762: *6* @test leoInspect.module (s)
-import leo.core.leoInspect as inspect
-
-# g.cls()
-
-def show(o,indent):
-    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
-    print('%s%s' % (' '*4*indent,o.format()))
-
-<< define s >>
-print('Input...\n%s\n' % (s.rstrip()))
-
-m = inspect.module(s=s)
-
-if 1:
-    print(show(m,0))
-
-print('\nAssignments to a...\n')
-for o in m.assignments_to('a'):
-    print(o.format())
-    
-print('\nAssignments using d...\n')
-for o in m.assignments_using('d'):
-    print(o.format())
-    
-print('\nCalls to f...\n')
-for o in m.calls_to('f'):
-    print(o.format())
-
-if 1:
-    for s in m.statements():
-        show(s,0)
-    
-    for f in m.functions():
-        show(f,0)
-        for z in f.statements():
-            show(z,1)
-    
-    for cls in m.classes():
-        show(cls,0)
-        for d in cls.defs():
-            show(d,1)
-            for z in d.statements():
-                show(z,1)
-.. @+node:ekr.20111117031039.10763: *7* << define s >>
-s = '''
-x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
-a=b+c
-f(a=1,b=2,*args,**keys)
-'''
-
-
-# def outer_function(a,b=99,c=88,*args,**keys):
-    # print('hello')
-    
-# class myClass:
-    # def method():
-        # pass
-    
-.. @+node:ekr.20111116103733.9838: *6* @test speed of AstTraverser (one file)
-import leo.core.leoGlobals as g
-import leo.core.leoInspect as leoInspect
-import ast
-import time
-
-# g.cls()
-
-fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
-
-t1 = time.clock()
-s = open(fn,'r').read()
-t2 = time.clock()
-tree = ast.parse(s,filename=fn,mode='exec')
-t3 = time.clock()
-leoInspect.AstTraverser(fn).visit(tree)
-t4 = time.clock()
-
-if 1:
-    print('read:     %2.3f sec.' % (t2-t1))
-    print('parse:    %2.3f sec.' % (t3-t2))
-    print('traverse: %2.3f sec.' % (t4-t3))
-    print('total:    %2.3f sec.' % (t4-t1))
 .. @+node:ekr.20110620083705.14901: *4* Fix or disable curses gui
 leoBridge.py requires the nullGui.
 .. @+node:ekr.20111019104425.15861: *3* Scripts

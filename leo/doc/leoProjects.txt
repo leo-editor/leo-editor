@@ -342,8 +342,6 @@ def scanOptions():
 # It's useful to have this do-nothing test.
 
 assert True
-#@+node:ekr.20111107092526.9819: *4* @test cls
-g.cls() # Clear the screen
 #@+node:ekr.20111110085739.10265: *4* @test html string
 s = '''\
 <HTML>

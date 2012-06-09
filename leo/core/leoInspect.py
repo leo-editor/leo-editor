@@ -9,15 +9,6 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-#@+at To do
-# 
-# - Allow "partial" matches in calls_to,assign_to.
-#     - Use regex searches?
-#     
-# - Append *all* statements to statements list.
-#     Including def, class, if, while, pass, with etc.
-#@@c
-
 #@+<< imports >>
 #@+node:ekr.20111116103733.10440: **  << imports >> (leoInspect)
 import sys
@@ -54,6 +45,10 @@ else:
     import cStringIO
     StringIO = cStringIO.StringIO
 #@-<< imports >>
+
+g_dumper = None     # Global, singleton instance of AstDumper.
+g_formatter = None  # Global, singleton instance of AstFormatter.
+
 #@+<< naming conventions >>
 #@+node:ekr.20111116103733.10146: **  << naming conventions >>
 #@@nocolor-node
@@ -989,7 +984,7 @@ class AstTraverser(object):
     #@-others
 #@-<< define class AstTraverser >>
 #@+<< define class Context >>
-#@+node:ekr.20111116103733.10402: ** << define class Context >>
+#@+node:ekr.20111116103733.10402: ** << define class Context >> (includes getters)
 class Context(object):
 
     '''The base class of all context-related semantic data.
@@ -1016,6 +1011,7 @@ class Context(object):
         sd.n_contexts += 1
 
         # Public semantic data: accessed via getters.
+        self._calls = [] # All call statements defined in this context.
         self._classes = [] # Classes defined in this context.
         self._defs = [] # Functions defined in this context.
         self._statements = [] # List of all statements in the context.
@@ -1127,15 +1123,22 @@ class Context(object):
             tree = assn.tree()
             kind = self.ast_kind(tree)
             if kind == 'Assign':
+                # Return the *entire* assignment if *any* of the targets match.
+                # The caller will have to filter the result.
                 for target in tree.targets:
-                    lhs = format(target)
-                    if s == lhs:
-                        result.append(assn)
-                        break
+                    if self.ast_kind(target) =='Name':
+                        if target.id == s:
+                            result.append(assn)
+                            break
+                    else:
+                        lhs = format(target)
+                        if lhs.startswith(s):
+                            result.append(assn)
+                            break
             else:
                 assert kind == 'AugAssign',kind
                 lhs = format(tree.target)
-                if s == lhs:
+                if lhs.startswith(s):
                     result.append(assn)
 
         return result
@@ -1164,13 +1167,13 @@ class Context(object):
         if all:
             return self.all_calls(result=None)
         else:
-            return self.filter_calls(self._statements)
+            return self.filter_calls(self._calls)
 
     def all_calls(self,result):
 
         if result is None:
             result = []
-        result.extend(self.filter_calls(self._statements))
+        result.extend(self._calls)
         for aList in (self._classes,self._defs):
             for cx in aList:
                 cx.all_calls(result)
@@ -1180,12 +1183,13 @@ class Context(object):
         '''Return all the calls in aList.'''
         return [z for z in aList
             if z.context_kind == 'call']
-    #@+node:ekr.20111126074312.10384: *4* cx.call_to
+    #@+node:ekr.20111126074312.10384: *4* cx.calls_to
     def calls_to (self,s,all=True):
         
         format,result = self.formatter.format,[]
 
         for call in self.calls(all=all):
+            # g.trace(call.format())
             tree = call.tree()
             func = format(tree.func)
             if s == func:
@@ -1333,7 +1337,52 @@ class Context(object):
 #@-<< define class Context >>
 
 #@+others
+#@+node:ekr.20120609070048.11216: ** To do (leoInspect)
+#@@nocolor-node
+#@+at
+# 
+# ** Improve cx.assignments_to.
+# 
+# - Allow "partial" matches in calls_to,assignments_to.
+#     - Use regex searches?
+#     
+# - Append *all* statements to statements list.
+#     Including def, class, if, while, pass, with etc.
+# 
+# - Verify that all kinds of name expressions & attributes are handled correctly.
+# 
+# - Create global lists for calls, assignments.
+# 
+# - Create global symbol dicts for names.
 #@+node:ekr.20111116103733.10539: **  Top-level functions
+#@+node:ekr.20120609070048.10397: *3* g_dump_tree
+
+
+def g_dump_tree(tree):
+    
+    '''Return a string containing the human-readable version of tree.'''
+
+    global g_dumper
+    
+    if not g_dumper:
+        g_dumper = AstDumper()
+
+    return g_dumper.dumpTreeAsString(tree)
+#@+node:ekr.20120609070048.10871: *3* g_format_tree
+def g_format_tree(tree):
+    
+    '''Return a string containing the human-readable version of tree.'''
+
+    global g_formatter
+    
+    if not g_formatter:
+        g_formatter = AstFormatter()
+
+    return g_formatter.format(tree)
+#@+node:ekr.20120609070048.11466: *3* g_tree_kind
+def g_tree_kind(tree):
+
+    return tree.__class__.__name__
 #@+node:ekr.20111116103733.10337: *3* chain_base
 # This global function exists avoid duplicate code
 # in the Chain and SymbolTable classes.
@@ -2057,12 +2106,13 @@ class AstFormatter (AstTraverser):
             values.append(self.visit(z,'dict values'))
             
         if len(keys) == len(values):
-            self.append('{')
+            self.append('{\n' if keys else '{')
             items = []
             for i in range(len(keys)):
-                items.append('%s:%s' % (keys[i],values[i]))
-            self.append(','.join(items))
-            self.append('}')
+                items.append('  %s:%s' % (keys[i],values[i]))
+                # items.append('\n  %s:%s' % (keys[i],self.visit(values[i],'dict-value')))
+            self.append(',\n'.join(items))
+            self.append('\n}' if keys else '}')
         else:
             g.trace('*** Error *** keys: %s values: %s' % (
                 repr(keys),repr(values)))
@@ -2101,8 +2151,8 @@ class AstFormatter (AstTraverser):
             
         # self.visit(tree.ctx,'list context')
         
-        self.append('(%s)' % ','.join(elts))
-    #@+node:ekr.20111117031039.10204: *4* f.ListComp & Comprehension TEST
+        self.append('[%s]' % ','.join(elts))
+    #@+node:ekr.20111117031039.10204: *4* f.ListComp & Comprehension
     def do_ListComp(self,tree,tag=''):
 
         elt = self.visit(tree.elt,'list comp elt')
@@ -2111,7 +2161,10 @@ class AstFormatter (AstTraverser):
         for z in tree.generators:
             generators.append(self.visit(z,'list comp generator'))
             
-        self.append('[%s for %s in %s]' % (elt,elt,''.join(generators)))
+        ### self.append('[%s for %s in %s]' % (elt,elt,''.join(generators)))
+        self.append('[%s for %s]' % (elt,''.join(generators)))
+        
+    # chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
 
     def do_comprehension(self,tree,tag=''):
 
@@ -2123,7 +2176,9 @@ class AstFormatter (AstTraverser):
         for z in tree.ifs:
             ifs.append(self.visit(z,'comprehension if'))
             
-        self.append('**comprehension** name: %s ifs: %s' % (name,''.join(ifs)))
+        self.append('%s in %s' % (name,it))
+        if ifs:
+            self.append(' if %s' % (''.join(ifs)))
     #@+node:ekr.20111117031039.10203: *4* f.Name
     def do_Name(self,tree,tag=''):
 
@@ -2149,7 +2204,8 @@ class AstFormatter (AstTraverser):
     #@+node:ekr.20111117031039.10455: *4* f.Str
     def do_str (self,s,tag=''):
 
-        self.append(s)
+        ### self.append(s)
+        self.append(repr(s))
 
     def do_Str (self,tree,tag=''):
         
@@ -2176,7 +2232,7 @@ class AstFormatter (AstTraverser):
         for z in tree.elts:
             elts.append(self.visit(z,'list elts'))
             
-        self.append(','.join(elts))
+        self.append('(%s)' % ','.join(elts))
 
         # self.visit(tree.ctx,'list context')
     #@+node:ekr.20111117031039.10557: *4* formatter:simple operands
@@ -2271,6 +2327,20 @@ class AstFormatter (AstTraverser):
     def do_LtE(self,tree,tag=''):   self.append('<=')
     def do_NotEq(self,tree,tag=''): self.append('!=')
     def do_NotIn(self,tree,tag=''): self.append(' not in ')
+    #@+node:ekr.20120609070048.11084: *4* f.ternary op (ifExp)
+    def do_IfExp (self,tree,tag=''):
+        
+        self.trace(tree,tag)
+        test = self.visit(tree.test,'if-expr test')
+        if tree.body:
+            body = self.visit(tree.body,'if-expr body')
+        else:
+            body = '*** no body'
+        if tree.orelse:
+            else_ = self.visit(tree.orelse,'if-expr orelse')
+        else:
+            else_ = '*** no orelse***'
+        return self.append('%s if %s else %s ' % (body,test,else_))
     #@+node:ekr.20111117031039.10493: *4* f.expression operators
     def do_op(self,tree,tag=''):
         pass
@@ -2310,7 +2380,7 @@ class AstFormatter (AstTraverser):
         rhs = self.visit(tree.value,'aug-assn value')
         lhs = self.visit(tree.target,'aut-assn target')
 
-        self.append('%s%s%s\n' % (lhs,op,rhs))
+        self.append('%s%s=%s' % (lhs,op,rhs))
     #@+node:ekr.20111117031039.10208: *4* f.Call
     def do_Call(self,tree,tag=''):
         
@@ -2403,7 +2473,7 @@ class AstFormatter (AstTraverser):
         
         self.append('lambda ')
         self.append(self.visit(tree.args,'lambda args'))
-        self.append(':\n')
+        self.append(':')
         self.append(self.visit(tree.body,'lambda body'))
         # self.append('\n')
     #@+node:ekr.20111117031039.10972: *4* f.Pass
@@ -2679,7 +2749,10 @@ class InspectTraverser (AstTraverser):
         
         sd = self.sd
         cx = self.get_context()
-        cx._statements.append(StatementContext(tree,cx,sd,'call'))
+        
+        # Not correct: the call could be part of a larger statement.
+        # cx._statements.append(StatementContext(tree,cx,sd,'call'))
+        cx._calls.append(StatementContext(tree,cx,sd,'call'))
         
         sd.n_calls += 1
         
@@ -2977,6 +3050,16 @@ class LeoCoreFiles(object):
         except IOError:
             return ''
     #@-others
+#@+node:ekr.20120609070048.11214: ** class Program
+class Program:
+    
+    '''A class representing all the files in the program.
+    
+    May be significant later when industrial-strength caching is in effect.'''
+    
+    def __init__ (self,files):
+        
+        self.files = files
 #@+node:ekr.20111116103733.10380: ** class SemanticData
 class SemanticData(object):
     
