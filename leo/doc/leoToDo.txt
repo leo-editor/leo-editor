@@ -215,7 +215,7 @@ print(m)
 for z in m.classes():
     print(z)
     for z2 in z.defs():
-        name = z2._tree.name
+        name = z2.tree_ptr.name
         aList = z2.call_args_of(name)
         args = ','.join(aList)
         print(' %s(%s)' % (name,args))
@@ -444,7 +444,7 @@ for fn in leoInspect.LeoCoreFiles().files:
                     # if g_tree_kind(tree.value) == 'ListComp':
                         # print(a.format())
                         # print(g_dump_tree(tree.value))
-                    print(a.format())
+                    # print(a.format())
                     if kind == 'Assign':
                         for target in tree.targets:
                             # if False and g_tree_kind(target) not in ('Attribute','Name','Tuple','Subscript'):
@@ -490,19 +490,84 @@ t2 = time.time()
 print('files: %s time: %2.2f sec, total ivars: %s' % (
     n_files,t2-t1,len(list(g_d.keys()))))
 
-if 0:
+if 1:
     ambiguous,total = 0,0
     for key in sorted(g_d.keys()):
         aList = sorted(g_d.get(key))
-        if False: #  or len(aList) > 1:
+        if 1 and len(aList) > 1:
+            w = 30 # Width of left column
             if total == 0: print('Global ivars dict...')
-            if len(key) + 3 > 25: key = key[:22]+'...'
+            if len(key) + 3 > w: key = key[:w-3]+'...'
             aList2 = aList[:3]
             if len(aList2) < len(aList): aList2.append('...')
-            print('%25s %2s %s' % (key,len(aList),aList2))
+            print('%30s %2s %s' % (key,len(aList),aList2))
         total += 1
         if len(aList) > 1: ambiguous += 1
     print('total ivars: %s ambiguous: %s' % (total,ambiguous))
+
+if 1:
+    sd.print_stats()
+.. @+node:ekr.20120611094414.10167: *6* @test find all ctors
+import leo.core.leoInspect as leoInspect
+import time
+
+t1 = time.time()
+
+# Globals...
+sd = leoInspect.SemanticData(controller=None)
+classes = set()
+modules = {}
+
+# Pass 1: Load all modules.
+print('starting pass 1...')
+for fn in leoInspect.LeoCoreFiles().files:
+    m = leoInspect.module(fn=fn,sd=sd)
+    modules[m] = m
+    
+n_files = len(list(modules.keys()))
+
+t2 = time.time()
+print('pass 1: %2.2f sec files: %s' % (t2-t1,n_files))
+    
+# pass 2: compute all class names.
+for m in modules:
+    for z in m.classes():
+        classes.add(z.name())
+        
+t3 = time.time()
+print('pass 2: %2.2f sec' % (t3-t2))
+
+classes = sorted(list(classes))
+
+if 0:
+    for z in classes:
+        print(z)
+        
+# Pass 3: Find all calls to ctors.
+ctors = set()
+ctors_assns = []
+for m in modules:
+    for class_ in m.classes():
+        for def_ in class_.defs():
+            for a in def_.assignments():
+                rhs = a.tree().value
+                if m.tree_kind(rhs) == 'Call':
+                    s = leoInspect.g_find_function_call(rhs.func)
+                    if s in classes:
+                        ctors.add(s)
+                        ctors_assns.append(a.format())
+ 
+t4 = time.time()                            
+
+if 0:
+    for z in sorted(list(ctors)):
+        print(z)
+if 0:
+    for s in ctors_assns:
+        aList = s.split('=')
+        print('%30s = %s' % (aList[0],'='.join(aList[1:])[:80]))
+
+print('pass 3: %2.2f sec ctors: %s' % (t4-t3,len(ctors)))
 
 if 0:
     sd.print_stats()

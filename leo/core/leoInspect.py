@@ -49,6 +49,25 @@ else:
 g_dumper = None     # Global, singleton instance of AstDumper.
 g_formatter = None  # Global, singleton instance of AstFormatter.
 
+#@+<< to do >>
+#@+node:ekr.20120609070048.11216: **  << to do >> (leoInspect)
+#@@nocolor-node
+#@+at
+# 
+# ** Improve cx.assignments_to.
+# 
+# - Allow "partial" matches in calls_to,assignments_to.
+#     - Use regex searches?
+#     
+# - Append *all* statements to statements list.
+#     Including def, class, if, while, pass, with etc.
+# 
+# - Verify that all kinds of name expressions & attributes are handled correctly.
+# 
+# - Create global lists for calls, assignments.
+# 
+# - Create global symbol dicts for names.
+#@-<< to do >>
 #@+<< naming conventions >>
 #@+node:ekr.20111116103733.10146: **  << naming conventions >>
 #@@nocolor-node
@@ -1011,11 +1030,12 @@ class Context(object):
         sd.n_contexts += 1
 
         # Public semantic data: accessed via getters.
-        self._calls = [] # All call statements defined in this context.
-        self._classes = [] # Classes defined in this context.
-        self._defs = [] # Functions defined in this context.
-        self._statements = [] # List of all statements in the context.
-        self._tree = tree
+        self.calls_list = [] # All call statements defined in this context.
+        self.classes_list = [] # Classes defined in this context.
+        self.defs_list = [] # Functions defined in this context.
+        self.function_set = set()
+        self.statements_list = [] # List of all statements in the context.
+        self.tree_ptr = tree
         
         # Private semantic data: no getters.
         self.global_names = set() # Names that appear in a global statement in this context.
@@ -1049,11 +1069,8 @@ class Context(object):
             self.module_context = self
         else:
             self.module_context = parent_context.module_context
-    #@+node:ekr.20111116103733.10404: *3* cx.ast_kind
-    def ast_kind (self,tree):
-
-        return tree.__class__.__name__
-    #@+node:ekr.20111116103733.10405: *3* cx.description & name
+    #@+node:ekr.20120611094414.10891: *3* cx.utilities
+    #@+node:ekr.20111116103733.10405: *4* cx.description & name
     def description (self):
         
         '''Return a description of this context and all parent contexts.'''
@@ -1066,7 +1083,7 @@ class Context(object):
 
     # All subclasses override name.
     name = description
-    #@+node:ekr.20111116103733.10407: *3* cx.dump
+    #@+node:ekr.20111116103733.10407: *4* cx.dump
     def dump (self,level=0,verbose=False):
 
         if 0: # Just print the context
@@ -1075,22 +1092,33 @@ class Context(object):
             self.st.dump(level=level)
 
         if verbose:
-            for z in self._classes:
+            for z in self.classes_list:
                 z.dump(level+1)
-            for z in self._defs:
+            for z in self.defs_list:
                 z.dump(level+1)
             for z in self.temp_contexts:
                 z.dump(level+1)
-    #@+node:ekr.20111117031039.10099: *3* cx.format
+    #@+node:ekr.20120611094414.10881: *4* cx.format & format_tree
     def format(self,brief=True):
         
+        '''Return a string containing the human-readable version of the entire context.'''
+        
         cx = self
+        return cx.format_tree(cx.tree_ptr)
+
+
+    def format_tree(self,tree):
         
-        # return cx.sd.dumper.dumpTreeAsString(cx._tree,brief=brief,outStream=None)
+        '''Return a string containing the human-readable version of tree.'''
+
+        cx = self
+        return cx.formatter.format(tree)
+    #@+node:ekr.20111116103733.10404: *4* cx.tree_kind
+    def tree_kind (self,tree):
         
-        # return ast.dump(cx._tree,annotate_fields=True,include_attributes=not brief)
-        
-        return AstFormatter().format(cx._tree)
+        '''Return the class name of the tree node.'''
+
+        return tree.__class__.__name__
     #@+node:ekr.20111116161118.10113: *3* cx.getters
     #@+node:ekr.20111116161118.10114: *4* cx.assignments & helper
     def assignments (self,all=True):
@@ -1098,14 +1126,14 @@ class Context(object):
         if all:
             return self.all_assignments(result=None)
         else:
-            return self.filter_assignments(self._statements)
+            return self.filter_assignments(self.statements_list)
 
     def all_assignments(self,result):
 
         if result is None:
             result = []
-        result.extend(self.filter_assignments(self._statements))
-        for aList in (self._classes,self._defs):
+        result.extend(self.filter_assignments(self.statements_list))
+        for aList in (self.classes_list,self.defs_list):
             for cx in aList:
                 cx.all_assignments(result)
         return result
@@ -1121,12 +1149,12 @@ class Context(object):
 
         for assn in self.assignments(all=all):
             tree = assn.tree()
-            kind = self.ast_kind(tree)
+            kind = self.tree_kind(tree)
             if kind == 'Assign':
                 # Return the *entire* assignment if *any* of the targets match.
                 # The caller will have to filter the result.
                 for target in tree.targets:
-                    if self.ast_kind(target) =='Name':
+                    if self.tree_kind(target) =='Name':
                         if target.id == s:
                             result.append(assn)
                             break
@@ -1149,7 +1177,7 @@ class Context(object):
 
         for assn in self.assignments(all=all):
             tree = assn.tree()
-            kind = self.ast_kind(tree)
+            kind = self.tree_kind(tree)
             assert kind in ('Assign','AugAssign'),kind
             rhs = format(tree.value)
             i = rhs.find(s,0)
@@ -1167,14 +1195,14 @@ class Context(object):
         if all:
             return self.all_calls(result=None)
         else:
-            return self.filter_calls(self._calls)
+            return self.filter_calls(self.calls_list)
 
     def all_calls(self,result):
 
         if result is None:
             result = []
-        result.extend(self._calls)
-        for aList in (self._classes,self._defs):
+        result.extend(self.calls_list)
+        for aList in (self.classes_list,self.defs_list):
             for cx in aList:
                 cx.all_calls(result)
         return result
@@ -1214,14 +1242,14 @@ class Context(object):
         if all:
             return self.all_classes(result=None)
         else:
-            return self._classes
+            return self.classes_list
 
     def all_classes(self,result):
 
         if result is None:
             result = []
-        result.extend(self._classes)
-        for aList in (self._classes,self._defs):
+        result.extend(self.classes_list)
+        for aList in (self.classes_list,self.defs_list):
             for cx in aList:
                 cx.all_classes(result)
         return result
@@ -1231,14 +1259,14 @@ class Context(object):
         if all:
             return self.all_defs(result=None)
         else:
-            return self._defs
+            return self.defs_list
 
     def all_defs(self,result):
 
         if result is None:
             result = []
-        result.extend(self._defs)
-        for aList in (self._classes,self._defs):
+        result.extend(self.defs_list)
+        for aList in (self.classes_list,self.defs_list):
             for cx in aList:
                 cx.all_defs(result)
         return result
@@ -1248,14 +1276,14 @@ class Context(object):
         if all:
             return self.all_functions(result=None)
         else:
-            return self.filter_functions(self._defs)
+            return self.filter_functions(self.defs_list)
 
     def all_functions(self,result):
 
         if result is None:
             result = []
-        result.extend(self.filter_functions(self._defs))
-        for aList in (self._classes,self._defs):
+        result.extend(self.filter_functions(self.defs_list))
+        for aList in (self.classes_list,self.defs_list):
             for cx in aList:
                 cx.all_functions(result)
         return result
@@ -1269,21 +1297,21 @@ class Context(object):
     #@+node:ekr.20111126074312.10449: *4* cx.line_number
     def line_number (self):
         
-        return self._tree.lineno
+        return self.tree_ptr.lineno
     #@+node:ekr.20111116161118.10153: *4* cx.methods & helpers
     def methods (self,all=True):
         
         if all:
             return self.all_methods(result=None)
         else:
-            return self.filter_methods(self._defs)
+            return self.filter_methods(self.defs_list)
 
     def all_methods(self,result):
 
         if result is None:
             result = []
-        result.extend(self.filter_methods(self._defs))
-        for aList in (self._classes,self._defs):
+        result.extend(self.filter_methods(self.defs_list))
+        for aList in (self.classes_list,self.defs_list):
             for cx in aList:
                 cx.all_methods(result)
         return result
@@ -1300,21 +1328,21 @@ class Context(object):
         if all:
             return self.all_statements(result=None)
         else:
-            return self._statements
+            return self.statements_list
 
     def all_statements(self,result):
 
         if result is None:
             result = []
-        result.extend(self._statements)
-        for aList in (self._classes,self._defs):
+        result.extend(self.statements_list)
+        for aList in (self.classes_list,self.defs_list):
             for cx in aList:
                 cx.all_statements(result)
         return result
     #@+node:ekr.20111128103520.10259: *4* cx.token_range
     def token_range (self):
         
-        tree = self._tree
+        tree = self.tree_ptr
         
         # return (
             # g.toUnicode(self.byte_array[:tree.col_offset]),
@@ -1332,28 +1360,11 @@ class Context(object):
         (Context Class).  This tree can be passed to the format method for printing.
         '''
         
-        return self._tree
+        return self.tree_ptr
     #@-others
 #@-<< define class Context >>
 
 #@+others
-#@+node:ekr.20120609070048.11216: ** To do (leoInspect)
-#@@nocolor-node
-#@+at
-# 
-# ** Improve cx.assignments_to.
-# 
-# - Allow "partial" matches in calls_to,assignments_to.
-#     - Use regex searches?
-#     
-# - Append *all* statements to statements list.
-#     Including def, class, if, while, pass, with etc.
-# 
-# - Verify that all kinds of name expressions & attributes are handled correctly.
-# 
-# - Create global lists for calls, assignments.
-# 
-# - Create global symbol dicts for names.
 #@+node:ekr.20111116103733.10539: **  Top-level functions
 #@+node:ekr.20120609070048.10397: *3* g_dump_tree
 
@@ -1383,6 +1394,26 @@ def g_format_tree(tree):
 def g_tree_kind(tree):
 
     return tree.__class__.__name__
+#@+node:ekr.20120611094414.10582: *3* g_find_function_call
+def g_find_function_call (tree):
+    
+    '''Return the static name of the function being called.
+    
+    tree is the tree.func part of the Call node.'''
+    
+    kind = tree.__class__.__name__
+
+    if kind == 'str':
+        s = tree
+    elif kind == 'Name':
+        s = tree.id
+    elif kind == 'Attribute':
+        s = g_find_function_call(tree.attr)
+    else:
+        s = '**unknown kind: %s**: %s' % (kind,g_format_tree(tree))
+        g.trace(s)
+
+    return s
 #@+node:ekr.20111116103733.10337: *3* chain_base
 # This global function exists avoid duplicate code
 # in the Chain and SymbolTable classes.
@@ -1847,89 +1878,6 @@ class AstDumper(object):
 
         self.error('can not open %s' % fn)
         return ''
-    #@-others
-#@+node:ekr.20111116103733.10338: ** class Chain
-class Chain(object):
-    
-    '''A class representing an identifier chain a.b.c.d.
-
-    "a" is the **base** of the chain.
-    "d" is the **target** of the chain.
-    
-    The representation of the chain itelf is a string.
-    This representtion changes as the chain gets resolved.
-    
-    Chains also contain a list of ast nodes representing
-    identifiers to be patched when the chain is fully resolved.
-
-    See Pass1.do_Attribute for the kinds of nodes that
-    may be patched.
-    '''
-    
-    #@+others
-    #@+node:ekr.20111116103733.10339: *3*  ctor, repr (Chain)
-    def __init__ (self,tree,e,s):
-
-        self.e = e # The symbol table entry for the base of the chain.
-        self.s = s # A string in a.b.c.d format, or ''
-        self.tree = tree
-
-    def __repr__ (self):
-        
-        return 'Chain(%s)' % self.s
-        
-    __str__ = __repr__
-
-    #@+node:ekr.20111116103733.10340: *3*  hash, eq and ne
-    if 0: # These methods allow Chain's to be members of sets.
-
-        def __eq__ (self,other):
-            
-            return self.s == other.s
-            
-        def __ne__ (self,other):
-            
-            return self.s != other.s
-            
-        # Valid and safe, but hurts performance:
-        # sets of Chains will perform much like lists of Chains.
-        # This will not likely matter much because
-        # sets of chains will usually have few members.
-        def __hash__ (self):
-        
-            return 0
-    #@+node:ekr.20111116103733.10341: *3* chain.base
-    def base (self):
-        
-        '''Return the base of this Chain.'''
-        
-        # Call the global function to ensure that
-        # Chain.base() matches the code in SymbolTable.add_chain().
-
-        return chain_base(self.s)
-    #@+node:ekr.20111116103733.10342: *3* chain.is_empty
-    def is_empty (self):
-        
-        '''Return True if this chain is empty.'''
-        
-        return self.s.find('.') == -1
-    #@+node:ekr.20111116103733.10343: *3* chain.defines_ivar & get_ivar
-    def defines_ivar (self):
-        
-        parts = self.s.split('.')
-        return len(parts) == 2 and parts[0] == 'self'
-        
-    def get_ivar (self):
-        
-        parts = self.s.split('.')
-        if len(parts) == 2 and parts[0] == 'self':
-            return parts[1]
-        else:
-            return None
-    #@+node:ekr.20111116103733.10344: *3* chain.short_description
-    def short_description (self):
-        
-        return 'chain: %s' % self.s
     #@-others
 #@+node:ekr.20111117031039.10133: ** class AstFormatter (AstTraverser)
 class AstFormatter (AstTraverser):
@@ -2503,6 +2451,89 @@ class AstFormatter (AstTraverser):
             self.append(self.visit(z,'with body'))
             # self.append('\n')
     #@-others
+#@+node:ekr.20111116103733.10338: ** class Chain
+class Chain(object):
+    
+    '''A class representing an identifier chain a.b.c.d.
+
+    "a" is the **base** of the chain.
+    "d" is the **target** of the chain.
+    
+    The representation of the chain itelf is a string.
+    This representtion changes as the chain gets resolved.
+    
+    Chains also contain a list of ast nodes representing
+    identifiers to be patched when the chain is fully resolved.
+
+    See Pass1.do_Attribute for the kinds of nodes that
+    may be patched.
+    '''
+    
+    #@+others
+    #@+node:ekr.20111116103733.10339: *3*  ctor, repr (Chain)
+    def __init__ (self,tree,e,s):
+
+        self.e = e # The symbol table entry for the base of the chain.
+        self.s = s # A string in a.b.c.d format, or ''
+        self.tree = tree
+
+    def __repr__ (self):
+        
+        return 'Chain(%s)' % self.s
+        
+    __str__ = __repr__
+
+    #@+node:ekr.20111116103733.10340: *3*  hash, eq and ne
+    if 0: # These methods allow Chain's to be members of sets.
+
+        def __eq__ (self,other):
+            
+            return self.s == other.s
+            
+        def __ne__ (self,other):
+            
+            return self.s != other.s
+            
+        # Valid and safe, but hurts performance:
+        # sets of Chains will perform much like lists of Chains.
+        # This will not likely matter much because
+        # sets of chains will usually have few members.
+        def __hash__ (self):
+        
+            return 0
+    #@+node:ekr.20111116103733.10341: *3* chain.base
+    def base (self):
+        
+        '''Return the base of this Chain.'''
+        
+        # Call the global function to ensure that
+        # Chain.base() matches the code in SymbolTable.add_chain().
+
+        return chain_base(self.s)
+    #@+node:ekr.20111116103733.10342: *3* chain.is_empty
+    def is_empty (self):
+        
+        '''Return True if this chain is empty.'''
+        
+        return self.s.find('.') == -1
+    #@+node:ekr.20111116103733.10343: *3* chain.defines_ivar & get_ivar
+    def defines_ivar (self):
+        
+        parts = self.s.split('.')
+        return len(parts) == 2 and parts[0] == 'self'
+        
+    def get_ivar (self):
+        
+        parts = self.s.split('.')
+        if len(parts) == 2 and parts[0] == 'self':
+            return parts[1]
+        else:
+            return None
+    #@+node:ekr.20111116103733.10344: *3* chain.short_description
+    def short_description (self):
+        
+        return 'chain: %s' % self.s
+    #@-others
 #@+node:ekr.20111116103733.10345: ** class InspectTraverser (AstTraverser)
 class InspectTraverser (AstTraverser):
 
@@ -2545,7 +2576,7 @@ class InspectTraverser (AstTraverser):
         # Define the name in the old context.
         e = old_cx.st.add_name(tree.name,tree)
         e.set_defined()
-        old_cx._classes.append(new_cx)
+        old_cx.classes_list.append(new_cx)
         
         self.push_context(new_cx)
 
@@ -2571,7 +2602,7 @@ class InspectTraverser (AstTraverser):
         # Define the function/method name in the old context.
         e = old_cx.st.add_name(tree.name,tree)
         e.set_defined()
-        old_cx._defs.append(new_cx)
+        old_cx.defs_list.append(new_cx)
         
         self.push_context(new_cx)
        
@@ -2724,7 +2755,7 @@ class InspectTraverser (AstTraverser):
         sd = self.sd
         
         cx = self.get_context()
-        cx._statements.append(StatementContext(tree,cx,sd,'assn'))
+        cx.statements_list.append(StatementContext(tree,cx,sd,'assn'))
 
         self.visit(tree.value,'assn value')    
         for z in tree.targets:    
@@ -2737,7 +2768,7 @@ class InspectTraverser (AstTraverser):
         sd = self.sd
 
         cx = self.get_context()
-        cx._statements.append(StatementContext(tree,cx,sd,'aug-assn'))
+        cx.statements_list.append(StatementContext(tree,cx,sd,'aug-assn'))
 
         self.visit(tree.op)
         self.visit(tree.value,'aug-assn value') # The rhs.
@@ -2750,9 +2781,7 @@ class InspectTraverser (AstTraverser):
         sd = self.sd
         cx = self.get_context()
         
-        # Not correct: the call could be part of a larger statement.
-        # cx._statements.append(StatementContext(tree,cx,sd,'call'))
-        cx._calls.append(StatementContext(tree,cx,sd,'call'))
+        cx.calls_list.append(StatementContext(tree,cx,sd,'call'))
         
         sd.n_calls += 1
         
@@ -2775,7 +2804,7 @@ class InspectTraverser (AstTraverser):
         # Define a namespace for the 'for' target.
         old_cx = self.get_context()
         new_cx = ForContext(tree,old_cx,self.sd)
-        old_cx._statements.append(new_cx)
+        old_cx.statements_list.append(new_cx)
         old_cx.temp_contexts.append(new_cx)
         
         self.push_context(new_cx)
@@ -2800,7 +2829,7 @@ class InspectTraverser (AstTraverser):
 
         sd = self.sd
         cx = self.get_context()
-        cx._statements.append(StatementContext(tree,cx,sd,'global'))
+        cx.statements_list.append(StatementContext(tree,cx,sd,'global'))
 
         for name in tree.names:
             
@@ -2820,7 +2849,7 @@ class InspectTraverser (AstTraverser):
         trace = False
         sd = self.sd
         cx = self.get_context()
-        cx._statements.append(StatementContext(tree,cx,sd,'import'))
+        cx.statements_list.append(StatementContext(tree,cx,sd,'import'))
         aList = self.get_import_names(tree)
 
         for fn,asname in aList:
@@ -2893,7 +2922,7 @@ class InspectTraverser (AstTraverser):
             
         sd = self.sd
         cx = self.get_context()
-        cx._statements.append(StatementContext(tree,cx,sd,'import from'))
+        cx.statements_list.append(StatementContext(tree,cx,sd,'import from'))
 
         m = self.resolve_import_name(tree.module)
         if m and m not in sd.files_list:
@@ -2916,7 +2945,7 @@ class InspectTraverser (AstTraverser):
         # Define a namespace for the 'lambda' variables.
         old_cx = self.get_context()
         new_cx = LambdaContext(tree,old_cx,self.sd)
-        old_cx._statements.append(new_cx)
+        old_cx.statements_list.append(new_cx)
         old_cx.temp_contexts.append(new_cx)
         
         self.push_context(new_cx)
@@ -2961,7 +2990,7 @@ class InspectTraverser (AstTraverser):
         # Define a namespace for the 'with' statement.
         old_cx = self.get_context()
         new_cx = WithContext(tree,old_cx,self.sd)
-        old_cx._statements.append(new_cx)
+        old_cx.statements_list.append(new_cx)
         old_cx.temp_contexts.append(new_cx)
         
         self.push_context(new_cx)
@@ -3131,8 +3160,8 @@ class SemanticData(object):
 
         for cx in aList:
             yield cx
-            if cx._classes:
-                for z in self.all_contexts(cx._classes):
+            if cx.classes_list:
+                for z in self.all_contexts(cx.classes_list):
                     yield z
             if cx.functions:
                 for z in self.all_contexts(cx.functions):
@@ -3429,11 +3458,11 @@ class ClassContext (Context):
 
     def __repr__ (self):
         
-        return 'class(%s)' % (self._tree.name)
+        return 'class(%s)' % (self.tree_ptr.name)
         
     def name (self):
         
-        return self._tree.name
+        return self.tree_ptr.name
     
     __str__ = __repr__
 #@+node:ekr.20111116103733.10414: *3* class ConprehensionContext
@@ -3465,14 +3494,14 @@ class DefContext (Context):
 
     def __repr__ (self):
 
-        return 'def(%s)' % (self._tree.name)
+        return 'def(%s)' % (self.tree_ptr.name)
         
     def name (self,verbose=False):
         if verbose:
             kind = 'method' if self.class_context else 'function'
-            return '%s %s' % (kind,self._tree.name)
+            return '%s %s' % (kind,self.tree_ptr.name)
         else:
-            return self._tree.name
+            return self.tree_ptr.name
         
     __str__ = __repr__
 #@+node:ekr.20111116103733.10416: *3* class ForContext
@@ -3485,11 +3514,11 @@ class ForContext (Context):
         Context.__init__(self,tree,parent_context,sd,'for')
 
     def __repr__ (self):
-        kind = self.ast_kind(self._tree.target)
+        kind = self.tree_kind(self.tree_ptr.target)
         if kind == 'Name':
-            return 'for(%s)' % (self._tree.target.id)
+            return 'for(%s)' % (self.tree_ptr.target.id)
         elif kind == 'Tuple':
-            return 'for(%s)' % ','.join([z.id for z in self._tree.target.elts])
+            return 'for(%s)' % ','.join([z.id for z in self.tree_ptr.target.elts])
         else:
             return 'for(%s)' % (kind)
         
