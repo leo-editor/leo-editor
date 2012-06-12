@@ -376,47 +376,6 @@ class AstTraverser(object):
 
         AstDumper(brief=brief).dump(tree,outStream=outStream)
 
-    #@+node:ekr.20111116103733.10290: *4* node_after_tree
-    # The _parent must have been injected into all parent nodes for this to work.
-    # This will be so, because of the way in which visit traverses the tree.
-
-    def node_after_tree (self,tree):
-        
-        trace = False
-        tree1 = tree # For tracing
-        
-        def children(tree):
-            return [z for z in ast.iter_child_nodes(tree)]
-            
-        def parent(tree):
-            return hasattr(tree,'_parent') and tree._parent
-
-        def next(tree):
-            if parent(tree):
-                sibs = children(parent(tree))
-                if tree in sibs:
-                    i = sibs.index(tree)
-                    if i + 1 < len(sibs):
-                        return sibs[i+1]
-            return None
-
-        result = None
-        while tree:
-            result = next(tree)
-            if result:
-                break
-            else:
-                tree = parent(tree)
-
-        if trace:
-            info = self.info
-            for z in (ast.Module,ast.ClassDef,ast.FunctionDef):
-                if isinstance(tree1,z):
-                    g.trace('node: %22s, parent: %22s, after: %22s' % (
-                        info(tree1),info(parent(tree1)),info(result)))
-                    break
-
-        return result
     #@+node:ekr.20111116103733.10291: *4* string_dump
     def string_dump (self,tree):
         
@@ -424,7 +383,7 @@ class AstTraverser(object):
             g.trace('not an AST node')
             return ''
 
-        after = self.node_after_tree(tree)
+        after = g_node_after_tree(tree)
         lines = self.lines
             
         # Start with the first line.
@@ -1098,21 +1057,25 @@ class Context(object):
                 z.dump(level+1)
             for z in self.temp_contexts:
                 z.dump(level+1)
-    #@+node:ekr.20120611094414.10881: *4* cx.format & format_tree
-    def format(self,brief=True):
+    #@+node:ekr.20120611094414.10881: *4* cx.format
+    def format(self,obj=None):
         
         '''Return a string containing the human-readable version of the entire context.'''
         
         cx = self
-        return cx.format_tree(cx.tree_ptr)
-
-
-    def format_tree(self,tree):
+        format = cx.formatter.format
         
-        '''Return a string containing the human-readable version of tree.'''
-
-        cx = self
-        return cx.formatter.format(tree)
+        if not obj:
+            return format(cx.tree_ptr)
+        elif isinstance(obj,ast.AST):
+            return format(obj)
+        elif isinstance(obj,Context):
+            return format(obj.tree_ptr)
+        else:
+            # Unexpected
+            return '***cx.format: %s' % repr(obj)
+        
+    # format_tree = format
     #@+node:ekr.20111116103733.10404: *4* cx.tree_kind
     def tree_kind (self,tree):
         
@@ -1365,73 +1328,7 @@ class Context(object):
 #@-<< define class Context >>
 
 #@+others
-#@+node:ekr.20111116103733.10539: **  Top-level functions
-#@+node:ekr.20120609070048.10397: *3* g_dump_tree
-
-
-def g_dump_tree(tree):
-    
-    '''Return a string containing the human-readable version of tree.'''
-
-    global g_dumper
-    
-    if not g_dumper:
-        g_dumper = AstDumper()
-
-    return g_dumper.dumpTreeAsString(tree)
-#@+node:ekr.20120609070048.10871: *3* g_format_tree
-def g_format_tree(tree):
-    
-    '''Return a string containing the human-readable version of tree.'''
-
-    global g_formatter
-    
-    if not g_formatter:
-        g_formatter = AstFormatter()
-
-    return g_formatter.format(tree)
-#@+node:ekr.20120609070048.11466: *3* g_tree_kind
-def g_tree_kind(tree):
-
-    return tree.__class__.__name__
-#@+node:ekr.20120611094414.10582: *3* g_find_function_call
-def g_find_function_call (tree):
-    
-    '''Return the static name of the function being called.
-    
-    tree is the tree.func part of the Call node.'''
-    
-    kind = tree.__class__.__name__
-
-    if kind == 'str':
-        s = tree
-    elif kind == 'Name':
-        s = tree.id
-    elif kind == 'Attribute':
-        s = g_find_function_call(tree.attr)
-    else:
-        s = '**unknown kind: %s**: %s' % (kind,g_format_tree(tree))
-        g.trace(s)
-
-    return s
-#@+node:ekr.20111116103733.10337: *3* chain_base
-# This global function exists avoid duplicate code
-# in the Chain and SymbolTable classes.
-
-def chain_base (s):
-    
-    '''Return the base of the id chain s, a plain string.'''
-
-    if s.find('.') == -1:
-        # The chain is empty.
-        g.trace('can not happen: empty base',s)
-        return None
-    else:
-        base = s.split('.')[0]
-        base = base.replace('()','').replace('[]','')
-        # g.trace(base,s)
-        return base
-#@+node:ekr.20111116103733.10540: *3* inspect.module
+#@+node:ekr.20111116103733.10540: **  inspect.module (Entry point)
 def module (fn=None,s=None,sd=None,print_stats=False,print_times=False):
 
     if s:
@@ -1448,13 +1345,143 @@ def module (fn=None,s=None,sd=None,print_stats=False,print_times=False):
         sd = SemanticData(controller=None)
     InspectTraverser(fn,sd).traverse(s)
     module = sd.modules_dict.get(fn)
-           
+
     sd.total_time = time.clock()-t1
 
     if print_times: sd.print_times()
     if print_stats: sd.print_stats()
     
     return module
+#@+node:ekr.20111116103733.10539: **  Top-level utilities
+#@+node:ekr.20111116103733.10337: *3* g_chain_base
+# This global function exists avoid duplicate code
+# in the Chain and SymbolTable classes.
+
+def g_chain_base (s):
+    
+    '''Return the base of the id chain s, a plain string.'''
+
+    if s.find('.') == -1:
+        # The chain is empty.
+        g.trace('can not happen: empty base',s)
+        return None
+    else:
+        base = s.split('.')[0]
+        base = base.replace('()','').replace('[]','')
+        # g.trace(base,s)
+        return base
+#@+node:ekr.20120609070048.10397: *3* g_dump
+def g_dump(obj):
+    
+    global g_dumper
+    
+    if not g_dumper:
+        g_dumper = AstDumper()
+        
+    dump = g_dumper.dumpTreeAsString
+    
+    if isinstance(obj,ast.AST):
+        return dump(obj)
+    elif isinstance(obj,Context):
+        return dump(obj.tree_ptr)
+    else:
+        # Unexpected.
+        return '***g_dump: %s' % repr(obj)
+#@+node:ekr.20120609070048.10871: *3* g_format
+def g_format(obj):
+    
+    '''Return a string containing the human-readable version of tree.'''
+
+    global g_formatter
+    
+    if not g_formatter:
+        g_formatter = AstFormatter()
+        
+    format = g_formatter.format
+        
+    if isinstance(obj,ast.AST):
+        return format(obj)
+    elif isinstance(obj,Context):
+        return format(obj.tree_ptr)
+    else:
+        # Unexpected.
+        return '***g_format: %s' % repr(obj)
+#@+node:ekr.20120609070048.11466: *3* g_kind
+def g_kind(obj):
+    
+    if not obj:
+        return 'None'
+    elif hasattr(obj,'__class__'):
+        return obj.__class__.__name__
+    else:
+        # unexpected:
+        return '***g_kind: %s' % repr(obj)
+#@+node:ekr.20111116103733.10290: *3* g_node_after_tree
+# The _parent must have been injected into all parent nodes for this to work.
+# This will be so, because of the way in which visit traverses the tree.
+
+def g_node_after_tree (tree):
+    
+    trace = False
+    tree1 = tree # For tracing
+    
+    if not isinstance(tree,ast.AST):
+        return None
+    
+    def children(tree):
+        return [z for z in ast.iter_child_nodes(tree)]
+        
+    def parent(tree):
+        if not hasattr(tree,'_parent'): g.trace('***no _parent: %s' % repr(tree))
+        return hasattr(tree,'_parent') and tree._parent
+
+    def next(tree):
+        if parent(tree):
+            sibs = children(parent(tree))
+            if tree in sibs:
+                i = sibs.index(tree)
+                if i + 1 < len(sibs):
+                    return sibs[i+1]
+        return None
+
+    result = None
+    while tree:
+        result = next(tree)
+        if result:
+            break
+        else:
+            tree = parent(tree)
+
+    if trace:
+        info = self.info
+        for z in (ast.Module,ast.ClassDef,ast.FunctionDef):
+            if isinstance(tree1,z):
+                g.trace('node: %22s, parent: %22s, after: %22s' % (
+                    info(tree1),info(parent(tree1)),info(result)))
+                break
+
+    return result
+#@+node:ekr.20120611094414.10582: *3* g_find_function_call
+def g_find_function_call (tree):
+    
+    '''Return the static name of the function being called.
+    
+    tree is the tree.func part of the Call node.'''
+    
+    kind = tree.__class__.__name__
+
+    if kind == 'str':
+        s = tree
+    elif kind == 'Name':
+        s = tree.id
+    elif kind == 'Attribute':
+        s = g_find_function_call(tree.attr)
+    else:
+        # This is not an error.  Example:  (g())()
+        s = '**unknown kind: %s**: %s' % (kind,g_format(tree))
+        g.trace(s)
+
+    return s
 #@+node:ekr.20111116103733.10257: ** class AstDumper
 class AstDumper(object):
 
@@ -2509,7 +2536,7 @@ class Chain(object):
         # Call the global function to ensure that
         # Chain.base() matches the code in SymbolTable.add_chain().
 
-        return chain_base(self.s)
+        return g_chain_base(self.s)
     #@+node:ekr.20111116103733.10342: *3* chain.is_empty
     def is_empty (self):
         
@@ -3309,7 +3336,7 @@ class SymbolTable(object):
         
         st = self
         # if s.find('.') == -1: g.trace(s,g.callers())
-        base = chain_base(s)
+        base = g_chain_base(s)
         e = st.add_name(base,tree)
         chain = e.add_chain(base,tree,s)
         return chain

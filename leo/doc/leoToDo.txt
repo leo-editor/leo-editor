@@ -416,21 +416,26 @@ p,d,q[5]=f(a=1,b=2,*args,**keys)
         # pass
     
 .. @+node:ekr.20120607172857.10155: *6* @test compute all ivars in all classes
-import leo.core.leoInspect as leoInspect
-from leoInspect import g_dump_tree, g_format_tree, g_tree_kind
+import imp
 import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
 
 t1 = time.time()
 
+print('starting pass 1...')
+
 # Globals...
-sd = leoInspect.SemanticData(controller=None)
+sd = li.SemanticData(controller=None)
 g_d = {} # Keys are ivars, values are lists of classes.
 n_files = 0
 
-for fn in leoInspect.LeoCoreFiles().files:
+for fn in li.LeoCoreFiles().files:
 
     # Most of the time is spent creating the context objects.
-    m = leoInspect.module(fn=fn,sd=sd)
+    m = li.module(fn=fn,sd=sd)
     n_files += 1
     
     ### To do: create global assignments list.
@@ -440,17 +445,17 @@ for fn in leoInspect.LeoCoreFiles().files:
             for def_ in class_.defs():
                 for a in def_.assignments():
                     tree = a.tree()
-                    kind = g_tree_kind(tree)
-                    # if g_tree_kind(tree.value) == 'ListComp':
+                    kind = g_kind(tree)
+                    # if g_kind(tree.value) == 'ListComp':
                         # print(a.format())
-                        # print(g_dump_tree(tree.value))
+                        # print(g_dump(tree.value))
                     # print(a.format())
                     if kind == 'Assign':
                         for target in tree.targets:
-                            # if False and g_tree_kind(target) not in ('Attribute','Name','Tuple','Subscript'):
-                                # print('assn target: %s' % g_format_tree(target))
-                                # print('assn target: %s' % g_dump_tree(target))
-                            name = g_format_tree(target)
+                            # if False and g_kind(target) not in ('Attribute','Name','Tuple','Subscript'):
+                                # print('assn target: %s' % g_format(target))
+                                # print('assn target: %s' % g_dump(target))
+                            name = g_format(target)
                             if name.startswith('self.'):
                                 name = name[5:]
                             i = name.find('[')
@@ -462,7 +467,7 @@ for fn in leoInspect.LeoCoreFiles().files:
                                 g_d[name] = aList
                     else:
                         assert kind == 'AugAssign',kind
-                        name = g_format_tree(tree.target)
+                        name = g_format(tree.target)
                         aList = g_d.get(name,[])
                         if class_.name() not in aList:
                             aList.append(class_.name())
@@ -508,34 +513,38 @@ if 1:
 if 1:
     sd.print_stats()
 .. @+node:ekr.20120611094414.10167: *6* @test find all ctors
-import leo.core.leoInspect as leoInspect
+import imp
 import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
 
 t1 = time.time()
 
 # Globals...
-sd = leoInspect.SemanticData(controller=None)
+sd = li.SemanticData(controller=None)
 classes = set()
 modules = {}
 
 # Pass 1: Load all modules.
 print('starting pass 1...')
-for fn in leoInspect.LeoCoreFiles().files:
-    m = leoInspect.module(fn=fn,sd=sd)
+for fn in li.LeoCoreFiles().files:
+    m = li.module(fn=fn,sd=sd)
     modules[m] = m
     
 n_files = len(list(modules.keys()))
 
 t2 = time.time()
-print('pass 1: %2.2f sec files: %s' % (t2-t1,n_files))
+print('pass 1: %2.3f sec files: %s' % (t2-t1,n_files))
     
-# pass 2: compute all class names.
+# Pass 2: compute all class names.
 for m in modules:
-    for z in m.classes():
-        classes.add(z.name())
+    for class_ in m.classes():
+        classes.add(class_.name())
         
 t3 = time.time()
-print('pass 2: %2.2f sec' % (t3-t2))
+print('pass 2: %2.3f sec' % (t3-t2))
 
 classes = sorted(list(classes))
 
@@ -552,7 +561,7 @@ for m in modules:
             for a in def_.assignments():
                 rhs = a.tree().value
                 if m.tree_kind(rhs) == 'Call':
-                    s = leoInspect.g_find_function_call(rhs.func)
+                    s = li.g_find_function_call(rhs.func)
                     if s in classes:
                         ctors.add(s)
                         ctors_assns.append(a.format())
@@ -567,7 +576,7 @@ if 0:
         aList = s.split('=')
         print('%30s = %s' % (aList[0],'='.join(aList[1:])[:80]))
 
-print('pass 3: %2.2f sec ctors: %s' % (t4-t3,len(ctors)))
+print('pass 3: %2.3f sec ctors assigns: %s' % (t4-t3,len(ctors_assns)))
 
 if 0:
     sd.print_stats()
