@@ -1028,6 +1028,21 @@ class Context(object):
             self.module_context = self
         else:
             self.module_context = parent_context.module_context
+    #@+node:ekr.20120612044943.10220: *3* cx.__getstate__
+    def __getstate__(self):
+        
+        '''Return the representation of the Context class for use by pickle.'''
+        
+        d = {
+            'calls':        [repr(z) for z in self.calls_list],
+            'classes':      [repr(z) for z in self.classes_list],
+            'defs':         [repr(z) for z in self.defs_list],
+            'statements':   [repr(z) for z in self.statements_list],
+            'tree':         self.format(self.tree_ptr),
+        }
+        
+        # g.trace('(Context)',d)
+        return d
     #@+node:ekr.20120611094414.10891: *3* cx.utilities
     #@+node:ekr.20111116103733.10405: *4* cx.description & name
     def description (self):
@@ -1339,14 +1354,14 @@ def module (fn=None,s=None,sd=None,print_stats=False,print_times=False):
             print('file not found: %s' % (fn))
             return None
         
-    t1 = time.clock()
+    t1 = time.time()
 
     if not sd:
         sd = SemanticData(controller=None)
     InspectTraverser(fn,sd).traverse(s)
     module = sd.modules_dict.get(fn)
 
-    sd.total_time = time.clock()-t1
+    sd.total_time += time.time()-t1
 
     if print_times: sd.print_times()
     if print_stats: sd.print_stats()
@@ -3045,16 +3060,16 @@ class InspectTraverser (AstTraverser):
         
         sd = self.sd
         
-        t1 = time.clock()
+        t1 = time.time()
 
         tree = ast.parse(s,filename=self.fn,mode='exec')
 
-        t2 = time.clock()
+        t2 = time.time()
         sd.parse_time += t2-t1
         
         self.visit(tree,tag='top')
         
-        t3 = time.clock()
+        t3 = time.time()
         sd.pass1_time += t3-t2
     #@-others
 #@+node:ekr.20111116103733.10312: ** class LeoCoreFiles
@@ -3473,6 +3488,9 @@ class SymbolTableEntry(object):
         
         return 'ste: %s' % self.name
     #@-others
+#@+node:ekr.20120612044943.10201: ** class TestPickleClass
+class TestPickleClass:
+    pass
 #@+node:ekr.20111116103733.10401: ** Context classes
 #@+node:ekr.20111116103733.10413: *3* class ClassContext
 class ClassContext (Context):
