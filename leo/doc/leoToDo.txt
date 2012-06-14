@@ -10,7 +10,7 @@ This is the "will do" list.
 .. @+node:ekr.20120515133946.11416: *3* To do today
 # This should appear before any @file node.
 .. @+node:ekr.20120608083208.10175: *4* Run all unit tests externally, except in @local-tests tree
-.. @+node:ekr.20120327163022.9740: *4* Improve LeoInspect
+.. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
 @nocolor-node
 
 2012/05/20: ideas for LeoInspect
@@ -25,6 +25,7 @@ This is the "will do" list.
 - The assertions for TypedDict and TypedDictOfLists are ugly. We would like
   a lint-like tool to do away with them.
     
+.. @+node:ekr.20120613104401.10222: *4* Notes
 .. @+node:ekr.20120515193246.10035: *5* To do
 @language rest
 
@@ -51,577 +52,6 @@ These getters are non-trivial to do, but a reasonable design is in place.
 - Made leoInspect a stand-alone module.
     The code attempts to import leo.core.leoGlobals.
     If that fails, it uses an internal LeoGlobals class.
-.. @+node:ekr.20111116103733.9818: *5* LeoInspect unit tests
-@language python
-.. @+node:ekr.20120609070048.11429: *6* Basic tests
-.. @+node:ekr.20111116103733.10672: *7* @test leoInspect with multiple files
-import leo.core.leoInspect as leoInspect
-import os
-import time
-
-<< define old_s >>
-<< define s >>
-
-@others
-
-aList = (
-    'leoAtFile.py',
-    'leoEditCommands.py',
-)
-test(files=aList,print_stats=False,s=None,print_times=True)
-.. @+node:ekr.20111116103733.10451: *8* << define old_s >>
-# import leo.core.leoGlobals
-# import leo.core.leoGlobals as g
-# from leo.core.leoGlobals import pr as pr2
-# from leo.core.leoGlobals import trace
-
-s_old = '''\
-import sys
-
-aGlobal = 5
-# aGlobal2 is not explicitly defined.
-
-c = [z for z in 'abc']
-
-def myFunc():
-    n1,n2,n3,junk,junk=sys.version_info
-    a = self.b
-    for z in a:
-        print(z)
-    with A() as a:
-        print(a,b)
-        
-def test():
-    a = b # UnboundLocalError.
-    b = 1
-    c = 2 # Any def will do at present.
-    print(g)
-    print(c.frame.body)
-    print(c.frame.body.xxx.yyy)
-    print(b.yyy) # no check will be made.
-    print(xxx.yyy)
-    for c in 'abc':
-        print(c,b)
-        print(g)
-
-
-class myClass:
-    
-    def __init__(self,c):
-        self.a = True
-        self.b = None
-        c.frame.xxxx
-        
-    def spam(self,a,b,c=5,*args,**keys):
-        global aGlobal2
-        aGlobal2 = 'abc'
-        self.a = b
-        self.a = x
-        
-    def no_self(a):
-        pass
-        
-    def test_lambda(self):
-        f = lambda a,b: a
-
-    def test_comprehension(self):
-        z2 = [z for z in 'abc']
-        
-aGlobal3 = 4 # This should be defined everywhere.
-
-def test():
-    # a = ','.join(['a','b'])
-    p = 5
-    # print(p.parent().h)
-    # print(g.app.windowList[0])
-    print(p)
-    print(g)
-
-'''
-
-# import leo.core.leoCommands as leoCommands
-.. @+node:ekr.20111116103733.10452: *8* << define s >>
-s = '''\
-
-import leo.core.leoGlobals as g
-
-def test(c):
-    a = 5
-    f = c.frame
-    c.frame.body.bodyCtrl = w
-
-'''
-
-s = g.adjustTripleString(s,-4)
-# print(s)
-.. @+node:ekr.20111116103733.10450: *8* test
-def test(files,print_stats=True,s=None,print_times=True):
-   
-    t1 = time.time()
-    sd = leoInspect.SemanticData(controller=None)
-
-    if s: # Use test string.
-        fn = '<test file>'
-        leoInspect.InspectTraverser(fn,sd).traverse(s)
-    else:
-        for fn in files:
-            print(g.shortFileName(fn))
-            s = leoInspect.LeoCoreFiles().get_source(fn)
-            if s:
-                leoInspect.InspectTraverser(fn,sd).traverse(s)
-            else:
-                print('file not found: %s' % (fn))
-           
-    sd.total_time = time.time()-t1
-    
-    if print_times: sd.print_times()
-    if print_stats: sd.print_stats()
-.. @+node:ekr.20111116103733.10449: *7* @test leoInspect.module.classes
-import leo.core.leoInspect as leoInspect
-
-dump_classes = False
-print_modules = True
-print_functions = True
-print_stats = False
-print_times = False
-
-# if dump_modules or print_stats:
-    # g.cls()
-
-m = leoInspect.module(fn='leoApp.py',sd=None,
-    print_stats=print_stats,print_times=print_times)
-    
-if 0:
-    print(m)
-    for o in m.classes():
-        if dump_classes:
-            o.dump(verbose=False)
-        if print_modules:
-            print(o)
-        if print_functions:
-            for f in o.functions():
-                print('  %s' % f)
-.. @+node:ekr.20111116161118.10218: *7* @test leoInspect.module.defs
-import leo.core.leoInspect as leoInspect
-
-# g.cls()
-
-m = leoInspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-    
-if 0:
-    print(m)
-    for z in m.classes():
-        print(z)
-        for z2 in z.defs():
-            name = z2.tree_ptr.name
-            aList = z2.call_args_of(name)
-            args = ','.join(aList)
-            print(' %s(%s)' % (name,args))
-.. @+node:ekr.20111116161118.10212: *7* @test leoInspect.module.classes 2
-import leo.core.leoInspect as leoInspect
-
-# g.cls()
-
-m = leoInspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-    
-if 0:
-    for z in m.classes():
-        print(z)
-.. @+node:ekr.20111116161118.10181: *7* @test leoInspect.module.statements
-import leo.core.leoInspect as leoInspect
-
-# g.cls()
-
-m = leoInspect.module(fn='leoEditCommands.py')
-    #,sd=None,print_stats=False,print_times=False)
-
-if 0:
-    print(m)
-    for z in m.classes():
-        print(z)
-        for z2 in z.defs():
-            print(z2)
-.. @+node:ekr.20111116161118.10230: *7* @test leoInspect (leoEditCommands.py)
-import leo.core.leoInspect as leoInspect
-
-# g.cls()
-
-m = leoInspect.module(fn='leoEditCommands.py')
-
-def show(o):
-    print('%-5s %s' % (o.line_number(),o.format()))
-
-var = '.widget'
-func = 'w.insert'
-
-if 0:
-    print('\nAssignments to %s...\n' % (var))
-    for o in m.assignments_to(var):
-        show(o)
-        
-    print('\nAssignments using %s...\n' % (var))
-    for o in m.assignments_using(var):
-        show(o)
-        
-    print('\nCalls to %s...\n' % (func))
-    for o in m.calls_to(func):
-        show(o)
-        
-    if 1:
-        classes = m.classes()
-        for d in classes[0].defs():
-            print('')
-            print(d)
-            for z in d.statements():
-                # print(z.tree())
-                # print(z.sd.dump_ast(z.tree()))
-                lines = g.splitLines(z.format())
-                for line in lines:
-                    print('  %s' % (line))
-.. @+node:ekr.20120609070048.10224: *6* leoInspect speed tests
-.. @+node:ekr.20111127090852.10227: *7* @test speed of leoInspect.module (all core files)
-import leo.core.leoInspect as leoInspect
-import time
-
-t1 = time.time()
-
-sd = leoInspect.SemanticData()
-count = 0
-for fn in leoInspect.LeoCoreFiles().files:
-    # print(fn)
-    m = leoInspect.module(fn,sd=sd)
-    count += 1
-
-t2 = time.time()
-
-print('file: %s time: %2.2f sec' % (count,t2-t1))
-
-if 0:
-    sd.print_stats()
-if 1:
-    sd.print_times()
-.. @+node:ekr.20111127153202.10231: *7* @test speed of AstTraverser (all Leo core files)
-import leo.core.leoGlobals as g
-import leo.core.leoInspect as leoInspect
-import ast
-import time
-
-read_time,parse_time,traverse_time = 0.0,0.0,0.0
-t_start = time.time()
-count = 0
-for fn in leoInspect.LeoCoreFiles().files:
-    count += 1
-    t2 = time.time()
-    s = open(fn,'r').read()
-    t3 = time.time()
-    tree = ast.parse(s,filename=fn,mode='exec')
-    t4 = time.time()
-    leoInspect.AstTraverser(fn).visit(tree)
-    t5 = time.time()
-
-    read_time += t3-t2
-    parse_time += t4-t3
-    traverse_time += t5-t4
-t_end = time.time()
-total_time = t_end-t_start
-if 1:
-    print('files:     %s' % (count))
-    print('read:      %2.3f sec.' % (read_time))
-    print('ast.parse: %2.3f sec.' % (parse_time))
-    print('traverse:  %2.3f sec.' % (traverse_time))
-    print('total:     %2.3f sec.' % (total_time))
-
-.. @+node:ekr.20111117031039.10762: *6* @test leoInspect.module (s)
-import leo.core.leoInspect as leoInspect
-
-def show(o,indent=0):
-    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
-    print('%s%s' % (' '*4*indent,o.format()))
-
-<< define s >>
-print('Input...\n%s\n' % (s.rstrip()))
-
-m = leoInspect.module(s=s)
-
-# print(show(m,0))
-
-print('\nStatements...\n')
-for o in m.statements():
-    print(o.format())
-    
-if 0:
-    print('\nAssignments...\n')
-    for o in m.assignments():
-        print(o.format())
-
-print('\nAssignments to a...\n')
-for o in m.assignments_to('a'):
-    print(o.format())
-    
-print('\nAssignments using d...\n')
-for o in m.assignments_using('d'):
-    print(o.format())
-    
-print('\nCalls to f...\n')
-for o in m.calls_to('f'):
-    print(o.format())
-
-if 0:
-    for f in m.functions():
-        show(f,0)
-        for z in f.statements():
-            show(z,1)
-    
-    for cls in m.classes():
-        show(cls,0)
-        for d in cls.defs():
-            show(d,1)
-            for z in d.statements():
-                show(z,1)
-.. @+node:ekr.20111117031039.10763: *7* << define s >>
-s = '''
-x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
-a=b+c
-p,d,q[5]=f(a=1,b=2,*args,**keys)
-'''
-
-
-# def outer_function(a,b=99,c=88,*args,**keys):
-    # print('hello')
-    
-# class myClass:
-    # def method():
-        # pass
-    
-.. @+node:ekr.20120607172857.10155: *6* @test compute all ivars in all classes
-import imp
-import time
-
-import leo.core.leoInspect as li
-imp.reload(li)
-g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
-
-t1 = time.time()
-
-print('starting pass 1...')
-
-# Globals...
-sd = li.SemanticData(controller=None)
-g_d = {} # Keys are ivars, values are lists of classes.
-n_files = 0
-
-for fn in li.LeoCoreFiles().files:
-
-    # Most of the time is spent creating the context objects.
-    m = li.module(fn=fn,sd=sd)
-    n_files += 1
-    
-    ### To do: create global assignments list.
-    
-    if 1: # Look for all targets. Takes about 0.15 sec.
-        for class_ in m.classes():
-            for def_ in class_.defs():
-                for a in def_.assignments():
-                    tree = a.tree()
-                    kind = g_kind(tree)
-                    # if g_kind(tree.value) == 'ListComp':
-                        # print(a.format())
-                        # print(g_dump(tree.value))
-                    # print(a.format())
-                    if kind == 'Assign':
-                        for target in tree.targets:
-                            # if False and g_kind(target) not in ('Attribute','Name','Tuple','Subscript'):
-                                # print('assn target: %s' % g_format(target))
-                                # print('assn target: %s' % g_dump(target))
-                            name = g_format(target)
-                            if name.startswith('self.'):
-                                name = name[5:]
-                            i = name.find('[')
-                            if i > -1:
-                                name = name[:i]
-                            aList = g_d.get(name,[])
-                            if class_.name() not in aList:
-                                aList.append(class_.name())
-                                g_d[name] = aList
-                    else:
-                        assert kind == 'AugAssign',kind
-                        name = g_format(tree.target)
-                        aList = g_d.get(name,[])
-                        if class_.name() not in aList:
-                            aList.append(class_.name())
-                            g_d[name] = aList
-
-    # Takes about 0.1 sec. cumulative.
-    if 0: # Look for all ivars.
-        for class_ in m.classes():
-            for def_ in class_.defs():
-                if def_.name() == '__init__':
-                    for a in def_.assignments_to('self'):
-                        # Not all targets are ivars.
-                        for target in a.tree().targets:
-                            name = g_format(target)
-                            if name.startswith('self.'):
-                                name = name[5:]
-                                aList = g_d.get(name,[])
-                                if class_.name() not in aList:
-                                    aList.append(class_.name())
-                                    g_d[name] = aList
-                       
-
-t2 = time.time()
-
-print('files: %s time: %2.2f sec, total ivars: %s' % (
-    n_files,t2-t1,len(list(g_d.keys()))))
-
-if 0:
-    ambiguous,total = 0,0
-    for key in sorted(g_d.keys()):
-        aList = sorted(g_d.get(key))
-        if 1 and len(aList) > 1:
-            w = 30 # Width of left column
-            if total == 0: print('Global ivars dict...')
-            if len(key) + 3 > w: key = key[:w-3]+'...'
-            aList2 = aList[:3]
-            if len(aList2) < len(aList): aList2.append('...')
-            print('%30s %2s %s' % (key,len(aList),aList2))
-        total += 1
-        if len(aList) > 1: ambiguous += 1
-    print('total ivars: %s ambiguous: %s' % (total,ambiguous))
-
-if 0:
-    sd.print_stats()
-.. @+node:ekr.20120611094414.10167: *6* @test find all ctors
-import imp
-import time
-
-import leo.core.leoInspect as li
-imp.reload(li)
-g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
-
-t1 = time.time()
-
-# Globals...
-sd = li.SemanticData(controller=None)
-classes = set()
-modules = {}
-
-# Pass 1: Load all modules.
-print('starting pass 1...')
-for fn in li.LeoCoreFiles().files:
-    m = li.module(fn=fn,sd=sd)
-    modules[m] = m
-    
-n_files = len(list(modules.keys()))
-
-t2 = time.time()
-print('pass 1: %2.3f sec files: %s' % (t2-t1,n_files))
-    
-# Pass 2: compute all class names.
-for m in modules:
-    for class_ in m.classes():
-        classes.add(class_.name())
-        
-t3 = time.time()
-print('pass 2: %2.3f sec' % (t3-t2))
-
-classes = sorted(list(classes))
-
-if 0:
-    for z in classes:
-        print(z)
-        
-# Pass 3: Find all calls to ctors.
-ctors = set()
-ctors_assns = []
-for m in modules:
-    for class_ in m.classes():
-        for def_ in class_.defs():
-            for a in def_.assignments():
-                rhs = a.tree().value
-                if m.tree_kind(rhs) == 'Call':
-                    s = li.g_find_function_call(rhs.func)
-                    if s in classes:
-                        ctors.add(s)
-                        ctors_assns.append(a.format())
- 
-t4 = time.time()                            
-
-if 0:
-    for z in sorted(list(ctors)):
-        print(z)
-if 0:
-    for s in ctors_assns:
-        aList = s.split('=')
-        print('%30s = %s' % (aList[0],'='.join(aList[1:])[:80]))
-
-print('pass 3: %2.3f sec ctors assigns: %s' % (t4-t3,len(ctors_assns)))
-
-if 0:
-    sd.print_stats()
-if 1:
-    sd.print_times()
-.. @+node:ekr.20120612044943.10200: *6* @test pickling
-# g.cls()
-
-import imp
-import pickle
-import time
-
-import leo.core.leoInspect as li
-imp.reload(li)
-    
-# Works, because TestPickleClass is a top-level class.
-o = li.TestPickleClass()
-
-try:
-    s = pickle.dumps(o)
-    print(len(s),o)
-except pickle.PicklingError:
-    print('can not pickle: %s' % repr(o))
-.. @+node:ekr.20120612044943.10190: *6* @test cache contexts
-# g.cls()
-
-import imp
-import pickle
-import time
-
-import leo.core.leoInspect as li
-imp.reload(li)
-g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
-
-# Pass 1: Load all modules.
-t1 = time.time()
-modules = {}
-sd = li.SemanticData(controller=None)
-print('starting pass 1...')
-n = 0
-for fn in li.LeoCoreFiles().files:
-    m = li.module(fn=fn,sd=sd)
-    modules[fn] = m
-    n += 1
-    # if n > 3: break
-    
-t2 = time.time()
-print('pass 1: %2.3f sec files: %s' % (t2-t1,len(list(modules.keys()))))
-
-# Pass 2: pickle all modules.
-for fn in sorted(modules.keys()):
-    m = modules.get(fn)
-    # print('%7s %s' % (len(repr(m)),g.shortFileName(fn)))
-    try:
-        s = pickle.dumps(m)
-        # print(len(s),m)
-    except pickle.PicklingError:
-        print('can not pickle: %s' % repr(m))
-
-    # print('%7s %s' % (len(g_dump(m)),g.shortFileName(fn)))
-    # o = m.classes()
-    # print(m)
-        
-t3 = time.time()
-print('pass 2: %2.3f sec' % (t3-t2))
 .. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
 @language python
 
@@ -737,6 +167,652 @@ a=b+c
     # def method():
         # pass
     
+.. @+node:ekr.20111116103733.9818: *4* LeoInspect unit tests
+@language python
+.. @+node:ekr.20120609070048.11429: *5* Basic tests
+.. @+node:ekr.20111116103733.10672: *6* @test leoInspect with multiple files
+import leo.core.leoInspect as leoInspect
+import os
+import time
+
+<< define old_s >>
+<< define s >>
+
+@others
+
+aList = (
+    'leoAtFile.py',
+    'leoEditCommands.py',
+)
+test(files=aList,print_stats=False,s=None,print_times=True)
+.. @+node:ekr.20111116103733.10451: *7* << define old_s >>
+# import leo.core.leoGlobals
+# import leo.core.leoGlobals as g
+# from leo.core.leoGlobals import pr as pr2
+# from leo.core.leoGlobals import trace
+
+s_old = '''\
+import sys
+
+aGlobal = 5
+# aGlobal2 is not explicitly defined.
+
+c = [z for z in 'abc']
+
+def myFunc():
+    n1,n2,n3,junk,junk=sys.version_info
+    a = self.b
+    for z in a:
+        print(z)
+    with A() as a:
+        print(a,b)
+        
+def test():
+    a = b # UnboundLocalError.
+    b = 1
+    c = 2 # Any def will do at present.
+    print(g)
+    print(c.frame.body)
+    print(c.frame.body.xxx.yyy)
+    print(b.yyy) # no check will be made.
+    print(xxx.yyy)
+    for c in 'abc':
+        print(c,b)
+        print(g)
+
+
+class myClass:
+    
+    def __init__(self,c):
+        self.a = True
+        self.b = None
+        c.frame.xxxx
+        
+    def spam(self,a,b,c=5,*args,**keys):
+        global aGlobal2
+        aGlobal2 = 'abc'
+        self.a = b
+        self.a = x
+        
+    def no_self(a):
+        pass
+        
+    def test_lambda(self):
+        f = lambda a,b: a
+
+    def test_comprehension(self):
+        z2 = [z for z in 'abc']
+        
+aGlobal3 = 4 # This should be defined everywhere.
+
+def test():
+    # a = ','.join(['a','b'])
+    p = 5
+    # print(p.parent().h)
+    # print(g.app.windowList[0])
+    print(p)
+    print(g)
+
+'''
+
+# import leo.core.leoCommands as leoCommands
+.. @+node:ekr.20111116103733.10452: *7* << define s >>
+s = '''\
+
+import leo.core.leoGlobals as g
+
+def test(c):
+    a = 5
+    f = c.frame
+    c.frame.body.bodyCtrl = w
+
+'''
+
+s = g.adjustTripleString(s,-4)
+# print(s)
+.. @+node:ekr.20111116103733.10450: *7* test
+def test(files,print_stats=True,s=None,print_times=True):
+   
+    t1 = time.time()
+    sd = leoInspect.SemanticData(controller=None)
+
+    if s: # Use test string.
+        fn = '<test file>'
+        leoInspect.InspectTraverser(fn,sd).traverse(s)
+    else:
+        for fn in files:
+            print(g.shortFileName(fn))
+            s = leoInspect.LeoCoreFiles().get_source(fn)
+            if s:
+                leoInspect.InspectTraverser(fn,sd).traverse(s)
+            else:
+                print('file not found: %s' % (fn))
+           
+    sd.total_time = time.time()-t1
+    
+    if print_times: sd.print_times()
+    if print_stats: sd.print_stats()
+.. @+node:ekr.20111116103733.10449: *6* @test leoInspect.module.classes
+import leo.core.leoInspect as leoInspect
+
+dump_classes = False
+print_modules = True
+print_functions = True
+print_stats = False
+print_times = False
+
+# if dump_modules or print_stats:
+    # g.cls()
+
+m = leoInspect.module(fn='leoApp.py',sd=None,
+    print_stats=print_stats,print_times=print_times)
+    
+if 0:
+    print(m)
+    for o in m.classes():
+        if dump_classes:
+            o.dump()
+        if print_modules:
+            print(o)
+        if print_functions:
+            for f in o.functions():
+                print('  %s' % f)
+.. @+node:ekr.20111116161118.10218: *6* @test leoInspect.module.defs
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+if 0:
+    print(m)
+    for z in m.classes():
+        print(z)
+        for z2 in z.defs():
+            name = z2.tree_ptr.name
+            aList = z2.call_args_of(name)
+            args = ','.join(aList)
+            print(' %s(%s)' % (name,args))
+.. @+node:ekr.20111116161118.10212: *6* @test leoInspect.module.classes 2
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+if 0:
+    for z in m.classes():
+        print(z)
+.. @+node:ekr.20111116161118.10181: *6* @test leoInspect.module.statements
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+
+if 0:
+    print(m)
+    for z in m.classes():
+        print(z)
+        for z2 in z.defs():
+            print(z2)
+.. @+node:ekr.20111116161118.10230: *6* @test leoInspect (leoEditCommands.py)
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+
+def show(o):
+    print('%-5s %s' % (o.line_number(),o.format()))
+
+var = '.widget'
+func = 'w.insert'
+
+if 0:
+    print('\nAssignments to %s...\n' % (var))
+    for o in m.assignments_to(var):
+        show(o)
+        
+    print('\nAssignments using %s...\n' % (var))
+    for o in m.assignments_using(var):
+        show(o)
+        
+    print('\nCalls to %s...\n' % (func))
+    for o in m.calls_to(func):
+        show(o)
+        
+    if 1:
+        classes = m.classes()
+        for d in classes[0].defs():
+            print('')
+            print(d)
+            for z in d.statements():
+                # print(z.tree())
+                # print(z.sd.dump_ast(z.tree()))
+                lines = g.splitLines(z.format())
+                for line in lines:
+                    print('  %s' % (line))
+.. @+node:ekr.20111117031039.10762: *6* @test leoInspect.module (s)
+import leo.core.leoInspect as leoInspect
+
+def show(o,indent=0):
+    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
+    print('%s%s' % (' '*4*indent,o.format()))
+
+<< define s >>
+print('Input...\n%s\n' % (s.rstrip()))
+
+m = leoInspect.module(s=s)
+
+# print(show(m,0))
+
+print('\nStatements...\n')
+for o in m.statements():
+    print(o.format())
+    
+if 0:
+    print('\nAssignments...\n')
+    for o in m.assignments():
+        print(o.format())
+
+print('\nAssignments to a...\n')
+for o in m.assignments_to('a'):
+    print(o.format())
+    
+print('\nAssignments using d...\n')
+for o in m.assignments_using('d'):
+    print(o.format())
+    
+print('\nCalls to f...\n')
+for o in m.calls_to('f'):
+    print(o.format())
+
+if 0:
+    for f in m.functions():
+        show(f,0)
+        for z in f.statements():
+            show(z,1)
+    
+    for cls in m.classes():
+        show(cls,0)
+        for d in cls.defs():
+            show(d,1)
+            for z in d.statements():
+                show(z,1)
+.. @+node:ekr.20111117031039.10763: *7* << define s >>
+s = '''
+x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
+a=b+c
+p,d,q[5]=f(a=1,b=2,*args,**keys)
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
+.. @+node:ekr.20120609070048.10224: *5* leoInspect speed tests
+.. @+node:ekr.20111127090852.10227: *6* @test speed of leoInspect.module (all core files)
+import leo.core.leoInspect as leoInspect
+import time
+
+t1 = time.time()
+
+sd = leoInspect.SemanticData()
+count = 0
+for fn in leoInspect.LeoCoreFiles().files:
+    # print(fn)
+    m = leoInspect.module(fn,sd=sd)
+    count += 1
+
+t2 = time.time()
+
+print('file: %s time: %2.2f sec' % (count,t2-t1))
+
+if 0:
+    sd.print_stats()
+if 1:
+    sd.print_times()
+.. @+node:ekr.20111127153202.10231: *6* @test speed of AstTraverser (all Leo core files)
+import leo.core.leoGlobals as g
+import leo.core.leoInspect as leoInspect
+import ast
+import time
+
+read_time,parse_time,traverse_time = 0.0,0.0,0.0
+t_start = time.time()
+count = 0
+for fn in leoInspect.LeoCoreFiles().files:
+    count += 1
+    t2 = time.time()
+    s = open(fn,'r').read()
+    t3 = time.time()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    t4 = time.time()
+    leoInspect.AstTraverser(fn).visit(tree)
+    t5 = time.time()
+
+    read_time += t3-t2
+    parse_time += t4-t3
+    traverse_time += t5-t4
+t_end = time.time()
+total_time = t_end-t_start
+if 1:
+    print('files:     %s' % (count))
+    print('read:      %2.3f sec.' % (read_time))
+    print('ast.parse: %2.3f sec.' % (parse_time))
+    print('traverse:  %2.3f sec.' % (traverse_time))
+    print('total:     %2.3f sec.' % (total_time))
+
+.. @+node:ekr.20120607172857.10155: *5* @test compute all ivars in all classes
+import imp
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
+
+t1 = time.time()
+
+print('starting pass 1...')
+
+# Globals...
+sd = li.SemanticData(controller=None)
+g_d = {} # Keys are ivars, values are lists of classes.
+n_files = 0
+
+for fn in li.LeoCoreFiles().files:
+
+    # Most of the time is spent creating the context objects.
+    m = li.module(fn=fn,sd=sd)
+    n_files += 1
+    
+    ### To do: create global assignments list.
+    
+    if 1: # Look for all targets. Takes about 0.15 sec.
+        for class_ in m.classes():
+            for def_ in class_.defs():
+                for a in def_.assignments():
+                    tree = a.tree()
+                    kind = g_kind(tree)
+                    # if g_kind(tree.value) == 'ListComp':
+                        # print(a.format())
+                        # print(g_dump(tree.value))
+                    # print(a.format())
+                    if kind == 'Assign':
+                        for target in tree.targets:
+                            # if False and g_kind(target) not in ('Attribute','Name','Tuple','Subscript'):
+                                # print('assn target: %s' % g_format(target))
+                                # print('assn target: %s' % g_dump(target))
+                            name = g_format(target)
+                            if name.startswith('self.'):
+                                name = name[5:]
+                            i = name.find('[')
+                            if i > -1:
+                                name = name[:i]
+                            aList = g_d.get(name,[])
+                            if class_.name() not in aList:
+                                aList.append(class_.name())
+                                g_d[name] = aList
+                    else:
+                        assert kind == 'AugAssign',kind
+                        name = g_format(tree.target)
+                        aList = g_d.get(name,[])
+                        if class_.name() not in aList:
+                            aList.append(class_.name())
+                            g_d[name] = aList
+
+    # Takes about 0.1 sec. cumulative.
+    if 0: # Look for all ivars.
+        for class_ in m.classes():
+            for def_ in class_.defs():
+                if def_.name() == '__init__':
+                    for a in def_.assignments_to('self'):
+                        # Not all targets are ivars.
+                        for target in a.tree().targets:
+                            name = g_format(target)
+                            if name.startswith('self.'):
+                                name = name[5:]
+                                aList = g_d.get(name,[])
+                                if class_.name() not in aList:
+                                    aList.append(class_.name())
+                                    g_d[name] = aList
+                       
+
+t2 = time.time()
+
+print('files: %s time: %2.2f sec, total ivars: %s' % (
+    n_files,t2-t1,len(list(g_d.keys()))))
+
+if 0:
+    ambiguous,total = 0,0
+    for key in sorted(g_d.keys()):
+        aList = sorted(g_d.get(key))
+        if 1 and len(aList) > 1:
+            w = 30 # Width of left column
+            if total == 0: print('Global ivars dict...')
+            if len(key) + 3 > w: key = key[:w-3]+'...'
+            aList2 = aList[:3]
+            if len(aList2) < len(aList): aList2.append('...')
+            print('%30s %2s %s' % (key,len(aList),aList2))
+        total += 1
+        if len(aList) > 1: ambiguous += 1
+    print('total ivars: %s ambiguous: %s' % (total,ambiguous))
+
+if 0:
+    sd.print_stats()
+.. @+node:ekr.20120611094414.10167: *5* @test find all ctors
+import imp
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
+
+t1 = time.time()
+
+# Globals...
+sd = li.SemanticData(controller=None)
+classes = set()
+modules = {}
+
+# Pass 1: Load all modules.
+print('starting pass 1...')
+for fn in li.LeoCoreFiles().files:
+    m = li.module(fn=fn,sd=sd)
+    modules[m] = m
+    
+n_files = len(list(modules.keys()))
+
+t2 = time.time()
+print('pass 1: %2.3f sec files: %s' % (t2-t1,n_files))
+    
+# Pass 2: compute all class names.
+for m in modules:
+    for class_ in m.classes():
+        classes.add(class_.name())
+        
+t3 = time.time()
+print('pass 2: %2.3f sec' % (t3-t2))
+
+classes = sorted(list(classes))
+
+if 0:
+    for z in classes:
+        print(z)
+        
+# Pass 3: Find all calls to ctors.
+ctors = set()
+ctors_assns = []
+for m in modules:
+    for class_ in m.classes():
+        for def_ in class_.defs():
+            for a in def_.assignments():
+                rhs = a.tree().value
+                if m.tree_kind(rhs) == 'Call':
+                    s = li.g_find_function_call(rhs.func)
+                    if s in classes:
+                        ctors.add(s)
+                        ctors_assns.append(a.format())
+ 
+t4 = time.time()                            
+
+if 0:
+    for z in sorted(list(ctors)):
+        print(z)
+if 0:
+    for s in ctors_assns:
+        aList = s.split('=')
+        print('%30s = %s' % (aList[0],'='.join(aList[1:])[:80]))
+
+print('pass 3: %2.3f sec ctors assigns: %s' % (t4-t3,len(ctors_assns)))
+
+if 0:
+    sd.print_stats()
+if 1:
+    sd.print_times()
+.. @+node:ekr.20120612044943.10200: *5* @test pickling
+# g.cls()
+
+import imp
+import pickle
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+    
+# Works, because TestPickleClass is a top-level class.
+o = li.TestPickleClass()
+
+try:
+    s = pickle.dumps(o)
+    print(len(s),o)
+except pickle.PicklingError:
+    print('can not pickle: %s' % repr(o))
+.. @+node:ekr.20120612044943.10190: *5* @test cache contexts
+# g.cls()
+
+import imp
+import pickle
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
+
+# Pass 1: Load all modules.
+t1 = time.time()
+sd = li.SemanticData(controller=None)
+files = li.LeoCoreFiles().files
+
+print('starting pass 1...')
+for fn in files:
+    li.module(fn=fn,sd=sd)
+
+t2 = time.time()
+print('pass 1: %2.3f sec files: %s' % (t2-t1,len(list(sd.modules_dict.keys()))))
+
+# Pass 2: pickle all modules.
+for fn in sorted(sd.modules_dict.keys()):
+    m = sd.modules_dict.get(fn)
+    try:
+        s = pickle.dumps(m)
+        print('%6s %s' % (len(s),fn))
+    except pickle.PicklingError:
+        print('can not pickle: %s' % repr(m))
+        
+t3 = time.time()
+print('pass 2: %2.3f sec' % (t3-t2))
+.. @+node:ekr.20120613104401.10223: *4* Recent
+.. @+node:ekr.20120613104401.10174: *5* @test dump symbol table
+# g.cls()
+
+import imp
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+# g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
+
+t1 = time.time()
+sd = li.SemanticData(controller=None)
+files = li.LeoCoreFiles().files # [:3]
+
+print('starting pass 1...')
+for fn in files:
+    li.module(fn=fn,sd=sd)
+
+t2 = time.time()
+
+if 0:
+    sd.dump()
+
+if 1:
+    sd.print_stats()
+
+print('pass 1: %2.2f sec files: %s' % (
+    t2-t1,len(list(sd.modules_dict.keys()))))
+.. @+node:ekr.20111116103733.10393: *5* st.dump
+def dump (self,level=0):
+    
+    cx = self.context
+    
+    print('')
+    print(self)
+
+    # Print the table entries.
+    if 1:
+        keys = list(self.d.keys())
+        keys.sort()
+        for key in keys:
+            print(self.d.get(key))
+        
+    # Print non-empty ctx lists.
+    if 0:
+        table = (
+            (cx.del_names,'Del'),
+            (cx.load_names,'Load'),
+            (cx.param_names,'Param'),
+            (cx.store_names,'Store'),
+            (cx.global_names,'Globals'),
+            (cx.all_global_names,'all_glob'),
+        )
+        for aSet,kind in table:
+            if aSet:
+                print('%8s: %s' % (kind,list(aSet)))
+
+.. @+node:ekr.20111116103733.10407: *5* cx.dump
+def dump (self,level=0):
+
+    if 1: # Just print the context
+        print(' '*level,repr(self))
+    if 0:
+        self.st.dump(level=level)
+    if 1:
+        for z in self.classes_list:
+            z.dump(level+1)
+        for z in self.defs_list:
+            z.dump(level+1)
+    if 0:
+        for z in self.temp_contexts:
+            z.dump(level+1)
+.. @+node:ekr.20111116103733.10383: *5* sd.dump
+def dump (self):
+    
+    sd = self
+    d = sd.modules_dict
+
+    print('\nDump of modules...')
+    for fn in sorted(d.keys()):
+        m = d.get(fn)
+        m.dump()
 .. @+node:ekr.20120607172857.10153: *3* Next
 .. @+node:ekr.20120523092521.9904: *4* Easy bugs
 .. @+node:ekr.20110621085435.6531: *5* Fix bug: Improve the find panel and find menu

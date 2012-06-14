@@ -974,6 +974,19 @@ class Context(object):
 
     __str__ = __repr__
 
+    # Name is defined below.
+    # def name(self):
+        # '''Should be overriden by subclasses.'''
+        # return 'Context at %s' % id(self)
+    
+    # def __cmp__ (self,other):
+        # if   self.name() <  other.name(): return -1
+        # elif self.name() == other.name(): return 0
+        # else:                             return 1
+        
+    # def __hash__ (self):
+        # return self.name()
+
     #@+others
     #@+node:ekr.20111116103733.10403: *3* cx ctor
     def __init__(self,tree,parent_context,sd,kind):
@@ -1058,18 +1071,18 @@ class Context(object):
     # All subclasses override name.
     name = description
     #@+node:ekr.20111116103733.10407: *4* cx.dump
-    def dump (self,level=0,verbose=False):
+    def dump (self,level=0):
 
-        if 0: # Just print the context
-            print(repr(self))
-        else:
+        if 1: # Just print the context
+            print(' '*level,repr(self))
+        if 0:
             self.st.dump(level=level)
-
-        if verbose:
+        if 1:
             for z in self.classes_list:
                 z.dump(level+1)
             for z in self.defs_list:
                 z.dump(level+1)
+        if 0:
             for z in self.temp_contexts:
                 z.dump(level+1)
     #@+node:ekr.20120611094414.10881: *4* cx.format
@@ -2790,6 +2803,18 @@ class InspectTraverser (AstTraverser):
             assert ctx == 'Del',ctx
             cx.del_names.add(name)
             sd.n_del_names += 1
+    #@+node:ekr.20120613104401.10221: *4* it.ListComp
+    def do_ListComp(self,tree,tag=''):
+
+        sd = self.sd
+
+        # self.trace(tree,tag)
+
+        self.visit(tree.elt,'list comp elt')
+        for z in tree.generators:
+            self.visit(z,'list comp generator')
+            
+        sd.n_list_comps += 1
     #@+node:ekr.20111116103733.10368: *3* it.Statements
     #@+node:ekr.20111116103733.10369: *4* it.Assign
     def do_Assign(self,tree,tag=''):
@@ -3192,33 +3217,37 @@ class SemanticData(object):
         self.pass1_time = 0.0
         self.pass2_time = 0.0
         self.total_time = 0.0
-    #@+node:ekr.20111116103733.10382: *3* sd.all_contexts (generator)
-    def all_contexts (self,aList=None):
-        
-        '''An iterator returning all contexts.'''
-        
-        if not aList:
-            aList = list(self.modules_dict.values())
+    #@+node:ekr.20111116103733.10382: *3* sd.all_contexts (generator) (not used)
+    if 0: # This works, but is too clever by half.
 
-        for cx in aList:
-            yield cx
-            if cx.classes_list:
-                for z in self.all_contexts(cx.classes_list):
-                    yield z
-            if cx.functions:
-                for z in self.all_contexts(cx.functions):
-                    yield z
-            if cx.temp_contexts:
-                for z in self.all_contexts(cx.temp_contexts):
-                    yield z
+        def all_contexts (self,aList=None):
+            
+            '''An iterator returning all contexts.'''
+            
+            if not aList:
+                aList = list(self.modules_dict.values())
+        
+            for cx in aList:
+                yield cx
+                if cx.classes_list:
+                    for z in self.all_contexts(cx.classes_list):
+                        yield z
+                if cx.defs_list:
+                    for z in self.all_contexts(cx.defs_list):
+                        yield z
+                if cx.temp_contexts:
+                    for z in self.all_contexts(cx.temp_contexts):
+                        yield z
     #@+node:ekr.20111116103733.10383: *3* sd.dump
-    def dump (self,verbose=True):
+    def dump (self):
         
         sd = self
+        d = sd.modules_dict
+
         print('\nDump of modules...')
-        for cx in sd.all_contexts():
-            print('')
-            cx.dump(verbose=verbose)
+        for fn in sorted(d.keys()):
+            m = d.get(fn)
+            m.dump()
     #@+node:ekr.20111116103733.10384: *3* sd.dump_ast
     def dump_ast (self,tree,brief=False):
         
@@ -3376,28 +3405,30 @@ class SymbolTable(object):
         
         cx = self.context
         
+        print('')
         print(self)
 
         # Print the table entries.
-        keys = list(self.d.keys())
-        keys.sort()
-        for key in keys:
-            print(self.d.get(key))
+        if 1:
+            keys = list(self.d.keys())
+            keys.sort()
+            for key in keys:
+                print(self.d.get(key))
             
         # Print non-empty ctx lists.
-        table = (
-            (cx.del_names,'Del'),
-            (cx.load_names,'Load'),
-            (cx.param_names,'Param'),
-            (cx.store_names,'Store'),
-            (cx.global_names,'Globals'),
-            (cx.all_global_names,'all_glob'),
-        )
-        for aSet,kind in table:
-            if aSet:
-                print('%8s: %s' % (kind,list(aSet)))
+        if 0:
+            table = (
+                (cx.del_names,'Del'),
+                (cx.load_names,'Load'),
+                (cx.param_names,'Param'),
+                (cx.store_names,'Store'),
+                (cx.global_names,'Globals'),
+                (cx.all_global_names,'all_glob'),
+            )
+            for aSet,kind in table:
+                if aSet:
+                    print('%8s: %s' % (kind,list(aSet)))
 
-        
     #@+node:ekr.20111116103733.10394: *3* st.get_name
     def get_name (self,name):
         
