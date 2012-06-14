@@ -726,7 +726,9 @@ class TestManager:
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
         
         # This seems a bit risky when run in unitTest.leo.
-        # c.save() # Eliminate the need for ctrl-s.
+        if not c.fileName().endswith('unitTest.leo'):
+            if c.isChanged():
+                c.save() # Eliminate the need for ctrl-s.
         
         if trace: g.trace('marked',marked,'c',c)
 
