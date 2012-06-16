@@ -128,7 +128,8 @@ expanded="ekr.20050901101608.4,EKR.20040524104904.140,ekr.20070317043727.3,"><vh
 <v t="ekr.20100805165051.7173"><vh>@file atShadow.txt</vh></v>
 </v>
 <v t="ekr.20120315101404.14224"><vh>The leoInspect Module</vh>
-<v t="ekr.20120315101404.14225"><vh>@file leoInspect.txt</vh></v>
+<v t="ekr.20120315101404.14225"
+expanded="ekr.20120315101404.14233,ekr.20120315101404.14264,"><vh>@file leoInspect.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>

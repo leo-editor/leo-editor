@@ -609,6 +609,8 @@ if 0:
 if 0:
     sd.print_stats()
 .. @+node:ekr.20120611094414.10167: *5* @test find all ctors
+g.cls()
+
 import imp
 import time
 
@@ -620,22 +622,20 @@ t1 = time.time()
 
 # Globals...
 sd = li.SemanticData(controller=None)
-classes = set()
-modules = {}
+d = sd.modules_dict
 
 # Pass 1: Load all modules.
 print('starting pass 1...')
 for fn in li.LeoCoreFiles().files:
-    m = li.module(fn=fn,sd=sd)
-    modules[m] = m
-    
-n_files = len(list(modules.keys()))
+    li.module(fn=fn,sd=sd)
 
 t2 = time.time()
-print('pass 1: %2.3f sec files: %s' % (t2-t1,n_files))
+print('pass 1: %2.3f sec files: %s' % (t2-t1,len(list(d.keys()))))
     
 # Pass 2: compute all class names.
-for m in modules:
+classes = set()
+for fn in sorted(d):
+    m = d.get(fn)
     for class_ in m.classes():
         classes.add(class_.name())
         
@@ -651,7 +651,8 @@ if 0:
 # Pass 3: Find all calls to ctors.
 ctors = set()
 ctors_assns = []
-for m in modules:
+for fn in sorted(d):
+    m = d.get(fn)
     for class_ in m.classes():
         for def_ in class_.defs():
             for a in def_.assignments():
@@ -674,7 +675,7 @@ if 0:
 
 print('pass 3: %2.3f sec ctors assigns: %s' % (t4-t3,len(ctors_assns)))
 
-if 0:
+if 1:
     sd.print_stats()
 if 1:
     sd.print_times()

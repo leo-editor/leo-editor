@@ -121,7 +121,7 @@ but much more work would be required. Indeed, pylint is an extremely
 capable program. It can make complex deductions that are presently far
 beyond leoInspect's capabilities.
 
-However, leoInspect is a supremely elegant front end. It might serve
+However, leoInspect is an elegant front end. It might serve
 as the basis of more complex analysis. Multi-pass algorithms are often
 *faster* and more elegant than single-pass algorithms, so the "extra"
 overhead of the leoInspect prepass is probably not significant. What
@@ -164,18 +164,12 @@ ivars.
 The o.format getter is an exception. It traverses o's AST to create
 the human-readable representation of o.
 
-In a remarkable collapse in complexity, InspectTraverser.do_Attribute
-uses the *formatting* code to compute the value of the attribute. This
-replaces complex AST-traversal code with a call to the formatter. This
-is one of the most clever refactorings I have ever discovered. For the
-gory details behind this Aha, see `this post`_.
+The AstFormatter class is a straightforward recursive descent algorithm.
 
-The InspectTraverser class is now so simple that it is now a bit hard
-to see what exactly it is doing. Most of the InspectTraverser class
-methods are simple variants of the base AstTraverser class. BTW,
-making InspectTraverser class be a subclass of AstFormatter would be
-bad style. We want the InspectTraverser class to *have* a formatter,
-not *be* a formatter.
+The InspectTraverser.do_Attribute method uses the *formatting* code to
+compute the value of the attribute. This replaces complex
+AST-traversal code with a call to the formatter.
+
 .. @+node:ekr.20120316081721.14295: *4* Getters
 Getters all follow roughly the same pattern.  For example::
 
@@ -217,73 +211,6 @@ different from AST trees for augmented assignments. Once the type of
 assignment is identified, the code simply *formats* the left hand side
 (lhs) of the assignment, and compares s with the lhs. If there is a
 match, the entire assignment is appended to the result.
-.. @+node:ekr.20120315101404.14256: *4* The AstFormatter class
-The AstFormatter class is a crucial part of the leoInspect module. It
-is elegant enough that it might be difficult to understand. The basic
-coding pattern used throughout the formatter class is simple. The code
-that handles each construct does the following:
-
-A. Calls self.visit for interior contexts to get the *formatted*
-   string for those contexts.
-
-B. Computes a result string s.
-
-C. Calls self.append(s) to "return" the result.
-
-Let's look at AstFormatter.do_Attribute. Attributes can be complex.
-For example, the following would be represented at the top level by an
-AST Attribute node::
-
-    a.f(...)[1:g(...)].c.e
-
-Here is the code for f.do_Attribute::
-
-    def do_Attribute(self,tree,tag=''):
-        name = tree.attr
-        expr = self.visit(tree.value,'attribute value')
-        self.append('%s.%s' % (expr,name))
-
-The AstFormatter.visit method is the crucial part of this design
-pattern. It returns a string that properly "flattens" what might be an
-arbitrarily complex tree. Here it is, slightly edited::
-
-    def visit (self,tree,tag=None):
-        kind = tree.__class__
-        f = self.dispatch_table.get(kind)
-        if f:
-            self.push()
-            f(tree,tag)
-            val = self.pop()
-            return val
-        else:
-            g.trace('bad ast type',kind)
-            return None
-
-The visit method calls self.push() to save the present string being
-"accumulated", determines the proper function f to call using the
-dispatch table, visits the node by calling f and then calls
-self.pop().
-
-    def push (self):
-        self.stack.append(self.result)
-        self.result = []
-
-    def pop (self):
-        val = ''.join(self.result)
-        self.result = self.stack.pop()
-        return val
-
-The result from the "interior" call to f is ''.join(self.result).  The
-pop method computes this result and *then* pops the stack, restoring
-the previous value of self.result.
-
-The final piece of the puzzle is::
-
-    def append(self,s):
-        self.result.append(s)
-
-**Important**: the patten allows multiple calls to self.append in a
-single method.  The do_arguments method shows how flexible this pattern is.
 .. @+node:ekr.20120315101404.14264: *4* Computing token ranges
 This section describes the how the unfinished o.token_range getter will work.
 
