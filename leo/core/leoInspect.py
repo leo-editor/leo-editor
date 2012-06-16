@@ -2185,10 +2185,6 @@ class AstFormatter(AstTraverser):
                 repr(keys),repr(values)))
                 
         return ''.join(result)
-    #@+node:ekr.20111117031039.10559: *4* f.Elipsis
-    def do_Ellipsis(self,tree):
-        
-        return '...'
     #@+node:ekr.20111117031039.10572: *4* f.ExtSlice
     def do_ExtSlice (self,tree):
 
@@ -2306,6 +2302,9 @@ class AstFormatter(AstTraverser):
     def do_Bytes(self,tree):
         assert isPython3
         return str(tree.s)
+        
+    def do_Ellipsis(self,tree):
+        return '...'
 
     def do_int (self,s):
         return s
@@ -2443,9 +2442,10 @@ class AstFormatter(AstTraverser):
         return self.indent('continue\n')
     #@+node:ekr.20120614011356.10085: *4* f.Delete
     def do_Delete(self,tree):
+        
+        targets = [self.visit(z) for z in tree.targets]
 
-        return self.indent('del %s\n' % ','.join(
-            [self.visit(z) for z in tree.targets]))
+        return self.indent('del %s\n' % ','.join(targets))
     #@+node:ekr.20120614011356.10082: *4* f.Exec
     # Python 2.x only
     def do_Exec(self,tree):
@@ -2461,7 +2461,8 @@ class AstFormatter(AstTraverser):
             args.append(self.visit(tree.locals))
             
         if args:
-            return self.indent('exec %s in %s\n' % (body,','.join(args)))
+            return self.indent('exec %s in %s\n' % (
+                body,','.join(args)))
         else:
             return self.indent('exec %s\n' % (body))
     #@+node:ekr.20111117031039.10209: *4* f.For
@@ -2496,7 +2497,8 @@ class AstFormatter(AstTraverser):
         
         result = []
         
-        result.append(self.indent('if %s:\n' % (self.visit(tree.test))))
+        result.append(self.indent('if %s:\n' % (
+            self.visit(tree.test))))
         
         for z in tree.body:
             self.level += 1
@@ -2522,7 +2524,8 @@ class AstFormatter(AstTraverser):
             else:
                 names.append(fn)
         
-        return self.indent('import %s\n' % ','.join(names))
+        return self.indent('import %s\n' % (
+            ','.join(names)))
     #@+node:ekr.20111117031039.10212: *5* f.get_import_names
     def get_import_names (self,tree):
 
@@ -2577,7 +2580,8 @@ class AstFormatter(AstTraverser):
         if hasattr(tree,'nl') and tree.nl:
             vals.append('nl=%s' % self.visit(tree.nl))
         
-        return self.indent('print(%s)\n' % ','.join(vals))
+        return self.indent('print(%s)\n' % (
+            ','.join(vals)))
     #@+node:ekr.20120614011356.10090: *4* f.Raise
     def do_Raise(self,tree):
         
@@ -2587,14 +2591,16 @@ class AstFormatter(AstTraverser):
                 args.append(self.visit(getattr(tree,attr)))
             
         if args:
-            return self.indent('raise %s\n' % ','.join(args))
+            return self.indent('raise %s\n' % (
+                ','.join(args)))
         else:
             return self.indent('raise\n')
     #@+node:ekr.20120614011356.10087: *4* f.Return
     def do_Return(self,tree):
 
         if tree.value:
-            return self.indent('return %s\n' % self.visit(tree.value))
+            return self.indent('return %s\n' % (
+                self.visit(tree.value)))
         else:
             return self.indent('return\n')
     #@+node:ekr.20120614011356.10078: *4* f.While
@@ -2602,7 +2608,8 @@ class AstFormatter(AstTraverser):
         
         result = []
 
-        result.append(self.indent('while %s:\n' % self.visit(tree.test)))
+        result.append(self.indent('while %s:\n' % (
+            self.visit(tree.test))))
         
         for z in tree.body:
             self.level += 1

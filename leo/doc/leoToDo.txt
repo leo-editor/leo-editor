@@ -731,6 +731,49 @@ for fn in sorted(sd.modules_dict.keys()):
         
 t3 = time.time()
 print('pass 2: %2.3f sec' % (t3-t2))
+.. @+node:ekr.20120614011356.10075: *5* @test AstFormatter
+g.cls()
+
+import imp
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_format = li.g_format
+
+# Pass 1: Load all modules.
+sd = li.SemanticData(controller=None)
+files = li.LeoCoreFiles().files # [0:2]
+
+s = '''
+def spam():
+    """This is a docstring"""
+    a = 2
+    try:
+        pass
+    except Exception as message: ###
+        pass
+    if f(1):
+        g('a')
+    else:
+        g(2)
+    while 1 < 2:
+        pass
+    raise AttributeError ###
+    return 2
+'''
+
+if 0: # String
+    li.module(s=s,sd=sd)
+else:
+    print('starting pass 1...')
+    for fn in files:
+        li.module(fn=fn,sd=sd)
+    
+# Pass 2: format the module.
+for fn in sorted(sd.modules_dict.keys()):
+    m = sd.modules_dict.get(fn)
+    # print(m.format())
+    m.format() # Run for warnings.
 .. @+node:ekr.20120613104401.10223: *4* Recent
 .. @+node:ekr.20120613104401.10174: *5* @test dump symbol table
 # g.cls()
