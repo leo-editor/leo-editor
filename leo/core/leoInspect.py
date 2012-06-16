@@ -20,7 +20,7 @@ except ImportError:
     try:
         import leoGlobals as g
     except ImportError:
-        pass # Will fail lager.
+        pass # Will fail later.
     
     # A bad idea.
     #   < < define g object > >
@@ -409,31 +409,31 @@ class AstTraverser(object):
     #@+node:ekr.20111116103733.10292: *3* a.Expressions
     def do_Expr(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.value,'expr-value')
+        self.visit(tree.value)
 
     def do_Expression(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.body,'expression-body')
+        self.visit(tree.body)
 
     def do_GeneratorExp(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.elt,'generator elt')
+        self.visit(tree.elt)
         for z in tree.generators:
-            self.visit(z,'generator generator')
+            self.visit(z)
     #@+node:ekr.20111116103733.10293: *4* a.IfExp
     def do_IfExp (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.test,'if-expr test')
+        self.visit(tree.test)
         if tree.body:
-            self.visit(tree.body,'if-expr body')
+            self.visit(tree.body)
         if tree.orelse:
-            self.visit(tree.orelse,'if-expr orelse')
+            self.visit(tree.orelse)
     #@+node:ekr.20111116103733.10294: *4* a.Operands
     def do_Attribute(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.value,'attribute value')
-        self.visit(tree.attr,'attribute attr (identifier)')
-        self.visit(tree.ctx,'attribute context')
+        self.visit(tree.value)
+        self.visit(tree.attr)
+        self.visit(tree.ctx)
 
     # Python 2.x only.
     def do_bool(self,tree,tag=''):
@@ -445,39 +445,39 @@ class AstTraverser(object):
 
     def do_Call(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.func,'call func')
+        self.visit(tree.func)
         for z in tree.args:
-            self.visit(z,'call args')
+            self.visit(z)
         for z in tree.keywords:
-            self.visit(z,'call keyword args')
+            self.visit(z)
         if hasattr(tree,'starargs') and tree.starargs:
             if self.kind(tree.starargs) == 'Name':
-                 self.visit(tree.starargs,'call *args')
+                 self.visit(tree.starargs)
             elif self.isiterable(tree.starargs):
                 for z in tree.starargs:
-                    self.visit(z,'call *args')
+                    self.visit(z)
             else: g.trace('** unknown starargs kind',tree)
         if hasattr(tree,'kwargs') and tree.kwargs:
             if self.kind(tree.kwargs) == 'Name':
-                 self.visit(tree.kwargs,'call *args')
+                 self.visit(tree.kwargs)
             elif self.isiterable(tree.kwargs):
                 for z in tree.kwargs:
-                    self.visit(z,'call *args')
+                    self.visit(z)
             else: g.trace('** unknown kwargs kind',tree)
 
     def do_comprehension(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.target,'comprehension target (a Name)')
-        self.visit(tree.iter,'comprehension iter (an Attribute)')
+        self.visit(tree.target)
+        self.visit(tree.iter)
         for z in tree.ifs:
-            self.visit(z,'comprehension if')
+            self.visit(z)
 
     def do_Dict(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.keys:
-            self.visit(z,'dict keys')
+            self.visit(z)
         for z in tree.values:
-            self.visit(z,'dict values')
+            self.visit(z)
 
     def do_Ellipsis(self,tree,tag=''):
         self.trace(tree,tag)
@@ -485,37 +485,37 @@ class AstTraverser(object):
     def do_ExtSlice (self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.dims:
-            self.visit(z,'slice dimention')
+            self.visit(z)
 
     def do_Index (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.value,'index value')
+        self.visit(tree.value)
 
     def do_int (self,s,tag=''):
         self.trace(None,tag=tag,s=s,kind='int')
 
     def do_Keyword (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.arg,'keyword arg')
-        self.visit(tree.value,'keyword value')
+        self.visit(tree.arg)
+        self.visit(tree.value)
 
     def do_List(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.elts:
-            self.visit(z,'list elts')
-        self.visit(tree.ctx,'list context')
+            self.visit(z)
+        self.visit(tree.ctx)
 
     def do_ListComp(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.elt,'list comp elt')
+        self.visit(tree.elt)
         for z in tree.generators:
-            self.visit(z,'list comp generator')
+            self.visit(z)
 
     def do_Name(self,tree,tag=''):
         self.trace(tree,tag)
         # tree.id is a string.
-        self.visit(tree.id,'name id')
-        self.visit(tree.ctx,'name context')
+        self.visit(tree.id)
+        self.visit(tree.ctx)
 
     def do_Num(self,tree,tag=''):
         tag = '%s: %s' % (tag,repr(tree.n))
@@ -524,11 +524,11 @@ class AstTraverser(object):
     def do_Slice (self,tree,tag=''):
         self.trace(tree,tag)
         if hasattr(tree,'lower') and tree.lower is not None:
-            self.visit(tree.lower,'slice lower')
+            self.visit(tree.lower)
         if hasattr(tree,'upper') and tree.upper is not None:
-            self.visit(tree.upper,'slice upper')
+            self.visit(tree.upper)
         if hasattr(tree,'step') and tree.step is not None:
-            self.visit(tree.step,'slice step')
+            self.visit(tree.step)
 
     def do_str (self,s,tag=''):
         self.trace(None,tag=tag,s=s,kind='str')
@@ -538,14 +538,14 @@ class AstTraverser(object):
 
     def do_Subscript(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.slice,'subscript slice')
-        self.visit(tree.ctx,'subscript context')
+        self.visit(tree.slice)
+        self.visit(tree.ctx)
 
     def do_Tuple(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.elts:
-            self.visit(z,'list elts')
-        self.visit(tree.ctx,'list context')
+            self.visit(z)
+        self.visit(tree.ctx)
     #@+node:ekr.20111116103733.10295: *4* a.Operators
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
     # -- keyword arguments supplied to call
@@ -555,10 +555,10 @@ class AstTraverser(object):
         
         assert self.kind(tree) == 'arguments'
         for z in tree.args:
-            self.visit(z,'arg')
+            self.visit(z)
             
         for z in tree.defaults:
-            self.visit(z,'default arg')
+            self.visit(z)
             
         name = hasattr(tree,'vararg') and tree.vararg
         if name: pass
@@ -572,22 +572,22 @@ class AstTraverser(object):
     def do_BinOp (self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.op)
-        self.visit(tree.right,'binop right')
-        self.visit(tree.left,'binop left')
+        self.visit(tree.right)
+        self.visit(tree.left)
 
     def do_BoolOp (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.op,'bool op')
+        self.visit(tree.op)
         for z in tree.values:
-            self.visit(z,'boolop value')
+            self.visit(z)
 
     def do_Compare(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.left,'compare left')
+        self.visit(tree.left)
         for z in tree.ops:
-            self.visit(z,'compare op')
+            self.visit(z)
         for z in tree.comparators:
-            self.visit(z,'compare comparator')
+            self.visit(z)
 
     def do_op(self,tree,tag=''):
         # This does nothing but specify the op type.
@@ -636,7 +636,7 @@ class AstTraverser(object):
 
     def do_UnaryOp (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.operand,'unop operand')
+        self.visit(tree.operand)
 
     # unaryop = Invert | Not | UAdd | USub
     do_Invert = do_UnaryOp
@@ -647,32 +647,32 @@ class AstTraverser(object):
     def do_Interactive(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.body:
-            self.visit(z,'interactive body')
+            self.visit(z)
 
     def do_Module (self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.body:
-            self.visit(z,'module body')
+            self.visit(z)
 
     def do_Suite(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.body:
-            self.visit(z,'suite body')
+            self.visit(z)
     #@+node:ekr.20111116103733.10297: *3* a.Statements
     #@+node:ekr.20111116103733.10298: *4* a.Statements (assignments)
     def do_Assign(self,tree,tag=''):
 
         self.trace(tree,tag)
-        self.visit(tree.value,'assn value')
+        self.visit(tree.value)
         for z in tree.targets:
-            self.visit(z,'assn target')
+            self.visit(z)
 
     def do_AugAssign(self,tree,tag=''):
 
         self.trace(tree,tag)
         self.trace(tree.op)
-        self.visit(tree.value,'aug-assn value')
-        self.visit(tree.target,'aut-assn target')
+        self.visit(tree.value)
+        self.visit(tree.target)
     #@+node:ekr.20111116103733.10299: *4* a.Statements (classes & functions)
        # identifier name,
         # expr* bases,
@@ -681,37 +681,37 @@ class AstTraverser(object):
 
     def do_ClassDef (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.name,'class name')
+        self.visit(tree.name)
         for z in tree.body:
-            self.visit(z,'body')
+            self.visit(z)
 
     def do_FunctionDef (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.name,'function name')
+        self.visit(tree.name)
         for z in tree.body:
-            self.visit(z,'body')
+            self.visit(z)
 
     def do_Lambda (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.args,'lambda args')
-        self.visit(tree.body,'lambda body')
+        self.visit(tree.args)
+        self.visit(tree.body)
     #@+node:ekr.20111116103733.10300: *4* a.Statements (compound)
     def do_For (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.target,'for target')
-        self.visit(tree.iter,'for iter')
+        self.visit(tree.target)
+        self.visit(tree.iter)
         for z in tree.body:
-            self.visit(z,'for body')
+            self.visit(z)
         for z in tree.orelse:
-            self.visit(z,'for else')
+            self.visit(z)
 
     def do_If (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.test,'if test')
+        self.visit(tree.test)
         for z in tree.body:
-            self.visit(z,'if body')
+            self.visit(z)
         for z in tree.orelse:
-            self.visit(z,'if orelse')
+            self.visit(z)
 
     def do_With (self,tree,tag=''):
         self.trace(tree,tag)
@@ -720,78 +720,78 @@ class AstTraverser(object):
         if hasattr(tree,'optional_vars'):
             pass ### tree.optional_vars may be a name.
             # for z in tree.optional_vars:
-                # self.visit(z,'with vars')
+                # self.visit(z)
         for z in tree.body:
-            self.visit(z,'with body')
+            self.visit(z)
 
     def do_While (self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.test,'while expr test')
+        self.visit(tree.test)
         for z in tree.body:
-            self.visit(z,'while body')
+            self.visit(z)
         for z in tree.orelse:
-            self.visit(z,'while orelse')
+            self.visit(z)
     #@+node:ekr.20111116103733.10301: *4* a.Statements (exceptions)
     def do_ExceptHandler(self,tree,tag=''):
         self.trace(tree,tag)
         if hasattr(tree,'type') and tree.type:
-            self.visit(tree.type,'except handler type')
+            self.visit(tree.type)
         if hasattr(tree,'name') and tree.name:
-            self.visit(tree.name,'except handler name')
+            self.visit(tree.name)
         for z in tree.body:
-            self.visit(z,'except handler body')
+            self.visit(z)
 
     def do_Raise(self,tree,tag=''):
         self.trace(tree,tag)
         if hasattr(tree,'type') and tree.type is not None:
-            self.visit(tree.type,'raise type')
+            self.visit(tree.type)
         if hasattr(tree,'inst') and tree.inst is not None:
-            self.visit(tree.inst,'raise inst')
+            self.visit(tree.inst)
         if hasattr(tree,'tback') and tree.tback is not None:
-            self.visit(tree.tback,'raise tback')
+            self.visit(tree.tback)
 
     def do_TryExcept(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.body:
-            self.visit(z,'try except body')
+            self.visit(z)
         for z in tree.handlers:
-            self.visit(z,'try except handler')
+            self.visit(z)
         for z in tree.orelse:
-            self.visit(z,'try orelse')
+            self.visit(z)
 
     def do_TryFinally(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.body:
-            self.visit(z,'try finally body')
+            self.visit(z)
         for z in tree.finalbody:
-            self.visit(z,'try finalbody')
+            self.visit(z)
     #@+node:ekr.20111116103733.10302: *4* a.Statements (import) (AstTraverser)
     def do_Import(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.names:
-            self.visit(z,'import name')
+            self.visit(z)
 
     def do_ImportFrom(self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.module)
         if hasattr(tree,'level') and tree.level is not None:
-            self.visit(tree.level,'import level')
+            self.visit(tree.level)
         for z in tree.names:
-            self.visit(z,'import alias name')
+            self.visit(z)
 
     # identifier name, identifier? asname)
     def do_alias(self,tree,tag=''):
         self.trace(tree,tag)
         self.visit(tree.name)
         if hasattr(tree,'asname') and tree.asname is not None:
-            self.visit(tree.asname,'import as name')
+            self.visit(tree.asname)
 
     #@+node:ekr.20111116103733.10303: *4* a.Statements (simple)
     def do_Assert(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.test,'assert test')
+        self.visit(tree.test)
         if hasattr(tree,'msg') and tree.msg:
-            self.visit(tree.msg,'assert message')
+            self.visit(tree.msg)
 
     def do_Break(self,tree,tag=''):
         self.trace(tree,tag)
@@ -802,21 +802,21 @@ class AstTraverser(object):
     def do_Delete(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.targets:
-            self.visit(z,'del targets')
+            self.visit(z)
 
     # Python 2.x only
     def do_Exec(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.body,'exec body')
+        self.visit(tree.body)
         if hasattr(tree,'globals') and tree.globals:
-            self.visit(tree.globals,'exec globals')
+            self.visit(tree.globals)
         if hasattr(tree,'locals') and tree.locals:
-            self.visit(tree.locals,'exec locals')
+            self.visit(tree.locals)
 
     def do_Global(self,tree,tag=''):
         self.trace(tree,tag)
         for z in tree.names:
-            self.visit(z,'global name')
+            self.visit(z)
 
     def do_Pass(self,tree,tag=''):
         self.trace(tree,tag)
@@ -825,25 +825,25 @@ class AstTraverser(object):
     def do_Print(self,tree,tag=''):
         self.trace(tree,tag)
         if hasattr(tree,'dest') and tree.dest:
-            self.visit(tree.dest,'print dest')
+            self.visit(tree.dest)
         for z in tree.values:
-            self.visit(z,'print value')
-        self.visit(tree.nl,'print nl')
+            self.visit(z)
+        self.visit(tree.nl)
 
     # Python 2.x only
     def do_Repr(self,tree,tag=''):
         self.trace(tree,tag)
-        self.visit(tree.value,'repr value')
+        self.visit(tree.value)
 
     def do_Return(self,tree,tag=''):
         self.trace(tree,tag)
         if tree.value:
-            self.visit(tree.value,'return value')
+            self.visit(tree.value)
 
     def do_Yield(self,tree,tag=''):
         self.trace(tree,tag)
         if hasattr(tree,'value') and tree.value:
-            self.visit(tree.value,'yield value')
+            self.visit(tree.value)
     #@+node:ekr.20111116103733.10304: *3* a.Tools
     #@+at
     # Useful tools for tree traversal and testing.
@@ -1935,7 +1935,7 @@ class AstDumper(object):
         return ''
     #@-others
 #@+node:ekr.20111117031039.10133: ** class AstFormatter (AstTraverser)
-class AstFormatter (AstTraverser):
+class AstFormatter(AstTraverser):
     
     '''A class to recreate source code from an AST.
     
@@ -1954,117 +1954,175 @@ class AstFormatter (AstTraverser):
             # Calls init_tracing.
 
         self.fn = fn
+        self.level = 0 # Indentation level.
         self.options = options or {}
-        self.result = []
-        self.stack = []
-        self.trace_flag = False # Subclasses may set this.
-    #@+node:ekr.20111117031039.10259: *3* f.append
-    def append(self,s):
-        
-        self.result.append(s)
-            
     #@+node:ekr.20111117031039.10260: *3* f.format
     def format (self,tree):
 
         return self.visit(tree)
-        # return ''.join(self.result)
-    #@+node:ekr.20111117031039.10221: *3* f.push, pop & peep
-    def push (self):
-        self.stack.append(self.result)
-        self.result = []
+    #@+node:ekr.20120614011356.10093: *3* f.indent
+    def indent (self,s):
         
-    def pop (self):
-        val = ''.join(self.result)
-        self.result = self.stack.pop()
-        return val
-
-    def peek(self):
-        
-        return ''.join(self.stack[-1])
+        return '%s%s' % (' '*self.level,s)
     #@+node:ekr.20111117031039.10395: *3* f.visit
-    def visit (self,tree,tag=None):
+    bad_names = []
+
+    def visit (self,tree):
 
         '''Visit the ast tree node, dispatched by node type.'''
 
         kind = tree.__class__
         f = self.dispatch_table.get(kind)
         if f:
-            self.push()
-            f(tree,tag)
-            val = self.pop()
-            if self.trace_flag:
-                g.trace(f.__name__,val)
-            return val
+            return f(tree)
+            # val = f(tree)
+            # if val is None and f.__name__ not in self.bad_names:
+                # g.trace('returns None: %s',f.__name__)
+                # self.bad_names.append(f.__name__)
+                # val = '*** None'
+            # return val
         else:
-            g.trace('**** bad ast type',kind)
-            return None
+            s = '<bad ast type: %s>' % kind
+            g.trace('**** %s' % s)
+            return s
     #@+node:ekr.20111117031039.10193: *3* f.Contexts
     #@+node:ekr.20111117031039.10194: *4* f.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
-    def do_ClassDef (self,tree,tag=''):
+    def do_ClassDef (self,tree):
         
-        name = self.visit(tree.name,'class name')
-        
-        bases = []
-        if tree.bases:
-            for z in tree.bases:
-                bases.append(self.visit(z,'class base'))
+        result = []
+        name = self.visit(tree.name)
+        bases = [self.visit(z) for z in tree.bases] if tree.bases else []
                 
         if bases:
-            self.append('class (%s):' % (','.join(bases)))
+            result.append(self.indent('class %s(%s):\n' % (name,','.join(bases))))
         else:
-            self.append('class %s:' % name)
+            result.append(self.indent('class %s:\n' % name))
 
         for z in tree.body:
-            self.append(self.visit(z,'body'))
-            # self.append('\n')
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+            
+        return ''.join(result)
     #@+node:ekr.20111117031039.10195: *4* f.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
-    def do_FunctionDef (self,tree,tag=''):
+    def do_FunctionDef (self,tree):
+        
+        result = []
         
         if tree.decorator_list:
             for z in tree.decorator_list:
-                decorator = self.visit(z,'decorator')
-                self.append('@%s\n' % decorator)
+                result.append('@%s\n' % self.visit(z))
         
-        def_name = self.visit(tree.name,'function name')
-        
-        if tree.args:
-            args = self.visit(tree.args,'arg')
-        else:
-            args = ''
-            
-        self.append('def %s(%s):' % (def_name,args))
+        name = self.visit(tree.name)
+        args = self.visit(tree.args) if tree.args else ''
+
+        result.append(self.indent('def %s(%s):\n' % (name,args)))
 
         for z in tree.body:
-            self.append(self.visit(z,'body'))
-            # self.append('\n')
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+            
+        return ''.join(result)
     #@+node:ekr.20111117031039.10197: *4* f.Module
-    def do_Module (self,tree,tag=''):
+    def do_Module (self,tree):
+
+        return ''.join([self.visit(z) for z in  tree.body])
+    #@+node:ekr.20120614011356.10107: *3* f.Exceptions
+    #@+node:ekr.20120614011356.10091: *4* f.ExceptHandler
+    def do_ExceptHandler(self,tree):
+        
+        result = []
+        result.append(self.indent('except'))
+
+        if hasattr(tree,'type') and tree.type:
+            result.append(' %s' % self.visit(tree.type))
+
+        if hasattr(tree,'name') and tree.name:
+            result.append(' as %s' % self.visit(tree.name))
+            
+        result.append(':\n')
         
         for z in tree.body:
-            self.append(self.visit(z,'module body'))
-            # self.append('\n')
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+        
+        return ''.join(result)
+    #@+node:ekr.20120614011356.10092: *4* f.TryExcept
+    def do_TryExcept(self,tree):
+        
+        result = []
+        result.append(self.indent('try:\n'))
+
+        for z in tree.body:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+            
+        assert tree.handlers
+        for z in tree.handlers:
+            result.append(self.visit(z))
+
+        if tree.orelse:
+            result.append(result.append('else:\n'))
+            for z in tree.orelse:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+                
+        return ''.join(result)
+    #@+node:ekr.20120614011356.10089: *4* f.TryFinally
+    def do_TryFinally(self,tree):
+        
+        result = []
+        result.append(self.indent('try:\n'))
+       
+        for z in tree.body:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+
+        result.append(self.indent('finally:\n'))
+        for z in tree.finalbody:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+
+        return ''.join(result)
     #@+node:ekr.20111117031039.10198: *3* f.Operands
+    #@+node:ekr.20120614011356.10103: *4* f.Expr & Expression
+    def do_Expr(self,tree):
+        
+        '''An outer expression: must be indented.'''
+        
+        return self.indent('%s\n' % self.visit(tree.value))
+
+    def do_Expression(self,tree):
+        
+        '''An inner expression: do not indent.'''
+
+        return '%s\n' % self.visit(tree.body)
+    #@+node:ekr.20111117031039.10696: *4* f.arg
+    def do_arg(self,tree):
+
+        return self.visit(tree.arg)
     #@+node:ekr.20111117031039.10683: *4* f.arguments
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
     # -- keyword arguments supplied to call
     # keyword = (identifier arg, expr value)
 
-    def do_arguments(self,tree,tag=''):
+    def do_arguments(self,tree):
         
         kind = self.kind(tree)
         assert kind == 'arguments',kind
-        
-        args = []
-        for z in tree.args:
-            args.append(self.visit(z,'arg'))
             
-        defaults = []
-        for z in tree.defaults:
-            defaults.append(self.visit(z,'default arg'))
+        args     = [self.visit(z) for z in tree.args]
+        defaults = [self.visit(z) for z in tree.defaults]
         
         # Assign default values to the last args.
         args2 = []
@@ -2082,274 +2140,259 @@ class AstFormatter (AstTraverser):
         name = hasattr(tree,'kwarg') and tree.kwarg
         if name: args2.append('**'+name)
         
-        self.append(','.join(args2))
-    #@+node:ekr.20111117031039.10696: *4* f.arg
-    def do_arg(self,tree,tag=''):
-        
-        self.append(self.visit(tree.arg))
+        return ','.join(args2)
     #@+node:ekr.20111117031039.10199: *4* f.Attribute & helper
     # Attribute(expr value, identifier attr, expr_context ctx)
 
-    def do_Attribute(self,tree,tag=''):
-        
-        name = tree.attr
+    def do_Attribute(self,tree):
 
-        expr = self.visit(tree.value,'attribute value')
-        
-        self.append('%s.%s' % (expr,name))
+        return '%s.%s' % (
+            self.visit(tree.value),
+            self.visit(tree.attr))
+    #@+node:ekr.20111117031039.10208: *4* f.Call
+    def do_Call(self,tree):
+
+        func = self.visit(tree.func)
+
+        args = [self.visit(z) for z in tree.args]
+
+        for z in tree.keywords:
+            args.append(self.visit(z))
+
+        if hasattr(tree,'starargs') and tree.starargs:
+            args.append('*%s' % (self.visit(tree.starargs)))
+
+        if hasattr(tree,'kwargs') and tree.kwargs:
+            args.append('**%s' % (self.visit(tree.kwargs)))
+
+        return '%s(%s)' % (func,','.join(args))
     #@+node:ekr.20111117031039.10558: *4* f.Dict
-    def do_Dict(self,tree,tag=''):
+    def do_Dict(self,tree):
         
-        keys = []
-        for z in tree.keys:
-            keys.append(self.visit(z,'dict keys'))
-            
-        values = []
-        for z in tree.values:
-            values.append(self.visit(z,'dict values'))
+        result = []
+        keys   = [self.visit(z) for z in tree.keys]
+        values = [self.visit(z) for z in tree.values]
             
         if len(keys) == len(values):
-            self.append('{\n' if keys else '{')
+            result.append('{\n' if keys else '{')
             items = []
             for i in range(len(keys)):
                 items.append('  %s:%s' % (keys[i],values[i]))
-                # items.append('\n  %s:%s' % (keys[i],self.visit(values[i],'dict-value')))
-            self.append(',\n'.join(items))
-            self.append('\n}' if keys else '}')
+            result.append(',\n'.join(items))
+            result.append('\n}' if keys else '}')
         else:
             g.trace('*** Error *** keys: %s values: %s' % (
                 repr(keys),repr(values)))
+                
+        return ''.join(result)
     #@+node:ekr.20111117031039.10559: *4* f.Elipsis
-    def do_Ellipsis(self,tree,tag=''):
+    def do_Ellipsis(self,tree):
         
-        self.append('...')
+        return '...'
     #@+node:ekr.20111117031039.10572: *4* f.ExtSlice
-    def do_ExtSlice (self,tree,tag=''):
+    def do_ExtSlice (self,tree):
+
+        return ':'.join([self.visit(z) for z in tree.dims])
+    #@+node:ekr.20120614011356.10104: *4* f.Generator
+    def do_GeneratorExp(self,tree):
+       
+        elt  = self.visit(tree.elt)
+
+        gens = [self.visit(z) for z in tree.generators]
         
-        dims = []
-        for z in tree.dims:
-            self.append(self.visit(z,'slice dimention'))
-            
-        # self.append('[%s]' % (':'.join(dims)))
-        self.append(':'.join(dims))
+        return '<gen %s for %s>' % (elt,','.join(gens))
     #@+node:ekr.20111117031039.10571: *4* f.Index
-    def do_Index (self,tree,tag=''):
+    def do_Index (self,tree):
         
-        self.append(self.visit(tree.value,'index value'))
+        return self.visit(tree.value)
     #@+node:ekr.20111117031039.10354: *4* f.Keyword
     # keyword = (identifier arg, expr value)
 
-    def do_Keyword(self,tree,tag=''):
+    def do_Keyword(self,tree):
 
         # tree.arg is a string.
-        val = self.visit(tree.value,'keyword value')
+        val = self.visit(tree.value)
 
-        self.append('%s=%s' % (tree.arg,val))
+        # This is a keyword *arg*, not a Python keyword!
+        return '%s=%s' % (tree.arg,val)
     #@+node:ekr.20111117031039.10567: *4* f.List
-    def do_List(self,tree,tag=''):
+    def do_List(self,tree):
+
+        # Not used: list context.
+        # self.visit(tree.ctx)
         
-        elts = []
-        for z in tree.elts:
-            elts.append(self.visit(z,'list elts'))
-            
-        # self.visit(tree.ctx,'list context')
-        
-        self.append('[%s]' % ','.join(elts))
+        elts = [self.visit(z) for z in tree.elts]
+        return '[%s]' % ','.join(elts)
     #@+node:ekr.20111117031039.10204: *4* f.ListComp & Comprehension
-    def do_ListComp(self,tree,tag=''):
+    def do_ListComp(self,tree):
 
-        elt = self.visit(tree.elt,'list comp elt')
+        elt = self.visit(tree.elt)
 
-        generators = []
-        for z in tree.generators:
-            generators.append(self.visit(z,'list comp generator'))
-            
-        ### self.append('[%s for %s in %s]' % (elt,elt,''.join(generators)))
-        self.append('[%s for %s]' % (elt,''.join(generators)))
-        
-    # chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
+        gens = [self.visit(z) for z in tree.generators]
 
-    def do_comprehension(self,tree,tag=''):
+        return '[%s for %s]' % (elt,''.join(gens))
 
-        name = self.visit(tree.target,'comprehension target (a Name)')
-        
-        it = self.visit(tree.iter,'comprehension iter (an Attribute)')
+    def do_comprehension(self,tree):
 
-        ifs = []
-        for z in tree.ifs:
-            ifs.append(self.visit(z,'comprehension if'))
-            
-        self.append('%s in %s' % (name,it))
+        result = []
+        name = self.visit(tree.target) # A name.
+        it   = self.visit(tree.iter) # An attribute.
+
+        result.append('%s in %s' % (name,it))
+
+        ifs = [self.visit(z) for z in tree.ifs]
         if ifs:
-            self.append(' if %s' % (''.join(ifs)))
+            result.append(' if %s' % (''.join(ifs)))
+            
+        return ''.join(result)
     #@+node:ekr.20111117031039.10203: *4* f.Name
-    def do_Name(self,tree,tag=''):
+    def do_Name(self,tree):
 
-        self.append(tree.id)
+        return tree.id
+    #@+node:ekr.20120614011356.10080: *4* f.Repr
+    # Python 2.x only
+    def do_Repr(self,tree):
+
+        return 'repr(%s)' % self.visit(tree.value)
     #@+node:ekr.20111117031039.10573: *4* f.Slice
-    def do_Slice (self,tree,tag=''):
+    def do_Slice (self,tree):
         
         lower,upper,step = '','',''
         
         if hasattr(tree,'lower') and tree.lower is not None:
-            lower = self.visit(tree.lower,'slice lower')
+            lower = self.visit(tree.lower)
             
         if hasattr(tree,'upper') and tree.upper is not None:
-            upper = self.visit(tree.upper,'slice upper')
+            upper = self.visit(tree.upper)
             
         if hasattr(tree,'step') and tree.step is not None:
-            step = self.visit(tree.step,'slice step')
+            step = self.visit(tree.step)
             
         if step:
-            self.append('%s:%s:%s' % (lower,upper,step))
+            return '%s:%s:%s' % (lower,upper,step)
         else:
-            self.append('%s:%s' % (lower,upper))
-    #@+node:ekr.20111117031039.10455: *4* f.Str
-    def do_str (self,s,tag=''):
+            return '%s:%s' % (lower,upper)
+    #@+node:ekr.20111117031039.10455: *4* f.Str & str
+    def do_str (self,s):
 
-        ### self.append(s)
-        self.append(repr(s))
+        return s # Not repr(s)
 
-    def do_Str (self,tree,tag=''):
-        
-        self.append(repr(tree.s))
+    def do_Str (self,tree):
+
+        return repr(tree.s)
+
     #@+node:ekr.20111117031039.10574: *4* f.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
-    def do_Subscript(self,tree,tag=''):
+    def do_Subscript(self,tree):
         
-        value = self.visit(tree.value,'subscript value')
-        the_slice = self.visit(tree.slice,'subscript slice')
-        
-        self.append('%s[%s]' % (value,the_slice))
-        
-        
-        
-        # self.append(self.visit(tree.slice,'subscript slice'))
+        value = self.visit(tree.value)
 
-        # self.visit(tree.ctx,'subscript context')
+        the_slice = self.visit(tree.slice)
+        
+        return '%s[%s]' % (value,the_slice)
     #@+node:ekr.20111117031039.10560: *4* f.Tuple
-    def do_Tuple(self,tree,tag=''):
-        
-        elts = []
-        for z in tree.elts:
-            elts.append(self.visit(z,'list elts'))
+    def do_Tuple(self,tree):
             
-        self.append('(%s)' % ','.join(elts))
+        elts = [self.visit(z) for z in tree.elts]
 
-        # self.visit(tree.ctx,'list context')
+        return '(%s)' % ','.join(elts)
     #@+node:ekr.20111117031039.10557: *4* formatter:simple operands
     # Python 2.x only.
-    def do_bool(self,tree,tag=''):
-        pass
-        # g.trace(tree)
+    def do_bool(self,tree):
+        return '' ###
         
     # Python 3.x only.
-    def do_Bytes(self,tree,tag=''):
+    def do_Bytes(self,tree):
         assert isPython3
-        self.append(str(tree.s))
+        return str(tree.s)
 
-    def do_int (self,s,tag=''):
-        self.append(s)
+    def do_int (self,s):
+        return s
 
-    def do_Num(self,tree,tag=''):
-        self.append(repr(tree.n))
+    def do_Num(self,tree):
+        return repr(tree.n)
     #@+node:ekr.20111117031039.10421: *3* f.Operators
     #@+node:ekr.20111117031039.10487: *4* f.BinOp
-    def do_BinOp (self,tree,tag=''):
-        
-        op = self.visit(tree.op,'binop op')
-        rt = self.visit(tree.right,'binop right')
-        lt = self.visit(tree.left,'binop left')
+    def do_BinOp (self,tree):
 
-        self.append('%s%s%s' % (lt,op,rt))
+        return '%s%s%s' % (
+            self.visit(tree.left),
+            self.visit(tree.op),
+            self.visit(tree.right))
+            
     #@+node:ekr.20111117031039.10488: *4* f.BoolOp
-    def do_BoolOp (self,tree,tag=''):
+    def do_BoolOp (self,tree):
         
-        op = self.visit(tree.op,'bool op')
+        op = self.visit(tree.op)
 
-        values = []
-        for z in tree.values:
-            values.append(self.visit(z,'boolop value'))
+        values = [self.visit(z) for z in tree.values]
 
-        self.append(op.join(values))
+        return op.join(values)
         
     #@+node:ekr.20111117031039.10489: *4* f.Compare
-    def do_Compare(self,tree,tag=''):
+    def do_Compare(self,tree):
         
-        lt = self.visit(tree.left,'compare left')
-        
-        ops = []
-        for z in tree.ops:
-            ops.append(self.visit(z,'compare op'))
-
-        comparators = []
-        for z in tree.comparators:
-            comparators.append(self.visit(z,'compare comparator'))
+        result = []
+        lt    = self.visit(tree.left)
+        ops   = [self.visit(z) for z in tree.ops]
+        comps = [self.visit(z) for z in tree.comparators]
             
-        self.append(lt)
+        result.append(lt)
             
-        if len(ops) == len(comparators):
+        if len(ops) == len(comps):
             for i in range(len(ops)):
-                self.append('%s%s' % (ops[i],comparators[i]))
+                result.append('%s%s' % (ops[i],comps[i]))
         else:
-            g.trace('ops',repr(ops),'comparators',repr(comparators))
+            g.trace('ops',repr(ops),'comparators',repr(comps))
+            
+        return ''.join(result)
     #@+node:ekr.20111117031039.10495: *4* f.UnaryOp
-    def do_UnaryOp (self,tree,tag=''):
+    def do_UnaryOp (self,tree):
         
-        self.append(self.visit(tree.operand,'unop operand'))
+        return self.visit(tree.operand)
     #@+node:ekr.20111117031039.10491: *4* f.arithmetic operators
     # operator = Add | BitAnd | BitOr | BitXor | Div
     # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub | 
 
-    def do_Add(self,tree,tag=''):       self.append('+')
-    def do_BitAnd(self,tree,tag=''):    self.append('&')
-    def do_BitOr(self,tree,tag=''):     self.append('|')
-    def do_BitXor(self,tree,tag=''):    self.append('^')
-    def do_Div(self,tree,tag=''):       self.append('/')
-    def do_FloorDiv(self,tree,tag=''):  self.append('//')
-    def do_LShift(self,tree,tag=''):    self.append('<<')
-    def do_Mod(self,tree,tag=''):       self.append('%')
-    def do_Mult(self,tree,tag=''):      self.append('*')
-    def do_Pow(self,tree,tag=''):       self.append('**')
-    def do_RShift(self,tree,tag=''):    self.append('>>')
-    def do_Sub(self,tree,tag=''):       self.append('-')
+    def do_Add(self,tree):       return '+'
+    def do_BitAnd(self,tree):    return '&'
+    def do_BitOr(self,tree):     return '|'
+    def do_BitXor(self,tree):    return '^'
+    def do_Div(self,tree):       return '/'
+    def do_FloorDiv(self,tree):  return '//'
+    def do_LShift(self,tree):    return '<<'
+    def do_Mod(self,tree):       return '%'
+    def do_Mult(self,tree):      return '*'
+    def do_Pow(self,tree):       return '**'
+    def do_RShift(self,tree):    return '>>'
+    def do_Sub(self,tree):       return '-'
     #@+node:ekr.20111117031039.10490: *4* f.boolean operators
     # boolop = And | Or
-    def do_And(self,tree,tag=''):   self.append(' and ')
-    def do_Or(self,tree,tag=''):    self.append(' or ')
+    def do_And(self,tree):   return ' and '
+    def do_Or(self,tree):    return ' or '
     #@+node:ekr.20111117031039.10492: *4* f.comparison operators
     # cmpop = Eq | Gt | GtE | In | Is | IsNot | Lt | LtE | NotEq | NotIn
-    def do_Eq(self,tree,tag=''):    self.append('==')
-    def do_Gt(self,tree,tag=''):    self.append('>')
-    def do_GtE(self,tree,tag=''):   self.append('>=')
-    def do_In(self,tree,tag=''):    self.append(' in ')
-    def do_Is(self,tree,tag=''):    self.append(' is ')
-    def do_IsNot(self,tree,tag=''): self.append(' is not ')
-    def do_Lt(self,tree,tag=''):    self.append('<')
-    def do_LtE(self,tree,tag=''):   self.append('<=')
-    def do_NotEq(self,tree,tag=''): self.append('!=')
-    def do_NotIn(self,tree,tag=''): self.append(' not in ')
+    def do_Eq(self,tree):    return '=='
+    def do_Gt(self,tree):    return '>'
+    def do_GtE(self,tree):   return '>='
+    def do_In(self,tree):    return ' in '
+    def do_Is(self,tree):    return ' is '
+    def do_IsNot(self,tree): return ' is not '
+    def do_Lt(self,tree):    return '<'
+    def do_LtE(self,tree):   return '<='
+    def do_NotEq(self,tree): return '!='
+    def do_NotIn(self,tree): return ' not in '
     #@+node:ekr.20120609070048.11084: *4* f.ternary op (ifExp)
-    def do_IfExp (self,tree,tag=''):
-        
-        self.trace(tree,tag)
-        test = self.visit(tree.test,'if-expr test')
-        if tree.body:
-            body = self.visit(tree.body,'if-expr body')
-        else:
-            body = '*** no body'
-        if tree.orelse:
-            else_ = self.visit(tree.orelse,'if-expr orelse')
-        else:
-            else_ = '*** no orelse***'
-        return self.append('%s if %s else %s ' % (body,test,else_))
+    def do_IfExp (self,tree):
+
+        return '%s if %s else %s ' % (
+            self.visit(tree.body),
+            self.visit(tree.test),
+            self.visit(tree.orelse))
     #@+node:ekr.20111117031039.10493: *4* f.expression operators
-    def do_op(self,tree,tag=''):
-        pass
-        
-    # def do_expression_context(self,tree,tag=''):
-        # self.trace_flag(tree,tag)
+    def do_op(self,tree):
+        return ''
 
     do_AugLoad  = do_op
     do_AugStore = do_op
@@ -2360,88 +2403,126 @@ class AstFormatter (AstTraverser):
     #@+node:ekr.20111117031039.10494: *4* f.unary opertors
     # unaryop = Invert | Not | UAdd | USub
 
-    def do_Invert(self,tree,tag=''):    self.append('~')
-    def do_Not(self,tree,tag=''):       self.append(' not ')
-    def do_UAdd(self,tree,tag=''):      self.append('+')
-    def do_USub(self,tree,tag=''):      self.append('-')
+    def do_Invert(self,tree):   return '~'
+    def do_Not(self,tree):      return ' not '
+    def do_UAdd(self,tree):     return '+'
+    def do_USub(self,tree):     return '-'
     #@+node:ekr.20111117031039.10205: *3* f.Statements
+    #@+node:ekr.20120614011356.10084: *4* f.Assert
+    def do_Assert(self,tree):
+        
+        test = self.visit(tree.test)
+
+        if hasattr(tree,'msg') and tree.msg:
+            message = self.visit(tree.msg)
+            return self.indent('assert %s, %s' % (test,message))
+        else:
+            return self.indent('assert %s' % test)
     #@+node:ekr.20111117031039.10206: *4* f.Assign
-    def do_Assign(self,tree,tag=''):
+    def do_Assign(self,tree):
 
-        val = self.visit(tree.value,'assn value')
-            
-        targets = []
-        for z in tree.targets:
-            targets.append(self.visit(z,'assn target'))
+        val = self.visit(tree.value)
+        
+        assns = ['%s=%s\n' % (self.visit(z),val) for z in tree.targets]
 
-        targets = '='.join(targets)
-        self.append('%s=%s' % (targets,val))
+        return ''.join([self.indent(z) for z in assns])
     #@+node:ekr.20111117031039.10207: *4* f.AugAssign
-    def do_AugAssign(self,tree,tag=''):
+    def do_AugAssign(self,tree):
+
+        return self.indent('%s%s=%s\n' % (
+            self.visit(tree.target),
+            self.visit(tree.op),
+            self.visit(tree.value)))
+    #@+node:ekr.20120614011356.10083: *4* f.Break and f.Continue
+    def do_Break(self,tree):
+
+        return self.indent('break\n')
+
+    def do_Continue(self,tree):
+
+        return self.indent('continue\n')
+    #@+node:ekr.20120614011356.10085: *4* f.Delete
+    def do_Delete(self,tree):
+
+        return self.indent('del %s\n' % ','.join(
+            [self.visit(z) for z in tree.targets]))
+    #@+node:ekr.20120614011356.10082: *4* f.Exec
+    # Python 2.x only
+    def do_Exec(self,tree):
         
-        op = self.visit(tree.op)
-        rhs = self.visit(tree.value,'aug-assn value')
-        lhs = self.visit(tree.target,'aut-assn target')
-
-        self.append('%s%s=%s' % (lhs,op,rhs))
-    #@+node:ekr.20111117031039.10208: *4* f.Call
-    def do_Call(self,tree,tag=''):
+        body = self.visit(tree.body)
         
-        func = self.visit(tree.func,'call func')
+        args = [] # Globals before locals.
+
+        if hasattr(tree,'globals') and tree.globals:
+            args.append(self.visit(tree.globals))
         
-        # Unlike 'ast.arguments, ast.Call has no defaults.
-        args = []
-        for z in tree.args:
-            args.append(self.visit(z,'call args'))
-
-        for z in tree.keywords:
-            args.append(self.visit(z,'call keyword args'))
-
-        if hasattr(tree,'starargs') and tree.starargs:
-            args.append('*%s' % (self.visit(tree.starargs,'call *arg')))
-
-        if hasattr(tree,'kwargs') and tree.kwargs:
-            args.append('**%s' % (self.visit(tree.kwargs,'call **args')))
+        if hasattr(tree,'locals') and tree.locals:
+            args.append(self.visit(tree.locals))
             
-        self.append('%s(%s)' % (func,','.join(args)))
+        if args:
+            return self.indent('exec %s in %s\n' % (body,','.join(args)))
+        else:
+            return self.indent('exec %s\n' % (body))
     #@+node:ekr.20111117031039.10209: *4* f.For
-    def do_For (self,tree,tag=''):
+    def do_For (self,tree):
         
-        self.append('for ')
-        self.append(self.visit(tree.target,'for target'))
-        self.append(' in ')
-        self.append(self.visit(tree.iter,'for iter'))
-        self.append(':\n')
+        result = []
+
+        result.append(self.indent('for %s in %s:\n' % (
+            self.visit(tree.target),
+            self.visit(tree.iter))))
         
         for z in tree.body:
-            self.append(self.visit(z,'for body'))
-            # self.append('\n')
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
 
         if tree.orelse:
-            self.append('else:')
+            result.append(self.indent('else:\n'))
             for z in tree.orelse:
-                self.append(self.visit(z,'for else'))
-                # self.append('\n')
-    #@+node:ekr.20111117031039.10210: *4* f.Global
-    def do_Global(self,tree,tag=''):
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
 
-        self.append('global ')
-        self.append(','.join(tree.names))
-        self.append('\n')
-    #@+node:ekr.20111117031039.10211: *4* f.Import & helper
-    def do_Import(self,tree,tag=''):
+        return ''.join(result)
+    #@+node:ekr.20111117031039.10210: *4* f.Global
+    def do_Global(self,tree):
+
+        return self.indent('global %s\n' % (
+            ','.join(tree.names)))
+    #@+node:ekr.20120614011356.10077: *4* f.If
+    def do_If (self,tree):
         
-        self.append('import ')
+        result = []
+        
+        result.append(self.indent('if %s:\n' % (self.visit(tree.test))))
+        
+        for z in tree.body:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+            
+        if tree.orelse:
+            result.append(self.indent('else:\n'))
+            for z in tree.orelse:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            
+        return ''.join(result)
+    #@+node:ekr.20111117031039.10211: *4* f.Import & helper
+    def do_Import(self,tree):
         
         names = []
+
         for fn,asname in self.get_import_names(tree):
             if asname:
                 names.append('%s as %s' % (fn,asname))
             else:
                 names.append(fn)
-                
-        self.append(','.join(names))
-        self.append('\n')
+        
+        return self.indent('import %s\n' % ','.join(names))
     #@+node:ekr.20111117031039.10212: *5* f.get_import_names
     def get_import_names (self,tree):
 
@@ -2458,53 +2539,120 @@ class AstFormatter (AstTraverser):
 
         return result
     #@+node:ekr.20111117031039.10214: *4* f.ImportFrom
-    def do_ImportFrom(self,tree,tag=''):
+    def do_ImportFrom(self,tree):
         
-        self.append('from %s import ' % (tree.module))
-
         names = []
+
         for fn,asname in self.get_import_names(tree):
             if asname:
                 names.append('%s as %s' % (fn,asname))
             else:
                 names.append(fn)
-            
-        self.append(','.join(names))
-        self.append('\n')
+        
+        return self.indent('from %s import %s\n' % (
+            tree.module,
+            ','.join(names)))
     #@+node:ekr.20111117031039.10215: *4* f.Lambda & helper
-    def do_Lambda (self,tree,tag=''):
-        
-        self.append('lambda ')
-        self.append(self.visit(tree.args,'lambda args'))
-        self.append(':')
-        self.append(self.visit(tree.body,'lambda body'))
-        # self.append('\n')
+    def do_Lambda (self,tree):
+            
+        return self.indent('lambda %s: %s\n' % (
+            self.visit(tree.args),
+            self.visit(tree.body)))
     #@+node:ekr.20111117031039.10972: *4* f.Pass
-    def do_Pass(self,tree,tag=''):
+    def do_Pass(self,tree):
+
+        return self.indent('pass\n')
+    #@+node:ekr.20120614011356.10081: *4* f.Print
+    # Python 2.x only
+    def do_Print(self,tree):
         
-        self.append('pass')
-    #@+node:ekr.20111117031039.10217: *4* f.With
-    def do_With (self,tree,tag=''):
+        vals = []
+
+        for z in tree.values:
+           vals.append(self.visit(z))
+           
+        if hasattr(tree,'dest') and tree.dest:
+            vals.append('dest=%s' % self.visit(tree.dest))
+            
+        if hasattr(tree,'nl') and tree.nl:
+            vals.append('nl=%s' % self.visit(tree.nl))
         
-        self.append('with ')
+        return self.indent('print(%s)\n' % ','.join(vals))
+    #@+node:ekr.20120614011356.10090: *4* f.Raise
+    def do_Raise(self,tree):
+        
+        args = []
+        for attr in ('type','inst','tback'):
+            if hasattr(tree,attr) and getattr(tree,attr) is not None:
+                args.append(self.visit(getattr(tree,attr)))
+            
+        if args:
+            return self.indent('raise %s\n' % ','.join(args))
+        else:
+            return self.indent('raise\n')
+    #@+node:ekr.20120614011356.10087: *4* f.Return
+    def do_Return(self,tree):
+
+        if tree.value:
+            return self.indent('return %s\n' % self.visit(tree.value))
+        else:
+            return self.indent('return\n')
+    #@+node:ekr.20120614011356.10078: *4* f.While
+    def do_While (self,tree):
+        
+        result = []
+
+        result.append(self.indent('while %s:\n' % self.visit(tree.test)))
+        
+        for z in tree.body:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+
+        if tree.orelse:
+            result.append('else:\n')
+            for z in tree.orelse:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+        
+        return ''.join(result)
+    #@+node:ekr.20111117031039.10217: *4* f.With (To do)
+    def do_With (self,tree):
+        
+        result = []
+        result.append(self.indent('with '))
         
         if hasattr(tree,'context_expression'):
-            result.append(self.visit(tree.context_expresssion,'context expr'))
+            result.append(self.visit(tree.context_expresssion))
 
         vars_list = []
         if hasattr(tree,'optional_vars'):
             try:
                 for z in tree.optional_vars:
-                    vars_list.append(self.visit(z,'with vars'))
+                    vars_list.append(self.visit(z))
             except TypeError: # Not iterable.
-                vars_list.append(self.visit(tree.optional_vars,'with var'))
+                vars_list.append(self.visit(tree.optional_vars))
                 
-        self.append(','.join(vars_list))
-        self.append(':\n')
+        result.append(','.join(vars_list))
+        result.append(':\n')
         
         for z in tree.body:
-            self.append(self.visit(z,'with body'))
-            # self.append('\n')
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+            
+        result.append('\n')
+        return ''.join(result)
+    #@+node:ekr.20120614011356.10086: *4* f.Yield
+    def do_Yield(self,tree):
+
+        if hasattr(tree,'value') and tree.value:
+            return self.indent('yield %s\n' % (
+                self.visit(tree.value)))
+        else:
+            return self.indent('yield\n')
+
     #@-others
 #@+node:ekr.20111116103733.10338: ** class Chain
 class Chain(object):
@@ -2635,10 +2783,10 @@ class InspectTraverser (AstTraverser):
         
         self.push_context(new_cx)
 
-        self.visit(tree.name,'class name')
+        self.visit(tree.name)
 
         for z in tree.body:
-            self.visit(z,'body')
+            self.visit(z)
        
         self.pop_context()
             
@@ -2661,7 +2809,7 @@ class InspectTraverser (AstTraverser):
         
         self.push_context(new_cx)
        
-        self.visit(tree.name,'function name')
+        self.visit(tree.name)
 
         # Define the function arguments before visiting the body.
         # These arguments, including 'self', are known in the body.
@@ -2669,7 +2817,7 @@ class InspectTraverser (AstTraverser):
         
         # Visit the body.
         for z in tree.body:
-            self.visit(z,'body')
+            self.visit(z)
 
         self.pop_context()
         
@@ -2686,10 +2834,10 @@ class InspectTraverser (AstTraverser):
         # Handle positional args.
         # do_Name actually adds the args.
         for z in tree.args:
-            self.visit(z,'arg')
+            self.visit(z)
             
         for z in tree.defaults:
-            self.visit(z,'default arg')
+            self.visit(z)
 
         for tag in ('vararg','kwarg',):
             name = hasattr(tree,tag) and getattr(tree,tag)
@@ -2713,7 +2861,7 @@ class InspectTraverser (AstTraverser):
 
         try:
             for z in tree.body:
-                self.visit(z,'module body')
+                self.visit(z)
         finally:
             self.pop_context()
     #@+node:ekr.20111125131712.10256: *3* it.Operands
@@ -2724,7 +2872,7 @@ class InspectTraverser (AstTraverser):
 
     def format_tree(self,tree,tag=''):
         val = self.formatter.visit(tree)
-        if self.trace_flag: g.trace(tag,val)
+        # if self.trace_flag: g.trace(tag,val)
         return val
         
     # do_Attribute
@@ -2755,17 +2903,21 @@ class InspectTraverser (AstTraverser):
         name = tree.attr
         
         # Use the *formatter* to traverse tree.value.
-        expr = self.formatter.visit(tree.value,'attribute value')
+        expr = self.formatter.visit(tree.value)
         s = '%s.%s' % (expr,name)
         
         if self.trace_flag: g.trace(s)
         
         chain = cx.st.add_chain(tree,s)
-
-        self.formatter.append(s)
-            # For recursive calls.
-            
+        
         self.sd.n_attributes += 1
+
+        #### Huh?
+        #### self.formatter.append(s)
+            # For recursive calls.
+        return s
+            
+        
     #@+node:ekr.20111125131712.10278: *4* it.Name
     def do_Name(self,tree,tag=''):
 
@@ -2808,11 +2960,9 @@ class InspectTraverser (AstTraverser):
 
         sd = self.sd
 
-        # self.trace(tree,tag)
-
-        self.visit(tree.elt,'list comp elt')
+        self.visit(tree.elt)
         for z in tree.generators:
-            self.visit(z,'list comp generator')
+            self.visit(z)
             
         sd.n_list_comps += 1
     #@+node:ekr.20111116103733.10368: *3* it.Statements
@@ -2824,9 +2974,9 @@ class InspectTraverser (AstTraverser):
         cx = self.get_context()
         cx.statements_list.append(StatementContext(tree,cx,sd,'assn'))
 
-        self.visit(tree.value,'assn value')    
+        self.visit(tree.value)    
         for z in tree.targets:    
-            self.visit(z,'assn target')
+            self.visit(z)
 
         sd.n_assignments += 1
     #@+node:ekr.20111116103733.10370: *4* it.AugAssign
@@ -2838,8 +2988,8 @@ class InspectTraverser (AstTraverser):
         cx.statements_list.append(StatementContext(tree,cx,sd,'aug-assn'))
 
         self.visit(tree.op)
-        self.visit(tree.value,'aug-assn value') # The rhs.
-        self.visit(tree.target,'aut-assn target') # The lhs.
+        self.visit(tree.value) # The rhs.
+        self.visit(tree.target) # The lhs.
 
         sd.n_assignments += 1
     #@+node:ekr.20111116103733.10365: *4* it.Call
@@ -2852,19 +3002,19 @@ class InspectTraverser (AstTraverser):
         
         sd.n_calls += 1
         
-        self.visit(tree.func,'call func')
+        self.visit(tree.func)
         
         for z in tree.args:
-            self.visit(z,'call args')
+            self.visit(z)
 
         for z in tree.keywords:
-            self.visit(z,'call keywords')
+            self.visit(z)
 
         if hasattr(tree,'starargs') and tree.starargs:
-            self.visit(tree.starargs,'call starags')
+            self.visit(tree.starargs)
 
         if hasattr(tree,'kwargs') and tree.kwargs:
-            self.visit(tree.kwargs,'call kwargs')
+            self.visit(tree.kwargs)
     #@+node:ekr.20111116103733.10371: *4* it.For
     def do_For (self,tree,tag=''):
         
@@ -2876,15 +3026,15 @@ class InspectTraverser (AstTraverser):
         
         self.push_context(new_cx)
         
-        self.visit(tree.target,'for target')
+        self.visit(tree.target)
 
-        self.visit(tree.iter,'for iter')
+        self.visit(tree.iter)
         
         for z in tree.body:
-            self.visit(z,'for body')
+            self.visit(z)
 
         for z in tree.orelse:
-            self.visit(z,'for else')
+            self.visit(z)
 
         self.pop_context()
         
@@ -3021,7 +3171,7 @@ class InspectTraverser (AstTraverser):
         self.def_lambda_args_helper(new_cx,tree.args)
 
         # Enter all other definitions in the defining_context.
-        self.visit(tree.body,'lambda body')
+        self.visit(tree.body)
 
         self.pop_context()
         
@@ -3040,10 +3190,10 @@ class InspectTraverser (AstTraverser):
         # Handle positional args.
         # do_Name actually adds the args.
         for z in tree.args:
-            self.visit(z,'arg')
+            self.visit(z)
             
         for z in tree.defaults:
-            self.visit(z,'default arg')
+            self.visit(z)
 
         for tag in ('vararg','kwarg',):
             name = hasattr(tree,tag) and getattr(tree,tag)
@@ -3068,12 +3218,12 @@ class InspectTraverser (AstTraverser):
         if hasattr(tree,'optional_vars'):
             try:
                 for z in tree.optional_vars:
-                    self.visit(z,'with vars')
+                    self.visit(z)
             except TypeError: # Not iterable.
-                self.visit(tree.optional_vars,'with var')
+                self.visit(tree.optional_vars)
         
         for z in tree.body:
-            self.visit(z,'with body')
+            self.visit(z)
 
         self.pop_context()
         
