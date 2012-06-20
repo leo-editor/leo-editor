@@ -541,7 +541,7 @@ class quickMove(object):
         self.c.redraw()  # must come second to keep focus
         self.c.frame.bringToFront()  # doesn't work
         if self.c.config.getBool("quickmove_timer_hack"):
-            QtCore.QTimer.singleShot(100, self.c.bringToFront)
+            QtCore.QTimer.singleShot(0, self.c.bringToFront)
 
     #@+node:tbrown.20120104084659.21948: *3* bookmark_other
     def bookmark_other(self, c2, p, op=None):
@@ -575,7 +575,7 @@ class quickMove(object):
         self.c.redraw()  # must come second to keep focus
         self.c.frame.bringToFront()  # doesn't work
         if self.c.config.getBool("quickmove_timer_hack"):
-            QtCore.QTimer.singleShot(100, self.c.bringToFront)
+            QtCore.QTimer.singleShot(0, self.c.bringToFront)
     #@+node:tbrown.20120620073922.33740: *3* unl_to_pos
     def unl_to_pos(self, c2, for_p):
         """"c2 may be an outline (like c) or an UNL (string)
