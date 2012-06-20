@@ -917,8 +917,8 @@ class todoController:
                             repl.append(str(n))
                     x0 = x0.replace(what, ','.join(repl))
 
-                x0 = [int(i) for i in x0.replace(',',' ').split()
-                      if int(i) in self.todo_priorities]
+                x0 = [int(i) for i in x0.replace(',',' ').split()]
+                      # if int(i) in self.todo_priorities]
             except:
                 g.es('Not understood, no action')
                 return
@@ -967,8 +967,8 @@ class todoController:
         pris = sorted([(k,v) for k,v in pris.items()]) 
         for pri in pris:
             if pri[0] in self.priorities:
-                g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
-                    self.priorities[pri[0]]['long']))
+                g.es('%s\t%d\t%s\t(%s)' % (self.priorities[pri[0]]['short'], pri[1],
+                    self.priorities[pri[0]]['long'],pri[0]))
     #@+node:tbrown.20090119215428.49: *3* updateUI
     def updateUI(self,tag=None,k=None):
 

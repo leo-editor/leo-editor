@@ -135,6 +135,10 @@ if g.app.gui.guiName() == "qt":
 def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
+    
+    if '_quickmove' not in g.app.db:
+        g.app.db['_quickmove'] = {'global_targets': []}
+    
     return True
 
 def onCreate(tag, keywords):
@@ -158,6 +162,17 @@ class quickMove(object):
     ]
 
     #@+others
+    #@+node:tbrown.20120619072702.22812: *3* add_target
+    def add_target(self, p):
+        """add the current node as a target for global operations"""
+        
+        g.app.db['_quickmove']['global_targets'].append({
+            'name': p.h,
+            'unl': p.get_UNL(),
+        })
+        
+        # is this needed / what's the shorthand?
+        g.app.db['_quickmove'] = g.app.db['_quickmove']
     #@+node:tbrown.20110914094319.18256: *3* copy_recursively
     @staticmethod
     def copy_recursively(nd0, nd1):
@@ -392,6 +407,14 @@ class quickMove(object):
         # copy / cut to other outline
         for txt, cut in ("Copy to...", False), ("Move to...", True):
             sub = pathmenu.addMenu(txt)
+            
+            # global targets
+            for target in g.app.db['_quickmove']['global_targets']:
+                a = sub.addAction(target['name'])
+                a.connect(a, QtCore.SIGNAL("triggered()"), 
+                    lambda c2=target['unl'], p=p, cut=cut: self.to_other(c2, p, cut=cut))
+            
+            # top of open outlines
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
                     g.os_path_basename(c2.fileName()))
@@ -400,10 +423,17 @@ class quickMove(object):
                     
         # bookmark to other outline 
         sub = pathmenu.addMenu("Bookmark to...")
+            
+        # top of open outlines
         for c2 in g.app.commanders():
             a = sub.addAction(g.os_path_basename(c2.fileName()))
             a.connect(a, QtCore.SIGNAL("triggered()"), 
                 lambda c2=c2, p=p: self.bookmark_other(c2, p))
+
+        # add new global target
+        a = pathmenu.addAction("Add node as target")
+        a.connect(a, QtCore.SIGNAL("triggered()"), 
+             lambda p=p: self.add_target(p))
 
         # actions within this outline
         for name,dummy,command in self.local_imps:
@@ -469,20 +499,54 @@ class quickMove(object):
     def to_other(self, c2, p, op=None, cut=False):
         """Copy/Move(cut == True) p from self.c to c2 at quickmove node op,
         or top of outline if op == None.  c2 may be self.c.
-        """
         
-        nd = c2.rootPosition().insertAfter()
-        nd.copy().back().moveAfter(nd)
+        c2 may be an outline (like c) or an UNL (string)
+        """
+
+        p_v = p.v  # p may be invalid by the time we want to use it
+
+        if g.isString(c2):
+            # c2 is an UNL indicating where to insert
+            full_path = c2
+            path, unl = full_path.split('#')
+            c2 = g.openWithFileName(path, old_c=self.c)
+            self.c.frame.bringToFront()
+            found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
+            
+            if found:
+                nd = maxp.insertAsNthChild(0)
+            else:
+                g.es("Could not find '%s'"%full_path)
+                self.c.frame.bringToFront()
+                return
+        else:
+            # c2 is an outline, insert at top
+            nd = c2.rootPosition().insertAfter()
+            nd.copy().back().moveAfter(nd)
+        
+        p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
+                                        # invalidating p
         
         self.copy_recursively(p, nd)
-
-        if cut:
-            nxt = p.copy().visNext(self.c).v
-            self.c.deleteOutline(p)
-            self.c.selectPosition(self.c.vnode2position(nxt))
         
+        p = self.c.vnode2position(p_v)
+        
+        nxt = p.copy().visNext(self.c).v
+        
+        if cut:
+            self.c.selectPosition(p)
+            self.c.deleteOutline()
+            
+        if nxt:        
+            self.c.selectPosition(self.c.vnode2position(nxt))
+
         c2.redraw()
         self.c.redraw()  # must come second to keep focus
+        self.c.frame.bringToFront()  # doesn't work
+        if self.c.config.getBool("quickmove_timer_hack"):
+            QtCore.QTimer.singleShot(100, self.c.bringToFront)
+            print 'timer set'
+
     #@+node:tbrown.20120104084659.21948: *3* bookmark_other
     def bookmark_other(self, c2, p, op=None):
         """Bookmark p from self.c to c2 at quickmove node op,

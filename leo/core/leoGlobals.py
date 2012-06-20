@@ -1946,7 +1946,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how fast we will recurse.  So it should default to 0 (zero).
     """
-    
+        
     if g.unitTesting:
         g.app.unitTestDict['g.recursiveUNLSearch']=True
         return True, maxdepth, maxp
@@ -1956,7 +1956,18 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
         c.selectPosition(p)
         c.redraw()
         c.frame.bringToFront()
+        
+    found, maxdepth, maxp = recursiveUNLFind(unlList, c, depth, p, maxdepth, maxp)
+    
+    if maxp:
+        moveToP(c, maxp)
+        
+    return found, maxdepth, maxp
 
+def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+    """Internal part of recursiveUNLSearch which doesn't change the
+    selected position or call c.frame.bringToFront()"""
+    
     if depth == 0:
         nds = c.rootPosition().self_and_siblings()
         unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
@@ -1969,8 +1980,8 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
         if unlList[depth] == i.h:
 
             if depth+1 == len(unlList):  # found it
-                moveToP(c, i)
-                return True, maxdepth, maxp
+                #X moveToP(c, i)
+                return True, maxdepth, i
             else:
                 if maxdepth < depth+1:
                     maxdepth = depth+1
@@ -1981,7 +1992,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
                 # else keep looking through nds
 
     if depth == 0 and maxp:  # inexact match
-        moveToP(c, maxp)
+        #X moveToP(c, maxp)
         g.es('Partial UNL match')
 
     return False, maxdepth, maxp
