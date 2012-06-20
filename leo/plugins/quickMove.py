@@ -14,12 +14,11 @@ Adds `Move/Clone/Copy To Last Child Button` and `Move/Clone/Copy To First Child
 Button`, `Link To/From` and `Jump To` commands to the Move sub-menu on the
 Outline menu, and each node's context menu, if the `contextmenu` plugin is enabled.
 
-Also adds a `Copy/Move to` menu item to copy/move nodes to other currently
-open outlines, currently to the top of the other outline only.
+Also adds a `Copy/Move to/Bookmark to` menu item to copy/move nodes to other currently
+open outlines.
 
-Adds a `Bookmark to` menu item to bookmark nodes to other currently
-open outlines.  Bookmark will be either at the top of the other
-outline, or the first child in any top-level `@bookmarks` node.
+Targets in other outlines may be specified with the `Add node as target` command, 
+and edited with the `Show targets` / `Read targets` commands.
 
 Select a node ``Foo`` and then use the `Move To Last Child Button` command.
 This adds a 'to Foo' button to the button bar. Now select another node and click
@@ -166,12 +165,16 @@ class quickMove(object):
     def add_target(self, p):
         """add the current node as a target for global operations"""
         
+        name, ok = QtGui.QInputDialog.getText(None,"Target name","Target name",text=p.h)
+        if not ok:
+            return
+        
         g.app.db['_quickmove']['global_targets'].append({
-            'name': p.h,
+            'name': name,
             'unl': p.get_UNL(),
         })
         
-        # is this needed / what's the shorthand?
+        # make sure g.app.db knows it's been changed
         g.app.db['_quickmove'] = g.app.db['_quickmove']
     #@+node:tbrown.20110914094319.18256: *3* copy_recursively
     @staticmethod
@@ -423,17 +426,27 @@ class quickMove(object):
                     
         # bookmark to other outline 
         sub = pathmenu.addMenu("Bookmark to...")
-            
+        # global targets
+        for target in g.app.db['_quickmove']['global_targets']:
+            a = sub.addAction(target['name'])
+            a.connect(a, QtCore.SIGNAL("triggered()"), 
+                lambda c2=target['unl'], p=p, cut=cut: self.bookmark_other(c2, p))
         # top of open outlines
         for c2 in g.app.commanders():
             a = sub.addAction(g.os_path_basename(c2.fileName()))
             a.connect(a, QtCore.SIGNAL("triggered()"), 
                 lambda c2=c2, p=p: self.bookmark_other(c2, p))
 
-        # add new global target
+        # add new global target, etc.
         a = pathmenu.addAction("Add node as target")
         a.connect(a, QtCore.SIGNAL("triggered()"), 
              lambda p=p: self.add_target(p))
+        a = pathmenu.addAction("Show targets")
+        a.connect(a, QtCore.SIGNAL("triggered()"), 
+             lambda p=p: self.show_targets())
+        a = pathmenu.addAction("Read targets")
+        a.connect(a, QtCore.SIGNAL("triggered()"), 
+             lambda p=p: self.read_targets())
 
         # actions within this outline
         for name,dummy,command in self.local_imps:
@@ -499,31 +512,15 @@ class quickMove(object):
     def to_other(self, c2, p, op=None, cut=False):
         """Copy/Move(cut == True) p from self.c to c2 at quickmove node op,
         or top of outline if op == None.  c2 may be self.c.
-        
-        c2 may be an outline (like c) or an UNL (string)
         """
 
         p_v = p.v  # p may be invalid by the time we want to use it
-
-        if g.isString(c2):
-            # c2 is an UNL indicating where to insert
-            full_path = c2
-            path, unl = full_path.split('#')
-            c2 = g.openWithFileName(path, old_c=self.c)
-            self.c.frame.bringToFront()
-            found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
-            
-            if found:
-                nd = maxp.insertAsNthChild(0)
-            else:
-                g.es("Could not find '%s'"%full_path)
-                self.c.frame.bringToFront()
-                return
-        else:
-            # c2 is an outline, insert at top
-            nd = c2.rootPosition().insertAfter()
-            nd.copy().back().moveAfter(nd)
         
+        c2, nd = self.unl_to_pos(c2, p)
+        
+        if c2 is None:
+            return
+
         p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
                                         # invalidating p
         
@@ -545,7 +542,6 @@ class quickMove(object):
         self.c.frame.bringToFront()  # doesn't work
         if self.c.config.getBool("quickmove_timer_hack"):
             QtCore.QTimer.singleShot(100, self.c.bringToFront)
-            print 'timer set'
 
     #@+node:tbrown.20120104084659.21948: *3* bookmark_other
     def bookmark_other(self, c2, p, op=None):
@@ -553,22 +549,127 @@ class quickMove(object):
         or top of outline if op == None.  c2 may be self.c.
         """
         
-        for nd in c2.rootPosition().self_and_siblings():
-            if '@bookmarks' in nd.h:
-                nd.expand()
-                nd = nd.insertAsNthChild(0)
-                nd.h = p.h
-                break
-        else:    
-            nd = c2.rootPosition().insertAfter()
-            nd.copy().back().moveAfter(nd)
+        p_v = p.v  # p may be invalid by the time we want to use it
+        
+        c2, nd = self.unl_to_pos(c2, p)
+        
+        if c2 is None:
+            return
+        
+        p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
+                                        # invalidating p
+        
+        if '@bookmarks' in nd.copy().parent().h:
+            nd.h = p.h
+        else:
             nd.h = "@url %s"%p.h
         
         nd.b = p.get_UNL()
         nd.v.u = dict(p.v.u)
+
+        nxt = p.copy().visNext(self.c)        
+        if nxt:        
+            self.c.selectPosition(nxt)
         
         c2.redraw()
         self.c.redraw()  # must come second to keep focus
+        self.c.frame.bringToFront()  # doesn't work
+        if self.c.config.getBool("quickmove_timer_hack"):
+            QtCore.QTimer.singleShot(100, self.c.bringToFront)
+    #@+node:tbrown.20120620073922.33740: *3* unl_to_pos
+    def unl_to_pos(self, c2, for_p):
+        """"c2 may be an outline (like c) or an UNL (string)
+        
+        return c, p where c is an outline and p is a node to copy data to
+        in that outline
+        
+        for_p is the p to be copied - needed to check for invalid recursive
+        copy / move
+        """
+
+        if g.isString(c2):
+            # c2 is an UNL indicating where to insert
+            full_path = c2
+            path, unl = full_path.split('#')
+            c2 = g.openWithFileName(path, old_c=self.c)
+            self.c.frame.bringToFront()
+            found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
+            
+            if found:
+                
+                if for_p == maxp or for_p.isAncestorOf(maxp):
+                    g.es("Invalid move")
+                    return None, None
+                
+                nd = maxp.insertAsNthChild(0)
+            else:
+                g.es("Could not find '%s'"%full_path)
+                self.c.frame.bringToFront()
+                return None, None
+        else:
+            # c2 is an outline, insert at top
+            nd = c2.rootPosition().insertAfter()
+            nd.copy().back().moveAfter(nd)
+
+        return c2, nd
+    #@+node:tbrown.20120620073922.22304: *3* show_targets
+    def show_targets(self):
+        """Add a node with the global targets listed by name and UNL"""
+        
+        c = self.c
+        c.p.contract()
+        nd = c.p.insertAfter()
+        nd.h = "Global QuickMove targets"
+        nd.b = """
+    There are the current global QuickMove targets.  Use the tree context menu
+    Move -> Read targets command to replace the stored targets with the content
+    of this node, after editing.
+
+    Targets are a pair of lines, starting with "NAME:" and "UNL:", with the whole
+    UNL on one line.\n\n"""
+
+        for target in g.app.db['_quickmove']['global_targets']:
+            nd.b += "NAME: %s\nUNL: %s\n\n" % (target['name'], target['unl'])
+
+        c.selectPosition(nd)
+        c.redraw()
+    #@+node:tbrown.20120620073922.28410: *3* read_targets
+    def read_targets(self):
+        """Read the targets displayed for editing by show_targets(), and
+        replace the global list"""
+        
+        c = self.c
+        
+        new = []
+        name = None
+        
+        for line in c.p.b.split('\n'):
+            
+            if line.startswith('NAME: '):
+                if name is not None:
+                    g.es("Error reading targets, two NAMEs without an UNL between them")
+                    return
+                name = line[6:].strip()
+                continue
+            
+            if line.startswith('UNL: '):
+                if name is None:
+                    g.es("Error reading targets, UNL without preceeding NAME")
+                    return
+                unl = line[5:].strip()
+                new.append((name, unl))
+                name = None
+                continue
+
+            # other lines are just ignored
+
+        g.app.db['_quickmove']['global_targets'] = [
+            {'name': name, 'unl': unl} for name, unl in new
+        ]
+        # make sure g.app.db knows it's been changed
+        g.app.db['_quickmove'] = g.app.db['_quickmove']
+
+        g.es("%d targets read - you should delete this node now" % len(new))
     #@-others
 
 #@+node:tbrown.20070117104409.5: ** class quickMoveButton
