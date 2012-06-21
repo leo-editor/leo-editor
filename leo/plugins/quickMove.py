@@ -198,6 +198,9 @@ class quickMove(object):
             ("Make ALL Buttons Here Permanent",None,self.permanentButton),
             ("Clear ALL Permanent Buttons Here",None,self.clearButton),
         )
+        
+        self.recent_moves = []  # recent move/copy/bookmark to commands for
+                                # top level context menu entries
 
         self.imps = []  # implementations, (func,name,text)
         self.txts = {}  # get short from name, for permanent buttons
@@ -404,6 +407,12 @@ class quickMove(object):
 
         if c != self.c:
             return  # wrong commander
+            
+        for cb, name in reversed(self.recent_moves):
+            a = QtGui.QAction(name, menu)
+            a.connect(a, QtCore.SIGNAL("triggered()"), 
+                      lambda cb=cb, name=name: self.do_wrap(cb, name))
+            menu.insertAction(menu.actions()[0], a)
 
         pathmenu = menu.addMenu("Move")
         
@@ -414,28 +423,40 @@ class quickMove(object):
             # global targets
             for target in g.app.db['_quickmove']['global_targets']:
                 a = sub.addAction(target['name'])
-                a.connect(a, QtCore.SIGNAL("triggered()"), 
-                    lambda c2=target['unl'], p=p, cut=cut: self.to_other(c2, p, cut=cut))
+                def cb(c2=target['unl'], cut=cut):
+                    self.to_other(c2, cut=cut)
+                def wrap(cb=cb, name=txt.strip('.')+' '+target['name']):
+                    self.do_wrap(cb, name)
+                a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
             
             # top of open outlines
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
                     g.os_path_basename(c2.fileName()))
-                a.connect(a, QtCore.SIGNAL("triggered()"), 
-                    lambda c2=c2, p=p, cut=cut: self.to_other(c2, p, cut=cut))
+                def cb(c2=c2, cut=cut):
+                    self.to_other(c2, cut=cut)
+                def wrap(cb=cb, name=txt.strip('.')+' top of '+g.os_path_basename(c2.fileName())):
+                    self.do_wrap(cb, name)
+                a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
                     
         # bookmark to other outline 
         sub = pathmenu.addMenu("Bookmark to...")
         # global targets
         for target in g.app.db['_quickmove']['global_targets']:
             a = sub.addAction(target['name'])
-            a.connect(a, QtCore.SIGNAL("triggered()"), 
-                lambda c2=target['unl'], p=p, cut=cut: self.bookmark_other(c2, p))
+            def cb(c2=target['unl'], cut=cut):
+                self.bookmark_other(c2)
+            def wrap(cb=cb, name="Bookmark to "+target['name']):
+                self.do_wrap(cb, name)
+            a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
         # top of open outlines
         for c2 in g.app.commanders():
             a = sub.addAction(g.os_path_basename(c2.fileName()))
-            a.connect(a, QtCore.SIGNAL("triggered()"), 
-                lambda c2=c2, p=p: self.bookmark_other(c2, p))
+            def cb(c2=c2):
+                self.bookmark_other(c2)
+            def wrap(cb=cb, name="Bookmark to top of "+g.os_path_basename(c2.fileName())):
+                self.do_wrap(cb, name)
+            a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
 
         # add new global target, etc.
         a = pathmenu.addAction("Add node as target")
@@ -452,6 +473,20 @@ class quickMove(object):
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
             a.connect(a, QtCore.SIGNAL("triggered()"), command)
+    #@+node:tbrown.20120621072000.19675: *3* do_wrap
+    def do_wrap(self, cb, name):
+        """Call a callback and store it in the list of recent actions
+        which get top level menu items"""
+        
+        while (cb, name) in self.recent_moves:
+            self.recent_moves.remove((cb, name))
+        
+        self.recent_moves.insert(0, (cb, name))
+        
+        while len(self.recent_moves) > 5:
+            del self.recent_moves[-1]
+        
+        cb()
     #@+node:tbrown.20100810095317.24878: *3* set_parent
     def set_parent(self, v, first, type_):
 
@@ -509,10 +544,12 @@ class quickMove(object):
 
         g.es('Moved to parent')
     #@+node:tbrown.20110914094319.18255: *3* to_other
-    def to_other(self, c2, p, op=None, cut=False):
+    def to_other(self, c2, op=None, cut=False):
         """Copy/Move(cut == True) p from self.c to c2 at quickmove node op,
         or top of outline if op == None.  c2 may be self.c.
         """
+
+        p = self.c.p
 
         p_v = p.v  # p may be invalid by the time we want to use it
         
@@ -544,14 +581,16 @@ class quickMove(object):
             QtCore.QTimer.singleShot(0, self.c.bringToFront)
 
     #@+node:tbrown.20120104084659.21948: *3* bookmark_other
-    def bookmark_other(self, c2, p, op=None):
+    def bookmark_other(self, c2, op=None):
         """Bookmark p from self.c to c2 at quickmove node op,
         or top of outline if op == None.  c2 may be self.c.
         """
         
+        p = self.c.p
+        
         p_v = p.v  # p may be invalid by the time we want to use it
         
-        c2, nd = self.unl_to_pos(c2, p)
+        c2, nd = self.unl_to_pos(c2, p, bookmark=True)
         
         if c2 is None:
             return
@@ -559,7 +598,13 @@ class quickMove(object):
         p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
                                         # invalidating p
         
-        if '@bookmarks' in nd.copy().parent().h:
+        in_bookmarks = False
+        for i in nd.parents():
+            if '@bookmarks' in i.h:
+                in_bookmarks = True
+                break
+        
+        if in_bookmarks:
             nd.h = p.h
         else:
             nd.h = "@url %s"%p.h
@@ -577,7 +622,7 @@ class quickMove(object):
         if self.c.config.getBool("quickmove_timer_hack"):
             QtCore.QTimer.singleShot(0, self.c.bringToFront)
     #@+node:tbrown.20120620073922.33740: *3* unl_to_pos
-    def unl_to_pos(self, c2, for_p):
+    def unl_to_pos(self, c2, for_p, bookmark=False):
         """"c2 may be an outline (like c) or an UNL (string)
         
         return c, p where c is an outline and p is a node to copy data to
@@ -597,7 +642,7 @@ class quickMove(object):
             
             if found:
                 
-                if for_p == maxp or for_p.isAncestorOf(maxp):
+                if not bookmark and (for_p == maxp or for_p.isAncestorOf(maxp)):
                     g.es("Invalid move")
                     return None, None
                 
