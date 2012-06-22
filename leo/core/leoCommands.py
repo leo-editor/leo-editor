@@ -205,7 +205,7 @@ class Commands (object):
             # True: prevent setting c.changed when switching chapters.
             
         # Flags for c.outerUpdate...
-        self.requestBringToFront = False
+        self.requestBringToFront = None # A commander, or None.
         self.requestCloseWindow = False
         self.requestedFocusWidget = None
         self.requestRedrawFlag = False
@@ -6981,13 +6981,14 @@ class Commands (object):
     BeginUpdate = beginUpdate # Compatibility with old scripts
     EndUpdate = endUpdate # Compatibility with old scripts
     #@+node:ekr.20080514131122.8: *4* c.bringToFront
-    def bringToFront(self,set_focus=True):
+    def bringToFront(self,c2=None,set_focus=True):
 
         c = self
-        c.requestBringToFront = True
+        c2 = c2 or c
+        c.requestBringToFront = c2
         c.requestedIconify = 'deiconify'
-        c.requestedFocusWidget = c.frame.body.bodyCtrl
-        g.app.gui.ensure_commander_visible(c)
+        c.requestedFocusWidget = c2.frame.body.bodyCtrl
+        g.app.gui.ensure_commander_visible(c2)
 
     BringToFront = bringToFront # Compatibility with old scripts
     #@+node:ekr.20040803072955.143: *4* c.expandAllAncestors
@@ -7064,8 +7065,10 @@ class Commands (object):
         
         if c.requestBringToFront:
             if hasattr(c.frame,'bringToFront'):
-                c.frame.bringToFront()
-            c.requestBringToFront = False
+                ### c.frame.bringToFront()
+                c.requestBringToFront.frame.bringToFront()
+                    # c.requestBringToFront is a commander.
+            c.requestBringToFront = None
 
         # The iconify requests are made only by c.bringToFront.
         if c.requestedIconify == 'iconify':
