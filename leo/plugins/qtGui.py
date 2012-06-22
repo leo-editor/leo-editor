@@ -7737,7 +7737,7 @@ class leoQtGui(leoGui.leoGui):
 
         if g.unitTesting: return None
         
-        # n,ok = QtGui.QInputDialog.getDouble(None, title, message)
+        # n,ok = QtGui.QInputDialog.getDouble(None,title,message)
         d = QtGui.QInputDialog()
         d.setWindowTitle(title)
         d.setLabelText(message)
@@ -7759,11 +7759,6 @@ class leoQtGui(leoGui.leoGui):
 
         if g.unitTesting: return None
 
-        # s,ok = QtGui.QInputDialog.getText(None, title, message)
-        # if not ok:
-            # return None
-        #return str(s)  # 2011-06-28 TNB return string not QString
-        
         d = QtGui.QInputDialog()
         d.setWindowTitle(title)
         d.setLabelText(message)
