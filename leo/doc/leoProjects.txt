@@ -2709,6 +2709,93 @@ def doBackSpace (self,defaultCompletionList,completion=True):
     if not completion: return
     k.mb_tabListPrefix = w.getAllText()
     k.computeCompletionList(defaultCompletionList,backspace=True)
+#@+node:ekr.20120622075651.10000: *4* Added c2 keyword arg to c.bringToFront
+#@+node:ekr.20080514131122.20: *5* c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and not g.unitTesting
+    verbose = False ; traceFocus = True
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+    
+    if trace and (verbose or aList):
+        g.trace('**start',g.callers(5))
+    
+    if c.requestBringToFront:
+        if hasattr(c.frame,'bringToFront'):
+            ### c.frame.bringToFront()
+            c.requestBringToFront.frame.bringToFront()
+                # c.requestBringToFront is a commander.
+        c.requestBringToFront = None
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We must not set the focus to the body pane here!
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and (verbose or aList):
+        g.trace('** end',aList)
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    mods = g.childrenModifiedSet
+    if mods:
+        #print(mods)
+        g.doHook("childrenModified",c=c, nodes = mods)
+        mods.clear()
+    mods = g.contentModifiedSet
+    if mods:
+        #print(mods)
+        g.doHook("contentModified",c=c, nodes = mods)
+        mods.clear()
+        
+
+    # g.trace('after')
+#@+node:ekr.20080514131122.8: *5* c.bringToFront
+def bringToFront(self,c2=None,set_focus=True):
+
+    c = self
+    c2 = c2 or c
+    c.requestBringToFront = c2
+    c.requestedIconify = 'deiconify'
+    c.requestedFocusWidget = c2.frame.body.bodyCtrl
+    g.app.gui.ensure_commander_visible(c2)
+
+BringToFront = bringToFront # Compatibility with old scripts
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

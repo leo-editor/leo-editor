@@ -7596,30 +7596,6 @@ class leoQtGui(leoGui.leoGui):
         filters = ['%s (%s)' % (z) for z in filetypes]
 
         return ';;'.join(filters)
-    #@+node:ekr.20110605121601.18490: *5* runAskOkCancelStringDialog
-    def runAskOkCancelStringDialog(self,c,title,message):
-
-        """Create and run askOkCancelString dialog ."""
-
-        if g.unitTesting: return None
-
-        txt,ok = QtGui.QInputDialog.getText(None, title, message)
-        if not ok:
-            return None
-
-        return str(txt)  # 2011-06-28 TNB return string not QString
-    #@+node:ekr.20110605121601.18491: *5* runAskOkCancelNumberDialog
-    def runAskOkCancelNumberDialog(self,c,title,message):
-
-        """Create and run askOkCancelNumber dialog ."""
-
-        if g.unitTesting: return None
-
-        n,ok = QtGui.QInputDialog.getDouble(None, title, message)
-        if not ok:
-            return None
-
-        return n
     #@+node:ekr.20110605121601.18492: *5* qtGui panels
     def createComparePanel(self,c):
 
@@ -7657,42 +7633,6 @@ class leoQtGui(leoGui.leoGui):
         c.in_qt_dialog = True
         d.exec_()
         c.in_qt_dialog = False
-    #@+node:ekr.20110605121601.18494: *5* runAskLeoIDDialog
-    def runAskLeoIDDialog(self):
-
-        """Create and run a dialog to get g.app.LeoID."""
-
-        if g.unitTesting: return None
-
-        message = (
-            "leoID.txt not found\n\n" +
-            "Please enter an id that identifies you uniquely.\n" +
-            "Your cvs/bzr login name is a good choice.\n\n" +
-            "Leo uses this id to uniquely identify nodes.\n\n" +
-            "Your id must contain only letters and numbers\n" +
-            "and must be at least 3 characters in length.")
-        parent = None
-        title = 'Enter Leo id'
-        s,ok = QtGui.QInputDialog.getText(parent,title,message)
-        return g.u(s)
-    #@+node:ekr.20110605121601.18495: *5* runAskOkDialog
-    def runAskOkDialog(self,c,title,message=None,text="Ok"):
-
-        """Create and run a qt an askOK dialog ."""
-
-        if g.unitTesting: return None
-
-        b = QtGui.QMessageBox
-        d = b(c.frame.top)
-
-        d.setWindowTitle(title)
-        if message: d.setText(message)
-        d.setIcon(b.Information)
-        yes = d.addButton(text,b.YesRole)
-        c.in_qt_dialog = True
-        d.exec_()
-        c.in_qt_dialog = False
-
     #@+node:ekr.20110605121601.18496: *5* runAskDateTimeDialog
     def runAskDateTimeDialog(self, c, title, 
         message='Select Date/Time', init=None, step_min={}):
@@ -7772,6 +7712,85 @@ class leoQtGui(leoGui.leoGui):
             return None
         else:
             return d.dt.dateTime().toPyDateTime()
+    #@+node:ekr.20110605121601.18494: *5* runAskLeoIDDialog
+    def runAskLeoIDDialog(self):
+
+        """Create and run a dialog to get g.app.LeoID."""
+
+        if g.unitTesting: return None
+
+        message = (
+            "leoID.txt not found\n\n" +
+            "Please enter an id that identifies you uniquely.\n" +
+            "Your cvs/bzr login name is a good choice.\n\n" +
+            "Leo uses this id to uniquely identify nodes.\n\n" +
+            "Your id must contain only letters and numbers\n" +
+            "and must be at least 3 characters in length.")
+        parent = None
+        title = 'Enter Leo id'
+        s,ok = QtGui.QInputDialog.getText(parent,title,message)
+        return g.u(s)
+    #@+node:ekr.20110605121601.18491: *5* runAskOkCancelNumberDialog (changed)
+    def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+
+        """Create and run askOkCancelNumber dialog ."""
+
+        if g.unitTesting: return None
+        
+        # n,ok = QtGui.QInputDialog.getDouble(None, title, message)
+        d = QtGui.QInputDialog()
+        d.setWindowTitle(title)
+        d.setLabelText(message)
+        if cancelButtonText:
+            d.setCancelButtonText(cancelButtonText)
+        if okButtonText:
+            d.setOkButtonText(okButtonText)
+        ok = d.exec_()
+        n = d.textValue()
+        try:
+            n = float(n)
+        except ValueError:
+            n = None
+        return n if ok else None
+    #@+node:ekr.20110605121601.18490: *5* runAskOkCancelStringDialog (changed)
+    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+
+        """Create and run askOkCancelString dialog ."""
+
+        if g.unitTesting: return None
+
+        # s,ok = QtGui.QInputDialog.getText(None, title, message)
+        # if not ok:
+            # return None
+        #return str(s)  # 2011-06-28 TNB return string not QString
+        
+        d = QtGui.QInputDialog()
+        d.setWindowTitle(title)
+        d.setLabelText(message)
+        if cancelButtonText:
+            d.setCancelButtonText(cancelButtonText)
+        if okButtonText:
+            d.setOkButtonText(okButtonText)
+        ok = d.exec_()
+        return str(d.textValue()) if ok else None
+    #@+node:ekr.20110605121601.18495: *5* runAskOkDialog
+    def runAskOkDialog(self,c,title,message=None,text="Ok"):
+
+        """Create and run a qt askOK dialog ."""
+
+        if g.unitTesting: return None
+
+        b = QtGui.QMessageBox
+        d = b(c.frame.top)
+
+        d.setWindowTitle(title)
+        if message: d.setText(message)
+        d.setIcon(b.Information)
+        yes = d.addButton(text,b.YesRole)
+        c.in_qt_dialog = True
+        d.exec_()
+        c.in_qt_dialog = False
+
     #@+node:ekr.20110605121601.18497: *5* runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self,c,title,
         message=None,

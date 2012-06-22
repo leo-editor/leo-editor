@@ -171,11 +171,11 @@ class leoGui:
         """Create and run an askOK dialog ."""
         self.oops()
 
-    def runAskOkCancelNumberDialog(self,c,title,message):
+    def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
         """Create and run askOkCancelNumber dialog ."""
         self.oops()
 
-    def runAskOkCancelStringDialog(self,c,title,message):
+    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
         """Create and run askOkCancelString dialog ."""
         self.oops()
 
@@ -463,10 +463,10 @@ class nullGui(leoGui):
     def runAskOkDialog(self,c,title,message=None,text="Ok"):
         return self.simulateDialog("okDialog","Ok")
 
-    def runAskOkCancelNumberDialog(self,c,title,message):
+    def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
         return self.simulateDialog("numberDialog",-1)
 
-    def runAskOkCancelStringDialog(self,c,title,message):
+    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
         return self.simulateDialog("stringDialog",'')
 
     def runCompareDialog(self,c):
