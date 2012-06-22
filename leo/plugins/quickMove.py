@@ -575,11 +575,8 @@ class quickMove(object):
             self.c.selectPosition(self.c.vnode2position(nxt))
 
         c2.redraw()
+        self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
-        self.c.frame.bringToFront()  # doesn't work
-        if self.c.config.getBool("quickmove_timer_hack"):
-            QtCore.QTimer.singleShot(0, self.c.bringToFront)
-
     #@+node:tbrown.20120104084659.21948: *3* bookmark_other
     def bookmark_other(self, c2, op=None):
         """Bookmark p from self.c to c2 at quickmove node op,
@@ -617,10 +614,8 @@ class quickMove(object):
             self.c.selectPosition(nxt)
         
         c2.redraw()
+        self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
-        self.c.frame.bringToFront()  # doesn't work
-        if self.c.config.getBool("quickmove_timer_hack"):
-            QtCore.QTimer.singleShot(0, self.c.bringToFront)
     #@+node:tbrown.20120620073922.33740: *3* unl_to_pos
     def unl_to_pos(self, c2, for_p, bookmark=False):
         """"c2 may be an outline (like c) or an UNL (string)
@@ -637,7 +632,7 @@ class quickMove(object):
             full_path = c2
             path, unl = full_path.split('#')
             c2 = g.openWithFileName(path, old_c=self.c)
-            self.c.frame.bringToFront()
+            self.c.bringToFront(c2=self.c)
             found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
             
             if found:
@@ -649,7 +644,7 @@ class quickMove(object):
                 nd = maxp.insertAsNthChild(0)
             else:
                 g.es("Could not find '%s'"%full_path)
-                self.c.frame.bringToFront()
+                self.c.bringToFront(c2=self.c)
                 return None, None
         else:
             # c2 is an outline, insert at top
