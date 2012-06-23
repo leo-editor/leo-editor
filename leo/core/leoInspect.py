@@ -2661,6 +2661,199 @@ class AstFormatter(AstTraverser):
             return self.indent('yield\n')
 
     #@-others
+#@+node:ekr.20120622075651.10002: ** class ChainPrinter (AstFormatter)
+class ChainPrinter (AstFormatter):
+
+    #@+others
+    #@+node:ekr.20120623124606.10136: *3*  ChainPrint.ctor
+    def __init__ (self,fn):
+        
+        self.d = {}
+        self.top_attribute = True
+
+        AstFormatter.__init__ (self,fn=fn)
+            # Init the base class.
+    #@+node:ekr.20120622075651.10005: *3* Attribute
+    # Attribute(expr value, identifier attr, expr_context ctx)
+
+    def do_Attribute(self,tree):
+        
+        top = self.top_attribute
+        try:
+            self.top_attribute = False
+            s = '%s.%s' % (
+                self.visit(tree.value),
+                self.visit(tree.attr))
+        finally:
+            self.top_attribute = top
+            
+        if top:
+            aList = s.split('.')
+            if aList:
+                name,rest = aList[0],aList[1:]
+                if (
+                    name == 'self' and len(rest) > 1 or
+                    name != 'self' and len(rest) > 0
+                ):
+                    aList2 = self.d.get(name,[])
+                    if rest not in aList2:
+                        aList2.append(rest)
+                        self.d[name] = aList2
+                    
+        return s
+    #@+node:ekr.20120622075651.10006: *3* showChains
+    def showChains(self,p):
+        
+        verbose = False
+        result = []
+        d,n1,n2 = self.d,0,0
+        for key in sorted(d.keys()):
+            aList = d.get(key)
+            for chain in sorted(aList):
+                s = '.'.join(chain)
+                if s.find('(') > -1 or s.find('[') > -1 or s.find('{') > -1:
+                    # print('%s.%s' % (key,s))
+                    result.append('%s.%s' % (key,s))
+                    n2 += 1
+                else:
+                    if verbose:
+                        result.append('%s.%s' % (key,s))
+                    n1 += 1
+                    
+        p.b = '\n'.join(result)
+        return n1,n2
+
+    #@-others
+#@+node:ekr.20120622075651.10007: ** class ReturnPrinter (AstFormatter)
+class ReturnPrinter (AstFormatter):
+    
+    #@+others
+    #@+node:ekr.20120623101052.10157: *3*  ReturnPrinter.ctor
+    def __init__ (self,fn):
+        
+        self.d = {}
+            # Keys are def names.
+            # values are lists of lists of return statements.
+
+        self.ret_stack = []
+
+        AstFormatter.__init__ (self,fn=fn)
+            # Init the base class.
+    #@+node:ekr.20120623101052.10076: *3* FunctionDef
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef (self,tree):
+
+        name = self.visit(tree.name)
+        self.ret_stack.append([])
+        
+        for z in tree.body:
+            self.level += 1
+            self.visit(z)
+            self.level -= 1
+
+        aList = self.d.get(name,[])
+        aList.append(self.ret_stack.pop())
+        self.d[name] = aList
+        return ''
+
+        # The following isn't needed, but doesn't hurt.
+        # result = []
+        
+        # if tree.decorator_list:
+            # for z in tree.decorator_list:
+                # result.append('@%s\n' % self.visit(z))
+        
+        # name = self.visit(tree.name)
+        # args = self.visit(tree.args) if tree.args else ''
+
+        # result.append(self.indent('def %s(%s):\n' % (name,args)))
+
+        # for z in tree.body:
+            # self.level += 1
+            # result.append(self.visit(z))
+            # self.level -= 1
+            
+        # return ''.join(result)
+    #@+node:ekr.20120623101052.10078: *3* Return
+    def do_Return(self,tree):
+
+        aList = self.ret_stack.pop()
+        
+        val = self.visit(tree.value) if tree.value else None
+        
+        if val in ('True','False'):
+            val = 'Bool'
+
+        if val != None and val not in aList:
+            aList.append(val)
+
+        self.ret_stack.append(aList)
+        
+        return ''
+         
+        # The following isn't needed, but doesn't hurt.
+        # if tree.value:
+            # return self.indent('return %s\n' % (
+                # self.visit(tree.value)))
+        # else:
+            # return self.indent('return\n')
+    #@+node:ekr.20120623101052.10074: *3* showReturns
+    def showReturns(self,p):
+        
+        verbose = False
+        put_to_p = True # True: set body text of p.
+        result = []
+        
+        def put(s):
+            if put_to_p: result.append(s)
+            else:        print(s)
+        
+        def put_list(aList):
+            if aList:
+                for ret in sorted(list(set(aList))):
+                    put('  %s' % ret)
+            else:
+                put('  None (implicit)')
+        
+        d = self.d
+        for key in sorted(list(d.keys())):
+            aList = d.get(key)
+            n = len(aList)
+            assert n >= 1
+            if n == 1:
+                aList2 = aList[0]
+                n2 = len([z for z in aList2 if z is not None])
+                if verbose or n2 > 1:
+                    put('%s %s' % (key,n))
+                    put_list(aList2)
+            else:
+                for aList2 in aList:
+                    if aList2 != aList[0]:
+                        equal = False
+                        break
+                else:
+                    equal = True
+                if equal:
+                    aList2 = aList[0]
+                    n2 = len([z for z in aList2 if z is not None])
+                    if verbose or n2 > 1:
+                        put('%s %s' % (key,n))
+                        put('  all lists equal')
+                        put_list(aList2)
+                else:
+                    put('%s %s' % (key,n))
+                    i = 0
+                    for aList2 in aList:
+                        put_list(aList2)
+                        i += 1
+                        if i < len(aList):
+                            put('  %s' % ('-' * 10))
+                        
+                      
+        if put_to_p:  
+            p.b = '\n'.join(result)
+    #@-others
 #@+node:ekr.20111116103733.10338: ** class Chain
 class Chain(object):
     
