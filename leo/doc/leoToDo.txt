@@ -774,6 +774,89 @@ for fn in sorted(sd.modules_dict.keys()):
     m = sd.modules_dict.get(fn)
     # print(m.format())
     m.format() # Run for warnings.
+.. @+node:ekr.20120622075651.10003: *5* @test print-chains
+import ast
+import imp
+import time
+import leo.core.leoInspect as li
+imp.reload(li)
+
+t1 = time.time()
+
+g.cls()
+
+last = c.rootPosition()
+while last.hasNext():
+    last = last.next()
+    
+parent = last.insertAfter()
+parent.h = 'Chains: %s' % time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime())
+parent.b = '@killcolor'
+
+count, total_chains,unusual_chains = 0,0,0
+for fn in li.LeoCoreFiles().files: # [:2]:
+    # print()
+    # print(fn)
+    s = open(fn,'r').read()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    cp = li.ChainPrinter(fn)
+    cp.visit(tree)
+    p2 = parent.insertAsLastChild()
+    p2.h = g.shortFileName(fn)
+    n1,n2 = cp.showChains(p2)
+    total_chains += n1
+    unusual_chains += n2
+    # print('chains: %s' % (n))
+    count += 1
+    
+c.redraw(parent)
+
+t2 = time.time()
+
+print('files: %s total chains: %s unusual_chains: %s time: %2.2f sec' % (
+    count,total_chains,unusual_chains,t2-t1))
+
+# if 0:
+    # sd.print_stats()
+# if 0:
+    # sd.print_times()
+.. @+node:ekr.20120623101052.10073: *5* @test print-returns
+import ast
+import imp
+import time
+import leo.core.leoInspect as li
+imp.reload(li)
+
+g.cls()
+
+t1 = time.time()
+
+last = c.rootPosition()
+while last.hasNext():
+    last = last.next()
+    
+parent = last.insertAfter()
+parent.h = 'Returns: %s' % time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime())
+parent.b = '@killcolor'
+
+count=0
+for fn in li.LeoCoreFiles().files: # [:3]:
+    # print()
+    # print(fn)
+    s = open(fn,'r').read()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    rp = li.ReturnPrinter(fn)
+    rp.visit(tree)
+    p2 = parent.insertAsLastChild()
+    p2.h = g.shortFileName(fn)
+    rp.showReturns(p2)
+    count += 1
+c.redraw(parent)
+
+t2 = time.time()
+
+print('files: %s time: %2.2f sec' % (
+    count,t2-t1))
 .. @+node:ekr.20120613104401.10223: *4* Recent
 .. @+node:ekr.20120613104401.10174: *5* @test dump symbol table
 # g.cls()
