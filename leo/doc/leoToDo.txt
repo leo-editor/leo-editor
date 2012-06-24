@@ -820,6 +820,52 @@ print('files: %s total chains: %s unusual_chains: %s time: %2.2f sec' % (
     # sd.print_stats()
 # if 0:
     # sd.print_times()
+.. @+node:ekr.20120623165430.10182: *5* @test print-calls
+import ast
+import imp
+import time
+import leo.core.leoInspect as li
+imp.reload(li)
+
+g.cls()
+
+t1 = time.time()
+
+last = c.rootPosition()
+while last.hasNext():
+    last = last.next()
+    
+parent = last.insertAfter()
+parent.h = 'Calls: %s' % time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime())
+parent.b = '@killcolor'
+
+g_d = {}
+count=0
+for fn in li.LeoCoreFiles().files: # [:3]:
+    # print()
+    # print(fn)
+    s = open(fn,'r').read()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    cp = li.CallPrinter(fn)
+    cp.visit(tree)
+    p2 = parent.insertAsLastChild()
+    p2.h = g.shortFileName(fn)
+    cp.showCalls(p2)
+    for key in cp.d.keys():
+        aList = g_d.get(key,[])
+        aList.extend(cp.d.get(key))
+        g_d[key] = sorted(list(set(aList)))
+    count += 1
+    
+p2 = parent.insertAsLastChild()
+p2.h = 'global calls'
+cp.showCalls(p2,d=g_d)
+c.selectPosition(parent)
+c.redraw()
+
+t2 = time.time()
+
+print('files: %s time: %2.2f sec' % (count,t2-t1))
 .. @+node:ekr.20120623101052.10073: *5* @test print-returns
 import ast
 import imp
@@ -839,6 +885,7 @@ parent = last.insertAfter()
 parent.h = 'Returns: %s' % time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime())
 parent.b = '@killcolor'
 
+g_d = {}
 count=0
 for fn in li.LeoCoreFiles().files: # [:3]:
     # print()
@@ -850,7 +897,18 @@ for fn in li.LeoCoreFiles().files: # [:3]:
     p2 = parent.insertAsLastChild()
     p2.h = g.shortFileName(fn)
     rp.showReturns(p2)
+    for key in rp.d.keys():
+        aList = g_d.get(key,[])
+        aList2 = rp.d.get(key)
+        if aList2:
+            aList.extend(aList2)
+            g_d[key] = aList
     count += 1
+    
+p2 = parent.insertAsLastChild()
+p2.h = 'global returns'
+rp.showReturns(p2,d=g_d)
+
 c.redraw(parent)
 
 t2 = time.time()

@@ -2661,18 +2661,100 @@ class AstFormatter(AstTraverser):
             return self.indent('yield\n')
 
     #@-others
-#@+node:ekr.20120622075651.10002: ** class ChainPrinter (AstFormatter)
-class ChainPrinter (AstFormatter):
-
-    #@+others
-    #@+node:ekr.20120623124606.10136: *3*  ChainPrint.ctor
+#@+node:ekr.20120623165430.10175: ** class CallPrinter (AstFormatter)
+class CallPrinter (AstFormatter):
+    
     def __init__ (self,fn):
-        
+    
         self.d = {}
-        self.top_attribute = True
-
+            # Keys are def names; values are lists of calls.
+    
         AstFormatter.__init__ (self,fn=fn)
             # Init the base class.
+
+    #@+others
+    #@+node:ekr.20120623165430.10411: *3* Call
+    def do_Call(self,tree):
+
+        func = self.visit(tree.func)
+        
+        if func.find('.') > -1 and func.find("'") == -1 and func.find('"') == -1:
+            aList = func.split('.')
+            key = aList[-1]
+        else:
+            key = func
+
+        args = [self.visit(z) for z in tree.args]
+
+        for z in tree.keywords:
+            args.append(self.visit(z))
+
+        if hasattr(tree,'starargs') and tree.starargs:
+            args.append('*%s' % (self.visit(tree.starargs)))
+
+        if hasattr(tree,'kwargs') and tree.kwargs:
+            args.append('**%s' % (self.visit(tree.kwargs)))
+            
+        s = '%s(%s)' % (func,','.join(args))
+        s = s.replace('\n','') # Shouldn't be necessary.
+
+        aList = self.d.get(key,[])
+        if s not in aList:
+            aList.append(s)
+            self.d[key] = aList
+        
+        return s
+    #@+node:ekr.20120623165430.10755: *3* Constants & Name
+    # Return generic markers allow better pattern matches.
+
+    def do_bool(self,tree): # Python 2.x only.
+        return 'Bool' 
+
+    def do_Bytes(self,tree): # Python 3.x only.
+        return 'Bytes' # return str(tree.s)
+        
+    def do_int (self,s):
+        return 'Int' # return s
+        
+    def do_Name(self,tree):
+        return 'Bool' if tree.id in ('True','False') else tree.id
+
+    def do_Num(self,tree):
+        return 'Num' # return repr(tree.n)
+
+    def do_str (self,s):
+        return s # Not repr(s)
+
+    def do_Str (self,tree):
+        return 'Str' # return repr(tree.s)
+    #@+node:ekr.20120623165430.10179: *3* showCalls
+    def showCalls(self,p,d=None):
+        
+        verbose = False
+        
+        d = d or self.d
+        result = []
+        for key in sorted(list(d.keys())):
+            aList = d.get(key)
+            if verbose or len(aList) > 1:
+                result.append(key)
+                for z in sorted(aList):
+                    result.append('  %s' % (z))
+
+        p.b = '\n'.join(result)
+    #@-others
+#@+node:ekr.20120622075651.10002: ** class ChainPrinter (AstFormatter)
+class ChainPrinter (AstFormatter):
+    
+    def __init__ (self,fn):
+    
+        self.d = {}
+        self.top_attribute = True
+    
+        AstFormatter.__init__ (self,fn=fn)
+            # Init the base class.
+
+    #@+others
     #@+node:ekr.20120622075651.10005: *3* Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
@@ -2701,6 +2783,29 @@ class ChainPrinter (AstFormatter):
                         self.d[name] = aList2
                     
         return s
+    #@+node:ekr.20120623165430.11467: *3* Constants & Name
+    # Return generic markers allow better pattern matches.
+
+    def do_bool(self,tree): # Python 2.x only.
+        return 'Bool' 
+
+    def do_Bytes(self,tree): # Python 3.x only.
+        return 'Bytes' # return str(tree.s)
+        
+    def do_int (self,s):
+        return 'Int' # return s
+        
+    def do_Name(self,tree):
+        return 'Bool' if tree.id in ('True','False') else tree.id
+
+    def do_Num(self,tree):
+        return 'Num' # return repr(tree.n)
+
+    def do_str (self,s):
+        return s # Not repr(s)
+
+    def do_Str (self,tree):
+        return 'Str' # return repr(tree.s)
     #@+node:ekr.20120622075651.10006: *3* showChains
     def showChains(self,p):
         
@@ -2727,18 +2832,41 @@ class ChainPrinter (AstFormatter):
 #@+node:ekr.20120622075651.10007: ** class ReturnPrinter (AstFormatter)
 class ReturnPrinter (AstFormatter):
     
-    #@+others
-    #@+node:ekr.20120623101052.10157: *3*  ReturnPrinter.ctor
     def __init__ (self,fn):
-        
+    
         self.d = {}
             # Keys are def names.
             # values are lists of lists of return statements.
-
+    
         self.ret_stack = []
-
+    
         AstFormatter.__init__ (self,fn=fn)
             # Init the base class.
+
+    #@+others
+    #@+node:ekr.20120623165430.11427: *3* Constants & Name
+    # Return generic markers allow better pattern matches.
+
+    def do_bool(self,tree): # Python 2.x only.
+        return 'Bool' 
+
+    def do_Bytes(self,tree): # Python 3.x only.
+        return 'Bytes' # return str(tree.s)
+        
+    def do_int (self,s):
+        return 'Int' # return s
+        
+    def do_Name(self,tree):
+        return 'Bool' if tree.id in ('True','False') else tree.id
+
+    def do_Num(self,tree):
+        return 'Num' # return repr(tree.n)
+
+    def do_str (self,s):
+        return s # Not repr(s)
+
+    def do_Str (self,tree):
+        return 'Str' # return repr(tree.s)
     #@+node:ekr.20120623101052.10076: *3* FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
@@ -2799,11 +2927,12 @@ class ReturnPrinter (AstFormatter):
         # else:
             # return self.indent('return\n')
     #@+node:ekr.20120623101052.10074: *3* showReturns
-    def showReturns(self,p):
+    def showReturns(self,p,d=None):
         
         verbose = False
         put_to_p = True # True: set body text of p.
         result = []
+        d = d or self.d
         
         def put(s):
             if put_to_p: result.append(s)
@@ -2815,13 +2944,14 @@ class ReturnPrinter (AstFormatter):
                     put('  %s' % ret)
             else:
                 put('  None (implicit)')
-        
-        d = self.d
+
         for key in sorted(list(d.keys())):
             aList = d.get(key)
             n = len(aList)
-            assert n >= 1
-            if n == 1:
+            # assert n >= 1
+            if n == 0:
+                pass
+            elif n == 1:
                 aList2 = aList[0]
                 n2 = len([z for z in aList2 if z is not None])
                 if verbose or n2 > 1:
