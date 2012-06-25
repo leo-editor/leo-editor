@@ -774,6 +774,21 @@ for fn in sorted(sd.modules_dict.keys()):
     m = sd.modules_dict.get(fn)
     # print(m.format())
     m.format() # Run for warnings.
+.. @+node:ekr.20120625075849.10257: *5* @test g_files_in_dir 
+import imp
+import leo.core.leoInspect as li
+imp.reload(li)
+
+g.cls()
+
+aList = li.g_files_in_dir(r'C:\Python26\Lib\lib2to3',
+    extList = ['.py'],
+    excludeDirs= ['tests'])
+
+for z in aList:
+    print(z)
+
+print('files: %s' % (len(z)))
 .. @+node:ekr.20120622075651.10003: *5* @test print-chains
 import ast
 import imp
@@ -877,26 +892,53 @@ g.cls()
 
 t1 = time.time()
 
+verbose = False # False: only print defs with more than one return.
+
 last = c.rootPosition()
 while last.hasNext():
     last = last.next()
     
+if 1: # Coverage
+    description = 'coverage'
+    files = li.g_files_in_dir(r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
+        extList = ['.py'],excludeDirs= ['.bzr','htmlfiles'])
+elif 0: # Pylint
+    description = 'pylint'
+    files = li.g_files_in_dir(r'C:\Python26\Lib\site-packages\pylint-0.25.1-py2.6.egg\pylint',
+        extList = ['.py'],excludeDirs= ['.bzr','test'])
+elif 0: # Rope.
+    description = 'Rope'
+    files = li.g_files_in_dir(r'C:\Python26\Lib\site-packages\rope',
+        extList = ['.py'],excludeDirs= ['.bzr'])
+elif 0: # lib2to3
+    description = 'lib2to3'
+    files = li.g_files_in_dir(r'C:\Python26\Lib\lib2to3',
+        extList = ['.py'],excludeDirs= ['tests'])
+else: # Leo
+    description = 'Leo'
+    files = li.LeoCoreFiles().files
+    
 parent = last.insertAfter()
-parent.h = 'Returns: %s' % time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime())
+parent.h = 'Returns: %s verbose=%s %s' % (
+    description, verbose,
+    time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime()))
 parent.b = '@killcolor'
 
 g_d = {}
 count=0
-for fn in li.LeoCoreFiles().files: # [:3]:
-    # print()
+for fn in files:
     # print(fn)
     s = open(fn,'r').read()
-    tree = ast.parse(s,filename=fn,mode='exec')
+    try:
+        tree = ast.parse(s,filename=fn,mode='exec')
+    except SyntaxError:
+        print('Syntax error in %s' % (fn))
+        continue
     rp = li.ReturnPrinter(fn)
     rp.visit(tree)
     p2 = parent.insertAsLastChild()
     p2.h = g.shortFileName(fn)
-    rp.showReturns(p2)
+    rp.showReturns(p2,verbose=verbose)
     for key in rp.d.keys():
         aList = g_d.get(key,[])
         aList2 = rp.d.get(key)
@@ -905,9 +947,10 @@ for fn in li.LeoCoreFiles().files: # [:3]:
             g_d[key] = aList
     count += 1
     
-p2 = parent.insertAsLastChild()
-p2.h = 'global returns'
-rp.showReturns(p2,d=g_d)
+if 0:
+    p2 = parent.insertAsLastChild()
+    p2.h = 'global returns'
+    rp.showReturns(p2,d=g_d)
 
 c.redraw(parent)
 

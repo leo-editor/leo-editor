@@ -1415,6 +1415,57 @@ def g_dump(obj):
     else:
         # Unexpected.
         return '***g_dump: %s' % repr(obj)
+#@+node:ekr.20120625075849.10256: *3* g_files_in_dir
+def g_files_in_dir (theDir,recursive=True,extList=None,excludeDirs=None):
+    
+    '''Return a list of all Python files in the directory.
+    
+    Include all descendants if recursiveFlag is True.
+    
+    Include all file types if extList is None.
+    '''
+    
+    # if extList is None: extList = ['.py']
+    if excludeDirs is None: excludeDirs = []
+    result = []
+
+    if recursive:
+        for root, dirs, files in os.walk(theDir):
+            for z in files:
+                fn = g.os_path_finalize_join(root,z)
+                junk,ext = g.os_path_splitext(fn)
+                if not extList or ext in extList:
+                    result.append(fn)
+            if excludeDirs and dirs:
+                for z in dirs:
+                    if z in excludeDirs:
+                        dirs.remove(z)
+    else:
+        for ext in extList:
+            result.extend(glob.glob(theDir,'*%s' % (ext)))
+        
+    return sorted(list(set(result)))
+#@+node:ekr.20120611094414.10582: *3* g_find_function_call
+def g_find_function_call (tree):
+    
+    '''Return the static name of the function being called.
+    
+    tree is the tree.func part of the Call node.'''
+    
+    kind = tree.__class__.__name__
+
+    if kind == 'str':
+        s = tree
+    elif kind == 'Name':
+        s = tree.id
+    elif kind == 'Attribute':
+        s = g_find_function_call(tree.attr)
+    else:
+        # This is not an error.  Example:  (g())()
+        s = '**unknown kind: %s**: %s' % (kind,g_format(tree))
+        g.trace(s)
+
+    return s
 #@+node:ekr.20120609070048.10871: *3* g_format
 def g_format(obj):
     
@@ -1489,27 +1540,6 @@ def g_node_after_tree (tree):
                 break
 
     return result
-#@+node:ekr.20120611094414.10582: *3* g_find_function_call
-def g_find_function_call (tree):
-    
-    '''Return the static name of the function being called.
-    
-    tree is the tree.func part of the Call node.'''
-    
-    kind = tree.__class__.__name__
-
-    if kind == 'str':
-        s = tree
-    elif kind == 'Name':
-        s = tree.id
-    elif kind == 'Attribute':
-        s = g_find_function_call(tree.attr)
-    else:
-        # This is not an error.  Example:  (g())()
-        s = '**unknown kind: %s**: %s' % (kind,g_format(tree))
-        g.trace(s)
-
-    return s
 #@+node:ekr.20111116103733.10257: ** class AstDumper
 class AstDumper(object):
 
@@ -2069,7 +2099,7 @@ class AstFormatter(AstTraverser):
             result.append(self.visit(z))
 
         if tree.orelse:
-            result.append(result.append('else:\n'))
+            result.append('else:\n')
             for z in tree.orelse:
                 self.level += 1
                 result.append(self.visit(z))
@@ -2883,6 +2913,7 @@ class ReturnPrinter (AstFormatter):
         aList = self.d.get(name,[])
         aList.append(self.ret_stack.pop())
         self.d[name] = aList
+        # g.trace(name,aList)
         return ''
 
         # The following isn't needed, but doesn't hurt.
@@ -2927,9 +2958,8 @@ class ReturnPrinter (AstFormatter):
         # else:
             # return self.indent('return\n')
     #@+node:ekr.20120623101052.10074: *3* showReturns
-    def showReturns(self,p,d=None):
-        
-        verbose = False
+    def showReturns(self,p,verbose,d=None):
+
         put_to_p = True # True: set body text of p.
         result = []
         d = d or self.d
