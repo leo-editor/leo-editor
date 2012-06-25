@@ -1485,6 +1485,31 @@ def g_format(obj):
     else:
         # Unexpected.
         return '***g_format: %s' % repr(obj)
+#@+node:ekr.20120625092120.10573: *3* g_get_files_by_project_name
+def g_get_files_by_project_name(name):
+    
+    d = { # Change these paths as required for your system.
+        'coverage': (
+            r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
+            ['.py'],['.bzr','htmlfiles']),
+        'lib2to3': (
+            r'C:\Python26\Lib\lib2to3',['.py'],['tests']),
+        'pylint': (
+            r'C:\Python26\Lib\site-packages\pylint-0.25.1-py2.6.egg\pylint',
+            ['.py'],['.bzr','test']),
+        'rope': (
+            r'C:\Python26\Lib\site-packages\rope',['.py'],['.bzr']),
+    }
+    
+    if name.lower() == 'leo': ### Remove this special case.
+        return LeoCoreFiles().files
+    else:
+        data = d.get(name.lower())
+        if data:
+            theDir,extList,excludeDirs=data
+            return g_files_in_dir(theDir,recursive=True,extList=extList,excludeDirs=excludeDirs)
+        else:
+            return []
 #@+node:ekr.20120609070048.11466: *3* g_kind
 def g_kind(obj):
     
@@ -2958,15 +2983,13 @@ class ReturnPrinter (AstFormatter):
         # else:
             # return self.indent('return\n')
     #@+node:ekr.20120623101052.10074: *3* showReturns
-    def showReturns(self,p,verbose,d=None):
+    def showReturns(self,verbose,d=None):
 
-        put_to_p = True # True: set body text of p.
         result = []
         d = d or self.d
         
         def put(s):
-            if put_to_p: result.append(s)
-            else:        print(s)
+            result.append(s)
         
         def put_list(aList):
             if aList:
@@ -2978,41 +3001,35 @@ class ReturnPrinter (AstFormatter):
         for key in sorted(list(d.keys())):
             aList = d.get(key)
             n = len(aList)
-            # assert n >= 1
             if n == 0:
                 pass
             elif n == 1:
                 aList2 = aList[0]
-                n2 = len([z for z in aList2 if z is not None])
-                if verbose or n2 > 1:
+                n2 = len([z for z in aList2 if z not in (None,'None')])
+                if (verbose and n2 > 0) or (not verbose and n2 > 1):
                     put('%s %s' % (key,n))
+                    # put('  one list')
                     put_list(aList2)
             else:
-                for aList2 in aList:
-                    if aList2 != aList[0]:
-                        equal = False
-                        break
-                else:
-                    equal = True
+                equal = not any([z != aList[0] for z in aList])
                 if equal:
                     aList2 = aList[0]
-                    n2 = len([z for z in aList2 if z is not None])
-                    if verbose or n2 > 1:
+                    n2 = len([z for z in aList2 if z not in (None,'None')])
+                    if (verbose and n2 > 0) or (not verbose and n2 > 1):
                         put('%s %s' % (key,n))
                         put('  all lists equal')
                         put_list(aList2)
                 else:
                     put('%s %s' % (key,n))
+                    put('  lists unequal')
                     i = 0
                     for aList2 in aList:
                         put_list(aList2)
                         i += 1
                         if i < len(aList):
                             put('  %s' % ('-' * 10))
-                        
-                      
-        if put_to_p:  
-            p.b = '\n'.join(result)
+
+        return '\n'.join(result)
     #@-others
 #@+node:ekr.20111116103733.10338: ** class Chain
 class Chain(object):
