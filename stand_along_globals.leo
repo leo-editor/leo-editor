@@ -300,8 +300,9 @@
 <v t="ekr.20120625092120.12813"><vh>g.init_zodb</vh></v>
 </v>
 </v>
-<v t="ekr.20120625092120.12469" descendentVnodeUnknownAttributes="7d71005505302e362e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoStandAloneGlobals.py</vh></v>
 <v t="ekr.20120625092120.12838"><vh>test</vh></v>
+<v t="ekr.20120625092120.12469" descendentVnodeUnknownAttributes="7d71005805000000302e362e3071017d71025808000000616e6e6f7461746571037d710473732e"
+expanded="ekr.20120625092120.12646,"><vh>@file leoStandAloneGlobals.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20120625092120.12471"># Don't import this here: it messes up Leo's startup code.

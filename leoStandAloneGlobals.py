@@ -110,8 +110,8 @@ class Bunch (object):
         return self.__dict__.get(key,theDefault)
 
 bunch = Bunch
-#@+node:ekr.20120625092120.12735: *3* class nullObject
-class nullObject:
+#@+node:ekr.20120625092120.12735: *3* class NullObject
+class NullObject:
 
     """An object that does nothing, and does it very well.
     
@@ -121,8 +121,8 @@ class nullObject:
     def __init__   (self,*args,**keys): pass
     def __call__   (self,*args,**keys): return self
     # def __len__    (self): return 0 # Debatable.
-    def __repr__   (self): return "nullObject"
-    def __str__    (self): return "nullObject"
+    def __repr__   (self): return "NullObject"
+    def __str__    (self): return "NullObject"
     if isPython3:
         def __bool__(self): return False
     else:
@@ -130,20 +130,22 @@ class nullObject:
     def __delattr__(self,attr):     return self
     def __getattr__(self,attr):     return self
     def __setattr__(self,attr,val): return self
-#@+node:ekr.20120625092120.12741: *3* class fileLikeObject
+    
+nullObject = NullObject
+#@+node:ekr.20120625092120.12741: *3* class FileLikeObject
 # Note: we could use StringIo for this.
 
-class fileLikeObject:
+class FileLikeObject:
 
     """Define a file-like object for redirecting writes to a string.
 
     The caller is responsible for handling newlines correctly."""
 
     #@+others
-    #@+node:ekr.20120625092120.12742: *4*  ctor (fileLikeObject)
+    #@+node:ekr.20120625092120.12742: *4*  ctor (FileLikeObject)
     def __init__(self,encoding='utf-8',fromString=None):
 
-        # g.trace('g.fileLikeObject:__init__','fromString',fromString)
+        # g.trace('g.FileLikeObject:__init__','fromString',fromString)
 
         # New in 4.2.1: allow the file to be inited from string s.
 
@@ -197,6 +199,8 @@ class fileLikeObject:
 
             self.list.append(s)
     #@-others
+
+fileLikeObject = FileLikeObject
 #@+node:ekr.20120625092120.12609: ** Common functions
 #@+node:ekr.20120625092120.12729: *3* angleBrackets
 # Returns < < s > >
@@ -205,8 +209,6 @@ def angleBrackets(s):
 
     return ( "<<" + s +
         ">>") # must be on a separate line.
-
-### virtual_event_name = angleBrackets
 #@+node:ekr.20120625092120.12510: *3* callers & _callerName
 def callers (n=4,count=0,excludeCaller=True,files=False):
 
@@ -364,8 +366,6 @@ def splitLines (s):
     '''Split s into lines, preserving the number of lines and
     the endings of all lines, including the last line.'''
 
-    # g.stat()
-
     if s:
         return s.splitlines(True) # This is a Python string function!
     else:
@@ -414,8 +414,6 @@ def trace (*args,**keys):
         else:         name = pad + name
 
     # Munge *args into s.
-    # print ('g.trace:args...')
-    # for z in args: print (g.isString(z),repr(z))
     result = [name]
     for arg in args:
         if g.isString(arg):
@@ -443,14 +441,10 @@ def translateArgs(args,d):
     if not hasattr(g,'consoleEncoding'):
         e = sys.getdefaultencoding()
         g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
-        # print 'translateArgs',g.consoleEncoding
 
     result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
         n += 1
-
-        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
-
         # First, convert to unicode.
         if type(arg) == type('a'):
             arg = g.toUnicode(arg,g.consoleEncoding)
@@ -473,19 +467,10 @@ def translateString (s):
 
     '''Return the translated text of s.'''
 
-    if g.isPython3:
-        if not g.isString(s):
-            s = str(s,'utf-8')
-        # if g.app.translateToUpperCase:
-            # s = s.upper()
-        # else:
-        return gettext.gettext(s)
-    else:
-        return gettext.gettext(s)
-        # if g.app.translateToUpperCase:
-            # return s.upper()
-        # else:
-            # return gettext.gettext(s)
+    if g.isPython3 and not g.isString(s):
+        s = str(s,'utf-8')
+    
+    return gettext.gettext(s)
 
 tr = translateString
 #@+node:ekr.20120625092120.12817: ** Printing
