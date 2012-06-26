@@ -40,6 +40,8 @@ else:
     StringIO = cStringIO.StringIO
 #@-<< imports >>
 
+# print('leoInspect.py: %s' % __file__)
+
 g_dumper = None     # Global, singleton instance of AstDumper.
 g_formatter = None  # Global, singleton instance of AstFormatter.
 
@@ -1482,12 +1484,15 @@ def g_format(obj):
 #@+node:ekr.20120625092120.10573: *3* g_get_files_by_project_name
 def g_get_files_by_project_name(name):
     
+    leo_path,junk = g.os_path_split(__file__)
+    
     d = { # Change these paths as required for your system.
         'coverage': (
             r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
             ['.py'],['.bzr','htmlfiles']),
         'leo':(
-            r'C:\leo.repo\trunk\leo\core',
+            # r'C:\leo.repo\trunk\leo\core',
+            leo_path,
             ['.py'],['.bzr']),
         'lib2to3': (
             r'C:\Python26\Lib\lib2to3',
