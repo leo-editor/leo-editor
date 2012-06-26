@@ -1240,6 +1240,26 @@ class Context(object):
             for cx in aList:
                 cx.all_classes(result)
         return result
+    #@+node:ekr.20120626085227.11131: *4* cx.contexts (new)
+    def contexts (self,include_temp=True):
+            
+        '''An iterator returning all contexts.'''
+        
+        yield self
+            
+        for cx in self.classes_list:
+            for z in cx.contexts():
+                yield z
+            
+        for cx in self.defs_list:
+            for z in cx.contexts():
+                yield z
+            
+        if include_temp:
+            for cx in self.temp_contexts:
+                for z in cx.contexts():
+                    yield z
+
     #@+node:ekr.20111116161118.10164: *4* cx.defs
     def defs (self,all=True):
         
@@ -1309,6 +1329,18 @@ class Context(object):
     def is_method(self,f):
         '''Return True if f is a method, not a function.'''
         return True
+    #@+node:ekr.20120626085227.11134: *4* cx.parent_contexts (new)
+    def parent_contexts (self):
+        
+        cx = self
+        result = []
+
+        while cx.parent_context:
+            result.append(cx.parent_context)
+            cx = cx.parent_context
+
+        result.reverse()
+        return result
     #@+node:ekr.20111116161118.10165: *4* cx.statements
     def statements (self,all=True):
         
@@ -1358,7 +1390,8 @@ def module (fn=None,s=None,sd=None,print_stats=False,print_times=False):
     if s:
         fn = '<string file>'
     else:
-        s = LeoCoreFiles().get_source(fn)
+        # s = LeoCoreFiles().get_source(fn)
+        s = g_get_source(fn)
         if not s:
             print('file not found: %s' % (fn))
             return None
@@ -1519,6 +1552,16 @@ def g_get_files_by_project_name(name):
         files.append(fn)
         
     return files
+#@+node:ekr.20120626085227.11133: *3* g_get_source (new)
+def g_get_source (fn):
+    
+    try:
+        f = open(fn,'r')
+        s = f.read()
+        f.close()
+        return s
+    except IOError:
+        return '' # Caller gives error message.
 #@+node:ekr.20120609070048.11466: *3* g_kind
 def g_kind(obj):
     
