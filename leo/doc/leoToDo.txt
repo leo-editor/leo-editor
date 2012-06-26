@@ -11,6 +11,11 @@ This is the "will do" list.
 # This should appear before any @file node.
 .. @+node:ekr.20120608083208.10175: *4* Run all unit tests externally, except in @local-tests tree
 .. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
+.. @+node:ekr.20120623165430.10710: *4* New to do
+@nocolor-node
+
+Create global name table.
+.. @+node:ekr.20120625183830.11319: *4* Ideas
 @nocolor-node
 
 2012/05/20: ideas for LeoInspect
@@ -891,8 +896,6 @@ imp.reload(li)
 g.cls()
 
 t1 = time.time()
-
-
 
 last = c.rootPosition()
 while last.hasNext():

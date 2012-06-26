@@ -15,15 +15,9 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 
 try:
-    import leo.core.leoGlobals as g
+    import leoStandAloneGlobals as g
 except ImportError:
-    try:
-        import leoGlobals as g
-    except ImportError:
-        pass # Will fail later.
-    
-    # A bad idea.
-    #   < < define g object > >
+    pass # Will fail later.
 
 # Used by ast-oriented code.
 if not isPython3:
@@ -1492,8 +1486,12 @@ def g_get_files_by_project_name(name):
         'coverage': (
             r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
             ['.py'],['.bzr','htmlfiles']),
+        'leo':(
+            r'C:\leo.repo\trunk\leo\core',
+            ['.py'],['.bzr']),
         'lib2to3': (
-            r'C:\Python26\Lib\lib2to3',['.py'],['tests']),
+            r'C:\Python26\Lib\lib2to3',
+            ['.py'],['tests']),
         'pylint': (
             r'C:\Python26\Lib\site-packages\pylint-0.25.1-py2.6.egg\pylint',
             ['.py'],['.bzr','test']),
@@ -1501,15 +1499,21 @@ def g_get_files_by_project_name(name):
             r'C:\Python26\Lib\site-packages\rope',['.py'],['.bzr']),
     }
     
-    if name.lower() == 'leo': ### Remove this special case.
-        return LeoCoreFiles().files
-    else:
-        data = d.get(name.lower())
-        if data:
-            theDir,extList,excludeDirs=data
-            return g_files_in_dir(theDir,recursive=True,extList=extList,excludeDirs=excludeDirs)
-        else:
-            return []
+    data = d.get(name.lower())
+    if not data:
+        g.trace('bad project name: %s' % (name))
+        return []
+   
+    theDir,extList,excludeDirs=data
+    files = g_files_in_dir(theDir,recursive=True,extList=extList,excludeDirs=excludeDirs)
+    
+    if name.lower() == 'leo':
+        for exclude in ['__init__.py','format-code.py']:
+            files = [z for z in files if not z.endswith(exclude)]
+        fn = g.os_path_join(theDir,'..','plugins','qtGui.py')
+        files.append(fn)
+        
+    return files
 #@+node:ekr.20120609070048.11466: *3* g_kind
 def g_kind(obj):
     
