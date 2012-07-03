@@ -1226,7 +1226,7 @@ class redirectClass:
             if app.log:
                 if trace: self.old.write(
                     'redirectClass: to log: %s\n' % repr(s))
-                app.log.put(s)
+                app.log.put(s, from_redirect=True)
             else:
                 self.old.write(s +'\n')
         else:

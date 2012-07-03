@@ -5077,7 +5077,7 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20110605121601.18321: *4* put & putnl (leoQtLog)
     #@+node:ekr.20110605121601.18322: *5* put (leoQtLog)
     # All output to the log stream eventually comes here.
-    def put (self,s,color=None,tabName='Log'):
+    def put (self,s,color=None,tabName='Log',from_redirect=False):
 
         trace = False and not g.unitTesting
         c = self.c
@@ -5103,11 +5103,17 @@ class leoQtLog (leoFrame.leoLog):
             s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
                 s = s.replace(' ','&nbsp;')
-            s = s.rstrip().replace('\n','<br>')
+            if from_redirect:
+                s = s.replace('\n','<br>')
+            else:
+                s = s.rstrip().replace('\n','<br>')
             s = '<font color="%s">%s</font>' % (color,s)
             if trace: print('leoQtLog.put',type(s),len(s),s[:40],w)
-            w.append(s) # w.append is a QTextBrowser method.
-            # w.insertHtml(s+'<br>') # Also works.
+            if from_redirect:
+                w.insertHtml(s)
+            else:
+                w.append(s) # w.append is a QTextBrowser method.
+                # w.insertHtml(s+'<br>') # Also works.
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(0) # Force the slider to the initial position.
         else:

@@ -1713,7 +1713,7 @@ class leoLog (HighLevelInterface):
     #@+node:ekr.20070302101304: *4* put & putnl (leoLog)
     # All output to the log stream eventually comes here.
 
-    def put (self,s,color=None,tabName='Log'):
+    def put (self,s,color=None,tabName='Log',from_redirect=False):
         print (s)
 
     def putnl (self,tabName='Log'):
@@ -2610,7 +2610,7 @@ class nullLog (leoLog):
 
         g.trace("nullLog:", g.callers(4))
     #@+node:ekr.20041012083237.3: *3* put and putnl (nullLog)
-    def put (self,s,color=None,tabName='Log'):
+    def put (self,s,color=None,tabName='Log',from_redirect=False):
         # print('(nullGui) print',repr(s))
         if self.enabled:
             try:
