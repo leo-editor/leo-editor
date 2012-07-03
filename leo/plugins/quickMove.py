@@ -118,6 +118,7 @@ __version__ = '0.7'
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 import types
+from copy import deepcopy
 
 import leo.core.leoGlobals as g
 
@@ -179,15 +180,12 @@ class quickMove(object):
     #@+node:tbrown.20110914094319.18256: *3* copy_recursively
     @staticmethod
     def copy_recursively(nd0, nd1):
-        """Recursively copy subtree, between outlines
-        
-        Might not work within the same outline, but intended for use between
-        outlines.
+        """Recursively copy subtree
         """
         
         nd1.h = nd0.h
         nd1.b = nd0.b
-        nd1.v.u = nd0.v.u
+        nd1.v.u = deepcopy(nd0.v.u)
         
         for child in nd0.children():
             quickMove.copy_recursively(child, nd1.insertAsLastChild())
@@ -780,10 +778,11 @@ class quickMoveButton:
         elif self.type_ == 'copy':
             if self.first:
                 nd = p2.insertAsNthChild(0)
-                p.copyTreeFromSelfTo(nd)
+                quickMove.copy_recursively(p, nd)
+                # unlike p.copyTreeFromSelfTo, deepcopys p.v.u
             else:
                 nd = p2.insertAsLastChild()
-                p.copyTreeFromSelfTo(nd)
+                quickMove.copy_recursively(p, nd)
 
         elif self.type_ in ('linkTo', 'linkFrom'):
             blc = getattr(c, 'backlinkController', None)
