@@ -3620,7 +3620,7 @@ class editCommandsClass (baseEditCommandsClass):
             'relPath': relPath,
             'where' : 'beforeHeadline',
             'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : 1, # -2,
-            'on' : 'tnode',
+            'on' : 'vnode',
         }
         newEntry.update(kargs)  # may switch 'on' to 'vnode'
         aList.append (newEntry)
