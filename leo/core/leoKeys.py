@@ -3296,7 +3296,7 @@ class keyHandlerClass:
         w.setSelectionRange(n,n,insert=n)
         
         w2 = c.frame.body.bodyCtrl.widget
-        if w2: w2.ensureCursorVisible()
+        if not c.config.getBool("maintain_scroll") and w2: w2.ensureCursorVisible()
             # 2011/10/02: Fix cursor-movement bug.
 
         if protect:

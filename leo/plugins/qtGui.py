@@ -3564,7 +3564,7 @@ class leoQtBody (leoFrame.leoBody):
             fg = self.unselectedForegroundColor
             c.frame.body.setEditorColors(bg,fg)
 
-        w.widget.ensureCursorVisible()
+        if not c.config.getBool("maintain_scroll"): w.widget.ensureCursorVisible()
             # 2011/10/02: Fix cursor-movement bug.
     #@-others
 #@+node:ekr.20110605121601.18225: *3* class leoQtFindTab (findTab)
