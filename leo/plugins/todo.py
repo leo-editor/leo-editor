@@ -136,9 +136,13 @@ if g.app.gui.guiName() == "qt":
                 lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
 
             u.dueDateToggle.stateChanged.connect(
-                lambda v: o.set_due_date(val=u.dueDateEdit.date()))
+                lambda v: o.set_due_date(val=u.dueDateEdit.date(), mode='check'))
             u.dueTimeToggle.stateChanged.connect(
-                lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
+                lambda v: o.set_due_time(val=u.dueTimeEdit.time(), mode='check'))
+                
+            # FIXME - move to ui design
+            u.dueDateEdit.setEnabled(True)
+            u.dueTimeEdit.setEnabled(True)
 
             for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
                 "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
@@ -178,11 +182,11 @@ if g.app.gui.guiName() == "qt":
                 
                 if value:
                     getattr(edit, method)(value)
-                    edit.setEnabled(True)
+                    # edit.setEnabled(True)
                     toggle.setChecked(Qt.Checked)
                 else:
                     getattr(edit, method)(default)
-                    edit.setEnabled(False)
+                    # edit.setEnabled(False)
                     toggle.setChecked(Qt.Unchecked)
                     
                 edit.blockSignals(False)
@@ -772,34 +776,35 @@ class todoController:
     def local_clear(self, p=None):
         self.recalc_time(p, clear=True)
     #@+node:tbrown.20110213091328.16233: *4* set_due_date
-    def set_due_date(self,p=None, val=None):
+    def set_due_date(self,p=None, val=None, mode='adjust'):
+        "mode: `adjust` for change in time, `check` for checkbox toggle"
         if p is None:
             p = self.c.currentPosition()
         v = p.v
-
-        if val == None: return
         
-        if self.ui.UI.dueDateToggle.checkState() == Qt.Unchecked:
-            self.setat(v, 'duedate', "")
-            self.ui.UI.dueDateEdit.setEnabled(False)
+        if mode == 'check':
+            if self.ui.UI.dueDateToggle.checkState() == Qt.Unchecked:
+                self.setat(v, 'duedate', "")
+            else:
+                self.setat(v, 'duedate', val.toPyDate())
         else:
-            self.setat(v, 'duedate', val.toPyDate())           
-            self.ui.UI.dueDateEdit.setEnabled(True)
-
+            self.ui.UI.dueDateToggle.setCheckState(Qt.Checked)
+            self.setat(v, 'duedate', val.toPyDate())
     #@+node:tbrown.20110213091328.16235: *4* set_due_time
-    def set_due_time(self,p=None, val=None):
+    def set_due_time(self,p=None, val=None, mode='adjust'):
+        "mode: `adjust` for change in time, `check` for checkbox toggle"
         if p is None:
             p = self.c.currentPosition()
         v = p.v
 
-        if val == None: return
-
-        if self.ui.UI.dueTimeToggle.checkState() == Qt.Unchecked:
-            self.setat(v, 'duetime', "")
-            self.ui.UI.dueTimeEdit.setEnabled(False)
+        if mode == 'check':
+            if self.ui.UI.dueTimeToggle.checkState() == Qt.Unchecked:
+                self.setat(v, 'duetime', "")
+            else:
+                self.setat(v, 'duetime', val.toPyTime())
         else:
+            self.ui.UI.dueTimeToggle.setCheckState(Qt.Checked)
             self.setat(v, 'duetime', val.toPyTime())
-            self.ui.UI.dueTimeEdit.setEnabled(True)
     #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
     #@+node:tbrown.20090119215428.41: *4* childrenTodo
     @redrawer
