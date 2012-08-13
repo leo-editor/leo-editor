@@ -2462,6 +2462,7 @@ class keyHandlerClass:
             'isPlain',k.isPlainKey(stroke),
             'escapes',k.getArgEscapes,
             'completion',state==0 and completion or state!=0 and k.arg_completion)
+
         if state == 0:
             k.arg = ''
             #@+<< init altX vars >>
@@ -2880,7 +2881,7 @@ class keyHandlerClass:
         
         trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = g.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = True
+        verbose = False
         
         k,c = self,self.c ; gui = g.app.gui
         c.check_event(event)

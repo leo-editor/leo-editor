@@ -2557,6 +2557,7 @@ def getArg (self,event,
         'isPlain',k.isPlainKey(stroke),
         'escapes',k.getArgEscapes,
         'completion',state==0 and completion or state!=0 and k.arg_completion)
+
     if state == 0:
         k.arg = ''
         << init altX vars >>
