@@ -1418,12 +1418,7 @@ class TestManager:
         
         if trace: g.trace('all: %s marked: %s %s' % (all,marked,p.h))
         
-        # An important special case: add the *selected* @test or @suite node,
-        # regard regardless of all other considerations.
-        if tm.isTestNode(c.p) or tm.isSuiteNode(c.p):
-            seen.append(p.v)
-            result.append(c.p.copy())
-            
+        # 2012/08/13: Add special cases only after this loop.
         while p and p != limit:
             if p.v in seen:
                 if trace and verbose: g.trace('already seen',p.h)
@@ -1472,8 +1467,16 @@ class TestManager:
                     else:
                         p.moveToThreadNext()
                         
-        # Another important special case for run-selected-tests.
-        # Look up the tree for @test & @suite nodes if none have been found so far.
+        # Special case 1:
+        # Add the selected node @test or @suite node if no tests have been found so far.
+        # Important: this may be used to run a test in an @ignore tree.            
+        if not result and (tm.isTestNode(c.p) or tm.isSuiteNode(c.p)):
+            seen.append(p.v)
+            result.append(c.p.copy())
+                        
+        # Special case 2:
+        # Look up the selected tree for @test & @suite nodes if none have been found so far.
+        # Note: this applies only when executing one of the run-selected-unit-tests commands.
         if not result and not marked and not all:
             for p in c.p.parents():
                 if tm.isTestNode(p) or tm.isSuiteNode(p):
