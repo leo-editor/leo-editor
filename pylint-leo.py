@@ -214,6 +214,7 @@ def scanOptions():
     add('-p', help = 'plugins')
     add('-r', help = 'recent')
     add('-s', help = 'suppressions')
+    add('-t', help = 'static type checking')
     
     # Parse the options.
     options, args = parser.parse_args()
@@ -225,6 +226,7 @@ def scanOptions():
     elif options.p: return 'plugins'
     elif options.r: return 'recent'
     elif options.s: return 'suppressions'
+    elif options.t: return 'stc'
     else:           return 'core'
 #@-others
 
@@ -269,6 +271,10 @@ elif scope == 'recent':
     tables_table = (
         (recentCoreList,'core'),
         (recentPluginsList,'plugins'),
+    )
+elif scope == 'stc':
+    tables_table = (
+        (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
     )
 else:
     print('bad scope',scope)
