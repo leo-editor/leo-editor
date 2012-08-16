@@ -72,6 +72,14 @@ leoscreen-jump-to-error
   and looks for a node starting with "@" and ending with "somefile.py", then
   jumps to line NNN in that file.
 
+leoscreen-jump-to-error-up
+  `leoscreen-jump-to-error` jumps to the inner most stack-frame in the last
+  traceback, this goes up one stack-frame. Note it will go through stack frames
+  in previous tracebacks, so you need to pay attention to what's in the shell
+  window. `leoscreen-jump-to-error` always resets to the inner most stack-frame
+  in the last traceback.
+
+
 **Settings**
 
 leoscreen_prefix
@@ -198,6 +206,9 @@ class leoscreen_Controller:
         self._get_output()  # prime output diffing system
 
         self.popups = []  # store references to popup windows
+        
+        self.stack_frame = 0
+        # used by jump to error commands, 0 = innermost frame
     #@+node:tbrown.20100226095909.12785: *3* __del__
     def __del__(self):
         """remove temporary file"""
@@ -446,21 +457,40 @@ def cmd_less_prompt(c):
 #@+node:tbrown.20120516075804.26095: ** cmd_jump_to_error
 def cmd_jump_to_error(c):
     
+    c.leo_screen.stack_frame = 0
+    
+    jump_to_error_internal(c)
+
+def cmd_jump_to_error_up(c):
+    
+    c.leo_screen.stack_frame += 1
+    
+    jump_to_error_internal(c)
+
+def jump_to_error_internal(c):
+    
     import re
     regex = re.compile(r'  File "(.*)", line (\d+), in')
     
     lines = c.leo_screen.get_all(c)
     lines = lines.split('\n')
+    
+    skipped = 0
     for i in reversed(lines):
         match = regex.match(i)
         if match:
-            g.es("Line %s in %s"%(match.group(2), match.group(1)))
-            for p in c.all_unique_positions():
-                if p.h.startswith('@') and p.h.endswith(match.group(1)):
-                    c.selectPosition(p)
-                    c.goToLineNumber(c).go(n=int(match.group(2)))
-                    c.bodyWantsFocusNow()
-                    break
-            break
+            if skipped == c.leo_screen.stack_frame:
+                g.es("Line %s in %s"%(match.group(2), match.group(1)))
+                filename = g.os_path_basename(match.group(1))
+                for p in c.all_unique_positions():
+                    if p.h.startswith('@') and p.h.endswith(filename):
+                        c.selectPosition(p)
+                        c.goToLineNumber(c).go(n=int(match.group(2)))
+                        c.bodyWantsFocusNow()
+                        break
+                break
+            skipped += 1
+    else:
+        g.es("%d error frames found in console content"%skipped)
 #@-others
 #@-leo
