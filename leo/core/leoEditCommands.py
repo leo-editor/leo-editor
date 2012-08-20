@@ -349,6 +349,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
         for source,tag in table:
             aList = c.config.getData(source)
             if aList:
+                # append continued lines
+                idx = len(aList) - 1
+                while idx != 0:
+                    if aList[idx].startswith('\:'):
+                        # append to previous line
+                        aList[idx-1] = "%s\n%s" % (aList[idx-1], aList[idx][2:])
+                        del aList[idx]
+                    idx -= 1
+                
                 for s in aList:
                     self.addAbbrevHelper(s,tag)
 
@@ -363,10 +372,24 @@ class abbrevCommandsClass (baseEditCommandsClass):
         
             c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
             c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
-            c.abbrev_subst_env = {}
+            c.abbrev_subst_env = {
+                'c': c,
+                'g': g,
+                '_values': {},
+            }
             if c.config.getData('abbreviations-subst-env'):
-                exec '\n'.join(c.config.getData('abbreviations-subst-env')) in \
-                    c.abbrev_subst_env, c.abbrev_subst_env
+            
+                aList = c.config.getData('abbreviations-subst-env')
+                
+                idx = len(aList) - 1
+                while idx != 0: # append continued lines
+                    if aList[idx].startswith('\:'):
+                        # append to previous line
+                        aList[idx-1] = "%s\n%s" % (aList[idx-1], aList[idx][2:])
+                        del aList[idx]
+                    idx -= 1
+
+                exec '\n'.join(aList) in c.abbrev_subst_env, c.abbrev_subst_env
         else:
             c.abbrev_subst_start = False
             if c.config.getString('abbreviations-subst-start'):
@@ -471,7 +494,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     break
                 content, rest = content
                 exec content in c.abbrev_subst_env, c.abbrev_subst_env
-                val = "%s%s%s" % (prefix, c.abbrev_subst_env['ans'], rest)
+                val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
 
         if trace: g.trace('**inserting',repr(val))
         oldSel = j,j
@@ -611,6 +634,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 g.es_print('redefining abbreviation',name,
                     '\nfrom',repr(old),'to',repr(val))
             d [name] = val,tag
+
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)
     #@+node:ekr.20050920084036.25: *4* addAbbreviation
