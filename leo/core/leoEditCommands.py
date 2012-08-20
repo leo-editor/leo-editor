@@ -357,6 +357,22 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 self.listAbbrevs()
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
+        # here for speed in masterCommand
+        if (c.config.getString('abbreviations-subst-start') and
+            c.config.getBool('scripting-at-script-nodes')):
+        
+            c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
+            c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
+            c.abbrev_subst_env = {}
+            if c.config.getData('abbreviations-subst-env'):
+                exec '\n'.join(c.config.getData('abbreviations-subst-env')) in \
+                    c.abbrev_subst_env, c.abbrev_subst_env
+        else:
+            c.abbrev_subst_start = False
+            if c.config.getString('abbreviations-subst-start'):
+                g.es("Note: @abbreviations-subst-start found, but no substitutions "
+                     "without @scripting-at-script-nodes = True")
+            
 
         if (k.abbrevOn and not g.app.initing and
             not g.unitTesting and not g.app.batchMode and
@@ -446,6 +462,16 @@ class abbrevCommandsClass (baseEditCommandsClass):
             else: i -= 1
         else:
             return False
+            
+        if c.abbrev_subst_start:
+            while c.abbrev_subst_start in val:
+                prefix, rest = val.split(c.abbrev_subst_start, 1)
+                content = rest.split(c.abbrev_subst_end, 1)
+                if len(content) != 2:
+                    break
+                content, rest = content
+                exec content in c.abbrev_subst_env, c.abbrev_subst_env
+                val = "%s%s%s" % (prefix, c.abbrev_subst_env['ans'], rest)
 
         if trace: g.trace('**inserting',repr(val))
         oldSel = j,j
