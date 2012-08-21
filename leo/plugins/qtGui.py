@@ -7759,7 +7759,8 @@ class leoQtGui(leoGui.leoGui):
             n = None
         return n if ok else None
     #@+node:ekr.20110605121601.18490: *5* runAskOkCancelStringDialog (changed)
-    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                                   okButtonText=None,default=""):
 
         """Create and run askOkCancelString dialog ."""
 
@@ -7768,6 +7769,7 @@ class leoQtGui(leoGui.leoGui):
         d = QtGui.QInputDialog()
         d.setWindowTitle(title)
         d.setLabelText(message)
+        d.setTextValue(default)
         if cancelButtonText:
             d.setCancelButtonText(cancelButtonText)
         if okButtonText:

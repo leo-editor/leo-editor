@@ -175,7 +175,8 @@ class leoGui:
         """Create and run askOkCancelNumber dialog ."""
         self.oops()
 
-    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                                   okButtonText=None,default=""):
         """Create and run askOkCancelString dialog ."""
         self.oops()
 
@@ -466,7 +467,8 @@ class nullGui(leoGui):
     def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
         return self.simulateDialog("numberDialog",-1)
 
-    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+    def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                                   okButtonText=None,default=""):
         return self.simulateDialog("stringDialog",'')
 
     def runCompareDialog(self,c):
