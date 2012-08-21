@@ -512,11 +512,15 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
+<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
+<v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
+<v t="tbrown.20120820202856.25330"><vh>@data abbreviations-subst-env</vh></v>
+<v t="tbrown.20120820202856.25331"><vh>@@data abbreviations examples</vh></v>
 </v>
 <v t="ekr.20110611092035.16470"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
@@ -9531,6 +9535,177 @@ where the extra information is the name of the linked node's parent.
 # active_path will load as binary, i.e. using external software
 # use lower case only
 .pdf
+</t>
+<t tx="tbrown.20120820202856.25328">If this @string is set to something other than None, *and*
+@bool scripting-at-script-nodes = True, then substitutions
+will be made when abbreviations are inserted.  For example
+set abbreviations-subst-start to '{|{' and
+abbreviations-subst-end to '}|}' and an abbreviation
+like::
+
+    date;;={|{import time;x=time.asctime()}|}
+
+will expand to something like "Mon Aug 20 22:00:40 2012"
+
+See also abbreviations-subst-env.
+</t>
+<t tx="tbrown.20120820202856.25329">See abbreviations-subst-start.  This setting,
+abbreviations-subst-end, has no effect if
+abbreviations-subst-start is not set.</t>
+<t tx="tbrown.20120820202856.25330">"""
+If abbreviations-subst-start is set (see docs for that 
+@setting), the code in this node will be executed, once
+only, when the outline is loaded, in an environment which
+will be used for execution of substitutions in
+abbreviations.  For example, if this node contains
+`import time`, then an abbreviation like::
+
+    date;;={|{import time;x=time.asctime()}|}
+
+can be written more simply as::
+
+    date;;={|{x=time.asctime()}|}
+
+The environent will contain `c` and `g`, and a
+dict called `_values` (see ask() and get() below).
+
+Start lines with `\:` to preserve indentation.
+"""
+
+# helpful imports
+import os
+import sys
+import time
+import datetime
+
+# the remainder of the functions here are helpers
+# for the class and def template abbreviations in
+# @@data abbreviations-examples, see that node to
+# enable.
+
+try:
+\:    import pwd  # for full name of user in templates
+\:except:
+\:    pwd = None
+
+def ask(s, default=""):
+\:    """Ask, always, for a value for template field 's'"""
+\:    x = g.app.gui.runAskOkCancelStringDialog(c, s, s, default=default)
+\:    _values[s] = x
+\:    return x
+
+def get(s, default=""):
+\:    """Ask for template field 's' only if not already known"""
+\:    if s in _values:
+\:        return _values[s]
+\:    else:
+\:        return ask(s, default=default)
+
+def user_name():
+\:    """get user's full name if available"""
+\:    if pwd:
+\:        return pwd.getpwnam(os.environ['LOGNAME']).pw_gecos.rstrip(',')
+\:    else:
+\:        os.environ['LOGNAME']
+
+def file_name():
+\:    """dafault name of this file if implied by headline"""
+\:    if c.p.h.endswith(".py"):
+\:        return g.os_path_split(c.p.h)[-1]
+\:    return ".py"
+
+def in_class():
+\:    """return "self" if in a class definition (from headline)"""
+\:    for nd in c.p.self_and_parents_iter():
+\:        if nd.h.startswith('class '):
+\:            return "self, "
+\:    return ""
+
+def param_doc(k=None):
+\:    """make an epydoc / rst style parameter documentation block"""
+\:    if not k:
+\:        k = "Params, comma sep."  # for a regular def
+\:        indent = '    '
+\:    else:  # assume in an __init__ def'n
+\:        indent = '        '
+\:    if k in _values and _values[k]:
+\:        return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
+\:            ["%s- `%s`: "%(indent, i.split('=',1)[0].strip())
+\:             for i in _values[k].split(',')]))
+\:    return ""
+
+def long_word():
+\:    """example of an abbreviation substitution which inspects
+\:    the current content of the body text, see `;;;` example
+\:    in @@data abbreviations-examples
+\:    """
+\:    words = c.p.b.split()
+\:    w = c.frame.body.bodyCtrl
+\:    i = w.getInsertPoint() - 3  # for ;;;
+\:    b = c.p.b
+\:    s = []
+\:    while i and b[i].isalpha():
+\:        s[0:0] = b[i]
+\:        i -= 1
+\:    s = ''.join(s)
+\:    for i in words:
+\:        if i.startswith(s) and i != s:
+\:            return i[len(s):]
+\:    
+\:    return ''
+   </t>
+<t tx="tbrown.20120820202856.25331"># Examples of abbreviations with substitutions, see
+# abbreviations-subst-start and
+# abbreviations-subst-env.   Use `\:` to extend
+# code beyond one line, and preserve indentation.
+# Values to be susstituted must be assigned to `x`.
+
+date;;={|{x=time.asctime()}|}
+ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
+
+# template for a .py file
+""";;=@language python
+\:"""
+\:{|{x=file_name()}|} - {|{x=""}|}
+\:
+\:{|{x=user_name()}|}, {|{x=time.asctime()}|}
+\:"""
+\:
+\:import os
+\:import sys
+\:
+\:def main():
+\:    pass
+\:
+\:if __name__ == '__main__':
+\:    main()\n
+
+# template for a class
+class;;=class {|{
+\:x=ask("Class name",default=c.p.h.replace('class ',''))}|}(object):
+\:    """{|{x=get("Class name")}|} - 
+\:    """
+\:
+\:    def __init__(self{|{
+\:x = ask("__init__ params, comma sep.");
+\:if x: x = ", " + x}|}):
+\:        """{|{x=param_doc("__init__ params, comma sep.")}|}
+\:        """
+\:        {|{x=""}|}
+\:
+\:    @others
+
+# template for a def
+def;;=def {|{x=ask("function name",default=c.p.h)}|}({|{x=in_class()}|}{|{x=ask("Params, comma sep.")}|}):
+\:    """{|{x=get("function name")}|} - Return {|{x=param_doc()}|}
+\:    """
+\:
+\:    {|{x=""}|}
+
+# see abbreviations-subst-env - `antid;;;` will expand to
+# `antidisestablishmentarianism` if `antidisestablishmentarianism`
+# already occurs in the text
+;;;={|{x=long_word()}|}
 </t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
