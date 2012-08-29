@@ -349,6 +349,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
         for source,tag in table:
             aList = c.config.getData(source)
             if aList:
+                # append continued lines
+                idx = len(aList) - 1
+                while idx != 0:
+                    if aList[idx].startswith('\:'):
+                        # append to previous line
+                        aList[idx-1] = "%s\n%s" % (aList[idx-1], aList[idx][2:])
+                        del aList[idx]
+                    idx -= 1
+                
                 for s in aList:
                     self.addAbbrevHelper(s,tag)
 
@@ -357,6 +366,39 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 self.listAbbrevs()
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
+        # here for speed in masterCommand
+        if (c.config.getString('abbreviations-subst-start') and
+            c.config.getBool('scripting-at-script-nodes')):
+        
+            c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
+            c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
+            c.abbrev_place_start = c.config.getString('abbreviations-place-start')
+            c.abbrev_place_end = c.config.getString('abbreviations-place-end')
+            c.abbrev_subst_env = {
+                'c': c,
+                'g': g,
+                '_values': {},
+            }
+            if c.config.getData('abbreviations-subst-env'):
+            
+                aList = c.config.getData('abbreviations-subst-env')
+                
+                idx = len(aList) - 1
+                while idx != 0: # append continued lines
+                    if aList[idx].startswith('\:'):
+                        # append to previous line
+                        aList[idx-1] = "%s\n%s" % (aList[idx-1], aList[idx][2:])
+                        del aList[idx]
+                    idx -= 1
+
+                g.do_exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
+
+        else:
+            c.abbrev_subst_start = False
+            if c.config.getString('abbreviations-subst-start'):
+                g.es("Note: @abbreviations-subst-start found, but no substitutions "
+                     "without @scripting-at-script-nodes = True")
+            
 
         if (k.abbrevOn and not g.app.initing and
             not g.unitTesting and not g.app.batchMode and
@@ -446,7 +488,26 @@ class abbrevCommandsClass (baseEditCommandsClass):
             else: i -= 1
         else:
             return False
+            
+        if c.abbrev_subst_start:
+            while c.abbrev_subst_start in val:
+                prefix, rest = val.split(c.abbrev_subst_start, 1)
+                content = rest.split(c.abbrev_subst_end, 1)
+                if len(content) != 2:
+                    break
+                content, rest = content
+                c.abbrev_subst_env['_abr'] = word
+                
+                g.do_exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
 
+                val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
+        
+        if c.abbrev_place_start:
+            new_pos = val.find(c.abbrev_place_start)
+            new_end = val.find(c.abbrev_place_end)
+        else:
+            new_pos = -1
+        
         if trace: g.trace('**inserting',repr(val))
         oldSel = j,j
         c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
@@ -454,6 +515,14 @@ class abbrevCommandsClass (baseEditCommandsClass):
         w.insert(i,val)
         c.frame.body.forceFullRecolor() # 2011/10/21
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
+        if new_pos > -1:
+            c.frame.body.setInsertPoint(
+                j+new_end-len(word)+1+len(c.abbrev_place_end)
+            )
+            c.frame.body.setSelectionRange(
+                j+new_pos-len(word)+1, 
+                j+new_end-len(word)+1+len(c.abbrev_place_end)
+            )
 
         return True
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
@@ -585,6 +654,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 g.es_print('redefining abbreviation',name,
                     '\nfrom',repr(old),'to',repr(val))
             d [name] = val,tag
+
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)
     #@+node:ekr.20050920084036.25: *4* addAbbreviation

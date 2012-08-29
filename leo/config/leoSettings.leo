@@ -512,11 +512,17 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
+<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
+<v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
+<v t="tbrown.20120820202856.25330"><vh>@data abbreviations-subst-env</vh></v>
+<v t="tbrown.20120820202856.25331"><vh>@@data abbreviations examples</vh></v>
+<v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
+<v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
 </v>
 <v t="ekr.20110611092035.16470"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
@@ -9532,6 +9538,278 @@ where the extra information is the name of the linked node's parent.
 # use lower case only
 .pdf
 </t>
+<t tx="tbrown.20120820202856.25328">If this @string is set to something other than None, *and*
+@bool scripting-at-script-nodes = True, then substitutions
+will be made when abbreviations are inserted.  For example
+set abbreviations-subst-start to ``{|{`` and
+abbreviations-subst-end to ``}|}`` and an abbreviation
+like::
+
+    date;;={|{import time;x=time.asctime()}|}
+
+will expand to something like "Mon Aug 20 22:00:40 2012"
+
+See also abbreviations-subst-env.
+</t>
+<t tx="tbrown.20120820202856.25329">See abbreviations-subst-start.  This setting,
+abbreviations-subst-end, has no effect if
+abbreviations-subst-start is not set.</t>
+<t tx="tbrown.20120820202856.25330">"""
+If abbreviations-subst-start is set (see that 
+@setting), the code in this node will be executed, once
+only, when the outline is loaded, in an environment which
+will be used for execution of substitutions in
+abbreviations.  For example, if this node contains
+`import time`, then an abbreviation like::
+
+    date;;={|{import time;x=time.asctime()}|}
+
+can be written more simply as::
+
+    date;;={|{x=time.asctime()}|}
+
+The environment will contain `c` and `g`, a
+dict called `_values` (see ask() and get() below),
+and `_abr`, the abbreviation being expanded.
+
+Start lines with `\:` to preserve indentation.
+"""
+
+# helpful imports
+import os
+import sys
+import time
+import datetime
+
+# the remainder of the functions here are helpers
+# for the class, def etc. template abbreviations in
+# @@data abbreviations-examples, see that node to
+# enable.
+
+try:
+\:    import pwd  # for full name of user in templates
+\:except:
+\:    pwd = None
+
+def ask(s, default=""):
+\:    """Ask, always, for a value for template field 's'"""
+\:    x = g.app.gui.runAskOkCancelStringDialog(c, s, s, default=default)
+\:    _values[s] = x
+\:    return x
+
+def get(s, default=""):
+\:    """Ask for template field 's' only if not already known"""
+\:    if s in _values:
+\:        return _values[s]
+\:    else:
+\:        return ask(s, default=default)
+
+def user_name():
+\:    """get user's full name if available"""
+\:    if pwd:
+\:        return pwd.getpwnam(os.environ['LOGNAME']).pw_gecos.rstrip(',')
+\:    else:
+\:        os.environ['LOGNAME']
+
+def file_name():
+\:    """dafault name of this file if implied by headline"""
+\:    if c.p.h.endswith(".py"):
+\:        return g.os_path_split(c.p.h)[-1]
+\:    return ".py"
+
+def in_class():  # return "self, " if in a class definition
+\:    """return "self" if in a class definition (from headline)"""
+\:    for nd in c.p.self_and_parents_iter():
+\:        if nd.h.startswith('class'):
+\:            return "self, "
+\:    return ""
+
+def param_doc(k=None):
+\:    """make an epydoc / rst style parameter documentation block"""
+\:    if not k:
+\:        k = "Params, comma sep."
+\:        indent = '    '
+\:    else:  # assume in an __init__ def'n
+\:        indent = '        '
+\:    if k in _values and _values[k]:
+\:        return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
+\:            ["%s- `%s`: &lt;|describe %s|&gt;" % (
+\:                indent, i.split('=',1)[0].strip(), i.split('=',1)[0].strip()
+\:             ) for i in _values[k].split(',')]))
+\:    return ""
+
+def long_word():
+\:    """example of an abbreviation substitution which inspects
+\:    the current content of the body text, see `;;;` example
+\:    in @@data abbreviations-examples
+\:    """
+\:    words = c.p.b.split()
+\:    w = c.frame.body.bodyCtrl
+\:    i = w.getInsertPoint() - len(_abr)
+\:    b = c.p.b
+\:    s = []
+\:    while i and b[i].isalpha():
+\:        s[0:0] = b[i]
+\:        i -= 1
+\:    s = ''.join(s)
+\:    for i in words:
+\:        if i.startswith(s) and i != s:
+\:            return i[len(s):]
+\:    
+\:    return ''
+
+def close_xml():
+\:    """simple, but usually right, code to close open XML tags"""
+\:    w = c.frame.body.bodyCtrl
+\:    i = w.getInsertPoint() - len(_abr)
+\:    b = c.p.b
+\:    skips = 1
+\:    while i and skips:
+\:        s = []
+\:        while i and b[i] != '&gt;':
+\:            i -= 1
+\:        i -= 1
+\:        while i and (b[i] != '&lt;' or (s and b[i] == '&lt;' and s[0] == '/')):
+\:            s[0:0] = b[i]
+\:            i -= 1
+\:            if s and s[0] == '&lt;' and len(s) &gt; 1 and s[1] == '/':
+\:                skips += 1  # a closed tag indicates search one more tag
+\:        skips -= 1
+\:    s = ''.join([i if i.isalpha() else ' ' for i in s])
+\:    if s.strip():
+\:        return "&lt;/%s&gt;" % (s.split(None, 1)[0])
+\:    else:
+\:        return "&lt;/"
+
+def next_place():
+\:    """select the text of the next template placeholder
+\:       see @string abbrev-place-start"""
+\:    from PyQt4 import QtCore
+\:    txt = c.p.b
+\:    new_pos = txt.find(c.abbrev_place_start)
+\:    if new_pos &lt; 0:
+\:        i = j = len(txt)
+\:    else:
+\:        new_end = txt.find(c.abbrev_place_end)
+\:        i = new_pos-len(_abr)+1
+\:        j = new_end-len(_abr)+1+len(c.abbrev_place_end)
+\:    def later(c=c, i=i, j=j):
+\:        c.frame.body.setInsertPoint(i)
+\:        c.frame.body.setSelectionRange(i, j)
+\:    QtCore.QTimer.singleShot(0, later)
+
+def django_tag():
+\:    """expand {block content} to 
+\:       {% block content %}\n{% end_block content %} with proper
+\:       indentation (for Django web templates)"""
+\:    from PyQt4 import QtCore
+\:    w = c.frame.body.bodyCtrl
+\:    i = w.getInsertPoint() - len(_abr)
+\:    b = c.p.b
+\:    s = []
+\:    while i and b[i] != '{':
+\:        s[0:0] = b[i]
+\:        i -= 1
+\:    start = i
+\:    s = ''.join(s)
+\:    indent = 0
+\:    while i and b[i] != '\n':
+\:        indent += 1
+\:        i -= 1
+\:    if indent:
+\:        indent -= 1
+\:    def later(c=c, indent=indent, b=b, s=s, _abr=_abr):
+\:        c.p.b = "%s{%% %s %%}\n    %s\n%s{%% end%s %%}%s" % (
+\:            b[:start], s, ' '*indent, ' '*indent, s, b[start+len(s)+len(_abr):]
+\:        )
+\:    QtCore.QTimer.singleShot(0, later)
+  </t>
+<t tx="tbrown.20120820202856.25331"># Examples of abbreviations with substitutions, see
+# abbreviations-subst-start and
+# abbreviations-subst-env.   Use `\:` to extend
+# code beyond one line, and preserve indentation.
+# Values to be susstituted must be assigned to `x`.
+
+date;;={|{x=time.asctime()}|}
+ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
+
+# template for a .py file
+""";;=@language python
+\:"""
+\:&lt;||&gt;{|{x=file_name()}|} - &lt;|describe|&gt;
+\:
+\:{|{x=user_name()}|}, {|{x=time.asctime()}|}
+\:"""
+\:
+\:import os
+\:import sys
+\:
+\:def main():
+\:    &lt;|code|&gt;
+\:
+\:if __name__ == '__main__':
+\:    main()\n
+
+date;;={|{x=time.asctime()}|}
+ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
+tss;;={|{x=time.strftime("%Y%m%d")}|}
+
+# see abbreviations-subst-env - `antid;;;` will expand to
+# `antidisestablishmentarianism` if `antidisestablishmentarianism`
+# already occurs in the text
+;;;={|{x=long_word()}|}
+
+# template for a class
+class;;=class {|{
+\:x=ask("Class name",default=c.p.h.replace('class ',''))}|}(object):
+\:    """{|{x=get("Class name")}|} - &lt;|describe class|&gt;
+\:    """
+\:
+\:    def __init__(self{|{
+\:x = ask("__init__ params, comma sep.");
+\:if x: x = ", " + x}|}):
+\:        """&lt;|describe init|&gt;{|{x=param_doc("__init__ params, comma sep.")}|}
+\:        """
+\:        &lt;|code|&gt;
+\:
+\:    @others
+
+# template for a def
+def;;=def {|{x=ask("function name",default=c.p.h)}|}({|{x=in_class()}|}{|{x=ask("Params, comma sep.")}|}):
+\:    """{|{x=get("function name")}|} - Return &lt;|return|&gt;{|{x=param_doc()}|}
+\:    """
+\:
+\:    &lt;|code|&gt;
+
+# rst csv table
+csv-table;;=.. csv-table::
+\:   :header: "&lt;|col 1|&gt;", "", "", ""
+\:   :widths: 1, 1, 1, 1
+\:
+\:   &lt;|data|&gt;
+
+# see abbreviations-subst-env - `antid;;;` will expand to
+# `antidisestablishmentarianism` if `antidisestablishmentarianism`
+# already occurs in the text
+,,={|{next_place();x=''}|}
+
+# make balanced indented Django web template tags, see @data abbreviations-subst-env
+};;={|{django_tag();x=''}|}
+
+# close XML tags, see @data abbreviations-subst-env
+&lt;;;={|{x=close_xml()}|}
+</t>
+<t tx="tbrown.20120821183537.18662">The end of a placeholder for template expansions, e.g.
+`|&gt;`. See @string abbreviations-place-start.</t>
+<t tx="tbrown.20120821183537.18663">Start of a placeholder for template expansions.  E.g.
+the ``&lt;|`` in::
+
+    w;;=while &lt;|condition|&gt;:
+    \:    &lt;|code|&gt;
+
+This would expand with the ``&lt;|condition|&gt;`` selected, and ``,,``,
+if that's an abbreviation linked to next_place(), see 
+``@@data abbreviations examples``, would select ``&lt;|code|&gt;``.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
