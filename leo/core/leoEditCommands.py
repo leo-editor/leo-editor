@@ -391,7 +391,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
                         del aList[idx]
                     idx -= 1
 
-                exec '\n'.join(aList) in c.abbrev_subst_env, c.abbrev_subst_env
+                g.do_exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
+
         else:
             c.abbrev_subst_start = False
             if c.config.getString('abbreviations-subst-start'):
@@ -496,7 +497,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     break
                 content, rest = content
                 c.abbrev_subst_env['_abr'] = word
-                exec content in c.abbrev_subst_env, c.abbrev_subst_env
+                
+                g.do_exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
+
                 val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
         
         if c.abbrev_place_start:
