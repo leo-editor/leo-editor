@@ -17,6 +17,10 @@ leoscreen-run-text
   Send the text selected in Leo's body text to the shell app.
   Selects the next line for your convenience.
 
+leoscreen-run-all-text
+  Send all the text in Leo's body text to the shell app.
+  Selects the next node for your convenience.
+
 leoscreen-get-line
   Insert a line of the last result from the shell into Leo's body text
   at the current insert point.  Lines are pulled one at a time starting
@@ -430,6 +434,13 @@ def cmd_run_text(c):
         pass
 
     c.leo_screen.run_text(txt,c)
+#@+node:tbrown.20120905091352.20333: ** cmd_run_all_text
+def cmd_run_all_text(c):
+    """pass whole body text to shell app. via screen and move to next body"""
+    txt = c.p.b
+    c.leo_screen.run_text(txt,c)
+    c.selectThreadNext()
+    c.redraw()
 #@+node:tbrown.20100226095909.12791: ** cmd_next,prev,other
 def cmd_next(c):
     """execute screen command next"""
