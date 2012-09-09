@@ -4934,7 +4934,7 @@ def assertUi(uitype):
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
 #@+node:ekr.20111103205308.9657: *3* g.cls
-def cls():
+def cls(event=None):
     
     '''Clear the screen.'''
     

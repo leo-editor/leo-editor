@@ -1601,6 +1601,7 @@ class editCommandsClass (baseEditCommandsClass):
             'click-headline':                       self.clickHeadline,
             'click-icon-box':                       self.clickIconBox,
             'clone-marked-nodes':                   c.cloneMarked,
+            'cls':                                  g.cls,
             'contract-body-pane':                   c.frame.contractBodyPane,
             'contract-log-pane':                    c.frame.contractLogPane,
             'contract-outline-pane':                c.frame.contractOutlinePane,
