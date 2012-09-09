@@ -779,7 +779,7 @@ for fn in sorted(sd.modules_dict.keys()):
     m = sd.modules_dict.get(fn)
     # print(m.format())
     m.format() # Run for warnings.
-.. @+node:ekr.20120625075849.10257: *5* @test g_files_in_dir 
+.. @+node:ekr.20120625075849.10257: *5* @test g_files_in_dir
 import imp
 import leo.core.leoInspect as li
 imp.reload(li)
@@ -42305,7 +42305,8 @@ def runAskOkDialog(self,c,title,message=None,text="Ok"):
 def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
     return self.simulateDialog("numberDialog",-1)
 
-def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                               okButtonText=None,default=""):
     return self.simulateDialog("stringDialog",'')
 
 def runCompareDialog(self,c):

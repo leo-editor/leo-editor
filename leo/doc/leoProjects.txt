@@ -2815,7 +2815,8 @@ def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButt
     """Create and run askOkCancelNumber dialog ."""
     self.oops()
 
-def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                               okButtonText=None,default=""):
     """Create and run askOkCancelString dialog ."""
     self.oops()
 
@@ -2844,7 +2845,8 @@ def runAskOkDialog(self,c,title,message=None,text="Ok"):
 def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
     return self.simulateDialog("numberDialog",-1)
 
-def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                               okButtonText=None,default=""):
     return self.simulateDialog("stringDialog",'')
 
 def runCompareDialog(self,c):
@@ -3042,7 +3044,8 @@ def runAskOkCancelNumberDialog(self,c,title,message,cancelButtonText=None,okButt
         n = None
     return n if ok else None
 #@+node:ekr.20110605121601.18490: *6* runAskOkCancelStringDialog (changed)
-def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButtonText=None):
+def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,
+                               okButtonText=None,default=""):
 
     """Create and run askOkCancelString dialog ."""
 
@@ -3051,6 +3054,7 @@ def runAskOkCancelStringDialog(self,c,title,message,cancelButtonText=None,okButt
     d = QtGui.QInputDialog()
     d.setWindowTitle(title)
     d.setLabelText(message)
+    d.setTextValue(default)
     if cancelButtonText:
         d.setCancelButtonText(cancelButtonText)
     if okButtonText:
