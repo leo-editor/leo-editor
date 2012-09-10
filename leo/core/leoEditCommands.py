@@ -502,7 +502,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
                 val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
         
-        if c.abbrev_place_start:
+        if c.abbrev_subst_start and c.abbrev_place_start:
             new_pos = val.find(c.abbrev_place_start)
             new_end = val.find(c.abbrev_place_end)
         else:
