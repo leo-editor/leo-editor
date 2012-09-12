@@ -374,7 +374,7 @@ else:
     # Create a dummy suite.
     suite = tm.generalTestCase(p)
     
-if suite: g.app.scriptDict['suite'] = suite
+# if suite: g.app.scriptDict['suite'] = suite
     
 #@+node:ekr.20090703093925.5003: *3* << define exclude >>
 exclude = [
@@ -11462,14 +11462,14 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 suite = c.testManager.makeImportExportSuite("exportTests",doImport=False)
 
-g.app.scriptDict['suite'] = suite
+# g.app.scriptDict['suite'] = suite
 #@+node:ekr.20090529141856.4698: *4*  Import tests
 #@+node:ekr.20090529141856.4699: *5* @suite Import tests
 # Create unit tests in g.app.scriptDict["suite"]
 
 suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
 
-g.app.scriptDict['suite'] = suite
+# g.app.scriptDict['suite'] = suite
 #@+node:ekr.20090529141856.4790: *4*  Test files
 import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -18724,8 +18724,8 @@ for p in root.children_iter():
     if test:
         if trace and verbose: print(h)
         suite.addTest(test)
-if suite:
-    g.app.scriptDict['suite'] = suite
+# if suite:
+    # g.app.scriptDict['suite'] = suite
 #@+node:ekr.20090529115704.4398: *5* @shadow-tests
 @
 
@@ -19514,7 +19514,7 @@ This eliminates references to nodes that no longer exist in the present outline.
 
 suite = c.testManager.makeEditBodySuite(p)
 
-g.app.scriptDict['suite'] = suite
+# g.app.scriptDict['suite'] = suite
 #@+node:ekr.20040712101754.38: *5* editBodyTests
 @language plain
 @
@@ -19847,7 +19847,7 @@ import unittest
 
 suite = makePluginsTestSuite(c)
 
-g.app.scriptDict['suite'] = suite
+# g.app.scriptDict['suite'] = suite
 #@+node:ekr.20050120095423.12: *4* makePluginsTestSuite
 def makePluginsTestSuite(c):
 
@@ -20000,13 +20000,13 @@ if 1:
             plural = g.choose(n==1,'','s')
             s = 'found %2d test routine%s for %s' % (n,plural,plugin)
             g.es_print(s)
-    if 1: # For @suite nodes.  Better for unit testing.
-        g.app.scriptDict['suite'] = suite
-    else: # For script button nodes.  Good for testing.
-        # Verbosity: 1: print just dots.
-        unittest.TextTestRunner(verbosity=1).run(suite)
-        c.setChanged(changed) # Restore changed state.
-        c.selectVnode(p1) # N.B. Restore the selected node.
+    # if 1: # For @suite nodes.  Better for unit testing.
+        # g.app.scriptDict['suite'] = suite
+    # else: # For script button nodes.  Good for testing.
+        # # Verbosity: 1: print just dots.
+        # unittest.TextTestRunner(verbosity=1).run(suite)
+        # c.setChanged(changed) # Restore changed state.
+        # c.selectVnode(p1) # N.B. Restore the selected node.
 #@+node:ekr.20050218015346.11: *4* << class testRoutineTestCase >>
 class testRoutineTestCase(unittest.TestCase):
 

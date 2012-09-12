@@ -720,7 +720,7 @@ class TestManager:
         to run external tests "locally" from dynamicUnitTest.leo
         '''
 
-        trace = False ; verbose = False
+        trace = False ; verbose = True
         c,tm = self.c,self
 
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
@@ -752,6 +752,9 @@ class TestManager:
                 elif tm.isSuiteNode(p): # @suite
                     if trace: g.trace('adding',p.h)
                     test = tm.makeTestSuite(p)
+                elif tm.isTestClassNode(p):
+                    if trace: g.trace('adding',p.h)
+                    test = tm.makeTestClass(p) # A suite of tests.
                 else:
                     test = None
                 if test:
@@ -761,6 +764,7 @@ class TestManager:
             # Verbosity: 1: print just dots.
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
+                if trace: g.trace('no found: running raw body')
                 test = tm.makeTestCase(c.p)
                 if test:
                     suite.addTest(test)
@@ -782,31 +786,99 @@ class TestManager:
                 c.contractAllHeadlines()
                 c.redraw(p1)
             g.unitTesting = g.app.unitTesting = False
-    #@+node:ekr.20051104075904.12: *5* makeTestSuite (leoTest)
-    #@+at This code executes the script in an @suite node.  This code assumes:
-    # - The script creates a one or more unit tests.
-    # - The script puts the result in g.app.scriptDict["suite"]
-    #@@c
+    #@+node:ekr.20120912094259.10549: *5* get_suite_script
+    def get_suite_script(self):
+        
+        s = '''
+        
+    try:
+        g.app.scriptDict['suite'] = suite
+    except NameError:
+        pass
+        
+    '''
+        return g.adjustTripleString(s, self.c.tab_width)
+    #@+node:ekr.20120912094259.10547: *5* get_test_class_script
+    def get_test_class_script(self):
+        
+        s = '''
+        
+    try:
+        g.app.scriptDict['testclass'] = testclass
+    except NameError:
+        pass
+        
+    '''
+        return g.adjustTripleString(s,self.c.tab_width)
+    #@+node:ekr.20051104075904.13: *5* makeTestCase
+    def makeTestCase (self,p):
+
+        c = self.c
+        p = p.copy()
+
+        if p.b.strip():
+            return generalTestCase(c,p)
+        else:
+            return None
+    #@+node:ekr.20120912094259.10546: *5* makeTestClass
+    def makeTestClass (self,p):
+
+        """Create a subclass of unittest.TestCase"""
+
+        c,tm = self.c,self
+        fname = 'makeTestClass'
+        p = p.copy()
+        script = g.getScript(c,p).strip()
+        if not script:
+            print("nothing in %s" % p.h)
+            return None
+        try:
+            script = script + tm.get_test_class_script()
+            script = script + tm.get_suite_script()
+            d = {'c':c,'g':g,'p':p,'unittest':unittest}
+            if c.write_script_file:
+                scriptFile = c.writeScriptFile(script)
+                if g.isPython3:
+                    exec(compile(script,scriptFile,'exec'),d)
+                else:
+                    execfile(scriptFile,d)
+            else:
+                exec(script + '\n',d)
+            testclass = g.app.scriptDict.get('testclass')
+            suite = g.app.scriptDict.get('suite')
+            if suite and testclass:
+                print("\n%s: both 'suite' and 'testclass defined in %s" % (
+                    fname,p.h)) 
+            elif testclass:
+                suite = unittest.TestLoader().loadTestsFromTestCase(testclass)
+                return suite
+            elif suite:
+                return suite
+            else:
+                print("\n%s: neither 'suite' nor 'testclass' defined in %s" % (
+                    fname,p.h))
+                return None
+        except Exception:
+            print('\n%s: exception creating test class in %s' % (fname,p.h))
+            g.es_print_exception()
+            return None
+    #@+node:ekr.20051104075904.12: *5* makeTestSuite
+    # This code executes the script in an @suite node.
+    # This code assumes that the script sets the 'suite' var to the test suite.
 
     def makeTestSuite (self,p):
 
         """Create a suite of test cases by executing the script in an @suite node."""
 
         c,tm = self.c,self
+        fname = 'makeTestSuite'
         p = p.copy()
-        # g.trace('c.write_script_file',c.write_script_file)
         script = g.getScript(c,p).strip()
         if not script:
             print("no script in %s" % p.h)
             return None
         try:
-            if 0: #debugging
-                n,lines = 0,g.splitLines(script)
-                for line in lines:
-                    print(n,line)
-                    n += 1
-                    
-            # 2011/11/02: make script sources available.
+            script = script + tm.get_suite_script()
             d = {'c':c,'g':g,'p':p}
             if c.write_script_file:
                 scriptFile = c.writeScriptFile(script)
@@ -818,21 +890,11 @@ class TestManager:
                 exec(script + '\n',d)
             suite = g.app.scriptDict.get("suite")
             if not suite:
-                print("\nmakeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+                print("\n%s: %s script did not set suite var" % (fname,p.h))
             return suite
         except Exception:
-            print('\nmakeTestSuite: exception creating test cases for %s' % p.h)
+            print('\n%s: exception creating test cases for %s' % (fname,p.h))
             g.es_print_exception()
-            return None
-    #@+node:ekr.20051104075904.13: *5* makeTestCase
-    def makeTestCase (self,p):
-
-        c = self.c
-        p = p.copy()
-
-        if p.b.strip():
-            return generalTestCase(c,p)
-        else:
             return None
     #@+node:ekr.20070627135407: *4* TM.runTestsExternally (external tests)
     def runTestsExternally (self,all,marked):
@@ -1437,6 +1499,9 @@ class TestManager:
                 if trace: g.trace('adding',p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
+            elif add and tm.isTestClassNode(p): # @testclass
+                result.append(p.copy())
+                p.moveToNodeAfterTree()
             elif not marked or not p.isMarked() or not p.hasChildren():
                 if trace and verbose: g.trace('skipping:',p.h)
                 p.moveToThreadNext()
@@ -1460,7 +1525,10 @@ class TestManager:
                         if trace and verbose:
                             g.trace(p.h)
                         p.moveToNodeAfterTree()
-                    elif tm.isTestNode(p) or tm.isSuiteNode(p): # @test or @suite.
+                    elif (tm.isTestNode(p) or # @test 
+                          tm.isSuiteNode(p) or # @suite
+                          tm.isTestClassNode(p) # @testclass
+                    ):
                         if trace: g.trace(p.h)
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
@@ -1611,9 +1679,13 @@ class TestManager:
                 modules.append(module)
 
         return modules
-    #@+node:ekr.20051104075904.3: *4* TM.isSuiteNode and isTestNode
+    #@+node:ekr.20051104075904.3: *4* TM.isSuiteNode, isTestNode & isTestClassNode
     def isSuiteNode (self,p):
         return g.match_word(p.h.lower(),0,"@suite")
+        
+    def isTestClassNode (self,p):
+        '''Return True if p is an @testclass node'''
+        return g.match_word(p.h.lower(),0,"@testclass")
 
     def isTestNode (self,p):
         '''Return True if p is an @test node'''
