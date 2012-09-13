@@ -663,7 +663,11 @@
 <v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
 <v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
 </v>
-<v t="ekr.20120912154527.2699"><vh>script!!</vh></v>
+<v t="ekr.20120912154527.2699"><vh>Prototype of screencast script</vh>
+<v t="ekr.20120912212404.2700"><vh>wait</vh></v>
+<v t="ekr.20120912212404.2701"><vh>head_keys</vh></v>
+<v t="ekr.20120912212404.2702"><vh>body_keys</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -964,7 +968,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8686,44 +8690,51 @@ for gnx in aList:
         'children': [z.gnx for z in v.children]
     }
 </t>
-<t tx="ekr.20120912154527.2699">g.cls()
+<t tx="ekr.20120912154527.2699">@others
 
-do = c.k.simulateCommand
-
-def wait(n=1.0):
-    g.sleep(n)
-
-c_old = c
+s = p.b # This script.
 c = c.new()
-
-def head_key(ch):
-    c.p.h = c.p.h + ch
-    wait(0.50)
-    c.redraw_now(p3) # to update the headline.
+p = c.p
+p.h = ''
+n1,n2 = 0.01,0.2 # Small difference are important.
+head_keys('This is headline text',n1,n2)
+body_keys('This is some body text.\n',0.0,0.0) # n1,n2)
+body_keys('Some more body text.\n',0.0,0.0)
+body_keys(s,0.0,0.0)
+c.setChanged(False)
+# c.close()
+</t>
+<t tx="ekr.20120912212404.2700">def wait(n=1.0,high=None):
+    
+    import random
+    
+    if n &gt; 0.0 and high:
+        n = random.uniform(n,n+high)
+    if n &gt; 0.0:
+        g.sleep(n)
+</t>
+<t tx="ekr.20120912212404.2701">def head_keys(s,n1=0.04,n2=0.1):
+    import leo.core.leoGui as leoGui
+    p = c.p
     c.editHeadline()
-    c.frame.tree.repaint() # tree.update queues the update.
-    
-    
-def body_key(ch):
-    p3.b = p3.b + ch
-    wait(0.50)
-    c.bodyWantsFocusNow()
+    w = c.frame.tree.edit_widget(p)
+    for ch in s:
+        p.h = p.h + ch
+        c.frame.tree.repaint() # *not* tree.update.
+        wait(n1,n2)
+        event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
+        c.k.masterKeyHandler(event)
+    c.frame.tree.repaint()
     c.redraw()
-
-p2 = c.rootPosition()
-p3 = p2.insertAfter()
-p3.h = 'New node!'
-
-if 1: # Works.
-    # tree = c.frame.tree
-    for i in range(3):
-        head_key('*')
-        
-if 1: # Works.
-    for i in range(4):
-        body_key('!')
-
-print('done!!')
+</t>
+<t tx="ekr.20120912212404.2702">def body_keys(s,n1=0.04,n2=0.1):
+    c.bodyWantsFocusNow()
+    p = c.p
+    for i,ch in enumerate(s):
+        p.b = p.b + ch
+        c.frame.body.bodyCtrl.widget.repaint()
+        wait(n1,n2)
+    c.redraw()
 </t>
 </tnodes>
 </leo_file>
