@@ -6585,6 +6585,7 @@ class Commands (object):
     #@+node:ekr.20070226121510: *7*  c.xFocusHelper
     def treeEditFocusHelper (self):
         c = self
+
         if c.stayInTreeAfterEdit:
             c.treeWantsFocus()
         else:
@@ -6592,6 +6593,7 @@ class Commands (object):
 
     def treeFocusHelper (self):
         c = self
+
         if c.stayInTreeAfterSelect:
             c.treeWantsFocus()
         else:
@@ -7051,7 +7053,7 @@ class Commands (object):
     def outerUpdate (self):
 
         trace = False and not g.unitTesting
-        verbose = False ; traceFocus = True
+        verbose = True ; traceFocus = True
         c = self ; aList = []
         if not c.exists or not c.k:
             return
@@ -7119,7 +7121,6 @@ class Commands (object):
             #print(mods)
             g.doHook("contentModified",c=c, nodes = mods)
             mods.clear()
-            
 
         # g.trace('after')
     #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
@@ -7134,7 +7135,8 @@ class Commands (object):
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw (self,p=None,setFocus=False):
         '''Redraw the screen immediately.'''
-
+        
+        trace = False
         c = self
         if not p: p = c.p or c.rootPosition()
 
@@ -7145,6 +7147,8 @@ class Commands (object):
         
         # Be careful.  nullTree.redraw return None.
         c.selectPosition(p2 or p)
+        
+        if trace: g.trace('setFocus',setFocus,p2 or p)
 
         if setFocus: c.treeFocusHelper()
 
@@ -7233,7 +7237,7 @@ class Commands (object):
         c = self
 
         if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-            import pdb ; pdb.set_trace() # Drop into pdb.
+            ### import pdb ; pdb.set_trace() # Drop into pdb.
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
     #@+node:ekr.20080514131122.17: *4* c.widget_name
@@ -8214,7 +8218,7 @@ class Commands (object):
             cc.selectChapterForPosition(p)
                 # Important: selectChapterForPosition calls c.redraw
                 # if the chapter changes.
-            if trace: g.trace(p)
+            if trace: g.trace(p and p.h)
             
         # 2012/03/08: De-hoist as necessary to make p visible.
         redraw_flag = False

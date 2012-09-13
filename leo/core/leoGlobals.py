@@ -5393,6 +5393,13 @@ def toPythonIndex (s,index):
             return 0
 
 toGuiIndex = toPythonIndex
+#@+node:ekr.20120912153732.10597: *3* g.wait
+def sleep (n):
+    
+    '''Wait about n milliseconds.'''
+    
+    from time import sleep
+    sleep(n) #sleeps for 5 seconds
 #@+node:ekr.20120129181245.10220: *3* g.TypedDict/OfLists & isTypedDict/OfLists
 class TypedDict:
     

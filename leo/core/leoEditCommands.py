@@ -3141,7 +3141,7 @@ class editCommandsClass (baseEditCommandsClass):
             c.widgetWantsFocusNow(pane)
             k.showStateAndMode()
     #@+node:ekr.20051022144825: *4* focusTo...
-    def focusToBody (self,event):
+    def focusToBody (self,event=None):
         '''Put the keyboard focus in Leo's body pane.'''
         c = self.c ; k = c.k
         c.bodyWantsFocus()
@@ -3149,15 +3149,15 @@ class editCommandsClass (baseEditCommandsClass):
             k.setDefaultInputState()
             k.showStateAndMode()
 
-    def focusToLog (self,event):
+    def focusToLog (self,event=None):
         '''Put the keyboard focus in Leo's log pane.'''
         self.c.logWantsFocus()
 
-    def focusToMinibuffer (self,event):
+    def focusToMinibuffer (self,event=None):
         '''Put the keyboard focus in Leo's minibuffer.'''
         self.c.minibufferWantsFocus()
 
-    def focusToTree (self,event):
+    def focusToTree (self,event=None):
         '''Put the keyboard focus in Leo's outline pane.'''
         self.c.treeWantsFocus()
     #@+node:ekr.20060211063744.1: *4* clicks in the headline (leoEditCommands)

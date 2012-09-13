@@ -661,7 +661,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # Important: do not set lockouts here.
             # Only methods that actually generate events should set lockouts.
             if trace: g.trace(self.traceItem(item))
-            self.select(p) # Calls before/afterSelectHint.
+            self.select(p)
+                # This is a call to leoTree.select(!!)
+                # Calls before/afterSelectHint.
         else:
             self.error('no p for item: %s' % item)
 
@@ -777,8 +779,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # We don't redraw during unit testing: an important speedup.
         if c.expandAllAncestors(p) and not g.unitTesting:
+            if trace: g.trace('***self.full_redraw')
             self.full_redraw(p)
         else:
+            if trace: g.trace('*** c.outerUpdate')
             c.outerUpdate() # Bring the tree up to date.
             item = self.setItemForCurrentPosition(scroll=False)
     #@+node:ekr.20110605121601.17907: *3* beforeSelectHint (nativeTree)
@@ -826,7 +830,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         """Start editing p's headline."""
 
         trace = False and not g.unitTesting
-        if self.busy(): return
+        if self.busy():
+            if trace: g.trace('busy')
+            return
+
         c = self.c
         c.outerUpdate()
             # Do any scheduled redraw.
@@ -838,11 +845,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             e,wrapper = None,None # 2011/06/07: define wrapper here too.
             self.error('no item for %s' % p)
+            
+        if trace: g.trace('p: %s e: %s' % (p and p.h,e))
 
-        # A nice hack: just set the focus request.
-        if e: c.requestedFocusWidget = e
-        
-        if trace: g.trace(e,wrapper,g.callers())
+        if e:
+            # A nice hack: just set the focus request.
+            c.requestedFocusWidget = e
+
         return e,wrapper # 2011/02/12
     #@+node:ekr.20110605121601.17910: *3* editPosition (nativeTree)
     def editPosition(self):

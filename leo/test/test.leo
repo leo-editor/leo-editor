@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="60" left="787" height="750" width="1007"/>
+	<global_window_position top="60" left="787" height="928" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -18,7 +18,7 @@
 <v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
 <v t="ekr.20110511061102.5232"><vh>@bool enable_autocompleter_initially = False</vh></v>
 <v t="ekr.20110512225930.2456"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20110510110227.2440"><vh>@bool use_qcompleter = True</vh></v>
+<v t="ekr.20110510110227.2440"><vh>@bool use_qcompleter = False</vh></v>
 </v>
 <v t="ekr.20100118190256.2014"><vh>Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -663,6 +663,7 @@
 <v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
 <v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
 </v>
+<v t="ekr.20120912154527.2699"><vh>script!!</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -963,7 +964,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8684,6 +8685,45 @@ for gnx in aList:
         # 'ua': v.u,
         'children': [z.gnx for z in v.children]
     }
+</t>
+<t tx="ekr.20120912154527.2699">g.cls()
+
+do = c.k.simulateCommand
+
+def wait(n=1.0):
+    g.sleep(n)
+
+c_old = c
+c = c.new()
+
+def head_key(ch):
+    c.p.h = c.p.h + ch
+    wait(0.50)
+    c.redraw_now(p3) # to update the headline.
+    c.editHeadline()
+    c.frame.tree.repaint() # tree.update queues the update.
+    
+    
+def body_key(ch):
+    p3.b = p3.b + ch
+    wait(0.50)
+    c.bodyWantsFocusNow()
+    c.redraw()
+
+p2 = c.rootPosition()
+p3 = p2.insertAfter()
+p3.h = 'New node!'
+
+if 1: # Works.
+    # tree = c.frame.tree
+    for i in range(3):
+        head_key('*')
+        
+if 1: # Works.
+    for i in range(4):
+        body_key('!')
+
+print('done!!')
 </t>
 </tnodes>
 </leo_file>

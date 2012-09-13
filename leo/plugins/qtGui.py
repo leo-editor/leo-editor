@@ -6640,8 +6640,11 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         gui-specific stuff.'''
 
         trace = False and not g.unitTesting
+        c = self.c
         w = self.treeWidget
-        w.setCurrentItem(item) # Must do this first.
+        w.setCurrentItem(item)
+            # Must do this first.
+            # This generates a call to onTreeSelect.
         w.editItem(item)
             # Generates focus-in event that tree doesn't report.
         e = w.itemWidget(item,0) # A QLineEdit.
