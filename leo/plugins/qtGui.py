@@ -5145,6 +5145,7 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
+    #@+node:ekr.20120913110135.10613: *4* putImage (leoQtLog)
     #@+node:ekr.20110605121601.18324: *4* Tab (leoQtLog)
     #@+node:ekr.20110605121601.18325: *5* clearTab
     def clearTab (self,tabName,wrap='none'):
@@ -8126,11 +8127,12 @@ class leoQtGui(leoGui.leoGui):
         '''Load the icon and return it.'''
 
         trace = False and not g.unitTesting
+        verbose = False
 
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
-            if trace: # and not name.startswith('box'):
+            if trace and verbose: # and not name.startswith('box'):
                 g.trace('cached',id(image),name,image)
             return image
         try:

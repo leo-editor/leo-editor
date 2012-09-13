@@ -1217,6 +1217,9 @@ class Commands (object):
         '''Create a new Leo window.'''
         
         lm = g.app.loadManager
+        
+        # Clean out the update queue so it won't interfere with the new window.
+        self.outerUpdate()
 
         # Send all log messages to the new frame.
         g.app.setLog(None)

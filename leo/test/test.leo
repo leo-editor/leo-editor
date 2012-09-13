@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.42">
 	<global_window_position top="60" left="655" height="928" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -663,16 +663,99 @@
 <v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
 <v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
 </v>
-<v t="ekr.20120912154527.2699"><vh>@command screencast @key=alt-9</vh>
-<v t="ekr.20120912212404.2702"><vh>body_keys</vh></v>
-<v t="ekr.20120913065629.2769"><vh>command</vh></v>
-<v t="ekr.20120913071431.2714"><vh>focus</vh></v>
-<v t="ekr.20120912212404.2701"><vh>head_keys</vh></v>
-<v t="ekr.20120913062258.2706"><vh>key</vh></v>
-<v t="ekr.20120913081922.2763"><vh>repaint</vh></v>
-<v t="ekr.20120913081922.2744"><vh>start</vh></v>
-<v t="ekr.20120912212404.2700"><vh>wait</vh></v>
+<v t="ekr.20120913105857.2914"><vh>From quickstart</vh>
+<v t="ekr.20120913105857.2915"><vh>Welcome to Leo!</vh></v>
+<v t="ekr.20120913105857.2916"><vh>Tree manipulation basics</vh></v>
+<v t="ekr.20120913105857.2917"><vh>Programming</vh>
+<v t="ekr.20120913105857.2918"><vh>External files</vh>
+<v t="ekr.20120913105857.2919"><vh>Thin nodes (explanation &amp; exercise)</vh>
+<v t="ekr.20120913105857.2920"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2921"><vh>@@thin myfile_thin.py</vh>
+<v t="ekr.20120913105857.2922"><vh>imports &amp; setup routines</vh>
+<v t="ekr.20120913105857.2923"><vh>imports</vh></v>
+<v t="ekr.20120913105857.2924"><vh>init1, init2</vh></v>
 </v>
+<v t="ekr.20120913105857.2925"><vh>class Foo</vh>
+<v t="ekr.20120913105857.2926"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120913105857.2927"><vh>spam</vh></v>
+<v t="ekr.20120913105857.2928"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2929"><vh>Auto nodes</vh>
+<v t="ekr.20120913105857.2930"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2931"><vh>@@auto myfile_auto.py</vh>
+<v t="ekr.20120913105857.2932"><vh>imports &amp; setup routines</vh>
+<v t="ekr.20120913105857.2933"><vh>imports</vh></v>
+<v t="ekr.20120913105857.2934"><vh>init1, init2</vh></v>
+</v>
+<v t="ekr.20120913105857.2935"><vh>class Foo</vh>
+<v t="ekr.20120913105857.2936"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120913105857.2937"><vh>spam</vh></v>
+<v t="ekr.20120913105857.2938"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2939"><vh>Shadow nodes</vh>
+<v t="ekr.20120913105857.2940"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2941"><vh>@@shadow myfile_shadow.py</vh>
+<v t="ekr.20120913105857.2942"><vh>imports &amp; setup routines</vh>
+<v t="ekr.20120913105857.2943"><vh>imports</vh></v>
+<v t="ekr.20120913105857.2944"><vh>init1, init2</vh></v>
+</v>
+<v t="ekr.20120913105857.2945"><vh>class Foo</vh>
+<v t="ekr.20120913105857.2946"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120913105857.2947"><vh>spam</vh></v>
+<v t="ekr.20120913105857.2948"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2949"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ekr.20120913105857.2950"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2951"><vh>@@auto-rst myfile_rst.txt</vh>
+<v t="ekr.20120913105857.2952"><vh>Main heading</vh>
+<v t="ekr.20120913105857.2953"><vh>subheading 1</vh></v>
+<v t="ekr.20120913105857.2954"><vh>subheading 2</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2955"><vh>Configuration (enabling plugins etc.)</vh>
+<v t="ekr.20120913105857.2956"><vh>Find out your ~/.leo directory (script)</vh></v>
+<v t="ekr.20120913105857.2957"><vh>@@settings</vh>
+<v t="ekr.20120913105857.2958"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20120913105857.2959"><vh>@@string initial_split_orientation = horizontal</vh></v>
+<v t="ekr.20120913105857.2960"><vh>suggested style sheets</vh>
+<v t="ekr.20120913105857.2961"><vh>default look (Linux)</vh>
+<v t="ekr.20120913105857.2962"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ekr.20120913105857.2963"><vh>A mac look</vh>
+<v t="ekr.20120913105857.2964"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+</v>
+<v t="ekr.20120913105857.2965"><vh>@int qt_max_colorized_chars = 200000</vh></v>
+<v t="ekr.20120913105857.2966"><vh>@data contextmenu_commands</vh></v>
+<v t="ekr.20120913105857.2967"><vh>@bool use_body_focus_border = False</vh></v>
+</v>
+</v>
+<v t="ekr.20120913105857.2968"><vh>Search and replace</vh></v>
+<v t="ekr.20120913105857.2969"><vh>Minibuffer</vh></v>
+<v t="ekr.20120913105857.2970"><vh>Scripting Leo</vh>
+<v t="ekr.20120913105857.2971"><vh>Executing scripts with ctrl+b</vh>
+<v t="ekr.20120913105857.2972"><vh>Press ctrl+b here</vh></v>
+</v>
+<v t="ekr.20120913105857.2973"><vh>Creating script buttons</vh>
+<v t="ekr.20120913105857.2974"><vh>@button example-btn</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913112755.2855"><vh>@command screencast @key=Alt-9</vh></v>
+<v t="ekr.20120913122618.2822"><vh>Node 1</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -973,7 +1056,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -1538,8 +1621,10 @@ mod_scripting.py
 nav_qt.py
 plugins_menu.py
 quicksearch.py
-
 viewrendered.py
+
+# testing
+screencast.py
 
 ### UNL.py # moved to core.
 ### scrolledmessage.py is broken at present.
@@ -8695,136 +8780,789 @@ for gnx in aList:
         'children': [z.gnx for z in v.children]
     }
 </t>
-<t tx="ekr.20120912154527.2699">@others
+<t tx="ekr.20120913105857.2914"></t>
+<t tx="ekr.20120913105857.2915">This is a brief tutorial for getting familiar with basic Leo
+functionality. Click around and experiment.
 
-start()
+Note that you probably want to save your own "working copy"
+of this file before proceeding further. Do that by "File -&gt;
+Save as".
 
-s = p.b # This script.
-c = c.new()
+This guide is intentionally quite brief and minimal -
+therefore, it merely scratches the surface of what Leo can
+do. You can begin leveraging Leo for mindmapping-like tasks
+by just reading the node "Tree manipulation basics", and
+moving on to other topics after acquiring some basic
+familiarity. </t>
+<t tx="ekr.20120913105857.2916">You can use Leo as fairly typical outliner. Play around with
+some of the commands from the Outline menu:
 
-# if would be nice to finish redrawing the new pane, but that doesn't seem to be working.
-# In particular, the icon area isn't populated with items.
-# It will be best to run this kind of script from quickstart.leo.
-if 0:
-    c.outerUpdate()
-    repaint('window')
+- Click the expansion box of nodes_ to show and hide their
+  children.
 
+- The ``Insert Node`` command (``Ctrl+I``) inserts a new
+  headline into the outline.
+
+- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a
+  headline and all its children, and copies the structure to
+  clipboard - ready to paste with ``Paste Node`` command
+  (``Ctrl+Shift+V``). Use ``Copy Node`` command
+  (``Ctrl+Shift+C``) to copy node to clipboard without
+  deleting it from outline. Copy-paste command family works
+  across different Leo documents and processes.
+
+- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
+  ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
+  commands move the currently selected node, along with all
+  its descendants.
+
+- The ``Promote`` (``Ctrl+{``) command makes all the
+  children of a headline siblings of the headline. The
+  ``Demote`` (``Ctrl+}``) command makes all following
+  siblings_ of a headline children of the headline.
+
+- Move around the tree and expand/collapse nodes by pressing
+  Alt + arrow keys. This also moves the focus to tree, so,
+  after pressing Alt + arrow, you can move around by using
+  arrow keys alone. Return the focus to the body control by
+  pressing ``Enter``.
+
+- To edit the headline, use press ``Ctrl+H``. This works
+  regardless of whether body or headline has focus.
+
+You enter `body text` for any node by selecting the node's
+headline in the outline pane and then typing in the body
+pane. Leo has a full range of `editing commands` that apply
+to the body pane.
+
+See Leo's documentation for more detailed discussion.</t>
+<t tx="ekr.20120913105857.2917"></t>
+<t tx="ekr.20120913105857.2918">"External file" means a file that resides on your file
+system. If you are programming, these are the files you
+eventually want to create to get something useful out of
+Leo, for example, your C++ or Python source code files.</t>
+<t tx="ekr.20120913105857.2919">Remove the first @ from @thin in the subtree below and save
+(ctrl+s) to create an "external" file which is directly
+usable outside leo - try opening the resulting myfile.py in
+a normal text editor (e.g. from right-click menu on the @thin node) 
+to see what it looks like.
+
+Note the @others directive, and the the lines that look like
+
+#@-node:ville.20090627211608.10122:class Foo
+
+These are called "sentinels", and they are needed to
+preserve the tree structure in the external files. They
+allow your tree structure to survive, even when someone else
+edits the source (or you edit it yourself in an external
+editor).</t>
+<t tx="ekr.20120913105857.2920"> </t>
+<t tx="ekr.20120913105857.2921">@language python
+@others
+</t>
+<t tx="ekr.20120913105857.2922"></t>
+<t tx="ekr.20120913105857.2923">import os
+import sys
+
+</t>
+<t tx="ekr.20120913105857.2924">def init1():
+    print "init1"
+
+def init2():
+    print "init2"</t>
+<t tx="ekr.20120913105857.2925">class Foo:
+    &lt;&lt; docstring &gt;&gt;
+    @others
+
+
+</t>
+<t tx="ekr.20120913105857.2926">""" Some sort of useful class """
+
+</t>
+<t tx="ekr.20120913105857.2927">def spam(self):
+    pass
+
+</t>
+<t tx="ekr.20120913105857.2928">def eggs(self):
+    pass</t>
+<t tx="ekr.20120913105857.2929">If the sentinels in thin nodes are unacceptable for your workflow 
+(typically the case when you are the only one using Leo in a 
+particular project), you can use @auto nodes to "play well with 
+others". @auto nodes understand the structure of the source code
+(parsers exist for popular languages), and create the "typical"
+outline for the code when the file is loaded. When you save, the outline is 
+written back.
+
+Do the same thing you did with @@thin - i.e., 
+
+- Remove the first @, and save. 
+- Check the resulting file (`/myfile_auto.py) and observe that it has 
+  no sentinels.   
+- There is no "magic" involved. If you execute 'File -&gt; Read auto nodes" 
+  (or right click on @auto node and choose "Refresh from disk", or reopen 
+  this document), you'll note that  the outline structure was lost, 
+  and the "parsed" structure is created instead. This is the cost
+  of using @auto nodes.</t>
+<t tx="ekr.20120913105857.2930"></t>
+<t tx="ekr.20120913105857.2931">@language python
+@others
+</t>
+<t tx="ekr.20120913105857.2932"></t>
+<t tx="ekr.20120913105857.2933">import os
+import sys
+
+</t>
+<t tx="ekr.20120913105857.2934">def init1():
+    print "init1"
+
+def init2():
+    print "init2"</t>
+<t tx="ekr.20120913105857.2935">class Foo:
+    &lt;&lt; docstring &gt;&gt;
+    @others
+
+
+</t>
+<t tx="ekr.20120913105857.2936">""" Some sort of useful class """
+
+</t>
+<t tx="ekr.20120913105857.2937">def spam(self):
+    pass
+
+</t>
+<t tx="ekr.20120913105857.2938">def eggs(self):
+    pass</t>
+<t tx="ekr.20120913105857.2939">In this tree, you can experiment with @shadow. It combines the benefits
+of @thin and @auto - namely, it publishes a file without sentinels, but
+still allows the tree structure to survive, even if the external file
+is edited outside Leo.
+
+The cost is complexity - @shadow relies on a "shadow file" that remembers
+the structure, and a sophisticated diff/patch algorithm that merges
+the changes from the external file to the tree structure.
+
+Experiment by editing the external file outside Leo and doing Right click
+-&gt; refresh from disk on the @shadow node. </t>
+<t tx="ekr.20120913105857.2940"></t>
+<t tx="ekr.20120913105857.2941">@language python
+@others
+</t>
+<t tx="ekr.20120913105857.2942"></t>
+<t tx="ekr.20120913105857.2943">import os
+import sys
+
+</t>
+<t tx="ekr.20120913105857.2944">def init1():
+    print "init1"
+
+def init2():
+    print "init2"</t>
+<t tx="ekr.20120913105857.2945">class Foo:
+    &lt;&lt; docstring &gt;&gt;
+    @others
+
+
+</t>
+<t tx="ekr.20120913105857.2946">""" Some sort of useful class """
+
+</t>
+<t tx="ekr.20120913105857.2947">def spam(self):
+    pass
+
+</t>
+<t tx="ekr.20120913105857.2948">def eggs(self):
+    pass</t>
+<t tx="ekr.20120913105857.2949">reStructuredText (http://docutils.sourceforge.net/rst.html)
+is an efficient way of authoring documentation as plain text.
+Leo provides first-class support for RST authoring, including 
+the unique feature of representing RST outline structure
+as Leo tree. You can find an example in the tree below - again,
+just remove the first @ character from @@auto-rst and save,
+opening the external file afterwards.
+</t>
+<t tx="ekr.20120913105857.2950"></t>
+<t tx="ekr.20120913105857.2951" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e65733171036802752e">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+
+</t>
+<t tx="ekr.20120913105857.2952">Observe the underlining style of the headings.
+</t>
+<t tx="ekr.20120913105857.2953">Some text in first other chapter.
+</t>
+<t tx="ekr.20120913105857.2954">More text in other chapter.</t>
+<t tx="ekr.20120913105857.2955">If you are just starting, you should create your own myLeoSettings.leo in ~/.leo. We'll do that next.
+
+Create the file first: 
+  - File -&gt; New (or ctrl+N)
+  - File -&gt; Save as
+  - Navigate to ~/.leo
+  - save as myLeoSettings.leo
+
+In the current tree, there is @@settings subtree. We are
+copying this to the new file. Go to node @@settings, and
+copy the whole tree to clipboard (ctrl+shift+c).
+  
+Select the document that has myLeoSettings.leo (the one you
+just created). Drop the settings tree there (ctrl+shift+v),
+Remove extra @ from @@settings, and save again.
+
+Now, you should be all set. Verify that it worked by Help-&gt;open myLeoSettings.leo
+</t>
+<t tx="ekr.20120913105857.2956"># execute this script by ctrl+b to find out where your ~/.leo is
+
+g.es('Homedir is at ',g.app.homeLeoDir)
+
+</t>
+<t tx="ekr.20120913105857.2957"></t>
+<t tx="ekr.20120913105857.2958"># Leo loads plugins in the order they appear here.
+# File names may be indented as desired.
+
+# Standard plugins enabled in official distributions....
+
+plugins_menu.py
+leo_to_html.py
+mod_scripting.py
+quicksearch.py
+UNL.py
+contextmenu.py
+nav_qt.py
+
+# The plugins manager plugin does not
+# understand @enabled-plugins nodes.
+# plugin_manager.py
+
+# The rst3 plugin is no longer needed.
+# It's code has been moved to Leo's core
+# rst3.py
+
+# These plugins used to be enabled when using the tk plugin.
+# cleo.py
+# hoist.py
+# image.py
+# nav_buttons.py
+# threading_colorizer.py
+
+# All other plugins.
+# Order is important for enabled plugins that
+# add items to the icon area.
+
+# ConceptualSort.py
+# EditAttributes.py
+# FileActions.py
+# Library.py
+# nodeActions.py
+# UASearch.py
+# URLloader.py
+# UniversalScrolling.py
+
+# add_directives.py
+# arrows.py
+# at_folder.py
+# at_view.py
+# autotrees.py
+# base64Packager.py
+# bibtex.py
+# chapter_hoist.py
+# cleo.py
+# color_markup.py
+# datenodes.py
+# detect_urls.py
+# dyna_menu.py
+# fastGotoNode.py
+# footprints.py
+# groupOperations.py
+# hoist.py
+# image.py
+# import_cisco_config.py
+# ipython.py
+# keybindings.py
+# leoOPML.py
+# leo_to_html.py
+# leo_to_rtf.py
+# leoupdate.py
+# macros.py
+# mod_autosave.py
+# mod_http.py
+# mod_labels.py
+# mod_read_dir_outline.py
+# mod_shadow.py
+# multifile.py
+# nav_buttons.py
+# newButtons.py
+# niceNosent.py
+# nodebar.py
+# nodenavigator.py
+# open_shell.py
+# open_with.py
+# paste_as_headlines.py
+# pie_menus.py
+# pretty_print.py
+# print_cp.py
+# quickMove.py
+# rClick.py
+# read_only_nodes.py
+# rowcol.py
+# run_nodes.py
+# s_menu.py
+# scheduler.py
+# searchbox.py
+# shortcut_button.py
+# slideshow.py
+# table.py
+# templates.py
+# trace_tags.py
+# vim.py
+# word_count.py
+# word_export.py
+# xcc_nodes.py
+# xemacs.py
+# xsltWithNodes.py
+# zodb.py
+# quicksearch.py
+# tomboy_import.py
+# ctagscompleter.py
+# colorize_headlines.py</t>
+<t tx="ekr.20120913105857.2959">horizontal: body pane to the left
+vertical: body pane on the botton
+
+vertical is the default; you may prefer horizontal for small but wide screens (e.g. on laptops)</t>
+<t tx="ekr.20120913105857.2960">This tree containt some suggested "looks" for Leo.
+
+To experiment, you may want to use a @button that applies
+the stylesheet in current node; look for "@button set-style-sheet" 
+in scripts.leo.
+
+For information on stylesheets, see
+
+http://doc.trolltech.com/stylesheet.html
+
+Style contributions are welcome.</t>
+<t tx="ekr.20120913105857.2961">Classic Leo colors. This should look good on Linux.</t>
+<t tx="ekr.20120913105857.2962">/* Documentation of Qt stylesheets at http://doc.trolltech.com/stylesheet.html 
+
+To experiment, you may want to use a @button that applies
+the current stylesheet; look for "@button set-style-sheet" in
+scripts.leo.
+
+*/
+
+/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+/* A QWidget: supports only background attributes.*/
+
+QSplitter::handle {
+    background-color: #CAE1FF; /* lightSteelBlue1 */
+}
+
+QStackedWidget {
+    /* background-color:lightpink; */
+    border-color: red;
+    padding: 0px;
+    /* border-width: 0px; */
+    /* background-color: yellow; */
+}
+
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-style: solid;
+}
+
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    background-color: #ffffec; /* Leo's traditional tree color */
+    selection-color: black; /* was white */
+    selection-background-color: lightgrey;
+    /* font-family: SansSerif; */
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit {
+    background-color: cornsilk;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The log panes */
+QTextEdit {
+    background-color: #f2fdff;
+    selection-color: white;
+    selection-background-color: blue;
+    /* font-family: Courier New; */
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The body pane */
+QTextEdit#richTextEdit {
+    background-color: #fdf5f5; /* A kind of pink. */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: DejaVu Sans Mono;
+    /* font-family: Courier New; */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel {
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* Editor labels */
+QLineEdit#editorLabel {
+    background-color: #ffffec;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+    border: 2px;
+    margin: 2px;
+}
+
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+QLineEdit#status2 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+XXQPushButton {
+    background-color: #fdf5f5; /* A kind of pink. */
+    margin: 2px;
+    padding; 4px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+/* QMenuBar works, but not QMenu... */
+XXQMenuBar {
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+</t>
+<t tx="ekr.20120913105857.2963">This is the classic Leo look, but with fonts that
+allegedly look better on Mac.</t>
+<t tx="ekr.20120913105857.2964">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
+
+/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+/* A QWidget: supports only background attributes.*/
+
+QSplitter::handle {
+    background-color: #CAE1FF; /* lightSteelBlue1 */
+}
+
+QStackedWidget {
+    /* background-color:lightpink; */
+    border-color: red;
+    padding: 0px;
+    /* border-width: 0px; */
+    /* background-color: yellow; */
+}
+
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-style: solid;
+}
+
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    background-color: #ffffec; /* Leo's traditional tree color */
+    selection-color: black; /* was white */
+    selection-background-color: lightgrey;
+    /* font-family: SansSerif; */
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit {
+    background-color: cornsilk;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The log panes */
+QTextEdit {
+    background-color: #f2fdff;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: Monaco;
+    font-size: 10px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The body pane */
+QTextEdit#richTextEdit {
+    background-color: #fdf5f5; /* A kind of pink. */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: Monaco;
+    /* font-family: Courier New; */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel {
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* Editor labels */
+QLineEdit#editorLabel {
+    background-color: #ffffec;
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+    border: 2px;
+    margin: 2px;
+}
+
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: Monaco;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+QLineEdit#status2 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+XXQPushButton {
+    background-color: #fdf5f5; /* A kind of pink. */
+    margin: 2px;
+    padding; 4px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+/* QMenuBar works, but not QMenu... */
+XXQMenuBar {
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}</t>
+<t tx="ekr.20120913105857.2965">If zero, all nodes are colorized, regardless of length of body text.
+If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
+<t tx="ekr.20120913105857.2966"># Add commands to contextmenu
+# The format is &lt;command&gt; SPACE &lt;description&gt;
+
+# stickynote Create a sticky note
+# read-at-file-nodes Read file node</t>
+<t tx="ekr.20120913105857.2967">Avoid red focus borders in body pane (if it's not in your aesthetic taste)</t>
+<t tx="ekr.20120913105857.2968">Press ctrl + F to enter "minibuffer find" mode. Press F3 to
+"find again".
+
+For large scale searches (classic "find in files"
+functionality for the whole tree), look for the "Nav" tab in
+the log pane (in upper right of the screen). Enter your
+search string and press enter, then click on the matches.
+
+You can also activate the "Nav" functionality with ctrl+shift+f.
+
+To perform find-and replace, press ctrl-f, enter the text
+to search, then press ctrl+shift+r, and enter the text to replace
+the matches with, and press Enter.
+
+To limit the replace operations to particular external file,
+you can use your external editor. That is, right click on
+the @thin node (say, @thin myfile.py), choose "Edit
+myfile.py in MYEDITOR", and perform the necessary operations.
+After that, right click on the node and choose "Refresh from 
+disk".
+</t>
+<t tx="ekr.20120913105857.2969">The minibuffer is the text input area at the bottom of the
+screen, familiar to users of emacs and vi.
+
+Press alt-x to enter a minibuffer command (e.g. alt-x
+fill-paragraph). Press ctrl+p (repeat-complex-command)
+folowed by Enter to re-run a previous minibuffer command.</t>
+<t tx="ekr.20120913105857.2970">Eventually, you will want to add extra functionality to your
+Leo documents. There are a few simple ways, and unlimited 
+power for advanced users
+
+</t>
+<t tx="ekr.20120913105857.2971">You can write scripts in your document trees, and execute
+them with ctrl+b. Try it on the child of this node - it
+should display the list of nodes that have a headline
+starting with @ in the log pane.
+
+It will also append the summary as a new node under itself.
+
+</t>
+<t tx="ekr.20120913105857.2972">@language python
+# c is "commander", central api object specific to current document 
+
+# get a list of "position" objects
+nodes = c.find_h('^@')
+
+res = []
+for n in nodes:
+    # .b gets the body text, .h is headline
+    body = n.b
+    res.append("- " + n.h)
+    
+    res.append("   " + str(body.count('\n')) + " lines")
+    
+# 'p' is the 'current position'    
+child = p.insertAsLastChild()    
+child.b = "\n".join(res)
+child.h = "Report"
+
+c.redraw()    </t>
+<t tx="ekr.20120913105857.2973">You can create buttons in the button bar by adding @button
+nodes to your outline.
+
+A button does not appear automatically when you add it - you
+need to reopen the document to make it appear.
+
+</t>
+<t tx="ekr.20120913105857.2974"># p is current position
+
+g.es("p.h is " + p.h)</t>
+<t tx="ekr.20120913112755.2855">@others
+
+c.save()
+
+if 0: # Use a separate window.
+    
+    c.outerUpdate() # Clear the old_c's update list.
+    # s = p.b # This script.
+    c = c.new()
+    
+# Select this node.
+p0 = g.findNodeAnywhere(c,'@command screencast @key=Alt-9')
+assert p0
+c.selectPosition(p0)
+assert c.p == p0
+next = c.p.next()
+c.selectPosition(next)
+
+# Init...
+m = c.screencast_controller
+m.set_speed(1.0) # 0.50 runs twice as fast.
+m.set_log_focus(False)
 n1,n2 = 0.02,0.175 # Small difference are important.
+
+box0_fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons','box00.GIF')
+box8_fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons','box08.GIF')
+assert g.os_path_exists(box0_fn),box0_fn
+
+m.clear_log()
+m.log('Here are the basics of Leo',begin=True)
 if 1:
-    key('ctrl-i','insert-node')
-    head_keys('Node 2',n1,n2)
-    key('alt+up','goto-prev-visible')
-if 0:
-    head_keys('Node 1',n1,n2)
-if 0:
-    body_keys('This is some body text.\n',n1,n2)
-    body_keys('Some more body text.\n')
-if 0:
-    body_keys(s)
-    
+    m.log('Ctrl-I inserts a new node')
+    m.command('insert-node')
+    m.log('The new node has a black icon border\n' +
+        'indicating that the node has changed')
+    m.log('Ctrl-H begins editing')
+    m.head_keys('Node 2',n1,n2)
+    m.log('Alt-UpArrow selects the previous node.')
+    m.command('goto-prev-visible')
+    p2 = c.p
+    m.log("We'll type in the headline")
+    m.head_keys('Node 1',n1,n2)
+    m.log('Return puts focus in the body pane')
+    m.focus('body')
+    m.log('Now we can type some text')
+    m.body_keys('This is some body text.\n',n1,n2)
+    m.body_keys('Some more body text.\n')
+    m.log('The little square in the icon box\n' +
+        'indicates that the node has body text')
+    # m.body_keys(s) # Confusing
+
+# Part 2
 if 1:
-    command('insert-node')
-    c.p.h='Inserted Node'
-    command('move-outline-right')
-    command('goto-prev-visible')
-    wait(1)
-    command('contract-node')
-    # repaint('tree')
-    # g.es('wait 1 sec. before expanding')
-    wait(1)
-    command('expand-node')
-    focus('body')
+    m.log("Let's insert a new node")
+    m.command('insert-node')
+    # c.p.h='Inserted Node'
+    m.log('Ctrl-R moves the outline right')
+    m.command('move-outline-right')
+    m.log('Alt-UpArrow selects the previous node')
+    m.command('goto-prev-visible')
+    m.log('Alt-LeftArrow collapses the node')
+    m.command('contract-node')
+    m.log('Alt-RightArrow expands the node')
+    m.command('expand-node')
+m.log("That's all!",end=True)
+m.focus('body')
 
-c.setChanged(False)
-# c.close()
+try:
+    assert p2 != p0
+    p2.b = ''
+except Exception:
+    pass
+
+# Only useful if we are putting the screencast in another window.
+    # c.setChanged(False)
+    # c.close()
 </t>
-<t tx="ekr.20120912212404.2700">def wait(n=1,high=0):
-    
-    import random
-
-    if n &gt; 0 and high &gt; 0:
-        n = random.uniform(n,n+high)
-    if n &gt; 0:
-        g.sleep(n)
-</t>
-<t tx="ekr.20120912212404.2701">def head_keys(s,n1=0,n2=0):
-    import leo.core.leoGui as leoGui
-
-    p = c.p
-    p.h=''
-    tree = c.frame.tree
-    c.editHeadline()
-    w = tree.edit_widget(p)
-    for ch in s:
-        p.h = p.h + ch
-        tree.repaint() # *not* tree.update.
-        wait(n1,n2)
-        event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
-        c.k.masterKeyHandler(event)
-    # Ensure the final result is correct.
-    # tree.repaint()
-    p.h=s
-    c.redraw()
-</t>
-<t tx="ekr.20120912212404.2702">def body_keys(s,n1=0,n2=0):
-
-    c.bodyWantsFocusNow()
-    p = c.p
-    w = c.frame.body.bodyCtrl.widget
-    for ch in s:
-        p.b = p.b + ch
-        w.repaint()
-        wait(n1,n2)
-    c.redraw()
-</t>
-<t tx="ekr.20120913062258.2706">def key(setting,command):
-    '''Simulate hitting the key.  Show the key in the log pane.'''
-
-    stroke = c.k.strokeFromSetting(setting)
-    g.es(stroke.s)
-    c.k.simulateCommand(command)
-    c.redraw()</t>
-<t tx="ekr.20120913065629.2769">def command(command_name):
-    
-    c.k.simulateCommand(command_name)
-    c.redraw()
-</t>
-<t tx="ekr.20120913071431.2714">def focus(pane):
-
-    d = {
-        'body': c.bodyWantsFocus,
-        'log': c.logWantsFocus,
-        'tree': c.treeWantsFocus,
-    }
-    
-    f = d.get(pane)
-    if f:
-        f()
-        c.outerUpdate()
-    else:
-        g.trace('bad pane: %s' % (pane))</t>
-<t tx="ekr.20120913081922.2744">def start():
-    
-    '''Init the screencast.'''
-    
-    c.save()
-    c.outerUpdate()
-        # Clear all the pending updates.
-        # Otherwise the old_c.outerupdate spoils focus in the new c.</t>
-<t tx="ekr.20120913081922.2763">def repaint(pane):
-
-    d = {
-        'body': c.frame.body.bodyCtrl,
-        'log': c.frame.log.logCtrl,
-        'tree': c.frame.tree.treeWidget,
-        'window': c.frame.top,
-    }
-    
-    w = d.get(pane)
-    if w:
-        w.repaint()
-    else:
-        g.trace('bad pane: %s' % (pane))
-</t>
+<t tx="ekr.20120913122618.2822"></t>
 </tnodes>
 </leo_file>
