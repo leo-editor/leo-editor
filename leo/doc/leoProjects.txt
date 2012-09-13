@@ -2725,7 +2725,7 @@ def outerUpdate (self):
     c.requestRedrawFlag = False
     
     if trace and (verbose or aList):
-        g.trace('**start',g.callers(5))
+        g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
     
     if c.requestBringToFront:
         if hasattr(c.frame,'bringToFront'):

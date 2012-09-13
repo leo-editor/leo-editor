@@ -527,6 +527,7 @@ class Commands (object):
         g.doHook("command1") returns False.
         This provides a simple mechanism for overriding commands."""
 
+        trace = False and not g.unitTesting
         c = self ; p = c.p
         commandName = command and command.__name__
         c.setLog()
@@ -556,7 +557,9 @@ class Commands (object):
         if not g.doHook("command1",c=c,p=p,v=p,label=label):
             try:
                 c.inCommand = True
+                if trace: g.trace('start',command)
                 val = command(event)
+                if trace: g.trace('end',command)
                 if c and c.exists: # Be careful: the command could destroy c.
                     c.inCommand = False
                     c.k.funcReturn = val
@@ -571,10 +574,11 @@ class Commands (object):
 
             if c and c.exists:
                 if c.requestCloseWindow:
-                    g.trace('Closing window after command')
+                    if trace: g.trace('closing window after command')
                     c.requestCloseWindow = False
                     g.app.closeLeoWindow(c.frame)
                 else:
+                    if trace: g.trace('calling outerUpdate')
                     c.outerUpdate()
 
         # Be careful: the command could destroy c.
@@ -1069,7 +1073,9 @@ class Commands (object):
         It will also be able to handle commands from the minibuffer even
         if rclick is not installed.
         """
-        def minibufferCallback(event, function=function):
+        def minibufferCallback(event,function=function):
+            
+            trace = False and not g.unitTesting
 
             # Avoid a pylint complaint.
             if hasattr(self,'theContextMenuController'):
@@ -1088,6 +1094,7 @@ class Commands (object):
 
             retval = None
             try:
+                if trace: g.trace(function,keywords)
                 retval = function(keywords)
             finally:
                 if cm:
@@ -1230,7 +1237,7 @@ class Commands (object):
         g.app.writeWaitingLog(c)
         c.setLog()
         c.redraw()
-        return c # For unit test.
+        return c # For unit tests and scripts.
     #@+node:ekr.20031218072017.2821: *6* c.open & helper
     def open (self,event=None):
 
@@ -7063,7 +7070,7 @@ class Commands (object):
         c.requestRedrawFlag = False
         
         if trace and (verbose or aList):
-            g.trace('**start',g.callers(5))
+            g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
         
         if c.requestBringToFront:
             if hasattr(c.frame,'bringToFront'):

@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="60" left="787" height="928" width="1078"/>
+	<global_window_position top="60" left="655" height="928" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -663,10 +663,15 @@
 <v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
 <v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
 </v>
-<v t="ekr.20120912154527.2699"><vh>Prototype of screencast script</vh>
-<v t="ekr.20120912212404.2700"><vh>wait</vh></v>
-<v t="ekr.20120912212404.2701"><vh>head_keys</vh></v>
+<v t="ekr.20120912154527.2699"><vh>@command screencast @key=alt-9</vh>
 <v t="ekr.20120912212404.2702"><vh>body_keys</vh></v>
+<v t="ekr.20120913065629.2769"><vh>command</vh></v>
+<v t="ekr.20120913071431.2714"><vh>focus</vh></v>
+<v t="ekr.20120912212404.2701"><vh>head_keys</vh></v>
+<v t="ekr.20120913062258.2706"><vh>key</vh></v>
+<v t="ekr.20120913081922.2763"><vh>repaint</vh></v>
+<v t="ekr.20120913081922.2744"><vh>start</vh></v>
+<v t="ekr.20120912212404.2700"><vh>wait</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -968,7 +973,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8692,49 +8697,134 @@ for gnx in aList:
 </t>
 <t tx="ekr.20120912154527.2699">@others
 
+start()
+
 s = p.b # This script.
 c = c.new()
-p = c.p
-p.h = ''
-n1,n2 = 0.01,0.2 # Small difference are important.
-head_keys('This is headline text',n1,n2)
-body_keys('This is some body text.\n',0.0,0.0) # n1,n2)
-body_keys('Some more body text.\n',0.0,0.0)
-body_keys(s,0.0,0.0)
+
+# if would be nice to finish redrawing the new pane, but that doesn't seem to be working.
+# In particular, the icon area isn't populated with items.
+# It will be best to run this kind of script from quickstart.leo.
+if 0:
+    c.outerUpdate()
+    repaint('window')
+
+n1,n2 = 0.02,0.175 # Small difference are important.
+if 1:
+    key('ctrl-i','insert-node')
+    head_keys('Node 2',n1,n2)
+    key('alt+up','goto-prev-visible')
+if 0:
+    head_keys('Node 1',n1,n2)
+if 0:
+    body_keys('This is some body text.\n',n1,n2)
+    body_keys('Some more body text.\n')
+if 0:
+    body_keys(s)
+    
+if 1:
+    command('insert-node')
+    c.p.h='Inserted Node'
+    command('move-outline-right')
+    command('goto-prev-visible')
+    wait(1)
+    command('contract-node')
+    # repaint('tree')
+    # g.es('wait 1 sec. before expanding')
+    wait(1)
+    command('expand-node')
+    focus('body')
+
 c.setChanged(False)
 # c.close()
 </t>
-<t tx="ekr.20120912212404.2700">def wait(n=1.0,high=None):
+<t tx="ekr.20120912212404.2700">def wait(n=1,high=0):
     
     import random
-    
-    if n &gt; 0.0 and high:
+
+    if n &gt; 0 and high &gt; 0:
         n = random.uniform(n,n+high)
-    if n &gt; 0.0:
+    if n &gt; 0:
         g.sleep(n)
 </t>
-<t tx="ekr.20120912212404.2701">def head_keys(s,n1=0.04,n2=0.1):
+<t tx="ekr.20120912212404.2701">def head_keys(s,n1=0,n2=0):
     import leo.core.leoGui as leoGui
+
     p = c.p
+    p.h=''
+    tree = c.frame.tree
     c.editHeadline()
-    w = c.frame.tree.edit_widget(p)
+    w = tree.edit_widget(p)
     for ch in s:
         p.h = p.h + ch
-        c.frame.tree.repaint() # *not* tree.update.
+        tree.repaint() # *not* tree.update.
         wait(n1,n2)
         event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
         c.k.masterKeyHandler(event)
-    c.frame.tree.repaint()
+    # Ensure the final result is correct.
+    # tree.repaint()
+    p.h=s
     c.redraw()
 </t>
-<t tx="ekr.20120912212404.2702">def body_keys(s,n1=0.04,n2=0.1):
+<t tx="ekr.20120912212404.2702">def body_keys(s,n1=0,n2=0):
+
     c.bodyWantsFocusNow()
     p = c.p
-    for i,ch in enumerate(s):
+    w = c.frame.body.bodyCtrl.widget
+    for ch in s:
         p.b = p.b + ch
-        c.frame.body.bodyCtrl.widget.repaint()
+        w.repaint()
         wait(n1,n2)
     c.redraw()
+</t>
+<t tx="ekr.20120913062258.2706">def key(setting,command):
+    '''Simulate hitting the key.  Show the key in the log pane.'''
+
+    stroke = c.k.strokeFromSetting(setting)
+    g.es(stroke.s)
+    c.k.simulateCommand(command)
+    c.redraw()</t>
+<t tx="ekr.20120913065629.2769">def command(command_name):
+    
+    c.k.simulateCommand(command_name)
+    c.redraw()
+</t>
+<t tx="ekr.20120913071431.2714">def focus(pane):
+
+    d = {
+        'body': c.bodyWantsFocus,
+        'log': c.logWantsFocus,
+        'tree': c.treeWantsFocus,
+    }
+    
+    f = d.get(pane)
+    if f:
+        f()
+        c.outerUpdate()
+    else:
+        g.trace('bad pane: %s' % (pane))</t>
+<t tx="ekr.20120913081922.2744">def start():
+    
+    '''Init the screencast.'''
+    
+    c.save()
+    c.outerUpdate()
+        # Clear all the pending updates.
+        # Otherwise the old_c.outerupdate spoils focus in the new c.</t>
+<t tx="ekr.20120913081922.2763">def repaint(pane):
+
+    d = {
+        'body': c.frame.body.bodyCtrl,
+        'log': c.frame.log.logCtrl,
+        'tree': c.frame.tree.treeWidget,
+        'window': c.frame.top,
+    }
+    
+    w = d.get(pane)
+    if w:
+        w.repaint()
+    else:
+        g.trace('bad pane: %s' % (pane))
 </t>
 </tnodes>
 </leo_file>
