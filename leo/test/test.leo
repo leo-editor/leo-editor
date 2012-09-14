@@ -754,10 +754,20 @@
 </v>
 </v>
 </v>
-<v t="ekr.20120913112755.2855"><vh>@command screencast</vh></v>
 <v t="ekr.20120914093811.2824"><vh>@command start screencast @key=alt-9</vh></v>
 <v t="ekr.20120914093811.2825"><vh>@screencast test</vh>
-<v t="ekr.20120914093811.2826"><vh>action 1</vh></v>
+<v t="ekr.20120914093811.2826"><vh>ctrl-i</vh></v>
+<v t="ekr.20120914174750.2853"><vh>Black border</vh></v>
+<v t="ekr.20120914104624.2829"><vh>ctrl-h</vh></v>
+<v t="ekr.20120914104624.2832"><vh>return</vh></v>
+<v t="ekr.20120914104624.2833"><vh>tying in body</vh></v>
+<v t="ekr.20120914104624.2834"><vh>another inserted node</vh></v>
+<v t="ekr.20120914104624.2835"><vh>Ctrl-R</vh></v>
+<v t="ekr.20120914104624.2836"><vh>Up</vh></v>
+<v t="ekr.20120914104624.2837"><vh>Left</vh></v>
+<v t="ekr.20120914104624.2838"><vh>Right</vh></v>
+<v t="ekr.20120914174750.2850"><vh>That's all</vh></v>
+<v t="ekr.20120914174750.2851"><vh>m.quit</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1059,7 +1069,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9489,83 +9499,6 @@ need to reopen the document to make it appear.
 <t tx="ekr.20120913105857.2974"># p is current position
 
 g.es("p.h is " + p.h)</t>
-<t tx="ekr.20120913112755.2855">@others
-
-c.save()
-
-if 0: # Use a separate window.
-    
-    c.outerUpdate() # Clear the old_c's update list.
-    # s = p.b # This script.
-    c = c.new()
-    
-# Select this node.
-p0 = g.findNodeAnywhere(c,'@command screencast @key=Alt-9')
-assert p0
-c.selectPosition(p0)
-assert c.p == p0
-next = c.p.next()
-c.selectPosition(next)
-
-# Init...
-m = c.screencast_controller
-m.set_speed(1.0) # 0.50 runs twice as fast.
-m.set_log_focus(False)
-n1,n2 = 0.02,0.175 # Small difference are important.
-
-box0_fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons','box00.GIF')
-box8_fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons','box08.GIF')
-assert g.os_path_exists(box0_fn),box0_fn
-
-m.clear_log()
-m.log('Here are the basics of Leo',begin=True)
-if 1:
-    m.log('Ctrl-I inserts a new node')
-    m.command('insert-node')
-    m.log('The new node has a black icon border\n' +
-        'indicating that the node has changed')
-    m.log('Ctrl-H begins editing')
-    m.head_keys('Node 2',n1,n2)
-    m.log('Alt-UpArrow selects the previous node.')
-    m.command('goto-prev-visible')
-    p2 = c.p
-    m.log("We'll type in the headline")
-    m.head_keys('Node 1',n1,n2)
-    m.log('Return puts focus in the body pane')
-    m.focus('body')
-    m.log('Now we can type some text')
-    m.body_keys('This is some body text.\n',n1,n2)
-    m.body_keys('Some more body text.\n')
-    m.log('The little square in the icon box\n' +
-        'indicates that the node has body text')
-    # m.body_keys(s) # Confusing
-
-# Part 2
-if 1:
-    m.log("Let's insert a new node")
-    m.command('insert-node')
-    # c.p.h='Inserted Node'
-    m.log('Ctrl-R moves the outline right')
-    m.command('move-outline-right')
-    m.log('Alt-UpArrow selects the previous node')
-    m.command('goto-prev-visible')
-    m.log('Alt-LeftArrow collapses the node')
-    m.command('contract-node')
-    m.log('Alt-RightArrow expands the node')
-    m.command('expand-node')
-m.log("That's all!",end=True)
-m.focus('body')
-
-try:
-    assert p2 != p0
-    p2.b = ''
-except Exception:
-    pass
-
-# Only useful if we are putting the screencast in another window.
-    # c.setChanged(False)
-    # c.close()
-</t>
 <t tx="ekr.20120914093811.2824">c.save()
 
 m = c.screencast_controller
@@ -9577,7 +9510,51 @@ p2 = g.findNodeAnywhere(c,'@screencast test')
 assert p2
 m.start(p2)</t>
 <t tx="ekr.20120914093811.2825"></t>
-<t tx="ekr.20120914093811.2826">m.log('Ctrl-I inserts a new node')
-m.command('insert-node')</t>
+<t tx="ekr.20120914093811.2826"># Create a root node for the examples.
+
+m.p1.contract()
+c.redraw_now(m.p1)
+
+m.log('Ctrl-I inserts a new node')
+
+# Put the new node after the @screencast node.
+p2 = m.p1.insertAfter()
+p2.setDirty()
+
+c.redraw_now(p2)
+</t>
+<t tx="ekr.20120914104624.2829">m.log('Ctrl-H begins editing')
+m.log("We'll type in the headline")
+m.head_keys('Node 1')
+</t>
+<t tx="ekr.20120914104624.2832">m.log('Return puts focus in the body pane')
+m.focus('body')
+</t>
+<t tx="ekr.20120914104624.2833">m.log('Now we can type some text')
+m.body_keys('This is some body text.\n')
+m.body_keys('Some more body text.\n',n1=0.0,n2=0.0)
+m.log(
+    'The little square in the icon box\n' +
+    'indicates that the node has body text')</t>
+<t tx="ekr.20120914104624.2834">m.log("Let's insert a new node")
+m.command('insert-node')
+</t>
+<t tx="ekr.20120914104624.2835">m.log('Ctrl-R moves the outline right')
+m.command('move-outline-right')
+</t>
+<t tx="ekr.20120914104624.2836">m.log('UpArrow selects the previous node')
+m.command('goto-prev-visible')
+</t>
+<t tx="ekr.20120914104624.2837">m.log('LeftArrow collapses the node')
+m.command('contract-node')
+</t>
+<t tx="ekr.20120914104624.2838">m.log('RightArrow expands the node')
+m.command('expand-node')</t>
+<t tx="ekr.20120914174750.2850">m.log('That\'s all folks!')
+</t>
+<t tx="ekr.20120914174750.2851">m.quit()</t>
+<t tx="ekr.20120914174750.2853">m.log('The new node has a black icon border\n' +
+        'indicating that the node has changed')
+</t>
 </tnodes>
 </leo_file>
