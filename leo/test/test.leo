@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.42">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.65">
 	<global_window_position top="60" left="655" height="928" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -759,6 +759,7 @@
 <v t="ekr.20120914093811.2826"><vh>ctrl-i</vh></v>
 <v t="ekr.20120914174750.2853"><vh>Black border</vh></v>
 <v t="ekr.20120914104624.2829"><vh>ctrl-h</vh></v>
+<v t="ekr.20120914182320.2853"><vh>typing</vh></v>
 <v t="ekr.20120914104624.2832"><vh>return</vh></v>
 <v t="ekr.20120914104624.2833"><vh>tying in body</vh></v>
 <v t="ekr.20120914104624.2834"><vh>another inserted node</vh></v>
@@ -9502,9 +9503,9 @@ g.es("p.h is " + p.h)</t>
 <t tx="ekr.20120914093811.2824">c.save()
 
 m = c.screencast_controller
-m.set_speed(1.0) # 0.50 runs twice as fast.
-m.set_log_focus(False)
-n1,n2 = 0.02,0.175 # Small difference are important.
+# m.set_speed(1.0) # 0.50 runs twice as fast.
+# m.set_log_focus(False)
+# n1,n2 = 0.02,0.175 # Small difference are important.
 
 p2 = g.findNodeAnywhere(c,'@screencast test')
 assert p2
@@ -9524,8 +9525,7 @@ p2.setDirty()
 c.redraw_now(p2)
 </t>
 <t tx="ekr.20120914104624.2829">m.log('Ctrl-H begins editing')
-m.log("We'll type in the headline")
-m.head_keys('Node 1')
+c.editHeadline()
 </t>
 <t tx="ekr.20120914104624.2832">m.log('Return puts focus in the body pane')
 m.focus('body')
@@ -9553,8 +9553,12 @@ m.command('expand-node')</t>
 <t tx="ekr.20120914174750.2850">m.log('That\'s all folks!')
 </t>
 <t tx="ekr.20120914174750.2851">m.quit()</t>
-<t tx="ekr.20120914174750.2853">m.log('The new node has a black icon border\n' +
-        'indicating that the node has changed')
+<t tx="ekr.20120914174750.2853">m.log(
+    'The new node has a black icon border '
+    'indicating that the node has changed')
+</t>
+<t tx="ekr.20120914182320.2853">m.log("We'll type in the headline")
+m.head_keys('Node 1')
 </t>
 </tnodes>
 </leo_file>

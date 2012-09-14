@@ -276,7 +276,7 @@ class ScreenCastController:
         '''Terminate the slide show.'''
         
         m = self
-        g.trace('\n *** end of slide show at: %s' % (m.p1.h))
+        print('*** end of slide show at: %s' % (m.p1.h))
         m.delete_widgets()
         m.c.k.keyboardQuit()
     #@+node:ekr.20120913110135.10585: *3* repaint
@@ -364,7 +364,8 @@ class ScreenCastController:
             g.trace('screencast-reverse not ready yet.')
         else:
             g.trace('ignore %s' % (char))
-            m.quit()
+            if char not in ('Down','Up'):
+                m.quit()
     #@+node:ekr.20120913110135.10587: *3* wait
     def wait(self,n=1,high=0,force=False):
         
