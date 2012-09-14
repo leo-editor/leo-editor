@@ -54,15 +54,9 @@ class ScreenCastController:
         self.c = c
         self.log_color = 'black'
         self.log_focus = True # True: writing to log sets focus to log.
+        self.p1 = None # The first slide of the show.
+        self.p = None # The present slide of the show.
         self.speed = 1.0 # Amount to multiply wait times.
-            
-        if 0:
-            # if would be nice to finish redrawing the new pane, but that doesn't seem to be working.
-            # In particular, the icon area isn't populated with items.
-            # It will be best to run this kind of script from quickstart.leo.
-            if 0:
-                c.outerUpdate()
-                self.repaint('window')
     #@+node:ekr.20120913110135.10580: *3* body_keys
     def body_keys (self,s,n1=0,n2=0):
         
@@ -163,6 +157,35 @@ class ScreenCastController:
             m.wait(1)
         
         
+    #@+node:ekr.20120914074855.10721: *3* next
+    def next (self):
+        
+        '''Find the next non-empty screencast node and execute its script.'''
+        
+        m = self
+        
+        while m.p:
+            g.trace(m.p.h)
+            p2 = m.p.copy()
+            m.p.moveToThreadNext()
+            if p2.b.strip(): # Probably should test after stripping comments...
+                g.trace('executing',p2.h)
+                d = {'c':m.c,'g:':g,'m':m,'p':p2}
+                m.c.executeScript(p=p2,namespace=d,useSelectedText=False)
+                    # event=None, args=None, p=None,
+                    # script=None, define_g=True,
+                    # define_name='__main__', silent=False
+                break
+        else:
+            m.quit()
+    #@+node:ekr.20120914074855.10722: *3* quit
+    def quit (self):
+        
+        '''Terminate the slide show.'''
+        
+        m = self
+        g.trace('end of slide show at: %s' % (m.p1.h))
+        m.c.k.keyboardQuit()
     #@+node:ekr.20120913110135.10585: *3* repaint
     def repaint(self,pane):
 
@@ -190,6 +213,40 @@ class ScreenCastController:
             g.trace('speed must be >= 0.0')
         else:
             self.speed = speed
+    #@+node:ekr.20120914074855.10720: *3* start
+    def start (self,p):
+        
+        self.p1 = p.copy()
+        self.p = p.copy()
+        self.state_handler(event=None)
+    #@+node:ekr.20120914074855.10715: *3* state_handler
+    def state_handler (self,event):
+
+        trace = False and not g.unitTesting
+        m = self
+        k = m.c.k
+        tag = 'screencast'
+        state = k.getState(tag)
+        char = event and event.char or ''
+        if trace: g.trace('state: %s char: %s' % (state,char))
+
+        if state == 0:
+            k.setLabel('screencast') # We might want to lock this label...
+            k.setState(tag,1,self.state_handler)
+            assert m.p1 and m.p1 == m.p
+            m.next()
+        elif char == 'Escape': # k.masterKeyHandler handles ctrl-g.
+            g.trace('end of slide show')
+            k.keyboardQuit()
+        elif char == 'Right':
+            m.next()
+        elif char == 'Left':
+            g.trace('screencast-reverse not ready yet.')
+        else:
+            g.trace('ignore %s' % (char))
+            # k.clearState()
+            # k.resetLabel()
+            # k.showStateAndMode()
     #@+node:ekr.20120913110135.10587: *3* wait
     def wait(self,n=1,high=0):
         

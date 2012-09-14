@@ -754,8 +754,11 @@
 </v>
 </v>
 </v>
-<v t="ekr.20120913112755.2855"><vh>@command screencast @key=Alt-9</vh></v>
-<v t="ekr.20120913122618.2822"><vh>Node 1</vh></v>
+<v t="ekr.20120913112755.2855"><vh>@command screencast</vh></v>
+<v t="ekr.20120914093811.2824"><vh>@command start screencast @key=alt-9</vh></v>
+<v t="ekr.20120914093811.2825"><vh>@screencast test</vh>
+<v t="ekr.20120914093811.2826"><vh>action 1</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1056,7 +1059,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9563,6 +9566,18 @@ except Exception:
     # c.setChanged(False)
     # c.close()
 </t>
-<t tx="ekr.20120913122618.2822"></t>
+<t tx="ekr.20120914093811.2824">c.save()
+
+m = c.screencast_controller
+m.set_speed(1.0) # 0.50 runs twice as fast.
+m.set_log_focus(False)
+n1,n2 = 0.02,0.175 # Small difference are important.
+
+p2 = g.findNodeAnywhere(c,'@screencast test')
+assert p2
+m.start(p2)</t>
+<t tx="ekr.20120914093811.2825"></t>
+<t tx="ekr.20120914093811.2826">m.log('Ctrl-I inserts a new node')
+m.command('insert-node')</t>
 </tnodes>
 </leo_file>
