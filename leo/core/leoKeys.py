@@ -2060,7 +2060,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.112: *5* callAltXFunction
     def callAltXFunction (self,event):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel()
         k.mb_tabList = []
         commandName = s[len(k.mb_prefix):].strip()
@@ -3768,12 +3768,18 @@ class keyHandlerClass:
 
     def computeCompletionList (self,defaultTabList,backspace,allow_empty_completion=False):
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel() ; tabName = 'Completion'
         command = s [len(k.mb_prompt):]
             # s always includes prefix, so command is well defined.
 
         k.mb_tabList,common_prefix = g.itemsMatchingPrefixInList(command,defaultTabList)
         c.frame.log.clearTab(tabName)
+        
+        if trace:
+            g.trace('command',command)
+            g.trace('common_prefix',common_prefix)
+            g.trace('k.mb_tabList',k.mb_tabList)
         
         if not k.mb_tabList and allow_empty_completion:
             if command:
@@ -3846,10 +3852,11 @@ class keyHandlerClass:
 
         '''Handle tab completion when the user hits a tab.'''
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel().strip()
 
         if k.mb_tabList and s.startswith(k.mb_tabListPrefix):
-            # g.trace('cycle',repr(s))
+            if trace: g.trace('cycle',repr(s))
             # Set the label to the next item on the tab list.
             k.mb_tabListIndex +=1
             if k.mb_tabListIndex >= len(k.mb_tabList):
@@ -3857,7 +3864,7 @@ class keyHandlerClass:
             k.setLabel(k.mb_prompt + k.mb_tabList [k.mb_tabListIndex])
         else:
             if redraw:
-                # g.trace('** recomputing default completions')
+                if trace: g.trace('** recomputing default completions')
                 k.computeCompletionList(defaultTabList,
                     backspace=False,
                     allow_empty_completion=allow_empty_completion)

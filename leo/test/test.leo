@@ -789,6 +789,19 @@
 <v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
 </v>
 </v>
+<v t="ekr.20120915162554.2882"><vh>@screencast minibuffer</vh>
+<v t="ekr.20120915162554.2883"><vh>mb intro</vh></v>
+<v t="ekr.20120915170516.2889"><vh>mb ctrl-x</vh></v>
+<v t="ekr.20120915164308.2886"><vh>mb typing</vh></v>
+<v t="ekr.20120915170516.2888"><vh>mb tab </vh></v>
+<v t="ekr.20120915173000.2893"><vh>mb tab2</vh></v>
+<v t="ekr.20120915173000.2894"><vh>mb tab3</vh></v>
+<v t="ekr.20120915173000.2895"><vh>mb newline</vh></v>
+<v t="ekr.20120915174321.2898"><vh>mb done</vh></v>
+<v t="ekr.20120915175727.2905"><vh>mb cleanup</vh></v>
+<v t="ekr.20120915181136.2904"><vh>mb quit</vh></v>
+</v>
+<v t="ekr.20120915181136.2907"><vh>@screencast Ctrl-F</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1089,7 +1102,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9521,22 +9534,11 @@ need to reopen the document to make it appear.
 g.es("p.h is " + p.h)</t>
 <t tx="ekr.20120914093811.2824">c.save()
 
-def find(c,p):
-    m = c.screencast_controller
-    p1 = p.copy()
-    while p:
-        if p.h.startswith('@screencast'):
-            return m.start(p)
-        else: p.moveToThreadNext()
-    p = p1.threadBack()
-    while p:
-        if p.h.startswith('@screencast'):
-            return m.start(p)
-        else: p.moveToThreadBack()
-    g.es_print('no @screencast node found')
-        
-find(c,p)
-</t>
+m = c.screencast_controller
+assert m
+p = m.find_screencast(p)
+assert p
+m.start(p)</t>
 <t tx="ekr.20120914093811.2825"></t>
 <t tx="ekr.20120914093811.2826"># Create a root node for the examples.
 
@@ -9544,7 +9546,7 @@ m.p1.contract()
 c.redraw_now(m.p1)
 
 # Speed up typing.
-m.n1 = m.n2 = 0.0
+# m.n1 = m.n2 = 0.0
 
 m.log('Ctrl-I inserts a new node')
 
@@ -9611,5 +9613,43 @@ m.image('tree','box15.GIF',center=True,height=100)</t>
 </t>
 <t tx="ekr.20120915122112.2874">m.log('The save command clears all black borders')
 m.image('tree','box07.GIF',center=True,height=100)</t>
+<t tx="ekr.20120915162554.2882"></t>
+<t tx="ekr.20120915162554.2883">m.caption('body',
+    'The minibuffer is an area at the bottom of the screen. '
+    'You use the minibuffer to enter commands by name.'
+)
+</t>
+<t tx="ekr.20120915164308.2886">m.caption('body','We only need to type the start of long command names...')
+m.minibuffer_keys('ins')</t>
+<t tx="ekr.20120915170516.2888">m.caption('body','Typing the &lt;Tab&gt; key does tab completion')
+m.minibuffer_keys('\t')
+</t>
+<t tx="ekr.20120915170516.2889">m.caption('body','Typing &lt;Ctrl-X&gt; opens the minibuffer')
+m.minibuffer_keys('')</t>
+<t tx="ekr.20120915173000.2893">m.caption('body',
+    'The completion tab shows all the valid completions.\n'
+    'The minibuffer shows the longest common prefix.'
+)</t>
+<t tx="ekr.20120915173000.2894">m.caption('body','Typing "no&lt;Tab&gt;" is enough to complete the command')
+m.minibuffer_keys('no\t')
+</t>
+<t tx="ekr.20120915173000.2895">m.caption('body',
+    'When only one item appears in the Completion list\n'
+    'The &lt;Return&gt; key will execute the command'
+)
+</t>
+<t tx="ekr.20120915174321.2898">m.caption('body','A new node has been inserted')
+m.minibuffer_keys('\n')
+</t>
+<t tx="ekr.20120915175727.2905">m.caption('body','Deleting the newly-inserted node concludes this slideshow.')
+
+assert m.p1
+p2 = m.p1.next()
+assert p2
+p2.doDelete()
+c.redraw_now(m.p1)
+</t>
+<t tx="ekr.20120915181136.2904">m.quit()</t>
+<t tx="ekr.20120915181136.2907"></t>
 </tnodes>
 </leo_file>
