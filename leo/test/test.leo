@@ -773,11 +773,21 @@
 <v t="ekr.20120914174750.2851"><vh>m.quit</vh></v>
 </v>
 <v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
+<v t="ekr.20120915122112.2873"><vh>icon box</vh></v>
+<v t="ekr.20120915114713.2866"><vh>node icon</vh></v>
+<v t="ekr.20120915112650.2864"><vh>dirty icon</vh></v>
+<v t="ekr.20120915122112.2871"><vh>text icon</vh></v>
+<v t="ekr.20120915122112.2869"><vh>marked icon</vh></v>
+<v t="ekr.20120915122112.2870"><vh>clone icon</vh></v>
+<v t="ekr.20120915122112.2872"><vh>full icon</vh></v>
+<v t="ekr.20120915122112.2874"><vh>save command clears dirty bits</vh></v>
+<v t="ekr.20120915122112.2868"><vh>@ignore-tree</vh>
 <v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
 <v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
 <v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
 <v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
 <v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1079,7 +1089,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9511,16 +9521,21 @@ need to reopen the document to make it appear.
 g.es("p.h is " + p.h)</t>
 <t tx="ekr.20120914093811.2824">c.save()
 
-m = c.screencast_controller
-
-while p:
-    if p.h.startswith('@screencast'):
-        m.start(p)
-        break
-    else:
-        p.moveToThreadNext()
-else:
+def find(c,p):
+    m = c.screencast_controller
+    p1 = p.copy()
+    while p:
+        if p.h.startswith('@screencast'):
+            return m.start(p)
+        else: p.moveToThreadNext()
+    p = p1.threadBack()
+    while p:
+        if p.h.startswith('@screencast'):
+            return m.start(p)
+        else: p.moveToThreadBack()
     g.es_print('no @screencast node found')
+        
+find(c,p)
 </t>
 <t tx="ekr.20120914093811.2825"></t>
 <t tx="ekr.20120914093811.2826"># Create a root node for the examples.
@@ -9579,5 +9594,22 @@ m.head_keys('Node 1')
 <t tx="ekr.20120914183137.2856">m.caption('body','The minibuffer is below the body pane')</t>
 <t tx="ekr.20120914183137.2857">m.caption('tree','The icon area appears above the tree pane')</t>
 <t tx="ekr.20120915073533.2862"></t>
+<t tx="ekr.20120915112650.2864">m.log('The icon for a changed node has a black border.')
+m.image('tree','box08.GIF',center=True,height=100)</t>
+<t tx="ekr.20120915114713.2866">m.log('The icon for an empty, unchanged node has a gray border.')
+m.image('tree','box00.GIF',center=True,height=100)</t>
+<t tx="ekr.20120915122112.2868"></t>
+<t tx="ekr.20120915122112.2869">m.log('A marked node has an icon with a red vertical line.')
+m.image('tree','box02.GIF',center=True,height=100)</t>
+<t tx="ekr.20120915122112.2870">m.log('A cloned node has an icon with a red arrow.')
+m.image('tree','box04.GIF',center=True,height=100)</t>
+<t tx="ekr.20120915122112.2871">m.log('A node with body text has a small blue square in its icon')
+m.image('tree','box01.GIF',center=True,height=100)</t>
+<t tx="ekr.20120915122112.2872">m.log('This changed, cloned, marked node has body text')
+m.image('tree','box15.GIF',center=True,height=100)</t>
+<t tx="ekr.20120915122112.2873">m.log('Each node has an oblong icon box to the left of its headline')
+</t>
+<t tx="ekr.20120915122112.2874">m.log('The save command clears all black borders')
+m.image('tree','box07.GIF',center=True,height=100)</t>
 </tnodes>
 </leo_file>

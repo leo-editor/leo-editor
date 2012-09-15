@@ -20,6 +20,7 @@ import PyQt4.QtGui as QtGui
 #@-<< imports >>
 
 # To do:
+# Typing in minibuffer.  Search commands.
 # Convenience methods for common images.
 
 #@@language python
@@ -201,7 +202,7 @@ class ScreenCastController:
         p.h=s
         c.redraw()
     #@+node:ekr.20120913110135.10615: *3* image
-    def image(self,pane,pixmap):
+    def image(self,pane,fn,center=None,height=None,width=None):
         
         '''Put an image in the indicated pane.'''
 
@@ -209,9 +210,23 @@ class ScreenCastController:
         parent = m.pane_widget(pane)
         if parent:
             w = QtGui.QLabel('label',parent)
-            m.widgets.append(w)
+            fn = m.resolve_icon_fn(fn)
+            if not fn: return None
+            pixmap = QtGui.QPixmap(fn)
+            if not pixmap:
+                return g.trace('Not a pixmap: %s' % (fn))
+            if height:
+                pixmap = pixmap.scaledToHeight(height)
+            if width:
+                pixmap = pixmap.scaledToWidth(width)
             w.setPixmap(pixmap)
+            if center:
+                g_w=w.geometry()
+                g_p=parent.geometry()
+                dx = (g_p.width()-g_w.width())/2
+                w.move(g_w.x()+dx,g_w.y()+10)
             w.show()
+            m.widgets.append(w)
             return w
         else:
             g.trace('bad pane: %s' % (pane))
@@ -361,9 +376,14 @@ class ScreenCastController:
         '''
         
         m = self
+        c = m.c
         self.manual=manual
         m.p1 = p.copy()
         m.p = p.copy()
+        p.contract()
+        c.redraw_now(p)
+        m.delete_widgets()
+            # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()
     #@+node:ekr.20120914074855.10715: *3* state_handler
     def state_handler (self,event=None):
