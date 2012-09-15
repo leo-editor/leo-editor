@@ -20,7 +20,6 @@ import PyQt4.QtGui as QtGui
 #@-<< imports >>
 
 # To do:
-# Left arrow backs up the screencasts (using undo).
 # Convenience methods for common images.
 
 #@@language python
@@ -100,7 +99,7 @@ class ScreenCastController:
             s = s.rstrip()
             if s and s[-1].isalpha(): s = s+'.'
             w = QtGui.QPlainTextEdit(s,parent)
-            w.setObjectName('Screencast.Caption')
+            w.setObjectName('screencastcaption')
             m.widgets.append(w)
             w2 = m.pane_widget(pane)
             geom = w2.geometry()

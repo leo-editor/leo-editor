@@ -512,8 +512,8 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
@@ -5751,6 +5751,11 @@ QPushButton#script-button-button {
     background-color: #ffffcc;
     /* border: none; /* Needed to make background-color "stick" */
 }
+
+QPlainTextEdit#screencastcaption {
+    background-color: yellow;
+}
+
 </t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
