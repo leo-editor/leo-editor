@@ -20,7 +20,6 @@ import PyQt4.QtGui as QtGui
 #@-<< imports >>
 
 # To do:
-# Make sure ctrl-g calls c.screenCastController.delete_widgets.
 # Convenience methods for common images.
 
 #@@language python

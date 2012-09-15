@@ -2921,6 +2921,8 @@ class keyHandlerClass:
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
+            if hasattr(c,'screenCastController') and c.screenCastController:
+                c.screenCastController.quit()
             if c.macroCommands.recordingMacro:
                 c.macroCommands.endMacro()
                 return # (for Tk) 'break'

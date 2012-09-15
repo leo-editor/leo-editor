@@ -754,8 +754,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20120914093811.2824"><vh>@command start screencast @key=alt-9</vh></v>
-<v t="ekr.20120914093811.2825"><vh>@screencast test</vh>
+<v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
+<v t="ekr.20120914093811.2825"><vh>@screencast common keys</vh>
 <v t="ekr.20120914093811.2826"><vh>ctrl-i</vh></v>
 <v t="ekr.20120914174750.2853"><vh>Black border</vh></v>
 <v t="ekr.20120914104624.2829"><vh>ctrl-h</vh></v>
@@ -769,6 +769,13 @@
 <v t="ekr.20120914104624.2838"><vh>Right</vh></v>
 <v t="ekr.20120914174750.2850"><vh>That's all</vh></v>
 <v t="ekr.20120914174750.2851"><vh>m.quit</vh></v>
+</v>
+<v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
+<v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
+<v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
+<v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
+<v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
+<v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1070,7 +1077,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9503,13 +9510,16 @@ g.es("p.h is " + p.h)</t>
 <t tx="ekr.20120914093811.2824">c.save()
 
 m = c.screencast_controller
-# m.set_speed(1.0) # 0.50 runs twice as fast.
-# m.set_log_focus(False)
-# n1,n2 = 0.02,0.175 # Small difference are important.
 
-p2 = g.findNodeAnywhere(c,'@screencast test')
-assert p2
-m.start(p2)</t>
+while p:
+    if p.h.startswith('@screencast'):
+        m.start(p)
+        break
+    else:
+        p.moveToThreadNext()
+else:
+    g.es_print('no @screencast node found')
+</t>
 <t tx="ekr.20120914093811.2825"></t>
 <t tx="ekr.20120914093811.2826"># Create a root node for the examples.
 
@@ -9560,5 +9570,11 @@ m.command('expand-node')</t>
 <t tx="ekr.20120914182320.2853">m.log("We'll type in the headline")
 m.head_keys('Node 1')
 </t>
+<t tx="ekr.20120914183137.2850"></t>
+<t tx="ekr.20120914183137.2851">m.caption('tree','This is the tree pane')</t>
+<t tx="ekr.20120914183137.2853">m.caption('log','This is the log pane')</t>
+<t tx="ekr.20120914183137.2855">m.caption('body','This is the body pane')</t>
+<t tx="ekr.20120914183137.2856">m.caption('body','The minibuffer is below the body pane')</t>
+<t tx="ekr.20120914183137.2857">m.caption('tree','The icon area appears above the tree pane')</t>
 </tnodes>
 </leo_file>
