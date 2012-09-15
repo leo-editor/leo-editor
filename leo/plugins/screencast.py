@@ -20,6 +20,7 @@ import PyQt4.QtGui as QtGui
 #@-<< imports >>
 
 # To do:
+# Left arrow backs up the screencasts (using undo).
 # Convenience methods for common images.
 
 #@@language python
@@ -62,12 +63,17 @@ class ScreenCastController:
         self.p1 = None # The first slide of the show.
         self.p = None # The present slide of the show.
         self.speed = 1.0 # Amount to multiply wait times.
+        self.node_stack = [] # For undo.
         self.widgets = [] # List of (popup) widgets created by this class.
         
         # inject c.screenCastController
         c.screenCastController = self
     #@+node:ekr.20120913110135.10580: *3* body_keys
     def body_keys (self,s,n1=None,n2=None):
+        
+        '''Simulate typing in the body pane.
+        n1 and n2 indicate the range of delays between keystrokes.
+        '''
         
         m = self
         c = m.c
@@ -76,6 +82,8 @@ class ScreenCastController:
         c.bodyWantsFocusNow()
         p = c.p
         w = c.frame.body.bodyCtrl.widget
+        c.undoer.setUndoTypingParams(p,'typing',
+            oldText=p.b,newText=p.b+s,oldSel=None,newSel=None,oldYview=None)
         for ch in s:
             p.b = p.b + ch
             w.repaint()
@@ -92,10 +100,12 @@ class ScreenCastController:
             s = s.rstrip()
             if s and s[-1].isalpha(): s = s+'.'
             w = QtGui.QPlainTextEdit(s,parent)
+            w.setObjectName('Screencast.Caption')
             m.widgets.append(w)
             w2 = m.pane_widget(pane)
             geom = w2.geometry()
             w.resize(geom.width(),min(100,geom.height()/2))
+            # w.setContentsMargins(5,5,5,5)
             off = QtCore.Qt.ScrollBarAlwaysOff
             w.setHorizontalScrollBarPolicy(off)
             w.setVerticalScrollBarPolicy(off)
@@ -117,10 +127,16 @@ class ScreenCastController:
     #@+node:ekr.20120913110135.10581: *3* command
     def command(self,command_name):
         
+        '''Execute the command whose name is given and update the screen immediately.'''
+
         m = self
         c = m.c
+
         c.k.simulateCommand(command_name)
-        c.redraw()
+            # Named commands handle their own undo!
+            # The undo handling in m.next should suffice.
+
+        c.redraw_now()
         m.repaint('all')
     #@+node:ekr.20120914163440.10581: *3* delete_widgets
     def delete_widgets (self):
@@ -131,12 +147,14 @@ class ScreenCastController:
         m.widgets=[]
     #@+node:ekr.20120913110135.10582: *3* focus
     def focus(self,pane):
+        
+        '''Immediately set the focus to the given pane.'''
 
         m = self
         c = m.c
         d = {
             'body': c.bodyWantsFocus,
-            'log': c.logWantsFocus,
+            'log':  c.logWantsFocus,
             'tree': c.treeWantsFocus,
         }
         
@@ -150,15 +168,27 @@ class ScreenCastController:
     #@+node:ekr.20120913110135.10583: *3* head_keys
     def head_keys(self,s,n1=None,n2=None):
         
+        '''Simulate typing in the headline.
+        n1 and n2 indicate the range of delays between keystrokes.
+        '''
+        
         m = self
         c = m.c
         p = c.p
+        undoType = 'Typing'
         if n1 is None: n1 = m.n1
         if n2 is None: n2 = m.n2
-        p.h=''
         tree = c.frame.tree
+        oldHead = p.h
+        p.h=''
         c.editHeadline()
         w = tree.edit_widget(p)
+        # Support undo.
+        undoData = c.undoer.beforeChangeNodeContents(p,oldHead=oldHead)
+        dirtyVnodeList = p.setDirty()
+        c.undoer.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+        # Lock out key handling in m.state_handler.
         m.ignore_keys = True
         try:
             for ch in s:
@@ -169,8 +199,6 @@ class ScreenCastController:
                 c.k.masterKeyHandler(event)
         finally:
             m.ignore_keys = False
-        # Ensure the final result is correct.
-        # tree.repaint()
         p.h=s
         c.redraw()
     #@+node:ekr.20120913110135.10615: *3* image
@@ -227,31 +255,34 @@ class ScreenCastController:
     #@+node:ekr.20120914074855.10721: *3* next
     def next (self):
         
-        '''Find the next non-empty screencast node and execute its script.'''
+        '''Find the next screencast node and execute its script.
+        Call m.quit if no more nodes remain.'''
         
         trace = False and not g.unitTesting
         m = self
+        c = m.c
         m.delete_widgets()
         
         while m.p:
-            if trace: g.trace(m.p.h)
+            # if trace: g.trace(m.p.h)
             h = m.p.h.replace('_','').replace('-','')
             if g.match_word(h,0,'@ignore'):
-                if trace: g.trace(h)
+                # if trace: g.trace(h)
                 m.p.moveToThreadNext()
             elif g.match_word(h,0,'@ignoretree'):
-                if trace: g.trace(h)
+                # if trace: g.trace(h)
                 m.p.moveToNodeAfterTree()
             else:
                 p2 = m.p.copy()
                 m.p.moveToThreadNext()
                 if p2.b.strip():
-                    if trace: g.trace('executing',p2.h)
-                    d = {'c':m.c,'g:':g,'m':m,'p':p2}
-                    m.c.executeScript(p=p2,namespace=d,useSelectedText=False)
-                        # event=None, args=None, p=None,
-                        # script=None, define_g=True,
-                        # define_name='__main__', silent=False
+                    if trace: g.trace(p2.h,c.p.v)
+                    d = {'c':c,'g:':g,'m':m,'p':p2}
+                    tag = 'screencast'
+                    m.node_stack.append(p2)
+                    undoData = c.undoer.beforeChangeGroup(c.p,tag,verboseUndoGroup=False)
+                    c.executeScript(p=p2,namespace=d,useSelectedText=False)
+                    c.undoer.afterChangeGroup(c.p,tag,undoData)
                     break
         else:
             m.quit()
@@ -275,32 +306,28 @@ class ScreenCastController:
         '''Terminate the slide show.'''
         
         m = self
-        print('*** end of slide show at: %s' % (m.p1.h))
+        print('end slide show: %s' % (m.p1.h))
+        g.es('end slide show',color='red')
         m.delete_widgets()
         m.c.k.keyboardQuit()
     #@+node:ekr.20120913110135.10585: *3* repaint
     def repaint(self,pane):
+        
+        '''Repaint the given pane.'''
 
         m = self
-        c = m.c
-        d = {
-            'all':  c.frame.top,
-            'body': c.frame.body.bodyCtrl.widget,
-            'log':  c.frame.log.logCtrl.widget,
-            'tree': c.frame.tree.treeWidget,
-        }
-        w = d.get(pane)
+        w = m.pane_widget(pane)
         if w:
-            # g.trace(pane,w)
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
     #@+node:ekr.20120914163440.10582: *3* resolve_icon_fn
     def resolve_icon_fn (self,fn):
         
+        '''Resolve fn relative to the Icons directory.'''
+        
         m = self
 
-        # Resolve relative file names relative to the Icons directory.
         dir_ = g.os_path_finalize_join(g.app.loadDir,'..','Icons')
         path = g.os_path_finalize_join(dir_,fn)
         
@@ -311,11 +338,15 @@ class ScreenCastController:
             return None
     #@+node:ekr.20120913110135.10611: *3* set_log_focus & set_speed
     def set_log_focus(self,val):
+        
+        '''Set m.log_focus to the given value.'''
 
         m = self
         m.log_focus = bool(val)
 
     def set_speed (self,speed):
+        
+        '''Set m.speed to the given value.'''
         
         m = self
         if speed < 0:
@@ -337,6 +368,8 @@ class ScreenCastController:
         m.state_handler()
     #@+node:ekr.20120914074855.10715: *3* state_handler
     def state_handler (self,event=None):
+        
+        '''Handle keys while in the "screencast" input state.'''
 
         trace = False and not g.unitTesting
         m = self
@@ -360,13 +393,33 @@ class ScreenCastController:
         elif char == 'Right':
             m.next()
         elif char == 'Left':
-            g.trace('screencast-reverse not ready yet.')
+            m.undo()
         else:
             g.trace('ignore %s' % (char))
             if char not in ('Down','Up'):
                 m.quit()
+    #@+node:ekr.20120914195404.11208: *3* undo
+    def undo (self):
+        
+        '''Undo the previous screencast scene.'''
+
+        m = self
+        
+        m.delete_widgets()
+        
+        if m.node_stack:
+            c = m.c
+            m.p = m.node_stack.pop()
+            c.undoer.undo()
+            c.redraw()
+        else:
+            m.quit()
+            # g.trace('can not undo')
     #@+node:ekr.20120913110135.10587: *3* wait
     def wait(self,n=1,high=0,force=False):
+        
+        '''Wait for an interval between n and high.
+        Do nothing if in manual mode unless force is True.'''
         
         m = self
         

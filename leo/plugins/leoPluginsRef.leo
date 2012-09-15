@@ -36,7 +36,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -58,13 +58,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
+<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
 <v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
-<v t="ville.20090518182905.5419" a="E"><vh>@file nav_qt.py</vh></v>
-<v t="ville.20120604212857.4215" a="E"
-expanded="ville.20120604212857.4237,"><vh>@file notebook.py</vh></v>
+<v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
+<v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
@@ -72,13 +71,13 @@ expanded="ville.20120604212857.4237,"><vh>@file notebook.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="ville.20110403115003.10348" a="E"><vh>@file valuespace.py</vh></v>
+<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
 <v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
-<v t="edream.110203113231.667" a="E"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
 <v t="ekr.20101110084839.5682"><vh>@file bzr_qcommands.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
@@ -128,7 +127,7 @@ expanded="ville.20120604212857.4237,"><vh>@file notebook.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file mod_leo2ascd.txt</vh></v>
 </v>
 </v>
-<v t="EKR.20040517075715" a="E"><vh>External programs</vh>
+<v t="EKR.20040517075715"><vh>External programs</vh>
 <v t="ekr.20110125103904.12504"><vh>@file gitarchive.py</vh></v>
 <v t="ekr.20080201143145"><vh>@file ipython.py</vh></v>
 <v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
@@ -141,12 +140,12 @@ expanded="ville.20120604212857.4237,"><vh>@file notebook.py</vh></v>
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
+<v t="edream.110203113231.872"><vh>Files and nodes</vh>
 <v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
-<v t="tbrown.20081223111325.3" a="E"><vh>@file backlink.py</vh></v>
+<v t="tbrown.20081223111325.3"><vh>@file backlink.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
 <v t="ajones.20070122153625"><vh>@file expfolder.py</vh></v>
@@ -161,7 +160,7 @@ expanded="ville.20120604212857.4237,"><vh>@file notebook.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
-<v t="ville.20120503224623.3574" a="E"><vh>@file leomylyn.py</vh></v>
+<v t="ville.20120503224623.3574"><vh>@file leomylyn.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
@@ -169,16 +168,17 @@ expanded="ville.20120604212857.4237,"><vh>@file notebook.py</vh></v>
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20120309073937.9878" a="E"><vh>Searching</vh>
+<v t="ekr.20120309073937.9878"><vh>Searching</vh>
 <v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
 <v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 </v>
-<v t="ekr.20101004082701.5674"><vh>Slideshows and screenshots</vh>
-<v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
+<v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
+<v t="ekr.20120913110135.10579"><vh>@file screencast.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
+<v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>

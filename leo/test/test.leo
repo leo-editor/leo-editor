@@ -757,11 +757,13 @@
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
 <v t="ekr.20120914093811.2825"><vh>@screencast common keys</vh>
 <v t="ekr.20120914093811.2826"><vh>ctrl-i</vh></v>
+<v t="ekr.20120915073533.2862"><vh>typing...</vh>
 <v t="ekr.20120914174750.2853"><vh>Black border</vh></v>
 <v t="ekr.20120914104624.2829"><vh>ctrl-h</vh></v>
 <v t="ekr.20120914182320.2853"><vh>typing</vh></v>
 <v t="ekr.20120914104624.2832"><vh>return</vh></v>
 <v t="ekr.20120914104624.2833"><vh>tying in body</vh></v>
+</v>
 <v t="ekr.20120914104624.2834"><vh>another inserted node</vh></v>
 <v t="ekr.20120914104624.2835"><vh>Ctrl-R</vh></v>
 <v t="ekr.20120914104624.2836"><vh>Up</vh></v>
@@ -1077,7 +1079,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9526,16 +9528,16 @@ else:
 m.p1.contract()
 c.redraw_now(m.p1)
 
+# Speed up typing.
+m.n1 = m.n2 = 0.0
+
 m.log('Ctrl-I inserts a new node')
 
 # Put the new node after the @screencast node.
-p2 = m.p1.insertAfter()
-p2.setDirty()
-
-c.redraw_now(p2)
+m.command('insert-node')
 </t>
 <t tx="ekr.20120914104624.2829">m.log('Ctrl-H begins editing')
-c.editHeadline()
+m.command('edit-headline')
 </t>
 <t tx="ekr.20120914104624.2832">m.log('Return puts focus in the body pane')
 m.focus('body')
@@ -9576,5 +9578,6 @@ m.head_keys('Node 1')
 <t tx="ekr.20120914183137.2855">m.caption('body','This is the body pane')</t>
 <t tx="ekr.20120914183137.2856">m.caption('body','The minibuffer is below the body pane')</t>
 <t tx="ekr.20120914183137.2857">m.caption('tree','The icon area appears above the tree pane')</t>
+<t tx="ekr.20120915073533.2862"></t>
 </tnodes>
 </leo_file>
