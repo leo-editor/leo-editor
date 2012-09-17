@@ -792,13 +792,15 @@
 </v>
 <v t="ekr.20120915162554.2882"><vh>@screencast minibuffer</vh>
 <v t="ekr.20120915162554.2883"><vh>mb intro</vh></v>
-<v t="ekr.20120915170516.2889"><vh>mb alt-x</vh></v>
 <v t="ekr.20120915164308.2886"><vh>mb typing</vh></v>
 <v t="ekr.20120915170516.2888"><vh>mb tab </vh></v>
-<v t="ekr.20120915173000.2893"><vh>mb tab2</vh></v>
-<v t="ekr.20120915173000.2894"><vh>mb tab3</vh></v>
-<v t="ekr.20120916070849.2917"><vh>@ignore mb backspace</vh></v>
-<v t="ekr.20120916185527.2922"><vh>@ignore mb o tab</vh></v>
+<v t="ekr.20120915173000.2894"><vh>mb no tab</vh></v>
+<v t="ekr.20120917133405.2948"><vh>mb backspace</vh></v>
+<v t="ekr.20120917133405.2950"><vh>mb backspace</vh></v>
+<v t="ekr.20120917133405.2952"><vh>mb backspace</vh></v>
+<v t="ekr.20120917133405.2953"><vh>mb e tab</vh></v>
+<v t="ekr.20120917133405.2955"><vh>mb 6 backspaces</vh></v>
+<v t="ekr.20120916185527.2922"><vh>mb o tab</vh></v>
 <v t="ekr.20120915173000.2895"><vh>mb Return</vh></v>
 <v t="ekr.20120915174321.2898"><vh>mb inserted node</vh></v>
 <v t="ekr.20120915175727.2905"><vh>mb last slide</vh></v>
@@ -9634,26 +9636,26 @@ m.image('tree','box15.GIF',center=True,height=100)</t>
 m.image('tree','box07.GIF',center=True,height=100)</t>
 <t tx="ekr.20120915162554.2882"></t>
 <t tx="ekr.20120915162554.2883">m.caption('body',
-    'The minibuffer is an area at the bottom of the screen. '
-    'You use the minibuffer to enter commands by name.'
-)
-</t>
-<t tx="ekr.20120915164308.2886">m.caption('body','We only need to type the start of long command names...')
-m.plain_keys('ins')
-</t>
-<t tx="ekr.20120915170516.2888">m.caption('body','Typing the &lt;Tab&gt; key does tab completion')
-m.plain_keys('\t')
-</t>
-<t tx="ekr.20120915170516.2889">m.caption('body','Typing &lt;Alt-X&gt; opens the minibuffer')
-
+    'The minibuffer is an area at the bottom of the screen.\n'
+    'You use the minibuffer to enter commands by name.\n'
+    '&lt;Alt-X&gt; opens the minibuffer')
 m.single_key('alt-x')
 
-# m.minibuffer_keys('')</t>
-<t tx="ekr.20120915173000.2893">m.caption('body',
+</t>
+<t tx="ekr.20120915164308.2886">m.caption('body',
+    'We only need to type the start of long command names.\n'
+    'Here we have typed "ins" to begin one of Leo\'s insert commands.')
+m.plain_keys('ins')
+</t>
+<t tx="ekr.20120915170516.2888">m.caption('body',
+    'The &lt;Tab&gt; key does tab completion.\n'
     'The Completion tab shows all the valid completions.\n'
-    'The minibuffer shows the longest common prefix.'
-)</t>
-<t tx="ekr.20120915173000.2894">m.caption('body','Typing "no&lt;Tab&gt;" is enough to complete the command')
+    'The minibuffer shows the longest common prefix.')
+m.plain_keys('\t')
+</t>
+<t tx="ekr.20120915173000.2894">m.caption('body',
+    'Typing "no&lt;Tab&gt;" is enough to complete the command:\n'
+    'only one command appears in the Completion tab.')
 m.plain_keys('no\t')
 </t>
 <t tx="ekr.20120915173000.2895">m.caption('body',
@@ -9688,9 +9690,6 @@ m.quit()</t>
 m.single_key('ctrl-f')
 m.plain_keys('def spam')
 </t>
-<t tx="ekr.20120916070849.2917">m.caption('body','Typing three &lt;Backspace&gt; charaters and then a &lt;Tab&gt; will show more completions')
-m.plain_keys('\b\b\b\t')
-</t>
 <t tx="ekr.20120916140331.2916">m.caption('tree','Typing &lt;Return&gt; starts the search.')
 </t>
 <t tx="ekr.20120916184021.2918">def spam():
@@ -9701,8 +9700,22 @@ c.selectPosition(c.p.next())
 
 m.plain_keys('\n')
 </t>
-<t tx="ekr.20120916185527.2922">m.caption('body','Now typing just o&lt;Tab&gt; will show just one command')
+<t tx="ekr.20120916185527.2922">m.caption('body','Typing o&lt;Tab&gt; gets us back to the insert-node command')
 m.plain_keys('o\t')
+</t>
+<t tx="ekr.20120917133405.2948">m.caption('body','Typing a single &lt;BackSpace&gt; shows the same completions')
+m.plain_keys('\b')
+</t>
+<t tx="ekr.20120917133405.2950">m.caption('body','Typing another &lt;BackSpace&gt; still shows the same completions')
+m.plain_keys('\b')
+</t>
+<t tx="ekr.20120917133405.2952">m.caption('body','Typing a third &lt;BackSpace&gt; shows more completions')
+m.plain_keys('\b')
+</t>
+<t tx="ekr.20120917133405.2953">m.caption('body','Typing "e" followed by &lt;Tab&gt; completes the insert-newline command')
+m.plain_keys('e\t')</t>
+<t tx="ekr.20120917133405.2955">m.caption('body','Typing &lt;BackSpace&gt; six more times restores the previous completions')
+m.plain_keys('\b\b\b\b\b\b')
 </t>
 </tnodes>
 </leo_file>

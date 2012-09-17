@@ -31,9 +31,8 @@ import PyQt4.QtGui as QtGui
 
 #@+at
 # To do:
-# * Backspace in minibuffer.
-# * Document this plugin in the docstring and with a screencast.
-# - Eliminate redundant key-handling methods.
+# - m.prev calls m.undo twice to restore previous slide.
+# - Document this plugin in the docstring and with a screencast.
 # - Test Qt stylesheet for QPlainTextEdit: can it set font?
 # - Commands that invoke screencasts.
 #@@c
