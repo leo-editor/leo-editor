@@ -755,6 +755,24 @@
 </v>
 </v>
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
+<v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
+<v t="ekr.20120915122112.2873"><vh>icon box</vh></v>
+<v t="ekr.20120915114713.2866"><vh>node icon</vh></v>
+<v t="ekr.20120915112650.2864"><vh>dirty icon</vh></v>
+<v t="ekr.20120915122112.2871"><vh>text icon</vh></v>
+<v t="ekr.20120915122112.2869"><vh>marked icon</vh></v>
+<v t="ekr.20120915122112.2870"><vh>clone icon</vh></v>
+<v t="ekr.20120915122112.2872"><vh>full icon</vh></v>
+<v t="ekr.20120915122112.2874"><vh>save command clears dirty bits</vh></v>
+<v t="ekr.20120916063628.2922"><vh>quit</vh></v>
+<v t="ekr.20120915122112.2868"><vh>panes</vh>
+<v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
+<v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
+<v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
+<v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
+<v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
+</v>
+</v>
 <v t="ekr.20120914093811.2825"><vh>@screencast common keys</vh>
 <v t="ekr.20120914093811.2826"><vh>ctrl-i</vh></v>
 <v t="ekr.20120915073533.2862"><vh>typing...</vh>
@@ -770,38 +788,30 @@
 <v t="ekr.20120914104624.2837"><vh>Left</vh></v>
 <v t="ekr.20120914104624.2838"><vh>Right</vh></v>
 <v t="ekr.20120914174750.2850"><vh>That's all</vh></v>
-<v t="ekr.20120914174750.2851"><vh>m.quit</vh></v>
-</v>
-<v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
-<v t="ekr.20120915122112.2873"><vh>icon box</vh></v>
-<v t="ekr.20120915114713.2866"><vh>node icon</vh></v>
-<v t="ekr.20120915112650.2864"><vh>dirty icon</vh></v>
-<v t="ekr.20120915122112.2871"><vh>text icon</vh></v>
-<v t="ekr.20120915122112.2869"><vh>marked icon</vh></v>
-<v t="ekr.20120915122112.2870"><vh>clone icon</vh></v>
-<v t="ekr.20120915122112.2872"><vh>full icon</vh></v>
-<v t="ekr.20120915122112.2874"><vh>save command clears dirty bits</vh></v>
-<v t="ekr.20120915122112.2868"><vh>@ignore-tree</vh>
-<v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
-<v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
-<v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
-<v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
-<v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
-</v>
+<v t="ekr.20120914174750.2851"><vh>clean up and quit</vh></v>
 </v>
 <v t="ekr.20120915162554.2882"><vh>@screencast minibuffer</vh>
 <v t="ekr.20120915162554.2883"><vh>mb intro</vh></v>
-<v t="ekr.20120915170516.2889"><vh>mb ctrl-x</vh></v>
+<v t="ekr.20120915170516.2889"><vh>mb alt-x</vh></v>
 <v t="ekr.20120915164308.2886"><vh>mb typing</vh></v>
 <v t="ekr.20120915170516.2888"><vh>mb tab </vh></v>
 <v t="ekr.20120915173000.2893"><vh>mb tab2</vh></v>
 <v t="ekr.20120915173000.2894"><vh>mb tab3</vh></v>
-<v t="ekr.20120915173000.2895"><vh>mb newline</vh></v>
-<v t="ekr.20120915174321.2898"><vh>mb done</vh></v>
-<v t="ekr.20120915175727.2905"><vh>mb cleanup</vh></v>
-<v t="ekr.20120915181136.2904"><vh>mb quit</vh></v>
+<v t="ekr.20120916070849.2917"><vh>@ignore mb backspace</vh></v>
+<v t="ekr.20120916185527.2922"><vh>@ignore mb o tab</vh></v>
+<v t="ekr.20120915173000.2895"><vh>mb Return</vh></v>
+<v t="ekr.20120915174321.2898"><vh>mb inserted node</vh></v>
+<v t="ekr.20120915175727.2905"><vh>mb last slide</vh></v>
+<v t="ekr.20120916065229.2914"><vh>mb quit</vh></v>
 </v>
-<v t="ekr.20120915181136.2907"><vh>@screencast Ctrl-F</vh></v>
+<v t="ekr.20120915181136.2907"><vh>@screencast Ctrl-F</vh>
+<v t="ekr.20120916063628.2912"><vh>find intro</vh></v>
+<v t="ekr.20120916065229.2916"><vh>Ctrl-F</vh></v>
+<v t="ekr.20120916140331.2916"><vh>Return</vh></v>
+<v t="ekr.20120916184840.2920"><vh>The search succeeds</vh></v>
+<v t="ekr.20120916063628.2913"><vh>cleanup and quit</vh></v>
+</v>
+<v t="ekr.20120916184021.2918"><vh>spam</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1102,7 +1112,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="13"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9536,8 +9546,13 @@ g.es("p.h is " + p.h)</t>
 
 m = c.screencast_controller
 assert m
+
+# Actually, you can start a screencast anywhere:
+# it continues until the first node that contains a call to m.quit()
+# However, this automatic find feature is a convenience.
 p = m.find_screencast(p)
 assert p
+
 m.start(p)</t>
 <t tx="ekr.20120914093811.2825"></t>
 <t tx="ekr.20120914093811.2826"># Create a root node for the examples.
@@ -9581,7 +9596,11 @@ m.command('contract-node')
 m.command('expand-node')</t>
 <t tx="ekr.20120914174750.2850">m.log('That\'s all folks!')
 </t>
-<t tx="ekr.20120914174750.2851">m.quit()</t>
+<t tx="ekr.20120914174750.2851">p2 = m.p1.next()
+if p2 and p2.h == 'Node 1':
+    p2.doDelete()
+    c.redraw_now(m.p1)
+m.quit()</t>
 <t tx="ekr.20120914174750.2853">m.log(
     'The new node has a black icon border '
     'indicating that the node has changed')
@@ -9620,18 +9639,22 @@ m.image('tree','box07.GIF',center=True,height=100)</t>
 )
 </t>
 <t tx="ekr.20120915164308.2886">m.caption('body','We only need to type the start of long command names...')
-m.minibuffer_keys('ins')</t>
-<t tx="ekr.20120915170516.2888">m.caption('body','Typing the &lt;Tab&gt; key does tab completion')
-m.minibuffer_keys('\t')
+m.plain_keys('ins')
 </t>
-<t tx="ekr.20120915170516.2889">m.caption('body','Typing &lt;Ctrl-X&gt; opens the minibuffer')
-m.minibuffer_keys('')</t>
+<t tx="ekr.20120915170516.2888">m.caption('body','Typing the &lt;Tab&gt; key does tab completion')
+m.plain_keys('\t')
+</t>
+<t tx="ekr.20120915170516.2889">m.caption('body','Typing &lt;Alt-X&gt; opens the minibuffer')
+
+m.ctrl_key('alt-x')
+
+# m.minibuffer_keys('')</t>
 <t tx="ekr.20120915173000.2893">m.caption('body',
-    'The completion tab shows all the valid completions.\n'
+    'The Completion tab shows all the valid completions.\n'
     'The minibuffer shows the longest common prefix.'
 )</t>
 <t tx="ekr.20120915173000.2894">m.caption('body','Typing "no&lt;Tab&gt;" is enough to complete the command')
-m.minibuffer_keys('no\t')
+m.plain_keys('no\t')
 </t>
 <t tx="ekr.20120915173000.2895">m.caption('body',
     'When only one item appears in the Completion list\n'
@@ -9639,17 +9662,47 @@ m.minibuffer_keys('no\t')
 )
 </t>
 <t tx="ekr.20120915174321.2898">m.caption('body','A new node has been inserted')
-m.minibuffer_keys('\n')
+m.plain_keys('\n')
 </t>
 <t tx="ekr.20120915175727.2905">m.caption('body','Deleting the newly-inserted node concludes this slideshow.')
 
-assert m.p1
+</t>
+<t tx="ekr.20120915181136.2907"></t>
+<t tx="ekr.20120916063628.2912">m.caption('tree','This screencasts discusses Leo\'s basic Find/Change commands')</t>
+<t tx="ekr.20120916063628.2913">m.quit()</t>
+<t tx="ekr.20120916063628.2922">m.quit()</t>
+<t tx="ekr.20120916065229.2914">assert m.p1
 p2 = m.p1.next()
 assert p2
-p2.doDelete()
+if p2.h == 'newHeadline' and not p2.b:
+    p2.doDelete()
 c.redraw_now(m.p1)
+
+m.quit()</t>
+<t tx="ekr.20120916065229.2916">m.caption('tree',
+    'Typing &lt;Ctrl-F&gt; starts the find command.\n'
+    'Leo shows the Find Tab in the Log pane.\n'
+    'The minibuffer prompts you for a Find string'
+)
+
+m.ctrl_key('ctrl-f')
+m.plain_keys('def spam')
 </t>
-<t tx="ekr.20120915181136.2904">m.quit()</t>
-<t tx="ekr.20120915181136.2907"></t>
+<t tx="ekr.20120916070849.2917">m.caption('body','Typing three &lt;Backspace&gt; charaters and then a &lt;Tab&gt; will show more completions')
+m.plain_keys('\b\b\b\t')
+</t>
+<t tx="ekr.20120916140331.2916">m.caption('tree','Typing &lt;Return&gt; starts the search.')
+</t>
+<t tx="ekr.20120916184021.2918">def spam():
+    pass</t>
+<t tx="ekr.20120916184840.2920">m.caption('tree','The search succeeds')
+
+c.selectPosition(c.p.next())
+
+m.plain_keys('\n')
+</t>
+<t tx="ekr.20120916185527.2922">m.caption('body','Now typing just o&lt;Tab&gt; will show just one command')
+m.plain_keys('o\t')
+</t>
 </tnodes>
 </leo_file>

@@ -5740,7 +5740,7 @@ class KeyStroke:
     #@+node:ekr.20120204061120.10067: *5* ks.__repr___ & __str__
     def __str__ (self):
 
-        return '<KeyStroke: %s>' % (self.s)
+        return '<KeyStroke: %s>' % (repr(self.s))
         
     __repr__ = __str__
     #@+node:ekr.20120203053243.10117: *5* ks.rich comparisons

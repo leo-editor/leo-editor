@@ -2496,7 +2496,7 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
 #@+node:ekr.20061031131434.112: *6* callAltXFunction
 def callAltXFunction (self,event):
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     k = self ; c = k.c ; s = k.getLabel()
     k.mb_tabList = []
     commandName = s[len(k.mb_prefix):].strip()

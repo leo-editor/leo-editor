@@ -56,19 +56,25 @@ class ScreenCastController:
         self.log_color = 'black'
         self.log_focus = True # True: writing to log sets focus to log.
         self.ignore_keys = False # True: ignore keys in state_handler.
-        self.in_minibuffer = False # True: simulating minibuffer
+        self.in_minibuffer = False # True: simulating minibuffer.
+        self.quit_flag = False # True if m.quit has been called.
+        self.k_state = g.bunch(kind=None,n=None,handler=None) # Saved k.state.
+        self.key_w = None # Saved widget for passed-along key handling.
         self.manual = True # True: transition manually between scenes.
         self.n1 = 0.02 # default minimal typing delay.
         self.n2 = 0.175 # default maximum typing delay.
         self.p1 = None # The first slide of the show.
         self.p = None # The present slide of the show.
         self.speed = 1.0 # Amount to multiply wait times.
+        self.state_name = 'screencast' # The state name to enable m.state_handler.
         self.node_stack = [] # For undo.
+        self.user_dict = {} # For use by scripts.
         self.widgets = [] # List of (popup) widgets created by this class.
         
         # inject c.screenCastController
         c.screenCastController = self
-    #@+node:ekr.20120913110135.10580: *3* body_keys
+    #@+node:ekr.20120916062255.10591: *3* Typing
+    #@+node:ekr.20120913110135.10580: *4* body_keys
     def body_keys (self,s,n1=None,n2=None):
         
         '''Simulate typing in the body pane.
@@ -78,6 +84,7 @@ class ScreenCastController:
         m = self ; c = m.c
         if n1 is None: n1 = m.n1
         if n2 is None: n2 = m.n2
+        m.key_w = m.pane_widget('body')
         c.bodyWantsFocusNow()
         p = c.p
         w = c.frame.body.bodyCtrl.widget
@@ -88,6 +95,136 @@ class ScreenCastController:
             w.repaint()
             m.wait(n1,n2,force=True)
         c.redraw()
+    #@+node:ekr.20120916062255.10588: *4* ctrl_key
+    def ctrl_key (self,ch,pane='body'):
+        
+        '''Execute the alt or ctrl key by passing a key event to k.masterKeyHandler.'''
+        
+        m = self
+        m.single_key(ch,pane=pane)
+    #@+node:ekr.20120916062255.10589: *4* get_key_event
+    def get_key_event (self,ch,w):
+        
+        m = self ; c = m.c ; k = c.k
+        
+        m.key_w = w
+        
+        if len(ch) > 1:
+            key = None
+            stroke = k.strokeFromSetting(ch).s
+        else:
+            stroke = key = ch
+            
+        # g.trace(ch,key,stroke)
+        
+        return leoGui.leoKeyEvent(c,key,stroke,w=w,
+            x=0,y=0,x_root=0,y_root=0) # These are required.
+    #@+node:ekr.20120913110135.10583: *4* head_keys
+    def head_keys(self,s,n1=None,n2=None):
+        
+        '''Simulate typing in the headline.
+        n1 and n2 indicate the range of delays between keystrokes.
+        '''
+        
+        m = self ; c = m.c ; p = c.p ; undoType = 'Typing'
+        oldHead = p.h ; tree = c.frame.tree
+        if n1 is None: n1 = m.n1
+        if n2 is None: n2 = m.n2
+        p.h=''
+        c.editHeadline()
+        w = tree.edit_widget(p)
+        # Support undo.
+        undoData = c.undoer.beforeChangeNodeContents(p,oldHead=oldHead)
+        dirtyVnodeList = p.setDirty()
+        c.undoer.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+        # Lock out key handling in m.state_handler.
+        m.ignore_keys = True
+        try:
+            m.key_w = w
+            for ch in s:
+                p.h = p.h + ch
+                tree.repaint() # *not* tree.update.
+                m.wait(n1,n2,force=True)
+                event = m.get_key_event(ch,w)
+                c.k.masterKeyHandler(event)
+        finally:
+            m.ignore_keys = False
+        p.h=s
+        c.redraw()
+    #@+node:ekr.20120915091327.13817: *4* minibuffer_keys
+    def minibuffer_keys (self,s,n1=None,n2=None):
+        
+        '''Simulate typing in the minibuffer.
+        n1 and n2 indicate the range of delays between keystrokes.
+        '''
+        
+        m = self ; c = m.c
+        w = m.pane_widget('minibuffer')
+        for ch in s:
+            m.single_key(ch,n1=n1,n2=n2,w=w)
+        
+        # m = self ; c = m.c ; tree = c.frame.tree
+
+        # if n1 is None: n1 = m.n1
+        # if n2 is None: n2 = m.n2
+        # try:
+            # m.in_minibuffer = True
+            # c.minibufferWantsFocus()
+            # c.outerUpdate()
+            # w = m.pane_widget('minibuffer')
+            # g.trace(m.k_state.kind,m.k_state.n)
+            # for ch in s:
+                # tree.repaint() # *not* tree.update.
+                # m.wait(n1,n2,force=True)
+                # event = m.get_key_event(ch,w)
+                # c.k.masterKeyHandler(event)
+        # finally:
+            # m.in_minibuffer = False
+
+        c.redraw_now() # Sets focus.
+        c.widgetWantsFocusNow(c.frame.miniBufferWidget.widget)
+        c.outerUpdate()
+    #@+node:ekr.20120916062255.10590: *4* plain_keys
+    def plain_keys(self,s,n1=None,n2=None,pane='body'):
+        
+        '''Simulate typing a string of plain keys.'''
+        
+        m = self
+
+        for ch in s:
+            m.single_key(ch,n1=n1,n2=n2,pane=pane)
+    #@+node:ekr.20120916062255.10593: *4* single_key
+    def single_key (self,ch,n1=None,n2=None,pane=None,w=None):
+        
+        '''The master key helper: simulate typing a single key.
+        Pass the key to k.masterKeyHandler with k.state set to m.k_state.
+        '''
+        
+        trace = True and not g.unitTesting
+        m = self ; k = m.c.k
+        
+        w =  w or m.pane_widget(pane or 'body')
+        force = n1 is not None or n2 is not None
+        if force and n1 is None: n1 = m.n1
+        if force and n2 is None: n2 = m.n2
+        try:
+            if m.k_state.kind:
+                old_state_kind = m.k_state.kind
+                k.setState(m.k_state.kind,m.k_state.n,m.k_state.handler)
+            else:
+                old_state_kind = None
+                k.clearState()
+            w.repaint() # *not* tree.update.
+            m.wait(n1,n2,force=force)
+            event = m.get_key_event(ch,w)
+            k.masterKeyHandler(event)
+        finally:
+            # Save k.state in m.k_state.
+            if k.state.kind != m.state_name:
+                m.set_state(k.state)
+            # Important: do *not* re-enable m.state_handler here.
+            # This should be done *only* in m.next.
     #@+node:ekr.20120914133947.10578: *3* caption
     def caption (self,pane,s,center=False):
         
@@ -148,23 +285,27 @@ class ScreenCastController:
     #@+node:ekr.20120915091327.13816: *3* find_screencast
     def find_screencast(self,p):
         
-        m,p,p1,tag = self,p.copy(),p.copy(),'@screencast'
+        '''Find the nearest screencast, prefering previous screencasts
+        because that makes it easier to create screencasts.'''
         
+        m = self
+        return m.find_prev_screencast(p) or m.find_next_screencast(p)
+            
+    def find_next_screencast(self,p):
+        m = self ; p = p.copy()
         while p:
-            if p.h.startswith(tag):
+            if p.h.startswith('@screencast'):
                 return p
-            else:
-                p.moveToThreadNext()
-
-        p = p1.threadBack()
-        while p:
-            if p.h.startswith(tag):
-                return p
-            else:
-                p.moveToThreadBack()
+            else: p.moveToThreadNext()
+        else: return None
         
-        g.es_print('no @screencast node found')
-        return None
+    def find_prev_screencast(self,p):
+        m = self ; p = p.copy()
+        while p:
+            if p.h.startswith('@screencast'):
+                return p
+            else: p.moveToThreadBack()
+        else: return None
     #@+node:ekr.20120913110135.10582: *3* focus
     def focus(self,pane):
         
@@ -184,38 +325,6 @@ class ScreenCastController:
             m.repaint(pane)
         else:
             g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20120913110135.10583: *3* head_keys
-    def head_keys(self,s,n1=None,n2=None):
-        
-        '''Simulate typing in the headline.
-        n1 and n2 indicate the range of delays between keystrokes.
-        '''
-        
-        m = self ; c = m.c ; p = c.p ; undoType = 'Typing'
-        oldHead = p.h ; tree = c.frame.tree
-        if n1 is None: n1 = m.n1
-        if n2 is None: n2 = m.n2
-        p.h=''
-        c.editHeadline()
-        w = tree.edit_widget(p)
-        # Support undo.
-        undoData = c.undoer.beforeChangeNodeContents(p,oldHead=oldHead)
-        dirtyVnodeList = p.setDirty()
-        c.undoer.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
-        # Lock out key handling in m.state_handler.
-        m.ignore_keys = True
-        try:
-            for ch in s:
-                p.h = p.h + ch
-                tree.repaint() # *not* tree.update.
-                m.wait(n1,n2,force=True)
-                event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
-                c.k.masterKeyHandler(event)
-        finally:
-            m.ignore_keys = False
-        p.h=s
-        c.redraw()
     #@+node:ekr.20120913110135.10615: *3* image
     def image(self,pane,fn,center=None,height=None,width=None):
         
@@ -248,17 +357,6 @@ class ScreenCastController:
             return None
 
         
-    #@+node:ekr.20120913110135.10584: *3* key
-    def key(self,setting,command):
-
-        '''Simulate hitting the key.  Show the key in the log pane.'''
-
-        m = self ; c = m.c ; k = c.k
-
-        stroke = c.k.strokeFromSetting(setting)
-        k.simulateCommand(command)
-        c.redraw()
-        m.repaint('all')
     #@+node:ekr.20120913110135.10610: *3* log
     def log(self,s,begin=False,end=False,image_fn=None,pane='log'):
         
@@ -276,32 +374,6 @@ class ScreenCastController:
             m.wait(1)
         
         
-    #@+node:ekr.20120915091327.13817: *3* minibuffer_keys
-    def minibuffer_keys (self,s,n1=None,n2=None):
-        
-        '''Simulate typing in the minibuffer.
-        n1 and n2 indicate the range of delays between keystrokes.
-        '''
-        
-        m = self ; c = m.c ; tree = c.frame.tree
-
-        if n1 is None: n1 = m.n1
-        if n2 is None: n2 = m.n2
-        try:
-            m.in_minibuffer = True
-            c.minibufferWantsFocus()
-            c.outerUpdate()
-            for ch in s:
-                tree.repaint() # *not* tree.update.
-                m.wait(n1,n2,force=True)
-                event = leoGui.leoKeyEvent(c,ch,ch,w=tree,x=0,y=0,x_root=0,y_root=0)
-                c.k.masterKeyHandler(event)
-        finally:
-            m.in_minibuffer = False
-
-        c.redraw_now() # Sets focus.
-        c.widgetWantsFocusNow(c.frame.miniBufferWidget.widget)
-        c.outerUpdate()
     #@+node:ekr.20120914074855.10721: *3* next
     def next (self):
         
@@ -309,8 +381,11 @@ class ScreenCastController:
         Call m.quit if no more nodes remain.'''
         
         trace = False and not g.unitTesting
-        m = self ; c = m.c
+        m = self ; c = m.c ; k = c.k
         m.delete_widgets()
+        # Restore k.state from m.k_state.
+        if m.k_state.kind and m.k_state.kind != m.state_name:
+            k.setState(kind=m.k_state.kind,n=m.k_state.n,handler=m.k_state.handler)
         while m.p:
             if trace: g.trace(m.p.h)
             h = m.p.h.replace('_','').replace('-','')
@@ -329,8 +404,17 @@ class ScreenCastController:
                     undoData = c.undoer.beforeChangeGroup(c.p,tag,verboseUndoGroup=False)
                     c.executeScript(p=p2,namespace=d,useSelectedText=False)
                     c.undoer.afterChangeGroup(c.p,tag,undoData)
+                    # Save k.state in m.k_state.
+                    if k.state:
+                        if k.state.kind == m.state_name:
+                            m.clear_state()
+                        else:
+                            m.set_state(k.state)
+                    # Re-enable m.state_handler.
+                    if not m.quit_flag:
+                        k.setState(m.state_name,1,m.state_handler)
                     if m.p: return
-        # No m.p or no new node found.
+        # No non-empty node found.
         m.quit()
     #@+node:ekr.20120914133947.10579: *3* pane_widget
     def pane_widget (self,pane):
@@ -343,6 +427,7 @@ class ScreenCastController:
             'all':  c.frame.top,
             'body': c.frame.body.bodyCtrl.widget,
             'log':  c.frame.log.logCtrl.widget,
+            'minibuffer': c.frame.miniBufferWidget.widget,
             'tree': c.frame.tree.treeWidget,
         }
 
@@ -352,11 +437,15 @@ class ScreenCastController:
         
         '''Terminate the slide show.'''
         
-        m = self
+        m = self ; c = m.c ; k = c.k
         print('end slide show: %s' % (m.p1.h))
         g.es('end slide show',color='red')
         m.delete_widgets()
-        m.c.k.keyboardQuit()
+        k.keyboardQuit()
+        m.clear_state()
+        m.quit_flag = True
+        c.bodyWantsFocus()
+        c.redraw_now()
     #@+node:ekr.20120913110135.10585: *3* repaint
     def repaint(self,pane):
         
@@ -400,6 +489,34 @@ class ScreenCastController:
             g.trace('speed must be >= 0.0')
         else:
             m.speed = speed
+    #@+node:ekr.20120916062255.10585: *3* set_minibuffer_prefix
+    def set_minibuffer_prefix (self,s1,s2):
+        
+        '''Set the simulated minibuffer prefix.'''
+        
+        m = self ; k = m.c.k
+        
+        k.mb_prompt = s1
+        # k.mb_tabList = []
+        k.setLabel(s1+s2)
+    #@+node:ekr.20120916062255.10596: *3* set_state & clear_state
+    def set_state (self,state):
+        
+        m = self
+        
+        # g.trace('**** setting m.k_state: %s' % (state.kind))
+        m.k_state.kind = state.kind
+        m.k_state.n = state.n
+        m.k_state.handler = state.handler
+        
+    def clear_state (self):
+        
+        m = self
+        
+        # g.trace('**** clearing m.k_state')
+        m.k_state.kind = None
+        m.k_state.n = None
+        m.k_state.handler = None
     #@+node:ekr.20120914074855.10720: *3* start
     def start (self,p,manual=True):
         
@@ -416,6 +533,8 @@ class ScreenCastController:
         m.n2 = 0.175 # default maximum typing delay.
         m.p1 = p.copy()
         m.p = p.copy()
+        m.quit_flag = False
+        m.clear_state()
 
         p.contract()
         c.redraw_now(p)
@@ -428,13 +547,16 @@ class ScreenCastController:
         '''Handle keys while in the "screencast" input state.'''
 
         trace = False and not g.unitTesting
-        m = self ; c = m.c ; k = c.k ; tag = 'screencast'
-        state = k.getState(tag)
+        m = self ; c = m.c ; k = c.k
+        state = k.getState(m.state_name)
         char = event and event.char or ''
-        if trace: g.trace('state: %s char: %s' % (state,char))
+        if trace:
+            g.trace('char: %s k.state.kind: %s m.k_state: %s' % (
+                repr(char),repr(k.state.kind),m.k_state and repr(m.k_state.kind) or '<none>'))
         if m.ignore_keys:
             return
         if state == 0:
+            if trace: g.trace('======= state 0 =====')
             assert m.p1 and m.p1 == m.p
             # Init the minibuffer as in k.fullCommand.
             k.mb_event = event
@@ -442,7 +564,7 @@ class ScreenCastController:
             k.mb_prompt = 'Screencast: '
             k.mb_tabList = []
             k.setLabel(k.mb_prompt)
-            k.setState(tag,1,m.state_handler)
+            k.setState(m.state_name,1,m.state_handler)
             m.next()
         elif char == 'Escape': # k.masterKeyHandler handles ctrl-g.
             m.quit()
@@ -450,26 +572,28 @@ class ScreenCastController:
             m.next()
         elif char == 'Left':
             m.undo()
-        elif m.in_minibuffer:
-            # Similar to code in k.fullCommand
-            if char in ('\b','BackSpace'):
-                k.doBackSpace(list(c.commandsDict.keys()))
-            elif char in ('\t','Tab'):
-                aList = list(c.commandsDict.keys())
-                aList = [z for z in aList if z.startswith('ins')]
-                k.doTabCompletion(aList,allow_empty_completion=True)
-            elif char in ('\n','Return'):
-                c.frame.log.deleteTab('Completion')
-                k.callAltXFunction(k.mb_event)
-                k.setState(tag,1,m.state_handler) # Stay in the slideshow!
-            else:
-                event = g.bunch(char=char)
-                k.mb_tabList = []
-                k.updateLabel(event)
-                k.mb_tabListPrefix = k.getLabel()
-            c.minibufferWantsFocus()
+        ### We don't need this now that we can save/restore k.state.
+        # elif m.in_minibuffer:
+            # g.trace(repr(char))
+            # # Similar to code in k.fullCommand
+            # if char in ('\b','BackSpace'):
+                # k.doBackSpace(list(c.commandsDict.keys()))
+            # elif char in ('\t','Tab'):
+                # aList = list(c.commandsDict.keys())
+                # # aList = [z for z in aList if z.startswith('ins')]
+                # k.doTabCompletion(aList,allow_empty_completion=True)
+            # elif char in ('\n','Return'):
+                # c.frame.log.deleteTab('Completion')
+                # k.callAltXFunction(k.mb_event)
+                # k.setState(m.state_name,1,m.state_handler) # Stay in the slideshow!
+            # else:
+                # event = g.bunch(char=char)
+                # k.mb_tabList = []
+                # k.updateLabel(event)
+                # k.mb_tabListPrefix = k.getLabel()
+            # c.minibufferWantsFocus()
         else:
-            if trace: g.trace('ignore %s' % (char))
+            if trace: g.trace('ignore %s' % (repr(char)))
     #@+node:ekr.20120914195404.11208: *3* undo
     def undo (self):
         

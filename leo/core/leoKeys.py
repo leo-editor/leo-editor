@@ -2060,7 +2060,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.112: *5* callAltXFunction
     def callAltXFunction (self,event):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel()
         k.mb_tabList = []
         commandName = s[len(k.mb_prefix):].strip()
@@ -2931,7 +2931,7 @@ class keyHandlerClass:
                     event=event,func=k.keyboardQuit,stroke=stroke)
 
         if k.inState():
-            if trace: g.trace('   state %-10s %s' % (stroke,state))
+            if trace: g.trace('   state %-15s %s' % (state,stroke))
             done,val = k.doMode(event,state,stroke)
             if done: return val
 
@@ -4371,13 +4371,18 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.199: *4* setState
     def setState (self,kind,n,handler=None):
 
+        trace = False and not g.unitTesting
         k = self
+
         if kind and n != None:
+            if trace: g.trace('**** setting %s %s %s' % (
+                kind,n,handler and handler.__name__),g.callers())
             k.state.kind = kind
             k.state.n = n
             if handler:
                 k.state.handler = handler
         else:
+            if trace: g.trace('clearing')
             k.clearState()
 
         # k.showStateAndMode()
