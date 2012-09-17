@@ -5754,8 +5754,11 @@ QPushButton#script-button-button {
 
 QPlainTextEdit#screencastcaption {
     background-color: yellow;
+    font-family: DejaVu Sans Mono; /* Times New Roman; */
+    font-size: 18pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
 }
-
 </t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>

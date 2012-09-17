@@ -31,7 +31,6 @@ import PyQt4.QtGui as QtGui
 
 #@+at
 # To do:
-# - Test Qt stylesheet for QPlainTextEdit: can it set font?
 # - Document this plugin in the docstring and with a screencast.
 # - Commands that invoke screencasts.
 #@@c
@@ -153,14 +152,10 @@ class ScreenCastController:
             m.widgets.append(w)
             w2 = m.pane_widget(pane)
             geom = w2.geometry()
-            w.resize(geom.width(),min(100,geom.height()/2))
-            # w.setContentsMargins(5,5,5,5)
+            w.resize(geom.width(),min(150,geom.height()/2))
             off = QtCore.Qt.ScrollBarAlwaysOff
             w.setHorizontalScrollBarPolicy(off)
             w.setVerticalScrollBarPolicy(off)
-            font = w.font()
-            font.setPointSize(18)
-            w.setFont(font)
             w.show()
             return w
         else:
