@@ -1112,7 +1112,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9646,7 +9646,7 @@ m.plain_keys('\t')
 </t>
 <t tx="ekr.20120915170516.2889">m.caption('body','Typing &lt;Alt-X&gt; opens the minibuffer')
 
-m.ctrl_key('alt-x')
+m.single_key('alt-x')
 
 # m.minibuffer_keys('')</t>
 <t tx="ekr.20120915173000.2893">m.caption('body',
@@ -9685,7 +9685,7 @@ m.quit()</t>
     'The minibuffer prompts you for a Find string'
 )
 
-m.ctrl_key('ctrl-f')
+m.single_key('ctrl-f')
 m.plain_keys('def spam')
 </t>
 <t tx="ekr.20120916070849.2917">m.caption('body','Typing three &lt;Backspace&gt; charaters and then a &lt;Tab&gt; will show more completions')
