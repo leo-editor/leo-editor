@@ -31,9 +31,8 @@ import PyQt4.QtGui as QtGui
 
 #@+at
 # To do:
-# - m.prev calls m.undo twice to restore previous slide.
-# - Document this plugin in the docstring and with a screencast.
 # - Test Qt stylesheet for QPlainTextEdit: can it set font?
+# - Document this plugin in the docstring and with a screencast.
 # - Commands that invoke screencasts.
 #@@c
 
@@ -81,7 +80,7 @@ class ScreenCastController:
         self.p = None # The present slide of the show.
         self.speed = 1.0 # Amount to multiply wait times.
         self.state_name = 'screencast' # The state name to enable m.state_handler.
-        self.node_stack = [] # For undo.
+        self.node_stack = [] # For m.prev and m.undo.
         self.user_dict = {} # For use by scripts.
         self.widgets = [] # List of (popup) widgets created by this class.
         
@@ -390,30 +389,6 @@ class ScreenCastController:
                 m.set_state(k.state)
             # Important: do *not* re-enable m.state_handler here.
             # This should be done *only* in m.next.
-    #@+node:ekr.20120914074855.10720: *4* start
-    def start (self,p,manual=True):
-        
-        '''Start a screencast whose root node is p.
-        
-        Important: p is not necessarily c.p!
-        '''
-        
-        m = self ; c = m.c
-        
-        # Set ivars
-        m.manual=manual
-        m.n1 = 0.02 # default minimal typing delay.
-        m.n2 = 0.175 # default maximum typing delay.
-        m.p1 = p.copy()
-        m.p = p.copy()
-        m.quit_flag = False
-        m.clear_state()
-
-        p.contract()
-        c.redraw_now(p)
-        m.delete_widgets()
-            # Clear widgets left over from previous, unfinished, slideshows.
-        m.state_handler()
     #@+node:ekr.20120913110135.10587: *4* wait
     def wait(self,n=1,high=0,force=False):
         
@@ -475,6 +450,59 @@ class ScreenCastController:
                     if m.p: return
         # No non-empty node found.
         m.quit()
+    #@+node:ekr.20120917132841.10609: *4* prev
+    def prev (self):
+        
+        '''Show the previous slide.  This will recreate the slide's widgets,
+        but the user may have to adjust the minibuffer or other widgets by hand.'''
+        
+        trace = False and not g.unitTesting
+        m = self
+        
+        if m.p and m.p == m.p1:
+            g.trace('at start: %s' % (m.p and m.p.h))
+            m.start(m.p1)
+        else:
+            p = m.undo()
+            if p and p == m.p1:
+                if trace: g.trace('at start: %s' % (m.p and m.p.h))
+                m.start(m.p1)
+            elif p:
+                if trace: g.trace('undo, undo, next: %s' % (m.p and m.p.h))
+                m.undo()
+                m.next()
+            else:
+                if trace: g.trace('no undo: restart: %s' % (m.p and m.p.h))
+                m.start(m.p1)
+    #@+node:ekr.20120914074855.10720: *4* start
+    def start (self,p,manual=True):
+        
+        '''Start a screencast whose root node is p.
+        
+        Important: p is not necessarily c.p!
+        '''
+        
+        m = self ; c = m.c ; k = c.k
+        
+        assert p
+        
+        # Reset Leo's state.
+        k.keyboardQuit()
+        
+        # Set ivars
+        m.manual=manual
+        m.n1 = 0.02 # default minimal typing delay.
+        m.n2 = 0.175 # default maximum typing delay.
+        m.p1 = p.copy()
+        m.p = p.copy()
+        m.quit_flag = False
+        m.clear_state()
+
+        p.contract()
+        c.redraw_now(p)
+        m.delete_widgets()
+            # Clear widgets left over from previous, unfinished, slideshows.
+        m.state_handler()
     #@+node:ekr.20120914074855.10715: *4* state_handler
     def state_handler (self,event=None):
         
@@ -506,7 +534,17 @@ class ScreenCastController:
         elif char == 'Right':
             m.next()
         elif char == 'Left':
-            m.undo()
+            m.prev()
+        elif m.k_state.kind != m.state_name:
+            # We are simulating another state.
+            # Pass the character to *that* state,
+            # making *sure* to save/restore all state.
+            kind,n,handler = k.state.kind,k.state.n,k.state.handler
+            m_state_copy = g.bunch(kind=m.k_state.kind,
+                n=m.k_state.n,handler=m.k_state.handler)
+            m.single_key(char)
+            k.setState(kind,n,handler)
+            m.set_state(m_state_copy)
         elif trace:
             g.trace('ignore %s' % (repr(char)))
     #@+node:ekr.20120914195404.11208: *4* undo
@@ -523,9 +561,27 @@ class ScreenCastController:
             m.p = m.node_stack.pop()
             c.undoer.undo()
             c.redraw()
+            return m.p
         else:
-            m.quit()
-            # g.trace('can not undo')
+            return None
+    #@+node:ekr.20120916062255.10596: *4* set_state & clear_state
+    def set_state (self,state):
+        
+        m = self
+        
+        # g.trace('**** setting m.k_state: %s' % (state.kind))
+        m.k_state.kind = state.kind
+        m.k_state.n = state.n
+        m.k_state.handler = state.handler
+        
+    def clear_state (self):
+        
+        m = self
+        
+        # g.trace('**** clearing m.k_state')
+        m.k_state.kind = None
+        m.k_state.n = None
+        m.k_state.handler = None
     #@+node:ekr.20120916193057.10606: *3* Utilities
     #@+node:ekr.20120916062255.10589: *4* get_key_event
     def get_key_event (self,ch,w):
@@ -595,24 +651,6 @@ class ScreenCastController:
         else:
             g.trace('does not exist: %s' % (path))
             return None
-    #@+node:ekr.20120916062255.10596: *4* set_state & clear_state
-    def set_state (self,state):
-        
-        m = self
-        
-        # g.trace('**** setting m.k_state: %s' % (state.kind))
-        m.k_state.kind = state.kind
-        m.k_state.n = state.n
-        m.k_state.handler = state.handler
-        
-    def clear_state (self):
-        
-        m = self
-        
-        # g.trace('**** clearing m.k_state')
-        m.k_state.kind = None
-        m.k_state.n = None
-        m.k_state.handler = None
     #@-others
 #@-others
 #@-leo
