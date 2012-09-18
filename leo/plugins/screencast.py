@@ -57,7 +57,7 @@ def onCreate (tag, keys):
     
     c = keys.get('c')
     if c:
-        c.screencast_controller = scc = ScreenCastController(c)
+        c.screencast_controller = ScreenCastController(c)
 #@+node:ekr.20120913110135.10607: ** class ScreenCastController
 class ScreenCastController:
     
@@ -80,6 +80,7 @@ class ScreenCastController:
         self.speed = 1.0 # Amount to multiply wait times.
         self.state_name = 'screencast' # The state name to enable m.state_handler.
         self.node_stack = [] # For m.prev and m.undo.
+        self.text_flag = False # True: m.next shows body text instead of executing it.
         self.user_dict = {} # For use by scripts.
         self.widgets = [] # List of (popup) widgets created by this class.
         
@@ -337,7 +338,13 @@ class ScreenCastController:
         m.clear_state()
         m.quit_flag = True
         c.bodyWantsFocus()
-        c.redraw_now()
+        m.p1.contract()
+        c.redraw_now(m.p1)
+    #@+node:ekr.20120918103526.10594: *4* redraw
+    def redraw(self,p=None):
+        
+        m = self
+        m.c.redraw_now(p)
     #@+node:ekr.20120913110135.10611: *4* set_log_focus & set_speed
     def set_log_focus(self,val):
         
@@ -355,6 +362,12 @@ class ScreenCastController:
             g.trace('speed must be >= 0.0')
         else:
             m.speed = speed
+    #@+node:ekr.20120918103526.10595: *4* show_text
+    def show_child_text (self):
+        
+        m = self ; c = m.c
+        
+        c.redraw(m.p.threadBack().firstChild())
     #@+node:ekr.20120916062255.10593: *4* single_key
     def single_key (self,ch,n1=None,n2=None,pane=None,w=None):
         
@@ -403,7 +416,7 @@ class ScreenCastController:
             # g.trace(n)
             g.sleep(n)
     #@+node:ekr.20120916193057.10607: *3* State handling
-    #@+node:ekr.20120914074855.10721: *4* next
+    #@+node:ekr.20120914074855.10721: *4* next & helper
     def next (self):
         
         '''Find the next screencast node and execute its script.
@@ -418,21 +431,18 @@ class ScreenCastController:
         while m.p:
             if trace: g.trace(m.p.h)
             h = m.p.h.replace('_','').replace('-','')
-            if g.match_word(h,0,'@ignore'):
+            if g.match_word(h,0,'@ignorenode'):
                 m.p.moveToThreadNext()
-            elif g.match_word(h,0,'@ignoretree'):
+            elif g.match_word(h,0,'@ignoretree') or g.match_word(h,0,'@ignore'):
                 m.p.moveToNodeAfterTree()
             else:
                 p2 = m.p.copy()
                 m.p.moveToThreadNext()
                 if p2.b.strip():
-                    if trace: g.trace(p2.h,c.p.v)
-                    d = {'c':c,'g:':g,'m':m,'p':p2}
-                    tag = 'screencast'
-                    m.node_stack.append(p2)
-                    undoData = c.undoer.beforeChangeGroup(c.p,tag,verboseUndoGroup=False)
-                    c.executeScript(p=p2,namespace=d,useSelectedText=False)
-                    c.undoer.afterChangeGroup(c.p,tag,undoData)
+                    if g.match_word(p2.h,0,'@text'):
+                        c.redraw(p2) # Selects the node, thereby showing the body text.
+                    else:
+                        m.exec_node(p2)
                     # Save k.state in m.k_state.
                     if k.state:
                         if k.state.kind == m.state_name:
@@ -445,6 +455,21 @@ class ScreenCastController:
                     if m.p: return
         # No non-empty node found.
         m.quit()
+    #@+node:ekr.20120918103526.10596: *5* exec_node
+    def exec_node (self,p):
+        
+        '''Execute the script in node p.'''
+        
+        trace = False and not g.unitTesting
+        m = self ; c = m.c
+        if trace: g.trace(p.h,c.p.v)
+        assert p.b
+        d = {'c':c,'g:':g,'m':m,'p':p}
+        tag = 'screencast'
+        m.node_stack.append(p)
+        undoData = c.undoer.beforeChangeGroup(c.p,tag,verboseUndoGroup=False)
+        c.executeScript(p=p,namespace=d,useSelectedText=False)
+        c.undoer.afterChangeGroup(c.p,tag,undoData)
     #@+node:ekr.20120917132841.10609: *4* prev
     def prev (self):
         

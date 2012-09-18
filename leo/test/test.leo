@@ -812,8 +812,25 @@
 <v t="ekr.20120916140331.2916"><vh>Return</vh></v>
 <v t="ekr.20120916184840.2920"><vh>The search succeeds</vh></v>
 <v t="ekr.20120916063628.2913"><vh>cleanup and quit</vh></v>
-</v>
 <v t="ekr.20120916184021.2918"><vh>spam</vh></v>
+</v>
+<v t="ekr.20120917200834.2928"><vh>@screencasts How to make screencasts</vh>
+<v t="ekr.20120918103319.2942"><vh>@ignore-tree plans</vh>
+<v t="ekr.20120917200834.2929"><vh>m.p: the program counter</vh></v>
+<v t="ekr.20120917200834.2930"><vh>images</vh></v>
+<v t="ekr.20120917200834.2931"><vh>The slideshow; all the nodes in a tree</vh></v>
+<v t="ekr.20120917200834.2932"><vh>Starting a slideshow</vh></v>
+<v t="ekr.20120917200834.2933"><vh>Simulated typing</vh></v>
+<v t="ekr.20120917200834.2934"><vh>Controlling Leo</vh></v>
+</v>
+<v t="ekr.20120918103721.2944"><vh>@ignore-node</vh>
+<v t="ekr.20120918113531.2956"><vh>@text Intro</vh></v>
+<v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
+<v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
+</v>
+<v t="ekr.20120918115916.2954"><vh>That's all</vh></v>
+<v t="ekr.20120918103721.2948"><vh>quit</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1114,7 +1131,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9671,14 +9688,14 @@ m.plain_keys('\n')
 </t>
 <t tx="ekr.20120915181136.2907"></t>
 <t tx="ekr.20120916063628.2912">m.caption('tree','This screencasts discusses Leo\'s basic Find/Change commands')</t>
-<t tx="ekr.20120916063628.2913">m.quit()</t>
+<t tx="ekr.20120916063628.2913">
+m.quit()</t>
 <t tx="ekr.20120916063628.2922">m.quit()</t>
 <t tx="ekr.20120916065229.2914">assert m.p1
 p2 = m.p1.next()
 assert p2
 if p2.h == 'newHeadline' and not p2.b:
     p2.doDelete()
-c.redraw_now(m.p1)
 
 m.quit()</t>
 <t tx="ekr.20120916065229.2916">m.caption('tree',
@@ -9696,7 +9713,8 @@ m.plain_keys('def spam')
     pass</t>
 <t tx="ekr.20120916184840.2920">m.caption('tree','The search succeeds')
 
-c.selectPosition(c.p.next())
+p2 = g.findNodeInTree(c,m.p1,'spam')
+m.redraw(p2)
 
 m.plain_keys('\n')
 </t>
@@ -9717,5 +9735,29 @@ m.plain_keys('e\t')</t>
 <t tx="ekr.20120917133405.2955">m.caption('body','Typing &lt;BackSpace&gt; six more times restores the previous completions')
 m.plain_keys('\b\b\b\b\b\b')
 </t>
+<t tx="ekr.20120917200834.2928"></t>
+<t tx="ekr.20120917200834.2929"></t>
+<t tx="ekr.20120917200834.2930"></t>
+<t tx="ekr.20120917200834.2931"></t>
+<t tx="ekr.20120917200834.2932"></t>
+<t tx="ekr.20120917200834.2933"></t>
+<t tx="ekr.20120917200834.2934"></t>
+<t tx="ekr.20120918103319.2942"></t>
+<t tx="ekr.20120918103721.2944">@language rest</t>
+<t tx="ekr.20120918103721.2948">m.quit()</t>
+<t tx="ekr.20120918111016.2955">Let's go behind the scenes to see how this slidewhow works...</t>
+<t tx="ekr.20120918113531.2956">This screencast discusses how to make screencasts with the screencasts
+plugin. This screencasts goes "behind the scenes" to revealing the inner
+workings of screencasts that are usually hidden. So this screencast is
+**unusual**, much like a TeX document that discusses TeX will be unusual.
+
+Indeed, this first "scene" of the screencast simply shows this particular
+node. As we shall see, screencasts usually do more than just show text.
+
+When you have finished reading this node, hit the Right Arrow key to to go
+the next scene.
+</t>
+<t tx="ekr.20120918113531.2957">This is some *emphasized* motivation.</t>
+<t tx="ekr.20120918115916.2954">m.caption('log','That\'s all!')</t>
 </tnodes>
 </leo_file>
