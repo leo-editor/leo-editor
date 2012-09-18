@@ -435,26 +435,33 @@ class ScreenCastController:
                 m.p.moveToThreadNext()
             elif g.match_word(h,0,'@ignoretree') or g.match_word(h,0,'@ignore'):
                 m.p.moveToNodeAfterTree()
-            else:
-                p2 = m.p.copy()
-                m.p.moveToThreadNext()
-                if p2.b.strip():
-                    if g.match_word(p2.h,0,'@text'):
-                        c.redraw(p2) # Selects the node, thereby showing the body text.
+            # else:
+                ### p2 = m.p.copy()
+                ### m.p.moveToThreadNext()
+            elif m.p.b.strip():
+                p_next = m.p.threadNext()
+                if g.match_word(m.p.h,0,'@text'):
+                    c.redraw(m.p) # Selects the node, thereby showing the body text.
+                else:
+                    m.exec_node(m.p)
+                # Save k.state in m.k_state.
+                if k.state:
+                    if k.state.kind == m.state_name:
+                        m.clear_state()
                     else:
-                        m.exec_node(p2)
-                    # Save k.state in m.k_state.
-                    if k.state:
-                        if k.state.kind == m.state_name:
-                            m.clear_state()
-                        else:
-                            m.set_state(k.state)
-                    # Re-enable m.state_handler.
-                    if not m.quit_flag:
-                        k.setState(m.state_name,1,m.state_handler)
-                    if m.p: return
-        # No non-empty node found.
-        m.quit()
+                        m.set_state(k.state)
+                # Re-enable m.state_handler.
+                if not m.quit_flag:
+                    k.setState(m.state_name,1,m.state_handler)
+                # Important: m.p is always set to p_next here,
+                # regardless of what the executed code does!
+                m.p = p_next
+                if m.p: break
+            else:
+                m.p.moveToThreadNext()
+        else:
+            # No non-empty node found.
+            m.quit()
     #@+node:ekr.20120918103526.10596: *5* exec_node
     def exec_node (self,p):
         

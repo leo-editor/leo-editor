@@ -756,6 +756,14 @@
 </v>
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
 <v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
+<v t="ekr.20120918123030.2960"><vh>Intro</vh></v>
+<v t="ekr.20120915122112.2868"><vh>panes</vh>
+<v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
+<v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
+<v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
+<v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
+<v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
+</v>
 <v t="ekr.20120915122112.2873"><vh>icon box</vh></v>
 <v t="ekr.20120915114713.2866"><vh>node icon</vh></v>
 <v t="ekr.20120915112650.2864"><vh>dirty icon</vh></v>
@@ -765,13 +773,6 @@
 <v t="ekr.20120915122112.2872"><vh>full icon</vh></v>
 <v t="ekr.20120915122112.2874"><vh>save command clears dirty bits</vh></v>
 <v t="ekr.20120916063628.2922"><vh>quit</vh></v>
-<v t="ekr.20120915122112.2868"><vh>panes</vh>
-<v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
-<v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
-<v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
-<v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
-<v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
-</v>
 </v>
 <v t="ekr.20120914093811.2825"><vh>@screencast common keys</vh>
 <v t="ekr.20120914093811.2826"><vh>ctrl-i</vh></v>
@@ -827,7 +828,9 @@
 <v t="ekr.20120918113531.2956"><vh>@text Intro</vh></v>
 <v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
 <v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
+<v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
 </v>
+<v t="ekr.20120918121401.2956"><vh>show quit node</vh></v>
 <v t="ekr.20120918115916.2954"><vh>That's all</vh></v>
 <v t="ekr.20120918103721.2948"><vh>quit</vh></v>
 </v>
@@ -1131,7 +1134,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9759,5 +9762,18 @@ the next scene.
 </t>
 <t tx="ekr.20120918113531.2957">This is some *emphasized* motivation.</t>
 <t tx="ekr.20120918115916.2954">m.caption('log','That\'s all!')</t>
+<t tx="ekr.20120918121401.2956">p2 = g.findNodeInTree(c,m.p1,'quit')
+assert p2
+m.caption('log','Here is the node that ends the slideshow')
+m.redraw(p2)</t>
+<t tx="ekr.20120918121401.2957">It's easy to show the text of another node in the present slideshow whose
+headline h is known::
+
+    p2 = g.findNodeInTree(c,m.p1,h)
+    m.redraw(p2)
+    
+This selects p2 in the outline and shows the body text of p2.
+</t>
+<t tx="ekr.20120918123030.2960">m.log('This screencast shows the different parts of Leo\'s screen')</t>
 </tnodes>
 </leo_file>
