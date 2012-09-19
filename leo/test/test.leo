@@ -70,8 +70,8 @@
 <v t="ekr.20100118141712.2011"><vh>@@int qt_tab_width = 80</vh></v>
 <v t="ekr.20100118122048.2003"><vh>@@font python keyword1 fonts</vh></v>
 <v t="ekr.20100118133026.2008"><vh>@@font python keyword3 fonts</vh></v>
-<v t="ekr.20100119095312.2041"><vh>@font rest keyword2 fonts</vh></v>
-<v t="ekr.20100119100926.2046"><vh>@font rest keyword4 fonts</vh></v>
+<v t="ekr.20100119095312.2041"><vh>@@font rest keyword2 fonts</vh></v>
+<v t="ekr.20100119100926.2046"><vh>@@font rest keyword4 fonts</vh></v>
 <v t="ekr.20100330084954.2125"><vh>@color pseudoplain_operator_color = blue</vh></v>
 </v>
 <v t="ekr.20100118190256.2016"><vh>Vim</vh>
@@ -663,6 +663,7 @@
 <v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
 <v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
 </v>
+<v t="ekr.20120918170946.2996"><vh>To do</vh>
 <v t="ekr.20120913105857.2914"><vh>From quickstart</vh>
 <v t="ekr.20120913105857.2915"><vh>Welcome to Leo!</vh></v>
 <v t="ekr.20120913105857.2916"><vh>Tree manipulation basics</vh></v>
@@ -754,6 +755,7 @@
 </v>
 </v>
 </v>
+</v>
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
 <v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
 <v t="ekr.20120918123030.2960"><vh>Intro</vh></v>
@@ -815,24 +817,65 @@
 <v t="ekr.20120916063628.2913"><vh>cleanup and quit</vh></v>
 <v t="ekr.20120916184021.2918"><vh>spam</vh></v>
 </v>
-<v t="ekr.20120917200834.2928"><vh>@screencasts How to make screencasts</vh>
-<v t="ekr.20120918103319.2942"><vh>@ignore-tree plans</vh>
-<v t="ekr.20120917200834.2929"><vh>m.p: the program counter</vh></v>
-<v t="ekr.20120917200834.2930"><vh>images</vh></v>
-<v t="ekr.20120917200834.2931"><vh>The slideshow; all the nodes in a tree</vh></v>
-<v t="ekr.20120917200834.2932"><vh>Starting a slideshow</vh></v>
-<v t="ekr.20120917200834.2933"><vh>Simulated typing</vh></v>
-<v t="ekr.20120917200834.2934"><vh>Controlling Leo</vh></v>
+<v t="ekr.20120917200834.2928"><vh>@screencast How to make screencasts</vh>
+<v t="ekr.20120919042123.3042"><vh>@ignore-node To do</vh></v>
+<v t="ekr.20120918170946.2994"><vh>Intro</vh>
+<v t="ekr.20120918164428.2968"><vh>Nodes</vh></v>
+<v t="ekr.20120918170133.2973"><vh>Scripts</vh></v>
+<v t="ekr.20120918170946.2976"><vh>Most nodes are hiddeen</vh></v>
+<v t="ekr.20120918170133.2974"><vh>Show nodes</vh></v>
 </v>
-<v t="ekr.20120918103721.2944"><vh>@ignore-node</vh>
+<v t="ekr.20120918174346.3024"><vh>The program counter</vh>
+<v t="ekr.20120918170133.2975"><vh>m.p</vh></v>
+<v t="ekr.20120918170946.2979"><vh>m.p 2</vh></v>
+</v>
+<v t="ekr.20120918174346.3026"><vh>Organizing nodes</vh>
+<v t="ekr.20120918174346.3018"><vh>organizing screencasts</vh></v>
+<v t="ekr.20120918174346.3019"><vh>empty nodes</vh></v>
+<v t="ekr.20120918174346.3020"><vh>ignored nodes</vh></v>
+<v t="ekr.20120918174346.3021"><vh>example @ignore-node</vh>
+<v t="ekr.20120918174346.3022"><vh>@ignore-node whatever</vh></v>
+</v>
+<v t="ekr.20120918174346.3027"><vh>ignored trees</vh></v>
+</v>
+<v t="ekr.20120918174346.3025"><vh>m methods</vh>
+<v t="ekr.20120918170946.2989"><vh>m.redraw</vh></v>
+<v t="ekr.20120918170946.2990"><vh>m.redraw 2</vh></v>
+<v t="ekr.20120918170946.2991"><vh>m.redraw 3</vh></v>
+<v t="ekr.20120918174346.3028"><vh>captions</vh>
+<v t="ekr.20120918170946.2981"><vh>m.log</vh></v>
+<v t="ekr.20120918170946.2982"><vh>m.caption</vh></v>
+<v t="ekr.20120918170946.2986"><vh>m.body</vh></v>
+<v t="ekr.20120918170946.2987"><vh>m.body 2</vh></v>
+<v t="ekr.20120918170946.2983"><vh>m.tree</vh></v>
+<v t="ekr.20120918170946.2984"><vh>m.tree 2</vh></v>
+</v>
+<v t="ekr.20120918174346.3029"><vh>images</vh>
+<v t="ekr.20120918170946.2992"><vh>m.image</vh></v>
+<v t="ekr.20120918170946.2993"><vh>m.image 2</vh></v>
+</v>
+<v t="ekr.20120918170946.2997"><vh>key handling</vh>
+<v t="ekr.20120918170946.2998"><vh>m.head_keys</vh></v>
+<v t="ekr.20120918170946.2999"><vh>m.head_keys 2</vh></v>
+<v t="ekr.20120918170946.3000"><vh>restore previous headline</vh></v>
+<v t="ekr.20120918174346.3014"><vh>m.body_keys</vh></v>
+<v t="ekr.20120918174346.3015"><vh>m.body_keys_ 2</vh>
+<v t="ekr.20120918174346.3016"><vh>@ignore-node child</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20120918174346.3023"><vh>more normal examples</vh></v>
+<v t="ekr.20120918115916.2954"><vh>m.quit</vh></v>
+<v t="ekr.20120918103721.2948"><vh>quit</vh></v>
+</v>
+<v t="ekr.20120918103721.2944"><vh>@ignore-tree Text nodes</vh>
+<v t="ekr.20120918144251.2965"><vh>@text Intro</vh></v>
+<v t="ekr.20120918144251.2964"><vh>@text</vh></v>
+<v t="ekr.20120918143835.2964"><vh>@text</vh></v>
 <v t="ekr.20120918113531.2956"><vh>@text Intro</vh></v>
 <v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
 <v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
 <v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
-</v>
-<v t="ekr.20120918121401.2956"><vh>show quit node</vh></v>
-<v t="ekr.20120918115916.2954"><vh>That's all</vh></v>
-<v t="ekr.20120918103721.2948"><vh>quit</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1134,7 +1177,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9631,11 +9674,11 @@ m.quit()</t>
 m.head_keys('Node 1')
 </t>
 <t tx="ekr.20120914183137.2850"></t>
-<t tx="ekr.20120914183137.2851">m.caption('tree','This is the tree pane')</t>
-<t tx="ekr.20120914183137.2853">m.caption('log','This is the log pane')</t>
-<t tx="ekr.20120914183137.2855">m.caption('body','This is the body pane')</t>
-<t tx="ekr.20120914183137.2856">m.caption('body','The minibuffer is below the body pane')</t>
-<t tx="ekr.20120914183137.2857">m.caption('tree','The icon area appears above the tree pane')</t>
+<t tx="ekr.20120914183137.2851">m.tree('This is the tree pane')</t>
+<t tx="ekr.20120914183137.2853">m.log('This is the log pane')</t>
+<t tx="ekr.20120914183137.2855">m.body('This is the body pane')</t>
+<t tx="ekr.20120914183137.2856">m.body('The minibuffer is below the body pane')</t>
+<t tx="ekr.20120914183137.2857">m.tree('The icon area appears above the tree pane')</t>
 <t tx="ekr.20120915073533.2862"></t>
 <t tx="ekr.20120915112650.2864">m.log('The icon for a changed node has a black border.')
 m.image('tree','box08.GIF',center=True,height=100)</t>
@@ -9655,42 +9698,42 @@ m.image('tree','box15.GIF',center=True,height=100)</t>
 <t tx="ekr.20120915122112.2874">m.log('The save command clears all black borders')
 m.image('tree','box07.GIF',center=True,height=100)</t>
 <t tx="ekr.20120915162554.2882"></t>
-<t tx="ekr.20120915162554.2883">m.caption('body',
+<t tx="ekr.20120915162554.2883">m.body(
     'The minibuffer is an area at the bottom of the screen.\n'
     'You use the minibuffer to enter commands by name.\n'
     '&lt;Alt-X&gt; opens the minibuffer')
 m.single_key('alt-x')
 
 </t>
-<t tx="ekr.20120915164308.2886">m.caption('body',
+<t tx="ekr.20120915164308.2886">m.body(
     'We only need to type the start of long command names.\n'
     'Here we have typed "ins" to begin one of Leo\'s insert commands.')
 m.plain_keys('ins')
 </t>
-<t tx="ekr.20120915170516.2888">m.caption('body',
+<t tx="ekr.20120915170516.2888">m.body(
     'The &lt;Tab&gt; key does tab completion.\n'
     'The Completion tab shows all the valid completions.\n'
     'The minibuffer shows the longest common prefix.')
 m.plain_keys('\t')
 </t>
-<t tx="ekr.20120915173000.2894">m.caption('body',
+<t tx="ekr.20120915173000.2894">m.body(
     'Typing "no&lt;Tab&gt;" is enough to complete the command:\n'
     'only one command appears in the Completion tab.')
 m.plain_keys('no\t')
 </t>
-<t tx="ekr.20120915173000.2895">m.caption('body',
+<t tx="ekr.20120915173000.2895">m.body(
     'When only one item appears in the Completion list\n'
     'The &lt;Return&gt; key will execute the command'
 )
 </t>
-<t tx="ekr.20120915174321.2898">m.caption('body','A new node has been inserted')
+<t tx="ekr.20120915174321.2898">m.body('A new node has been inserted')
 m.plain_keys('\n')
 </t>
-<t tx="ekr.20120915175727.2905">m.caption('body','Deleting the newly-inserted node concludes this slideshow.')
+<t tx="ekr.20120915175727.2905">m.body('Deleting the newly-inserted node concludes this slideshow.')
 
 </t>
 <t tx="ekr.20120915181136.2907"></t>
-<t tx="ekr.20120916063628.2912">m.caption('tree','This screencasts discusses Leo\'s basic Find/Change commands')</t>
+<t tx="ekr.20120916063628.2912">m.tree('This screencasts discusses Leo\'s basic Find/Change commands')</t>
 <t tx="ekr.20120916063628.2913">
 m.quit()</t>
 <t tx="ekr.20120916063628.2922">m.quit()</t>
@@ -9701,7 +9744,7 @@ if p2.h == 'newHeadline' and not p2.b:
     p2.doDelete()
 
 m.quit()</t>
-<t tx="ekr.20120916065229.2916">m.caption('tree',
+<t tx="ekr.20120916065229.2916">m.tree(
     'Typing &lt;Ctrl-F&gt; starts the find command.\n'
     'Leo shows the Find Tab in the Log pane.\n'
     'The minibuffer prompts you for a Find string'
@@ -9710,42 +9753,35 @@ m.quit()</t>
 m.single_key('ctrl-f')
 m.plain_keys('def spam')
 </t>
-<t tx="ekr.20120916140331.2916">m.caption('tree','Typing &lt;Return&gt; starts the search.')
+<t tx="ekr.20120916140331.2916">m.tree('Typing &lt;Return&gt; starts the search')
 </t>
 <t tx="ekr.20120916184021.2918">def spam():
     pass</t>
-<t tx="ekr.20120916184840.2920">m.caption('tree','The search succeeds')
+<t tx="ekr.20120916184840.2920">m.tree('The search succeeds')
 
 p2 = g.findNodeInTree(c,m.p1,'spam')
 m.redraw(p2)
 
 m.plain_keys('\n')
 </t>
-<t tx="ekr.20120916185527.2922">m.caption('body','Typing o&lt;Tab&gt; gets us back to the insert-node command')
+<t tx="ekr.20120916185527.2922">m.body('Typing o&lt;Tab&gt; gets us back to the insert-node command')
 m.plain_keys('o\t')
 </t>
-<t tx="ekr.20120917133405.2948">m.caption('body','Typing a single &lt;BackSpace&gt; shows the same completions')
+<t tx="ekr.20120917133405.2948">m.body('Typing a single &lt;BackSpace&gt; shows the same completions')
 m.plain_keys('\b')
 </t>
-<t tx="ekr.20120917133405.2950">m.caption('body','Typing another &lt;BackSpace&gt; still shows the same completions')
+<t tx="ekr.20120917133405.2950">m.body('Typing another &lt;BackSpace&gt; still shows the same completions')
 m.plain_keys('\b')
 </t>
-<t tx="ekr.20120917133405.2952">m.caption('body','Typing a third &lt;BackSpace&gt; shows more completions')
+<t tx="ekr.20120917133405.2952">m.body('Typing a third &lt;BackSpace&gt; shows more completions')
 m.plain_keys('\b')
 </t>
-<t tx="ekr.20120917133405.2953">m.caption('body','Typing "e" followed by &lt;Tab&gt; completes the insert-newline command')
+<t tx="ekr.20120917133405.2953">m.body('Typing "e" followed by &lt;Tab&gt; completes the insert-newline command')
 m.plain_keys('e\t')</t>
-<t tx="ekr.20120917133405.2955">m.caption('body','Typing &lt;BackSpace&gt; six more times restores the previous completions')
+<t tx="ekr.20120917133405.2955">m.body('Typing &lt;BackSpace&gt; six more times restores the previous completions')
 m.plain_keys('\b\b\b\b\b\b')
 </t>
 <t tx="ekr.20120917200834.2928"></t>
-<t tx="ekr.20120917200834.2929"></t>
-<t tx="ekr.20120917200834.2930"></t>
-<t tx="ekr.20120917200834.2931"></t>
-<t tx="ekr.20120917200834.2932"></t>
-<t tx="ekr.20120917200834.2933"></t>
-<t tx="ekr.20120917200834.2934"></t>
-<t tx="ekr.20120918103319.2942"></t>
 <t tx="ekr.20120918103721.2944">@language rest</t>
 <t tx="ekr.20120918103721.2948">m.quit()</t>
 <t tx="ekr.20120918111016.2955">Let's go behind the scenes to see how this slidewhow works...</t>
@@ -9761,11 +9797,11 @@ When you have finished reading this node, hit the Right Arrow key to to go
 the next scene.
 </t>
 <t tx="ekr.20120918113531.2957">This is some *emphasized* motivation.</t>
-<t tx="ekr.20120918115916.2954">m.caption('log','That\'s all!')</t>
-<t tx="ekr.20120918121401.2956">p2 = g.findNodeInTree(c,m.p1,'quit')
-assert p2
-m.caption('log','Here is the node that ends the slideshow')
-m.redraw(p2)</t>
+<t tx="ekr.20120918115916.2954">m.log(
+    'All screencasts should end with a call to m.quit(). '
+    'For this last slide, we\'ll show the *next* slide '
+    'by calling m.redraw(m.p.next()).')
+m.redraw(m.p.next())</t>
 <t tx="ekr.20120918121401.2957">It's easy to show the text of another node in the present slideshow whose
 headline h is known::
 
@@ -9775,5 +9811,137 @@ headline h is known::
 This selects p2 in the outline and shows the body text of p2.
 </t>
 <t tx="ekr.20120918123030.2960">m.log('This screencast shows the different parts of Leo\'s screen')</t>
+<t tx="ekr.20120918143835.2964">- Make it easy to demonstrate Leo's features.
+
+- Generate graphics and comments easily.
+
+- Easily scriptable.
+
+- Easy to generate *finished* slides.</t>
+<t tx="ekr.20120918144251.2964">The screencast plugin creates a **screencast**, a series of **slides** or **scenes**.
+Slides are static; scenes may contain animations.
+
+By default, a screencast is made up of an @screencast node and all its
+descendants. Each node represents one slide or scene. The screencast moves
+from node to node. Each node executes a **screencast script**. Typically,
+the script in each node modifies some part of Leo's window by switching
+nodes, show commands in action, or by displaying graphics or captions.</t>
+<t tx="ekr.20120918144251.2965">The screencast plugin came about in order to make it easier to show Leo in
+action, and to make it easier for Leo's users to show how they use Leo.
+
+A screencast is composed of the nodes of an **@screencast tree**.
+
+Each **screencast node** represents a **slide**. A slide is simply the
+appearance of the Leo window.
+
+Each screencast node contains a **screencast script**. Screencast scripts
+are Leo scripts, so they can do anything, they alter the appearance of the
+Leo main window in some way.
+
+Screencast scripts have access to the 'c', 'g' and 'p' vars as usual.
+Screencast scripts also have access to the 'm' variable, representing the
+**screencast controller** for the commander c.  Methods of the screencast
+controller make it easy to show graphics, including captions.
+
+A **caption** is a text area that overlays part of Leo's screen.  By default,
+captions have a distinctive yellow background.
+
+When showing a screencast, the **presenter** moves from slide to slide
+merely by typing the Right Arrow key.  This key executes the screencast nodes
+in outline order.</t>
+<t tx="ekr.20120918164428.2968">m.log(
+    'A screencasts is made up of nodes. '
+    'Like this one.')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170133.2973">m.log(
+    'Nodes contain scripts. '
+    'Within such scripts, '
+    '"m" is bound to a ScreenShotController object.'
+)
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170133.2974">m.log('This screencast is different: it shows its own nodes by calling m.redraw(m.p)')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170133.2975">m.log('m.p is the "program counter" of the screencast.')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2976">m.log('Most screencasts do *not* show the nodes comprising the screencast.')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2979">m.log('m.p is the position of the node whose script is being executed')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2981">m.log('As we has seen, m.log puts "caption" text in the log pane')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2982">m.log('A caption is text that overlays one of Leo\'s panes')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2983">m.log('The m.tree method puts a caption in the outline (tree) pane')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2984">m.tree('Like this')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2986">m.log('The m.body method puts a caption in the body pane')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2987">m.body('Like this')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2989">m.log('The m.redraw(p) method selects node p and redraws the screen.')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2990">m.log("It's unusual for scripts to call attention to themselves by calling m.redraw(m.p)")
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2991">m.log('Most scripts call m.redraw(p) to show a node p outside the @screencast tree')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2992">m.log('The m.image method puts up an image in an indicated pane.')
+m.redraw(m.p)
+</t>
+<t tx="ekr.20120918170946.2993">m.log('Like this.')
+m.image('tree','box00.GIF',center=True,height=100)
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2994"></t>
+<t tx="ekr.20120918170946.2996"></t>
+<t tx="ekr.20120918170946.2997">m.log('Several methods deal with key handling.')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2998">m.log('m.head_keys simulates typing in a headline')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.2999">m.log('Like this')
+m.head_keys('Typing in the headline')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918170946.3000">m.log('Oops.  Let\'s restore the previous headline.')
+m.p.back().back().h = 'm.head_keys'
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3014">m.log('Similarly, m.body keys simulates typing in the body pane')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3015">m.log("We'll put the body text in the child node. ")
+
+c.selectPosition(m.p.firstChild())
+m.body_keys('This is body text')
+m.redraw(m.p)
+m.p.firstChild().b = ''</t>
+<t tx="ekr.20120918174346.3016"></t>
+<t tx="ekr.20120918174346.3018">m.log('You can organize screencasts in several ways')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3019">m.log('Nodes without body text act as organizer nodes. ')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3020">m.log(
+    '@ignore-node nodes are also ignored. '
+    'They can contain any kind of body text.'
+)
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3021">m.log('In this example, well do m.redraw(m.p.firstChild()) to show the skipped node.')
+m.redraw(m.p.firstChild())</t>
+<t tx="ekr.20120918174346.3022">@language rest
+
+This node can contain any kind of text.
+
+It is *not* treated as a screencast script.
+</t>
+<t tx="ekr.20120918174346.3023">m.log('The other screencasts in this file give more typical examples '
+    'of how to use the methods of the ScreenCastController object.'
+)
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3024"></t>
+<t tx="ekr.20120918174346.3025">m.log('There ScreenCastController object has several useful convenience methods')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3026"></t>
+<t tx="ekr.20120918174346.3027">m.log('All nodes in an @ignore-tree tree are completely ignored.')
+m.redraw(m.p)</t>
+<t tx="ekr.20120918174346.3028"></t>
+<t tx="ekr.20120918174346.3029"></t>
+<t tx="ekr.20120919042123.3042">Discuss m.wait.
+Discuss @text nodes.</t>
 </tnodes>
 </leo_file>

@@ -2,11 +2,119 @@
 #@+node:ekr.20120913110135.10579: * @file screencast.py
 #@+<< docstring >>
 #@+node:ekr.20120913110135.10589: ** << docstring >>
-'''Screencast tools for Leo.
+'''
 
-Injects c.screencast_controller ivar into all commanders.
+#####################
+The screencast plugin
+#####################
 
-To document:
+Overview
+--------
+
+This plugin provides tools for showing **screencasts**, a series of
+**slides** controlled by a human presenter. Nodes represent slides. With a
+few exceptions discussed below, each screencast node contains a script. The
+**appearance** of a slide is simply the appearance of Leo's main window
+after this plugin executes the node's script.
+
+**Important**: screencast scripts typically consist of just a few simple
+calls to convenience methods provided by this plugin. In essence, each
+node's script is the *same as* writer's script. There is no need for a
+separate script that gets laboriously translated to a screencast script.
+
+Screencast nodes
+----------------
+
+**@screencast nodes** are nodes whose headline start with \@screencast.
+Generally speaking, **@slide nodes** are all the descendants of a
+particular \@screencast node that have non-empty body text.  Exceptions:
+
+- **Organizer nodes** are nodes with empty body text.  Such nodes serve
+  only to organize slide nodes.
+  
+- **Ignored nodes** are nodes whose headline start with \@ignore-node or
+  \@ignore-tree. This plugin ignores \@ignore-node and \@ignore-tree nodes,
+  and ignores all nodes contained in \@ignore-tree** trees.
+  
+Thus, a slide node is any descendant of an \@screencast node that
+
+a) contains body text and
+
+b) is neither an \@ignore-node node nor an \@gnore-tree node nor any
+   descendant of an \@ignore-tree node.
+   
+**Note**: \@ignore is a synonym for \@ignore-tree.
+
+There are two special kinds of slide nodes. Nodes whose headlines start
+with **@text** and **@rst** are also considered to be slide nodes, but the
+body text of such nodes do *not* contain scripts. Instead, the plugin shows
+the body text of \@text nodes as is, and shows the body text of \@rst nodes
+rendered as reStructuredText.
+
+Commands and keys
+-----------------
+
+The screencast-start command starts a screencast. This command executes the
+script in the first slide node of the tree and then pauses. Thereafter, the
+Right Arrow key executes the script in the next slide node (in outline order).
+The Left Arrow key executes the script in the previous slide node. The Escape
+or Ctrl-G keys terminate any screencast.
+
+Screencast scripts
+------------------
+
+Except for \@text and \@rst nodes, each non-empty, non-ignored screencast
+node must contain a **screencast script**. When the presenter moves to a
+new screenshot node, the screenshot plugin excutes the script in the node.
+Screencast scripts are simply Leo scripts that alter the appearance of the
+Leo main window, and thus the appearance of a slide. Scripts have access to
+the 'c', 'g' and 'p' vars as usual. Scripts also have access to the 'm'
+variable, representing the screencast controller for Leo outline. Scripts
+typically use 'm' to access convenience methods, but advanced scripts can
+use 'm' in other ways.
+
+The ScreenCastController
+------------------------
+
+The ScreenCastController (SCC) controls key handling during screencasts and
+executes screencast scripts as the screencast moves from node to node. As a
+result, screencasts scripts are usually *very* simple: each script
+typically consists of just a few lines of code, and each line typically
+just calls a single scc convenience methods.
+
+SCC convenience methods
+-----------------------
+
+**m.body(s)**, **m.log(s) and **m.tree(s)** create caption with text s in
+the indicated pane. A **caption** is a text area that overlays part of
+Leo's screen. By default, captions have a distinctive yellow background.
+The appearance of captions can be changed using Qt stylesheets.  See below.
+
+**m.body_keys(s,n1=None,n2=None)**
+
+**m.head_keys(s,n1=None,n2=None)**
+
+**m.redraw(p)**
+
+**m.single_key(setting)**
+
+the arg to m.ctrl_key can be anything that would be a valid key setting.
+  So the following are all equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc.
+  But "ctrl-F" is different from "ctrl-shift-f".
+
+**m.quit** ends the screencast.  By definition, the last slide of screencast *is* the
+first non-ignored screencast node that calls m.quit.
+
+**m.wait(n=1,high=0,force=False)**
+
+Stylesheets
+-----------
+
+
+Node order vs. selection order
+-------------------------------
+
+Screencast nodes are usually invisible.
     
 - m.p is the "program counter", completely distinct from c.p.
 
@@ -138,8 +246,8 @@ class ScreenCastController:
             w.repaint()
             m.wait(n1,n2,force=True)
         c.redraw()
-    #@+node:ekr.20120914133947.10578: *4* caption
-    def caption (self,pane,s,center=False):
+    #@+node:ekr.20120914133947.10578: *4* caption and abbreviations: body, log, tree
+    def caption (self,s,pane): # To do: center option.
         
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         
@@ -162,6 +270,15 @@ class ScreenCastController:
         else:
             g.trace('bad pane: %s' % (pane))
             return None
+
+    def body (self,s):
+        return self.caption(s,'body')
+        
+    def log (self,s):
+        return self.caption(s,'log')
+        
+    def tree (self,s):
+        return self.caption(s,'tree')
     #@+node:ekr.20120913110135.10612: *4* clear_log
     def clear_log (self):
         
@@ -299,8 +416,8 @@ class ScreenCastController:
             return None
 
         
-    #@+node:ekr.20120913110135.10610: *4* log
-    def log(self,s,begin=False,end=False,image_fn=None,pane='log'):
+    #@+node:ekr.20120913110135.10610: *4* old_log
+    def old_log(self,s,begin=False,end=False,image_fn=None,pane='log'):
         
         '''Put a message to the log pane, highlight it, and pause.'''
         
@@ -314,8 +431,6 @@ class ScreenCastController:
         
         if not end:
             m.wait(1)
-        
-        
     #@+node:ekr.20120916062255.10590: *4* plain_keys
     def plain_keys(self,s,n1=None,n2=None,pane='body'):
         
@@ -338,8 +453,8 @@ class ScreenCastController:
         m.clear_state()
         m.quit_flag = True
         c.bodyWantsFocus()
-        m.p1.contract()
-        c.redraw_now(m.p1)
+        # m.p1.contract()
+        # c.redraw_now(m.p1)
     #@+node:ekr.20120918103526.10594: *4* redraw
     def redraw(self,p=None):
         
@@ -435,11 +550,9 @@ class ScreenCastController:
                 m.p.moveToThreadNext()
             elif g.match_word(h,0,'@ignoretree') or g.match_word(h,0,'@ignore'):
                 m.p.moveToNodeAfterTree()
-            # else:
-                ### p2 = m.p.copy()
-                ### m.p.moveToThreadNext()
             elif m.p.b.strip():
                 p_next = m.p.threadNext()
+                p_old = m.p.copy()
                 if g.match_word(m.p.h,0,'@text'):
                     c.redraw(m.p) # Selects the node, thereby showing the body text.
                 else:
@@ -453,10 +566,10 @@ class ScreenCastController:
                 # Re-enable m.state_handler.
                 if not m.quit_flag:
                     k.setState(m.state_name,1,m.state_handler)
-                # Important: m.p is always set to p_next here,
-                # regardless of what the executed code does!
-                m.p = p_next
-                if m.p: break
+                # Change m.p only if the script has not already changed it.
+                if not m.p or m.p == p_old:
+                    m.p = p_next
+                break
             else:
                 m.p.moveToThreadNext()
         else:
