@@ -2155,6 +2155,35 @@ able to complain about all constructions.
 Thus, some import mistakes can *only* be found by running tests.  For
 complex programs like 2to3, the only truly safe way to check imports
 is by running the 2to3 test suite.
+#@+node:ekr.20120921145435.10607: *4* Fixed activateMenu
+@nocolor-node
+The trick is to find the wrapper first: it is *also* a QMenu.
+We can then call menuBar.setActiveAction on its action!!
+#@+node:ekr.20110605121601.18361: *5* leoQtMenu.activateMenu
+def activateMenu (self,menuName):
+
+    '''Activate the menu with the given name'''
+    
+    c = self.c
+    menu = self.getMenu(menuName)
+    if menu:
+        menubar = c.frame.top.leo_menubar
+        # Important: self is a leoQtMenu, **not** an instance of QMenu.
+        # Find the qtMenuWrapper (a subclass of both QMenu and leoQtMenu).
+        for child in menubar.children():
+            if (
+                hasattr(child,'leo_menu_label') and
+                child.leo_menu_label.lower() == menuName.lower()
+            ):
+                action = child.menuAction()
+                if action:
+                    menubar.setActiveAction(action)
+                else:
+                    g.trace('can not happen: no action for menu %s = %s' % (
+                        menuName,child))
+                return
+       
+    g.trace('No such top-level menu: %s' % (menuName))
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893

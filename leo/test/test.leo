@@ -818,7 +818,6 @@
 <v t="ekr.20120916184021.2918"><vh>spam</vh></v>
 </v>
 <v t="ekr.20120917200834.2928"><vh>@screencast How to make screencasts</vh>
-<v t="ekr.20120919042123.3042"><vh>@ignore-node To do</vh></v>
 <v t="ekr.20120918170946.2994"><vh>Intro</vh>
 <v t="ekr.20120918164428.2968"><vh>Nodes</vh></v>
 <v t="ekr.20120918170133.2973"><vh>Scripts</vh></v>
@@ -876,6 +875,9 @@
 <v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
 <v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
 <v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
+</v>
+<v t="ekr.20120921072549.3028"><vh>@screencast menus</vh>
+<v t="ekr.20120921072549.3029"><vh>Cmds menu</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1177,7 +1179,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="16,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9941,7 +9943,7 @@ m.redraw(m.p)</t>
 m.redraw(m.p)</t>
 <t tx="ekr.20120918174346.3028"></t>
 <t tx="ekr.20120918174346.3029"></t>
-<t tx="ekr.20120919042123.3042">Discuss m.wait.
-Discuss @text nodes.</t>
+<t tx="ekr.20120921072549.3028"></t>
+<t tx="ekr.20120921072549.3029">m.open_menu('Cmds')</t>
 </tnodes>
 </leo_file>

@@ -8,6 +8,32 @@
 The screencast plugin
 #####################
 
+Executive Summary
+-----------------
+
+- Within \@screencast trees, the body text of nodes contain scripts. As
+  usual, nodes without body text are organizer nodes.
+  
+- The 'm' variable in these scripts is a ScreenCastController (SCC).
+
+- The SCC handles keystrokes, executes the script in each node, and
+  provides convenience methods to show key handling, captions and (scaled)
+  graphics.
+  
+- When the human presenter types <Right Arrow>, the SCC executes the script
+  in the next node (in outline order), ignoring \@ignore-node nodes and
+  \@ignore-tree trees.
+  
+- Each slide's appearance is just the appearance of the Leo window after
+  the SCC executes the node's script. However, the SCC shows the body
+  text of each \@text node as it is, rather than treating it as a script.
+
+- A screencast is the sequence of slides shown by the SCC. Within a
+  screencast, the SCC manages keystrokes flexibly so that both scripts and
+  the human presenter can demonstrate Leo's minibuffer-based commands as
+  each slide is shown.
+
+
 Overview
 --------
 
@@ -21,6 +47,11 @@ after this plugin executes the node's script.
 calls to convenience methods provided by this plugin. In essence, each
 node's script is the *same as* writer's script. There is no need for a
 separate script that gets laboriously translated to a screencast script.
+
+**Important**: it's much harder to explain this plugin than to use it!
+Before reading further, please look at the example @screencast trees in
+test.leo to see what slides nodes typically contain and to see what
+the screencasts actually do as a result.
 
 Screencast nodes
 ----------------
@@ -60,6 +91,12 @@ Right Arrow key executes the script in the next slide node (in outline order).
 The Left Arrow key executes the script in the previous slide node. The Escape
 or Ctrl-G keys terminate any screencast.
 
+**Important**: as discussed below, screencasts can activate the minibuffer
+or execute commands such as the Find command *while showing a screencast*.
+In other words, the presenter can move from slide to slide while the Find
+command is prompting for input! This requires some behind-the-scenes magic,
+but allows screencast to demo any of Leo's commands "for real".
+
 Screencast scripts
 ------------------
 
@@ -94,22 +131,29 @@ The appearance of captions can be changed using Qt stylesheets.  See below.
 
 **m.head_keys(s,n1=None,n2=None)**
 
+**m.plain_keys(s,n1=None,n2=None,pane='body')**
+
 **m.redraw(p)**
 
-**m.single_key(setting)**
+**m.single_key(setting)** generates a key event. Examples::
+    
+   m.single_key('Alt-X') # Activates the minibuffer
+   m.single_key('Ctrl-F') # Activates Leo's Find command
+   
+**Important**: the SCC allows key handling in key-states *during*
+the execution of a screencast.  For example::
+    
+    m.single_key('Alt-X')
+    m.plain_keys('ins\tno\t\n')
+    
+actually executes the insert-node command!
 
-the arg to m.ctrl_key can be anything that would be a valid key setting.
-  So the following are all equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc.
-  But "ctrl-F" is different from "ctrl-shift-f".
+**Note**: the 'setting' arg can be anything that would be a valid key
+setting. The following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc.,
+but "ctrl-F" is different from "ctrl-shift-f".
 
-**m.quit** ends the screencast.  By definition, the last slide of screencast *is* the
-first non-ignored screencast node that calls m.quit.
-
-**m.wait(n=1,high=0,force=False)**
-
-Stylesheets
------------
-
+**m.quit** ends the screencast. By definition, the last slide of screencast
+is the first non-ignored screencast node that calls m.quit.
 
 Node order vs. selection order
 -------------------------------
@@ -121,8 +165,11 @@ Screencast nodes are usually invisible.
 - the arg to m.ctrl_key can be anything that would be a valid key setting.
   So the following are all equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc.
   But "ctrl-F" is different from "ctrl-shift-f".
+  
+Stylesheets
+-----------
 
-- 
+
 '''
 #@-<< docstring >>
 #@+<< imports >>
@@ -180,7 +227,6 @@ class ScreenCastController:
         self.quit_flag = False # True if m.quit has been called.
         self.k_state = g.bunch(kind=None,n=None,handler=None) # Saved k.state.
         self.key_w = None # Saved widget for passed-along key handling.
-        self.manual = True # True: transition manually between scenes.
         self.n1 = 0.02 # default minimal typing delay.
         self.n2 = 0.175 # default maximum typing delay.
         self.p1 = None # The first slide of the show.
@@ -233,8 +279,9 @@ class ScreenCastController:
         '''
         
         m = self ; c = m.c
-        if n1 is None: n1 = m.n1
-        if n2 is None: n2 = m.n2
+        if n1 is None: n1 = 0.02
+        if n2 is None: n2 = 0.095
+        
         m.key_w = m.pane_widget('body')
         c.bodyWantsFocusNow()
         p = c.p
@@ -244,7 +291,7 @@ class ScreenCastController:
         for ch in s:
             p.b = p.b + ch
             w.repaint()
-            m.wait(n1,n2,force=True)
+            m.wait(n1,n2)
         c.redraw()
     #@+node:ekr.20120914133947.10578: *4* caption and abbreviations: body, log, tree
     def caption (self,s,pane): # To do: center option.
@@ -360,8 +407,8 @@ class ScreenCastController:
         
         m = self ; c = m.c ; p = c.p ; undoType = 'Typing'
         oldHead = p.h ; tree = c.frame.tree
-        if n1 is None: n1 = m.n1
-        if n2 is None: n2 = m.n2
+        if n1 is None: n1 = 0.02
+        if n2 is None: n2 = 0.095
         p.h=''
         c.editHeadline()
         w = tree.edit_widget(p)
@@ -377,7 +424,7 @@ class ScreenCastController:
             for ch in s:
                 p.h = p.h + ch
                 tree.repaint() # *not* tree.update.
-                m.wait(n1,n2,force=True)
+                m.wait(n1,n2)
                 event = m.get_key_event(ch,w)
                 c.k.masterKeyHandler(event)
         finally:
@@ -431,6 +478,14 @@ class ScreenCastController:
         
         if not end:
             m.wait(1)
+    #@+node:ekr.20120921064434.10605: *4* open_menu
+    def open_menu (self,menu_name):
+        
+        '''Activate the indicated *top-level* menu.'''
+        
+        m = self
+        
+        m.c.frame.menu.activateMenu(menu_name)
     #@+node:ekr.20120916062255.10590: *4* plain_keys
     def plain_keys(self,s,n1=None,n2=None,pane='body'):
         
@@ -446,6 +501,12 @@ class ScreenCastController:
         '''Terminate the slide show.'''
         
         m = self ; c = m.c ; k = c.k
+        
+        if m.quit_flag:
+            return
+        if not m.p1:
+            return
+        
         print('end slide show: %s' % (m.p1.h))
         g.es('end slide show',color='red')
         m.delete_widgets()
@@ -453,8 +514,6 @@ class ScreenCastController:
         m.clear_state()
         m.quit_flag = True
         c.bodyWantsFocus()
-        # m.p1.contract()
-        # c.redraw_now(m.p1)
     #@+node:ekr.20120918103526.10594: *4* redraw
     def redraw(self,p=None):
         
@@ -493,8 +552,9 @@ class ScreenCastController:
         
         w =  w or m.pane_widget(pane or 'body')
         force = n1 is not None or n2 is not None
-        if force and n1 is None: n1 = m.n1
-        if force and n2 is None: n2 = m.n2
+        if force and n1 is None: n1 = 0.02
+        if force and n2 is None: n2 = 0.095
+
         try:
             if m.k_state.kind:
                 old_state_kind = m.k_state.kind
@@ -503,7 +563,7 @@ class ScreenCastController:
                 old_state_kind = None
                 k.clearState()
             w.repaint() # *not* tree.update.
-            m.wait(n1,n2,force=force)
+            m.wait(n1,n2)
             event = m.get_key_event(ch,w)
             k.masterKeyHandler(event)
         finally:
@@ -513,18 +573,19 @@ class ScreenCastController:
             # Important: do *not* re-enable m.state_handler here.
             # This should be done *only* in m.next.
     #@+node:ekr.20120913110135.10587: *4* wait
-    def wait(self,n=1,high=0,force=False):
+    def wait(self,n1=1,n2=0):
         
-        '''Wait for an interval between n and high.
-        Do nothing if in manual mode unless force is True.'''
+        '''Wait for an interval between n1 and n2.'''
         
         m = self
         
-        if m.manual and not force:
-            return
+        if n1 is None: n1 = 0
+        if n2 is None: n2 = 0
 
-        if n > 0 and high > 0:
-            n = random.uniform(n,n+high)
+        if n1 > 0 and n2 > 0:
+            n = random.uniform(n1,n2)
+        else:
+            n = n1
 
         if n > 0:
             n = n * m.speed
@@ -615,7 +676,7 @@ class ScreenCastController:
                 if trace: g.trace('no undo: restart: %s' % (m.p and m.p.h))
                 m.start(m.p1)
     #@+node:ekr.20120914074855.10720: *4* start
-    def start (self,p,manual=True):
+    def start (self,p):
         
         '''Start a screencast whose root node is p.
         
@@ -630,9 +691,6 @@ class ScreenCastController:
         k.keyboardQuit()
         
         # Set ivars
-        m.manual=manual
-        m.n1 = 0.02 # default minimal typing delay.
-        m.n2 = 0.175 # default maximum typing delay.
         m.p1 = p.copy()
         m.p = p.copy()
         m.quit_flag = False

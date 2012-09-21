@@ -5677,20 +5677,31 @@ class leoQtMenu (leoMenu.leoMenu):
             if s == realName:
                 action.setText(realLabel)
                 break
-    #@+node:ekr.20110605121601.18361: *4* Activate menu commands
+    #@+node:ekr.20110605121601.18361: *4* leoQtMenu.activateMenu
     def activateMenu (self,menuName):
 
         '''Activate the menu with the given name'''
-
+        
         c = self.c
         menu = self.getMenu(menuName)
-        # g.trace(menuName,menu)
         if menu:
-            top = c.frame.top.leo_ui
-            pos = menu.pos() # Doesn't do any good.
-            r = top.geometry()
-            pt = QtCore.QPoint(r.x()+pos.x(),r.y())
-            menu.exec_(pt)
+            menubar = c.frame.top.leo_menubar
+            # Important: self is a leoQtMenu, **not** an instance of QMenu.
+            # Find the qtMenuWrapper (a subclass of both QMenu and leoQtMenu).
+            for child in menubar.children():
+                if (
+                    hasattr(child,'leo_menu_label') and
+                    child.leo_menu_label.lower() == menuName.lower()
+                ):
+                    action = child.menuAction()
+                    if action:
+                        menubar.setActiveAction(action)
+                    else:
+                        g.trace('can not happen: no action for menu %s = %s' % (
+                            menuName,child))
+                    return
+           
+        g.trace('No such top-level menu: %s' % (menuName))
     #@+node:ekr.20110605121601.18362: *4* getMacHelpMenu
     def getMacHelpMenu (self,table):
 
@@ -7114,6 +7125,11 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
 
         assert c
         assert frame
+
+        if parent is None:
+            parent = c.frame.top.menuBar()
+            
+        # g.trace('(qtMenuWrapper) label: %s parent: %s' % (label,parent))
         
         QtGui.QMenu.__init__(self,parent)
         leoQtMenu.__init__(self,frame,label)
@@ -7136,6 +7152,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
     def onAboutToShow(self,*args,**keys):
         
+        # g.trace(self,args,keys)
         trace = False and not g.unitTesting ; verbose = True
         name = self.leo_menu_label
         if not name: return
