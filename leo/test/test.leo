@@ -663,99 +663,6 @@
 <v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
 <v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
 </v>
-<v t="ekr.20120918170946.2996"><vh>To do</vh>
-<v t="ekr.20120913105857.2914"><vh>From quickstart</vh>
-<v t="ekr.20120913105857.2915"><vh>Welcome to Leo!</vh></v>
-<v t="ekr.20120913105857.2916"><vh>Tree manipulation basics</vh></v>
-<v t="ekr.20120913105857.2917"><vh>Programming</vh>
-<v t="ekr.20120913105857.2918"><vh>External files</vh>
-<v t="ekr.20120913105857.2919"><vh>Thin nodes (explanation &amp; exercise)</vh>
-<v t="ekr.20120913105857.2920"><vh>@path ~</vh>
-<v t="ekr.20120913105857.2921"><vh>@@thin myfile_thin.py</vh>
-<v t="ekr.20120913105857.2922"><vh>imports &amp; setup routines</vh>
-<v t="ekr.20120913105857.2923"><vh>imports</vh></v>
-<v t="ekr.20120913105857.2924"><vh>init1, init2</vh></v>
-</v>
-<v t="ekr.20120913105857.2925"><vh>class Foo</vh>
-<v t="ekr.20120913105857.2926"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20120913105857.2927"><vh>spam</vh></v>
-<v t="ekr.20120913105857.2928"><vh>eggs</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20120913105857.2929"><vh>Auto nodes</vh>
-<v t="ekr.20120913105857.2930"><vh>@path ~</vh>
-<v t="ekr.20120913105857.2931"><vh>@@auto myfile_auto.py</vh>
-<v t="ekr.20120913105857.2932"><vh>imports &amp; setup routines</vh>
-<v t="ekr.20120913105857.2933"><vh>imports</vh></v>
-<v t="ekr.20120913105857.2934"><vh>init1, init2</vh></v>
-</v>
-<v t="ekr.20120913105857.2935"><vh>class Foo</vh>
-<v t="ekr.20120913105857.2936"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20120913105857.2937"><vh>spam</vh></v>
-<v t="ekr.20120913105857.2938"><vh>eggs</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20120913105857.2939"><vh>Shadow nodes</vh>
-<v t="ekr.20120913105857.2940"><vh>@path ~</vh>
-<v t="ekr.20120913105857.2941"><vh>@@shadow myfile_shadow.py</vh>
-<v t="ekr.20120913105857.2942"><vh>imports &amp; setup routines</vh>
-<v t="ekr.20120913105857.2943"><vh>imports</vh></v>
-<v t="ekr.20120913105857.2944"><vh>init1, init2</vh></v>
-</v>
-<v t="ekr.20120913105857.2945"><vh>class Foo</vh>
-<v t="ekr.20120913105857.2946"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20120913105857.2947"><vh>spam</vh></v>
-<v t="ekr.20120913105857.2948"><vh>eggs</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20120913105857.2949"><vh>reStructuredText (@auto-rst)</vh>
-<v t="ekr.20120913105857.2950"><vh>@path ~</vh>
-<v t="ekr.20120913105857.2951"><vh>@@auto-rst myfile_rst.txt</vh>
-<v t="ekr.20120913105857.2952"><vh>Main heading</vh>
-<v t="ekr.20120913105857.2953"><vh>subheading 1</vh></v>
-<v t="ekr.20120913105857.2954"><vh>subheading 2</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20120913105857.2955"><vh>Configuration (enabling plugins etc.)</vh>
-<v t="ekr.20120913105857.2956"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ekr.20120913105857.2957"><vh>@@settings</vh>
-<v t="ekr.20120913105857.2958"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20120913105857.2959"><vh>@@string initial_split_orientation = horizontal</vh></v>
-<v t="ekr.20120913105857.2960"><vh>suggested style sheets</vh>
-<v t="ekr.20120913105857.2961"><vh>default look (Linux)</vh>
-<v t="ekr.20120913105857.2962"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ekr.20120913105857.2963"><vh>A mac look</vh>
-<v t="ekr.20120913105857.2964"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-</v>
-<v t="ekr.20120913105857.2965"><vh>@int qt_max_colorized_chars = 200000</vh></v>
-<v t="ekr.20120913105857.2966"><vh>@data contextmenu_commands</vh></v>
-<v t="ekr.20120913105857.2967"><vh>@bool use_body_focus_border = False</vh></v>
-</v>
-</v>
-<v t="ekr.20120913105857.2968"><vh>Search and replace</vh></v>
-<v t="ekr.20120913105857.2969"><vh>Minibuffer</vh></v>
-<v t="ekr.20120913105857.2970"><vh>Scripting Leo</vh>
-<v t="ekr.20120913105857.2971"><vh>Executing scripts with ctrl+b</vh>
-<v t="ekr.20120913105857.2972"><vh>Press ctrl+b here</vh></v>
-</v>
-<v t="ekr.20120913105857.2973"><vh>Creating script buttons</vh>
-<v t="ekr.20120913105857.2974"><vh>@button example-btn</vh></v>
-</v>
-</v>
-</v>
-</v>
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
 <v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
 <v t="ekr.20120918123030.2960"><vh>Intro</vh></v>
@@ -875,6 +782,97 @@
 <v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
 <v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
 <v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
+</v>
+<v t="ekr.20120913105857.2914"><vh>From quickstart</vh>
+<v t="ekr.20120913105857.2915"><vh>Welcome to Leo!</vh></v>
+<v t="ekr.20120913105857.2916"><vh>Tree manipulation basics</vh></v>
+<v t="ekr.20120913105857.2917"><vh>Programming</vh>
+<v t="ekr.20120913105857.2918"><vh>External files</vh>
+<v t="ekr.20120913105857.2919"><vh>Thin nodes (explanation &amp; exercise)</vh>
+<v t="ekr.20120913105857.2920"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2921"><vh>@@thin myfile_thin.py</vh>
+<v t="ekr.20120913105857.2922"><vh>imports &amp; setup routines</vh>
+<v t="ekr.20120913105857.2923"><vh>imports</vh></v>
+<v t="ekr.20120913105857.2924"><vh>init1, init2</vh></v>
+</v>
+<v t="ekr.20120913105857.2925"><vh>class Foo</vh>
+<v t="ekr.20120913105857.2926"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120913105857.2927"><vh>spam</vh></v>
+<v t="ekr.20120913105857.2928"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2929"><vh>Auto nodes</vh>
+<v t="ekr.20120913105857.2930"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2931"><vh>@@auto myfile_auto.py</vh>
+<v t="ekr.20120913105857.2932"><vh>imports &amp; setup routines</vh>
+<v t="ekr.20120913105857.2933"><vh>imports</vh></v>
+<v t="ekr.20120913105857.2934"><vh>init1, init2</vh></v>
+</v>
+<v t="ekr.20120913105857.2935"><vh>class Foo</vh>
+<v t="ekr.20120913105857.2936"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120913105857.2937"><vh>spam</vh></v>
+<v t="ekr.20120913105857.2938"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2939"><vh>Shadow nodes</vh>
+<v t="ekr.20120913105857.2940"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2941"><vh>@@shadow myfile_shadow.py</vh>
+<v t="ekr.20120913105857.2942"><vh>imports &amp; setup routines</vh>
+<v t="ekr.20120913105857.2943"><vh>imports</vh></v>
+<v t="ekr.20120913105857.2944"><vh>init1, init2</vh></v>
+</v>
+<v t="ekr.20120913105857.2945"><vh>class Foo</vh>
+<v t="ekr.20120913105857.2946"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120913105857.2947"><vh>spam</vh></v>
+<v t="ekr.20120913105857.2948"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2949"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ekr.20120913105857.2950"><vh>@path ~</vh>
+<v t="ekr.20120913105857.2951"><vh>@@auto-rst myfile_rst.txt</vh>
+<v t="ekr.20120913105857.2952"><vh>Main heading</vh>
+<v t="ekr.20120913105857.2953"><vh>subheading 1</vh></v>
+<v t="ekr.20120913105857.2954"><vh>subheading 2</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20120913105857.2955"><vh>Configuration (enabling plugins etc.)</vh>
+<v t="ekr.20120913105857.2956"><vh>Find out your ~/.leo directory (script)</vh></v>
+<v t="ekr.20120913105857.2957"><vh>@@settings</vh>
+<v t="ekr.20120913105857.2958"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20120913105857.2959"><vh>@@string initial_split_orientation = horizontal</vh></v>
+<v t="ekr.20120913105857.2960"><vh>suggested style sheets</vh>
+<v t="ekr.20120913105857.2961"><vh>default look (Linux)</vh>
+<v t="ekr.20120913105857.2962"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ekr.20120913105857.2963"><vh>A mac look</vh>
+<v t="ekr.20120913105857.2964"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+</v>
+<v t="ekr.20120913105857.2965"><vh>@int qt_max_colorized_chars = 200000</vh></v>
+<v t="ekr.20120913105857.2966"><vh>@data contextmenu_commands</vh></v>
+<v t="ekr.20120913105857.2967"><vh>@bool use_body_focus_border = False</vh></v>
+</v>
+</v>
+<v t="ekr.20120913105857.2968"><vh>Search and replace</vh></v>
+<v t="ekr.20120913105857.2969"><vh>Minibuffer</vh></v>
+<v t="ekr.20120913105857.2970"><vh>Scripting Leo</vh>
+<v t="ekr.20120913105857.2971"><vh>Executing scripts with ctrl+b</vh>
+<v t="ekr.20120913105857.2972"><vh>Press ctrl+b here</vh></v>
+</v>
+<v t="ekr.20120913105857.2973"><vh>Creating script buttons</vh>
+<v t="ekr.20120913105857.2974"><vh>@button example-btn</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20120921072549.3028"><vh>@screencast menus</vh>
 <v t="ekr.20120921072549.3029"><vh>Cmds menu</vh></v>
@@ -1179,7 +1177,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="16,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="16"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9894,7 +9892,6 @@ m.redraw(m.p)
 m.image('tree','box00.GIF',center=True,height=100)
 m.redraw(m.p)</t>
 <t tx="ekr.20120918170946.2994"></t>
-<t tx="ekr.20120918170946.2996"></t>
 <t tx="ekr.20120918170946.2997">m.log('Several methods deal with key handling.')
 m.redraw(m.p)</t>
 <t tx="ekr.20120918170946.2998">m.log('m.head_keys simulates typing in a headline')
@@ -9944,6 +9941,7 @@ m.redraw(m.p)</t>
 <t tx="ekr.20120918174346.3028"></t>
 <t tx="ekr.20120918174346.3029"></t>
 <t tx="ekr.20120921072549.3028"></t>
-<t tx="ekr.20120921072549.3029">m.open_menu('Cmds')</t>
+<t tx="ekr.20120921072549.3029">m.open_menu('CursorBack') # Cmds:Buffers:Cursor-Back
+</t>
 </tnodes>
 </leo_file>

@@ -5441,7 +5441,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         Adds a submenu to the parent menu, or the menubar."""
         
-        # menu and parent are a qtMenuWrappers.
+        # menu and parent are a qtMenuWrappers, subclasses of  QMenu.
         c = self.c ; leoFrame = c.frame
         n = underline
         if -1 < n < len(label):
@@ -5560,8 +5560,6 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter insert_cascade menu method."""
 
-        # g.trace(label,menu)
-
         menu.setTitle(label)
         
         label.replace('&','').lower()
@@ -5677,31 +5675,37 @@ class leoQtMenu (leoMenu.leoMenu):
             if s == realName:
                 action.setText(realLabel)
                 break
-    #@+node:ekr.20110605121601.18361: *4* leoQtMenu.activateMenu
+    #@+node:ekr.20110605121601.18361: *4* leoQtMenu.activateMenu & helper
     def activateMenu (self,menuName):
 
         '''Activate the menu with the given name'''
         
         c = self.c
         menu = self.getMenu(menuName)
+            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
+        
         if menu:
-            menubar = c.frame.top.leo_menubar
-            # Important: self is a leoQtMenu, **not** an instance of QMenu.
-            # Find the qtMenuWrapper (a subclass of both QMenu and leoQtMenu).
-            for child in menubar.children():
-                if (
-                    hasattr(child,'leo_menu_label') and
-                    child.leo_menu_label.lower() == menuName.lower()
-                ):
-                    action = child.menuAction()
-                    if action:
-                        menubar.setActiveAction(action)
-                    else:
-                        g.trace('can not happen: no action for menu %s = %s' % (
-                            menuName,child))
-                    return
-           
-        g.trace('No such top-level menu: %s' % (menuName))
+            self.activateAllParentMenus(menu)
+        else:       
+            g.trace('No such menu: %s' % (menuName))
+    #@+node:ekr.20120922041923.10607: *5* activateAllParentMenus
+    def activateAllParentMenus (self,menu):
+        
+        '''menu is a qtMenuWrapper.  Activate it and all parent menus.'''
+        
+        parent = menu.parent()
+        action = menu.menuAction()
+
+        if action:
+            if parent and isinstance(parent,QtGui.QMenuBar):
+                parent.setActiveAction(action)
+            elif parent:
+                self.activateAllParentMenus(parent)
+                parent.setActiveAction(action)
+            else:
+                g.trace('can not happen: no parent for %s' % (menu))
+        else:
+            g.trace('can not happen: no action for %s' % (menu))
     #@+node:ekr.20110605121601.18362: *4* getMacHelpMenu
     def getMacHelpMenu (self,table):
 

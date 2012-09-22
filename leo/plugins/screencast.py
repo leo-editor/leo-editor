@@ -8,6 +8,59 @@
 The screencast plugin
 #####################
 
+The Story of this Plugin
+------------------------
+
+I created the screencast plugin as a tool for people wanting to demonstrate
+Leo to others. I wanted an *easy* way for people to prepackage an talk so
+that they could plan an *automated* talk in detail ahead of time. We can
+think of a talk as a series of slides *created by Leo itself*. Each slide
+is simply Leo as it appears at a particular time. When giving the talk, the
+presenter moves from one slide to the next by hitting the RtArrow (Right
+Arrow) key. The presenter may also back up from the present slide to the
+previous slide using the LtArrow (Left Arrow) key.
+
+It's surprisingly easy to do this in Leo. The first idea is that Leo
+scripts should create each slide. It was immediately obvious that Leo
+scripts would be the only easy way to change Leo's appearance. A
+demonstration will consist of a large number of slides, so we will need a
+correspondingly large number of scripts. Again, it was immediately obvious
+that the scripts should be stored in a tree of Leo nodes, one script per
+node. Let us call this tree of scripts the **controlling tree**. Normally
+the controlling tree will be hidden from view during the presentation.
+
+The scripts contained the controlling tree are normal Leo scripts, but they
+have access to some capabilities provided by this plugin, so let us call
+them **screencast scripts**. In particular, screencast scripts should be
+able to draw attention to various parts of the tree. This plugin gives
+scripts two ways of doing so: scaled images and captions. An **image** is
+an image (from an external file) that is shown overlaying part of Leo's
+screen. For example, a screencast could discuss Leo's icon box by shown
+greatly magnified images of various kinds of icon box. Similarly a
+**caption** is text that overlays part of the screen. By default, captions
+have a bright yellow background so that they clearly stand out from the
+normal appearance of Leo's screen.
+
+To recap: the presenter moves from slide to slide using the RtArrow key.
+This key causes the script in the next node of the controlling tree to be
+executed. The script alters the screen, say by selecting inserting,
+deleting, expanding and contracting nodes, or by inserting, deleting or
+changing headline or body text. The script will typically also show
+graphics or captions to highlight what the slide is supposed to be showing.
+
+Some surprisingly simple infrastructure is needed to make this scheme work.
+An object called the ScreenCastController (SCC) provides this
+infrastructure. When the screencast plugin is active, it injects a SCC into
+the Commander for each Leo outline. The SCC handles the behind-the-scenes
+details of handling the RtArrow and LtArrow keys, that is, of executing
+each screencast script. Each script executes with 'c', 'g', and 'p' defined
+as usual. However, the SCC *also* defines an 'm' variable, which is bound
+to the SCC itself. Thus, screencast scripts have complete access to the SCC
+itself. The SCC provides convenience methods for drawing graphics and
+captions. Other convenience methods allow simple **animations**, which
+simulate typing in headline or body text.
+
+
 Executive Summary
 -----------------
 
