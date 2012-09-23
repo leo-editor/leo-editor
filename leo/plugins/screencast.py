@@ -266,6 +266,26 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if c:
         c.screencast_controller = ScreenCastController(c)
+#@+node:ekr.20120922041923.10608: ** commands
+#@+node:ekr.20120922041923.10609: *3* @g.command('screencast-start')
+@g.command('screencast-start')
+def screencast_start(event):
+    c = event.get('c')
+    g.trace(c, c and c.p.h)
+    if c:
+        c.screenCastController.start(c.p)
+#@+node:ekr.20120922041923.10610: *3* @g.command('screencast-back')
+@g.command('screencast-back')
+def screencast_back(event):
+    c = event.get('c')
+    g.trace(c)
+#@+node:ekr.20120922041923.10611: *3* @g.command('screencast-next')
+@g.command('screencast-next')
+def screencast_next(event):
+    c = event.get('c')
+    g.trace(c)
+    if c:
+        c.screenCastController.next()
 #@+node:ekr.20120913110135.10607: ** class ScreenCastController
 class ScreenCastController:
     
@@ -399,6 +419,18 @@ class ScreenCastController:
 
         c.redraw_now()
         m.repaint('all')
+    #@+node:ekr.20120922041923.10612: *4* dismiss_menu_bar
+    def dismiss_menu_bar (self):
+        
+        m = self ; c = m.c
+        
+        # c.frame.menu.deactivateMenuBar()
+        
+        g.trace()
+        
+        menubar = c.frame.top.leo_menubar
+        menubar.setActiveAction(None)
+        menubar.repaint()
     #@+node:ekr.20120915091327.13816: *4* find_screencast & helpers
     def find_screencast(self,p):
         
@@ -536,9 +568,30 @@ class ScreenCastController:
         
         '''Activate the indicated *top-level* menu.'''
         
-        m = self
+        m = self ; c = m.c
         
-        m.c.frame.menu.activateMenu(menu_name)
+        menu = c.frame.menu.getMenu(menu_name)
+            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
+
+        if menu:
+            c.frame.menu.activateMenu(menu_name)
+            # g.trace(menu.signalsBlocked())
+                
+            if 0: # None of this works.
+                g.trace('repaint',c.frame.top)
+                c.frame.top.repaint()
+                g.trace('repaint',menu)
+                menu.repaint()
+                parent = menu.parent()
+                while parent:
+                    g.trace('repaint',parent)
+                    parent.repaint()
+                    if isinstance(parent,QtGui.QMenuBar):
+                        break
+                    else:
+                        parent = parent.parent()
+           
+        return menu
     #@+node:ekr.20120916062255.10590: *4* plain_keys
     def plain_keys(self,s,n1=None,n2=None,pane='body'):
         
@@ -560,8 +613,7 @@ class ScreenCastController:
         if not m.p1:
             return
         
-        print('end slide show: %s' % (m.p1.h))
-        g.es('end slide show',color='red')
+        g.es_print('end slide show: %s' % (m.p1.h),color='red')
         m.delete_widgets()
         k.keyboardQuit()
         m.clear_state()
@@ -572,6 +624,24 @@ class ScreenCastController:
         
         m = self
         m.c.redraw_now(p)
+    #@+node:ekr.20120913110135.10585: *4* repaint
+    def repaint(self,pane):
+        
+        '''Repaint the given pane.'''
+
+        m = self
+        w = m.pane_widget(pane)
+        if w:
+            w.repaint()
+        else:
+            g.trace('bad pane: %s' % (pane))
+    #@+node:ekr.20120923063251.10652: *4* select_position
+    def select_position (self,p):
+        
+        m = self
+        assert p
+        m.redraw(p)
+        
     #@+node:ekr.20120913110135.10611: *4* set_log_focus & set_speed
     def set_log_focus(self,val):
         
@@ -662,7 +732,7 @@ class ScreenCastController:
             h = m.p.h.replace('_','').replace('-','')
             if g.match_word(h,0,'@ignorenode'):
                 m.p.moveToThreadNext()
-            elif g.match_word(h,0,'@ignoretree') or g.match_word(h,0,'@ignore'):
+            elif g.match_word(h,0,'@ignoretree') or g.match_word(h,0,'@button'):
                 m.p.moveToNodeAfterTree()
             elif m.p.b.strip():
                 p_next = m.p.threadNext()
@@ -697,13 +767,19 @@ class ScreenCastController:
         trace = False and not g.unitTesting
         m = self ; c = m.c
         if trace: g.trace(p.h,c.p.v)
+        assert p
         assert p.b
         d = {'c':c,'g:':g,'m':m,'p':p}
         tag = 'screencast'
         m.node_stack.append(p)
-        undoData = c.undoer.beforeChangeGroup(c.p,tag,verboseUndoGroup=False)
-        c.executeScript(p=p,namespace=d,useSelectedText=False)
-        c.undoer.afterChangeGroup(c.p,tag,undoData)
+
+        try:
+            undoData = c.undoer.beforeChangeGroup(c.p,tag,verboseUndoGroup=False)
+            c.executeScript(p=p,namespace=d,useSelectedText=False,raiseFlag=True)
+            c.undoer.afterChangeGroup(c.p,tag,undoData)
+        except Exception:
+            g.es_exception()
+            m.quit()
     #@+node:ekr.20120917132841.10609: *4* prev
     def prev (self):
         
@@ -780,8 +856,12 @@ class ScreenCastController:
             k.setLabel(k.mb_prompt)
             k.setState(m.state_name,1,m.state_handler)
             m.next()
-        elif char == 'Escape': # k.masterKeyHandler handles ctrl-g.
-            m.quit()
+        # Only exit on Ctrl-g.
+        # Because of menu handling, it's convenient to have escape go to the next slide.
+        # That way an "extra" escape while dismissing menus will be handled well.
+        elif char == 'Escape':
+            # m.quit()
+            m.next()
         elif char == 'Right':
             m.next()
         elif char == 'Left':
@@ -876,17 +956,6 @@ class ScreenCastController:
         }
 
         return d.get(pane)
-    #@+node:ekr.20120913110135.10585: *4* repaint
-    def repaint(self,pane):
-        
-        '''Repaint the given pane.'''
-
-        m = self
-        w = m.pane_widget(pane)
-        if w:
-            w.repaint()
-        else:
-            g.trace('bad pane: %s' % (pane))
     #@+node:ekr.20120914163440.10582: *4* resolve_icon_fn
     def resolve_icon_fn (self,fn):
         

@@ -242,6 +242,7 @@
 <v t="ekr.20110321213439.2495"><vh>@button update-renderer</vh></v>
 </v>
 </v>
+<v t="ekr.20120923105702.3128"><vh>@button tutorial</vh></v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20111020134534.2594"><vh>@ignore disabled commands</vh>
@@ -307,7 +308,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940"></v>
+<v t="ekr.20120923110028.3130"><vh>Notes</vh>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
@@ -594,22 +595,14 @@
 </v>
 </v>
 <v t="ekr.20101004104134.2347"><vh>Recent</vh>
-<v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
 <v t="ekr.20100821214143.2190"><vh>@@html Leo's home page</vh></v>
-<v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
+<v t="ekr.20120505111317.2735"><vh>Convert Leo outline to/from json</vh>
+<v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
+<v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
+</v>
 <v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
-<v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
-<v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
-<v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
-<v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
-<v t="ekr.20110325142419.2341"><vh>setCompleter</vh></v>
-<v t="ekr.20110325142419.2342"><vh>insertCompletion</vh></v>
-<v t="ekr.20110325142419.2343"><vh>textUnderCursor</vh></v>
-<v t="ekr.20110325144059.2351"><vh>focusInEvent</vh></v>
-<v t="ekr.20110325144059.2352"><vh>keyPressEvent</vh></v>
-</v>
-<v t="ekr.20110325144059.2350"><vh>main</vh></v>
-</v>
+<v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
+<v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
 <v t="ekr.20110525093203.2470"><vh>json stuff</vh>
 <v t="ekr.20110414094917.2423"><vh>@json-outline</vh></v>
 <v t="ekr.20110414094917.2424"><vh>@input-tree</vh>
@@ -622,21 +615,26 @@
 </v>
 </v>
 </v>
-<v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
+<v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
+<v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
+<v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
+<v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
+<v t="ekr.20110325142419.2340"><vh>ctor</vh></v>
+<v t="ekr.20110325142419.2341"><vh>setCompleter</vh></v>
+<v t="ekr.20110325142419.2342"><vh>insertCompletion</vh></v>
+<v t="ekr.20110325142419.2343"><vh>textUnderCursor</vh></v>
+<v t="ekr.20110325144059.2351"><vh>focusInEvent</vh></v>
+<v t="ekr.20110325144059.2352"><vh>keyPressEvent</vh></v>
+</v>
+<v t="ekr.20110325144059.2350"><vh>main</vh></v>
+</v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
-<v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
-<v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
-<v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
-<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
-<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
-<v t="ekr.20110320203616.2493"><vh>@html Leo's home page</vh></v>
-<v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
-<v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
-<v t="ekr.20110322101711.2507"><vh>@svg bubbles sources</vh></v>
-<v t="ekr.20101014040509.2310"><vh>@image splash screen</vh></v>
-<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
-<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
-<v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
+<v t="ekr.20120426175039.2682"><vh>Socket test</vh>
+<v t="ekr.20120426175039.2683"><vh>class Server</vh>
+<v t="ekr.20120426175039.2684"><vh>__init__</vh></v>
+<v t="ekr.20120426175039.2685"><vh>handle_accept</vh></v>
+</v>
+<v t="ekr.20120426175039.2686"><vh>class RequestHandler</vh></v>
 </v>
 <v t="ekr.20120311074029.2727"><vh>URL's</vh>
 <v t="ekr.20120312075951.2740"><vh>@url file://{{c.openDirectory}}/../doc/LeoDocs.leo</vh></v>
@@ -651,18 +649,23 @@
 <v t="ekr.20120311074029.2736"><vh>@url file://c:/users/edreamleo/ekr.html</vh></v>
 <v t="ekr.20120320072350.2731"><vh>@url ../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
 </v>
+<v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
+<v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
+<v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
+<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
+<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
+<v t="ekr.20110320203616.2493"><vh>@html Leo's home page</vh></v>
+<v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
+<v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
+<v t="ekr.20110322101711.2507"><vh>@svg bubbles sources</vh></v>
+<v t="ekr.20101014040509.2310"><vh>@image splash screen</vh></v>
+<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
+<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
+<v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
-<v t="ekr.20120426175039.2682"><vh>Socket test</vh>
-<v t="ekr.20120426175039.2683"><vh>class Server</vh>
-<v t="ekr.20120426175039.2684"><vh>__init__</vh></v>
-<v t="ekr.20120426175039.2685"><vh>handle_accept</vh></v>
 </v>
-<v t="ekr.20120426175039.2686"><vh>class RequestHandler</vh></v>
 </v>
-<v t="ekr.20120505111317.2735"><vh>Convert Leo outline to/from json</vh>
-<v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
-<v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
-</v>
+<v t="ekr.20120923110028.3131"><vh>Screencasts</vh>
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
 <v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
 <v t="ekr.20120918123030.2960"><vh>Intro</vh></v>
@@ -724,6 +727,73 @@
 <v t="ekr.20120916063628.2913"><vh>cleanup and quit</vh></v>
 <v t="ekr.20120916184021.2918"><vh>spam</vh></v>
 </v>
+<v t="ekr.20120918103721.2944"><vh>@ignore-tree Text nodes</vh>
+<v t="ekr.20120918144251.2965"><vh>@text Intro</vh></v>
+<v t="ekr.20120918144251.2964"><vh>@text</vh></v>
+<v t="ekr.20120918143835.2964"><vh>@text</vh></v>
+<v t="ekr.20120918113531.2956"><vh>@text Intro</vh></v>
+<v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
+<v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
+<v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
+</v>
+<v t="ekr.20120921072549.3028"><vh>@screencast menus</vh>
+<v t="ekr.20120922191243.3126"><vh>@ignore-node comments</vh></v>
+<v t="ekr.20120922123519.3032"><vh>file</vh>
+<v t="ekr.20120922123519.3037"><vh>openwith</vh></v>
+<v t="ekr.20120922123519.3033"><vh>recentfiles</vh></v>
+<v t="ekr.20120922123519.3034"><vh>read/write</vh></v>
+<v t="ekr.20120922123519.3035"><vh>export</vh></v>
+</v>
+<v t="ekr.20120922123519.3038"><vh>edit</vh>
+<v t="ekr.20120922123519.3039"><vh>edit-body</vh></v>
+<v t="ekr.20120922123519.3040"><vh>edit-headline</vh></v>
+<v t="ekr.20120922123519.3041"><vh>find</vh></v>
+</v>
+<v t="ekr.20120922124750.3050"><vh>outline</vh>
+<v t="ekr.20120922124750.3051"><vh>check</vh></v>
+<v t="ekr.20120922124750.3052"><vh>expand/contract</vh></v>
+<v t="ekr.20120922124750.3053"><vh>move</vh></v>
+<v t="ekr.20120922124750.3054"><vh>mark</vh></v>
+<v t="ekr.20120922124750.3055"><vh>goto</vh></v>
+</v>
+<v t="ekr.20120922124750.3058"><vh>plugins</vh>
+<v t="ekr.20120922124750.3059"><vh>core</vh></v>
+</v>
+<v t="ekr.20120922124750.3057"><vh>cmds</vh>
+<v t="ekr.20120922124750.3063"><vh>abbrev</vh></v>
+<v t="ekr.20120922124750.3064"><vh>bodyeditors</vh></v>
+<v t="ekr.20120922124750.3065"><vh>buffers</vh></v>
+<v t="ekr.20120922124750.3066"><vh>chapters</vh></v>
+<v t="ekr.20120922124750.3067"><vh>cursorselection</vh>
+<v t="ekr.20120922124750.3068"><vh>cursorback</vh></v>
+<v t="ekr.20120922124750.3069"><vh>cursorbackextendselection</vh></v>
+<v t="ekr.20120922124750.3070"><vh>cursorbackextendto</vh></v>
+<v t="ekr.20120922124750.3071"><vh>cursorforward</vh></v>
+<v t="ekr.20120922124750.3072"><vh>cursorforwardextendselection</vh></v>
+</v>
+<v t="ekr.20120922124750.3073"><vh>debugging</vh></v>
+<v t="ekr.20120922124750.3074"><vh>filesanddirectories</vh></v>
+<v t="ekr.20120922124750.3075"><vh>focus</vh></v>
+<v t="ekr.20120922124750.3076"><vh>icons</vh></v>
+<v t="ekr.20120922124750.3077"><vh>macros</vh></v>
+<v t="ekr.20120922124750.3078"><vh>minibuffer</vh></v>
+<v t="ekr.20120922124750.3079"><vh>pickers</vh></v>
+<v t="ekr.20120922124750.3080"><vh>rectangles</vh></v>
+<v t="ekr.20120922124750.3081"><vh>registers</vh></v>
+<v t="ekr.20120922124750.3082"><vh>rstcommands</vh></v>
+<v t="ekr.20120922124750.3084"><vh>runscripttests</vh></v>
+<v t="ekr.20120922124750.3085"><vh>scrolling</vh></v>
+<v t="ekr.20120922124750.3086"><vh>shell</vh></v>
+<v t="ekr.20120922124750.3087"><vh>spellcheck</vh></v>
+<v t="ekr.20120922124750.3088"><vh>textcommands</vh></v>
+<v t="ekr.20120922124750.3089"><vh>togglesettings</vh></v>
+<v t="ekr.20120922124750.3090"><vh>yankandkill</vh></v>
+</v>
+<v t="ekr.20120922124750.3060"><vh>window</vh></v>
+<v t="ekr.20120922124750.3061"><vh>help</vh>
+<v t="ekr.20120922124750.3062"><vh>helpcommands</vh></v>
+</v>
+</v>
 <v t="ekr.20120917200834.2928"><vh>@screencast How to make screencasts</vh>
 <v t="ekr.20120918170946.2994"><vh>Intro</vh>
 <v t="ekr.20120918164428.2968"><vh>Nodes</vh></v>
@@ -774,18 +844,19 @@
 <v t="ekr.20120918115916.2954"><vh>m.quit</vh></v>
 <v t="ekr.20120918103721.2948"><vh>quit</vh></v>
 </v>
-<v t="ekr.20120918103721.2944"><vh>@ignore-tree Text nodes</vh>
-<v t="ekr.20120918144251.2965"><vh>@text Intro</vh></v>
-<v t="ekr.20120918144251.2964"><vh>@text</vh></v>
-<v t="ekr.20120918143835.2964"><vh>@text</vh></v>
-<v t="ekr.20120918113531.2956"><vh>@text Intro</vh></v>
-<v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
-<v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
-<v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
 </v>
-<v t="ekr.20120913105857.2914"><vh>From quickstart</vh>
-<v t="ekr.20120913105857.2915"><vh>Welcome to Leo!</vh></v>
-<v t="ekr.20120913105857.2916"><vh>Tree manipulation basics</vh></v>
+<v t="ekr.20120913105857.2914"><vh>@screencast Tutorial</vh>
+<v t="ekr.20120923110028.3133"><vh>@ignore-tree completed @text nodes</vh>
+<v t="ekr.20120913105857.2915"><vh>@text Welcome to Leo!</vh></v>
+<v t="ekr.20120913105857.2916"><vh>@text Tree manipulation basics</vh></v>
+</v>
+<v t="ekr.20120923063534.3130"><vh>Intro</vh></v>
+<v t="ekr.20120923110028.3139"><vh>Outlining</vh>
+<v t="ekr.20120923110028.3135"><vh>Expanding a node</vh></v>
+<v t="ekr.20120923115619.3157"><vh>Contracting a node</vh></v>
+</v>
+<v t="ekr.20120923115619.3155"><vh>@ignore-tree not yet</vh>
+<v t="ekr.20120923110028.3134"><vh>newHeadline</vh></v>
 <v t="ekr.20120913105857.2917"><vh>Programming</vh>
 <v t="ekr.20120913105857.2918"><vh>External files</vh>
 <v t="ekr.20120913105857.2919"><vh>Thin nodes (explanation &amp; exercise)</vh>
@@ -874,8 +945,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20120921072549.3028"><vh>@screencast menus</vh>
-<v t="ekr.20120921072549.3029"><vh>Cmds menu</vh></v>
+<v t="ekr.20120923110028.3132"><vh>Last slide</vh></v>
+<v t="ekr.20120923110028.3136"><vh>Example Tree</vh>
+<v t="ekr.20120923110028.3137"><vh>Example outline</vh>
+<v t="ekr.20120923110028.3138"><vh>Node b</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1177,7 +1252,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="16"></t>
+<t tx="ekr.20070416075121" str_leo_pos="3,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9941,7 +10016,149 @@ m.redraw(m.p)</t>
 <t tx="ekr.20120918174346.3028"></t>
 <t tx="ekr.20120918174346.3029"></t>
 <t tx="ekr.20120921072549.3028"></t>
-<t tx="ekr.20120921072549.3029">m.open_menu('CursorBack') # Cmds:Buffers:Cursor-Back
+<t tx="ekr.20120922123519.3032">menu = m.open_menu('file')
 </t>
+<t tx="ekr.20120922123519.3033">m.open_menu('recent-files')</t>
+<t tx="ekr.20120922123519.3034">m.open_menu('read/write')</t>
+<t tx="ekr.20120922123519.3035">m.open_menu('export')</t>
+<t tx="ekr.20120922123519.3037">m.open_menu('openwith')
+</t>
+<t tx="ekr.20120922123519.3038">m.open_menu('edit')</t>
+<t tx="ekr.20120922123519.3039">m.open_menu('edit-body')</t>
+<t tx="ekr.20120922123519.3040">m.open_menu('edit-headline')</t>
+<t tx="ekr.20120922123519.3041">m.open_menu('find')</t>
+<t tx="ekr.20120922124750.3050">m.open_menu('outline')</t>
+<t tx="ekr.20120922124750.3051">m.open_menu('check')</t>
+<t tx="ekr.20120922124750.3052">m.open_menu('expand/contract')</t>
+<t tx="ekr.20120922124750.3053">m.open_menu('move')</t>
+<t tx="ekr.20120922124750.3054">m.open_menu('mark')</t>
+<t tx="ekr.20120922124750.3055">m.open_menu('goto')</t>
+<t tx="ekr.20120922124750.3057">m.open_menu('cmds')
+</t>
+<t tx="ekr.20120922124750.3058">m.open_menu('plugins')</t>
+<t tx="ekr.20120922124750.3059">m.open_menu('core')</t>
+<t tx="ekr.20120922124750.3060">m.open_menu('window')</t>
+<t tx="ekr.20120922124750.3061">m.open_menu('help')</t>
+<t tx="ekr.20120922124750.3062">m.open_menu('helpcommands')</t>
+<t tx="ekr.20120922124750.3063">m.open_menu('abbrev')</t>
+<t tx="ekr.20120922124750.3064">m.open_menu('bodyeditors')</t>
+<t tx="ekr.20120922124750.3065">m.open_menu('buffers')</t>
+<t tx="ekr.20120922124750.3066">m.open_menu('chapters')</t>
+<t tx="ekr.20120922124750.3067">m.open_menu('cursorselection')</t>
+<t tx="ekr.20120922124750.3068">m.open_menu('cursorback')</t>
+<t tx="ekr.20120922124750.3069">m.open_menu('cursorbackextendselection')</t>
+<t tx="ekr.20120922124750.3070">m.open_menu('cursorbackextendto')</t>
+<t tx="ekr.20120922124750.3071">m.open_menu('cursorforward')</t>
+<t tx="ekr.20120922124750.3072">m.open_menu('cursorforwardextendselection')</t>
+<t tx="ekr.20120922124750.3073">m.open_menu('debugging')</t>
+<t tx="ekr.20120922124750.3074">m.open_menu('filesanddirectories')</t>
+<t tx="ekr.20120922124750.3075">m.open_menu('focus')</t>
+<t tx="ekr.20120922124750.3076">m.open_menu('icons')</t>
+<t tx="ekr.20120922124750.3077">m.open_menu('macros')</t>
+<t tx="ekr.20120922124750.3078">m.open_menu('minibuffer')</t>
+<t tx="ekr.20120922124750.3079">m.open_menu('pickers')</t>
+<t tx="ekr.20120922124750.3080">m.open_menu('rectangles')</t>
+<t tx="ekr.20120922124750.3081">m.open_menu('registers')</t>
+<t tx="ekr.20120922124750.3082">m.open_menu('rstcommands')</t>
+<t tx="ekr.20120922124750.3084">m.open_menu('runscripttests')</t>
+<t tx="ekr.20120922124750.3085">m.open_menu('scrolling')</t>
+<t tx="ekr.20120922124750.3086">m.open_menu('shell')</t>
+<t tx="ekr.20120922124750.3087">m.open_menu('spellcheck')</t>
+<t tx="ekr.20120922124750.3088">m.open_menu('textcommands')</t>
+<t tx="ekr.20120922124750.3089">m.open_menu('togglesettings')</t>
+<t tx="ekr.20120922124750.3090">m.open_menu('yankandkill')</t>
+<t tx="ekr.20120922191243.3126">@nocolor-node
+
+At present, opening a menu with m.open_menu "hangs" the screencast until
+the presenter hits &lt;esc&gt; enough times to dismiss the menu.
+
+I'd like to be able to call m.dismiss_menu_bar after waiting, say, 2
+seconds, but the menu won't be shown until after the entire script is
+executed!
+
+For example, the following code does not work. The menu's outline is shown
+after the redraws, but that is all. The calls to repaint have no effect.
+
+    menu = m.open_menu('outline')
+    menu.parent().repaint()
+    menu.raise_()
+    menu.repaint() # Doen't work.
+    m.wait(1)
+    m.dismiss_menu_bar()
+</t>
+<t tx="ekr.20120923063534.3130">p2 = g.findNodeAnywhere(c,'Example Tree')
+p2.contract()
+m.select_position(p2)
+
+m.body(
+    'This is a brief tutorial slideshow showing the basics of Leo.\n'''
+    'The Right Arrow key goes to the next slide.\n'
+    'The Ctrl-G key quits this tutorial.'
+)</t>
+<t tx="ekr.20120923105702.3128">c.screencast_controller.start(
+    g.findNodeAnywhere(c,'@screencast Tutorial'))</t>
+<t tx="ekr.20120923110028.3130"></t>
+<t tx="ekr.20120923110028.3131"></t>
+<t tx="ekr.20120923110028.3132">m.body(
+    'This concludes the slideshow. '
+    'We have merely scratched the surface of what Leo can do.\n'
+)</t>
+<t tx="ekr.20120923110028.3133"></t>
+<t tx="ekr.20120923110028.3134">@
+You can use Leo as fairly typical outliner. Play around with
+some of the commands from the Outline menu:
+
+- Click the expansion box of nodes_ to show and hide their
+  children.
+
+- The ``Insert Node`` command (``Ctrl+I``) inserts a new
+  headline into the outline.
+
+- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a
+  headline and all its children, and copies the structure to
+  clipboard - ready to paste with ``Paste Node`` command
+  (``Ctrl+Shift+V``). Use ``Copy Node`` command
+  (``Ctrl+Shift+C``) to copy node to clipboard without
+  deleting it from outline. Copy-paste command family works
+  across different Leo documents and processes.
+
+- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
+  ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
+  commands move the currently selected node, along with all
+  its descendants.
+
+- The ``Promote`` (``Ctrl+{``) command makes all the
+  children of a headline siblings of the headline. The
+  ``Demote`` (``Ctrl+}``) command makes all following
+  siblings_ of a headline children of the headline.
+
+- Move around the tree and expand/collapse nodes by pressing
+  Alt + arrow keys. This also moves the focus to tree, so,
+  after pressing Alt + arrow, you can move around by using
+  arrow keys alone. Return the focus to the body control by
+  pressing ``Enter``.
+
+- To edit the headline, use press ``Ctrl+H``. This works
+  regardless of whether body or headline has focus.
+
+You enter `body text` for any node by selecting the node's
+headline in the outline pane and then typing in the body
+pane. Leo has a full range of `editing commands` that apply
+to the body pane.
+
+See Leo's documentation for more detailed discussion.</t>
+<t tx="ekr.20120923110028.3135">c.p.expand()
+m.redraw()
+m.body('Clicking the expansion box of a collapsed node shows its children')</t>
+<t tx="ekr.20120923110028.3136"></t>
+<t tx="ekr.20120923110028.3137"></t>
+<t tx="ekr.20120923110028.3138"></t>
+<t tx="ekr.20120923110028.3139">m.body(
+    'The next few slides show how you can use Leo as a fairly typical outliner.'
+)</t>
+<t tx="ekr.20120923115619.3155"></t>
+<t tx="ekr.20120923115619.3157">c.p.contract()
+m.redraw()
+m.body('Clicking the expansion box of an expanded node hides its children')</t>
 </tnodes>
 </leo_file>

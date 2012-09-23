@@ -2172,6 +2172,7 @@ def activateMenu (self,menuName):
         self.activateAllParentMenus(menu)
     else:       
         g.trace('No such menu: %s' % (menuName))
+
 #@+node:ekr.20120922041923.10607: *6* activateAllParentMenus
 def activateAllParentMenus (self,menu):
     

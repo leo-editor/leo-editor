@@ -118,7 +118,7 @@ def getRecentCoreList():
         # 'leoBridge',
         # 'leoCache',
         # 'leoChapters',
-        # 'leoCommands',
+        'leoCommands',
         # 'leoConfig',
         # 'leoEditCommands',
         # 'leoFind',
@@ -147,9 +147,10 @@ def getRecentPluginsList ():
         # 'contextmenu',
         # 'codewisecompleter',
         # 'mod_scripting',
-        'nested_splitter',
+        # 'nested_splitter',
         # 'qtGui',
         # 'plugins_menu',
+        'screencast',
         # 'viewrendered',
     )
 #@+node:ekr.20100221142603.5643: ** getTkPass
