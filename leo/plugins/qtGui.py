@@ -5688,6 +5688,7 @@ class leoQtMenu (leoMenu.leoMenu):
             self.activateAllParentMenus(menu)
         else:       
             g.trace('No such menu: %s' % (menuName))
+
     #@+node:ekr.20120922041923.10607: *5* activateAllParentMenus
     def activateAllParentMenus (self,menu):
         
@@ -5706,6 +5707,16 @@ class leoQtMenu (leoMenu.leoMenu):
                 g.trace('can not happen: no parent for %s' % (menu))
         else:
             g.trace('can not happen: no action for %s' % (menu))
+    #@+node:ekr.20120922041923.10613: *4* leoQtMenu.deactivateMenuBar
+    def deactivateMenuBar (self):
+
+        '''Activate the menu with the given name'''
+        
+        menubar = self.c.frame.top.leo_menubar
+        
+        menubar.setActiveAction(None)
+        menubar.repaint()
+        
     #@+node:ekr.20110605121601.18362: *4* getMacHelpMenu
     def getMacHelpMenu (self,table):
 
@@ -8604,7 +8615,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
         verbose = True
-        traceEvent = False # True: call self.traceEvent.
+        traceEvent = True # True: call self.traceEvent.
         traceKey = (True or g.trace_masterKeyHandler)
         c = self.c ; k = c.k
         eventType = event.type()
