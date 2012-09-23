@@ -2254,7 +2254,7 @@ class Commands (object):
     #@+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
     def executeScript(self,event=None,args=None,p=None,script=None,
         useSelectedText=True,define_g=True,define_name='__main__',silent=False,
-        namespace=None):
+        namespace=None,raiseFlag=False):
 
         """This executes body text as a Python script.
 
@@ -2272,50 +2272,51 @@ class Commands (object):
                 sys.path.insert(0,c.frame.openDirectory)
                 script += '\n' # Make sure we end the script properly.
                 try:
-                    p = c.p
-                    if p: c.setCurrentDirectoryFromContext(p)
-                    d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
-                    if define_name: d['__name__'] = define_name
-                    d['script_args'] = args or []
-                    if namespace: d.update(namespace)
-                    # if args: sys.argv = args
-                    # A kludge: reset c.inCommand here to handle the case where we *never* return.
-                    # (This can happen when there are multiple event loops.)
-                    # This does not prevent zombie windows if the script puts up a dialog...
-                    c.inCommand = False
-                    if c.write_script_file:
-                        scriptFile = self.writeScriptFile(script)
-                        
-                        # 2011/10/31: make g.inScript a synonym for g.app.inScript.
-                        g.inScript = g.app.inScript = True
-                        try:
-                            if g.isPython3:
-                                exec(compile(script,scriptFile,'exec'),d)
-                            else:
-                                execfile(scriptFile,d)
-                        finally:
-                            g.inScript = g.app.inScript = False
-                    else:
-                        g.app.inScript = True
-                        try:
-                            exec(script,d)
-                        finally:
-                            g.app.inScript = False
-                    if 0: # This message switches panes, and can be disruptive.
-                        if not script1 and not silent:
-                            # Careful: the script may have changed the log tab.
-                            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
-                            g.es("end of script",color="purple",tabName=tabName)
+                    c.executeScriptHelper(args,define_g,define_name,namespace,p,script)
                 except Exception:
-                    g.handleScriptException(c,p,script,script1)
-                del sys.path[0]
+                    if raiseFlag:
+                        raise
+                    else:
+                        g.handleScriptException(c,p,script,script1)
+                finally:
+                    del sys.path[0]
             else:
                 tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
                 g.es("no script selected",color="blue",tabName=tabName)
+        
         finally:
             g.app.log = oldLog # 2011/01/19
             self.unredirectScriptOutput()
-    #@+node:ekr.20031218072017.2143: *7* redirectScriptOutput
+    #@+node:ekr.20120923063251.10651: *7* c.executeScriptHelper
+    def executeScriptHelper (self,args,define_g,define_name,namespace,p,script):
+
+        c = self
+        if p:
+            p = p.copy()
+            c.setCurrentDirectoryFromContext(p)
+        d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+        if define_name: d['__name__'] = define_name
+        d['script_args'] = args or []
+        if namespace: d.update(namespace)
+
+        # A kludge: reset c.inCommand here to handle the case where we *never* return.
+        # (This can happen when there are multiple event loops.)
+        # This does not prevent zombie windows if the script puts up a dialog...
+        try:
+            c.inCommand = False
+            g.inScript = g.app.inScript = True
+                # g.inScript is a synonym for g.app.inScript.
+            if c.write_script_file:
+                scriptFile = self.writeScriptFile(script)
+                if g.isPython3:
+                    exec(compile(script,scriptFile,'exec'),d)
+                else:
+                    execfile(scriptFile,d)
+            else:
+                exec(script,d)
+        finally:
+            g.inScript = g.app.inScript = False
+    #@+node:ekr.20031218072017.2143: *7* c.redirectScriptOutput
     def redirectScriptOutput (self):
 
         c = self
@@ -2326,7 +2327,7 @@ class Commands (object):
 
             g.redirectStdout() # Redirect stdout
             g.redirectStderr() # Redirect stderr
-    #@+node:ekr.20110522121957.18230: *7* setCurrentDirectoryFromContext
+    #@+node:ekr.20110522121957.18230: *7* c.setCurrentDirectoryFromContext
     def setCurrentDirectoryFromContext(self,p):
         
         trace = False and not g.unitTesting
@@ -2345,7 +2346,7 @@ class Commands (object):
                 os.chdir(path)
             except Exception:
                 pass
-    #@+node:EKR.20040627100424: *7* unredirectScriptOutput
+    #@+node:EKR.20040627100424: *7* c.unredirectScriptOutput
     def unredirectScriptOutput (self):
 
         c = self
