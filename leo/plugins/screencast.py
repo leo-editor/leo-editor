@@ -110,7 +110,7 @@ SCC passes all other keys to Leo's key-handling code. This allows key
 handling in key-states during the execution of a screencast. For example::
     
     m.single_key('Alt-X')
-    m.plain_keys('ins\tno\t\n')
+    m.plain_keys('ins\\tno\\t\\n')
     
 actually executes the insert-node command!
 
