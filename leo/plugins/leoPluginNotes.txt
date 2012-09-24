@@ -3,5 +3,73 @@
 #@+all
 #@+node:ekr.20120302043834.12029: ** Projects
 #@+node:ekr.20120301114648.9929: *3* Define @command foo and foo as alt-x commands
+#@+node:ekr.20120916193057.10604: ** Unused
+if 0:
+    @others
+#@+node:ekr.20120924071630.10624: *3* From ScreenCastController
+#@+node:ekr.20120915091327.13817: *4* minibuffer_keys
+def minibuffer_keys (self,s,n1=None,n2=None):
+    
+    '''Simulate typing in the minibuffer.
+    n1 and n2 indicate the range of delays between keystrokes.
+    '''
+    
+    m = self ; c = m.c
+
+    w = m.pane_widget('minibuffer')
+    for ch in s:
+        m.single_key(ch,n1=n1,n2=n2,w=w)
+
+    c.redraw_now() # Sets focus.
+    c.widgetWantsFocusNow(c.frame.miniBufferWidget.widget)
+    c.outerUpdate()
+#@+node:ekr.20120913110135.10610: *4* old_log
+def old_log(self,s,begin=False,end=False,image_fn=None,pane='log'):
+    
+    '''Put a message to the log pane, highlight it, and pause.'''
+    
+    m = self
+
+    if not begin:
+        m.wait(1)
+        
+    m.caption(pane,s)
+    m.repaint('all')
+    
+    if not end:
+        m.wait(1)
+#@+node:ekr.20120913110135.10611: *4* set_log_focus & set_speed
+def set_log_focus(self,val):
+    
+    '''Set m.log_focus to the given value.'''
+
+    m = self
+    m.log_focus = bool(val)
+
+def set_speed (self,speed):
+    
+    '''Set m.speed to the given value.'''
+    
+    m = self
+    if speed < 0:
+        g.trace('speed must be >= 0.0')
+    else:
+        m.speed = speed
+#@+node:ekr.20120916062255.10585: *4* set_minibuffer_prefix
+def set_minibuffer_prefix (self,s1,s2):
+    
+    '''Set the simulated minibuffer prefix.'''
+    
+    m = self ; k = m.c.k
+    
+    k.mb_prompt = s1
+    # k.mb_tabList = []
+    k.setLabel(s1+s2)
+#@+node:ekr.20120918103526.10595: *4* show_child_text
+def show_child_text (self):
+    
+    m = self ; c = m.c
+    
+    c.redraw(m.p.threadBack().firstChild())
 #@-all
 #@-leo

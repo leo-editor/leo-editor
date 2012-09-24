@@ -241,8 +241,8 @@
 <v t="ekr.20110321073942.2490"><vh>@button lock-unlock-renderer</vh></v>
 <v t="ekr.20110321213439.2495"><vh>@button update-renderer</vh></v>
 </v>
-</v>
 <v t="ekr.20120923105702.3128"><vh>@button tutorial</vh></v>
+</v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20111020134534.2594"><vh>@ignore disabled commands</vh>
@@ -848,16 +848,9 @@
 <v t="ekr.20120913105857.2914"><vh>@screencast Tutorial</vh>
 <v t="ekr.20120923110028.3133"><vh>@ignore-tree completed @text nodes</vh>
 <v t="ekr.20120913105857.2915"><vh>@text Welcome to Leo!</vh></v>
-<v t="ekr.20120913105857.2916"><vh>@text Tree manipulation basics</vh></v>
 </v>
 <v t="ekr.20120923063534.3130"><vh>Intro</vh></v>
-<v t="ekr.20120923110028.3139"><vh>Outlining</vh>
-<v t="ekr.20120923110028.3135"><vh>Expanding a node</vh></v>
-<v t="ekr.20120923115619.3157"><vh>Contracting a node</vh></v>
-</v>
 <v t="ekr.20120923115619.3155"><vh>@ignore-tree not yet</vh>
-<v t="ekr.20120923110028.3134"><vh>newHeadline</vh></v>
-<v t="ekr.20120913105857.2917"><vh>Programming</vh>
 <v t="ekr.20120913105857.2918"><vh>External files</vh>
 <v t="ekr.20120913105857.2919"><vh>Thin nodes (explanation &amp; exercise)</vh>
 <v t="ekr.20120913105857.2920"><vh>@path ~</vh>
@@ -910,7 +903,6 @@
 <v t="ekr.20120913105857.2952"><vh>Main heading</vh>
 <v t="ekr.20120913105857.2953"><vh>subheading 1</vh></v>
 <v t="ekr.20120913105857.2954"><vh>subheading 2</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -1252,7 +1244,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="3,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8990,49 +8982,6 @@ do. You can begin leveraging Leo for mindmapping-like tasks
 by just reading the node "Tree manipulation basics", and
 moving on to other topics after acquiring some basic
 familiarity. </t>
-<t tx="ekr.20120913105857.2916">You can use Leo as fairly typical outliner. Play around with
-some of the commands from the Outline menu:
-
-- Click the expansion box of nodes_ to show and hide their
-  children.
-
-- The ``Insert Node`` command (``Ctrl+I``) inserts a new
-  headline into the outline.
-
-- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a
-  headline and all its children, and copies the structure to
-  clipboard - ready to paste with ``Paste Node`` command
-  (``Ctrl+Shift+V``). Use ``Copy Node`` command
-  (``Ctrl+Shift+C``) to copy node to clipboard without
-  deleting it from outline. Copy-paste command family works
-  across different Leo documents and processes.
-
-- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
-  ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
-  commands move the currently selected node, along with all
-  its descendants.
-
-- The ``Promote`` (``Ctrl+{``) command makes all the
-  children of a headline siblings of the headline. The
-  ``Demote`` (``Ctrl+}``) command makes all following
-  siblings_ of a headline children of the headline.
-
-- Move around the tree and expand/collapse nodes by pressing
-  Alt + arrow keys. This also moves the focus to tree, so,
-  after pressing Alt + arrow, you can move around by using
-  arrow keys alone. Return the focus to the body control by
-  pressing ``Enter``.
-
-- To edit the headline, use press ``Ctrl+H``. This works
-  regardless of whether body or headline has focus.
-
-You enter `body text` for any node by selecting the node's
-headline in the outline pane and then typing in the body
-pane. Leo has a full range of `editing commands` that apply
-to the body pane.
-
-See Leo's documentation for more detailed discussion.</t>
-<t tx="ekr.20120913105857.2917"></t>
 <t tx="ekr.20120913105857.2918">"External file" means a file that resides on your file
 system. If you are programming, these are the files you
 eventually want to create to get something useful out of
@@ -9687,13 +9636,16 @@ g.es("p.h is " + p.h)</t>
 m = c.screencast_controller
 assert m
 
-# Actually, you can start a screencast anywhere:
-# it continues until the first node that contains a call to m.quit()
-# However, this automatic find feature is a convenience.
-p = m.find_screencast(p)
-assert p
-
-m.start(p)</t>
+if 1:
+    # Start at c.p
+    m.start(c.p)   
+else:
+    # You can start a screencast anywhere:
+    # it continues until the first node that contains a call to m.quit()
+    # However, this automatic find feature is a convenience.
+    p = m.find_screencast(p)
+    assert p
+    m.start(p)</t>
 <t tx="ekr.20120914093811.2825"></t>
 <t tx="ekr.20120914093811.2826"># Create a root node for the examples.
 
@@ -10099,66 +10051,19 @@ m.body(
     g.findNodeAnywhere(c,'@screencast Tutorial'))</t>
 <t tx="ekr.20120923110028.3130"></t>
 <t tx="ekr.20120923110028.3131"></t>
-<t tx="ekr.20120923110028.3132">m.body(
-    'This concludes the slideshow. '
+<t tx="ekr.20120923110028.3132">p2 = g.findNodeAnywhere(c,'Example Tree')
+p3 = g.findNodeInTree(c,p2,'newHeadline')
+if p3:
+    p3.doDelete()
+    m.redraw()
+m.body(
+    'Deleting the inserted node concludes the slideshow. '
     'We have merely scratched the surface of what Leo can do.\n'
 )</t>
 <t tx="ekr.20120923110028.3133"></t>
-<t tx="ekr.20120923110028.3134">@
-You can use Leo as fairly typical outliner. Play around with
-some of the commands from the Outline menu:
-
-- Click the expansion box of nodes_ to show and hide their
-  children.
-
-- The ``Insert Node`` command (``Ctrl+I``) inserts a new
-  headline into the outline.
-
-- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a
-  headline and all its children, and copies the structure to
-  clipboard - ready to paste with ``Paste Node`` command
-  (``Ctrl+Shift+V``). Use ``Copy Node`` command
-  (``Ctrl+Shift+C``) to copy node to clipboard without
-  deleting it from outline. Copy-paste command family works
-  across different Leo documents and processes.
-
-- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
-  ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
-  commands move the currently selected node, along with all
-  its descendants.
-
-- The ``Promote`` (``Ctrl+{``) command makes all the
-  children of a headline siblings of the headline. The
-  ``Demote`` (``Ctrl+}``) command makes all following
-  siblings_ of a headline children of the headline.
-
-- Move around the tree and expand/collapse nodes by pressing
-  Alt + arrow keys. This also moves the focus to tree, so,
-  after pressing Alt + arrow, you can move around by using
-  arrow keys alone. Return the focus to the body control by
-  pressing ``Enter``.
-
-- To edit the headline, use press ``Ctrl+H``. This works
-  regardless of whether body or headline has focus.
-
-You enter `body text` for any node by selecting the node's
-headline in the outline pane and then typing in the body
-pane. Leo has a full range of `editing commands` that apply
-to the body pane.
-
-See Leo's documentation for more detailed discussion.</t>
-<t tx="ekr.20120923110028.3135">c.p.expand()
-m.redraw()
-m.body('Clicking the expansion box of a collapsed node shows its children')</t>
 <t tx="ekr.20120923110028.3136"></t>
 <t tx="ekr.20120923110028.3137"></t>
 <t tx="ekr.20120923110028.3138"></t>
-<t tx="ekr.20120923110028.3139">m.body(
-    'The next few slides show how you can use Leo as a fairly typical outliner.'
-)</t>
 <t tx="ekr.20120923115619.3155"></t>
-<t tx="ekr.20120923115619.3157">c.p.contract()
-m.redraw()
-m.body('Clicking the expansion box of an expanded node hides its children')</t>
 </tnodes>
 </leo_file>

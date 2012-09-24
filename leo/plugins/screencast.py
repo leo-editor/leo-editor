@@ -2,225 +2,218 @@
 #@+node:ekr.20120913110135.10579: * @file screencast.py
 #@+<< docstring >>
 #@+node:ekr.20120913110135.10589: ** << docstring >>
+#@@language rest
+
 '''
 
 #####################
 The screencast plugin
 #####################
 
-The Story of this Plugin
-------------------------
-
-I created the screencast plugin as a tool for people wanting to demonstrate
-Leo to others. I wanted an *easy* way for people to prepackage an talk so
-that they could plan an *automated* talk in detail ahead of time. We can
-think of a talk as a series of slides *created by Leo itself*. Each slide
-is simply Leo as it appears at a particular time. When giving the talk, the
-presenter moves from one slide to the next by hitting the RtArrow (Right
-Arrow) key. The presenter may also back up from the present slide to the
-previous slide using the LtArrow (Left Arrow) key.
-
-It's surprisingly easy to do this in Leo. The first idea is that Leo
-scripts should create each slide. It was immediately obvious that Leo
-scripts would be the only easy way to change Leo's appearance. A
-demonstration will consist of a large number of slides, so we will need a
-correspondingly large number of scripts. Again, it was immediately obvious
-that the scripts should be stored in a tree of Leo nodes, one script per
-node. Let us call this tree of scripts the **controlling tree**. Normally
-the controlling tree will be hidden from view during the presentation.
-
-The scripts contained the controlling tree are normal Leo scripts, but they
-have access to some capabilities provided by this plugin, so let us call
-them **screencast scripts**. In particular, screencast scripts should be
-able to draw attention to various parts of the tree. This plugin gives
-scripts two ways of doing so: scaled images and captions. An **image** is
-an image (from an external file) that is shown overlaying part of Leo's
-screen. For example, a screencast could discuss Leo's icon box by shown
-greatly magnified images of various kinds of icon box. Similarly a
-**caption** is text that overlays part of the screen. By default, captions
-have a bright yellow background so that they clearly stand out from the
-normal appearance of Leo's screen.
-
-To recap: the presenter moves from slide to slide using the RtArrow key.
-This key causes the script in the next node of the controlling tree to be
-executed. The script alters the screen, say by selecting inserting,
-deleting, expanding and contracting nodes, or by inserting, deleting or
-changing headline or body text. The script will typically also show
-graphics or captions to highlight what the slide is supposed to be showing.
-
-Some surprisingly simple infrastructure is needed to make this scheme work.
-An object called the ScreenCastController (SCC) provides this
-infrastructure. When the screencast plugin is active, it injects a SCC into
-the Commander for each Leo outline. The SCC handles the behind-the-scenes
-details of handling the RtArrow and LtArrow keys, that is, of executing
-each screencast script. Each script executes with 'c', 'g', and 'p' defined
-as usual. However, the SCC *also* defines an 'm' variable, which is bound
-to the SCC itself. Thus, screencast scripts have complete access to the SCC
-itself. The SCC provides convenience methods for drawing graphics and
-captions. Other convenience methods allow simple **animations**, which
-simulate typing in headline or body text.
-
-
-Executive Summary
------------------
-
-- Within \@screencast trees, the body text of nodes contain scripts. As
-  usual, nodes without body text are organizer nodes.
-  
-- The 'm' variable in these scripts is a ScreenCastController (SCC).
-
-- The SCC handles keystrokes, executes the script in each node, and
-  provides convenience methods to show key handling, captions and (scaled)
-  graphics.
-  
-- When the human presenter types <Right Arrow>, the SCC executes the script
-  in the next node (in outline order), ignoring \@ignore-node nodes and
-  \@ignore-tree trees.
-  
-- Each slide's appearance is just the appearance of the Leo window after
-  the SCC executes the node's script. However, the SCC shows the body
-  text of each \@text node as it is, rather than treating it as a script.
-
-- A screencast is the sequence of slides shown by the SCC. Within a
-  screencast, the SCC manages keystrokes flexibly so that both scripts and
-  the human presenter can demonstrate Leo's minibuffer-based commands as
-  each slide is shown.
-
-
 Overview
---------
+========
 
-This plugin provides tools for showing **screencasts**, a series of
-**slides** controlled by a human presenter. Nodes represent slides. With a
-few exceptions discussed below, each screencast node contains a script. The
-**appearance** of a slide is simply the appearance of Leo's main window
-after this plugin executes the node's script.
+This plugin is a tool for people wanting to demonstrate Leo or some Leonine
+project to others. Using this plugin, a human demonstrator can prepare an
+automated talk ahead of time. The talk is a series of slides created by Leo
+itself. Each slide is simply Leo as it appears at a particular time. When
+giving the talk, the presenter moves from one slide to the next by hitting
+the RtArrow (Right Arrow) key. The presenter may also back up from the
+present slide to the previous slide using the LtArrow (Left Arrow) key.
 
-**Important**: screencast scripts typically consist of just a few simple
-calls to convenience methods provided by this plugin. In essence, each
-node's script is the *same as* writer's script. There is no need for a
-separate script that gets laboriously translated to a screencast script.
+To create the presentation, the presenter creates an **@screencast** node.
+This node, and all its descendants, is called the **controlling tree**.
+Each node of this tree may contain a script in its body text; each script
+creates a slide. Nodes without scripts can be used as organizer nodes as
+usual. **@ignore-node** nodes and **@ignore-tree** trees are ignored.
+Normally, the controlling tree will be hidden from view during the
+presentation--the presentation will be about *other* parts of the tree.
 
-**Important**: it's much harder to explain this plugin than to use it!
-Before reading further, please look at the example @screencast trees in
-test.leo to see what slides nodes typically contain and to see what
-the screencasts actually do as a result.
+The screencast-start command starts a screencast. This command shows the
+first slide of the nearest \@screencast node. Thereafter, the plugin
+executes the next script in controlling tree when the demonstrator types
+the RtArrow key. These scripts are normal Leo scripts, except that they
+also have access to an "m" variable that denotes a **ScreenCastController**
+(SCC), an object created by this plugin. The term **screencast script**
+denotes a script that has access to the "m" variable.
 
-Screencast nodes
-----------------
+The SCC provides convenience methods that screencast scripts can use to
+draw attention to various parts of Leo's screen. A typical script will
+consist of just one or two of the following calls:
 
-**@screencast nodes** are nodes whose headline start with \@screencast.
-Generally speaking, **@slide nodes** are all the descendants of a
-particular \@screencast node that have non-empty body text.  Exceptions:
-
-- **Organizer nodes** are nodes with empty body text.  Such nodes serve
-  only to organize slide nodes.
+- **m.image(file_name)** overlays a scaled image on Leo's window. For
+  example, a screencast could discuss Leo's icon box by shown greatly
+  magnified images of various kinds of icon box.
   
-- **Ignored nodes** are nodes whose headline start with \@ignore-node or
-  \@ignore-tree. This plugin ignores \@ignore-node and \@ignore-tree nodes,
-  and ignores all nodes contained in \@ignore-tree** trees.
+- **m.body(text)** overlays a caption on Leo's body pane. By default,
+  captions have a bright yellow background so that they clearly stand out
+  from the normal appearance of Leo's screen. Similarly **m.log(text)** and
+  **m.tree(text)** overlay captions on Leo's log and tree panes.
   
-Thus, a slide node is any descendant of an \@screencast node that
+- **m.body_keys(text)** and **m.head_keys(text)** animate typing of text in
+  body text and headlines respectively.
 
-a) contains body text and
+- **m.single_key(key_setting)** allows any key to be handled exactly as if
+  the user had typed the key.
+  
+- **m.open_menu(menu_name)** opens a menu as if the demonstrator had opened it
+  with a mouse click. **m.dismiss_menubar()** closes all open menus.
 
-b) is neither an \@ignore-node node nor an \@gnore-tree node nor any
-   descendant of an \@ignore-tree node.
-   
-**Note**: \@ignore is a synonym for \@ignore-tree.
+To summarize: the presenter moves from slide to slide using the RtArrow
+key. The RtArrow key causes the SCC executes the next script in the
+controlling tree. The script alters the screen, say by selecting inserting,
+deleting, expanding and contracting nodes, or by inserting, deleting or
+changing headline or body text. The script will typically also show images
+or captions to highlight what the slide is supposed to be showing. In
+short:
 
-There are two special kinds of slide nodes. Nodes whose headlines start
-with **@text** and **@rst** are also considered to be slide nodes, but the
-body text of such nodes do *not* contain scripts. Instead, the plugin shows
-the body text of \@text nodes as is, and shows the body text of \@rst nodes
-rendered as reStructuredText.
+- A screencast is a sequence of slides.  A slide is the appearance
+  of Leo after a screencast script is executed.
 
-Commands and keys
------------------
+- The human presenter moves to the next slide using the RtArrow key.
+  The LtArrow key moves back to the previous slide.
+  
+- Scripts in an \@screencast tree create slides. The 'm' variable allows
+  such scripts to animate keystrokes or overlay images or captions on the
+  screen.
+  
+Before reading further, please look at the example \@screencast trees in
+test.leo. Then run those screencasts to see the what the scripts do.
+  
 
-The screencast-start command starts a screencast. This command executes the
-script in the first slide node of the tree and then pauses. Thereafter, the
-Right Arrow key executes the script in the next slide node (in outline order).
-The Left Arrow key executes the script in the previous slide node. The Escape
-or Ctrl-G keys terminate any screencast.
+Reference
+=========
 
-**Important**: as discussed below, screencasts can activate the minibuffer
-or execute commands such as the Find command *while showing a screencast*.
-In other words, the presenter can move from slide to slide while the Find
-command is prompting for input! This requires some behind-the-scenes magic,
-but allows screencast to demo any of Leo's commands "for real".
+The screencast-start command
+----------------------------
+
+The screencast-start command starts a screencast. This command first
+searches backwards for the nearest \@screencast node. If no such node is
+found, the command searches forwards for the next \@screencast node. This
+command then executes the script in the body text, and pauses. Thereafter,
+the Right Arrow key executes the script in the next slide node (in outline
+order). The Left Arrow key executes the script in the previous slide node.
+The Escape or Ctrl-G keys terminate any screencast.
 
 Screencast scripts
 ------------------
 
-Except for \@text and \@rst nodes, each non-empty, non-ignored screencast
-node must contain a **screencast script**. When the presenter moves to a
-new screenshot node, the screenshot plugin excutes the script in the node.
-Screencast scripts are simply Leo scripts that alter the appearance of the
-Leo main window, and thus the appearance of a slide. Scripts have access to
-the 'c', 'g' and 'p' vars as usual. Scripts also have access to the 'm'
-variable, representing the screencast controller for Leo outline. Scripts
-typically use 'm' to access convenience methods, but advanced scripts can
-use 'm' in other ways.
+Screencast scripts are Leo scripts that have access to the 'm' variable,
+which is bound to c.screencastController, and instance of
+ScreenCastController. Such scripts typically use 'm' to access convenience
+methods, but advanced scripts can use 'm' in other ways.
 
 The ScreenCastController
 ------------------------
 
 The ScreenCastController (SCC) controls key handling during screencasts and
-executes screencast scripts as the screencast moves from node to node. As a
-result, screencasts scripts are usually *very* simple: each script
-typically consists of just a few lines of code, and each line typically
-just calls a single scc convenience methods.
+executes screencast scripts as the screencast moves from node to node.
 
-SCC convenience methods
------------------------
-
-**m.body(s)**, **m.log(s) and **m.tree(s)** create caption with text s in
-the indicated pane. A **caption** is a text area that overlays part of
-Leo's screen. By default, captions have a distinctive yellow background.
-The appearance of captions can be changed using Qt stylesheets.  See below.
-
-**m.body_keys(s,n1=None,n2=None)**
-
-**m.head_keys(s,n1=None,n2=None)**
-
-**m.plain_keys(s,n1=None,n2=None,pane='body')**
-
-**m.redraw(p)**
-
-**m.single_key(setting)** generates a key event. Examples::
-    
-   m.single_key('Alt-X') # Activates the minibuffer
-   m.single_key('Ctrl-F') # Activates Leo's Find command
-   
-**Important**: the SCC allows key handling in key-states *during*
-the execution of a screencast.  For example::
+The SCC only traps the RtArrow and LtArrow keys during a screencast. The
+SCC passes all other keys to Leo's key-handling code. This allows key
+handling in key-states during the execution of a screencast. For example::
     
     m.single_key('Alt-X')
     m.plain_keys('ins\tno\t\n')
     
 actually executes the insert-node command!
 
-**Note**: the 'setting' arg can be anything that would be a valid key
-setting. The following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc.,
-but "ctrl-F" is different from "ctrl-shift-f".
+SCC methods
+-----------
+
+The following paragraphs discuss the SCC methods that screencasts scripts
+may use.
+
+**m.body(s)**, **m.log(s)** and **m.tree(s)** create a caption with text s
+in the indicated pane. A **caption** is a text area that overlays part of
+Leo's screen. By default, captions have a distinctive yellow background.
+The appearance of captions can be changed using Qt stylesheets. See below.
+
+**m.body_keys(s,n1=None,n2=None)** Draws the string s in the body pane of
+the presently selected node. n1 and n2 give the range of delays to be
+inserted between typing. If n1 and n2 are both None, values are given that
+approximate a typical typing rate.
+
+**m.command(command_name)** Executes the named command.
+
+**m.dismiss_menubar()** Dismisses the menu opened with m.open_menu.
+
+**m.focus(pane)** Immediately forces focus to the indicated pane. Valid
+values are 'bodly', 'log' or 'tree'.
+
+**m.image(pane,fn,center=None,height=None,width=None)** Overlays an image
+in a pane. The valid values for `pane` are 'body', 'log' or 'tree'. `fn` is
+the path to the image file, resolved to the leo/Icons directory if fn is a
+relative path. If `height` is given, the image is scaled so it is height
+pixels high. If `width` is given, the image is scaled so it width pixels
+wide. If `center` is True, the image is centered horizontally in the given
+pane.
+
+**m.head_keys(s,n1=None,n2=None)** Same as m.body_keys, except that the
+keys are "typed" into the headline of the presently selected node.
+
+**m.open_menu(menu_name)** Opens the menu whose name is given, ignoring
+case and any non-alpha characters in menu_name. This method shows all
+parent menus, so m.open_menu('cursorback') suffices to show the
+"Cmds\:Cursor/Selection\:Cursor Back..." menu.
+
+**m.plain_keys(s,n1=None,n2=None,pane='body')** Same as m.body_keys, except
+that the keys are typed into the designated pane. The valid values for the
+'pane' argument are 'body','log' or 'tree'.
 
 **m.quit** ends the screencast. By definition, the last slide of screencast
-is the first non-ignored screencast node that calls m.quit.
+is the screencast node that calls m.quit.
 
-Node order vs. selection order
--------------------------------
+**m.redraw(p)** Forces an immediate redraw of the outline pane. If p is
+given, that position becomes c.p, the presently selected node.
 
-Screencast nodes are usually invisible.
+**m.selectPosition(p)** Same as m.redraw(p)
+
+**m.single_key(setting)** generates a key event. Examples::
     
-- m.p is the "program counter", completely distinct from c.p.
+   m.single_key('Alt-X') # Activates the minibuffer
+   m.single_key('Ctrl-F') # Activates Leo's Find command
+   
+The 'setting' arg can be anything that would be a valid key setting. The
+following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc., but "ctrl-F"
+is different from "ctrl-shift-f".
 
-- the arg to m.ctrl_key can be anything that would be a valid key setting.
-  So the following are all equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc.
-  But "ctrl-F" is different from "ctrl-shift-f".
+**m.start(p)** Starts a screencast at node p, regardless of whether p is an
+\@screencast node. This is useful during development while testing the
+script in node p.
+
+The program counter, m.p
+------------------------
+
+Most presenters will want to keep the nodes of the presentation tree
+hidden. Instead, presentation will make *other* nodes visible by calling
+m.selectPosition(p) or m.redraw(p).
+
+Thus, there must be a sharp distinction between the presently *selected*
+node, c.p, and the present screencast node, m.p. You can think of m.p as
+the program counter for the screencast.
+
+By default, after executing a screencast script, the SCC advances m.p to
+the next non-empty, non-ignored node in the \@screencast tree. However, if
+the just-executed screencast script has set m.p to a new, non-empty value,
+that value will be the new value of m.p.
   
 Stylesheets
 -----------
+
+Presenters may alter the appearance of captions by using changing the
+following stylesheet::
+
+    QPlainTextEdit#screencastcaption {
+        background-color: yellow;
+        font-family: DejaVu Sans Mono;
+        font-size: 18pt;
+        font-weight: normal; /* normal,bold,100,..,900 */
+        font-style: normal; /* normal,italic,oblique */
+    }
+
+You will find this stylesheet in the node @data
+``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
 
 '''
@@ -266,26 +259,17 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if c:
         c.screencast_controller = ScreenCastController(c)
-#@+node:ekr.20120922041923.10608: ** commands
 #@+node:ekr.20120922041923.10609: *3* @g.command('screencast-start')
 @g.command('screencast-start')
 def screencast_start(event):
     c = event.get('c')
-    g.trace(c, c and c.p.h)
+    # g.trace(c, c and c.p.h)
     if c:
-        c.screenCastController.start(c.p)
-#@+node:ekr.20120922041923.10610: *3* @g.command('screencast-back')
-@g.command('screencast-back')
-def screencast_back(event):
-    c = event.get('c')
-    g.trace(c)
-#@+node:ekr.20120922041923.10611: *3* @g.command('screencast-next')
-@g.command('screencast-next')
-def screencast_next(event):
-    c = event.get('c')
-    g.trace(c)
-    if c:
-        c.screenCastController.next()
+        m = c.screenCastController
+        if m:
+            p = m.find_screencast(c.p)
+            m.start(p)
+        
 #@+node:ekr.20120913110135.10607: ** class ScreenCastController
 class ScreenCastController:
     
@@ -313,36 +297,6 @@ class ScreenCastController:
         
         # inject c.screenCastController
         c.screenCastController = self
-    #@+node:ekr.20120916193057.10604: *3* Unused
-    if 0:
-        #@+others
-        #@+node:ekr.20120915091327.13817: *4* minibuffer_keys
-        def minibuffer_keys (self,s,n1=None,n2=None):
-            
-            '''Simulate typing in the minibuffer.
-            n1 and n2 indicate the range of delays between keystrokes.
-            '''
-            
-            m = self ; c = m.c
-
-            w = m.pane_widget('minibuffer')
-            for ch in s:
-                m.single_key(ch,n1=n1,n2=n2,w=w)
-
-            c.redraw_now() # Sets focus.
-            c.widgetWantsFocusNow(c.frame.miniBufferWidget.widget)
-            c.outerUpdate()
-        #@+node:ekr.20120916062255.10585: *4* set_minibuffer_prefix
-        def set_minibuffer_prefix (self,s1,s2):
-            
-            '''Set the simulated minibuffer prefix.'''
-            
-            m = self ; k = m.c.k
-            
-            k.mb_prompt = s1
-            # k.mb_tabList = []
-            k.setLabel(s1+s2)
-        #@-others
     #@+node:ekr.20120916193057.10605: *3* Entry points
     #@+node:ekr.20120913110135.10580: *4* body_keys
     def body_keys (self,s,n1=None,n2=None):
@@ -548,21 +502,6 @@ class ScreenCastController:
             return None
 
         
-    #@+node:ekr.20120913110135.10610: *4* old_log
-    def old_log(self,s,begin=False,end=False,image_fn=None,pane='log'):
-        
-        '''Put a message to the log pane, highlight it, and pause.'''
-        
-        m = self
-
-        if not begin:
-            m.wait(1)
-            
-        m.caption(pane,s)
-        m.repaint('all')
-        
-        if not end:
-            m.wait(1)
     #@+node:ekr.20120921064434.10605: *4* open_menu
     def open_menu (self,menu_name):
         
@@ -642,29 +581,6 @@ class ScreenCastController:
         assert p
         m.redraw(p)
         
-    #@+node:ekr.20120913110135.10611: *4* set_log_focus & set_speed
-    def set_log_focus(self,val):
-        
-        '''Set m.log_focus to the given value.'''
-
-        m = self
-        m.log_focus = bool(val)
-
-    def set_speed (self,speed):
-        
-        '''Set m.speed to the given value.'''
-        
-        m = self
-        if speed < 0:
-            g.trace('speed must be >= 0.0')
-        else:
-            m.speed = speed
-    #@+node:ekr.20120918103526.10595: *4* show_text
-    def show_child_text (self):
-        
-        m = self ; c = m.c
-        
-        c.redraw(m.p.threadBack().firstChild())
     #@+node:ekr.20120916062255.10593: *4* single_key
     def single_key (self,ch,n1=None,n2=None,pane=None,w=None):
         
@@ -695,25 +611,6 @@ class ScreenCastController:
                 m.set_state(k.state)
             # Important: do *not* re-enable m.state_handler here.
             # This should be done *only* in m.next.
-    #@+node:ekr.20120913110135.10587: *4* wait
-    def wait(self,n1=1,n2=0):
-        
-        '''Wait for an interval between n1 and n2.'''
-        
-        m = self
-        
-        if n1 is None: n1 = 0
-        if n2 is None: n2 = 0
-
-        if n1 > 0 and n2 > 0:
-            n = random.uniform(n1,n2)
-        else:
-            n = n1
-
-        if n > 0:
-            n = n * m.speed
-            # g.trace(n)
-            g.sleep(n)
     #@+node:ekr.20120916193057.10607: *3* State handling
     #@+node:ekr.20120914074855.10721: *4* next & helper
     def next (self):
@@ -971,6 +868,25 @@ class ScreenCastController:
         else:
             g.trace('does not exist: %s' % (path))
             return None
+    #@+node:ekr.20120913110135.10587: *4* wait
+    def wait(self,n1=1,n2=0):
+        
+        '''Wait for an interval between n1 and n2.'''
+        
+        m = self
+        
+        if n1 is None: n1 = 0
+        if n2 is None: n2 = 0
+
+        if n1 > 0 and n2 > 0:
+            n = random.uniform(n1,n2)
+        else:
+            n = n1
+
+        if n > 0:
+            n = n * m.speed
+            # g.trace(n)
+            g.sleep(n)
     #@-others
 #@-others
 #@-leo
