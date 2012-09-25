@@ -663,6 +663,7 @@
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
+<v t="ekr.20120925105035.3146"><vh>vpos probe</vh></v>
 </v>
 </v>
 <v t="ekr.20120923110028.3131"><vh>Screencasts</vh>
@@ -944,6 +945,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20120925084214.3144"><vh>@button show-vpos</vh></v>
+<v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1244,7 +1247,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -10065,5 +10068,248 @@ m.body(
 <t tx="ekr.20120923110028.3137"></t>
 <t tx="ekr.20120923110028.3138"></t>
 <t tx="ekr.20120923115619.3155"></t>
+<t tx="ekr.20120925073640.3143">@language rest
+
+'''
+
+This is known to cause scrolling problems.
+
+Scroll to end, either with mouse wheel or ctrl-end.
+Then click:  the unwanted scroll happens.
+
+Overview
+========
+
+This plugin is a tool for people wanting to demonstrate Leo or some Leonine
+project to others. Using this plugin, a human demonstrator can prepare an
+automated talk ahead of time. The talk is a series of slides created by Leo
+itself. Each slide is simply Leo as it appears at a particular time. When
+giving the talk, the presenter moves from one slide to the next by hitting
+the RtArrow (Right Arrow) key. The presenter may also back up from the
+present slide to the previous slide using the LtArrow (Left Arrow) key.
+
+To create the presentation, the presenter creates an **@screencast** node.
+This node, and all its descendants, is called the **controlling tree**.
+Each node of this tree may contain a script in its body text; each script
+creates a slide. Nodes without scripts can be used as organizer nodes as
+usual. **@ignore-node** nodes and **@ignore-tree** trees are ignored.
+Normally, the controlling tree will be hidden from view during the
+presentation--the presentation will be about *other* parts of the tree.
+
+The screencast-start command starts a screencast. This command shows the
+first slide of the nearest \@screencast node. Thereafter, the plugin
+executes the next script in controlling tree when the demonstrator types
+the RtArrow key. These scripts are normal Leo scripts, except that they
+also have access to an "m" variable that denotes a **ScreenCastController**
+(SCC), an object created by this plugin. The term **screencast script**
+denotes a script that has access to the "m" variable.
+
+The SCC provides convenience methods that screencast scripts can use to
+draw attention to various parts of Leo's screen. A typical script will
+consist of just one or two of the following calls:
+
+- **m.image(file_name)** overlays a scaled image on Leo's window. For
+  example, a screencast could discuss Leo's icon box by shown greatly
+  magnified images of various kinds of icon box.
+  
+- **m.body(text)** overlays a caption on Leo's body pane. By default,
+  captions have a bright yellow background so that they clearly stand out
+  from the normal appearance of Leo's screen. Similarly **m.log(text)** and
+  **m.tree(text)** overlay captions on Leo's log and tree panes.
+  
+- **m.body_keys(text)** and **m.head_keys(text)** animate typing of text in
+  body text and headlines respectively.
+
+- **m.single_key(key_setting)** allows any key to be handled exactly as if
+  the user had typed the key.
+  
+- **m.open_menu(menu_name)** opens a menu as if the demonstrator had opened it
+  with a mouse click. **m.dismiss_menubar()** closes all open menus.
+
+To summarize: the presenter moves from slide to slide using the RtArrow
+key. The RtArrow key causes the SCC executes the next script in the
+controlling tree. The script alters the screen, say by selecting inserting,
+deleting, expanding and contracting nodes, or by inserting, deleting or
+changing headline or body text. The script will typically also show images
+or captions to highlight what the slide is supposed to be showing. In
+short:
+
+- A screencast is a sequence of slides.  A slide is the appearance
+  of Leo after a screencast script is executed.
+
+- The human presenter moves to the next slide using the RtArrow key.
+  The LtArrow key moves back to the previous slide.
+  
+- Scripts in an \@screencast tree create slides. The 'm' variable allows
+  such scripts to animate keystrokes or overlay images or captions on the
+  screen.
+  
+Before reading further, please look at the example \@screencast trees in
+test.leo. Then run those screencasts to see the what the scripts do.
+  
+
+Reference
+=========
+
+The screencast-start command
+----------------------------
+
+The screencast-start command starts a screencast. This command first
+searches backwards for the nearest \@screencast node. If no such node is
+found, the command searches forwards for the next \@screencast node. This
+command then executes the script in the body text, and pauses. Thereafter,
+the Right Arrow key executes the script in the next slide node (in outline
+order). The Left Arrow key executes the script in the previous slide node.
+The Escape or Ctrl-G keys terminate any screencast.
+
+Screencast scripts
+------------------
+
+Screencast scripts are Leo scripts that have access to the 'm' variable,
+which is bound to c.screencastController, and instance of
+ScreenCastController. Such scripts typically use 'm' to access convenience
+methods, but advanced scripts can use 'm' in other ways.
+
+The ScreenCastController
+------------------------
+
+The ScreenCastController (SCC) controls key handling during screencasts and
+executes screencast scripts as the screencast moves from node to node.
+
+The SCC only traps the RtArrow and LtArrow keys during a screencast. The
+SCC passes all other keys to Leo's key-handling code. This allows key
+handling in key-states during the execution of a screencast. For example::
+    
+    m.single_key('Alt-X')
+    m.plain_keys('ins\\tno\\t\\n')
+    
+actually executes the insert-node command!
+
+SCC methods
+-----------
+
+The following paragraphs discuss the SCC methods that screencasts scripts
+may use.
+
+**m.body(s)**, **m.log(s)** and **m.tree(s)** create a caption with text s
+in the indicated pane. A **caption** is a text area that overlays part of
+Leo's screen. By default, captions have a distinctive yellow background.
+The appearance of captions can be changed using Qt stylesheets. See below.
+
+**m.body_keys(s,n1=None,n2=None)** Draws the string s in the body pane of
+the presently selected node. n1 and n2 give the range of delays to be
+inserted between typing. If n1 and n2 are both None, values are given that
+approximate a typical typing rate.
+
+**m.command(command_name)** Executes the named command.
+
+**m.dismiss_menubar()** Dismisses the menu opened with m.open_menu.
+
+**m.focus(pane)** Immediately forces focus to the indicated pane. Valid
+values are 'bodly', 'log' or 'tree'.
+
+**m.image(pane,fn,center=None,height=None,width=None)** Overlays an image
+in a pane. The valid values for `pane` are 'body', 'log' or 'tree'. `fn` is
+the path to the image file, resolved to the leo/Icons directory if fn is a
+relative path. If `height` is given, the image is scaled so it is height
+pixels high. If `width` is given, the image is scaled so it width pixels
+wide. If `center` is True, the image is centered horizontally in the given
+pane.
+
+**m.head_keys(s,n1=None,n2=None)** Same as m.body_keys, except that the
+keys are "typed" into the headline of the presently selected node.
+
+**m.open_menu(menu_name)** Opens the menu whose name is given, ignoring
+case and any non-alpha characters in menu_name. This method shows all
+parent menus, so m.open_menu('cursorback') suffices to show the
+"Cmds\:Cursor/Selection\:Cursor Back..." menu.
+
+**m.plain_keys(s,n1=None,n2=None,pane='body')** Same as m.body_keys, except
+that the keys are typed into the designated pane. The valid values for the
+'pane' argument are 'body','log' or 'tree'.
+
+**m.quit** ends the screencast. By definition, the last slide of screencast
+is the screencast node that calls m.quit.
+
+**m.redraw(p)** Forces an immediate redraw of the outline pane. If p is
+given, that position becomes c.p, the presently selected node.
+
+**m.selectPosition(p)** Same as m.redraw(p)
+
+**m.single_key(setting)** generates a key event. Examples::
+    
+   m.single_key('Alt-X') # Activates the minibuffer
+   m.single_key('Ctrl-F') # Activates Leo's Find command
+   
+The 'setting' arg can be anything that would be a valid key setting. The
+following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc., but "ctrl-F"
+is different from "ctrl-shift-f".
+
+**m.start(p)** Starts a screencast at node p, regardless of whether p is an
+\@screencast node. This is useful during development while testing the
+script in node p.
+
+The program counter, m.p
+------------------------
+
+Most presenters will want to keep the nodes of the presentation tree
+hidden. Instead, presentation will make *other* nodes visible by calling
+m.selectPosition(p) or m.redraw(p).
+
+Thus, there must be a sharp distinction between the presently *selected*
+node, c.p, and the present screencast node, m.p. You can think of m.p as
+the program counter for the screencast.
+
+By default, after executing a screencast script, the SCC advances m.p to
+the next non-empty, non-ignored node in the \@screencast tree. However, if
+the just-executed screencast script has set m.p to a new, non-empty value,
+that value will be the new value of m.p.
+  
+Stylesheets
+-----------
+
+Presenters may alter the appearance of captions by using changing the
+following stylesheet::
+
+    QPlainTextEdit#screencastcaption {
+        background-color: yellow;
+        font-family: DejaVu Sans Mono;
+        font-size: 18pt;
+        font-weight: normal; /* normal,bold,100,..,900 */
+        font-style: normal; /* normal,italic,oblique */
+    }
+
+You will find this stylesheet in the node @data
+``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
+
+
+'''
+</t>
+<t tx="ekr.20120925084214.3144">w = c.frame.body.bodyCtrl.widget
+print(w)
+
+
+vsb = w.verticalScrollBar()
+vpos = vsb.sliderPosition()
+print(vpos)</t>
+<t tx="ekr.20120925105035.3146">def sp(s=''):
+    old = g._old_sp
+    pos1 = c.frame.body.bodyCtrl.getYScrollPosition()
+    vsb = c.frame.body.bodyCtrl.widget.verticalScrollBar()
+    vmax = vsb.maximum()
+    pos2 = vsb.sliderPosition()
+    if s or old is None or old != pos1 or old != pos2:
+        g._old_sp = pos2
+        print(pos1,pos2,vmax)
+    if g._force_vscroll is not None:
+        vsb.setSliderPosition(g._force_vscroll)
+        g._force_vscroll = None
+
+
+g._force_vscroll = None
+g._sp = sp
+g._old_sp = None
+g.registerHandler('idle', lambda a,b:g._sp())
+g.cls()</t>
 </tnodes>
 </leo_file>

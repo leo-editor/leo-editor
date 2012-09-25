@@ -7018,5 +7018,68 @@ else:
         return unicode(s)
     def ue(s,encoding):
         return unicode(s,encoding)
+#@+node:ekr.20120925061642.13513: *3* update_style_sheet (qtGui) (code that doesn't work)
+def update_style_sheet (self,w,key,value,selector=None):
+    
+    trace = True and not g.unitTesting
+    
+    # Step one: update the dict.
+    d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+
+    d[key] = value
+    aList = [d.get(key) for key in list(d.keys())]
+    w.leo_styles_dict = d
+    
+    # Step two: update the stylesheet.
+    s = '; '.join(aList)
+    
+    if selector:
+        s = '%s { %s }' % (selector,s)
+        
+    old = str(w.styleSheet())
+    if False and old == s:
+        if trace: g.trace('no change')
+        return
+
+    if False and trace:
+        g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
+
+    # Carefully save any scrollbar state.
+    hsb,hpos,vsb,vpos = None,None,None,None
+    # if hasattr(w,'horizontalScrollBar'):
+        # hsb = w.horizontalScrollBar()
+        # hpos = hsb.sliderPosition()
+    if hasattr(w,'verticalScrollBar'):
+        vsb = w.verticalScrollBar()
+        vpos = vsb.sliderPosition()
+        vmax = vsb.maximum()
+        # vsb.blockSignals(True)
+    
+    # This call was responsible for the scrolling!
+    #g.trace('before setStyleSheet')
+    #w.blockSignals(True)
+    w.setStyleSheet(s)
+    w.repaint()
+    #w.blockSignals(False)
+    #g.trace('after setStyleSheet')
+    
+    # if hsb is not None:
+        # if trace: g.trace('restore hpos: %s' % (hpos))
+        # hsb = w.horizontalScrollBar()
+        # hsb.setSliderPosition(hpos)
+    if vsb is not None:
+        
+        # g._force_vscroll = vpos
+        vsb = w.verticalScrollBar()
+        # vsb.blockSignals(False)
+        new = vsb.sliderPosition()
+        vsb.setSliderPosition(vpos)
+        dy = vpos-new
+        # w.scroll(0,dy)
+        if trace:
+            g.trace('restore vpos: dy: %s new: %s saved: %s max: %s' % (
+                dy,new,vpos,vmax))
+            # after = vsb.sliderPosition()
+            # assert after == vpos,after
 #@-all
 #@-leo

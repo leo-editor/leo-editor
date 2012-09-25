@@ -86,6 +86,11 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         QtGui.QTextBrowser.__init__(self,parent)
         
+        # Debugging code for the scroll bug.
+        # self.leo_vsb = vsb = self.verticalScrollBar()
+        # vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
+            # self.onSliderChanged)
+        
         # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
         
         # For QCompleter
@@ -413,6 +418,10 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if trace: g.trace(pos,g.callers())
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
+    #@+node:ekr.20120925061642.13506: *4* onSliderChanged (LeoQTextBrowser) (not used)
+    def onSliderChanged(self,arg):
+        
+        g.trace(arg,g.callers())
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -485,27 +494,24 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                     event = {'c':c}
                     g.openUrlOnClick(event)
                     
-                if trace: g.trace()
+                if name == 'body':
+                    c.p.v.insertSpot = c.frame.body.getInsertPoint()
+                    if trace: g.trace(c.p.v.insertSpot)
                     
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
                 
-                # 2011/10/02: Calling k.keyboardQuit here causes some
-                # unwanted scrolling in rare cases, but seemingly that
-                # can't be helped: removing this call would be confusing.
+                # 2012/09/25: Calling k.keyboardQuit may call w.w.setStyleSheet.
+                # This generates a layout-request event, which spoils the scroll.
+                # The following lockout makes *sure* that this does not happen.
                 
-                c.k.keyboardQuit(setFocus=False)
+                # 2012/09/25: Disable this eliminates the unwanted scrolling.
+                try:
+                    g.app.gui.lockout_style_sheet = True
+                    c.k.keyboardQuit(setFocus=False)
+                finally:
+                    g.app.gui.lockout_style_sheet = False
                 
-                # Does not work: the layout-request event happens later.
-                # w = self.widget
-                # g.trace('blocking',w)
-                # w.blockSignals(True)
-                # try:
-                    # c.k.keyboardQuit(setFocus=False)
-                    # c.frame.top.update()
-                # finally:
-                    # w.blockSignals(False)
-                    # g.trace('unblocking',w)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
@@ -1246,7 +1252,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         else:
             delta = 0 ; g.trace('bad kind:',kind)
         val = vScroll.value()
-        # g.trace(kind,n,h,lineSpacing,delta,val)
+        # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
         vScroll.setValue(val+(delta*lineSpacing))
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18089: *5* insert (avoid call to setAllText) (leoQTextWidget)
@@ -1324,27 +1330,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # Fix bug 981849: incorrect body content shown.
         # Use the more careful code in setSelectionRangeHelper & lengthHelper.
         self.setSelectionRangeHelper(i=i,j=i,insert=i)
-        
-        # trace = (True or g.trace_scroll) and not g.unitTesting
-
-        # w = self.widget
-        # s = w.toPlainText()
-        # i = self.toPythonIndex(i)
-        # i = max(0,min(i,len(s)))
-        
-        # cursor = w.textCursor()
-        # cursor.setPosition(i)
-        # w.setTextCursor(cursor)
-        
-        # # Remember the values for v.restoreCursorAndScroll.
-        # v = self.c.p.v # Always accurate.
-        # v.insertSpot = i
-        # v.selectionStart = i
-        # v.selectionLength = 0
-        # v.scrollBarSpot = spot = w.getYScrollPosition()
-        
-        # if trace: g.trace(i,v.h)
-
     #@+node:ekr.20110605121601.18096: *5* setSelectionRangeHelper & helper (leoQTextEditWidget)
     def setSelectionRangeHelper(self,i,j,insert=None):
 
@@ -1401,7 +1386,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
     def setYScrollPosition(self,pos):
         
-        trace = False and g.trace_scroll and not g.unitTesting
+        trace = g.trace_scroll and not g.unitTesting
         w = self.widget
         
         if g.no_scroll:
@@ -2790,13 +2775,14 @@ class leoQtBody (leoFrame.leoBody):
         bg = check(bg,'background','white')
         fg = check(fg,'foreground','black')
         
-        if trace: g.trace(bg,fg)
+        if trace: g.trace(bg,fg,obj)
 
         # Set the stylesheet only for the QTextBrowser itself,
         # *not* the other child widgets:
         # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
             
         sheet = 'background-color: %s; color: %s' % (bg,fg)
+
         g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
     #@+node:ekr.20110605121601.18190: *4* oops (qtBody)
     def oops (self):
@@ -3163,6 +3149,7 @@ class leoQtBody (leoFrame.leoBody):
         c.bodyWantsFocus()
         w0.setSelectionRange(i,j,insert=ins)
             # 2011/11/21: bug fix: was ins=ins
+        # g.trace(pos0)
         sb0.setSliderPosition(pos0)
     #@+node:ekr.20110605121601.18206: *5* utils
     #@+node:ekr.20110605121601.18207: *6* computeLabel (qtBody)
@@ -7523,6 +7510,7 @@ class leoQtGui(leoGui.leoGui):
         
         # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
+        self.lockout_style_sheet = False
         
         # Put up the splash screen()
         if (g.app.use_splash_screen and
@@ -7564,7 +7552,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
     def add_border(self,c,w):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         state = c.k and c.k.unboundKeyAction
         
         if state and c.use_focus_border:
@@ -8421,6 +8409,7 @@ class leoQtGui(leoGui.leoGui):
     def update_style_sheet (self,w,key,value,selector=None):
         
         trace = False and not g.unitTesting
+        verbose = False
         
         # Step one: update the dict.
         d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
@@ -8434,10 +8423,22 @@ class leoQtGui(leoGui.leoGui):
         
         if selector:
             s = '%s { %s }' % (selector,s)
+            
+        old = str(w.styleSheet())
+        if old == s:
+            if trace: g.trace('no change')
+            return
+            
+        if g.app.gui.lockout_style_sheet == True:
+            if trace: g.trace('lockout_style_sheet is True')
+            return
 
-        if trace:
+        if trace and verbose:
             g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
 
+        # This call was responsible for the unwanted scrolling!
+        # Note that this apparently generates a layout-request event,
+        # and this event changes the scrollbars.
         w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18526: *4* toUnicode (qtGui)
     def toUnicode (self,s):
@@ -8705,7 +8706,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter)
     def create_key_event (self,event,c,w,ch,tkKey,shortcut):
 
-        trace = True and not g.unitTesting ; verbose = False
+        trace = False and not g.unitTesting ; verbose = False
         
         if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
             repr(ch),repr(tkKey),repr(shortcut)))
@@ -10745,7 +10746,7 @@ class jEditColorizer:
 
         '''Succeed if s[i:] matches pattern.'''
 
-        trace = (True or self.verbose) and not g.unitTesting
+        trace = (False or self.verbose) and not g.unitTesting
         if not self.allow_mark_prev: return 0
 
         # if trace: g.trace(g.callers(1),i,repr(s[i:i+20]))

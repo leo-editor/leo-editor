@@ -2525,7 +2525,6 @@ class keyHandlerClass:
 
         trace = False and not g.unitTesting
         k = self ; c = k.c
-        
         if trace: g.trace(g.callers())
 
         if g.app.quitting:
@@ -2555,6 +2554,7 @@ class keyHandlerClass:
 
         # At present, only the auto-completer suppresses this.
         k.setDefaultInputState()
+        # This was what caused the unwanted scrolling.
         k.showStateAndMode(setFocus=setFocus)
     #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
     def manufactureKeyPressForCommandName (self,w,commandName):
@@ -4432,6 +4432,8 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
+                
+        if trace: g.trace('w',w,'s',s)
                 
         if s:
             k.setLabelBlue(label=s,protect=True)

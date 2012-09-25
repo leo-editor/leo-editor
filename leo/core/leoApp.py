@@ -2527,7 +2527,9 @@ class LoadManager:
         fn = g.os_path_finalize(fn)
         if fn:
             c = lm.findOpenFile(fn)
-            if c: return c
+            if c:
+                if trace: g.trace('Already open: %s' % (fn))
+                return c
 
         # Step 1: get the previous settings.
         # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
