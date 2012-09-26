@@ -1307,6 +1307,7 @@ class keyHandlerClass:
         self.ignore_caps_lock               = getBool('ignore_caps_lock')
         self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
         self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
+        self.minibuffer_foreground_color    = getColor('minibuffer_foreground_color') or 'black'
         self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
         self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
         self.swap_mac_keys                  = getBool('swap_mac_keys')
@@ -3340,7 +3341,11 @@ class keyHandlerClass:
         k = self ; w = k.w
         if not w: return
 
-        w.setBackgroundColor(self.minibuffer_background_color) # 'lightblue')
+        # w.setBackgroundColor(self.minibuffer_background_color) # 'lightblue')
+        
+        w.setBothColors(
+            self.minibuffer_background_color,
+            self.minibuffer_foreground_color)
 
         if label is not None:
             k.setLabel(label,protect)

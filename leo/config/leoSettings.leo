@@ -133,6 +133,7 @@
 <v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
 <v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
 <v t="ekr.20100313080341.8370"><vh>@color minibuffer-error-color = red</vh></v>
+<v t="ekr.20120926072255.11432"><vh>@color minibuffer-foreground-color = black</vh></v>
 <v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
@@ -5709,6 +5710,7 @@ following settings, with defaults as shown::
 
     @color minibuffer-background-color = lightblue
     @color minibuffer-error-color = red
+    @color minibuffer-foreground-color = black
     @color minibuffer-warning-color = lightgrey
 */
 QLineEdit#lineEdit {
@@ -9469,6 +9471,7 @@ do-nothing = Shift-F11
 do-nothing = Shift-F12</t>
 <t tx="ekr.20120519193555.11830"></t>
 <t tx="ekr.20120520053551.11241"></t>
+<t tx="ekr.20120926072255.11432"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

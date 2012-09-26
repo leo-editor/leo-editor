@@ -501,7 +501,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
                 
-                # 2012/09/25: Calling k.keyboardQuit may call w.w.setStyleSheet.
+                # 2012/09/25: Calling k.keyboardQuit may call w.setStyleSheet.
                 # This generates a layout-request event, which spoils the scroll.
                 # The following lockout makes *sure* that this does not happen.
                 
@@ -2549,7 +2549,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # g.trace('vert',vert)
 
-    #@+node:ekr.20110605121601.18175: *4* setStyleSheets & helper
+    #@+node:ekr.20110605121601.18175: *4* setStyleSheets & helper (DynamicWindow)
     styleSheet_inited = False
 
     def setStyleSheets(self):
