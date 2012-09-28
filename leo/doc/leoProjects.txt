@@ -1924,6 +1924,8 @@ def add_border(self,c,w):
         elif name.startswith('head'):
             pass
         else:
+            # Always use the default border color for the tree.
+            color = c.focus_border_color
             sheet = "border: %spx solid %s" % (c.focus_border_width,color)
             self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
 #@+node:ekr.20120927164343.10093: *6* remove_border (qtGui)
@@ -1977,8 +1979,14 @@ def setEditorColors (self,bg,fg):
     
     trace = False and not g.unitTesting
     
+    c = self.c
+
+    if c.use_focus_border:
+        return
+      
+    # Deprecated.  This can cause unwanted scrolling.
     obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
-    
+
     class_name = obj.__class__.__name__
     if  class_name != 'LeoQTextBrowser':
         if trace: g.trace('unexpected object',obj)
@@ -1996,7 +2004,7 @@ def setEditorColors (self,bg,fg):
 
     bg = check(bg,'background','white')
     fg = check(fg,'foreground','black')
-    
+
     if trace: g.trace(bg,fg,obj)
 
     # Set the stylesheet only for the QTextBrowser itself,
@@ -2010,7 +2018,7 @@ def setEditorColors (self,bg,fg):
 def update_style_sheet (self,w,key,value,selector=None):
     
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     
     # Step one: update the dict.
     d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
@@ -2035,10 +2043,6 @@ def update_style_sheet (self,w,key,value,selector=None):
             g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
         else:
             g.trace(s)
-        
-    # if g.app.gui.lockout_style_sheet == True:
-        # if trace: g.trace('lockout_style_sheet is True')
-        # return
 
     # This call is responsible for the unwanted scrolling!
     # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
@@ -2278,22 +2282,16 @@ def mouseReleaseEvent (*args,**keys):
     # 2011/05/28: Do *not* change the focus!
     # This would rip focus away from tab panes.
     
-    # 2012/09/25: Calling k.keyboardQuit may call w.setStyleSheet.
-    # This generates a layout-request event, which spoils the scroll.
-    # The following lockout makes *sure* that this does not happen.
-    
-    # 2012/09/25: Disable this eliminates the unwanted scrolling.
-    try:
-        g.app.gui.lockout_style_sheet = True
-        c.k.keyboardQuit(setFocus=False)
-    finally:
-        g.app.gui.lockout_style_sheet = False
-    
+    # 2012/09/25: Calling k.keyboardQuit calls k.showStateColors.
+    # This used to call w.setStyleSheet, which caused unwanted scroll.
+    # The solution to this problem is to color border by
+    # coloring the innerBodyFrame using a QPainter.
+    c.k.keyboardQuit(setFocus=False)
 #@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
 def update_style_sheet (self,w,key,value,selector=None):
     
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     
     # Step one: update the dict.
     d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
@@ -2318,14 +2316,260 @@ def update_style_sheet (self,w,key,value,selector=None):
             g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
         else:
             g.trace(s)
-        
-    # if g.app.gui.lockout_style_sheet == True:
-        # if trace: g.trace('lockout_style_sheet is True')
-        # return
 
     # This call is responsible for the unwanted scrolling!
     # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
     w.setStyleSheet(s)
+#@+node:ekr.20120928142052.13477: *4* Fixed scrolling problem with scrollwheel
+@nocolor-node
+
+The maintain_scroll options is *evil*.
+#@+node:ekr.20120928142052.13478: *5* changed
+#@+node:ekr.20110605121601.18224: *6* onFocusColorHelper (qtBody)
+badFocusColors = []
+
+def onFocusColorHelper(self,kind,obj):
+
+    trace = False and not g.unitTesting
+    
+    c = self.c ; w = c.frame.body.bodyCtrl
+    
+    if trace: g.trace(kind)
+    
+    if kind == 'focus-in':
+        # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
+        c.k.showStateColors(inOutline=False,w=self.widget)
+    else:
+        bg = self.unselectedBackgroundColor
+        fg = self.unselectedForegroundColor
+        c.frame.body.setEditorColors(bg,fg)
+#@+node:ekr.20061031170011.8: *6* k.setLabel
+def setLabel (self,s,protect=False):
+
+    trace = (False or g.trace_minibuffer) and not g.app.unitTesting
+    k = self ; c = k.c ; w = self.w
+    if not w: return
+
+    if trace: g.trace(repr(s),w)
+
+    w.setAllText(s)
+    n = len(s)
+    w.setSelectionRange(n,n,insert=n)
+
+    if protect:
+        k.mb_prefix = s
+#@+node:ekr.20110605121601.18307: *6* toggleSplitDirection (qtFrame)
+def toggleSplitDirection (self,event=None):
+
+    '''Toggle the split direction in the present Leo window.'''
+
+    trace = False and not g.unitTesting
+    c,f = self.c,self
+    
+    if trace: g.trace('*'*20)
+        
+    def getRatio(w):
+        sizes = w.sizes()
+        if len(sizes) == 2:
+            size1,size2 = sizes
+            ratio = float(size1)/float(size1+size2)
+            if trace: g.trace(
+                '   ratio: %0.2f, size1: %3s, size2: %3s, total: %4s, w: %s' % (
+                ratio,size1,size2,size1+size2,w))
+            return ratio
+        else:
+            if trace: g.trace('oops: len(sizes)',len(sizes),'default 0.5')
+            return float(0.5)
+            
+    def getNewSizes(sizes,ratio):
+        size1,size2 = sizes
+        total = size1+size2
+        size1 = int(float(ratio)*float(total))
+        size2 = total - size1
+        if trace: g.trace(
+            'ratio: %0.2f, size1: %3s, size2: %3s, total: %4s' % (
+            ratio,size1,size2,total))
+        return [size1,size2]
+    
+    # Compute the actual ratios before reorienting.
+    w1,w2 = f.top.splitter, f.top.splitter_2
+    r1 = getRatio(w1)
+    r2 = getRatio(w2)
+    f.ratio,f.secondary_ratio = r1,r2
+    
+    # Remember the sizes before reorienting.
+    sizes1 = w1.sizes()
+    sizes2 = w2.sizes()
+    
+    # Reorient the splitters.
+    for w in (f.top.splitter,f.top.splitter_2):
+        w.setOrientation(
+            g.choose(w.orientation() == QtCore.Qt.Horizontal,
+                QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+                
+    # Fix bug 580328: toggleSplitDirection doesn't preserve existing ratio.
+    if len(sizes1) == 2 and len(sizes2) == 2:
+        w1.setSizes(getNewSizes(sizes1,r1))
+        w2.setSizes(getNewSizes(sizes2,r2))
+        
+    # Maintain the key invariant: self.splitVerticalFlag
+    # tells the alignment of the main splitter.
+    f.splitVerticalFlag = not f.splitVerticalFlag
+    
+    # Fix bug 581031: Scrollbar position is not preserved.
+    # This is better than adjust the scroll value directy.
+    c.frame.tree.setItemForCurrentPosition(scroll=True)
+    c.frame.body.seeInsertPoint()
+#@+node:ekr.20100216141722.5638: *6* showResults
+def showResults(self,found,p,n,n2,lines):
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    # Select p and make it visible.
+    c.redraw(p)
+
+    # Put the cursor on line n2 of the body text.
+    s = w.getAllText()
+    if found:
+        ins = g.convertRowColToPythonIndex(s,n2-1,0)
+    else:
+        ins = len(s)
+        if len(lines) < n and not g.unitTesting:
+            g.warning('only',len(lines),'lines')
+
+    if trace:
+        i,j = g.getLine(s,ins)
+        g.trace('found: %5s %2s %2s %15s %s' % (
+            found,n,n2,p.h,repr(s[i:j])))  
+
+    w.setInsertPoint(ins)
+    c.bodyWantsFocus()
+    c.frame.body.seeInsertPoint()
+#@+node:ekr.20110605121601.18480: *6* onActivateEvent (qtGui)
+# Called from eventFilter
+
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    trace = True and not g.unitTesting
+
+    if trace: g.trace(tag)
+    
+    if c.exists and tag == 'body':
+        self.active = True
+        # Retain the focus that existed when the deactivate event happened.
+            # c.bodyWantsFocusNow()
+        c.p.v.restoreCursorAndScroll()
+        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110607182447.16456: *5* Event handlers (qtGui)
+#@+node:ekr.20110605121601.18480: *6* onActivateEvent (qtGui)
+# Called from eventFilter
+
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    trace = True and not g.unitTesting
+
+    if trace: g.trace(tag)
+    
+    if c.exists and tag == 'body':
+        self.active = True
+        # Retain the focus that existed when the deactivate event happened.
+            # c.bodyWantsFocusNow()
+        c.p.v.restoreCursorAndScroll()
+        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20110605121601.18481: *6* onDeactiveEvent (qtGui)
+def onDeactivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    trace = False and not g.unitTesting
+
+    # This is called several times for each window activation.
+    # Save the headline only once.
+
+    if c.exists and tag.startswith('tree'):
+        self.active = False
+        if trace: g.trace()
+        c.k.keyboardQuit(setFocus=False)
+            # 2011/06/13.
+            # 2011/09/29. Don't change the tab in the log pane.
+        # c.endEditing()
+        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
+#@+node:ekr.20120925061642.13506: *5* onSliderChanged (LeoQTextBrowser)
+def onSliderChanged(self,arg):
+    
+    c = self.leo_c
+    p = c.p
+    
+    if p:
+        # g.trace(arg,c.p.v.h,g.callers())
+        p.v.scrollBarSpot = arg
+    
+    
+#@+node:ekr.20110605121601.18006: *5*   ctor (LeoQTextBrowser)
+def __init__(self,parent,c,wrapper):
+    
+    for attr in ('leo_c','leo_wrapper',):
+        assert not hasattr(QtGui.QTextBrowser,attr),attr
+
+    self.leo_c = c
+    self.leo_wrapper = wrapper
+    self.htmlFlag = True
+
+    QtGui.QTextBrowser.__init__(self,parent)
+    
+    # This event handler is the easy way to keep track of the vertical scroll position.
+    self.leo_vsb = vsb = self.verticalScrollBar()
+    vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
+        self.onSliderChanged)
+    
+    # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
+    
+    # For QCompleter
+    self.leo_q_completer = None
+    self.leo_options = None
+    self.leo_model = None
+#@+node:ekr.20100303074003.5636: *5* v.restoreCursorAndScroll
+# Called only by leoTree.selectHelper.
+
+def restoreCursorAndScroll (self):
+    
+    trace = (False or g.trace_scroll) and not g.unitTesting
+    v = self ; c = self.context
+    ins = v.insertSpot
+    start,n = v.selectionStart,v.selectionLength
+    spot = v.scrollBarSpot
+    w = c.frame.body
+    
+    # Fix bug 981849: incorrect body content shown.
+    if ins is None: ins = 0
+    w.setInsertPoint(ins)
+
+    if g.no_scroll:
+        return
+
+    # Override any changes to the scrollbar setting that might
+    # have been done above by w.setSelectionRange or w.setInsertPoint.
+    if spot is not None:
+        w.setYScrollPosition(spot)
+    v.scrollBarSpot = spot
+        
+    if trace: g.trace(spot,v.h)
+        
+    # Never call w.see here.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -3658,6 +3902,423 @@ g.es now "redirects" colors using the following settings:
     'black':    @color log_text_foreground_color
     'blue':     @color log_warning_color
     'red':      @color log_error_color
+#@+node:ekr.20120928081706.11455: *4* body border
+- (done) deprecate/reorganize *dynamic* body text background colors.
+    - (done) set body pane color only once. (Now done only via stylesheet).
+    - (done) use border colors to indicate state.
+#@+node:ekr.20120212060348.10374: *5*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Debugging options...
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+
+no_scroll = False
+    # True: disable all calls to w.setYScrollPosition.
+no_see = False
+    # True: disable all calls to w.see and w.seeInsertPoint.
+    
+# Tracing options...
+
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+
+#@+node:ekr.20110605121601.18026: *5* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
+def mouseReleaseEvent (*args,**keys):
+    
+    '''Override QLineEdit.mouseReleaseEvent.
+    
+    Simulate alt-x if we are not in an input state.'''
+    
+    trace = False and not g.unitTesting
+    
+    # Call the base class method.
+    if len(args) == 1:
+        event = args[0]
+        QtGui.QTextBrowser.mouseReleaseEvent(widget,event) # widget is unbound.
+    elif len(args) == 2:
+        event = args[1]
+        QtGui.QTextBrowser.mouseReleaseEvent(*args)
+    else:
+        g.trace('can not happen')
+        return
+
+    # Open the url on a control-click.
+    if QtCore.Qt.ControlModifier & event.modifiers():
+        event = {'c':c}
+        g.openUrlOnClick(event)
+        
+    if name == 'body':
+        c.p.v.insertSpot = c.frame.body.getInsertPoint()
+        if trace: g.trace(c.p.v.insertSpot)
+        
+    # 2011/05/28: Do *not* change the focus!
+    # This would rip focus away from tab panes.
+    
+    # 2012/09/25: Calling k.keyboardQuit calls k.showStateColors.
+    # This used to call w.setStyleSheet, which caused unwanted scroll.
+    # The solution to this problem is to color border by
+    # coloring the innerBodyFrame using a QPainter.
+    c.k.keyboardQuit(setFocus=False)
+#@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
+#@+node:ekr.20120927164343.10092: *6* add_border (qtGui)
+def add_border(self,c,w):
+
+    state = c.k and c.k.unboundKeyAction
+    
+    if state and c.use_focus_border:
+        d = {
+            'command':  c.focus_border_command_state_color,
+            'insert':   c.focus_border_color,
+            'overwrite':c.focus_border_overwrite_state_color,
+        }
+        color = d.get(state,c.focus_border_color)
+        name = g.u(w.objectName())
+        if name =='richTextEdit':
+            w = c.frame.top.leo_body_inner_frame
+            self.paint_qframe(w,color)
+        elif name.startswith('head'):
+            pass
+        else:
+            # Always use the default border color for the tree.
+            color = c.focus_border_color
+            sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10093: *6* remove_border (qtGui)
+def remove_border(self,c,w):
+
+    if not c.use_focus_border:
+        return
+        
+    name = g.u(w.objectName())
+    width = c.focus_border_width
+    if w.objectName()=='richTextEdit':
+        w = c.frame.top.leo_body_inner_frame
+        self.paint_qframe(w,'white')
+    elif name.startswith('head'):
+        pass
+    else:
+        sheet = "border: %spx solid white" % width
+        self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10094: *6* paint_qframe (qtGui)
+def paint_qframe (self,w,color):
+    
+    assert isinstance(w,QtGui.QFrame)
+    
+    # How's this for a kludge.
+    # Set this ivar for InnerBodyFrame.paintEvent.
+    g.app.gui.innerBodyFrameColor = color
+#@+node:ekr.20110605121601.18143: *5* createBodyPane
+def createBodyPane (self,parent):
+
+    # Create widgets.
+    bodyFrame = self.createFrame(parent,'bodyFrame')
+    innerFrame = self.createFrame(bodyFrame,'innerBodyFrame',
+        hPolicy=QtGui.QSizePolicy.Expanding)
+    sw = self.createStackedWidget(innerFrame,'bodyStackedWidget')
+    page2 = QtGui.QWidget()
+    self.setName(page2,'bodyPage2')
+    body = self.createText(page2,'richTextEdit')
+
+    # Pack.
+    vLayout = self.createVLayout(page2,'bodyVLayout',spacing=6)
+    grid = self.createGrid(bodyFrame,'bodyGrid')
+    innerGrid = self.createGrid(innerFrame,'bodyInnerGrid')
+    vLayout.addWidget(body)
+    sw.addWidget(page2)
+    innerGrid.addWidget(sw, 0, 0, 1, 1)
+    grid.addWidget(innerFrame, 0, 0, 1, 1)
+    self.verticalLayout.addWidget(parent)
+
+    # Official ivars
+    self.text_page = page2
+    self.stackedWidget = sw # used by leoQtBody
+    self.richTextEdit = body
+    self.leo_body_frame = bodyFrame
+    self.leo_body_inner_frame = innerFrame
+#@+node:ekr.20110605121601.18155: *5* createFrame
+def createFrame (self,parent,name,
+    hPolicy=None,vPolicy=None,
+    lineWidth = 1,
+    shadow = QtGui.QFrame.Plain,
+    shape = QtGui.QFrame.NoFrame,
+):
+
+    if name == 'innerBodyFrame':
+        class InnerBodyFrame(QtGui.QFrame):
+            def paintEvent(self,event):
+                # A kludge.  g.app.gui.innerBodyFrameColor is set by paint_qframe.
+                if hasattr(g.app.gui,'innerBodyFrameColor'):
+                    color = g.app.gui.innerBodyFrameColor
+                    painter = QtGui.QPainter()
+                    painter.begin(w)
+                    painter.fillRect(w.rect(),QtGui.QColor(color))
+                    painter.end()
+        w = InnerBodyFrame(parent)
+    else:
+        w = QtGui.QFrame(parent)
+    self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+    w.setFrameShape(shape)
+    w.setFrameShadow(shadow)
+    w.setLineWidth(lineWidth)
+    self.setName(w,name)
+    return w
+#@+node:ekr.20061031131434.130: *5* k.keyboardQuit
+def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    if trace: g.trace(g.callers())
+
+    if g.app.quitting:
+        return
+        
+    # 2011/05/30: We may be called from Qt event handlers.
+    # Make sure to end editing!
+    c.endEditing() 
+    
+    # Completely clear the mode.
+    if setFocus:
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    if k.inputModeName:
+        k.endMode()
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    if setFocus:
+        c.bodyWantsFocus()
+
+    # At present, only the auto-completer suppresses this.
+    k.setDefaultInputState()
+    # This was what caused the unwanted scrolling.
+    k.showStateAndMode(setFocus=setFocus)
+#@+node:ekr.20061031131434.192: *5* k.showStateAndMode
+def showStateAndMode(self,w=None,prompt=None,setFocus=True):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+        
+    isText = g.app.gui.isTextWidget(w)
+
+    # This fixes a problem with the tk gui plugin.
+    if mode and mode.lower().startswith('isearch'):
+        return
+
+    wname = g.app.gui.widget_name(w).lower()
+    
+    # 2011/02/12: get the wrapper for the headline widget.
+    if wname.startswith('head'):
+        if hasattr(c.frame.tree,'getWrapper'):
+            if hasattr(w,'widget'): w2 = w.widget
+            else: w2 = w
+            w = c.frame.tree.getWrapper(w2,item=None)
+            isText = bool(w) # A benign hack.
+
+    if trace: g.trace('state: %s, text?: %s, w: %s' % (
+        state,isText,w))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    else:
+        s = '%s State' % state.capitalize()
+        if c.editCommands.extendMode:
+            s = s + ' (Extend Mode)'
+            
+    if trace: g.trace('w',w,'s',s)
+            
+    if s:
+        k.setLabelBlue(label=s,protect=True)
+    if w and isText:
+        k.showStateColors(inOutline,w)
+        k.showStateCursor(state,w)
+#@+node:ekr.20080512115455.1: *5* k.showStateColors (changed)
+def showStateColors (self,inOutline,w):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    
+    if c.use_focus_border:
+        return
+
+    # This is now deprecated.
+    state = k.unboundKeyAction
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    w_name = g.app.gui.widget_name(w)
+
+    if w_name.startswith('body'):
+        w = c.frame.body
+    elif w_name.startswith('head'):
+        pass
+    else:
+        # Don't recolor the minibuffer, log panes, etc.
+        if trace: g.trace('not body or head')
+        return
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    if hasattr(w,'setEditorColors'):
+        # Note: fg color has no effect on Qt at present.
+        w.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            pass # g.es_exception()
+#@+node:ekr.20061031131434.133: *5* setInputState
+def setInputState (self,state,set_border=False):
+
+    c,k = self.c,self
+    k.unboundKeyAction = state
+
+    if set_border and c.frame and c.frame.body:
+        w = c.frame.body.bodyCtrl
+        if hasattr(w,'widget'):
+            g.app.gui.add_border(c,w.widget)
+#@+node:ekr.20110605121601.18187: *5* setEditorColors (qtBody)
+def setEditorColors (self,bg,fg):
+    
+    trace = False and not g.unitTesting
+    
+    c = self.c
+
+    if c.use_focus_border:
+        return
+      
+    # Deprecated.  This can cause unwanted scrolling.
+    obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
+
+    class_name = obj.__class__.__name__
+    if  class_name != 'LeoQTextBrowser':
+        if trace: g.trace('unexpected object',obj)
+        return
+    
+    def check(color,kind,default):
+        if color in ('none','None',None):
+            return default
+        if QtGui.QColor(color).isValid():
+            return color
+        if color not in self.badFocusColors:
+            self.badFocusColors.append(color)
+            g.warning('invalid body %s color: %s' % (kind,color))
+        return default
+
+    bg = check(bg,'background','white')
+    fg = check(fg,'foreground','black')
+
+    if trace: g.trace(bg,fg,obj)
+
+    # Set the stylesheet only for the QTextBrowser itself,
+    # *not* the other child widgets:
+    # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
+        
+    sheet = 'background-color: %s; color: %s' % (bg,fg)
+
+    g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
+#@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
+def update_style_sheet (self,w,key,value,selector=None):
+    
+    trace = False and not g.unitTesting
+    verbose = True
+    
+    # Step one: update the dict.
+    d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+
+    d[key] = value
+    aList = [d.get(key) for key in list(d.keys())]
+    w.leo_styles_dict = d
+    
+    # Step two: update the stylesheet.
+    s = '; '.join(aList)
+    
+    if selector:
+        s = '%s { %s }' % (selector,s)
+        
+    old = str(w.styleSheet())
+    if old == s:
+        # if trace: g.trace('no change')
+        return
+        
+    if trace:
+        if verbose:
+            g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
+        else:
+            g.trace(s)
+
+    # This call is responsible for the unwanted scrolling!
+    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
+    w.setStyleSheet(s)
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

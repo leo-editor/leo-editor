@@ -86,10 +86,10 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         QtGui.QTextBrowser.__init__(self,parent)
         
-        # Debugging code for the scroll bug.
-        # self.leo_vsb = vsb = self.verticalScrollBar()
-        # vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
-            # self.onSliderChanged)
+        # This event handler is the easy way to keep track of the vertical scroll position.
+        self.leo_vsb = vsb = self.verticalScrollBar()
+        vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
+            self.onSliderChanged)
         
         # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
         
@@ -418,10 +418,17 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if trace: g.trace(pos,g.callers())
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-    #@+node:ekr.20120925061642.13506: *4* onSliderChanged (LeoQTextBrowser) (not used)
+    #@+node:ekr.20120925061642.13506: *4* onSliderChanged (LeoQTextBrowser)
     def onSliderChanged(self,arg):
         
-        g.trace(arg,g.callers())
+        c = self.leo_c
+        p = c.p
+        
+        if p:
+            # g.trace(arg,c.p.v.h,g.callers())
+            p.v.scrollBarSpot = arg
+        
+        
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -501,17 +508,11 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
                 
-                # 2012/09/25: Calling k.keyboardQuit may call w.setStyleSheet.
-                # This generates a layout-request event, which spoils the scroll.
-                # The following lockout makes *sure* that this does not happen.
-                
-                # 2012/09/25: Disable this eliminates the unwanted scrolling.
-                try:
-                    g.app.gui.lockout_style_sheet = True
-                    c.k.keyboardQuit(setFocus=False)
-                finally:
-                    g.app.gui.lockout_style_sheet = False
-                
+                # 2012/09/25: Calling k.keyboardQuit calls k.showStateColors.
+                # This used to call w.setStyleSheet, which caused unwanted scroll.
+                # The solution to this problem is to color border by
+                # coloring the innerBodyFrame using a QPainter.
+                c.k.keyboardQuit(setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
@@ -2768,8 +2769,14 @@ class leoQtBody (leoFrame.leoBody):
         
         trace = False and not g.unitTesting
         
+        c = self.c
+
+        if c.use_focus_border:
+            return
+          
+        # Deprecated.  This can cause unwanted scrolling.
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
-        
+
         class_name = obj.__class__.__name__
         if  class_name != 'LeoQTextBrowser':
             if trace: g.trace('unexpected object',obj)
@@ -2787,7 +2794,7 @@ class leoQtBody (leoFrame.leoBody):
 
         bg = check(bg,'background','white')
         fg = check(fg,'foreground','black')
-        
+
         if trace: g.trace(bg,fg,obj)
 
         # Set the stylesheet only for the QTextBrowser itself,
@@ -3563,9 +3570,6 @@ class leoQtBody (leoFrame.leoBody):
             bg = self.unselectedBackgroundColor
             fg = self.unselectedForegroundColor
             c.frame.body.setEditorColors(bg,fg)
-
-        if not c.config.getBool("maintain_scroll"): w.widget.ensureCursorVisible()
-            # 2011/10/02: Fix cursor-movement bug.
     #@-others
 #@+node:ekr.20110605121601.18225: *3* class leoQtFindTab (findTab)
 class leoQtFindTab (leoFind.findTab):
@@ -4870,8 +4874,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # Fix bug 581031: Scrollbar position is not preserved.
         # This is better than adjust the scroll value directy.
         c.frame.tree.setItemForCurrentPosition(scroll=True)
-        w = c.frame.body.bodyCtrl.widget
-        w.ensureCursorVisible()
+        c.frame.body.seeInsertPoint()
     #@+node:ekr.20110605121601.18308: *6* resizeToScreen (qtFrame)
     def resizeToScreen (self,event=None):
 
@@ -7523,7 +7526,6 @@ class leoQtGui(leoGui.leoGui):
         
         # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
-        self.lockout_style_sheet = False
         
         # Put up the splash screen()
         if (g.app.use_splash_screen and
@@ -7582,6 +7584,8 @@ class leoQtGui(leoGui.leoGui):
             elif name.startswith('head'):
                 pass
             else:
+                # Always use the default border color for the tree.
+                color = c.focus_border_color
                 sheet = "border: %spx solid %s" % (c.focus_border_width,color)
                 self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
     #@+node:ekr.20120927164343.10093: *5* remove_border (qtGui)
@@ -8049,7 +8053,7 @@ class leoQtGui(leoGui.leoGui):
         # This is called several times for each window activation.
         # We only need to set the focus once.
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         if trace: g.trace(tag)
         
@@ -8057,6 +8061,7 @@ class leoQtGui(leoGui.leoGui):
             self.active = True
             # Retain the focus that existed when the deactivate event happened.
                 # c.bodyWantsFocusNow()
+            c.p.v.restoreCursorAndScroll()
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
     def onDeactivateEvent (self,event,c,obj,tag):
@@ -8446,7 +8451,7 @@ class leoQtGui(leoGui.leoGui):
     def update_style_sheet (self,w,key,value,selector=None):
         
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         
         # Step one: update the dict.
         d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
@@ -8471,10 +8476,6 @@ class leoQtGui(leoGui.leoGui):
                 g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
             else:
                 g.trace(s)
-            
-        # if g.app.gui.lockout_style_sheet == True:
-            # if trace: g.trace('lockout_style_sheet is True')
-            # return
 
         # This call is responsible for the unwanted scrolling!
         # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.

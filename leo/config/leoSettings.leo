@@ -107,7 +107,7 @@
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 <v t="ekr.20081018053140.12"></v>
 <v t="ekr.20080326060254.3"><vh>@string target_language = plain</vh></v>
-<v t="ekr.20041213105007.2"><vh>Body pane colors</vh>
+<v t="ekr.20041213105007.2"><vh>Body pane colors (deprecated)</vh>
 <v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
 <v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
 <v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
@@ -226,8 +226,8 @@
 <v t="ekr.20111023095357.16694"><vh>@bool use_focus_border = True</vh></v>
 <v t="ekr.20111103073536.16580"><vh>@bool use_body_focus_border = True</vh></v>
 <v t="ekr.20111023095357.16695"><vh>@int focus_border_width = 1</vh></v>
-<v t="ekr.20111023095357.16696"><vh>@color focus_border_color = red</vh></v>
-<v t="ekr.20120519193555.11830"><vh>@color focus_border_command_state_color = blue</vh></v>
+<v t="ekr.20111023095357.16696"><vh>@color focus_border_color = blue</vh></v>
+<v t="ekr.20120519193555.11830"><vh>@color focus_border_command_state_color = red</vh></v>
 <v t="ekr.20120520053551.11241"><vh>@color focus_border_overwrite_state_color = green</vh></v>
 </v>
 <v t="ekr.20110611092035.16490"><vh>Windows</vh>

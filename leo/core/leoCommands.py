@@ -1629,7 +1629,7 @@ class Commands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
-        if inBody: p.saveCursorAndScroll(w)
+        if inBody: p.saveCursorAndScroll()
         
         if g.unitTesting and g.app.unitTestDict.get('init_error_dialogs') is not None:
             # A kludge for unit testing:
@@ -1695,7 +1695,7 @@ class Commands (object):
         # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocus()
-            p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+            p.restoreCursorAndScroll()
         else:
             c.treeWantsFocus()
     #@+node:ekr.20110228162720.13980: *6* c.saveAll
@@ -1721,7 +1721,7 @@ class Commands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
-        if inBody: p.saveCursorAndScroll(w)
+        if inBody: p.saveCursorAndScroll()
 
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
@@ -1765,7 +1765,7 @@ class Commands (object):
         # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocus()
-            p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+            p.restoreCursorAndScroll()
         else:
             c.treeWantsFocus()
     #@+node:ekr.20031218072017.2836: *6* c.saveTo
@@ -1777,7 +1777,7 @@ class Commands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
-        if inBody: p.saveCursorAndScroll(w)
+        if inBody: p.saveCursorAndScroll()
 
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
@@ -1811,7 +1811,7 @@ class Commands (object):
         # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocus()
-            p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+            p.restoreCursorAndScroll()
         else:
             c.treeWantsFocus()
     #@+node:ekr.20031218072017.2837: *6* c.revert
@@ -2977,8 +2977,7 @@ class Commands (object):
 
             w.setInsertPoint(ins)
             c.bodyWantsFocus()
-            if g.trace_scroll: g.trace('seeInsertPoint',ins)
-            w.seeInsertPoint()
+            c.frame.body.seeInsertPoint()
         #@-others
     #@+node:ekr.20031218072017.2884: *5* Edit Body submenu
     #@+node:ekr.20031218072017.1827: *6* c.findMatchingBracket, helper and test

@@ -3335,6 +3335,8 @@ def add_border(self,c,w):
         elif name.startswith('head'):
             pass
         else:
+            # Always use the default border color for the tree.
+            color = c.focus_border_color
             sheet = "border: %spx solid %s" % (c.focus_border_width,color)
             self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
 .. @+node:ekr.20120927164343.10093: *7* remove_border (qtGui)
@@ -3365,7 +3367,7 @@ def paint_qframe (self,w,color):
 def update_style_sheet (self,w,key,value,selector=None):
     
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     
     # Step one: update the dict.
     d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
@@ -3390,10 +3392,6 @@ def update_style_sheet (self,w,key,value,selector=None):
             g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
         else:
             g.trace(s)
-        
-    # if g.app.gui.lockout_style_sheet == True:
-        # if trace: g.trace('lockout_style_sheet is True')
-        # return
 
     # This call is responsible for the unwanted scrolling!
     # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
@@ -4832,7 +4830,7 @@ def selectHelper (self,p,scroll):
         
     c.setCurrentPosition(p)
     << set the current node >>
-    p.restoreCursorAndScroll(w)
+    p.restoreCursorAndScroll()
         # Was in setBodyTextAfterSelect (in <select the new node>)
     c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
     c.frame.updateStatusLine() # New in Leo 4.4.1.
@@ -4849,27 +4847,6 @@ def selectHelper (self,p,scroll):
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 .. @+node:ekr.20120325072403.7771: *6* << unselect the old node >> (selectHelper)
-# Remember the position of the scrollbar *before* making any changes.
-# This does not work if we are switching body editors!
-    # if old_p:
-        # old_p.v.scrollBarSpot = yview = body.getYScrollPosition() if body else None
-        # if trace: g.trace('old scroll: %3s insert: %3s %s' % (
-            # yview,old_p.v.insertSpot,old_p.h))
-        
-# Remember the selection range and insert point.
-# This does not work if we are switching body editors!
-# Instead, w.setInsertPoint and w.setSelectionRangeHelper should do the saving.
-
-    # if old_p and body:
-        # old_p.v.insertSpot = ins = body.getInsertPoint()
-        # i,j = body.getSelectionRange()
-        # assert(i<=j)
-        # old_p.v.selectionStart = i
-        # old_p.v.selectionLength = j-i
-        # if trace: g.trace(i,j,ins)
-    
-# New in Leo 4.10: the code sets v.insertSpot as soon as it changes (not here).
-
 if old_p != p:
     self.endEditLabel() # sets editPosition = None
     self.setUnselectedLabelState(old_p)

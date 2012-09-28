@@ -766,13 +766,13 @@ class position (object):
 
         return self.v.setSelection(start,length)
     #@+node:ekr.20100303074003.5637: *5* p.restore/saveCursorAndScroll
-    def restoreCursorAndScroll (self,w):
+    def restoreCursorAndScroll (self):
 
-        self.v.restoreCursorAndScroll(w)
+        self.v.restoreCursorAndScroll()
 
-    def saveCursorAndScroll (self,w):
+    def saveCursorAndScroll (self):
 
-        self.v.saveCursorAndScroll(w)
+        self.v.saveCursorAndScroll()
     #@+node:ekr.20040315034158: *4* p.setBodyString & setHeadString
     def setBodyString (self,s):
 
@@ -2411,16 +2411,17 @@ class vnode (baseVnode):
     def setIcon (self):
 
         pass # Compatibility routine for old scripts
-    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll (changed 4.10)
+    #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
     # Called only by leoTree.selectHelper.
 
-    def restoreCursorAndScroll (self,w):
+    def restoreCursorAndScroll (self):
         
         trace = (False or g.trace_scroll) and not g.unitTesting
-        v = self
+        v = self ; c = self.context
         ins = v.insertSpot
         start,n = v.selectionStart,v.selectionLength
         spot = v.scrollBarSpot
+        w = c.frame.body
         
         # Fix bug 981849: incorrect body content shown.
         if ins is None: ins = 0
@@ -2435,18 +2436,16 @@ class vnode (baseVnode):
             w.setYScrollPosition(spot)
         v.scrollBarSpot = spot
             
-        if trace:
-            g.trace(spot,v.h)
-            # g.trace('start: %s n: %s ins: %s spot: %s %s' % (
-                # start,n,ins,spot,v.h))
+        if trace: g.trace(spot,v.h)
             
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
-    def saveCursorAndScroll(self,w):
+    def saveCursorAndScroll(self):
         
         trace = (False or g.trace_scroll) and not g.unitTesting
 
-        v = self
+        v = self ; c = v.context
+        w = c.frame.body
         if not w: return
         
         try:

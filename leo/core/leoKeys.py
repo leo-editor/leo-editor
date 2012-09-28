@@ -3298,10 +3298,6 @@ class keyHandlerClass:
         w.setAllText(s)
         n = len(s)
         w.setSelectionRange(n,n,insert=n)
-        
-        w2 = c.frame.body.bodyCtrl.widget
-        if not c.config.getBool("maintain_scroll") and w2: w2.ensureCursorVisible()
-            # 2011/10/02: Fix cursor-movement bug.
 
         if protect:
             k.mb_prefix = s
@@ -4445,20 +4441,22 @@ class keyHandlerClass:
         if w and isText:
             k.showStateColors(inOutline,w)
             k.showStateCursor(state,w)
-    #@+node:ekr.20080512115455.1: *4* showStateColors
+    #@+node:ekr.20080512115455.1: *4* k.showStateColors (changed)
     def showStateColors (self,inOutline,w):
 
         trace = False and not g.unitTesting
-        k = self ; c = k.c ; state = k.unboundKeyAction
+        k = self ; c = k.c
+        
+        if c.use_focus_border:
+            return
 
-        # body = c.frame.body ; bodyCtrl = body.bodyCtrl
-        w_name = g.app.gui.widget_name(w)
-
+        # This is now deprecated.
+        state = k.unboundKeyAction
         if state not in ('insert','command','overwrite'):
             g.trace('bad input state',state)
 
-        # if trace: g.trace('%9s' % (state),w_name)
-        
+        w_name = g.app.gui.widget_name(w)
+
         if w_name.startswith('body'):
             w = c.frame.body
         elif w_name.startswith('head'):
@@ -4467,7 +4465,6 @@ class keyHandlerClass:
             # Don't recolor the minibuffer, log panes, etc.
             if trace: g.trace('not body or head')
             return
-
         if state == 'insert':
             bg = k.insert_mode_bg_color
             fg = k.insert_mode_fg_color

@@ -2121,27 +2121,6 @@ class leoTree:
         if unselect:
             #@+<< unselect the old node >>
             #@+node:ekr.20120325072403.7771: *5* << unselect the old node >> (selectHelper)
-            # Remember the position of the scrollbar *before* making any changes.
-            # This does not work if we are switching body editors!
-                # if old_p:
-                    # old_p.v.scrollBarSpot = yview = body.getYScrollPosition() if body else None
-                    # if trace: g.trace('old scroll: %3s insert: %3s %s' % (
-                        # yview,old_p.v.insertSpot,old_p.h))
-                    
-            # Remember the selection range and insert point.
-            # This does not work if we are switching body editors!
-            # Instead, w.setInsertPoint and w.setSelectionRangeHelper should do the saving.
-
-                # if old_p and body:
-                    # old_p.v.insertSpot = ins = body.getInsertPoint()
-                    # i,j = body.getSelectionRange()
-                    # assert(i<=j)
-                    # old_p.v.selectionStart = i
-                    # old_p.v.selectionLength = j-i
-                    # if trace: g.trace(i,j,ins)
-                
-            # New in Leo 4.10: the code sets v.insertSpot as soon as it changes (not here).
-
             if old_p != p:
                 self.endEditLabel() # sets editPosition = None
                 self.setUnselectedLabelState(old_p)
@@ -2195,7 +2174,7 @@ class leoTree:
         c.treeFocusHelper() # 2010/12/14
         c.undoer.onSelect(old_p,p)
         #@-<< set the current node >>
-        p.restoreCursorAndScroll(w)
+        p.restoreCursorAndScroll()
             # Was in setBodyTextAfterSelect (in <select the new node>)
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
         c.frame.updateStatusLine() # New in Leo 4.4.1.
@@ -2232,7 +2211,7 @@ class leoTree:
             self.frame.body.recolor(p)
 
         # This is now done after c.p has been changed.
-            # p.restoreCursorAndScroll(w)
+            # p.restoreCursorAndScroll()
     #@+node:ekr.20031218072017.3718: *3* oops
     def oops(self):
 
