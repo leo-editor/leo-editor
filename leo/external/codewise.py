@@ -249,7 +249,7 @@ def cmd_tags(args):
     cw.feed_ctags(open(args[0]))
 
 #@+node:ekr.20110310093050.14234: *3* functions from leoGlobals
-#@+node:ekr.20110310093050.14291: *4* Most common functions...
+#@+node:ekr.20110310093050.14291: *4* Most common functions... (codewise.py)
 #@+node:ekr.20110310093050.14296: *5* callers & _callerName (codewise)
 def callers (n=4,count=0,excludeCaller=True,files=False):
 

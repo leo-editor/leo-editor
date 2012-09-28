@@ -1100,7 +1100,7 @@ class LeoApp:
 
         """set the frame to which log messages will go"""
 
-        # print("app.setLog:",log,g.callers())
+        # print("app.setLog:",log)
         if not self.logIsLocked:
             self.log = log
 

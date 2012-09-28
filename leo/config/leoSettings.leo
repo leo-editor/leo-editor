@@ -124,6 +124,7 @@
 </v>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
+<v t="ekr.20120928142052.11488"><vh>@color log_warning_color = blue</vh></v>
 <v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
 <v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
 <v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
@@ -9472,6 +9473,7 @@ do-nothing = Shift-F12</t>
 <t tx="ekr.20120519193555.11830"></t>
 <t tx="ekr.20120520053551.11241"></t>
 <t tx="ekr.20120926072255.11432"></t>
+<t tx="ekr.20120928142052.11488"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

@@ -28,6 +28,12 @@
 <v t="ekr.20110521072459.2464"><vh>@@color keyword3_color = orange</vh></v>
 <v t="ekr.20110521072459.2465"><vh>@@color keyword4_color = pink</vh></v>
 </v>
+<v t="ekr.20120928143821.3161"><vh>Log pane colors</vh>
+<v t="ekr.20120928143821.3162"><vh>@@color log_error_color = orange</vh></v>
+<v t="ekr.20120928143821.3168"><vh>@@color log_warning_color = purple</vh></v>
+<v t="ekr.20120928143821.3163"><vh>@@color log_text_foreground_color = pink</vh></v>
+<v t="ekr.20120928143821.3164"><vh>@@color log_text_background_color = None</vh></v>
+</v>
 <v t="ekr.20100118190256.2015"><vh>Files &amp; directories</vh>
 <v t="ekr.20101009105505.2295"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
@@ -10315,5 +10321,12 @@ g.cls()</t>
 <t tx="ekr.20120928085003.3150">g.note('note')
 g.warning('warning')
 g.error('oops')</t>
+<t tx="ekr.20120928143821.3161"></t>
+<t tx="ekr.20120928143821.3162">Color for error messages written to the log window.</t>
+<t tx="ekr.20120928143821.3163">Foreground color of log text.
+
+</t>
+<t tx="ekr.20120928143821.3164">Background color of log text.</t>
+<t tx="ekr.20120928143821.3168"></t>
 </tnodes>
 </leo_file>

@@ -2604,7 +2604,7 @@ def enl(tabName='Log'):
     if log and not log.isNull:
         log.newlines += 1
         log.putnl(tabName)
-#@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue(To be changed)
+#@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
 def blue (*args,**keys):
     g.es_print(color='blue',*args,**keys)
 
@@ -2612,7 +2612,7 @@ def error (*args,**keys):
     g.es_print(color='red',*args,**keys)
     
 def note (*args,**keys):
-    g.es_print(*args,**keys)
+    g.es_print(color='black',*args,**keys)
     
 def red (*args,**keys):
     g.es_print(color='red',*args,**keys)
@@ -2643,6 +2643,8 @@ def es(*args,**keys):
     d = g.doKeywordArgs(keys,d)
     color = d.get('color')
     if color == 'suppress': return # New in 4.3.
+    if log:
+        color = g.getActualColor(color)
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args,d)
@@ -2694,6 +2696,24 @@ def es_trace(*args,**keys):
             pass
 
     g.es(*args,**keys)
+#@+node:ekr.20120928142052.10116: *3* g.getActualColor
+def getActualColor(color):
+    
+    if not g.app.log:
+        return color
+        
+    c = g.app.log.c
+    d = {
+        'black':'log_text_foreground_color',
+        'blue': 'log_warning_color',
+        'red':  'log_error_color',
+    }
+    
+    setting = d.get(color)
+    color2 = c.config.getColor(setting) or color if setting else color
+    
+    # g.trace(color,color2)
+    return color2
 #@+node:ekr.20100126062623.6240: *3* g.internalError
 def internalError (*args):
 
