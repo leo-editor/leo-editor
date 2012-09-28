@@ -2325,6 +2325,65 @@ def update_style_sheet (self,w,key,value,selector=None):
 
 The maintain_scroll options is *evil*.
 #@+node:ekr.20120928142052.13478: *5* changed
+#@+node:ekr.20110605121601.18006: *6*   ctor (LeoQTextBrowser)
+def __init__(self,parent,c,wrapper):
+    
+    for attr in ('leo_c','leo_wrapper',):
+        assert not hasattr(QtGui.QTextBrowser,attr),attr
+
+    self.leo_c = c
+    self.leo_wrapper = wrapper
+    self.htmlFlag = True
+
+    QtGui.QTextBrowser.__init__(self,parent)
+    
+    # This event handler is the easy way to keep track of the vertical scroll position.
+    self.leo_vsb = vsb = self.verticalScrollBar()
+    vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
+        self.onSliderChanged)
+    
+    # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
+    
+    # For QCompleter
+    self.leo_q_completer = None
+    self.leo_options = None
+    self.leo_model = None
+#@+node:ekr.20061031170011.8: *6* k.setLabel
+def setLabel (self,s,protect=False):
+
+    trace = (False or g.trace_minibuffer) and not g.app.unitTesting
+    k = self ; c = k.c ; w = self.w
+    if not w: return
+
+    if trace: g.trace(repr(s),w)
+
+    w.setAllText(s)
+    n = len(s)
+    w.setSelectionRange(n,n,insert=n)
+
+    if protect:
+        k.mb_prefix = s
+#@+node:ekr.20110605121601.18480: *6* onActivateEvent (qtGui)
+# Called from eventFilter
+
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    trace = True and not g.unitTesting
+
+    if trace: g.trace(tag)
+    
+    if c.exists and tag == 'body':
+        self.active = True
+        # Retain the focus that existed when the deactivate event happened.
+            # c.bodyWantsFocusNow()
+        c.p.v.restoreCursorAndScroll()
+        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
 #@+node:ekr.20110605121601.18224: *6* onFocusColorHelper (qtBody)
 badFocusColors = []
 
@@ -2343,21 +2402,43 @@ def onFocusColorHelper(self,kind,obj):
         bg = self.unselectedBackgroundColor
         fg = self.unselectedForegroundColor
         c.frame.body.setEditorColors(bg,fg)
-#@+node:ekr.20061031170011.8: *6* k.setLabel
-def setLabel (self,s,protect=False):
+#@+node:ekr.20120925061642.13506: *6* onSliderChanged (LeoQTextBrowser)
+def onSliderChanged(self,arg):
+    
+    c = self.leo_c
+    p = c.p
+    
+    if p:
+        # g.trace(arg,c.p.v.h,g.callers())
+        p.v.scrollBarSpot = arg
+    
+    
+#@+node:ekr.20100216141722.5638: *6* showResults
+def showResults(self,found,p,n,n2,lines):
 
-    trace = (False or g.trace_minibuffer) and not g.app.unitTesting
-    k = self ; c = k.c ; w = self.w
-    if not w: return
+    trace = False and not g.unitTesting
+    c = self.c ; w = c.frame.body.bodyCtrl
 
-    if trace: g.trace(repr(s),w)
+    # Select p and make it visible.
+    c.redraw(p)
 
-    w.setAllText(s)
-    n = len(s)
-    w.setSelectionRange(n,n,insert=n)
+    # Put the cursor on line n2 of the body text.
+    s = w.getAllText()
+    if found:
+        ins = g.convertRowColToPythonIndex(s,n2-1,0)
+    else:
+        ins = len(s)
+        if len(lines) < n and not g.unitTesting:
+            g.warning('only',len(lines),'lines')
 
-    if protect:
-        k.mb_prefix = s
+    if trace:
+        i,j = g.getLine(s,ins)
+        g.trace('found: %5s %2s %2s %15s %s' % (
+            found,n,n2,p.h,repr(s[i:j])))  
+
+    w.setInsertPoint(ins)
+    c.bodyWantsFocus()
+    c.frame.body.seeInsertPoint()
 #@+node:ekr.20110605121601.18307: *6* toggleSplitDirection (qtFrame)
 def toggleSplitDirection (self,event=None):
 
@@ -2420,129 +2501,7 @@ def toggleSplitDirection (self,event=None):
     # This is better than adjust the scroll value directy.
     c.frame.tree.setItemForCurrentPosition(scroll=True)
     c.frame.body.seeInsertPoint()
-#@+node:ekr.20100216141722.5638: *6* showResults
-def showResults(self,found,p,n,n2,lines):
-
-    trace = False and not g.unitTesting
-    c = self.c ; w = c.frame.body.bodyCtrl
-
-    # Select p and make it visible.
-    c.redraw(p)
-
-    # Put the cursor on line n2 of the body text.
-    s = w.getAllText()
-    if found:
-        ins = g.convertRowColToPythonIndex(s,n2-1,0)
-    else:
-        ins = len(s)
-        if len(lines) < n and not g.unitTesting:
-            g.warning('only',len(lines),'lines')
-
-    if trace:
-        i,j = g.getLine(s,ins)
-        g.trace('found: %5s %2s %2s %15s %s' % (
-            found,n,n2,p.h,repr(s[i:j])))  
-
-    w.setInsertPoint(ins)
-    c.bodyWantsFocus()
-    c.frame.body.seeInsertPoint()
-#@+node:ekr.20110605121601.18480: *6* onActivateEvent (qtGui)
-# Called from eventFilter
-
-def onActivateEvent (self,event,c,obj,tag):
-
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    # This is called several times for each window activation.
-    # We only need to set the focus once.
-
-    trace = True and not g.unitTesting
-
-    if trace: g.trace(tag)
-    
-    if c.exists and tag == 'body':
-        self.active = True
-        # Retain the focus that existed when the deactivate event happened.
-            # c.bodyWantsFocusNow()
-        c.p.v.restoreCursorAndScroll()
-        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
-#@+node:ekr.20110607182447.16456: *5* Event handlers (qtGui)
-#@+node:ekr.20110605121601.18480: *6* onActivateEvent (qtGui)
-# Called from eventFilter
-
-def onActivateEvent (self,event,c,obj,tag):
-
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    # This is called several times for each window activation.
-    # We only need to set the focus once.
-
-    trace = True and not g.unitTesting
-
-    if trace: g.trace(tag)
-    
-    if c.exists and tag == 'body':
-        self.active = True
-        # Retain the focus that existed when the deactivate event happened.
-            # c.bodyWantsFocusNow()
-        c.p.v.restoreCursorAndScroll()
-        g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
-#@+node:ekr.20110605121601.18481: *6* onDeactiveEvent (qtGui)
-def onDeactivateEvent (self,event,c,obj,tag):
-
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    trace = False and not g.unitTesting
-
-    # This is called several times for each window activation.
-    # Save the headline only once.
-
-    if c.exists and tag.startswith('tree'):
-        self.active = False
-        if trace: g.trace()
-        c.k.keyboardQuit(setFocus=False)
-            # 2011/06/13.
-            # 2011/09/29. Don't change the tab in the log pane.
-        # c.endEditing()
-        g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
-#@+node:ekr.20120925061642.13506: *5* onSliderChanged (LeoQTextBrowser)
-def onSliderChanged(self,arg):
-    
-    c = self.leo_c
-    p = c.p
-    
-    if p:
-        # g.trace(arg,c.p.v.h,g.callers())
-        p.v.scrollBarSpot = arg
-    
-    
-#@+node:ekr.20110605121601.18006: *5*   ctor (LeoQTextBrowser)
-def __init__(self,parent,c,wrapper):
-    
-    for attr in ('leo_c','leo_wrapper',):
-        assert not hasattr(QtGui.QTextBrowser,attr),attr
-
-    self.leo_c = c
-    self.leo_wrapper = wrapper
-    self.htmlFlag = True
-
-    QtGui.QTextBrowser.__init__(self,parent)
-    
-    # This event handler is the easy way to keep track of the vertical scroll position.
-    self.leo_vsb = vsb = self.verticalScrollBar()
-    vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
-        self.onSliderChanged)
-    
-    # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
-    
-    # For QCompleter
-    self.leo_q_completer = None
-    self.leo_options = None
-    self.leo_model = None
-#@+node:ekr.20100303074003.5636: *5* v.restoreCursorAndScroll
+#@+node:ekr.20100303074003.5636: *6* v.restoreCursorAndScroll
 # Called only by leoTree.selectHelper.
 
 def restoreCursorAndScroll (self):
