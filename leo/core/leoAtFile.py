@@ -421,13 +421,13 @@ class atFile:
         at = self ; c = at.c ; p = c.p
 
         if not p.isAtFileNode() and not p.isAtThinFileNode():
-            return g.es('Please select an @thin or @file node',color='red')
+            return g.red('Please select an @thin or @file node')
 
         fn = p.anyAtFileNodeName()
         path = g.os_path_dirname(c.mFileName)
         fn = g.os_path_finalize_join(g.app.loadDir,path,fn)
         if not g.os_path_exists(fn):
-            return g.es_print('file not found: %s' % (fn),color='red')
+            return g.error('file not found: %s' % (fn))
 
         s,e = g.readFileIntoString(fn)
         if s is None: return
@@ -444,7 +444,7 @@ class atFile:
         at.readOpenFile(root,at.inputFile,fn)
         at.inputFile.close()
         if at.errors == 0:
-            g.es_print('check-derived-file passed',color='blue')
+            g.blue('check-derived-file passed')
     #@+node:ekr.20041005105605.19: *4* at.openFileForReading
     def openFileForReading(self,fromString=False):
 
@@ -516,8 +516,8 @@ class atFile:
         if root.isOrphan():
             g.es("reading:",root.h)
             # g.warning('The outline contains an orphan node!\nRetaining the outline')
-            g.es_print('orphan node in',root.h,color='red')
-            g.es_print('retaining the data from the .leo file',color='blue')
+            g.error('orphan node in',root.h)
+            g.blue('retaining the data from the .leo file')
             return False
         at.initReadIvars(root,fileName,
             importFileName=importFileName,atShadow=atShadow)
@@ -558,7 +558,7 @@ class atFile:
                 if 0: print("converting @file format in",root.h)
                 g.app.unitTestDict['read-convert']=True
             else:
-                g.es("converting @file format in",root.h,color='red')
+                g.red("converting @file format in",root.h)
         root.clearVisitedInTree()
 
         at.scanAllDirectives(root,importing=at.importing,reading=True)
@@ -622,8 +622,7 @@ class atFile:
         if hasattr(v,"tnodeList"):
 
             if False: # Not an error, but a useful trace.
-                s = "deleting tnodeList for " + repr(v)
-                g.es_print(s,color="blue")
+                g.blue("deleting tnodeList for " + repr(v))
 
             delattr(v,"tnodeList")
             v._p_changed = True
@@ -690,8 +689,8 @@ class atFile:
                 # g.trace(p.h,r.h)
                 pass 
             else:
-                g.es('resurrected node:',p.h,color='red')
-                g.es('in file:',root.h,color='blue')
+                g.error('resurrected node:',p.h)
+                g.blue('in file:',root.h)
 
         return callback
 
@@ -836,7 +835,7 @@ class atFile:
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         
         if not g.os_path_exists(fileName):
-            g.es_print('not found: @auto %s' % (fileName),color='red')
+            g.error('not found: @auto %s' % (fileName))
             return
 
         # 2010/7/28: Remember that we have seen the @auto node.
@@ -861,7 +860,7 @@ class atFile:
 
         if ic.errors:
             # Read the entire file into the node.
-            g.es_print('errors inhibited read @auto %s' % (fileName),color='red')
+            g.error('errors inhibited read @auto %s' % (fileName))
             g.es_print('reading entire file into @auto node.')
             at.readOneAtEditNode(fileName,p)
 
@@ -961,7 +960,7 @@ class atFile:
         ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
 
         if ic.errors:
-            g.es_print('errors inhibited read @shadow',fn,color='red')
+            g.error('errors inhibited read @shadow',fn)
 
         if ic.errors or not g.os_path_exists(fn):
             p.clearDirty()
@@ -1920,7 +1919,7 @@ class atFile:
 
         """Ignore an 3.x sentinel."""
 
-        g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
+        g.warning("ignoring 3.x sentinel:",s.strip())
     #@+node:ekr.20041005105605.102: *6* at.readAfterRef
     def  readAfterRef (self,s,i):
 
@@ -2065,7 +2064,7 @@ class atFile:
                     at.endSentinelComment = delim3
                 else:
                     line = g.get_line(s,i)
-                    g.es("ignoring bad @language sentinel:",line,color="red")
+                    g.error("ignoring bad @language sentinel:",line)
                 #@-<< handle @language >>
             elif g.match_word(s,i,"@comment"):
                 #@+<< handle @comment >>
@@ -2086,7 +2085,7 @@ class atFile:
                     self.endSentinelComment = delim3
                 else:
                     line = g.get_line(s,i)
-                    g.es("ignoring bad @comment sentinel:",line,color="red")
+                    g.error("ignoring bad @comment sentinel:",line)
                 #@-<< handle @comment >>
 
         # An @c or @code ends the doc part when using new sentinels.
@@ -2354,7 +2353,7 @@ class atFile:
                     except Exception:
                         pass
                     # This warning is given elsewhere.
-                    # g.es("changed:",p.h,color="blue")
+                    # g.warning("changed:",p.h)
     #@+node:ekr.20041005105605.119: *4* at.createImportedNode
     def createImportedNode (self,root,headline):
 
@@ -2674,7 +2673,7 @@ class atFile:
             ))
 
             if not g.unitTesting:
-                g.es_print("uncached read node changed",v.h,color="red")
+                g.error("uncached read node changed",v.h)
 
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
@@ -2705,7 +2704,7 @@ class atFile:
                 g.pr('\n','-' * 40)
         else:
             # This should never happen.
-            g.es("correcting hidden node: v=",repr(v),color="red")
+            g.error("correcting hidden node: v=",repr(v))
     #@+node:ekr.20100702062857.5824: *5* at.terminateBody
     def terminateBody (self,v,postPass=False):
 
@@ -2905,7 +2904,7 @@ class atFile:
 
         except IOError:
             if not g.app.unitTesting:
-                g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+                g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error',None
     #@+node:ekr.20041005105605.144: *4* at.write & helper
@@ -3104,7 +3103,7 @@ class atFile:
             # 2010/01/27: suppress this message during save-as and save-to commands.
             if pathChanged and not c.ignoreChangedPaths:
                 at.setPathUa(p,newPath) # Remember that we have changed paths.
-                g.es_print('path changed for',p.h,color='blue')
+                g.warning('path changed for',p.h)
                 if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
                     p.h,repr(oldPath),repr(newPath)))
 
@@ -3283,7 +3282,7 @@ class atFile:
                 ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
                 if ok:
                     found = True
-                    g.es('wrote %s' % p.atShadowFileNodeName(),color='blue')
+                    g.blue('wrote %s' % p.atShadowFileNodeName())
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
@@ -3313,7 +3312,7 @@ class atFile:
         fn = p.atShadowFileNodeName()
         if trace: g.trace(p.h,fn)
         if not fn:
-            g.es_print('can not happen: not an @shadow node',p.h,color='red')
+            g.error('can not happen: not an @shadow node',p.h)
             return False
 
         # A hack to support unknown extensions.
@@ -3389,7 +3388,7 @@ class atFile:
             root.clearOrphan()
             root.clearDirty()
         else:
-            g.es("not written:",at.outputFileName,color='red')
+            g.error("not written:",at.outputFileName)
             root.setDirty() # New in Leo 4.4.8.
             root.setOrphan() # 2010/10/22.
 
@@ -3508,7 +3507,7 @@ class atFile:
         if not fn and not toString: return False
 
         if p.hasChildren():
-            g.es('@edit nodes must not have children',color='red')
+            g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto or @thin')
             return False
 
@@ -3897,7 +3896,7 @@ class atFile:
         clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
         if clonedSibs > 1 and thisClonedSibIndex == 1:
             at.writeError("Cloned siblings are not valid in @thin trees")
-            g.es_print(p.h,color='red')
+            g.error(p.h)
 
         at.putOpenNodeSentinel(p)
         at.putBody(p) 
@@ -4463,7 +4462,7 @@ class atFile:
     #@+node:ekr.20090514111518.5666: *6* syntaxError (leoAtFile)
     def syntaxError(self,p,body):
 
-        g.es_print("Syntax error in: %s" % (p.h),color="red")
+        g.error("Syntax error in: %s" % (p.h))
         typ,val,tb = sys.exc_info()
         message = hasattr(val,'message') and val.message
         if message: g.es_print(message)
@@ -4491,21 +4490,21 @@ class atFile:
             if suppress:
                 raise
             else:
-                g.es("ParserError in",p.h,color="red")
+                g.error("ParserError in",p.h)
                 g.es('',str(msg))
         except IndentationError:
             junk, msg, junk = sys.exc_info()
             if suppress:
                 raise
             else:
-                g.es("IndentationError in",p.h,color="red")
+                g.error("IndentationError in",p.h)
                 g.es('',str(msg))
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
             if suppress:
                 raise
             else:
-                g.es("TokenError in",p.h,color="red")
+                g.error("TokenError in",p.h)
                 g.es('',str(msg))
         except tabnanny.NannyNag:
             junk, nag, junk = sys.exc_info()
@@ -4515,7 +4514,7 @@ class atFile:
                 badline = nag.get_lineno()
                 line    = nag.get_line()
                 message = nag.get_msg()
-                g.es("indentation error in",p.h,"line",badline,color="red")
+                g.error("indentation error in",p.h,"line",badline)
                 g.es(message)
                 line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n",line2)
@@ -4913,7 +4912,7 @@ class atFile:
                     self.endSentinelComment = delim3
                 else:
                     line = g.get_line(s,i)
-                    g.es("ignoring bad @language directive:",line,color="blue")
+                    g.warning("ignoring bad @language directive:",line)
             #@-<< handle @language >>
         elif g.match_word(s,k,"@comment"):
             #@+<< handle @comment >>
@@ -4938,7 +4937,7 @@ class atFile:
                     self.startSentinelComment = delim2
                     self.endSentinelComment = delim3
                 else:
-                    g.es("ignoring bad @comment directive:",line,color="blue")
+                    g.warning("ignoring bad @comment directive:",line)
             #@-<< handle @comment >>
         elif g.match_word(s,k,"@last"):
             self.putSentinel("@@last") # 10/27/03: Convert to an verbatim line _without_ anything else.
@@ -5010,7 +5009,7 @@ class atFile:
         theDir = g.os_path_dirname(fn)
         if theDir and not g.os_path_exists(theDir):
             if not g.unitTesting:
-                g.es('not written: %s directory not found' % fn,color='red')
+                g.error('not written: %s directory not found' % fn)
             return False
 
         # Replace
@@ -5076,7 +5075,7 @@ class atFile:
                 if ok:
                     g.es('unchanged:',self.shortFileName)
                 else:
-                    g.es('error writing',self.shortFileName,color='red')
+                    g.error('error writing',self.shortFileName)
                     g.es('not written:',self.shortFileName)
                     if root:
                         root.setDirty() # New in 4.4.8.
@@ -5095,7 +5094,7 @@ class atFile:
                         self.targetFileName,
                         ignoreLineEndings=True)):
 
-                    g.es("correcting line endings in:",self.targetFileName,color="blue")
+                    g.warning("correcting line endings in:",self.targetFileName)
                 #@-<< report if the files differ only in line endings >>
                 mode = self.stat(self.targetFileName)
                 ok = self.rename(self.outputFileName,self.targetFileName,mode)
@@ -5103,7 +5102,7 @@ class atFile:
                     c.setFileTimeStamp(self.targetFileName)
                     g.es('wrote:',self.shortFileName)
                 else:
-                    g.es('error writing',self.shortFileName,color='red')
+                    g.error('error writing',self.shortFileName)
                     g.es('not written:',self.shortFileName)
                     if root:
                         root.setDirty() # New in 4.4.8.
@@ -5143,7 +5142,7 @@ class atFile:
             if not p.v.isVisited():
                 at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():
-                    g.es("parent node:",p.parent().h,color="blue")
+                    g.blue("parent node:",p.parent().h)
                 if not at.thinFile and p.isAtIgnoreNode():
                     at.writeError("@ignore node: " + p.h)
 
@@ -5177,7 +5176,7 @@ class atFile:
     #@+node:ekr.20041005105605.218: *4* writeException
     def writeException (self,root=None): # changed 11.
 
-        g.es("exception writing:",self.targetFileName,color="red")
+        g.error("exception writing:",self.targetFileName)
         g.es_exception()
 
         if self.outputFile:
@@ -5206,8 +5205,12 @@ class atFile:
         '''Print an error message that may contain non-ascii characters.'''
 
         at = self
-        keys = {'color': g.choose(at.errors,'blue','red')}
-        g.es_print_error(*args,**keys)
+        # keys = {'color': g.choose(at.errors,'blue','red')}
+        # g.es_print_error(*args,**keys)
+        if at.errors:
+            g.error(*args)
+        else:
+            g.warning(*args)
     #@+node:ekr.20041005105605.221: *3* at.exception
     def exception (self,message):
 
@@ -5435,8 +5438,7 @@ class atFile:
             d[key] = g.choose(val is None,default,val)
 
         if issuePathWarning and g.app.atPathInBodyWarning:
-            g.es('warning: ignoring @path directive in',
-                g.app.atPathInBodyWarning,color='red')
+            g.error('warning: ignoring @path directive in',g.app.atPathInBodyWarning)
 
         # Post process.
         lineending  = d.get('lineending')
@@ -5582,6 +5584,6 @@ class atFile:
             read_only = False 
 
         if read_only:
-            g.es("read only:",fn,color="red")
+            g.error("read only:",fn)
     #@-others
 #@-leo

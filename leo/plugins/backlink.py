@@ -585,8 +585,8 @@ class backlinkController(object):
                     if link[0] == 'S':
                         lt = ('from', 'to')
                     # use g.es rather than showMessage here
-                    g.es('backlink: link %s %s %s ??? lost' % (
-                        lt[0], self.vnode[vnode].h, lt[1]), color='red')
+                    g.error('backlink: link %s %s %s ??? lost' % (
+                        lt[0], self.vnode[vnode].h, lt[1]))
                     continue
 
                 # check other end has link

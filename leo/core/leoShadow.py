@@ -669,7 +669,7 @@ class shadowController:
         x = self
 
         if not silent:
-            g.es_print(s,color='red')
+            g.error(s)
 
         # For unit testing.
         x.last_error = s

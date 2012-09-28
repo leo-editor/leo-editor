@@ -2028,7 +2028,7 @@ class AstDumper(object):
     #@+node:ekr.20111116103733.10276: *4* error (AstDumper)
     def error (self,s):
 
-        g.es_print(s,color='red')
+        g.error(s)
     #@+node:ekr.20111116103733.10277: *4* read_input_file
     def read_input_file (self,fn):
 

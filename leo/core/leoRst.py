@@ -491,7 +491,7 @@ class rstCommands:
         else:
             self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
-        g.es_print('done',color='blue')
+        g.blue('done')
     #@+node:ekr.20090502071837.63: *5* processTree
     def processTree(self,p,ext=None,toString=False,justOneFile=False):
 
@@ -524,7 +524,7 @@ class rstCommands:
                 p.moveToNodeAfterTree()
             else: p.moveToThreadNext()
         if not found:
-            g.es('No @rst or @slides nodes in selected tree',color='blue')
+            g.warning('No @rst or @slides nodes in selected tree')
         return None,None
     #@+node:ekr.20090502071837.64: *5* write_rst_tree
     def write_rst_tree (self,p,ext,fn,toString=False,justOneFile=False):
@@ -570,7 +570,7 @@ class rstCommands:
         c = self.c ; p = p.copy() ; h = p.h
         i = g.skip_id(h,1) # Skip the '@'
         kind,fn = h[:i].strip(),h[i:].strip()
-        if not fn: return g.es('%s requires file name' % (kind),color='red')
+        if not fn: return g.error('%s requires file name' % (kind))
         title = p and p.firstChild().h or '<no slide>'
         title = title.strip().capitalize()
         n_tot = p.numberOfChildren()
@@ -1193,8 +1193,7 @@ class rstCommands:
             # Do *not* set a default for overlining characters.
         if len(underlines2) > 1:
             underlines2 = underlines2[0]
-            g.trace('too many top-level underlines, using %s' % (
-                underlines2),color='blue')
+            g.warning('too many top-level underlines, using %s' % (underlines2))
         underlines1 = d.get('underlines1','')
         # Bug fix:  2010/05/26: pad underlines with default characters.
         default_underlines = '=+*^~"\'`-:><_'
@@ -1220,7 +1219,7 @@ class rstCommands:
         for z in lines:
             if z.strip() and not z.startswith('@') and not z.startswith('.. '):
                 # A real line that will not be written.
-                g.es('unsafe @auto-rst',color='red')
+                g.error('unsafe @auto-rst')
                 g.es('body text will be ignored in\n',p.h)
                 return False
         else:
@@ -1480,12 +1479,11 @@ class rstCommands:
                 # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
                 return { self.munge(name): val }
             else:
-                g.es_print('ignoring unknown option: %s' % (name),color='red')
+                g.error('ignoring unknown option:',name)
                 return {}
         else:
             g.trace(repr(s))
-            s2 = 'bad rst3 option in %s: %s' % (p.h,s)
-            g.es_print(s2,color='red')
+            g.error('bad rst3 option',s,'in',p.h)
             return {}
     #@+node:ekr.20090502071837.53: *5* scanOptions
     def scanOptions (self,p,s):
@@ -1556,7 +1554,7 @@ class rstCommands:
 
         # Special case.
         if self.getOption('http_server_support') and not mod_http:
-            g.es('No http_server_support: can not import mod_http plugin',color='red')
+            g.error('No http_server_support: can not import mod_http plugin')
             self.setOption('http_server_support',False)
     #@+node:ekr.20090502071837.56: *5* handleSingleNodeOptions
     def handleSingleNodeOptions (self,p):
@@ -1602,7 +1600,7 @@ class rstCommands:
             if justOneFile:
                 self.relocate_references(p.self_and_subtree)
 
-            g.es_print('html updated for http plugin',color="blue")
+            g.blue('html updated for http plugin')
 
             if self.getOption('clear_http_attributes'):
                 g.es_print("http attributes cleared")
@@ -1797,7 +1795,7 @@ class rstCommands:
         else:
             ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
             if not ok:
-                g.es_print('did not create:',theDir,color='red')
+                g.error('did not create:',theDir)
             return ok
     #@+node:ekr.20100813041139.5912: *5* createIntermediateFile (changed)
     def createIntermediateFile(self,fn,s):
@@ -1828,7 +1826,7 @@ class rstCommands:
         trace = False and not g.unitTesting
 
         if not docutils:
-            g.trace('docutils not present',color='red')
+            g.error('writeToDocutils: docutils not present')
             return None
 
         openDirectory = self.c.frame.openDirectory
@@ -1860,7 +1858,7 @@ class rstCommands:
                 if ext2 == ext:
                     break
             else:
-                g.es_print('unknown docutils extension: %s' % (ext),color='red')
+                g.error('unknown docutils extension: %s' % (ext))
                 return None
         
         if ext in ('.html','.htm') and not SilverCity:
@@ -1897,9 +1895,9 @@ class rstCommands:
             overrides.update(styleSheetArgsDict)
                 # MWC add args to settings
         elif rel_stylesheet_path == stylesheet_path:
-            g.es_print('stylesheet not found: %s' % (path),color='red')
+            g.error('stylesheet not found: %s' % (path))
         else:
-            g.es_print('stylesheet not found\n',path,color='red')
+            g.error('stylesheet not found\n',path)
             if self.path:g.es_print('@path:', self.path)
             g.es_print('open path:',self.c.frame.openDirectory)
             if rel_stylesheet_path:
@@ -1917,10 +1915,9 @@ class rstCommands:
             if g.isBytes(result):
                 result = g.toUnicode(result)
         except docutils.ApplicationError as error:
-            # g.es_print('Docutils error (%s):' % (
-                # error.__class__.__name__),color='red')
-            g.es_print('Docutils error:',color='red')
-            g.es_print(error,color='blue')
+            # g.error('Docutils error (%s):' % (error.__class__.__name__))
+            g.error('Docutils error:')
+            g.blue(error)
         except Exception:
             g.es_print('Unexpected docutils exception')
             g.es_exception()
@@ -2016,7 +2013,7 @@ class rstCommands:
 
             name = g.os_path_finalize(name)
 
-            g.es_print('wrote: %s' % (name),color="blue")
+            g.blue('wrote: %s' % (name))
     #@+node:ekr.20090502071837.92: *4* rstComment
     def rstComment (self,s):
 

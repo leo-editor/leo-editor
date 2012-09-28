@@ -90,7 +90,7 @@ if os.name == "dos" or os.name == "nt":
 else:
     Encoding = "ascii"
 
-# g.es("@run encoding: "+Encoding,color="blue")
+# g.blue("@run encoding: "+Encoding)
 
 # misc global variables...
 RunNode = None
@@ -138,7 +138,7 @@ def OnBodyKey(tag,keywords):
             In.flush()
             g.es(p.b)
         except IOError as ioerr:
-            g.es("[@run] IOError: "+str(ioerr),color="red")
+            g.error("[@run] IOError: "+str(ioerr))
             return
         c.setBodyText(p,"")
 #@+node:ekr.20040910070811.13: *3* OnIconDoubleClick
@@ -155,7 +155,7 @@ def OnIconDoubleClick(tag,keywords):
     h = p.h
     if g.match_word(h,0,"@run"):
         if RunNode or RunList:
-            g.es("@run already running!",color="red")
+            g.error("@run already running!")
         else:
             #@+<< handle double click in @run icon >>
             #@+node:ekr.20040910102554: *4* << handle double click in @run icon >>
@@ -182,7 +182,7 @@ def OnIconDoubleClick(tag,keywords):
                 In.flush()
                 g.es(b)
             except IOError as ioerr:
-                g.es("@run IOError: "+str(ioerr),color="red")
+                g.error("@run IOError: "+str(ioerr))
             #@-<< handle double click in @in icon >>
 #@+node:ekr.20040910070811.14: *3* OnIdle
 def OnIdle(tag,keywords):
@@ -221,7 +221,7 @@ def OnQuit(tag,keywords=None):
         g.disableIdleTimeHook()
         if RunNode:
             CloseProcess()
-        g.es("@run: forced quit!",color="red")
+        g.error("@run: forced quit!")
 #@+node:ekr.20040910070811.6: ** class readingThread
 class readingThread(threading.Thread):
 
@@ -280,9 +280,9 @@ def CloseProcess(c):
 
     # Write exit code.
     if ExitCode is None:
-        g.es("@run done",color="blue")
+        g.blue("@run done")
     else:
-        g.es("@run exits with code: %s" % (str(ExitCode)),color="red")	
+        g.error("@run exits with code: %s" % (str(ExitCode)))	
 
     # Redraw.
     c.redraw()
@@ -317,7 +317,7 @@ def OpenProcess(p):
             WorkDir=os.getcwd()
             os.chdir(path)
         else:
-            g.es("@run: invalid path: %s" % (path),color="red")
+            g.error("@run: invalid path: %s" % (path))
             return
     #@-<< set the working directory or return >>
     #@+<< set the command, removing all args following '#' >>
@@ -350,9 +350,9 @@ def OpenProcess(p):
                 args.append(child.b.strip())
     #@-<< append arguments from child nodes to command >>
 
-    g.es("@run %s>%s" % (os.getcwd(),command),color="blue")
+    g.blue("@run %s>%s" % (os.getcwd(),command))
     for arg in args:
-        g.es("@arg %s" % arg,color="blue")
+        g.blue("@arg %s" % arg)
     command += ' ' + ' '.join(args)
 
     # Start the threads and open the pipe.

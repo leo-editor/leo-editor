@@ -124,7 +124,7 @@
 </v>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20041119052015.2"><vh>@@color log_text_foreground_color = None</vh></v>
+<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
 <v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
 <v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
 <v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>

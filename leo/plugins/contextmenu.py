@@ -452,7 +452,7 @@ def editnode_on_idle (tag,keywords):
                             update = True
                         else:
                             # See how the user wants to resolve the conflict.
-                            g.es("conflict in " + g.shortFileName(path),color="red")
+                            g.error("conflict in " + g.shortFileName(path))
                             message = "Replace changed outline with external changes?"
                             result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
                             update = result.lower() == "yes"
@@ -460,7 +460,7 @@ def editnode_on_idle (tag,keywords):
                         update = s != body
 
                     if update:
-                        g.es("updated from: " + g.shortFileName(path),color="blue")
+                        g.blue("updated from: " + g.shortFileName(path))
                         s = g.toUnicode(s,encoding=encoding)
                         c.setBodyString(p,s)
                         #TL - 7/2/08 Converted to configurable 'goto node...'
@@ -471,7 +471,7 @@ def editnode_on_idle (tag,keywords):
                         if c.config.getBool('open_with_save_on_update'):
                             c.save()
                     elif conflict:
-                        g.es("not updated from: " + g.shortFileName(path),color="blue")
+                        g.blue("not updated from: " + g.shortFileName(path))
                     #@-<< update p's body text >>
             except Exception:
                 # g.es_exception()

@@ -249,7 +249,7 @@ def onIconDoubleClickNA(tag, keywords):
 #@+node:TL.20080507213950.7: ** init
 def init():
 
-	 g.es("nodeActions: Init", color='blue')
+	 g.blue("nodeActions: Init")
 	 ok = not g.app.unitTesting # Dangerous for unit testing.
 	 if ok:
 		  g.registerHandler("icondclick1", onIconDoubleClickNA)
@@ -275,8 +275,7 @@ def doNodeAction(pClicked, c):
    #Save @file type nodes before running script if enabled
    saveAtFile = c.config.getBool('nodeActions_save_atFile_nodes')
    if messageLevel >= 4:
-      g.es( "nA: Global nodeActions_save_atFile_nodes=", saveAtFile, \
-                                                         color='blue')
+      g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
    #Find the "nodeActions" node
    pNA = g.findNodeAnywhere(c,"nodeActions")
    if not pNA:
@@ -299,7 +298,7 @@ def doNodeAction(pClicked, c):
 
          pattern = pScript.h.strip()   #Pattern node's header
          if messageLevel >= 4:
-            g.es( "nA: Checking pattern '" + pattern, color='blue' )
+            g.blue( "nA: Checking pattern '" + pattern)
 
          #if directives exist, parse them and set directive flags for later use
          directiveExists = re.search( " \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
@@ -315,8 +314,7 @@ def doNodeAction(pClicked, c):
          #Remove the directives from the end of the pattern (if they exist)
          pattern = re.sub( " \[.*]$", "", pattern, 1)
          if messageLevel >= 4:
-            g.es( "nA:   Pattern='" + pattern + "' " \
-                                 + "(after directives removed)", color='blue' )
+            g.blue( "nA:   Pattern='" + pattern + "' " + "(after directives removed)")
 
          #Keep copy of pattern without directives for message log
          patternOriginal = pattern
@@ -333,8 +331,7 @@ def doNodeAction(pClicked, c):
                #Replace "@files" in pattern with clicked node's @file type
                pattern = re.sub( "^@files", firstWordInClickedHeader, pattern)
                if messageLevel >= 4:
-                  g.es( "nA:   Pattern='" + pattern + "' " \
-                               + "(after @files substitution)", color='blue' )
+                  g.blue( "nA:   Pattern='" + pattern + "' " + "(after @files substitution)")
 
          #Check for pattern match to clicked node's header
          if useRegEx:
@@ -343,10 +340,10 @@ def doNodeAction(pClicked, c):
             match = fnmatch.fnmatchcase(hClicked, pattern)
          if match:
             if messageLevel >= 1:
-               g.es( "nA: Matched pattern '" + patternOriginal + "'"																					, color='blue' )
+               g.blue( "nA: Matched pattern '" + patternOriginal + "'")
             if messageLevel >= 4:
-               g.es( "nA:   Directives: X=",useRegEx, "V=",passEventInternal, \
-                                        ">=",passEventExternal, color='blue')
+               g.blue( "nA:   Directives: X=",useRegEx, "V=",passEventInternal,
+                    ">=",passEventExternal,)
             #if @file type node, save node to disk (if configured)
             if clickedAtFileTypeNode:
                if saveAtFile:
@@ -355,7 +352,7 @@ def doNodeAction(pClicked, c):
                   c.requestRedrawFlag = True
                   c.redraw()
                   if messageLevel >= 3:
-                     g.es( "nA:   Saved '" + hClicked + "'", color='blue' )
+                     g.blue( "nA:   Saved '" + hClicked + "'")
             #Run the script
             applyNodeAction(pScript, pClicked, c)
             #Indicate that at least one pattern was matched
@@ -365,28 +362,28 @@ def doNodeAction(pClicked, c):
                break
          else:
             if messageLevel >= 3:
-               g.es("nA: Did not match '" + patternOriginal + "'", color='blue')
+               g.blue("nA: Did not match '" + patternOriginal + "'")
 
       #Finished checking headline against patterns
       if not foundPattern:
          #no match to any pattern, always pass event to next plugin
          if messageLevel >= 1:
-            g.es("nA: No patterns matched to """ + hClicked + '"', color='blue')
+            g.blue("nA: No patterns matched to """ + hClicked + '"')
          return False #TL - Inform onIconDoubleClick that no action was taken
       elif passEventExternal == True:
          #last matched pattern has directive to pass event to next plugin
          if messageLevel >= 2:
-            g.es("nA: Event passed to next plugin", color='blue')
+            g.blue("nA: Event passed to next plugin")
          return False #TL - Inform onIconDoubleClick to pass double-click event
       else:
          #last matched pattern did not have directive to pass event to plugin
          if messageLevel >= 2:
-            g.es("nA: Event not passed to next plugin", color='blue')
+            g.blue("nA: Event not passed to next plugin")
          return True #TL - Inform onIconDoubleClick to not pass double-click
    else:
       #nodeActions plugin enabled without a 'nodeActions' node
       if messageLevel >= 4:
-         g.es("nA: The ""nodeActions"" node does not exist", color='blue')
+         g.blue("nA: The ""nodeActions"" node does not exist")
       return False #TL - Inform onIconDoubleClick that no action was taken
 #@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):
@@ -438,7 +435,7 @@ def shellScriptInWindowNA(c,script):
         os.system("open -a /Applications/Utilities/Terminal.app " + path)
 
     elif sys.platform == 'win32':
-        g.es("shellScriptInWindow not ready for Windows",color='red')
+        g.error("shellScriptInWindow not ready for Windows")
 
     else:
         #@+<< write script to temporary Unix file >>

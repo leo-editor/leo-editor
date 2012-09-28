@@ -365,12 +365,12 @@ def on_open (tag,keywords):
     if not c: return
 
     p = c.rootPosition()
-    g.es("scanning for @read-only nodes...",color="blue")
+    g.blue("scanning for @read-only nodes...")
     while p:
         h = p.h
         if g.match_word(h,0,"@read-only"):
             changed = insert_read_only_node(c,p,h[11:])
-            g.es("changing %s" % p.h,color="red")
+            g.red("changing %s" % p.h)
             if changed:
                 if not p.isDirty():
                     p.setDirty()

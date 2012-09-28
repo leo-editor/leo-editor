@@ -738,12 +738,12 @@ class quickMoveButton:
         needs_undo = self.type_ != "jump"
 
         if not c.positionExists(p2):
-            g.es('Target no longer exists: %s' % self.targetHeadString,color='red')
+            g.error('Target no longer exists: %s' % self.targetHeadString)
             return
 
         if self.type_ in ('clone', 'move'):  # all others are always valid?
             if p.v == p2.v or not self.checkMove(p,p2):
-                g.es('Invalid move: %s' % (self.targetHeadString),color='red')
+                g.error('Invalid move: %s' % (self.targetHeadString))
                 return
 
         if needs_undo:

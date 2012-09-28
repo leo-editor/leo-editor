@@ -338,7 +338,7 @@ class scriptingController:
         c = self.c
 
         if c.disableCommandsMessage:
-            g.es(c.disableCommandsMessage,color='blue')
+            g.blue(c.disableCommandsMessage)
         else:
             g.app.scriptDict = {}
             c.executeScript(args=args,script=script,silent=True)
@@ -461,7 +461,7 @@ class scriptingController:
                     del sys.modules ['leoScriptModule'] # Essential.
                 import leo.core.leoScriptModule as leoScriptModule      
             else:
-                g.es('No debugger active',color='blue')
+                g.error('No debugger active')
 
         c.frame.bodyWantsFocus()
     #@+node:ekr.20060328125248.22: *4* createScriptButtonIconButton 'script-button' & callback
@@ -546,10 +546,10 @@ class scriptingController:
         theFile = g.toUnicode(theFile)
 
         if not self.atPluginNodes:
-            g.es("disabled @plugin: %s" % (theFile),color="blue")
+            g.warning("disabled @plugin: %s" % (theFile))
         # elif theFile in g.app.loadedPlugins:
         elif g.pluginIsLoaded(theFile):
-            g.es("plugin already loaded: %s" % (theFile),color="blue")
+            g.warning("plugin already loaded: %s" % (theFile))
         else:
             theModule = g.loadOnePlugin(theFile)
 
@@ -566,10 +566,10 @@ class scriptingController:
         args = self.getArgs(h)
 
         if self.atScriptNodes:
-            g.es("executing script %s" % (name),color="blue")
+            g.blue("executing script %s" % (name))
             c.executeScript(args=args,p=p,useSelectedText=False,silent=True)
         else:
-            g.es("disabled @script: %s" % (name),color="blue")
+            g.warning("disabled @script: %s" % (name))
 
         if 0:
             # Do not assume the script will want to remain in this commander.
@@ -665,7 +665,7 @@ class scriptingController:
         c = self.c
 
         if c.disableCommandsMessage:
-            g.es(c.disableCommandsMessage,color='blue')
+            g.blue(c.disableCommandsMessage)
         else:
             g.app.scriptDict = {}
             h = p.h
@@ -697,7 +697,7 @@ class scriptingController:
         # Truncate only the text of the button, not the command name.
         truncatedText = self.truncateButtonText(commandName)
         if not truncatedText.strip():
-            g.es_print('%s ignored: no cleaned text' % (text.strip() or ''),color='red')
+            g.error('%s ignored: no cleaned text' % (text.strip() or ''))
             return None
 
         # Command may be None.

@@ -719,7 +719,7 @@ class Leo_to_HTML(object):
         try:
             f = open(filepath, 'wb')
         except Exception:
-            g.es('can not open: %s' % (filepath),color='red')
+            g.error('can not open: %s' % (filepath))
             g.es_exception(full=False,c=self.c)
             return False
 
@@ -730,7 +730,7 @@ class Leo_to_HTML(object):
                     color=self.fileColor)
                 ok = True
             except Exception:
-                g.es('write failed: %s' % (filepath),color='red')
+                g.error('write failed: %s' % (filepath))
                 g.es_exception(full=False,c=self.c)
                 ok = False
         finally:

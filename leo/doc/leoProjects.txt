@@ -134,9 +134,9 @@ def doTests(c,all=None,marked=None,p=None,verbosity=1):
                 archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
                 c.cacher.db[key] = archive
         else:
-            g.es_print('no %s@test or @suite nodes in %s outline' % (
+            g.error('no %s@test or @suite nodes in %s outline' % (
                 g.choose(marked,'marked ',''),
-                g.choose(all,'entire','selected')),color='red')
+                g.choose(all,'entire','selected')))
     finally:
         c.setChanged(changed) # Restore changed state.
         if g.app.unitTestDict.get('restoreSelectedNode',True):
@@ -1905,9 +1905,9 @@ See http://stackoverflow.com/questions/9554435/qtextedit-background-color-change
 
     
 #@+node:ekr.20111022215436.16685: *5* Borders (qtGui)
+#@+node:ekr.20120927164343.10092: *6* add_border (qtGui)
 def add_border(self,c,w):
 
-    trace = False and not g.unitTesting
     state = c.k and c.k.unboundKeyAction
     
     if state and c.use_focus_border:
@@ -1917,14 +1917,39 @@ def add_border(self,c,w):
             'overwrite':c.focus_border_overwrite_state_color,
         }
         color = d.get(state,c.focus_border_color)
-        sheet = "border: %spx solid %s" % (c.focus_border_width,color)
-        self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
-
+        name = g.u(w.objectName())
+        if name =='richTextEdit':
+            w = c.frame.top.leo_body_inner_frame
+            self.paint_qframe(w,color)
+        elif name.startswith('head'):
+            pass
+        else:
+            sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10093: *6* remove_border (qtGui)
 def remove_border(self,c,w):
 
-    if c.use_focus_border:
-        sheet = "border: %spx solid white" % c.focus_border_width
+    if not c.use_focus_border:
+        return
+        
+    name = g.u(w.objectName())
+    width = c.focus_border_width
+    if w.objectName()=='richTextEdit':
+        w = c.frame.top.leo_body_inner_frame
+        self.paint_qframe(w,'white')
+    elif name.startswith('head'):
+        pass
+    else:
+        sheet = "border: %spx solid white" % width
         self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10094: *6* paint_qframe (qtGui)
+def paint_qframe (self,w,color):
+    
+    assert isinstance(w,QtGui.QFrame)
+    
+    # How's this for a kludge.
+    # Set this ivar for InnerBodyFrame.paintEvent.
+    g.app.gui.innerBodyFrameColor = color
 #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget)
 def setEditorColors(self,bg,fg):
     
@@ -1936,8 +1961,7 @@ def setEditorColors(self,bg,fg):
         if not QtGui.QColor(color).isValid():
             if color not in self.badFocusColors:
                 self.badFocusColors.append(color)
-                g.es_print('invalid head %s color: %s' % (
-                    kind,color),color='blue')
+                g.warning('invalid head %s color: %s' % (kind,color))
             color = default
         return color
 
@@ -1967,8 +1991,7 @@ def setEditorColors (self,bg,fg):
             return color
         if color not in self.badFocusColors:
             self.badFocusColors.append(color)
-            g.es_print('invalid body %s color: %s' % (
-                kind,color),color='blue')
+            g.warning('invalid body %s color: %s' % (kind,color))
         return default
 
     bg = check(bg,'background','white')
@@ -2004,19 +2027,21 @@ def update_style_sheet (self,w,key,value,selector=None):
         
     old = str(w.styleSheet())
     if old == s:
-        if trace: g.trace('no change')
+        # if trace: g.trace('no change')
         return
         
-    if g.app.gui.lockout_style_sheet == True:
-        if trace: g.trace('lockout_style_sheet is True')
-        return
+    if trace:
+        if verbose:
+            g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
+        else:
+            g.trace(s)
+        
+    # if g.app.gui.lockout_style_sheet == True:
+        # if trace: g.trace('lockout_style_sheet is True')
+        # return
 
-    if trace and verbose:
-        g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
-
-    # This call was responsible for the unwanted scrolling!
-    # Note that this apparently generates a layout-request event,
-    # and this event changes the scrollbars.
+    # This call is responsible for the unwanted scrolling!
+    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
     w.setStyleSheet(s)
 #@+node:ekr.20120602154454.10193: *4* Fixed import problems discovered by importing 2to3
 @language rest
@@ -2285,19 +2310,21 @@ def update_style_sheet (self,w,key,value,selector=None):
         
     old = str(w.styleSheet())
     if old == s:
-        if trace: g.trace('no change')
+        # if trace: g.trace('no change')
         return
         
-    if g.app.gui.lockout_style_sheet == True:
-        if trace: g.trace('lockout_style_sheet is True')
-        return
+    if trace:
+        if verbose:
+            g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
+        else:
+            g.trace(s)
+        
+    # if g.app.gui.lockout_style_sheet == True:
+        # if trace: g.trace('lockout_style_sheet is True')
+        # return
 
-    if trace and verbose:
-        g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
-
-    # This call was responsible for the unwanted scrolling!
-    # Note that this apparently generates a layout-request event,
-    # and this event changes the scrollbars.
+    # This call is responsible for the unwanted scrolling!
+    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
     w.setStyleSheet(s)
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
@@ -3315,7 +3342,7 @@ def runPropertiesDialog(self,
     """Dispay a modal TkPropertiesDialog"""
 
     # g.trace(data)
-    g.es_print('Properties menu not supported for Qt gui',color='blue')
+    g.warning('Properties menu not supported for Qt gui')
     result = 'Cancel'
     return result,data
 #@+node:ekr.20110605121601.18502: *6* runSaveFileDialog (qtGui)
@@ -3370,7 +3397,7 @@ pc = g.app.pluginsController
 if not pc.isLoaded('viewrendered.py'):
     vr = pc.loadOnePlugin('viewrendered.py')
     if vr:
-        g.es('viewrendered plugin loaded.', color='blue')
+        g.blue('viewrendered plugin loaded.')
         vr.onCreate('tag',{'c':c})
 #@+node:ekr.20110605121601.18506: *7* << no dialog error >>
 g.es_print_error(
@@ -3503,9 +3530,9 @@ def doTests(self,all=None,marked=None,verbosity=1):
                 archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
                 c.cacher.db[key] = archive
         else:
-            g.es_print('no %s@test or @suite nodes in %s outline' % (
+            g.error('no %s@test or @suite nodes in %s outline' % (
                 g.choose(marked,'marked ',''),
-                g.choose(all,'entire','selected')),color='red')
+                g.choose(all,'entire','selected')))
     finally:
         c.setChanged(changed) # Restore changed state.
         if g.app.unitTestDict.get('restoreSelectedNode',True):
@@ -3622,6 +3649,7 @@ def makeTestSuite (self,p):
         print('\n%s: exception creating test cases for %s' % (fname,p.h))
         g.es_print_exception()
         return None
+#@+node:ekr.20120926072255.12062: *4* @color minibuffer-foreground-color setting
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

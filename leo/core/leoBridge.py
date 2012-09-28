@@ -259,7 +259,7 @@ class bridgeController:
         if hasattr(sys,nonConstantAttr):
             g.app.leoID = getattr(sys,nonConstantAttr)
             if verbose and not g.app.silentMode:
-                g.es("leoID=",g.app.leoID,spaces=False,color='red')
+                g.red("leoID=",g.app.leoID,spaces=False)
         #@-<< try to get leoID from sys.leoID >>
         if not g.app.leoID:
             #@+<< try to get leoID from "leoID.txt" >>
@@ -275,15 +275,15 @@ class bridgeController:
                         if s and len(s) > 0:
                             g.app.leoID = s.strip()
                             if verbose and not g.app.silentMode:
-                                g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                                g.red('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False)
                             break
                         elif verbose:
-                            g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+                            g.red('empty ',tag,' (in ',theDir,')',spaces=False)
                     except IOError:
                         g.app.leoID = None
                     except Exception:
                         g.app.leoID = None
-                        g.es('unexpected exception in app.setLeoID',color='red')
+                        g.error('unexpected exception in app.setLeoID')
                         g.es_exception()
             #@-<< try to get leoID from "leoID.txt" >>
         if not g.app.leoID:
@@ -292,7 +292,7 @@ class bridgeController:
             try:
                 theId = os.getenv('USER')
                 if theId:
-                    if verbose: g.es_print("using os.getenv('USER'):",repr(theId),color='red')
+                    if verbose: g.red("using os.getenv('USER'):",repr(theId))
                     g.app.leoID = theId
 
             except Exception:
@@ -308,7 +308,7 @@ class bridgeController:
             ("global config",g.app.globalConfigDir),
             ("home",g.app.homeDir),
         ):
-            g.es('',kind,'directory','',':',theDir,color='blue')
+            g.blue('',kind,'directory','',':',theDir)
     #@+node:ekr.20070227093918: *3* isOpen
     def isOpen (self):
 

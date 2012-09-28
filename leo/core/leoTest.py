@@ -586,7 +586,7 @@ class runTestExternallyHelperClass:
                 kind = g.choose(self.all,'all','selected')
                 print('created %s unit tests in %0.2fsec in %s' % (
                     kind,t2-t1,self.fileName))
-                g.es('created %s unit tests' % (kind),color='blue')
+                g.blue('created %s unit tests' % (kind))
             # 2010/09/09: allow a way to specify the gui.
             gui = g.app.unitTestGui or 'nullGui'
             self.runUnitTestLeoFile(gui=gui,
@@ -777,9 +777,9 @@ class TestManager:
                     archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
                     c.cacher.db[key] = archive
             else:
-                g.es_print('no %s@test or @suite nodes in %s outline' % (
+                g.error('no %s@test or @suite nodes in %s outline' % (
                     g.choose(marked,'marked ',''),
-                    g.choose(all,'entire','selected')),color='red')
+                    g.choose(all,'entire','selected')))
         finally:
             c.setChanged(changed) # Restore changed state.
             if g.app.unitTestDict.get('restoreSelectedNode',True):
@@ -1313,13 +1313,13 @@ class TestManager:
             return True
         except SyntaxError:
             if not suppress:
-                g.es("syntax error in:",fileName,color="blue")
+                g.warning("syntax error in:",fileName)
                 g.es_print_exception(full=True,color="black")
             if reraise: raise
             return False
         except Exception:
             if not suppress:
-                g.es("unexpected error in:",fileName,color="blue")
+                g.warning("unexpected error in:",fileName)
                 # g.es_print_exception(full=False,color="black")
             if reraise: raise
             return False
@@ -1334,7 +1334,7 @@ class TestManager:
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
         except tokenize.TokenError as msg:
-            g.es_print("Token error in",fileName,color="blue")
+            g.warning("Token error in",fileName)
             g.es_print('',msg)
             assert 0, "test failed"
 
@@ -1342,7 +1342,7 @@ class TestManager:
             badline = nag.get_lineno()
             line    = nag.get_line()
             message = nag.get_msg()
-            g.es_print("Indentation error in",fileName,"line",badline,color="blue")
+            g.warning("Indentation error in",fileName,"line",badline)
             g.es_print('',message)
             g.es_print("offending line...")
             g.es_print('',line)

@@ -424,11 +424,11 @@ class opmlController:
                     parser.parse(f)
                     node = handler.getNode()
                 except xml.sax.SAXParseException:
-                    g.es_print('Error parsing %s' % (inputFileName),color='red')
+                    g.error('Error parsing %s' % (inputFileName))
                     g.es_exception()
                     return None
                 except Exception:
-                    g.es_print('Unexpected exception parsing %s' % (inputFileName),color='red')
+                    g.error('Unexpected exception parsing %s' % (inputFileName))
                     g.es_exception()
                     return None
             finally:
@@ -545,11 +545,11 @@ class opmlController:
             parser.parse(theFile) # expat does not support parseString
             sax_node = handler.getNode()
         except xml.sax.SAXParseException:
-            g.es_print('error parsing',fn,color='red')
+            g.error('error parsing',fn)
             g.es_exception()
             sax_node = None
         except Exception:
-            g.es_print('unexpected exception parsing',fn,color='red')
+            g.error('unexpected exception parsing',fn)
             g.es_exception()
             sax_node = None
 

@@ -512,8 +512,8 @@ class Commands (object):
                 w,h,l,t = self.fixedWindowPosition
                 c.fixedWindowPosition = int(w),int(h),int(l),int(t)
             except Exception:
-                g.es_print('bad @data fixedWindowPosition',
-                    repr(self.fixedWindowPosition),color='red')
+                g.error('bad @data fixedWindowPosition',
+                    repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500,700,50,50 # width,height,left,top.
     #@+node:ekr.20031218072017.2817: *3*  c.doCommand
@@ -538,13 +538,13 @@ class Commands (object):
 
         # The presence of this message disables all commands.
         if c.disableCommandsMessage:
-            g.es(c.disableCommandsMessage,color='blue')
+            g.blue(c.disableCommandsMessage)
             return # (for Tk) 'break' # Inhibit all other handlers.
 
         if c.exists and c.inCommand and not g.unitTesting:
             # g.trace('inCommand',c)
             g.app.commandInterruptFlag = True
-            g.es('ignoring command: already executing a command.',color='red')
+            g.error('ignoring command: already executing a command.')
             return # (for Tk) 'break'
 
         g.app.commandInterruptFlag = False
@@ -854,8 +854,7 @@ class Commands (object):
         if aList is None: aList = []
         ok, d = self.checkBatchOperationsList(aList)
         if not ok:
-            return g.es('do-batch-operations: invalid list argument',
-                color='red')
+            return g.error('do-batch-operations: invalid list argument')
 
         for v in list(d.keys()):
             aList2 = d.get(v,[])
@@ -1472,7 +1471,7 @@ class Commands (object):
         searchPath = c.openWithTempFilePath(p,ext)
         if not searchPath:
             # Check the mod_tempfname plugin.
-            return g.trace('c.openWithTempFilePath failed',color='red')
+            return g.error('c.openWithTempFilePath failed')
 
         # Set d and path if a temp file already refers to p.v
         path = None
@@ -1523,7 +1522,7 @@ class Commands (object):
         time_changed = old_time != new_time
 
         if body_changed and time_changed:
-            g.es_print('Conflict in temp file for',p.h,color='red')
+            g.error('Conflict in temp file for',p.h)
             result = g.app.gui.runAskYesNoCancelDialog(c,
                 'Conflict!', c.conflict_message,
                 yesMessage = 'Outline',
@@ -1539,7 +1538,7 @@ class Commands (object):
             # May be overridden by the mod_tempfname plugin.
             fn = c.createOpenWithTempFile(p,ext)
         else:
-            g.es('reopening:',g.shortFileName(fn),color='blue')
+            g.blue('reopening:',g.shortFileName(fn))
 
         return fn
     #@+node:ekr.20100203050306.5937: *8* c.createOpenWithTempFile
@@ -1554,9 +1553,9 @@ class Commands (object):
         try:
             if not g.unitTesting:
                 if g.os_path_exists(fn):
-                    g.es('recreating:  ',g.shortFileName(fn),color='red')
+                    g.red('recreating:  ',g.shortFileName(fn))
                 else:
-                    g.es('creating:  ',g.shortFileName(fn),color='blue')
+                    g.blue('creating:  ',g.shortFileName(fn))
             f = open(fn,'w')
             # Convert s to whatever encoding is in effect.
             d = c.scanAllDirectives(p)
@@ -1601,7 +1600,7 @@ class Commands (object):
             return fn
         except:
             if f: f.close()
-            g.es('exception creating temp file',color='red')
+            g.error('exception creating temp file')
             g.es_exception()
             return None
     #@+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (may be over-ridden)
@@ -2048,10 +2047,10 @@ class Commands (object):
                     s = g.toEncodedString(s,reportErrors=True)
                 theFile.write(s)
                 theFile.flush()
-                g.es_print('wrote:',fileName,color='blue')
+                g.blue('wrote:',fileName)
                 theFile.close()
             else:
-                g.es('can not write %s',fileName,color='red')
+                g.error('can not write %s',fileName)
     #@+node:ekr.20031218072017.2841: *5* Tangle submenu
     #@+node:ekr.20031218072017.2842: *6* tangleAll
     def tangleAll (self,event=None):
@@ -2282,7 +2281,7 @@ class Commands (object):
                     del sys.path[0]
             else:
                 tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
-                g.es("no script selected",color="blue",tabName=tabName)
+                g.warning("no script selected",tabName=tabName)
         
         finally:
             g.app.log = oldLog # 2011/01/19
@@ -2789,7 +2788,7 @@ class Commands (object):
                     vnodeName = self.removeLevelStars(vnodeName)
             else:
                 vnodeName = None
-                g.es_print("bad @+node sentinel",color='red')
+                g.error("bad @+node sentinel")
 
             return gnx,vnodeName
         #@+node:ekr.20100728074713.5843: *9* removeLevelStars
@@ -2912,7 +2911,7 @@ class Commands (object):
                     lines = open(filename).readlines()
             except Exception:
                 # Make sure failures to open a file generate clear messages.
-                g.es_print('can not open',fn,color='blue')
+                g.error('can not open',fn)
                 # g.es_exception()
                 lines = []
 
@@ -2938,8 +2937,7 @@ class Commands (object):
                     n = x.line_mapping[n]
             else:
                 if not g.unitTesting:
-                    g.es("no ancestor @<file node>: using script line numbers",
-                        color="blue")
+                    g.warning("no ancestor @<file node>: using script line numbers")
                 lines = g.getScript(c,p,useSelectedText=False)
                 lines = g.splitLines(lines)
 
@@ -2970,7 +2968,7 @@ class Commands (object):
             else:
                 ins = len(s)
                 if len(lines) < n and not g.unitTesting:
-                    g.es('only',len(lines),'lines',color="blue")
+                    g.warning('only',len(lines),'lines')
 
             if trace:
                 i,j = g.getLine(s,ins)
@@ -3343,7 +3341,7 @@ class Commands (object):
         body = c.frame.body ; current = c.p
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines:
-            g.es('No lines selected',color='blue')
+            g.warning('No lines selected')
             return
 
         u.beforeChangeGroup(current,undoType)
@@ -3361,7 +3359,7 @@ class Commands (object):
             u.afterChangeGroup(current,undoType)
             c.redraw(p)
         else:
-            g.es("selected text should contain section names",color="blue")
+            g.warning("selected text should contain section names")
 
         # Restore the selection.
         i,j = oldSel
@@ -3469,7 +3467,7 @@ class Commands (object):
         d1,d2,d3 = d.get('delims') # d1 is the line delim.
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines:
-            g.es('no text selected',color='blue')
+            g.warning('no text selected')
             return
 
         d2 = d2 or '' ; d3 = d3 or ''
@@ -3519,7 +3517,7 @@ class Commands (object):
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         result = []
         if not lines:
-            g.es('no text selected',color='blue')
+            g.warning('no text selected')
             return
 
         if d1:
@@ -3594,7 +3592,7 @@ class Commands (object):
             else:
                 s = time.strftime(format,time.localtime())
         except (ImportError, NameError):
-            g.es("time.strftime not available on this platform",color="blue")
+            g.warning("time.strftime not available on this platform")
             return ""
         except:
             g.es_exception() # Probably a bad format string in leoSettings.leo.
@@ -3893,8 +3891,8 @@ class Commands (object):
         if c.frame.findPanel:
             c.frame.findPanel.bringToFront()
         else:
-            g.es('the',g.app.gui.guiName(),
-                'gui does not support a stand-alone find dialog',color='blue')
+            g.warning('the',g.app.gui.guiName(),
+                'gui does not support a stand-alone find dialog')
     #@+node:ekr.20031218072017.2889: *6* findNext
     def findNext (self,event=None):
 
@@ -4384,7 +4382,7 @@ class Commands (object):
         c = self ; count = 1 ; errors = 0
 
         if full and not unittest:
-            g.es("all tests enabled: this may take awhile",color="blue")
+            g.blue("all tests enabled: this may take awhile")
 
         if root: iter = root.self_and_subtree
         else:    iter = c.all_positions
@@ -4401,7 +4399,7 @@ class Commands (object):
                 if hasattr(v,"tnodeList"): # and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
                     if 0:
                         s = "deleting tnodeList for " + repr(v)
-                        g.es_print(s,color="blue")
+                        g.warning(s)
                     delattr(v,"tnodeList")
                     v._p_changed = True
                 #@-<< remove tnodeList >>
@@ -4468,9 +4466,7 @@ class Commands (object):
                 #@+node:ekr.20040314044652: *7* << give test failed message >>
                 junk, value, junk = sys.exc_info()
 
-                s = "test failed at position %s\n%s" % (repr(p),value)
-
-                g.es_print(s,color="red")
+                g.error("test failed at position %s\n%s" % (repr(p),value))
                 #@-<< give test failed message >>
                 if trace: return errors 
         if verbose or not unittest:
@@ -4480,8 +4476,13 @@ class Commands (object):
                 g.enl()
 
             if errors or verbose:
-                color = g.choose(errors,'red','blue')
-                g.es_print('',count,'nodes checked',errors,'errors',color=color)
+                # color = g.choose(errors,'red','blue')
+                # g.es_print('',count,'nodes checked',errors,'errors',color=color)
+                if errors:
+                    g.error('',count,'nodes checked',errors,'errors')
+                else:
+                    g.blue('',count,'nodes checked',errors,'errors')
+
             #@-<< print summary message >>
         return errors
     #@+node:ekr.20040723094220: *6* Check Outline commands & allies
@@ -4521,7 +4522,7 @@ class Commands (object):
                         return result # End the unit test: it has failed.
 
         if not unittest:
-            g.es("check complete",color="blue")
+            g.blue("check complete")
 
         return result
     #@+node:ekr.20040723094220.3: *7* c.checkPythonCode
@@ -4559,7 +4560,7 @@ class Commands (object):
                         return "surprise" # abort
 
         if not unittest:
-            g.es("check complete",color="blue")
+            g.blue("check complete")
 
         # We _can_ return a result for unit tests because we aren't using doCommand.
         return result
@@ -4580,8 +4581,7 @@ class Commands (object):
             c.tabNannyNode(p,h,body,unittest,suppressErrors)
         except SyntaxError:
             if not suppressErrors:
-                s = "Syntax error in: %s" % h
-                g.es_print(s,color="blue")
+                g.warning("Syntax error in: %s" % h)
                 g.es_exception(full=False,color="black")
             if unittest: raise
         except Exception:
@@ -4605,14 +4605,14 @@ class Commands (object):
         except IndentationError:
             junk,msg,junk = sys.exc_info()
             if not suppressErrors:
-                g.es("IndentationError in",headline,color="blue")
+                g.warning("IndentationError in",headline)
                 g.es('',msg)
             if unittest: raise
 
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
             if not suppressErrors:
-                g.es("TokenError in",headline,color="blue")
+                g.warning("TokenError in",headline)
                 g.es('',msg)
             if unittest: raise
 
@@ -4622,7 +4622,7 @@ class Commands (object):
                 badline = nag.get_lineno()
                 line    = nag.get_line()
                 message = nag.get_msg()
-                g.es("indentation error in",headline,"line",badline,color="blue")
+                g.warning("indentation error in",headline,"line",badline)
                 g.es(message)
                 line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n",line2)
@@ -4710,8 +4710,8 @@ class Commands (object):
             def oops(message,i,j):
                 # This can be called from c-to-python, in which case warnings should be suppressed.
                 if giveWarnings:
-                    g.es('** changed ',p.h,color='red')
-                    g.es('%s after\n%s' % (
+                    g.error('** changed ',p.h)
+                    g.es_print('%s after\n%s' % (
                         message,repr(''.join(s[i:j]))))
             
             i,n,result = 0,len(s),[]
@@ -5072,7 +5072,7 @@ class Commands (object):
                 lines = self.get()
 
             except tokenize.TokenError:
-                g.es("error pretty-printing",h,"not changed.",color="blue")
+                g.warning("error pretty-printing",h,"not changed.")
                 return
 
             if dump:
@@ -5752,7 +5752,7 @@ class Commands (object):
             c.selectPosition(p1)
 
         if not g.unitTesting:
-            g.es('cloned %s nodes' % (n),color='blue')
+            g.blue('cloned %s nodes' % (n))
         c.redraw()    
     #@+node:ekr.20111005081134.15540: *6* c.deleteMarked
     def deleteMarked (self,event=None):
@@ -5774,7 +5774,7 @@ class Commands (object):
         if undo_data:
             u.afterDeleteMarkedNodes(undo_data,p1)
             if not g.unitTesting:
-                g.es('deleted %s nodes' % (len(undo_data)),color='blue')
+                g.blue('deleted %s nodes' % (len(undo_data)))
             c.setChanged(True)
 
         # Don't even *think* about restoring the old position.
@@ -5793,7 +5793,7 @@ class Commands (object):
             if v.isMarked():
                 break
         else:
-            return g.es('no marked nodes',color='blue')
+            return g.warning('no marked nodes')
 
         # Create a new root node to hold the moved nodes.
         parent = c.createMoveMarkedNode()
@@ -5814,7 +5814,7 @@ class Commands (object):
         if undo_data:
             u.afterMoveMarkedNodes(undo_data,p1)
             if not g.unitTesting:
-                g.es('moved %s nodes' % (len(undo_data)),color='blue')
+                g.blue('moved %s nodes' % (len(undo_data)))
             c.setChanged(True)
             
         # Don't even *think* about restoring the old position.
@@ -5848,7 +5848,7 @@ class Commands (object):
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
-            g.es("done",color="blue")
+            g.blue('done')
 
         c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2924: *6* markChangedRoots
@@ -5872,7 +5872,7 @@ class Commands (object):
                     u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
-            g.es("done",color="blue")
+            g.blue('done')
 
         c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2925: *6* markAllAtFileNodesDirty
@@ -5990,7 +5990,7 @@ class Commands (object):
 
         c = self ; h = c.rootPosition().h
         kind = g.choose(h.startswith('@chapter'),'chapter','hoist')
-        g.es("can't move node out of",kind,color="blue")
+        g.warning("can't move node out of",kind)
     #@+node:ekr.20031218072017.1767: *6* demote
     def demote (self,event=None):
 
@@ -6293,7 +6293,7 @@ class Commands (object):
         c.sparse_move = not c.sparse_move
 
         if not g.unitTesting:
-            g.es('sparse-move: %s' % c.sparse_move,color='blue')
+            g.blue('sparse-move: %s' % c.sparse_move)
     #@+node:ekr.20031218072017.2913: *5* Goto (Commands)
     #@+node:ekr.20031218072017.1628: *6* goNextVisitedNode
     def goNextVisitedNode (self,event=None):
@@ -6413,7 +6413,7 @@ class Commands (object):
         c = self ; cc = c.chapterController ; p = c.p
         if not p: return
         if not p.isCloned():
-            g.es('not a clone:',p.h,color='blue')
+            g.warning('not a clone:',p.h)
             return
 
         v = p.v
@@ -6437,7 +6437,7 @@ class Commands (object):
             c.selectPosition(p)
             c.redraw_after_select(p)
         else:
-            g.es("done",color="blue")
+            g.blue('done')
 
         # if cc:
             # name = cc.findChapterNameForPosition(p)
@@ -6467,7 +6467,7 @@ class Commands (object):
             c.selectPosition(p)
             c.redraw_after_select(p)
         else:
-            g.es('no more clones',color='blue')
+            g.blue('no more clones')
     #@+node:ekr.20031218072017.2917: *6* goToNextDirtyHeadline
     def goToNextDirtyHeadline (self,event=None):
 
@@ -6489,7 +6489,7 @@ class Commands (object):
                 wrapped = True
                 p = c.rootPosition()
 
-        if not p: g.es("done",color="blue")
+        if not p: g.blue('done')
         c.treeSelectHelper(p) # Sets focus.
     #@+node:ekr.20031218072017.2918: *6* goToNextMarkedHeadline
     def goToNextMarkedHeadline (self,event=None):
@@ -6512,7 +6512,7 @@ class Commands (object):
                 wrapped = True
                 p = c.rootPosition()
 
-        if not p: g.es("done",color="blue")
+        if not p: g.blue('done')
         c.treeSelectHelper(p) # Sets focus.
     #@+node:ekr.20031218072017.2919: *6* goToNextSibling
     def goToNextSibling (self,event=None):
@@ -6643,8 +6643,8 @@ class Commands (object):
         if frame.comparePanel:
             frame.comparePanel.bringToFront()
         else:
-            g.es('the',g.app.gui.guiName(),
-                'gui does not support the compare window',color='blue')
+            g.warning('the',g.app.gui.guiName(),
+                'gui does not support the compare window')
     #@+node:ekr.20031218072017.2932: *5* openPythonWindow
     def openPythonWindow (self,event=None):
 

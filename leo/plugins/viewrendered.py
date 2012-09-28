@@ -602,7 +602,7 @@ class ViewRenderedController(QtGui.QWidget):
 
         elif colorName not in pc.badColors:
             pc.badColors.append(colorName)
-            g.es_print('invalid body background color: %s' % (colorName),color='blue')
+            g.warning('invalid body background color: %s' % (colorName))
     #@+node:ekr.20110320120020.14476: *4* must_update
     def must_update (self,keywords):
         

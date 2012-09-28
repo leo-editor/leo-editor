@@ -736,8 +736,8 @@ class attrib_edit_Controller:
                 g.es("For '%s' attributes:\n  %s" % (getter.name(), getter.helpCreate()))
 
         if len(ans) > 1:
-            g.es('ERROR: more than one attribute type (%s) active' %
-            ', '.join([i.name() for i in ans]), color='red')
+            g.error('Eror: more than one attribute type (%s) active' %
+            ', '.join([i.name() for i in ans]))
         elif ans:
             ans[0].createAttrib(self.c.currentPosition().v, gui_parent=self.parent)
             self.updateEditorInt()

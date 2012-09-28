@@ -2222,7 +2222,7 @@ if Tk: # Register the handlers...
                         # Set update if we should update the outline from the file.
                         if conflict:
                             # See how the user wants to resolve the conflict.
-                            g.es("conflict in " + g.shortFileName(path),color="red")
+                            g.error("conflict in " + g.shortFileName(path))
                             message = "Replace changed outline with external changes?"
                             result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
                             update = result.lower() == "yes"
@@ -2230,12 +2230,12 @@ if Tk: # Register the handlers...
                             update = s != body
 
                         if update:
-                            g.es("updated from: " + g.shortFileName(path),color="blue")
+                            g.blue("updated from: " + g.shortFileName(path))
                             c.setBodyString(v,s,encoding)
                             c.selectVnode(v)
                             dict["body"] = s
                         elif conflict:
-                            g.es("not updated from: " + g.shortFileName(path),color="blue")
+                            g.warning("not updated from: " + g.shortFileName(path))
                 except:
                     g.es_exception() # testing
                     pass

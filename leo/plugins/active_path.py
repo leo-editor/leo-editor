@@ -348,7 +348,7 @@ def createFile(c,parent,d):
     """Ask if we should create a new file"""
     directory = os.path.dirname(d)
     if not os.path.isdir(directory):
-        g.es('Create parent directories first', color='red')
+        g.error('Create parent directories first')
         return False
 
     d = os.path.basename(d)

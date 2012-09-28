@@ -2937,7 +2937,7 @@ def exportHeadlines (self,fileName):
     try:
         theFile = open(fileName,'w')
     except IOError:
-        g.es("can not open",fileName,color="blue")
+        g.warning("can not open",fileName)
         c.testManager.fail()
         return
     for p in p.self_and_subtree():
@@ -3316,9 +3316,9 @@ a bit of time, I am not very familiar with python.
 Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
 .. @+node:ekr.20120318124102.9739: *5* Focus border doesn't work with Python 2.x!
 .. @+node:ekr.20111022215436.16685: *6* Borders (qtGui)
+.. @+node:ekr.20120927164343.10092: *7* add_border (qtGui)
 def add_border(self,c,w):
 
-    trace = False and not g.unitTesting
     state = c.k and c.k.unboundKeyAction
     
     if state and c.use_focus_border:
@@ -3328,14 +3328,39 @@ def add_border(self,c,w):
             'overwrite':c.focus_border_overwrite_state_color,
         }
         color = d.get(state,c.focus_border_color)
-        sheet = "border: %spx solid %s" % (c.focus_border_width,color)
-        self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
-
+        name = g.u(w.objectName())
+        if name =='richTextEdit':
+            w = c.frame.top.leo_body_inner_frame
+            self.paint_qframe(w,color)
+        elif name.startswith('head'):
+            pass
+        else:
+            sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+.. @+node:ekr.20120927164343.10093: *7* remove_border (qtGui)
 def remove_border(self,c,w):
 
-    if c.use_focus_border:
-        sheet = "border: %spx solid white" % c.focus_border_width
+    if not c.use_focus_border:
+        return
+        
+    name = g.u(w.objectName())
+    width = c.focus_border_width
+    if w.objectName()=='richTextEdit':
+        w = c.frame.top.leo_body_inner_frame
+        self.paint_qframe(w,'white')
+    elif name.startswith('head'):
+        pass
+    else:
+        sheet = "border: %spx solid white" % width
         self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+.. @+node:ekr.20120927164343.10094: *7* paint_qframe (qtGui)
+def paint_qframe (self,w,color):
+    
+    assert isinstance(w,QtGui.QFrame)
+    
+    # How's this for a kludge.
+    # Set this ivar for InnerBodyFrame.paintEvent.
+    g.app.gui.innerBodyFrameColor = color
 .. @+node:ekr.20111026115337.16528: *6* update_style_sheet (qtGui)
 def update_style_sheet (self,w,key,value,selector=None):
     
@@ -3357,19 +3382,21 @@ def update_style_sheet (self,w,key,value,selector=None):
         
     old = str(w.styleSheet())
     if old == s:
-        if trace: g.trace('no change')
+        # if trace: g.trace('no change')
         return
         
-    if g.app.gui.lockout_style_sheet == True:
-        if trace: g.trace('lockout_style_sheet is True')
-        return
+    if trace:
+        if verbose:
+            g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
+        else:
+            g.trace(s)
+        
+    # if g.app.gui.lockout_style_sheet == True:
+        # if trace: g.trace('lockout_style_sheet is True')
+        # return
 
-    if trace and verbose:
-        g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
-
-    # This call was responsible for the unwanted scrolling!
-    # Note that this apparently generates a layout-request event,
-    # and this event changes the scrollbars.
+    # This call is responsible for the unwanted scrolling!
+    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
     w.setStyleSheet(s)
 .. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
@@ -4976,7 +5003,7 @@ def os_path_expandExpression (s,**keys):
                 if trace: g.trace('returns',s)
             except Exception:
                 g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
+                g.es_exception(full=True, c=c)
 
     return s
 .. @+node:ekr.20080921060401.13: *7* g.os_path_expanduser
@@ -5345,13 +5372,13 @@ def checkOpenDirectory (c):
 
     if c.openDirectory != c.frame.openDirectory:
         g.error(
-            'c.openDirectory != c.frame.openDirectory\n'
+            'Error: c.openDirectory != c.frame.openDirectory\n'
             'c.openDirectory: %s\n'
             'c.frame.openDirectory: %s' % (
                 c.openDirectory,c.frame.openDirectory))
 
     if not g.os_path_isabs(c.openDirectory):
-        g.error ('relative c.openDirectory: %s' % (
+        g.error ('Error: relative c.openDirectory: %s' % (
             c.openDirectory))
 .. @+node:ekr.20080921060401.14: *5* g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
@@ -6396,7 +6423,7 @@ def putUnknownAttributes (self,torv):
 
     attrDict = torv.unknownAttributes
     if type(attrDict) != type({}):
-        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+        g.warning("ignoring non-dictionary unknownAttributes for",torv)
         return ''
     else:
         val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])

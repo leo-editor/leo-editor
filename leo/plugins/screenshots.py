@@ -1522,7 +1522,7 @@ class ScreenShotController(object):
 
         # "@url built slide" inhibits everything.
         if sc.find_node(sc.slide_node,'@url built slide'):
-            g.note('exists: @url built slide in %s' % (p.h),color='blue')
+            g.blue('exists: @url built slide in %s' % (p.h))
             return
 
         sc.make_slide()
@@ -1530,7 +1530,7 @@ class ScreenShotController(object):
         # "@url final output file" inhibits everything except the build.
         if sc.find_node(sc.slide_node,'@url final output file'):
             sc.make_at_url_node_for_built_slide()
-            g.note('exists: @url final output file %s' % (p.h),color='blue')
+            g.blue('exists: @url final output file %s' % (p.h))
             return
 
         # Do only a build if there is no @screenshot tree.
@@ -1576,7 +1576,7 @@ class ScreenShotController(object):
 
         sc = self
 
-        g.note('Opening Inkscape...\n',color='red')
+        g.red('Opening Inkscape...\n')
         sc.c.outerUpdate()
 
         sc.enable_filters(sc.working_fn, False)
@@ -2049,7 +2049,7 @@ class ScreenShotController(object):
             cmd.append('--select="%s"' % (sc.select_node))
 
         if sc.pause_flag:
-            g.note('Pausing:',g.shortFileName(sc.screenshot_fn),color='red')
+            g.red('Pausing:',g.shortFileName(sc.screenshot_fn))
             g.note('Please take the screenshot by hand')
             c.outerUpdate()
         else:

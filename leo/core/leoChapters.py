@@ -264,7 +264,7 @@ class chapterController:
         cc.selectChapterByName(name)
         cc.afterCreateChapter(bunch,c.p)
 
-        # g.es('created chapter',name,color='blue')
+        # g.blue('created chapter',name)
         return True
     #@+node:ekr.20070607092909: *4* cc.createChapterFromNode
     def createChapterFromNode (self,event=None):
@@ -651,7 +651,7 @@ class chapterController:
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
     def error (self,s):
 
-        g.es_print('Error: ',s,color='red')
+        g.error('Error: %s' % (s))
 
     def note (self,s,killUnitTest=False):
         
@@ -659,11 +659,11 @@ class chapterController:
             if killUnitTest:
                 assert False,s
         else:
-            g.es_print('Note: ',s,color='blue')
+            g.note('Note: %s' % (s))
         
     def warning (self,s):
         
-        g.es_print('Warning: ',s,color='red')
+        g.es_print('Warning: %s' % (s))
         
     #@+node:ekr.20070605124356: *4* cc.inChapter
     def inChapter (self):

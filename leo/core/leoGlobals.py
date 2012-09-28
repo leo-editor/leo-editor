@@ -367,7 +367,7 @@ def get_directives_dict(p,root=None,scanToCursor=False):
                 k = g.skip_line(s,j)
                 val = s[j:k].strip()
                 if j < len(s) and s[j] not in (' ','\t','\n'):
-                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1],color='red')
+                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1])
                     # if trace:g.trace(word,repr(val),s[i:i+20])
                     pass # Not a valid directive: just ignore it.
                 else:
@@ -542,7 +542,7 @@ def scanAtEncodingDirectives(aList):
             # g.trace(encoding)
             return encoding
         elif encoding and not g.app.unitTesting:
-            g.es("invalid @encoding:",encoding,color="red")
+            g.error("invalid @encoding:",encoding)
 
     return None
 #@+node:ekr.20080827175609.53: *4* g.scanAtHeaderDirectives
@@ -552,7 +552,7 @@ def scanAtHeaderDirectives(aList):
 
     for d in aList:
         if d.get('header') and d.get('noheader'):
-            g.es_print("conflicting @header and @noheader directives",color='red')
+            g.error("conflicting @header and @noheader directives")
 #@+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives
 def scanAtLineendingDirectives(aList):
 
@@ -565,7 +565,7 @@ def scanAtLineendingDirectives(aList):
             lineending = g.getOutputNewline(name=e)
             return lineending
         # else:
-            # g.es("invalid @lineending directive:",e,color="red")
+            # g.error("invalid @lineending directive:",e)
 
     return None
 #@+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives
@@ -582,7 +582,7 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                 return val
             else:
                 if issue_error_flag and not g.app.unitTesting:
-                    g.es("ignoring @pagewidth",s,color="red")
+                    g.error("ignoring @pagewidth",s)
 
     return None
 #@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives scanAllAtPathDirectives
@@ -662,7 +662,7 @@ def scanAtTabwidthDirectives(aList,issue_error_flag=False):
                 return val
             else:
                 if issue_error_flag and not g.app.unitTesting:
-                    g.es("ignoring @tabwidth",s,color="red")
+                    g.error("ignoring @tabwidth",s)
     return None
 
 def scanAllAtTabWidthDirectives(c,p):
@@ -875,13 +875,13 @@ def checkOpenDirectory (c):
 
     if c.openDirectory != c.frame.openDirectory:
         g.error(
-            'c.openDirectory != c.frame.openDirectory\n'
+            'Error: c.openDirectory != c.frame.openDirectory\n'
             'c.openDirectory: %s\n'
             'c.frame.openDirectory: %s' % (
                 c.openDirectory,c.frame.openDirectory))
 
     if not g.os_path_isabs(c.openDirectory):
-        g.error ('relative c.openDirectory: %s' % (
+        g.error ('Error: relative c.openDirectory: %s' % (
             c.openDirectory))
 #@+node:ekr.20071109165315: *4* g.stripPathCruft
 def stripPathCruft (path):
@@ -1673,7 +1673,7 @@ def create_temp_file (textMode=False):
         mode = g.choose(textMode,'w','wb')
         theFile = os.fdopen(fd,mode)
     except Exception:
-        g.es('unexpected exception in g.create_temp_file',color='red')
+        g.error('unexpected exception in g.create_temp_file')
         g.es_exception()
         theFile,theFileName = None,''
 
@@ -1785,7 +1785,7 @@ def is_sentinel (line,delims):
         j = line.find(delim3)
         return 0 == i < j
     else:
-        g.trace("can't happen. delims: %s" % repr(delims),color="red")
+        g.error("is_sentinel: can not happen. delims: %s" % repr(delims))
         return False
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
@@ -1847,11 +1847,9 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
                 else:
                     os.mkdir(path)
                 if verbose and not testing and not g.app.unitTesting:
-                    # g.trace('***callers***',g.callers(5))
-                    g.es_print("created directory:",path,color='red')
+                    g.red("created directory:",path)
             except Exception:
-                # g.trace(g.callers())
-                if verbose: g.es_print("exception creating directory:",path,color='red')
+                if verbose: g.error("exception creating directory:",path)
                 g.es_exception()
                 return None
     return dir1 # All have been created.
@@ -1910,11 +1908,11 @@ def readFileIntoString (fn,
         # g.trace(g.callers(5))
         if not silent:
             if kind:
-                g.es('can not open','',kind,fn,color='red')
+                g.error('can not open','',kind,fn)
             else:
-                g.es('can not open',fn,color='red')
+                g.error('can not open',fn)
     except Exception:
-        g.trace('unexpected exception reading %s' % (fn),color='red')
+        g.error('readFileIntoString: unexpected exception reading %s' % (fn))
         g.es_exception()
 
     return None,None
@@ -2066,7 +2064,7 @@ def update_file_if_changed(c,file_name,temp_name):
     if ok:
         g.es('','%12s: %s' % (kind,file_name))
     else:
-        g.es("rename failed: no file created!",color="red")
+        g.error("rename failed: no file created!")
         g.es('',file_name," may be read-only or in use")
 #@+node:ekr.20050104123726.3: *4* g.utils_remove
 def utils_remove (fileName,verbose=True):
@@ -2095,7 +2093,7 @@ def utils_rename (c,src,dst,verbose=True):
         return True
     except Exception:
         if verbose:
-            g.es('exception renaming',src,'to',dst,color='red')
+            g.error('exception renaming',src,'to',dst)
             g.es_exception(full=False)
         return False
 #@+node:ekr.20050104124903: *4* g.utils_chmod
@@ -2171,7 +2169,7 @@ def enable_gc_debug(event=None):
             # gc.set_debug(gc.DEBUG_STATS)
     elif not g.no_gc_message:
         g.no_gc_message = True
-        g.es('can not import gc module',color='blue')
+        g.error('can not import gc module')
 #@+node:ekr.20031218072017.1592: *3* printGc
 # Formerly called from unit tests.
 
@@ -2470,8 +2468,7 @@ def doHook(tag,*args,**keywords):
     if not g.app.config.use_plugins:
         
         if tag in ('open0','start1'):
-            s = "Plugins disabled: use_plugins is 0 in a leoSettings.leo file."
-            g.es_print(s,color="blue")
+            g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
         return None
 
     # Get the hook handler function.  Usually this is doPlugins.
@@ -2607,15 +2604,21 @@ def enl(tabName='Log'):
     if log and not log.isNull:
         log.newlines += 1
         log.putnl(tabName)
-#@+node:ekr.20100914094836.5892: *3* g.error, g.note & g.warning
-def error (*args,**keys):
-    g.es_print('Error:',color='red',*args,**keys)
+#@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue(To be changed)
+def blue (*args,**keys):
+    g.es_print(color='blue',*args,**keys)
 
+def error (*args,**keys):
+    g.es_print(color='red',*args,**keys)
+    
 def note (*args,**keys):
     g.es_print(*args,**keys)
+    
+def red (*args,**keys):
+    g.es_print(color='red',*args,**keys)
 
 def warning (*args,**keys):
-    g.es_print('Warning:',color='blue',*args,**keys)
+    g.es_print(color='blue',*args,**keys)
 #@+node:ekr.20070626132332: *3* g.es
 def es(*args,**keys):
 
@@ -2696,7 +2699,7 @@ def internalError (*args):
 
     callers = g.callers(5).split(',')
     caller = callers[-1]
-    g.es_print('\nInternal Leo error in',caller,color='red')
+    g.error('\nInternal Leo error in',caller)
     g.es_print(*args)
     g.es_print('Called from',','.join(callers[:-1]))
 #@+node:ekr.20090128083459.82: *3* g.posList
@@ -2997,7 +3000,7 @@ def os_path_expandExpression (s,**keys):
                 if trace: g.trace('returns',s)
             except Exception:
                 g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
+                g.es_exception(full=True, c=c)
 
     return s
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
@@ -4021,7 +4024,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException (c,p,script,script1):
 
-    g.es("exception executing script",color='blue')
+    g.warning("exception executing script")
 
     full = c.config.getBool('show_full_tracebacks_in_scripts')
 
@@ -4064,7 +4067,7 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     if find_p:
         find_text = find_p.b
     else:
-        g.es("no Find script node",color="red")
+        g.error("no Find script node")
         return
     if changeHeadline:
         change_p = tm.findNodeInTree(p,changeHeadline)
@@ -4240,7 +4243,7 @@ def reportBadChars (s,encoding):
                     errors, s.encode(encoding,'replace'),
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
-                    g.es(s2,color='red')
+                    g.error(s2)
         elif g.isChar(s):
             for ch in s:
                 try: unicode(ch,encoding,"strict")
@@ -4250,7 +4253,7 @@ def reportBadChars (s,encoding):
                     errors, unicode(s,encoding,'replace'),
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
-                    g.es(s2,color='red')
+                    g.error(s2)
     else:
         errors = 0
         if g.isUnicode(s):
@@ -4263,7 +4266,7 @@ def reportBadChars (s,encoding):
                     errors, s.encode(encoding,'replace'),
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
-                    g.es(s2,color='red')
+                    g.error(s2)
         elif g.isChar(s):
             for ch in s:
                 try: unicode(ch,encoding,"strict")
@@ -4273,7 +4276,7 @@ def reportBadChars (s,encoding):
                     errors, unicode(s,encoding,'replace'),
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
-                    g.es(s2,color='red')
+                    g.error(s2)
 #@+node:ekr.20050208093800: *3* g.toEncodedString
 def toEncodedString (s,encoding='utf-8',reportErrors=False):
 
@@ -4983,7 +4986,7 @@ def executeScript (name):
         theFile,filename,description = imp.find_module(mod_name)
         imp.load_module(mod_name,theFile,filename,description)
     except Exception:
-        g.es("exception executing",name,color="red")
+        g.error("exception executing",name)
         g.es_exception()
 
     if theFile:
@@ -5561,7 +5564,7 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     # elif g.app.gui.guiName() == 'tkinter' and moduleName in ('Tkinter','Pmw'):
         # return
     else:
-        g.es_print('',s,color="blue")
+        g.warning('',s)
 
 #@+node:ekr.20041219095213.1: *4* g.importModule
 def importModule (moduleName,pluginName=None,verbose=False):
@@ -5574,7 +5577,7 @@ def importModule (moduleName,pluginName=None,verbose=False):
     module = sys.modules.get(moduleName)
     if module:  return module
 
-    g.es('loading %s' % moduleName, color='blue')
+    g.blue('loading %s' % moduleName)
     exceptions = [] 
 
     try:
@@ -5607,7 +5610,7 @@ def importModule (moduleName,pluginName=None,verbose=False):
             else:
                 #unable to load module, display all exception messages
                 for e in exceptions:
-                    g.es(e, color='blue') 
+                    g.warning(e) 
         except Exception: # Importing a module can throw exceptions other than ImportError.
             t, v, tb = sys.exc_info()
             del tb  # don't need the traceback
@@ -5662,15 +5665,15 @@ def importFromPath (name,path,pluginName=None,verbose=False):
             module = imp.load_module(moduleName,theFile,pathname,description)
         except ImportError:
             if trace: # or verbose:
-                g.es_print("exception in g.importFromPath",color='blue')
+                g.error("exception in g.importFromPath")
                 g.es_exception()
         except UiTypeException:
             if not g.unitTesting and not g.app.batchMode:
                 g.es_print('Plugin %s does not support %s gui' % (
                     name,g.app.gui.guiName()))          
         except Exception:
-            g.es_print("unexpected exception in g.importFromPath(%s)" %
-                (name),color='blue')
+            g.error("unexpected exception in g.importFromPath(%s)" %
+                (name))
             g.es_exception()
     # Put no return statements before here!
     finally: 

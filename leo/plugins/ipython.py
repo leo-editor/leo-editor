@@ -81,10 +81,10 @@ try:
     import IPython.ipapi
     import_ok = True
 except ImportError:
-    g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
+    g.error('ipython plugin: can not import IPython.ipapi')
     import_ok = False
 except SyntaxError:
-    g.es_print('ipython plugin: syntax error importing IPython.ipapi',color='red')
+    g.error('ipython plugin: syntax error importing IPython.ipapi')
     import_ok = False
     
 #@-<< imports >>
@@ -270,11 +270,11 @@ class ipythonController:
     #@+node:ekr.20080204075924: *4* error & message
     def error (self,s):
 
-        g.es_print(s,color='red')
+        g.es_print(s)
 
     def message (self,s):
 
-        g.es_print(s,color='blue')
+        g.blue(s)
     #@+node:ekr.20080201150746.2: *4* pushToIPython
     def pushToIPython (self,script=None):
         ''' Push the node to IPython'''

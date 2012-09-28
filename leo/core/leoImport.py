@@ -444,7 +444,7 @@ class leoImportCommands (scanUtility):
         try:
             theFile = open(fileName,'w')
         except IOError:
-            g.es("can not open",fileName,color="blue")
+            g.warning("can not open",fileName)
             c.testManager.fail()
             return
         for p in p.self_and_subtree():
@@ -467,7 +467,7 @@ class leoImportCommands (scanUtility):
             theFile = open(fileName,'wb')
                 # Fix crasher: open in 'wb' mode.
         except IOError:
-            g.es("can not open",fileName,color="blue")
+            g.warning("can not open",fileName)
             c.testManager.fail()
             return
 
@@ -497,7 +497,7 @@ class leoImportCommands (scanUtility):
             # theFile = open(fileName,mode)
             theFile = open(fileName,'w')
         except IOError:
-            g.es("can not open",fileName,color="blue")
+            g.warning("can not open",fileName)
             c.testManager.fail()
             return
 
@@ -924,7 +924,7 @@ class leoImportCommands (scanUtility):
         while p and p != after:
             if p.isAtAutoNode():
                 if p.isAtIgnoreNode():
-                    g.es_print('ignoring',p.h,color='blue')
+                    g.warning('ignoring',p.h)
                     p.moveToThreadNext()
                 else:
                     # self.readOneAtAutoNode(p)
@@ -937,7 +937,7 @@ class leoImportCommands (scanUtility):
                 
         if not g.unitTesting:
             message = g.choose(found,'finished','no @auto nodes in the selected tree')
-            g.es(message,color='blue')
+            g.blue(message)
         c.redraw()
 
     #@+node:ekr.20031218072017.1810: *4* importDerivedFiles
@@ -997,7 +997,7 @@ class leoImportCommands (scanUtility):
             g.setGlobalOpenDir(fn)
             p = self.createOutline(fn,current)
             if p: # createOutline may fail.
-                if not g.unitTesting: g.es("imported",fn,color="blue")
+                if not g.unitTesting: g.blue("imported",fn)
                 p.contract()
                 p.setDirty()
                 c.setChanged(True)
@@ -1856,7 +1856,7 @@ class baseScannerClass (scanUtility):
 
         if not ok:
             self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
-            g.es_print('line:',repr(line),color='red')
+            g.error('line:',repr(line))
 
         return ok
     #@+node:ekr.20070703122141.104: *4* checkTrialWrite
@@ -1948,7 +1948,7 @@ class baseScannerClass (scanUtility):
         strict is True if leading whitespace is very significant.'''
 
         def pr(*args,**keys): #compareHelper
-            g.es_print(color='blue',*args,**keys)
+            g.blue(*args,**keys)
 
         def pr_mismatch(i,line1,line2):
             g.es_print('first mismatched line at line',str(i+1))
@@ -2086,7 +2086,7 @@ class baseScannerClass (scanUtility):
             aList.append('%4d %s' % (i,line))
 
         if trace or not g.unitTesting:
-            g.es_print('\n'.join(aList),color='blue')
+            g.blue('\n'.join(aList))
 
         return False
     #@+node:ekr.20111101052702.16721: *4* scanAndCompare & helpers
@@ -2378,7 +2378,7 @@ class baseScannerClass (scanUtility):
         if g.unitTesting:
             g.app.unitTestDict['fail'] = g.callers()
         else:
-            g.es_print('inserting @ignore',color='blue')
+            g.warning('inserting @ignore')
             if parent.isAnyAtFileNode() :
                 c.import_error_nodes.append(parent.h)
 
@@ -2658,9 +2658,9 @@ class baseScannerClass (scanUtility):
             g.app.unitTestDict ['actualErrors'] = self.errors
             if 0: # For debugging unit tests.
                 g.trace(g.callers())
-                g.es_print('',s,color='red')
+                g.error('',s)
         else:
-            g.es_print('error:',s,color='red')
+            g.error('Error:',s)
 
     def oops (self):
         g.pr('baseScannerClass oops: %s must be overridden in subclass' % g.callers())
@@ -2671,7 +2671,7 @@ class baseScannerClass (scanUtility):
 
     def warning (self,s):
         if not g.unitTesting:
-            g.es_print('warning:',s,color='red')
+            g.warning('Warning:',s)
     #@+node:ekr.20070706084535.1: *3* Parsing
     #@+at Scan and skipDecls would typically not be overridden.
     #@+node:ekr.20071201072917: *4* adjustDefStart

@@ -404,7 +404,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
             not g.unitTesting and not g.app.batchMode and
             not c.gui.isNullGui
         ):
-            g.es('Abbreviations are on',color='red')
+            g.red('Abbreviations are on')
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
@@ -1381,7 +1381,7 @@ class debugCommandsClass (baseEditCommandsClass):
                 if g.os_path_exists(debugger):
                     return debugger
                 else:
-                    g.es('debugger does not exist:',debugger,color='blue')
+                    g.warning('debugger does not exist:',debugger)
         else:
             g.es('no debugger found.')
             return None
@@ -1429,9 +1429,9 @@ class debugCommandsClass (baseEditCommandsClass):
         g.enable_gc_debug()
 
         if g.trace_gc_verbose:
-            g.es('enabled verbose gc stats',color='blue')
+            g.blue('enabled verbose gc stats')
         else:
-            g.es('enabled brief gc stats',color='blue')
+            g.blue('enabled brief gc stats')
     #@+node:ekr.20060202154734: *3* freeTreeWidgets
     def freeTreeWidgets (self,event=None):
 
@@ -1920,7 +1920,7 @@ class editCommandsClass (baseEditCommandsClass):
                     aList.extend(ivars)
                     d [key] = aList
                 else:
-                    g.es('invalid @data c-to-python-ivars-dict',repr(s),color='red')
+                    g.error('invalid @data c-to-python-ivars-dict',repr(s))
                     return {}
 
             return d
@@ -1956,7 +1956,7 @@ class editCommandsClass (baseEditCommandsClass):
             if changed:
                 u.afterChangeGroup(c.p,undoType,
                     reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-            g.es("done")
+            g.es('done')
         #@+node:ekr.20110916215321.7997: *5* convertCodeList (main pattern function)
         def convertCodeList(self,aList):
             
@@ -3614,7 +3614,7 @@ class editCommandsClass (baseEditCommandsClass):
                     w.seeInsertPoint()
                     ok = True
             if not ok:
-                g.es('goto-char takes non-negative integer argument',color='blue')
+                g.warning('goto-char takes non-negative integer argument')
             k.resetLabel()
             k.clearState()
     #@+node:ekr.20060417181052: *4* gotoGlobalLine
@@ -5141,7 +5141,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         self.extendMode = val
         if not g.unitTesting:
-            # g.es('extend mode',g.choose(val,'on','off'),color='red')
+            # g.red('extend mode',g.choose(val,'on','off'))
             c.k.showStateAndMode()
         c.widgetWantsFocusNow(w)
     #@+node:ekr.20050920084036.136: *4* exchangePointMark
@@ -10605,7 +10605,7 @@ class spellTabHandler (leoFind.leoFind):
         self.c.frame.log.selectTab('Log')
 
         # for message in self.messages:
-            # g.es(message,color='blue')
+            # g.warning(message)
 
         # self.messages = []
     #@+node:ekr.20051025071455.41: *5* ignore
@@ -10635,9 +10635,8 @@ class EnchantClass:
 
         # Set the base language
         if language and not enchant.dict_exists(language):
-            g.es_print('Invalid language code for Enchant',
-                repr(language),color='blue')
-            g.es('Using "en_US" instead')
+            g.warning('Invalid language code for Enchant',repr(language))
+            g.es_print('Using "en_US" instead')
             language = 'en_US'
 
         # Compute fn, the full path to the local dictionary.
@@ -10651,7 +10650,7 @@ class EnchantClass:
                 self.d = enchant.DictWithPWL(language,fn)
             except Exception:
                 g.es_exception()
-                g.es_print('not a valid dictionary file',fn,color='red')
+                g.error('not a valid dictionary file',fn)
                 self.d = enchant.Dict(language) 
         else:
             self.d = enchant.Dict(language) 

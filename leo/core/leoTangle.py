@@ -756,10 +756,9 @@ class baseTangleCommands:
         #@+<< return if @silent >>
         #@+node:ekr.20031218072017.3482: *5* << return if @silent >>
         if self.print_mode in ("quiet","silent"):
-            g.es(
+            g.warning(
                 '','@%s' % (self.print_mode),
-                "inhibits untangle for",root.h,
-                color="blue")
+                "inhibits untangle for",root.h)
             return
         #@-<< return if @silent >>
         s = root.b

@@ -548,7 +548,7 @@ class ScreenCastController:
         if not m.p1:
             return
         
-        g.es_print('end slide show: %s' % (m.p1.h),color='red')
+        g.red('end slide show: %s' % (m.p1.h))
         m.delete_widgets()
         k.keyboardQuit()
         m.clear_state()

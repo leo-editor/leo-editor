@@ -994,7 +994,7 @@ class LeoApp:
         if hasattr(sys,nonConstantAttr):
             g.app.leoID = getattr(sys,nonConstantAttr)
             if verbose and not g.app.silentMode and not g.app.unitTesting:
-                g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+                g.red("leoID=",g.app.leoID,spaces=False)
             # Careful: periods in the id field of a gnx will corrupt the .leo file!
             g.app.leoID = g.app.leoID.replace('.','-')
             return
@@ -1017,17 +1017,15 @@ class LeoApp:
                         # will corrupt the .leo file!
                         g.app.leoID = g.app.leoID.replace('.','-')
                         if verbose and not g.app.silentMode and not g.app.unitTesting:
-                            g.es('leoID=',g.app.leoID,' (in ',theDir,')',
-                                spaces=False,color="red")
+                            g.red('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False)
                         return
                     elif verbose and not g.app.unitTesting:
-                        g.es('empty ',tag,' (in ',theDir,')',spaces=False,
-                            color = "red")
+                        g.red('empty ',tag,' (in ',theDir,')',spaces=False)
                 except IOError:
                     g.app.leoID = None
                 except Exception:
                     g.app.leoID = None
-                    g.es_print('unexpected exception in app.setLeoID',color='red')
+                    g.error('unexpected exception in app.setLeoID')
                     g.es_exception()
         #@-<< return if we can set leoID from "leoID.txt" >>
         #@+<< return if we can set leoID from os.getenv('USER') >>
@@ -1036,8 +1034,8 @@ class LeoApp:
             theId = os.getenv('USER')
             if theId:
                 if verbose and not g.app.unitTesting:
-                    g.es("setting leoID from os.getenv('USER'):",
-                        repr(theId),color='blue')
+                    g.blue("setting leoID from os.getenv('USER'):",
+                        repr(theId))
                 g.app.leoID = theId
                 # Careful: periods in the id field of a gnx
                 # will corrupt the .leo file!
@@ -1074,7 +1072,7 @@ class LeoApp:
         g.app.leoID = g.app.leoID.replace('.','-')
 
         # g.trace(g.app.leoID)
-        g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+        g.blue('leoID=',repr(g.app.leoID),spaces=False)
         #@-<< put up a dialog requiring a valid id >>
         #@+<< attempt to create leoID.txt >>
         #@+node:ekr.20031218072017.1982: *4* << attempt to create leoID.txt >> (changed)
@@ -1090,12 +1088,12 @@ class LeoApp:
                     f.write(s)
                     f.close()
                     if g.os_path_exists(fn):
-                        g.es_print('',tag,'created in',theDir,color='red')
+                        g.error('',tag,'created in',theDir)
                         return
                 except IOError:
                     pass
 
-                g.es('can not create',tag,'in',theDir,color='red')
+                g.error('can not create',tag,'in',theDir)
         #@-<< attempt to create leoID.txt >>
     #@+node:ekr.20031218072017.1847: *3* app.setLog, lockLog, unlocklog
     def setLog (self,log):
@@ -1556,7 +1554,7 @@ class LoadManager:
             return fn
         elif g.os_path_isabs(fn):
             # Create the file.
-            g.es_print('Using default leo file name:\n%s' % (fn),color='red')
+            g.error('Using default leo file name:\n%s' % (fn))
             return fn
         else:
             # It's too risky to open a default file if it is relative.
@@ -1574,7 +1572,7 @@ class LoadManager:
                     ("global config",g.app.globalConfigDir),
                     ("home",g.app.homeDir),
                 ):
-                    g.es("%s dir:" % (kind),theDir,color="blue")
+                    g.blue("%s dir:" % (kind),theDir)
                     
         else:
             aList = (
@@ -1807,7 +1805,7 @@ class LoadManager:
             if not giveMessage: return
             if not g.isPython3:
                 s = g.toEncodedString(s,'ascii')
-            g.es_print(s,color='blue')
+            g.blue(s)
             
         theFile = lm.openLeoOrZipFile(fn)
         
@@ -2043,7 +2041,7 @@ class LoadManager:
             return fn
         elif g.os_path_isabs(fn):
             # Create the file.
-            g.es_print('Using default leo file name:\n%s' % (fn),color='red')
+            g.error('Using default leo file name:\n%s' % (fn))
             return fn
         else:
             # It's too risky to open a default file if it is relative.
@@ -2742,7 +2740,7 @@ class LoadManager:
         except IOError:
             # Do not use string + here: it will fail for non-ascii strings!
             if not g.unitTesting:
-                g.es_print("can not open:",fn,color="blue")
+                g.error("can not open:",fn)
             return None
     #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
     def openZipFile (self,fn):
@@ -2764,7 +2762,7 @@ class LoadManager:
         except IOError:
             # Do not use string + here: it will fail for non-ascii strings!
             if not g.unitTesting:
-                g.es_print("can not open:",fn,color="blue")
+                g.error("can not open:",fn)
             return None
     #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
     def readOpenedLeoFile(self,c,gui,fn,readAtFileNodesFlag,theFile):
@@ -3108,10 +3106,10 @@ class RecentFilesManager:
                     fn = g.os_path_join(theDir,'.leoRecentFiles.txt')
                     f = open(fn,'w')
                     f.close()
-                    g.es_print('created',fn,color='red')
+                    g.red('created',fn)
                     return
                 except Exception:
-                    g.es_print('can not create',fn,color='red')
+                    g.error('can not create',fn)
                     g.es_exception()
     #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
     def readRecentFilesFile (self,path):
@@ -3237,7 +3235,7 @@ class RecentFilesManager:
                             g.pr('wrote recent file: %s' % fileName)
                             written = True
                         else:
-                            g.pr('failed to recent file: %s' % (fileName),color='red')
+                            g.error('failed to write recent file: %s' % (fileName))
                     # Bug fix: Leo 4.4.6: write *all* recent files.
 
         if written:
@@ -3247,7 +3245,7 @@ class RecentFilesManager:
             if g.app.homeLeoDir:
                 fileName = g.os_path_finalize_join(g.app.homeLeoDir,tag)
                 if not g.os_path_exists(fileName):
-                    g.es_print('creating: %s' % (fileName),color='red')
+                    g.red('creating: %s' % (fileName))
                 rf.writeRecentFilesFileHelper(fileName)
 
             
@@ -3285,12 +3283,12 @@ class RecentFilesManager:
 
         except IOError:
             if 1: # The user may have erased a file.  Not an error.
-                g.es_print('error writing',fileName,color='red')
+                g.error('error writing',fileName)
                 g.es_exception()
                 return False
 
         except Exception:
-            g.es('unexpected exception writing',fileName,color='red')
+            g.error('unexpected exception writing',fileName)
             g.es_exception()
             if g.unitTesting: raise
             return False

@@ -133,7 +133,7 @@ def open_mimetype(tag, keywords, val=None):
 
         # stop here if the file doesn't exist
         if not g.os_path_exists(fpath):
-            g.es('@mime: file does not exist, %s' % fpath, color='red')
+            g.error('@mime: file does not exist, %s' % fpath)
             return True
 
         # user-specified command string, or sys.platform-determined string
@@ -157,18 +157,17 @@ def open_mimetype(tag, keywords, val=None):
                     # a shell for e.g. PATH access
                     open_func = exec_full_cmd(fullcmd)
                 else:
-                    g.es('@mime: no mailcap entry for %s: %s' % (ftype, fname),
-                         color='red')
+                    g.error('@mime: no mailcap entry for %s: %s' % (ftype, fname))
                 g.trace('mailcap command:', fullcmd)
             else:
-                g.es('@mime: unknown file type: %s' % fname, color='red')
+                g.error('@mime: unknown file type: %s' % fname)
 
 
         # use the custom open_func to open external file viewer
         if open_func:
             open_func(fpath)
         else:
-            g.es('@mime: no known way to open %s' % fname, color='red')
+            g.error('@mime: no known way to open %s' % fname)
 
         # block execution of e.g. vim plugin
         return True

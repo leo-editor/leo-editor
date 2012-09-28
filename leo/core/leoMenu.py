@@ -119,7 +119,7 @@ class leoMenu:
 
     def error (self,s):
 
-        g.es_print('',s,color='red')
+        g.error('',s)
     #@+node:ekr.20031218072017.3781: *3* Gui-independent menu routines
     #@+node:ekr.20060926213642: *4* capitalizeMinibufferMenuName
     def capitalizeMinibufferMenuName (self,s,removeHyphens):
@@ -1285,7 +1285,7 @@ class leoMenu:
             parent = self.getMenu(parentName) # parent may be None.
             menu = self.getMenu(menuName)
             if menu:
-                g.es("menu already exists:",menuName,color="red")
+                g.error("menu already exists:",menuName)
             else:
                 menu = self.new_menu(parent,tearoff=0,label=menuName)
                 self.setMenu(menuName,menu)
@@ -1331,7 +1331,7 @@ class leoMenu:
         # if trace: g.trace('parent',parent)
         if not parent:
             if not g.app.batchMode:
-                g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
+                g.error('','createOpenWithMenuFromTable:','no File menu')
             return
 
         label = self.getRealMenuName("Open &With...")

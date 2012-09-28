@@ -279,7 +279,7 @@ if sys.platform != 'cli':
             if target == 'xml-stylesheet':
                 self.c.frame.stylesheet = data
                 if False and not self.silent:
-                    g.es('','%s: %s' % (target,data),color='blue')
+                    g.warning('','%s: %s' % (target,data))
             else:
                 g.trace(target,data)
         #@+node:ekr.20060919110638.35: *4* startElement & helpers
@@ -617,11 +617,11 @@ class baseFileCommands:
                 self.readSaxFile(
                     theFile,fileName='check-leo-file',
                     silent=False,inClipboard=False,reassignIndices=False)
-                g.es_print('check-leo-file passed',color='blue')
+                g.blue('check-leo-file passed')
             except Exception:
                 junk, message, junk = sys.exc_info()
                 # g.es_exception()
-                g.es_print('check-leo-file failed:',str(message),color='red')
+                g.error('check-leo-file failed:',str(message))
         finally:
             self.checking = False
             c.loading = False # reenable c.changed
@@ -703,7 +703,7 @@ class baseFileCommands:
             c.dumpOutline()
 
         if checkAfterRead:
-            g.trace('checking outline after paste',color='blue')
+            g.blue('checking outline after paste')
             c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
         c.selectPosition(p)
@@ -724,7 +724,7 @@ class baseFileCommands:
             for z in parents:
                 # g.trace(p.h,id(p.v),id(z.v))
                 if p.v == z.v:
-                    g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                    g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
 
         return True
@@ -892,7 +892,7 @@ class baseFileCommands:
             self.read_only = False
 
         if self.read_only and not g.unitTesting:
-            g.es("read only:",fileName,color="red")
+            g.error("read only:",fileName)
     #@+node:ekr.20031218072017.3029: *4* fc.readAtFileNodes
     def readAtFileNodes (self):
 
@@ -1028,7 +1028,9 @@ class baseFileCommands:
                     v.unknownAttributes = resultDict[gnx]
                     v._p_changed = 1
                 elif verbose:
-                    g.trace('can not find vnode (duA): gnx = %s' % (gnx),color='red')
+                    g.error(
+                        'restoreDescendantAttributes: '
+                        'can not find vnode (duA): gnx = %s' % (gnx))
 
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v,resultDict in self.descendentVnodeUaDictList:
@@ -1039,8 +1041,10 @@ class baseFileCommands:
                     v.unknownAttributes = resultDict[key]
                     v._p_changed = 1
                 elif verbose:
-                    g.trace('can not find vnode (duA): archivedPosition: %s, root_v: %s' % (
-                        key,root_v),color='red')
+                    g.error(
+                        'restoreDescendantAttributes: '
+                        'can not find vnode (duA): archivedPosition: %s, root_v: %s' % (
+                            key,root_v))
 
         marks = {} ; expanded = {}
         for gnx in self.descendentExpandedList:
@@ -1050,14 +1054,18 @@ class baseFileCommands:
                 expanded[v]=v
                 # if trace: g.trace('expanded',v)
             elif verbose:
-                g.trace('can not find vnode (expanded): gnx = %s, tref: %s' % (gnx,tref),color='red')
+                g.error(
+                    'restoreDescendantAttributes: '
+                    'can not find vnode (expanded): gnx = %s, tref: %s' % (gnx,tref))
 
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
             if v: marks[v]=v
             elif verbose:
-                g.trace('can not find vnode (marks): gnx = %s tref: %s' % (gnx,tref),color='red')
+                g.error(
+                    'restoreDescendantAttributes: '
+                    'can not find vnode (marks): gnx = %s tref: %s' % (gnx,tref))
 
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
@@ -1201,7 +1209,7 @@ class baseFileCommands:
             if 'O' in s: v.setOrphan()
             # if 'T' in s: self.topVnode = v
             if 'V' in s:
-                # g.trace('setting currentVnode',v,color='red')
+                # g.red('handleVnodeSaxAttributes: setting currentVnode',v)
                 self.currentVnode = v
 
         s = d.get('tnodeList','')
@@ -1341,7 +1349,7 @@ class baseFileCommands:
             # g.trace('parsing done')
             sax_node = handler.getRootNode()
         except Exception:
-            g.es_print('error parsing',inputFileName,color='red')
+            g.error('error parsing',inputFileName)
             g.es_exception()
             sax_node = None
 
@@ -1396,7 +1404,7 @@ class baseFileCommands:
 
         def oops (message):
             if not g.app.unitTesting:
-                g.es_print('bad archived position: %s' % (message),color='red')
+                g.error('bad archived position: %s' % (message))
 
         try:
             aList = [int(z) for z in archivedPosition.split('.')]
@@ -1554,9 +1562,9 @@ class baseFileCommands:
 
         except Exception:
             if self.read_only:
-                g.es("read only",color="red")
+                g.error("read only")
             if not g.unitTesting:
-                g.es("exception deleting backup file:",fileName)
+                g.error("exception deleting backup file:",fileName)
                 g.es_exception(full=False)
             return False
     #@+node:ekr.20031218072017.1470: *3* put (leoFileCommands)
@@ -1903,7 +1911,7 @@ class baseFileCommands:
                 #@+node:ekr.20040702085529: *5* << issue informational messages >> (changed)
                 if 0: # It's strange to clear the orphan bit.
                     if isOrphan and (isFile or isThin):
-                        g.es("writing erroneous:",p.h,color="blue")
+                        g.warning("writing erroneous:",p.h)
                         p.clearOrphan()
                 #@-<< issue informational messages >>
             # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
@@ -2011,12 +2019,12 @@ class baseFileCommands:
 
         c = self.c
 
-        g.trace('@bool check_outline_before_save = True',color='blue')
+        g.blue('@bool check_outline_before_save = True')
 
         errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         ok = errors == 0
         if not ok:
-            g.es_print('outline not written',color='red')
+            g.error('outline not written')
 
         return ok
     #@+node:ekr.20040324080359.1: *4* isReadOnly
@@ -2027,7 +2035,7 @@ class baseFileCommands:
         if g.os_path_exists(fileName):
             try:
                 if not os.access(fileName,os.W_OK):
-                    g.es("can not write: read only:",fileName,color="red")
+                    g.error("can not write: read only:",fileName)
                     return True
             except Exception:
                 pass # os.access() may not exist on all platforms.
@@ -2131,12 +2139,12 @@ class baseFileCommands:
                     os.close(fd)
                 ok = True
             except Exception:
-                g.es('exception creating backup file',color='red')
+                g.error('exception creating backup file')
                 g.es_exception()
                 ok,backupName = False,None
 
             if not ok and self.read_only:
-                g.es("read only",color="red")
+                g.error("read only")
         else:
             ok,backupName = True,None
 
@@ -2163,8 +2171,7 @@ class baseFileCommands:
             # No need to create directories when restoring.
             g.utils_rename(c,backupName,fileName)
         else:
-            g.trace('backup file does not exist!',
-                repr(backupName),color='red')
+            g.error('backup file does not exist!',repr(backupName))
     #@+node:ekr.20100119145629.6110: *4* writeToStringHelper
     def writeToStringHelper (self,fileName):
 
@@ -2251,7 +2258,7 @@ class baseFileCommands:
         c = self.c
         c.endEditing()
         self.write_Leo_file(self.mFileName,outlineOnlyFlag=True)
-        g.es('done',color='blue')
+        g.blue('done')
     #@+node:ekr.20080805114146.2: ** Utils
     #@+node:ekr.20031218072017.1570: *3* fc.assignFileIndices & compactFileIndices
     def assignFileIndices (self):
@@ -2272,7 +2279,7 @@ class baseFileCommands:
 
         for p,torv in aList:
             if type(torv.unknownAttributes) != type({}):
-                g.es("ignoring non-dictionary uA for",p,color="blue")
+                g.warning("ignoring non-dictionary uA for",p)
             else:
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(torv.unknownAttributes) # Copy the dict.
@@ -2282,7 +2289,7 @@ class baseFileCommands:
                     ok = self.pickle(torv=torv,val=d.get(key),tag=None)
                     if not ok:
                         del d[key]
-                        g.es("ignoring bad unknownAttributes key",key,"in",p.h,color="blue")
+                        g.warning("ignoring bad unknownAttributes key",key,"in",p.h)
 
                 if d:
                     result.append((torv,d),)
@@ -2306,11 +2313,11 @@ class baseFileCommands:
 
         except pickle.PicklingError:
             if tag: # The caller will print the error if tag is None.
-                g.es_print("ignoring non-pickleable value",val,"in",torv,color="blue")
+                g.warning("ignoring non-pickleable value",val,"in",torv)
             return ''
 
         except Exception:
-            g.es("fc.pickle: unexpected exception in",torv,color='red')
+            g.error("fc.pickle: unexpected exception in",torv)
             g.es_exception()
             return ''
     #@+node:ekr.20040701065235.2: *3* fc.putDescendentAttributes
@@ -2385,7 +2392,7 @@ class baseFileCommands:
                 attr = ' %s="%s"' % (key,xml.sax.saxutils.escape(val))
                 return attr
             else:
-                g.es("ignoring non-string attribute",key,"in",torv,color="blue")
+                g.warning("ignoring non-string attribute",key,"in",torv)
                 return ''
         else:
             return self.pickle(torv=torv,val=val,tag=key)
@@ -2396,7 +2403,7 @@ class baseFileCommands:
 
         attrDict = torv.unknownAttributes
         if type(attrDict) != type({}):
-            g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+            g.warning("ignoring non-dictionary unknownAttributes for",torv)
             return ''
         else:
             val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])

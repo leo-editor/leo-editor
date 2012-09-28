@@ -136,11 +136,11 @@ class DT(baseLeoPlugin):
         else:
             g.es('Result of running doctest on this subtree;')        
         if failures == 0:
-            g.es("%s tests run successfully" % tests, color="blue")
+            g.blue("%s tests run successfully" % tests)
         if failures == 1:
-            g.es("There was one failure in %s tests" % tests, color="red")    
+            g.error("There was one failure in %s tests" % tests)    
         if failures > 1:
-            g.es("%s failures in %s tests" % (failures, tests), color="red")
+            g.error("%s failures in %s tests" % (failures, tests))
         #@-<<report summary of results>>
 
         #clean up temp file

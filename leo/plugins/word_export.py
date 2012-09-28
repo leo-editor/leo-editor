@@ -80,7 +80,7 @@ def getWordConnection():
         word.Documents.Add()
         return word
     except Exception as err:
-        g.es("Failed to connect to Word",color="blue")
+        g.warning("Failed to connect to Word")
         raise
         # return None
 #@+node:EKR.20040517075715.17: ** doPara
@@ -139,7 +139,7 @@ def cmd_Export(c):
         if word:
             header_style = getConfiguration().get("Main", "Header_Style")
             # Based on the rst plugin
-            g.es("Writing tree to Word",color="blue")
+            g.blue("Writing tree to Word")
             config = getConfiguration()
             writeNodeAndTree(c,word,
                 config.get("Main", "header_style").strip(),
@@ -149,7 +149,7 @@ def cmd_Export(c):
                 "")						 
             g.es("Done!")
     except Exception as err:
-        g.es("Exception writing Word",color="blue")
+        g.error("Exception writing Word")
         g.es_exception()
 #@-others
 #@-leo

@@ -239,9 +239,9 @@ def doMinidomTest( c ):
     try:
         mdom = minidom.parseString( s )
     except Exception as x:
-        g.es( "Minidom could not parse node because of:\n %s" % x, color='red' )
+        g.error("Minidom could not parse node because of:\n %s" % x)
         return
-    g.es( "Minidom could parse the node", color='blue'  )
+    g.blue("Minidom could parse the node")
 #@+node:mork.20041025090303: ** cleanString
 def cleanString( data ):
     '''This method cleans a string up for the processor.  It currently just removes

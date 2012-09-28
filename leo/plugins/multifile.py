@@ -169,11 +169,11 @@ def stop (tag,keywords):
             try:
                 if os.path.isdir(path):
                     shutil.copy2(fileName,path)
-                    g.es("multifile:\nWrote %s to %s" % (fileName,path),color="blue")
+                    g.blue("multifile:\nWrote %s to %s" % (fileName,path))
                 else:
-                    g.es("multifile:\n%s is not a directory, not writing %s" % (path,fileName),color="red")
+                    g.error("multifile:\n%s is not a directory, not writing %s" % (path,fileName))
             except:
-                g.es("multifile:\nCant write %s to %s" % (fileName,path),color="red")
+                g.error("multifile:\nCant write %s to %s" % (fileName,path))
                 g.es_exception_type()
     files.clear()
 #@+node:mork.20041018204908.5: ** scanForMultiPath

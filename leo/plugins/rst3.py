@@ -197,8 +197,7 @@ def init ():
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
-        s = 'rst3 plugin not loaded: can not load docutils'
-        g.es_print(s,color='red')
+        g.error('rst3 plugin not loaded: can not load docutils')
 
     return ok
 #@+node:ekr.20050805162550.6: *3* onCreate
@@ -946,12 +945,11 @@ class rstClass:
                 # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
                 return { self.munge(name): val }
             else:
-                g.es_print('ignoring unknown option: %s' % (name),color='red')
+                g.error('ignoring unknown option: %s' % (name))
                 return {}
         else:
             g.trace(repr(s))
-            s2 = 'bad rst3 option in %s: %s' % (p.h,s)
-            g.es_print(s2,color='red')
+            g.error('bad rst3 option in %s: %s' % (p.h,s))
             return {}
     #@+node:ekr.20050808070018.1: *5* scanOptions
     def scanOptions (self,p,s):
@@ -1014,7 +1012,7 @@ class rstClass:
                     break
         # Special case.
         if self.getOption('http_server_support') and not mod_http:
-            g.es('No http_server_support: can not import mod_http plugin',color='red')
+            g.error('No http_server_support: can not import mod_http plugin')
             self.setOption('http_server_support',False)
     #@+node:ekr.20050810103731: *5* handleSingleNodeOptions
     def handleSingleNodeOptions (self,p):
@@ -1090,7 +1088,7 @@ class rstClass:
         else:
             self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
-        g.es_print('done',color='blue')
+        g.blue('done')
     #@+node:ekr.20050805162550.17: *5* processTree
     def processTree(self,p,ext,toString,justOneFile):
 
@@ -1128,7 +1126,7 @@ class rstClass:
                     p.moveToThreadNext()
             else: p.moveToThreadNext()
         if not found:
-            g.es('No @rst nodes in selected tree',color='blue')
+            g.warning('No @rst nodes in selected tree')
         return None,None
     #@+node:ekr.20050805162550.21: *5* writeSpecialTree
     def writeSpecialTree (self,p,toString,justOneFile):
@@ -1157,7 +1155,7 @@ class rstClass:
             if not g.os_path_exists(theDir):
                 ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
                 if not ok:
-                    g.es_print('did not create:',theDir,color='red')
+                    g.error('did not create:',theDir)
                     return False
 
             # if not os.access(theDir,os.F_OK):
@@ -1223,7 +1221,7 @@ class rstClass:
             if self.ext == ext:
                 break
         else:
-            g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
+            g.error('unknown docutils extension: %s' % (self.ext))
             return ''
 
         # Make the stylesheet path relative to the directory containing the output file.
@@ -1247,9 +1245,9 @@ class rstClass:
             overrides.update(styleSheetArgsDict)
                 # MWC add args to settings
         elif rel_stylesheet_path == stylesheet_path:
-            g.es_print('stylesheet not found: %s' % (path),color='red')
+            g.error('stylesheet not found: %s' % (path))
         else:
-            g.es_print('stylesheet not found\n',path,color='red')
+            g.error('stylesheet not found\n',path)
             if self.path:g.es_print('@path:', self.path)
             g.es_print('open path:',self.c.frame.openDirectory)
             if rel_stylesheet_path:
@@ -1290,7 +1288,7 @@ class rstClass:
                 key,value = data
                 d[str(key)] = str(value)
             else:
-                g.es_print('bad option: %s' % s,color='red')
+                g.error('bad option: %s' % s)
                 break
 
         return d
@@ -1768,7 +1766,7 @@ class rstClass:
 
             name = g.os_path_finalize(name)
 
-            g.es_print('wrote: %s' % (name),color="blue")
+            g.blue('wrote: %s' % (name))
     #@+node:ekr.20050810083856: *4* rstComment
     def rstComment (self,s):
 
@@ -1826,7 +1824,7 @@ class rstClass:
             if justOneFile:
                 self.relocate_references(p.self_and_subtree)
 
-            g.es_print('html updated for http plugin',color="blue")
+            g.blue('html updated for http plugin')
 
             if self.getOption('clear_http_attributes'):
                 g.es_print("http attributes cleared")

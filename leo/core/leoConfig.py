@@ -130,7 +130,7 @@ class ParserBaseClass:
         g.pr(s)
 
         # Does not work at present because we are using a null Gui.
-        g.es(s,color="blue")
+        g.blue(s)
     #@+node:ekr.20041120094940: *3* kind handlers (ParserBaseClass)
     #@+node:ekr.20060608221203: *4* doAbbrev
     def doAbbrev (self,p,kind,name,val):
@@ -318,7 +318,7 @@ class ParserBaseClass:
 
             if not g.app.gui or not g.app.gui.guiName():
                 s = '@if-gui has no effect: g.app.gui not defined yet'
-                g.es_print(s,color='blue')
+                g.warning(s)
                 return "skip"
             elif g.app.gui.guiName().lower() == name.lower():
                 return None
@@ -536,7 +536,7 @@ class ParserBaseClass:
             else:
                 if False and not g.app.unitTesting and not g.app.silentMode:
                     s = 'using menus from: %s' % c.shortFileName()
-                    g.es_print(s,color='blue')
+                    g.blue(s)
                 g.app.config.menusList = aList
                 name = c.shortFileName() if c else '<no settings file>'
                 g.app.config.menusFileName = name
@@ -1095,7 +1095,7 @@ class ParserBaseClass:
         while p and p != after:
             result = self.visitNode(p)
             if result == "skip":
-                # g.es_print('skipping settings in',p.h,color='blue')
+                # g.warning('skipping settings in',p.h)
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -1469,8 +1469,8 @@ class GlobalConfigManager:
             # Important: this is not a complete test of conflicting settings:
             # The warning is given only if the code tries to access the setting.
             if warn:
-                g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
-                g.es_print('there may be conflicting settings!',color='red')
+                g.error('warning: ignoring',gs.kind,'',setting,'is not',requestedType)
+                g.error('there may be conflicting settings!')
             return None, False
         # elif val in (u'None',u'none','None','none','',None):
         elif isNone:
@@ -1869,8 +1869,8 @@ class LocalConfigManager:
             # Important: this is not a complete test of conflicting settings:
             # The warning is given only if the code tries to access the setting.
             if warn:
-                g.es_print('warning: ignoring',gs.kind,'',setting,'is not',requestedType,color='red')
-                g.es_print('there may be conflicting settings!',color='red')
+                g.error('warning: ignoring',gs.kind,'',setting,'is not',requestedType)
+                g.error('there may be conflicting settings!')
             return None, False
         # elif val in (u'None',u'none','None','none','',None):
         elif isNone:

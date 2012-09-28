@@ -144,7 +144,7 @@ class View:
             if currentPath.isdir():
                 self.processDirectory(currentPath, self.current)
         else:
-            g.es('path does not exist: %s' % (str(currentPath)),color='blue')
+            g.warning('path does not exist: %s' % (str(currentPath)))
     #@+node:ktenney.20041212102137: *3* clip
     def clip(self):
 
@@ -199,7 +199,7 @@ class View:
                     lines.append(line)
             c.setBodyText(self.current,''.join(lines))
         else:
-            g.es('path does not exist: %s' % (str(currentPath)),color='blue')
+            g.warning('path does not exist: %s' % (str(currentPath)))
     #@+node:ktenney.20041211072654.11: *3* getCurrentPath
     def getCurrentPath(self):
 

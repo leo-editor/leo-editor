@@ -95,7 +95,7 @@ class nodeIndices (object):
         """Create a gnx from its string representation"""
 
         if not g.isString(s):
-            g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
+            g.error("scanGnx: unexpected index type:",type(s),'',s)
             return None,None,None
 
         s = s.strip()
@@ -2435,8 +2435,10 @@ class vnode (baseVnode):
             w.setYScrollPosition(spot)
         v.scrollBarSpot = spot
             
-        if trace: g.trace('start: %s n: %s ins: %s spot: %s %s' % (
-            start,n,ins,spot,v.h))
+        if trace:
+            g.trace(spot,v.h)
+            # g.trace('start: %s n: %s ins: %s spot: %s %s' % (
+                # start,n,ins,spot,v.h))
             
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll

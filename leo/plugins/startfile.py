@@ -107,7 +107,7 @@ def onIconDoubleClick(tag,keywords):
                         g.es(filename+' - file not found in '+startdir)
                         g.es_exception()
                 else:
-                    g.es('%s not found in %s' % (filename,startdir),color='blue')
+                    g.warning('%s not found in %s' % (filename,startdir))
             os.chdir(thisdir) # restore the original current dir.
             #@-<< find path and start file >>
 #@-others

@@ -740,7 +740,7 @@ class leoFind:
                 self.re_obj = re.compile(s,flags)
                 # self.re_obj = re.compile(re.escape(self.find_text),flags)
             except Exception:
-                g.es('invalid regular expression:',self.find_text,color='blue')
+                g.warning('invalid regular expression:',self.find_text)
                 self.errors += 1 # Abort the search.
                 return None,None
 
@@ -1050,11 +1050,11 @@ class leoFind:
         if c.hoistStack:
             if not p:
                 if self.wrapping:
-                    g.es('wrap disabled in hoisted outlines',color='blue')
+                    g.warning('wrap disabled in hoisted outlines')
                 return
             bunch = c.hoistStack[-1]
             if not bunch.p.isAncestorOf(p):
-                g.es('found match outside of hoisted outline',color='blue')
+                g.warning('found match outside of hoisted outline')
                 return None
 
         # Wrap if needed.

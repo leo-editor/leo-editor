@@ -851,6 +851,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if e:
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
+            
+        # 2012/09/27.
+        g.app.gui.add_border(c,c.frame.tree.treeWidget)
 
         return e,wrapper # 2011/02/12
     #@+node:ekr.20110605121601.17910: *3* editPosition (nativeTree)
@@ -916,13 +919,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if i > -1:
                 s = s[:i]
                 if s != oldHead:
-                    g.es("truncating headline to one line",color="blue")
+                    g.warning("truncating headline to one line")
 
             limit = 1000
             if len(s) > limit:
                 s = s[:limit]
                 if s != oldHead:
-                    g.es("truncating headline to",limit,"characters",color="blue")
+                    g.warning("truncating headline to",limit,"characters")
             #@-<< truncate s if it has multiple lines >>
             p.initHeadString(s)
             item.setText(0,s) # Required to avoid full redraw.

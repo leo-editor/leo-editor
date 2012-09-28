@@ -515,8 +515,7 @@ class LeoPluginsController:
             if 0:
                 s2 = '@enabled-plugins found in %s' % (
                     g.app.config.enabledPluginsFileName)
-                g.es_print(s2,color='blue')
-                # g.trace(keys,g.callers())
+                g.blue(s2)
 
         for plugin in s.splitlines():
             if plugin.strip() and not plugin.lstrip().startswith('#'):
@@ -542,7 +541,7 @@ class LeoPluginsController:
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)
             if trace and verbose:
-                g.trace('plugin',moduleName,'already loaded',color="blue")
+                g.warning('loadOnePlugin: plugin',moduleName,'already loaded')
             return module
 
         assert g.app.loadDir
@@ -566,17 +565,17 @@ class LeoPluginsController:
 
         except ImportError:
             if trace or tag == 'open0': # Just give the warning once.
-                g.es_print('error importing plugin:',moduleName,color='red')
+                g.error('error importing plugin:',moduleName)
                 g.es_exception()
             result = None
         except SyntaxError:
             if trace or tag == 'open0': # Just give the warning once.
-                g.es_print('syntax error importing plugin:',moduleName,color='red')
+                g.error('syntax error importing plugin:',moduleName)
                 # g.es_exception()
             result = None
 
         except Exception as e:
-            g.es_print('exception importing plugin ' + moduleName,color='red')
+            g.error('exception importing plugin ' + moduleName)
             g.es_exception()
             result = None
 
@@ -593,16 +592,16 @@ class LeoPluginsController:
                     # Indicate success only if init_result is True.
                     init_result = result.init()
                     if init_result not in (True,False):
-                        g.error('%s.init did not return a bool' % (moduleName))
+                        g.error('Error: %s.init did not return a bool' % (moduleName))
                     if init_result:
                         self.loadedModules[moduleName] = result
                         self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
                     else:
                         if verbose and not g.app.initing:
-                            g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                            g.error('loadOnePlugin: failed to load module',moduleName)
                         result = None
                 except Exception:
-                    g.es_print('exception loading plugin',color='red')
+                    g.error('exception loading plugin')
                     g.es_exception()
                     result = None
             else:
@@ -622,11 +621,11 @@ class LeoPluginsController:
             pass
         elif result:
             if trace or verbose:
-                g.trace('loaded',moduleName,color="blue")
+                g.blue('loadOnePlugin: loaded',moduleName)
         else:
             if trace or self.warn_on_failure or (verbose and not g.app.initing):
                 if trace or tag == 'open0':
-                    g.trace('can not load enabled plugin:',moduleName,color="red")
+                    g.error('loadOnePlugin: can not load enabled plugin:',moduleName)
 
         return result
     #@+node:ekr.20031218072017.1318: *4* plugin_signon

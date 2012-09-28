@@ -43,8 +43,8 @@ class pluginController:
     def print_cp (self,event=None):
 
         c = self.c ; p = c.p
-        g.es_print('c: %s' % (c.fileName()),color='red')
-        g.es_print('p: %s' % (p.h),color='red')
+        g.red('c: %s' % (c.fileName()))
+        g.red('p: %s' % (p.h))
     #@-others
 #@-others
 #@-leo

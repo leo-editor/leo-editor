@@ -140,12 +140,12 @@ def doFileAction(filename, c):
                 done = True
                 break
         if not done:
-            g.es("no file action matches " + filename, color='blue')
+            g.warning("no file action matches " + filename)
             return False #TL - Inform onIconDoubleClick that no action was taken
         else:
             return True #TL - Inform onIconDoubleClick that action was taken
     else:
-        g.es("no FileActions node", color='blue')
+        g.warning("no FileActions node")
         return False #TL - Inform onIconDoubleClick that no action was taken
 #@+node:ekr.20040915105758.16: ** applyFileAction
 def applyFileAction(p, filename, c):
@@ -205,7 +205,7 @@ def shellScriptInWindow(c,script):
         os.system("open -a /Applications/Utilities/Terminal.app " + path)
 
     elif sys.platform == 'win32':
-        g.es("shellScriptInWindow not ready for Windows",color='red')
+        g.error("shellScriptInWindow not ready for Windows")
 
     else:
         #@+<< write script to temporary Unix file >>

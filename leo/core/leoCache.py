@@ -259,7 +259,7 @@ class cacher:
         ))
 
         # Always issue the warning.
-        g.es_print("cached read node changed:",child_v.h,color="red")
+        g.error("cached read node changed:",child_v.h)
 
         child_v.h,child_v.b = h,b
         child_v.setDirty()
@@ -680,8 +680,7 @@ class PickleShareDB:
         # below the root directory, but it's not necessary.
 
         if verbose:
-            g.es_print('clearing cache at directory...\n',
-                color='red')
+            g.red('clearing cache at directory...\n')
             g.es_print(self.root)
 
         for z in self.keys():

@@ -1392,7 +1392,7 @@ class undoer:
                     if 0:
                         g.trace('old_lines',old_lines)
                         g.trace('new_lines',new_lines)
-                    g.trace('Unexpected exception...',color='blue')
+                    g.error('Unexpected exception...')
                     g.es_exception()
                     newBead = True
         #@-<< set newBead if we can't share the previous bead >>

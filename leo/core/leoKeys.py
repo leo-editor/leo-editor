@@ -232,14 +232,14 @@ class AutoCompleterClass:
         if not g.unitTesting:
             s = 'autocompleter %s' % (
                 g.choose(k.enable_autocompleter,'On','Off'))
-            g.es(s,color='red')
+            g.red(s)
 
     def showCalltipsStatus (self):
         '''Show the autocompleter status.'''
         k = self.k
         if not g.unitTesting:
             s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
-            g.es(s,color='red')
+            g.red(s)
     #@+node:ekr.20061031131434.16: *3* Helpers
     #@+node:ekr.20110512212836.14469: *4* exit
     def exit (self):
@@ -403,7 +403,7 @@ class AutoCompleterClass:
                 if tabList:
                     self.show_completion_list(common_prefix,prefix,tabList)
                 else:
-                    g.es('No completions',color='blue')
+                    g.warning('No completions')
                     self.exit()
                 return None
             else:
@@ -828,7 +828,7 @@ class AutoCompleterClass:
             c.frame.log.clearTab('Info',wrap='word')
             self.put('',doc,tabName='Info')
         else:
-            g.es('no docstring for',repr(prefix),color='blue')
+            g.warning('no docstring for',repr(prefix))
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
     def init_qcompleter (self,event=None):
         
@@ -849,7 +849,7 @@ class AutoCompleterClass:
             self.auto_completer_state_handler(event)
         else:
             if not g.unitTesting:
-                g.es('No completions',color='blue')
+                g.warning('No completions')
             self.exit()
     #@+node:ekr.20110511133940.14552: *4* init_tabcompleter
     def init_tabcompleter (self,event=None):
@@ -864,7 +864,7 @@ class AutoCompleterClass:
             self.clearTabName() # Creates the tabbed pane.
             self.auto_completer_state_handler(event)
         else:
-            g.es('No completions',color='blue')
+            g.warning('No completions')
             self.exit()
     #@+node:ekr.20061031131434.39: *4* insert_general_char
     def insert_general_char (self,ch):
@@ -1685,8 +1685,8 @@ class keyHandlerClass:
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter','leave'):
             if shortcut.lower().find(s) > -1:
-                g.es_print('ignoring invalid key binding:','%s = %s' % (
-                    commandName,shortcut),color='blue')
+                g.warning('ignoring invalid key binding:','%s = %s' % (
+                    commandName,shortcut))
                 return False
 
         if pane.endswith('-mode'):
@@ -1855,7 +1855,7 @@ class keyHandlerClass:
                 c.commandsDict [key] = func
                 # k.inverseCommandsDict[func.__name__] = key
             else:
-                g.es_print('bad abbrev:',key,'unknown command name:',commandName,color='blue')
+                g.warning('bad abbrev:',key,'unknown command name:',commandName)
     #@+node:ekr.20061031131434.101: *4* k.initSpecialIvars
     def initSpecialIvars (self):
 
@@ -2367,7 +2367,7 @@ class keyHandlerClass:
             k.setState('last-full-command',1,handler=k.repeatComplexCommandHelper)
             k.setLabelBlue("Redo: %s" % str(k.mb_history[0]))
         else:
-            g.es('no previous command',color='blue')
+            g.warning('no previous command')
         return # (for Tk) 'break'
 
     def repeatComplexCommandHelper (self,event):
@@ -2588,7 +2588,7 @@ class keyHandlerClass:
             if g.app.unitTesting:
                 raise AttributeError(message)
             else:
-                g.trace(message,color='red')
+                g.error(message)
     #@+node:ekr.20071212104050: *4* k.overrideCommand
     def overrideCommand (self,commandName,func):
 
@@ -2627,7 +2627,7 @@ class keyHandlerClass:
         f = c.commandsDict.get(commandName)
 
         if f and f.__name__ != 'dummyCallback' and trace and verbose:
-            g.es_print('redefining',commandName, color='red')
+            g.error('redefining',commandName)
             
         assert not g.isStroke(shortcut)
 
@@ -2659,14 +2659,14 @@ class keyHandlerClass:
             ok = k.bindKey (pane,stroke,func,commandName,tag='register-command') # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
             if trace and verbose and ok and not g.app.silentMode:
-                g.es_print('','@command: %s = %s' % (
-                    commandName,k.prettyPrintKey(stroke)),color='blue')
+                g.blue('','@command: %s = %s' % (
+                    commandName,k.prettyPrintKey(stroke)))
                 if 0:
                     d = k.masterBindingsDict.get('button',{})
                     g.print_dict(d)
             c.frame.tree.setBindings()
         elif trace and verbose and not g.app.silentMode:
-            g.es_print('','@command: %s' % (commandName),color='blue')
+            g.blue('','@command: %s' % (commandName))
 
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
@@ -2711,7 +2711,7 @@ class keyHandlerClass:
             if g.app.unitTesting:
                 raise AttributeError
             else:
-                g.trace('no command for %s' % (commandName),color='red')
+                g.error('simulateCommand: no command for %s' % (commandName))
                 return None
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
@@ -2989,7 +2989,7 @@ class keyHandlerClass:
                 if val != 'continue':
                     k.endCommand(k.commandName)
             else:
-                g.es_print('no state function for',k.state.kind,color='red')
+                g.error('callStateFunction: no state function for',k.state.kind)
 
         return val
     #@+node:ekr.20091230094319.6244: *5* doMode

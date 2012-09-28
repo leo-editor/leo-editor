@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.65">
-	<global_window_position top="60" left="655" height="928" width="1078"/>
+	<global_window_position top="51" left="911" height="928" width="982"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -947,6 +947,7 @@
 </v>
 <v t="ekr.20120925084214.3144"><vh>@button show-vpos</vh></v>
 <v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1247,7 +1248,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -10311,5 +10312,8 @@ g._sp = sp
 g._old_sp = None
 g.registerHandler('idle', lambda a,b:g._sp())
 g.cls()</t>
+<t tx="ekr.20120928085003.3150">g.note('note')
+g.warning('warning')
+g.error('oops')</t>
 </tnodes>
 </leo_file>

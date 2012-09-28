@@ -72,7 +72,7 @@ def onPostSave(tag=None, keywords=None):
     if c:
         at = c.atFileCommands
         for p in nosentNodes:
-            g.es("node %s found" % p.h, color="red")
+            g.red("node %s found" % p.h)
             at.scanAllDirectives(p)
             name = p.atNoSentinelsFileNodeName()
             fname = g.os_path_join(at.default_directory,name)

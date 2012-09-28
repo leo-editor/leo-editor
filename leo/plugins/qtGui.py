@@ -770,7 +770,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         oldText = p.b
         if oldText == newText:
             # This can happen as the result of undo.
-            # g.trace('*** unexpected non-change',color="red")
+            # g.error('*** unexpected non-change')
             return
 
         # g.trace('**',len(newText),p.h,'\n',g.callers(8))
@@ -830,7 +830,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         v.selectionLength = j-i
         v.scrollBarSpot = spot = w.getYScrollPosition()
         
-        if trace: g.trace(id(v),id(w),i,j,ins,spot,v.h)
+        if trace:
+            g.trace(spot,v.h)
+            # g.trace(id(v),id(w),i,j,ins,spot,v.h)
     #@-others
 #@-<< define leoQtBaseTextWidget class >>
 #@+<< define leoQLineEditWidget class >>
@@ -1281,7 +1283,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if g.no_see:
             pass
         else:
-            if trace: g.trace(i)
+            if trace: g.trace('*****',i,g.callers())
             self.widget.ensureCursorVisible()
 
     def seeInsertPoint (self):
@@ -1291,7 +1293,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if g.no_see:
             pass
         else:
-            if trace: g.trace()
+            if trace: g.trace('*****',g.callers())
             self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *5* setAllText (leoQTextEditWidget) & helper (changed 4.10)
     def setAllText(self,s):
@@ -1371,7 +1373,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         v.selectionStart = i
         v.selectionLength = j-i
         v.scrollBarSpot = spot = w.getYScrollPosition()
-        if trace: g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
+        if trace:
+            g.trace(spot,v.h)
+            # g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
     #@+node:ekr.20110605121601.18097: *6* lengthHelper
     def lengthHelper(self):
 
@@ -1740,8 +1744,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
             if not QtGui.QColor(color).isValid():
                 if color not in self.badFocusColors:
                     self.badFocusColors.append(color)
-                    g.es_print('invalid head %s color: %s' % (
-                        kind,color),color='blue')
+                    g.warning('invalid head %s color: %s' % (kind,color))
                 color = default
             return color
 
@@ -2236,8 +2239,19 @@ class DynamicWindow(QtGui.QMainWindow):
         shape = QtGui.QFrame.NoFrame,
     ):
 
-        # g.trace(name)
-        w = QtGui.QFrame(parent)
+        if name == 'innerBodyFrame':
+            class InnerBodyFrame(QtGui.QFrame):
+                def paintEvent(self,event):
+                    # A kludge.  g.app.gui.innerBodyFrameColor is set by paint_qframe.
+                    if hasattr(g.app.gui,'innerBodyFrameColor'):
+                        color = g.app.gui.innerBodyFrameColor
+                        painter = QtGui.QPainter()
+                        painter.begin(w)
+                        painter.fillRect(w.rect(),QtGui.QColor(color))
+                        painter.end()
+            w = InnerBodyFrame(parent)
+        else:
+            w = QtGui.QFrame(parent)
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
@@ -2768,8 +2782,7 @@ class leoQtBody (leoFrame.leoBody):
                 return color
             if color not in self.badFocusColors:
                 self.badFocusColors.append(color)
-                g.es_print('invalid body %s color: %s' % (
-                    kind,color),color='blue')
+                g.warning('invalid body %s color: %s' % (kind,color))
             return default
 
         bg = check(bg,'background','white')
@@ -2963,7 +2976,7 @@ class leoQtBody (leoFrame.leoBody):
 
         # At present, can not delete the first column.
         if name == '1':
-            g.es('can not delete leftmost editor',color='blue')
+            g.warning('can not delete leftmost editor')
             return
 
         # Actually delete the widget.
@@ -3359,7 +3372,7 @@ class leoQtBody (leoFrame.leoBody):
 
         # At present, can not delete the first column.
         if name == '1':
-            g.es('can not delete leftmost editor',color='blue')
+            g.warning('can not delete leftmost editor')
             return
 
         # Actually delete the widget.
@@ -3404,7 +3417,7 @@ class leoQtBody (leoFrame.leoBody):
 
         # At present, can not delete the first column.
         if name == '1':
-            g.es('can not delete leftmost editor',color='blue')
+            g.warning('can not delete leftmost editor')
             return
 
         # Actually delete the widget.
@@ -5318,7 +5331,7 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20110605121601.18333: *4* leoQtLog color tab stuff
     def createColorPicker (self,tabName):
 
-        g.es('color picker not ready for qt',color='blue')
+        g.warning('color picker not ready for qt')
     #@+node:ekr.20110605121601.18334: *4* leoQtLog font tab stuff
     #@+node:ekr.20110605121601.18335: *5* createFontPicker
     def createFontPicker (self,tabName):
@@ -6063,7 +6076,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             force=True) # Disable caching.
 
         if not ok:
-            g.es_print('Error reading',fn,color='red')
+            g.error('Error reading',fn)
             p.b = '' # Safe: will not cause a write later.
             p.clearDirty() # Don't automatically rewrite this node.
     #@+node:ekr.20120309075544.9882: *10* createUrlForBinaryFile
@@ -6126,7 +6139,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c = self.c ; h = p.h
         for p2 in c.all_unique_positions():
             if p2.h == h and p2 != p:
-                g.es('Warning: duplicate node:',h,color='blue')
+                g.warning('Warning: duplicate node:',h)
                 break
     #@+node:ekr.20110605121601.18379: *8* doPathUrlHelper
     def doPathUrlHelper (self,fn,p):
@@ -7550,9 +7563,9 @@ class leoQtGui(leoGui.leoGui):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
+    #@+node:ekr.20120927164343.10092: *5* add_border (qtGui)
     def add_border(self,c,w):
 
-        trace = False and not g.unitTesting
         state = c.k and c.k.unboundKeyAction
         
         if state and c.use_focus_border:
@@ -7562,14 +7575,39 @@ class leoQtGui(leoGui.leoGui):
                 'overwrite':c.focus_border_overwrite_state_color,
             }
             color = d.get(state,c.focus_border_color)
-            sheet = "border: %spx solid %s" % (c.focus_border_width,color)
-            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
-
+            name = g.u(w.objectName())
+            if name =='richTextEdit':
+                w = c.frame.top.leo_body_inner_frame
+                self.paint_qframe(w,color)
+            elif name.startswith('head'):
+                pass
+            else:
+                sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+                self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+    #@+node:ekr.20120927164343.10093: *5* remove_border (qtGui)
     def remove_border(self,c,w):
 
-        if c.use_focus_border:
-            sheet = "border: %spx solid white" % c.focus_border_width
+        if not c.use_focus_border:
+            return
+            
+        name = g.u(w.objectName())
+        width = c.focus_border_width
+        if w.objectName()=='richTextEdit':
+            w = c.frame.top.leo_body_inner_frame
+            self.paint_qframe(w,'white')
+        elif name.startswith('head'):
+            pass
+        else:
+            sheet = "border: %spx solid white" % width
             self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+    #@+node:ekr.20120927164343.10094: *5* paint_qframe (qtGui)
+    def paint_qframe (self,w,color):
+        
+        assert isinstance(w,QtGui.QFrame)
+        
+        # How's this for a kludge.
+        # Set this ivar for InnerBodyFrame.paintEvent.
+        g.app.gui.innerBodyFrameColor = color
     #@+node:ekr.20110605121601.18485: *4* Clipboard (qtGui)
     def replaceClipboardWith (self,s):
 
@@ -7904,7 +7942,7 @@ class leoQtGui(leoGui.leoGui):
         """Dispay a modal TkPropertiesDialog"""
 
         # g.trace(data)
-        g.es_print('Properties menu not supported for Qt gui',color='blue')
+        g.warning('Properties menu not supported for Qt gui')
         result = 'Cancel'
         return result,data
     #@+node:ekr.20110605121601.18502: *5* runSaveFileDialog (qtGui)
@@ -7955,7 +7993,7 @@ class leoQtGui(leoGui.leoGui):
             if not pc.isLoaded('viewrendered.py'):
                 vr = pc.loadOnePlugin('viewrendered.py')
                 if vr:
-                    g.es('viewrendered plugin loaded.', color='blue')
+                    g.blue('viewrendered plugin loaded.')
                     vr.onCreate('tag',{'c':c})
             #@-<< load viewrendered plugin >>
             retval = send()
@@ -8298,7 +8336,7 @@ class leoQtGui(leoGui.leoGui):
             b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
 
             if c.disableCommandsMessage:
-                g.es('',c.disableCommandsMessage,color='blue')
+                g.blue('',c.disableCommandsMessage)
             else:
                 g.app.scriptDict = {}
                 c.executeScript(args=args,p=p,script=script,
@@ -8317,7 +8355,7 @@ class leoQtGui(leoGui.leoGui):
             shortcut = k.canonicalizeShortcut(shortcut)
             ok = k.bindKey ('button', shortcut,func,buttonText)
             if ok:
-                g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
+                g.blue('bound @button',buttonText,'to',shortcut)
             #@-<< bind the shortcut to executeScriptCallback >>
         #@+<< create press-buttonText-button command >>
         #@+node:ekr.20110605121601.18532: *5* << create press-buttonText-button command >>
@@ -8403,8 +8441,7 @@ class leoQtGui(leoGui.leoGui):
             g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
         else:
             self.badWidgetColors.append(colorName)
-            g.es_print('bad widget color %s for %s' % (
-                colorName,widgetKind),color='blue')
+            g.warning('bad widget color %s for %s' % (colorName,widgetKind))
     #@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
     def update_style_sheet (self,w,key,value,selector=None):
         
@@ -8426,19 +8463,21 @@ class leoQtGui(leoGui.leoGui):
             
         old = str(w.styleSheet())
         if old == s:
-            if trace: g.trace('no change')
+            # if trace: g.trace('no change')
             return
             
-        if g.app.gui.lockout_style_sheet == True:
-            if trace: g.trace('lockout_style_sheet is True')
-            return
+        if trace:
+            if verbose:
+                g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
+            else:
+                g.trace(s)
+            
+        # if g.app.gui.lockout_style_sheet == True:
+            # if trace: g.trace('lockout_style_sheet is True')
+            # return
 
-        if trace and verbose:
-            g.trace('\nold: %s\nnew: %s' % (str(w.styleSheet()),s))
-
-        # This call was responsible for the unwanted scrolling!
-        # Note that this apparently generates a layout-request event,
-        # and this event changes the scrollbars.
+        # This call is responsible for the unwanted scrolling!
+        # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
         w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18526: *4* toUnicode (qtGui)
     def toUnicode (self,s):
@@ -8673,7 +8712,7 @@ class leoQtEventFilter(QtCore.QObject):
                 elif eventType == ev.FocusOut:
                     g.app.gui.remove_border(c,obj)
                     c.frame.body.onFocusOut(obj)
-            if self.tag in ('tree','log'):
+            elif self.tag in ('log','tree'):
                 if eventType == ev.FocusIn:
                     g.app.gui.add_border(c,obj)
                 elif eventType == ev.FocusOut:
