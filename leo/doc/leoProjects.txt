@@ -3650,6 +3650,14 @@ def makeTestSuite (self,p):
         g.es_print_exception()
         return None
 #@+node:ekr.20120926072255.12062: *4* @color minibuffer-foreground-color setting
+#@+node:ekr.20120928142052.11489: *4* Added @color log_warning_color and g.getActualColor
+@nocolor-node
+
+g.es now "redirects" colors using the following settings:
+
+    'black':    @color log_text_foreground_color
+    'blue':     @color log_warning_color
+    'red':      @color log_error_color
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
