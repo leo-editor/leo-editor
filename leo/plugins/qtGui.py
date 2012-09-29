@@ -425,9 +425,9 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         p = c.p
         
         if p:
-            # g.trace(arg,c.p.v.h,g.callers())
-            p.v.scrollBarSpot = arg
-        
+            # g.trace(arg,c.p.v.h) #,g.callers())
+            pass # p.v.scrollBarSpot = arg
+                # This interferes with switching nodes.
         
     #@-others
 #@-<< define LeoQTextBrowser >>

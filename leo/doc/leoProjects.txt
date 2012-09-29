@@ -2403,9 +2403,9 @@ def onSliderChanged(self,arg):
     p = c.p
     
     if p:
-        # g.trace(arg,c.p.v.h,g.callers())
-        p.v.scrollBarSpot = arg
-    
+        # g.trace(arg,c.p.v.h) #,g.callers())
+        pass # p.v.scrollBarSpot = arg
+            # This interferes with switching nodes.
     
 #@+node:ekr.20100216141722.5638: *6* showResults
 def showResults(self,found,p,n,n2,lines):
