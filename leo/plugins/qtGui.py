@@ -424,10 +424,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         c = self.leo_c
         p = c.p
         
+        if hasattr(c.frame.tree,'tree_select_lockout'):
+            if c.frame.tree.tree_select_lockout:
+                return
+        
         if p:
             # g.trace(arg,c.p.v.h) #,g.callers())
-            pass # p.v.scrollBarSpot = arg
-                # This interferes with switching nodes.
+            p.v.scrollBarSpot = arg
         
     #@-others
 #@-<< define LeoQTextBrowser >>
