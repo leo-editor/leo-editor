@@ -8053,7 +8053,7 @@ class leoQtGui(leoGui.leoGui):
         # This is called several times for each window activation.
         # We only need to set the focus once.
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         if trace: g.trace(tag)
         
@@ -8451,7 +8451,6 @@ class leoQtGui(leoGui.leoGui):
     def update_style_sheet (self,w,key,value,selector=None):
         
         trace = False and not g.unitTesting
-        verbose = True
         
         # Step one: update the dict.
         d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
@@ -8472,10 +8471,8 @@ class leoQtGui(leoGui.leoGui):
             return
             
         if trace:
-            if verbose:
-                g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
-            else:
-                g.trace(s)
+            # g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
+            g.trace(s)
 
         # This call is responsible for the unwanted scrolling!
         # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.

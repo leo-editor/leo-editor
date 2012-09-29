@@ -670,7 +670,6 @@
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
 <v t="ekr.20120925105035.3146"><vh>vpos probe</vh></v>
-<v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
 </v>
 </v>
 <v t="ekr.20120923110028.3131"><vh>Screencasts</vh>
@@ -954,6 +953,7 @@
 </v>
 <v t="ekr.20120925084214.3144"><vh>@button show-vpos</vh></v>
 <v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1254,7 +1254,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -10322,7 +10322,8 @@ g.cls()</t>
 g.warning('warning')
 g.error('error')
 g.es('pink',color='pink')
-g.es_print('purple',color='purple')</t>
+g.es_print('purple',color='purple')
+g.es('default')</t>
 <t tx="ekr.20120928143821.3161"></t>
 <t tx="ekr.20120928143821.3162">Color for error messages written to the log window.</t>
 <t tx="ekr.20120928143821.3163">Foreground color of log text.

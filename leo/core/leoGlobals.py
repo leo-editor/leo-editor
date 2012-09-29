@@ -2562,6 +2562,24 @@ def pluginIsLoaded(fn):
 
 #@+node:ekr.20031218072017.3145: ** Most common functions... (leoGlobals.py)
 # These are guaranteed always to exist for scripts.
+#@+node:ekr.20120928142052.10116: *3* g.actualColor
+def actualColor(color):
+    
+    if not g.app.log:
+        return color
+        
+    c = g.app.log.c
+    d = {
+        'black':'log_text_foreground_color',
+        'blue': 'log_warning_color',
+        'red':  'log_error_color',
+    }
+    
+    setting = d.get(color)
+    color2 = c.config.getColor(setting) or color if setting else color
+    
+    # g.trace(color,color2)
+    return color2
 #@+node:ekr.20031218072017.3147: *3* g.choose
 def choose(cond, a, b): # warning: evaluates all arguments
 
@@ -2606,19 +2624,19 @@ def enl(tabName='Log'):
         log.putnl(tabName)
 #@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
 def blue (*args,**keys):
-    g.es_print(color='blue',*args,**keys)
+    g.es_print(color=g.actualColor('blue'),*args,**keys)
 
 def error (*args,**keys):
-    g.es_print(color='red',*args,**keys)
+    g.es_print(color=g.actualColor('red'),*args,**keys)
     
 def note (*args,**keys):
-    g.es_print(color='black',*args,**keys)
+    g.es_print(color=g.actualColor('black'),*args,**keys)
     
 def red (*args,**keys):
-    g.es_print(color='red',*args,**keys)
+    g.es_print(color=g.actualColor('red'),*args,**keys)
 
 def warning (*args,**keys):
-    g.es_print(color='blue',*args,**keys)
+    g.es_print(color=g.actualColor('blue'),*args,**keys)
 #@+node:ekr.20070626132332: *3* g.es
 def es(*args,**keys):
 
@@ -2639,12 +2657,18 @@ def es(*args,**keys):
         print('***es',g.callers())
 
     # Compute the effective args.
-    d = {'color':'black','commas':False,'newline':True,'spaces':True,'tabName':'Log'}
+    d = {
+        'color':None,
+        'commas':False,
+        'newline':True,
+        'spaces':True,
+        'tabName':'Log',
+    }
     d = g.doKeywordArgs(keys,d)
     color = d.get('color')
     if color == 'suppress': return # New in 4.3.
-    if log:
-        color = g.getActualColor(color)
+    elif log and color is None:
+        color = g.actualColor('black')
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args,d)
@@ -2696,24 +2720,6 @@ def es_trace(*args,**keys):
             pass
 
     g.es(*args,**keys)
-#@+node:ekr.20120928142052.10116: *3* g.getActualColor
-def getActualColor(color):
-    
-    if not g.app.log:
-        return color
-        
-    c = g.app.log.c
-    d = {
-        'black':'log_text_foreground_color',
-        'blue': 'log_warning_color',
-        'red':  'log_error_color',
-    }
-    
-    setting = d.get(color)
-    color2 = c.config.getColor(setting) or color if setting else color
-    
-    # g.trace(color,color2)
-    return color2
 #@+node:ekr.20100126062623.6240: *3* g.internalError
 def internalError (*args):
 

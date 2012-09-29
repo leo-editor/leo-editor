@@ -1134,8 +1134,8 @@ class LeoApp:
 
         table = [
             ('Leo Log Window','red'),
-            (app.signon,'black'),
-            (app.signon2,'black'),
+            (app.signon,None),
+            (app.signon2,None),
         ]
         table.reverse()
 

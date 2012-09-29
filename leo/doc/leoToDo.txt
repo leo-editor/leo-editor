@@ -7,9 +7,6 @@
 @language rest
 
 This is the "will do" list.
-.. @+node:ekr.20120515133946.11416: *3* To do today
-# This should appear before any @file node.
-.. @+node:ekr.20120608083208.10175: *4* Run all unit tests externally, except in @local-tests tree
 .. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
 .. @+node:ekr.20120613104401.10222: *4* Notes
 .. @+node:ekr.20120623165430.10710: *5* New to do
@@ -3367,7 +3364,6 @@ def paint_qframe (self,w,color):
 def update_style_sheet (self,w,key,value,selector=None):
     
     trace = False and not g.unitTesting
-    verbose = True
     
     # Step one: update the dict.
     d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
@@ -3388,10 +3384,8 @@ def update_style_sheet (self,w,key,value,selector=None):
         return
         
     if trace:
-        if verbose:
-            g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
-        else:
-            g.trace(s)
+        # g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
+        g.trace(s)
 
     # This call is responsible for the unwanted scrolling!
     # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
