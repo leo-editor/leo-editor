@@ -397,7 +397,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser)
     def getYScrollPosition(self):
         
-        trace = False and g.trace_scroll and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
 
         w = self
         sb = w.verticalScrollBar()
@@ -407,10 +407,11 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
     def setYScrollPosition(self,pos):
         
-        trace = g.trace_scroll and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
         w = self
 
         if g.no_scroll:
+            if trace: g.trace('no scroll')
             return
         elif pos is None:
             if trace: g.trace('None')
@@ -418,20 +419,28 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if trace: g.trace(pos,g.callers())
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
+           
     #@+node:ekr.20120925061642.13506: *4* onSliderChanged (LeoQTextBrowser)
     def onSliderChanged(self,arg):
         
+        trace = False and not g.unitTesting
         c = self.leo_c
         p = c.p
         
+        # Careful: changing nodes changes the scrollbars.
         if hasattr(c.frame.tree,'tree_select_lockout'):
             if c.frame.tree.tree_select_lockout:
+                if trace: g.trace('locked out: c.frame.tree.tree_select_lockout')
                 return
+                
+        # Only scrolling in the body pane should set v.scrollBarSpot.
+        if not c.frame.body or self != c.frame.body.bodyCtrl.widget:
+            if trace: g.trace('**** wrong pane')
+            return
         
         if p:
-            # g.trace(arg,c.p.v.h) #,g.callers())
+            if trace: g.trace(arg,c.p.v.h,g.callers())
             p.v.scrollBarSpot = arg
-        
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -1394,7 +1403,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
     def setYScrollPosition(self,pos):
         
-        trace = g.trace_scroll and not g.unitTesting
+        trace = (False or g.trace_scroll) and not g.unitTesting
         w = self.widget
         
         if g.no_scroll:
@@ -7513,7 +7522,7 @@ class leoQtGui(leoGui.leoGui):
 
     #@+others
     #@+node:ekr.20110605121601.18476: *4*   Birth & death (qtGui)
-    #@+node:ekr.20110605121601.18477: *5*  qtGui.__init__
+    #@+node:ekr.20110605121601.18477: *5*  qtGui.__init__ (qtGui)
     def __init__ (self):
 
         # Initialize the base class.
@@ -8064,7 +8073,8 @@ class leoQtGui(leoGui.leoGui):
             self.active = True
             # Retain the focus that existed when the deactivate event happened.
                 # c.bodyWantsFocusNow()
-            c.p.v.restoreCursorAndScroll()
+            if c.p.v:
+                c.p.v.restoreCursorAndScroll()
             g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18481: *5* onDeactiveEvent (qtGui)
     def onDeactivateEvent (self,event,c,obj,tag):
@@ -8478,7 +8488,7 @@ class leoQtGui(leoGui.leoGui):
             g.trace(s)
 
         # This call is responsible for the unwanted scrolling!
-        # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
+        # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
         w.setStyleSheet(s)
     #@+node:ekr.20110605121601.18526: *4* toUnicode (qtGui)
     def toUnicode (self,s):

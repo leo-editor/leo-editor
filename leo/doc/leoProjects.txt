@@ -2042,7 +2042,7 @@ def update_style_sheet (self,w,key,value,selector=None):
         g.trace(s)
 
     # This call is responsible for the unwanted scrolling!
-    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
+    # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
     w.setStyleSheet(s)
 #@+node:ekr.20120602154454.10193: *4* Fixed import problems discovered by importing 2to3
 @language rest
@@ -2312,7 +2312,7 @@ def update_style_sheet (self,w,key,value,selector=None):
         g.trace(s)
 
     # This call is responsible for the unwanted scrolling!
-    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
+    # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
     w.setStyleSheet(s)
 #@+node:ekr.20120928142052.13477: *4* Fixed scrolling problem with scrollwheel
 @nocolor-node
@@ -2376,7 +2376,8 @@ def onActivateEvent (self,event,c,obj,tag):
         self.active = True
         # Retain the focus that existed when the deactivate event happened.
             # c.bodyWantsFocusNow()
-        c.p.v.restoreCursorAndScroll()
+        if c.p.v:
+            c.p.v.restoreCursorAndScroll()
         g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
 #@+node:ekr.20110605121601.18224: *6* onFocusColorHelper (qtBody)
 badFocusColors = []
@@ -2399,17 +2400,24 @@ def onFocusColorHelper(self,kind,obj):
 #@+node:ekr.20120925061642.13506: *6* onSliderChanged (LeoQTextBrowser)
 def onSliderChanged(self,arg):
     
+    trace = False and not g.unitTesting
     c = self.leo_c
     p = c.p
     
+    # Careful: changing nodes changes the scrollbars.
     if hasattr(c.frame.tree,'tree_select_lockout'):
         if c.frame.tree.tree_select_lockout:
+            if trace: g.trace('locked out: c.frame.tree.tree_select_lockout')
             return
+            
+    # Only scrolling in the body pane should set v.scrollBarSpot.
+    if not c.frame.body or self != c.frame.body.bodyCtrl.widget:
+        if trace: g.trace('**** wrong pane')
+        return
     
     if p:
-        # g.trace(arg,c.p.v.h) #,g.callers())
+        if trace: g.trace(arg,c.p.v.h,g.callers())
         p.v.scrollBarSpot = arg
-    
 #@+node:ekr.20100216141722.5638: *6* showResults
 def showResults(self,found,p,n,n2,lines):
 
@@ -4270,7 +4278,7 @@ def update_style_sheet (self,w,key,value,selector=None):
         g.trace(s)
 
     # This call is responsible for the unwanted scrolling!
-    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
+    # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
     w.setStyleSheet(s)
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo

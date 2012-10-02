@@ -3388,7 +3388,7 @@ def update_style_sheet (self,w,key,value,selector=None):
         g.trace(s)
 
     # This call is responsible for the unwanted scrolling!
-    # To avoid problems, we now set the color of the innerBodyFrame, not richTextEdit.
+    # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
     w.setStyleSheet(s)
 .. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199

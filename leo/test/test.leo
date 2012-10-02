@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.64" body_secondary_ratio="0.41">
-	<global_window_position top="51" left="593" height="861" width="1095"/>
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.41">
+	<global_window_position top="81" left="756" height="861" width="1095"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1259,7 +1259,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -10432,7 +10432,7 @@ for bunch2 in bunch.aList:
         
 t2 = time.time()
 g.es_print('done: %2.3f sec len(aList): %s' % (t2-t1,len(bunch.aList)))
-    </t>
+</t>
 <t tx="ekr.20121001135612.3173">g.cls()
 
 import copy
