@@ -228,7 +228,7 @@ def scanOptions():
     elif options.r: return 'recent'
     elif options.s: return 'suppressions'
     elif options.t: return 'stc'
-    else:           return 'core'
+    else:           return 'all'
 #@-others
 
 scope = scanOptions()
