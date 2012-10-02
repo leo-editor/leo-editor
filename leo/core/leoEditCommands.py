@@ -542,17 +542,17 @@ class abbrevCommandsClass (baseEditCommandsClass):
         i,j = g.getWord(s,ins)
         word = w.get(i,j)
         aList = self.getDynamicList(w,word)
-        if aList:
-            # Bug fix: remove s itself, otherwise we can not extend beyond it.
-            if word in aList and len(aList) > 1: aList.remove(word)
-            prefix = reduce(g.longestCommonPrefix,aList)
-            if prefix.strip():
-                b = c.undoer.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
-                p.b = p.b[:i] + prefix + p.b[j:]
-                w.setAllText(p.b)
-                w.setInsertPoint(i+len(prefix))
-                c.undoer.afterChangeNodeContents(p,
-                    command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
+        if not aList: return
+        # Bug fix: remove s itself, otherwise we can not extend beyond it.
+        if word in aList and len(aList) > 1: aList.remove(word)
+        prefix = reduce(g.longestCommonPrefix,aList)
+        if prefix.strip():
+            b = c.undoer.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
+            p.b = p.b[:i] + prefix + p.b[j:]
+            w.setAllText(p.b)
+            w.setInsertPoint(i+len(prefix))
+            c.undoer.afterChangeNodeContents(p,
+                command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
     #@+node:ekr.20050920084036.59: *4* dynamicExpansion M-/
     def dynamicExpansion (self,event=None):
 
@@ -571,21 +571,21 @@ class abbrevCommandsClass (baseEditCommandsClass):
         i,j = g.getWord(s,ins)
         word = w.get(i,j)
         aList = self.getDynamicList(w,word)
-        if aList:
-            if word in aList and len(aList) > 0: aList.remove(word)
-            prefix = reduce(g.longestCommonPrefix,aList)
-            prefix = prefix.strip()
-            # g.trace(word,prefix,aList)
-            if prefix and prefix != word and len(aList) == 1:
-                s = w.getAllText()
-                b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h)
-                p.b = p.b[:i] + prefix + p.b[j:]
-                w.setAllText(p.b)
-                w.setInsertPoint(i+len(prefix))
-                c.undoer.afterChangeNodeContents(p,
-                    command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
-            else:
-                self.dynamicExpandHelper(event,prefix,aList,w)
+        if not aList: return
+        if word in aList and len(aList) > 1: aList.remove(word)
+        prefix = reduce(g.longestCommonPrefix,aList)
+        prefix = prefix.strip()
+        # g.trace(word,prefix,aList)
+        if False and prefix and prefix != word and len(aList) == 1:
+            s = w.getAllText()
+            b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h)
+            p.b = p.b[:i] + prefix + p.b[j:]
+            w.setAllText(p.b)
+            w.setInsertPoint(i+len(prefix))
+            c.undoer.afterChangeNodeContents(p,
+                command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
+        else:
+            self.dynamicExpandHelper(event,prefix,aList,w)
     #@+node:ekr.20070605110441: *5* dynamicExpandHelper (added event arg)
     def dynamicExpandHelper (self,event,prefix=None,aList=None,w=None):
         

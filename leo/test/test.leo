@@ -959,7 +959,6 @@
 <v t="ekr.20120930181209.3163"><vh>get color info</vh></v>
 <v t="ekr.20121001135612.3173"><vh>@button write color info</vh></v>
 <v t="ekr.20121001135612.3171"><vh>@button read color info</vh></v>
-<v t="ekr.20121002085351.3177"><vh>dabreav</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1260,7 +1259,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -13772,15 +13771,6 @@ class RecentFilesManager:
     #@-others
 #@-others
 #@-leo
-</t>
-<t tx="ekr.20121002085351.3177">ol
-abcd
-abcdef1
-abcdef2
-abcdefabc
-xyz
-pdq
-xyz2
 </t>
 </tnodes>
 </leo_file>
