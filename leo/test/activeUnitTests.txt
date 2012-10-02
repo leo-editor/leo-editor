@@ -9875,7 +9875,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 #@+node:ekr.20100131180007.5453: *4* @test dynamicExpandHelper
 # A totally wimpy test.
-c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',rlist=None,w=None)
+c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
 #@+node:ekr.20070306091949: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

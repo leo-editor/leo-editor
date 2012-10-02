@@ -526,40 +526,42 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         return True
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
-    #@+node:ekr.20050920084036.60: *4* dynamicCompletion
+    #@+node:ekr.20050920084036.60: *4* dynamicCompletion C-M-/
     def dynamicCompletion (self,event=None):
 
-        '''Insert the common prefix of all dynamic abbrev's matching the present word.
+        '''dabbrev-completion
+        Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.'''
 
-        c = self.c ; k = c.k ; p = c.p ; u = c.undoer
+        c = self.c ; k = c.k ; p = c.p
         w = self.editWidget(event)
         if not w: return
-
         s = w.getAllText()
         ins = w.getInsertPoint()
         if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
         i,j = g.getWord(s,ins)
-        txt = w.get(i,j)
-        rlist = []
-        self.getDynamicList(w,txt,rlist)
-        if rlist:
-            prefix = reduce(g.longestCommonPrefix,rlist)
-            if prefix:
-                b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
-                w.delete(i,j)
-                w.insert(i,prefix)
-                p.b = w.getAllText()
+        word = w.get(i,j)
+        aList = self.getDynamicList(w,word)
+        if aList:
+            # Bug fix: remove s itself, otherwise we can not extend beyond it.
+            if word in aList: aList.remove(word)
+            prefix = reduce(g.longestCommonPrefix,aList)
+            if prefix.strip():
+                b = c.undoer.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
+                p.b = p.b[:i] + prefix + p.b[j:]
+                w.setAllText(p.b)
+                w.setInsertPoint(i+len(prefix))
                 c.undoer.afterChangeNodeContents(p,
                     command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
-    #@+node:ekr.20050920084036.59: *4* dynamicExpansion
+    #@+node:ekr.20050920084036.59: *4* dynamicExpansion M-/
     def dynamicExpansion (self,event=None):
 
-        '''Expand the word in the buffer before point as a dynamic abbrev,
-        by searching in the buffer for words starting with that abbreviation (dabbrev-expand).
-        This corresponds to M-/ in Emacs.'''
+        '''dabbrev-expands (M-/ in Emacs).
+        Inserts the longest common prefix of the word at the cursor. Displays
+        all possible completions if the prefix is the same as the word.
+        '''
 
-        c = self.c ; k = c.k ; p = c.p ; u = c.undoer
+        c = self.c ; k = c.k ; p = c.p
         w = self.editWidget(event)
         if not w: return
 
@@ -567,71 +569,69 @@ class abbrevCommandsClass (baseEditCommandsClass):
         ins = w.getInsertPoint()
         if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
         i,j = g.getWord(s,ins)
-        txt = w.get(i,j)
-        rlist = []
-        self.getDynamicList(w,txt,rlist)
-        if not rlist: return
-        prefix = reduce(g.longestCommonPrefix,rlist)
-        if prefix and prefix != txt:
-            b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
-            w.delete(i,j)
-            w.insert(i,prefix)
-            p.b = w.getAllText()
-            c.undoer.afterChangeNodeContents(p,
-                command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
-        else:
-            self.dynamicExpandHelper(event,prefix,rlist,w)
+        word = w.get(i,j)
+        aList = self.getDynamicList(w,word)
+        if aList:
+            if word in aList and len(aList) > 0: aList.remove(word)
+            prefix = reduce(g.longestCommonPrefix,aList)
+            prefix = prefix.strip()
+            # g.trace(word,prefix,aList)
+            if prefix and prefix != word and len(aList) == 1:
+                s = w.getAllText()
+                b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h)
+                p.b = p.b[:i] + prefix + p.b[j:]
+                w.setAllText(p.b)
+                w.setInsertPoint(i+len(prefix))
+                c.undoer.afterChangeNodeContents(p,
+                    command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
+            else:
+                self.dynamicExpandHelper(event,prefix,aList,w)
     #@+node:ekr.20070605110441: *5* dynamicExpandHelper (added event arg)
-    def dynamicExpandHelper (self,event,prefix=None,rlist=None,w=None):
-
-        c,k = self.c,self.k ; tag = 'dabbrev-expand'
-        state = k.getState(tag)
+    def dynamicExpandHelper (self,event,prefix=None,aList=None,w=None):
         
+        c = self.c ; k = c.k ; p = c.p
+        tag = 'dabbrev-expand'
+        state = k.getState(tag)
         if state == 0:
             self.w = w
-            if w:
-                names = rlist
-                prefix2 = 'dabbrev-expand: '
-                k.setLabelBlue(prefix2+prefix,protect=True)
-                k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
+            prefix2 = 'dabbrev-expand: '
+            c.frame.log.deleteTab('Completion')
+            g.es('','\n'.join(aList),tabName='Completion')
+            k.setLabelBlue(prefix2+prefix,protect=True)
+            k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=aList)
         else:
+            c.frame.log.deleteTab('Completion')
             k.clearState()
             k.resetLabel()
             if k.arg:
                 w = self.w
                 s = w.getAllText()
+                b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h)
                 ins = w.getInsertPoint()
+                if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
                 i,j = g.getWord(s,ins)
-                w.delete(i,j)
-                w.insert(i,k.arg)
+                # g.trace('ins',ins,'i',i,'j',j,s[i:j])
+                p.b = p.b[:i] + k.arg + p.b[j:]
+                w.setAllText(p.b)
+                w.setInsertPoint(i+len(k.arg))
+                c.undoer.afterChangeNodeContents(p,
+                    command=tag,bunch=b,dirtyVnodeList=[]) 
     #@+node:ekr.20050920084036.61: *4* getDynamicList (helper)
-    def getDynamicList (self,w,txt,rlist):
+    def getDynamicList (self,w,s):
 
-        items = []
         if self.globalDynamicAbbrevs:
+            # Look in all nodes.
+            items = []
             for p in self.c.all_positions():
-                s = p.b
-                if s:
-                    items.extend(self.dynaregex.findall(s))
+               items.extend(self.dynaregex.findall(p.b))
         else:
-            # Make a big list of what we are considering a 'word'
-            s = w.getAllText()
-            items.append(self.dynaregex.findall(s))
+            # Just look in this node.
+            items = self.dynaregex.findall(w.getAllText())
 
-        # g.trace('txt',repr(txt),'len(items)',len(items))
+        items = sorted(set([z for z in items if z.startswith(s)]))
 
-        if items:
-            for word in items:
-                if not word.startswith(txt) or word == txt:
-                    continue
-                    # dont need words that dont match or == the pattern
-                if word not in rlist:
-                    rlist.append(word)
-                else:
-                    rlist.remove(word)
-                    rlist.append(word)
-
-        # g.trace('rlist',rlist)
+        # g.trace(repr(s),repr(sorted(items)))
+        return items
     #@+node:ekr.20070531103114: *3* static abbrevs
     #@+node:ekr.20100901080826.6001: *4* addAbbrevHelper
     def addAbbrevHelper (self,s,tag=''):
