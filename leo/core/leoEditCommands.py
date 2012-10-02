@@ -622,7 +622,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if self.globalDynamicAbbrevs:
             # Look in all nodes.
             items = []
-            for p in self.c.all_positions():
+            for p in self.c.all_unique_positions():
                items.extend(self.dynaregex.findall(p.b))
         else:
             # Just look in this node.
