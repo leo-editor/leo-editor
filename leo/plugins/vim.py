@@ -4,26 +4,37 @@
 #@+node:ekr.20050226184411: ** << docstring >>
 ''' Enables two-way communication with VIM.
 
-This plugin provides the vim-open-node command, which opens the selected node in vim.
+This plugin provides the ``vim-open-node`` command, which opens the selected node in vim.
 
-Settings
+Commands
 --------
 
-- Leo will put Vim cursor at same location as Leo cursor in
-  file if 'vim_plugin_positions_cursor' set to True.
-
-- Leo will put node in a Vim tab card if 'vim_plugin_uses_tab_feature' set to True.
-
-- Leo will update the node in the outline when you save the file in VIM.
+The **vim-open-node** command opens the selected node in vim. This *supersedes*
+the old way of opening nodes by double-clicking the icon box. Leo will
+update the node in the outline when you save the file in vim.
 
 Installation
 ------------
 
-To install this plugin set the vim_cmd and vim_exe settings to the path to vim or gvim
-as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is
-on your PATH.
+Enable this plugin as usual and set the ``vim_cmd`` and ``vim_exe``
+settings as shown below. Alternatively, you can ensure that gvim.exe is on
+your PATH. gvim is recommended, not the basic console vim.
 
-gvim is recommended--the basic console vim is not recommended.
+Settings
+--------
+
+**@string vim_cmd** (Important!): The command to execute to start gvim.
+Something like::
+    
+    <path-to-gvim>/gvim --servername LEO
+    
+    
+**@string vim_exe** (Important!): The path to the gvim executable.
+
+**vim_plugin_positions_cursor**: Leo will put Vim cursor at same location as
+Leo cursor in file.
+
+**vim_plugin_uses_tab_feature**: Leo will put node in a Vim tab card.
 
 '''
 #@-<< docstring >>

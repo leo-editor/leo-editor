@@ -2540,6 +2540,7 @@ def restoreCursorAndScroll (self):
 LeoQTextBrowser.onSliderChanged must set v.scrollBarSpot only if "self" is actually the body pane.
 
 Othewise scrolling the log pane will scroll the body pane!
+#@+node:ekr.20121002123916.10203: *4* Fixed crasher in active_path.py
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893

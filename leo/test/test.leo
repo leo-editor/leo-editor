@@ -1831,6 +1831,7 @@ viewrendered.py
 # testing
 # active_path.py
 screencast.py
+vim.py
 
 ### UNL.py # moved to core.
 ### scrolledmessage.py is broken at present.
