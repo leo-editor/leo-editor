@@ -4,13 +4,14 @@
 #@+node:ekr.20050226184411: ** << docstring >>
 ''' Enables two-way communication with VIM.
 
-This plugin provides the ``vim-open-node`` command, which opens the selected node in vim.
+This plugin provides the ``vim-open-node`` command, which opens the
+selected node in vim. This *supersedes* the old way of opening nodes by
+double-clicking the icon box.
 
 Commands
 --------
 
-The **vim-open-node** command opens the selected node in vim. This *supersedes*
-the old way of opening nodes by double-clicking the icon box. Leo will
+The **vim-open-node** command opens the selected node in vim. Leo will
 update the node in the outline when you save the file in vim.
 
 Installation
@@ -27,8 +28,7 @@ Settings
 Something like::
     
     <path-to-gvim>/gvim --servername LEO
-    
-    
+
 **@string vim_exe** (Important!): The path to the gvim executable.
 
 **vim_plugin_positions_cursor**: Leo will put Vim cursor at same location as
