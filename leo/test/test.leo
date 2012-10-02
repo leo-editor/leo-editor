@@ -315,6 +315,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
+<v t="ekr.20071025193940"></v>
 <v t="ekr.20120923110028.3130"><vh>Notes</vh>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
@@ -959,6 +960,7 @@
 <v t="ekr.20120930181209.3163"><vh>get color info</vh></v>
 <v t="ekr.20121001135612.3173"><vh>@button write color info</vh></v>
 <v t="ekr.20121001135612.3171"><vh>@button read color info</vh></v>
+<v t="ekr.20121002124235.3173"><vh>@path c:\leo.repo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1259,7 +1261,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -1827,6 +1829,7 @@ quicksearch.py
 viewrendered.py
 
 # testing
+# active_path.py
 screencast.py
 
 ### UNL.py # moved to core.
@@ -13772,5 +13775,6 @@ class RecentFilesManager:
 #@-others
 #@-leo
 </t>
+<t tx="ekr.20121002124235.3173"></t>
 </tnodes>
 </leo_file>

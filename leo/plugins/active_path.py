@@ -508,18 +508,17 @@ def query(c, s):
 #@+node:tbrown.20090225191501.1: ** run_recursive
 def run_recursive(c):
     """Recursive descent."""
-    p = c.p
 
     c.__active_path['start_time'] = time.time()
-
-    for s in reversed(list(p.self_and_subtree())):
-
+    p = c.p
+    
+    aList = [z.copy() for z in c.p.self_and_subtree()]
+    for p2 in reversed(aList):
         if time.time() - c.__active_path['start_time'] >= c.__active_path['timeout']:
             g.es('Recursive processing aborts after %f seconds' %
                 c.__active_path['timeout'])
             break
-
-        yield s
+        yield p2
 
     c.redraw(p)
 #@+node:ville.20090223183051.1: ** act on node
@@ -586,7 +585,7 @@ def cmd_SetNodeToAbsolutePathRecursive(c):
 def cmd_SetNodeToAbsolutePath(c, p=None):
     """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
 
-    if p is None:
+    if not p:
         p = c.p
 
     path = getPath(c, p)
