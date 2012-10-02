@@ -620,10 +620,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
     def getDynamicList (self,w,s):
 
         if self.globalDynamicAbbrevs:
-            # Look in all nodes.
+            # Look in all nodes.h
             items = []
             for p in self.c.all_unique_positions():
-               items.extend(self.dynaregex.findall(p.b))
+                items.extend(self.dynaregex.findall(p.b))
         else:
             # Just look in this node.
             items = self.dynaregex.findall(w.getAllText())

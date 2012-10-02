@@ -4090,6 +4090,9 @@ debug                       = None
 execute-script              = Ctrl+B
 redo                        = Shift-Ctrl-Z
 
+dabbrev-completion                  = Alt-Ctrl-slash
+dabbrev-expands                     = Alt-slash
+
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
 run-marked-unit-tests-externally    = Alt-4 # The new standard
