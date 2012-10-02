@@ -544,7 +544,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         aList = self.getDynamicList(w,word)
         if aList:
             # Bug fix: remove s itself, otherwise we can not extend beyond it.
-            if word in aList: aList.remove(word)
+            if word in aList and len(aList) > 1: aList.remove(word)
             prefix = reduce(g.longestCommonPrefix,aList)
             if prefix.strip():
                 b = c.undoer.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
