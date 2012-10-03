@@ -4287,6 +4287,446 @@ def update_style_sheet (self,w,key,value,selector=None):
     # This call is responsible for the unwanted scrolling!
     # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
     w.setStyleSheet(s)
+#@+node:ekr.20121002023749.10190: *4* Cached syntax coloring
+#@+node:ekr.20121003080152.10210: *5* changed/new
+#@+node:EKR.20040610094819: *6* << define globalDirectiveList >>
+# Visible externally so plugins may add to the list of directives.
+
+globalDirectiveList = [
+
+    # *** Longer prefixes must appear before shorter.
+    'all',
+    'colorcache', # 2012/10/03.
+    'code','color', 'comment','c',
+    'delims','doc','encoding','end_raw',
+    'first','header','ignore','killcolor',
+    'language','last','lineending',
+    'markup', # Make this an official directive,
+    'nocolor-node','nocolor','noheader','nowrap',
+    'others','pagewidth','path','quiet',
+    'raw','root-code','root-doc','root','silent',
+    'tabwidth', 'terse',
+    'unit','verbose', 'wrap',
+]
+#@+node:ekr.20120212060348.10374: *6*  << global switches >>
+trace_startup = False
+    # These traces use print instead of g.trace so that
+    # the traces can add class info the method name.
+
+new_modes = False
+    # True: use ModeController and ModeInfo classes.
+if new_modes: print('***** new_modes')
+
+new_keys = False
+    # This project hardly seems urgent.
+    # True: Qt input methods produce a **user setting**, not a stroke.
+if new_keys: print('***** new_keys')
+
+# Debugging options...
+
+enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
+
+no_scroll = False
+    # True: disable all calls to w.setYScrollPosition.
+no_see = False
+    # True: disable all calls to w.see and w.seeInsertPoint.
+    
+# Tracing options...
+
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
+
+# Switches to trace the garbage collector.
+trace_gc = False           
+trace_gc_calls = False    
+trace_gc_calls = False 
+trace_gc_verbose = False
+trace_gc_inited = False
+
+trace_masterCommand = False
+trace_masterKeyHandler = False
+trace_masterKeyHandlerGC = False
+trace_minibuffer = False
+trace_modes = False
+
+# These print statements have been moved to writeWaitingLog.
+# This allows for better --silent operation.
+if 0:
+    print('*** isPython3: %s' % isPython3)
+    if not enableDB:
+        print('** leoGlobals.py: caching disabled')
+
+#@+node:ekr.20040803072955.128: *6* leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by the gui to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+    
+    trace = False and not g.unitTesting
+    if trace:
+        import time
+        t1 = time.time()
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+        
+    if trace:
+        g.trace('%2.3f sec' % (time.time()-t1))
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911: *7* selectHelper (leoTree) (changed 4.10)
+# Do **not** try to "optimize" this by returning if p==c.p.
+# 2011/11/06: *event handlers* are called only if p != c.p.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+    
+    call_event_handlers = p != old_p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace(p and p.h,g.callers())
+            
+    if call_event_handlers:
+        unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    else:
+        unselect = True
+
+    if unselect:
+        << unselect the old node >>
+        
+    if call_event_handlers:
+        g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+    if call_event_handlers:
+        if call_event_handlers:
+            select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        else:
+            select = True
+        if select:
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+    else:
+        if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+            << select the new node >>
+            c.nodeHistory.update(p) # Remember this position.
+        
+    c.setCurrentPosition(p)
+    << set the current node >>
+    p.restoreCursorAndScroll()
+        # Was in setBodyTextAfterSelect (in <select the new node>)
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    # if trace and (verbose or call_event_handlers):
+        # g.trace('**** after old: %s new %s' % (
+            # old_p and len(old_p.b),len(p.b)))
+
+    # what UNL.py used to do
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine(p.get_UNL())
+
+    if call_event_handlers: # 2011/11/06
+        g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+#@+node:ekr.20120325072403.7771: *8* << unselect the old node >> (selectHelper)
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+    
+    colorizer = c.frame.body.colorizer
+    if (
+        colorizer
+        and hasattr(colorizer,'colorCacheFlag')
+        and colorizer.colorCacheFlag
+        and hasattr(colorizer,'write_colorizer_cache')
+    ):
+        colorizer.write_colorizer_cache(old_p)
+#@+node:ekr.20040803072955.133: *8* << set the current node >> (selectHelper)
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+# Was in ctor.
+use_chapters = c.config.getBool('use_chapters')
+
+if use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+c.treeFocusHelper() # 2010/12/14
+c.undoer.onSelect(old_p,p)
+#@+node:ekr.20120325072403.7767: *8* << select the new node >> (selectHelper)
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@+node:ekr.20090608081524.6109: *7* setBodyTextAfterSelect (changed 4.10)
+def setBodyTextAfterSelect (self,p,old_p):
+    
+    # trace = g.trace_scroll and not g.unitTesting
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = p.v.b # Guaranteed to be unicode.
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        self.frame.body.recolor(p)
+
+    # This is now done after c.p has been changed.
+        # p.restoreCursorAndScroll()
+#@+node:ekr.20121003051050.10198: *6* write_colorizer_cache (leoQtColorizer)
+# Used info from qt/src/gui/text/qsyntaxhighlighter.cpp
+
+def write_colorizer_cache (self,p):
+
+    trace = False and not g.unitTesting
+    if not p: return
+    c = self.c
+    w = c.frame.body.bodyCtrl.widget # a subclass of QTextBrowser
+    doc = w.document()
+    if trace:
+        t1 = time.time()
+    aList = []
+    for i in range(doc.blockCount()):
+        b = doc.findBlockByNumber(i)
+        s = g.u(b.text())
+        layout = b.layout()
+        ranges = list(layout.additionalFormats()) # A list of FormatRange objects.
+        if ranges:
+            aList.append(g.bunch(i=i,ranges=ranges,s=s))
+            # Apparently not necessary.
+                # ranges2 = []
+                # for r in ranges:
+                    # # Hold the format in memory by copying it.
+                    # r.format = QtGui.QTextCharFormat(r.format)
+                    # ranges2.append(r)
+                # aList.append(g.bunch(i=i,ranges=ranges2,s=s))
+            
+    p.v.colorCache = g.bunch(aList=aList,n=doc.blockCount(),v=p.v)
+    if trace:
+        g.trace('%2.3f sec len(aList): %s v: %s' % (
+            time.time()-t1,len(aList),c.p.v.h,))
+#@+node:ekr.20110605121601.18568: *6* rehighlight  (leoQtSyntaxhighligher) ***
+def rehighlight (self,p):
+
+    '''Override base rehighlight method'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; tree = c.frame.tree
+    self.w = c.frame.body.bodyCtrl.widget
+    
+    if trace:
+        t1 = time.time()
+
+    # Call the base class method, but *only*
+    # if the crucial 'currentBlock' method exists.
+    n = self.colorer.recolorCount
+    if self.colorizer.enabled and self.hasCurrentBlock:
+        # Lock out onTextChanged.
+        old_selecting = tree.selecting
+        try:
+            tree.selecting = True
+            if (
+                self.colorizer.colorCacheFlag
+                and hasattr(p.v,'colorCache') and p.v.colorCache
+                and not g.unitTesting
+            ):
+                # Should be no need to init the colorizer.
+                self.rehighlight_with_cache(p.v.colorCache)
+            else:
+                self.colorer.init(p,p.b)
+                QtGui.QSyntaxHighlighter.rehighlight(self)
+        finally:
+            tree.selecting = old_selecting
+
+    if trace:
+        g.trace('recolors: %4s %2.3f sec' % (
+            self.colorer.recolorCount-n,time.time()-t1))
+#@+node:ekr.20121003051050.10201: *6* rehighlight_with_cache (leoQtSyntaxHighlighter)
+def rehighlight_with_cache (self,bunch):
+    
+    '''Rehighlight the block from bunch, without calling QSH.rehighlight.
+    
+    - bunch.aList: a list of bunch2 objects.
+    - bunch.n: a block (line) number.
+    - bunch.v: the vnode.
+        - bunch2.i: the index of the block.
+        - bunch2.s: the contents of the block.
+        - bunch2.ranges: a list of QTextLayout.FormatRange objects.
+    '''
+
+    trace = False and not g.unitTesting
+    w = self.c.frame.body.bodyCtrl.widget # a subclass of QTextEdit.
+    doc = w.document()
+    if bunch.n != doc.blockCount():
+        return g.trace('bad block count: expected %s got %s' % (
+            bunch.n,doc.blockCount()))
+    if trace:
+        t1 = time.time()
+    for i,bunch2 in enumerate(bunch.aList):
+        b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
+        layout = b.layout() # a QTextLayout.
+        if bunch2.s == g.u(b.text()):
+           layout.setAdditionalFormats(bunch2.ranges)
+        else:
+            return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
+                i,bunch2.s,g.u(b.text())))
+    if trace:
+        g.trace('%2.3f sec %s' % (time.time()-t1))
+#@+node:ekr.20110605121601.18567: *6* highlightBlock (leoQtSyntaxHighlighter)
+def highlightBlock (self,s):
+    """ Called by QSyntaxHiglighter """
+    
+    trace = False and not g.unitTesting
+
+    if self.hasCurrentBlock and not self.colorizer.killColorFlag:
+        if g.isPython3:
+            s = str(s)
+        else:
+            s = unicode(s)
+            
+        self.colorer.recolor(s)
+        
+        v = self.c.p.v
+        if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
+            if trace: g.trace('clearing cache',g.callers())
+            self.c.p.v.colorCache = None # Kill the color caching.
+#@+node:ekr.20110605121601.18556: *6* scanColorDirectives (leoQtColorizer) & helper
+def scanColorDirectives(self,p):
+    
+    '''Set self.language based on the directives in p's tree.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    if c == None: return None # self.c may be None for testing.
+    
+    root = p.copy()
+    self.colorCacheFlag = False
+    self.language = None
+    self.rootMode = None # None, "code" or "doc"
+
+    for p in root.self_and_parents():
+        theDict = g.get_directives_dict(p)
+        # if trace: g.trace(p.h,theDict)
+        << Test for @colorcache >>
+        << Test for @language >>
+        << Test for @root, @root-doc or @root-code >>
+        
+    # 2011/05/28: If no language, get the language from any @<file> node.
+    if self.language:
+        if trace: g.trace('found @language %s %s' % (self.language,self.languageList))
+        return self.language
+        
+    #  Attempt to get the language from the nearest enclosing @<file> node.
+    self.language = g.getLanguageFromAncestorAtFileNode(root)
+
+    if not self.language:
+        if trace: g.trace('using default',c.target_language)
+        self.language = c.target_language
+
+    return self.language # For use by external routines.
+#@+node:ekr.20121003152523.10126: *7* << Test for @colorcache >>
+# The @colorcache directive is a per-node directive.
+if p == root:
+    self.colorCacheFlag = 'colorcache' in theDict
+    # g.trace('colorCacheFlag: %s' % self.colorCacheFlag)
+#@+node:ekr.20110605121601.18557: *7* << Test for @language >>
+if 'language' in theDict:
+    s = theDict["language"]
+    i = g.skip_ws(s,0)
+    j = g.skip_c_id(s,i)
+    aList = self.findLanguageDirectives(p)
+    # In the root node, we use the first (valid) @language directive,
+    # no matter how many @language directives the root node contains.
+    # In ancestor nodes, only unambiguous @language directives
+    # set self.language.
+    if p == root or len(aList) == 1:
+        self.languageList = aList
+        self.language = aList and aList[0] or []
+        break
+#@+node:ekr.20110605121601.18558: *7* << Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
+
+    s = theDict["root"]
+    if g.match_word(s,0,"@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(s,0,"@root-doc"):
+        self.rootMode = "doc"
+    else:
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = g.choose(doc,"doc","code")
+#@+node:ekr.20110605121601.18559: *7* findLanguageDirectives
+def findLanguageDirectives (self,p):
+
+    '''Scan p's body text for *valid* @language directives.
+
+    Return a list of languages.'''
+    
+    # Speed not very important: called only for nodes containing @language directives.
+    trace = False and not g.unitTesting
+    aList = []
+    for s in g.splitLines(p.b):
+        if g.match_word(s,0,'@language'):
+            i = len('@language')
+            i = g.skip_ws(s,i)
+            j = g.skip_id(s,i)
+            if j > i:
+                word = s[i:j]
+                if self.isValidLanguage(word):
+                    aList.append(word)
+                else:
+                    if trace:g.trace('invalid',word)
+
+    if trace: g.trace(aList)
+    return aList
+#@+node:ekr.20110605121601.18560: *7* isValidLanguage
+def isValidLanguage (self,language):
+    
+    fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+    return g.os_path_exists(fn)
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
