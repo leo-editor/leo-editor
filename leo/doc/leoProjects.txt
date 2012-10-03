@@ -3878,6 +3878,9 @@ g.es now "redirects" colors using the following settings:
     - (done) set body pane color only once. (Now done only via stylesheet).
     - (done) use border colors to indicate state.
 #@+node:ekr.20120212060348.10374: *5*  << global switches >>
+cache_color_info = False
+    # True: use the experimental caching scheme for syntax coloring.
+
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.

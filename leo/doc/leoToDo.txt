@@ -3441,6 +3441,9 @@ This will eliminate the hacks for *entry-commands* and *command-prompt keys.
 ModeController: a wrapper for g.app.config.modeCommandsDict
 .. @+node:ekr.20120228164039.11406: *5*  Clean up #### in leoKeys
 .. @+node:ekr.20120212060348.10374: *5*  << global switches >>
+cache_color_info = False
+    # True: use the experimental caching scheme for syntax coloring.
+
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
@@ -4844,6 +4847,15 @@ def selectHelper (self,p,scroll):
 if old_p != p:
     self.endEditLabel() # sets editPosition = None
     self.setUnselectedLabelState(old_p)
+    
+    colorizer = c.frame.body.colorizer
+    if (
+        colorizer and
+        g.cache_color_info and
+        hasattr(colorizer,'write_colorizer_cache') and
+        not g.unitTesting
+    ):
+        colorizer.write_colorizer_cache(old_p)
 .. @+node:ekr.20040803072955.133: *6* << set the current node >> (selectHelper)
 self.setSelectedLabelState(p)
 

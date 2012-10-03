@@ -954,13 +954,13 @@
 </v>
 </v>
 </v>
-<v t="ekr.20121001135612.3174"><vh>@@edit ../core/leoApp.py</vh></v>
 <v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20121001073919.3165"><vh>old</vh></v>
 <v t="ekr.20120930181209.3163"><vh>get color info</vh></v>
 <v t="ekr.20121001135612.3173"><vh>@button write color info</vh></v>
 <v t="ekr.20121001135612.3171"><vh>@button read color info</vh></v>
-<v t="ekr.20121002124235.3173"><vh>@path c:\leo.repo</vh></v>
+<v t="ekr.20121003082727.3173"><vh>clear all v.colorCache</vh></v>
+<v t="ekr.20121001135612.3174"><vh>@@edit ../core/leoApp.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1261,7 +1261,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -13776,6 +13776,8 @@ class RecentFilesManager:
 #@-others
 #@-leo
 </t>
-<t tx="ekr.20121002124235.3173"></t>
+<t tx="ekr.20121003082727.3173">for p in c.all_unique_positions():
+    p.v.colorCache=None
+print('done')</t>
 </tnodes>
 </leo_file>

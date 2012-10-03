@@ -37,6 +37,7 @@ import string
 import sys
 # import tempfile
 import platform
+import time
 
 # if g.isPython3:
     # import urllib.request as urllib
@@ -9482,6 +9483,43 @@ class leoQtColorizer:
 
         if trace: g.trace(d)
         return d
+    #@+node:ekr.20121003051050.10198: *4* write_colorizer_cache (leoQtColorizer)
+    # Used info from qt/src/gui/text/qsyntaxhighlighter.cpp
+
+    def write_colorizer_cache (self,p):
+
+        trace = False and not g.unitTesting
+        if g.unitTesting:
+            return
+        if not p:
+            g.trace('no p')
+        c = self.c
+        w = c.frame.body.bodyCtrl.widget # a subclass of QTextBrowser
+        doc = w.document()
+        if trace:
+            t1 = time.time()
+        aList = []
+        for i in range(doc.blockCount()):
+            b = doc.findBlockByNumber(i)
+            s = g.u(b.text())
+            layout = b.layout()
+            ranges = list(layout.additionalFormats())
+            if ranges:
+                ranges2 = [
+                    g.bunch(
+                        r=r, # Provide the actual FormatRange so it can be rewritten.
+                        length=r.length,
+                        start=r.start,
+                        font=r.format.font(),
+                        foreground=r.format.foreground(),
+                        underline=r.format.fontUnderline(),
+                    ) for r in ranges]
+                aList.append(g.bunch(i=i,ranges=ranges2,s=s))
+                
+        p.v.colorCache = g.bunch(aList=aList,n=doc.blockCount(),v=p.v)
+        if trace:
+            g.trace('%2.3f sec len(aList): %s v: %s' % (
+                time.time()-t1,len(aList),c.p.v.h,))
     #@-others
 
 #@+node:ekr.20110605121601.18565: *3* leoQtSyntaxHighlighter
@@ -9515,7 +9553,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             colorizer=colorizer,
             highlighter=self,
             w=c.frame.body.bodyCtrl)
-    #@+node:ekr.20110605121601.18567: *4* highlightBlock
+    #@+node:ekr.20110605121601.18567: *4* highlightBlock (leoQtSyntaxHighlighter)
     def highlightBlock (self,s):
         """ Called by QSyntaxHiglighter """
 
@@ -9524,9 +9562,14 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
                 s = str(s)
             else:
                 s = unicode(s)
+                
             self.colorer.recolor(s)
-
-    #@+node:ekr.20110605121601.18568: *4* rehighlight
+            
+            v = self.c.p.v
+            if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
+                g.trace('clearing cache',g.callers())
+                self.c.p.v.colorCache = None # Kill the color caching.
+    #@+node:ekr.20110605121601.18568: *4* rehighlight  (leoQtSyntaxhighligher)
     def rehighlight (self,p):
 
         '''Override base rehighlight method'''
@@ -9539,7 +9582,8 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         self.colorer.init(p,s)
         n = self.colorer.recolorCount
         
-        if trace: g.trace(p.h)
+        if trace:
+            t1 = time.time()
 
         # Call the base class method, but *only*
         # if the crucial 'currentBlock' method exists.
@@ -9548,13 +9592,92 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             old_selecting = c.frame.tree.selecting
             try:
                 c.frame.tree.selecting = True
-                QtGui.QSyntaxHighlighter.rehighlight(self)
+                if hasattr(p.v,'colorCache') and p.v.colorCache and not g.unitTesting:
+                    self.rehighlight_with_cache(p.v.colorCache)
+                else:
+                    QtGui.QSyntaxHighlighter.rehighlight(self)
             finally:
                 c.frame.tree.selecting = old_selecting
 
-        if trace and verbose:
-            g.trace('%s %s calls to recolor' % (
-                p.h,self.colorer.recolorCount-n))
+        if trace:
+            if verbose:
+                g.trace('%s %s calls to recolor' % (
+                    p.h,self.colorer.recolorCount-n))
+            else:
+                g.trace('%2.3f sec %s' % (time.time()-t1,p.h))
+    #@+node:ekr.20121003051050.10201: *4* rehighlight_with_cache (leoQtSyntaxHighlighter)
+    def rehighlight_with_cache (self,bunch):
+        
+        '''Rehighlight the block from bunch, without calling QSH.rehighlight.
+        
+        - bunch.aList: a list of bunch2 objects.
+        - bunch.n: a block (line) number.
+        - bunch.v: the vnode.
+            - bunch2.i: the index of the block.
+            - bunch2.s: the contents of the block.
+            - bunch2.ranges: a list of bunch3 objects.
+                - bunch3.r: a FormatRange.
+                - bunch3.start, bunch3.length: r.start, r.length
+                - bunch3.font: r.font()
+                - bunch3.foreground: r.format.foreground()
+                - bunch3.underline: r.format.fontUnderline()
+        '''
+
+        trace = False and not g.unitTesting
+        verbose = False
+        assert not g.unitTesting
+        c = self.c    
+        w = c.frame.body.bodyCtrl.widget # a subclass of QTextBrowser
+        assert isinstance(w,QtGui.QTextEdit)
+        doc = w.document()
+
+        if bunch.n != doc.blockCount():
+            if not g.app.unitTesting:
+                g.trace('bad block count: expected %s got %s' % (
+                    bunch.n,doc.blockCount()))
+            return
+        
+        if trace:
+            t1 = time.time()
+
+        for i,bunch2 in enumerate(bunch.aList):
+            b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
+            layout = b.layout()
+            s = bunch2.s
+            if s != g.u(b.text()):
+                if not g.app.unitTesting:
+                    g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
+                        i,s,g.u(b.text())))
+                return
+            ranges2 = []
+            for bunch3 in bunch2.ranges:
+                r = bunch3.r # Reuse the old FormatRange item.
+                r.start = bunch3.start
+                r.length = bunch3.length
+                format = QtGui.QTextCharFormat()
+                format.setFont(bunch3.font)
+                format.setFontUnderline(bunch3.underline)
+                format.setForeground(bunch3.foreground)
+                r.format = format
+                color = bunch3.foreground.color()
+                if trace and verbose:
+                    g.trace('%s.%s.%s %s' % (
+                        color.red(),color.green(),color.blue(),
+                        s[r.start:r.start+r.length]))
+                ranges2.append(r)
+
+            # This is what QSyntaxHighlighter.applyFormatChanges does.
+            layout.setAdditionalFormats(ranges2)
+        
+        # doc.markContentsDirty(b.position(),b.length())
+
+        if trace:
+            t2 = time.time()
+            if verbose:
+                g.trace('%2.3f sec len(aList): %s v: %s' % (
+                    t2-t1,len(bunch.aList),bunch.v.h))
+            else:
+                g.trace('%2.3f sec %s' % (t2-t1,bunch.v.h))
     #@-others
 #@+node:ekr.20110605121601.18569: *3* class jeditColorizer
 # This is c.frame.body.colorizer.highlighter.colorer
@@ -11418,18 +11541,21 @@ class jEditColorizer:
 
         '''Recolor a *single* line, s.'''
 
-        trace = False and not g.unitTesting
-        callers = False ; line = True ; state = True
+        trace = True and not g.unitTesting
+        callers = False ; line = False ; state = False
+        returns = False
 
         # Update the counts.
         self.recolorCount += 1
         self.totalChars += len(s)
 
         if self.colorizer.changingText:
+            if trace and returns: g.trace('changingText')
             return
         if not self.colorizer.flag:
+            if trace and returns: g.trace('not flag')
             return
-
+            
         # Get the previous state.
         n = self.prevState() # The state at the end of the previous line.
         if trace:

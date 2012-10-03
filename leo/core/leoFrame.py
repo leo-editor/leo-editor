@@ -2124,6 +2124,15 @@ class leoTree:
             if old_p != p:
                 self.endEditLabel() # sets editPosition = None
                 self.setUnselectedLabelState(old_p)
+                
+                colorizer = c.frame.body.colorizer
+                if (
+                    colorizer and
+                    g.cache_color_info and
+                    hasattr(colorizer,'write_colorizer_cache') and
+                    not g.unitTesting
+                ):
+                    colorizer.write_colorizer_cache(old_p)
             #@-<< unselect the old node >>
             
         if call_event_handlers:
