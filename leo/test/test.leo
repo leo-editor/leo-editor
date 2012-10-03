@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.45" body_secondary_ratio="0.41">
-	<global_window_position top="127" left="550" height="861" width="910"/>
+	<global_window_position top="127" left="550" height="861" width="1185"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -957,10 +957,10 @@
 <v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20121001073919.3165"><vh>old</vh></v>
 <v t="ekr.20120930181209.3163"><vh>get color info</vh></v>
-<v t="ekr.20121001135612.3173"><vh>@button write color info</vh></v>
-<v t="ekr.20121001135612.3171"><vh>@button read color info</vh></v>
 <v t="ekr.20121003082727.3173"><vh>clear all v.colorCache</vh></v>
 <v t="ekr.20121001135612.3174"><vh>@@edit ../core/leoApp.py</vh></v>
+<v t="ekr.20121001135612.3173"><vh>@button write color info</vh></v>
+<v t="ekr.20121001135612.3171"><vh>@button read color info</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1261,7 +1261,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -10407,39 +10407,21 @@ else:
 
 w = c.frame.body.bodyCtrl.widget # a subclass of QTextBrowser
 doc = w.document()
-assert bunch.n == doc.blockCount(),'expected %s\ngot     %s' % (bunch.n,doc.blockCount())
+assert bunch.n == doc.blockCount(),'expected %s\ngot     %s' % (
+    bunch.n,doc.blockCount())
 
 t1 = time.time()
 for bunch2 in bunch.aList:
-    # i,ranges,s = bunch2.i,bunch2.ranges,bunch2.s
     b = doc.findBlockByNumber(bunch2.i)
     layout = b.layout()
-    s = bunch2.s
-    assert s == str(b.text()),'expected %s\ngot     %s' % (s,str(b.text()))
-    ranges2 = []
-    for bunch3 in bunch2.ranges:
-        r = bunch3.r # Reuse the old FormatRange item.
-        r.start = bunch3.start
-        r.length = bunch3.length
-        format = QtGui.QTextCharFormat()
-        format.setFont(bunch3.font)
-        format.setFontUnderline(bunch3.underline)
-        format.setForeground(bunch3.foreground)
-        r.format = format
-        color = bunch3.foreground.color()
-        if 0:
-            print('%s.%s.%s %s' % (
-                color.red(),color.green(),color.blue(),
-                s[r.start:r.start+r.length]))
-        ranges2.append(r)
-    layout.setAdditionalFormats(ranges2)
+    assert bunch2.s == g.u(b.text()),'expected %s\ngot     %s' % (
+        bunch2.s,g.u(b.text()))
+    layout.setAdditionalFormats(bunch2.ranges)
         
 t2 = time.time()
 g.es_print('done: %2.3f sec len(aList): %s' % (t2-t1,len(bunch.aList)))
 </t>
-<t tx="ekr.20121001135612.3173">g.cls()
-
-import copy
+<t tx="ekr.20121001135612.3173">import PyQt4.QtGui as QtGui
 import time
 
 w = c.frame.body.bodyCtrl.widget # a subclass of QTextBrowser
@@ -10448,21 +10430,15 @@ t1 = time.time()
 aList = []
 for i in range(doc.blockCount()):
     b = doc.findBlockByNumber(i)
-    s = str(b.text())
-    # bf = b.blockFormat() # margins, etc, not fonts or colors.
+    s = g.u(b.text())
     layout = b.layout()
     ranges = list(layout.additionalFormats())
-    # ranges = [(r.start,r.length,copy.deepcopy(r.format) for r in layout.additionalFormats()]
     if ranges:
-        ranges2 = [
-            g.bunch(
-                r=r, # A kludge: we'll rewrite this.
-                length=r.length,
-                start=r.start,
-                font=r.format.font(),
-                foreground=r.format.foreground(),
-                underline=r.format.fontUnderline(),
-            ) for r in ranges]
+        ranges2 = []
+        for r in ranges:
+            r.format = QtGui.QTextCharFormat(r.format)
+                # Hold the format by copying it.
+            ranges2.append(r)
         aList.append(g.bunch(i=i,ranges=ranges2,s=s))
         
 g.app.qsh_cache = g.bunch(aList=aList,n=doc.blockCount(),v=c.p.v)
@@ -10471,6 +10447,7 @@ g.es_print('done: %2.3f sec %s len(aList): %s' % (t2-t1,c.p.v.h,len(aList)))
 </t>
 <t tx="ekr.20121001135612.3174"># -----&gt; A test file for the write/read color info buttons.
 
+@colorcache
 @language python
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin

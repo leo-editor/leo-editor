@@ -2136,10 +2136,10 @@ class leoTree:
                 
                 colorizer = c.frame.body.colorizer
                 if (
-                    colorizer and
-                    g.cache_color_info and
-                    hasattr(colorizer,'write_colorizer_cache') and
-                    not g.unitTesting
+                    colorizer
+                    and hasattr(colorizer,'colorCacheFlag')
+                    and colorizer.colorCacheFlag
+                    and hasattr(colorizer,'write_colorizer_cache')
                 ):
                     colorizer.write_colorizer_cache(old_p)
             #@-<< unselect the old node >>

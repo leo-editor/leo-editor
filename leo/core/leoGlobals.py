@@ -16,10 +16,6 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >>
-cache_color_info = False
-    # True: use the experimental caching scheme for syntax coloring.
-if cache_color_info: print('***** cache_color_info')
-
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
@@ -149,8 +145,9 @@ else:
 
 globalDirectiveList = [
 
-    # Longer prefixes must appear before shorter.
+    # *** Longer prefixes must appear before shorter.
     'all',
+    'colorcache', # 2012/10/03.
     'code','color', 'comment','c',
     'delims','doc','encoding','end_raw',
     'first','header','ignore','killcolor',
