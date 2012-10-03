@@ -9556,6 +9556,8 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     #@+node:ekr.20110605121601.18567: *4* highlightBlock (leoQtSyntaxHighlighter)
     def highlightBlock (self,s):
         """ Called by QSyntaxHiglighter """
+        
+        trace = False and not g.unitTesting
 
         if self.hasCurrentBlock and not self.colorizer.killColorFlag:
             if g.isPython3:
@@ -9567,7 +9569,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             
             v = self.c.p.v
             if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
-                g.trace('clearing cache',g.callers())
+                if trace: g.trace('clearing cache',g.callers())
                 self.c.p.v.colorCache = None # Kill the color caching.
     #@+node:ekr.20110605121601.18568: *4* rehighlight  (leoQtSyntaxhighligher)
     def rehighlight (self,p):

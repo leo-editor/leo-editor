@@ -13,6 +13,7 @@ These classes should be overridden to create frames for a particular gui."""
 import leo.core.leoGlobals as g
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
+
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
@@ -2073,6 +2074,11 @@ class leoTree:
         The scroll argument is used by the gui to suppress scrolling while dragging.'''
 
         if g.app.killed or self.tree_select_lockout: return None
+        
+        trace = False and not g.unitTesting
+        if trace:
+            import time
+            t1 = time.time()
 
         try:
             c = self.c ; old_p = c.p
@@ -2083,6 +2089,9 @@ class leoTree:
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p,old_p)
+            
+        if trace:
+            g.trace('%2.3f sec' % (time.time()-t1))
 
         return val  # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911: *4* selectHelper (leoTree) (changed 4.10)
