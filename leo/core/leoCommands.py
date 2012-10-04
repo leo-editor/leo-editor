@@ -2271,6 +2271,7 @@ class Commands (object):
                 sys.path.insert(0,c.frame.openDirectory)
                 script += '\n' # Make sure we end the script properly.
                 try:
+                    if not p: p = c.p # Fix bug created at rev 5453.
                     c.executeScriptHelper(args,define_g,define_name,namespace,p,script)
                 except Exception:
                     if raiseFlag:
@@ -2290,9 +2291,9 @@ class Commands (object):
     def executeScriptHelper (self,args,define_g,define_name,namespace,p,script):
 
         c = self
-        if p:
-            p = p.copy()
-            c.setCurrentDirectoryFromContext(p)
+        assert p
+        p = p.copy()
+        c.setCurrentDirectoryFromContext(p)
         d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
