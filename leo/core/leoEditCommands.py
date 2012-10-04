@@ -547,10 +547,12 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if word in aList and len(aList) > 1: aList.remove(word)
         prefix = reduce(g.longestCommonPrefix,aList)
         if prefix.strip():
-            b = c.undoer.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
+            ypos = w.getYScrollPosition()
+            b = c.undoer.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h,oldYScroll=ypos)
             p.b = p.b[:i] + prefix + p.b[j:]
             w.setAllText(p.b)
             w.setInsertPoint(i+len(prefix))
+            w.setYScrollPosition(ypos)
             c.undoer.afterChangeNodeContents(p,
                 command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
     #@+node:ekr.20050920084036.59: *4* dynamicExpansion M-/
@@ -578,10 +580,12 @@ class abbrevCommandsClass (baseEditCommandsClass):
         # g.trace(word,prefix,aList)
         if False and prefix and prefix != word and len(aList) == 1:
             s = w.getAllText()
-            b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h)
+            ypos = w.getYScrollPosition()
+            b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h,oldYScroll=ypos)
             p.b = p.b[:i] + prefix + p.b[j:]
             w.setAllText(p.b)
             w.setInsertPoint(i+len(prefix))
+            w.setYScrollPosition(ypos)
             c.undoer.afterChangeNodeContents(p,
                 command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
         else:
@@ -606,7 +610,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
             if k.arg:
                 w = self.w
                 s = w.getAllText()
-                b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h)
+                ypos = w.getYScrollPosition()
+                b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h,oldYScroll=ypos)
                 ins = w.getInsertPoint()
                 if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
                 i,j = g.getWord(s,ins)
@@ -614,6 +619,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 p.b = p.b[:i] + k.arg + p.b[j:]
                 w.setAllText(p.b)
                 w.setInsertPoint(i+len(k.arg))
+                w.setYScrollPosition(ypos)
                 c.undoer.afterChangeNodeContents(p,
                     command=tag,bunch=b,dirtyVnodeList=[]) 
     #@+node:ekr.20050920084036.61: *4* getDynamicList (helper)

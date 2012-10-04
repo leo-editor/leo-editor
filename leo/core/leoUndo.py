@@ -114,6 +114,7 @@ class undoer:
         self.newRecentFiles = None
         self.newSel = None
         self.newTree = None
+        self.newYScroll = None
         self.oldBack = None
         self.oldBody = None
         self.oldChanged = None
@@ -126,6 +127,7 @@ class undoer:
         self.oldRecentFiles = None
         self.oldSel = None
         self.oldTree = None
+        self.oldYScroll = None
         self.pasteAsClone = None
         self.prevSel = None
         self.sortChildren = None
@@ -577,6 +579,7 @@ class undoer:
         bunch.newHead = p.h
         bunch.newMarked = p.isMarked()
         bunch.newSel = w.getSelectionRange()
+        bunch.newYScroll = w.getYScrollPosition()
 
         u.pushBead(bunch)
     #@+node:ekr.20050315134017.3: *5* afterChangeTree
@@ -939,7 +942,7 @@ class undoer:
         u.bead += 1
         u.beads[u.bead:] = [bunch]
     #@+node:ekr.20050315133212.2: *5* beforeChangeNodeContents
-    def beforeChangeNodeContents (self,p,oldBody=None,oldHead=None):
+    def beforeChangeNodeContents (self,p,oldBody=None,oldHead=None,oldYScroll=None):
 
         '''Return data that gets passed to afterChangeNode'''
 
@@ -951,6 +954,7 @@ class undoer:
 
         bunch.oldBody = oldBody or p.b
         bunch.oldHead = oldHead or p.h
+        bunch.oldYScroll = oldYScroll
 
         return bunch
     #@+node:ekr.20050315134017.6: *5* beforeChangeTree
@@ -1703,7 +1707,9 @@ class undoer:
 
         if u.groupCount == 0 and u.newSel:
             i,j = u.newSel
-            u.c.frame.body.setSelectionRange(i,j)
+            w.setSelectionRange(i,j)
+        if u.groupCount == 0 and u.newYScroll is not None:
+            w.setYScrollPosition(u.newYScroll)
 
         u.updateMarks('new')
 
@@ -2077,14 +2083,12 @@ class undoer:
         trace = False and not g.unitTesting
         u = self ; c = u.c
         w = c.frame.body.bodyCtrl
-        ### u.p.setBodyString(u.oldBody)
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
         c.frame.body.recolor(u.p,incremental=False)
         
         if trace: g.trace(repr(u.oldHead))
 
-        ### u.p.initHeadString(u.oldHead)
         u.p.h = u.oldHead
 
         # This is required.  Otherwise c.redraw will revert the change!
@@ -2092,7 +2096,9 @@ class undoer:
 
         if u.groupCount == 0 and u.oldSel:
             i,j = u.oldSel
-            u.c.frame.body.setSelectionRange(i,j)
+            w.setSelectionRange(i,j)
+        if u.groupCount == 0 and u.oldYScroll is not None:
+            w.setYScrollPosition(u.oldYScroll)
 
         u.updateMarks('old')
 
