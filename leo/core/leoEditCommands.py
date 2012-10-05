@@ -548,7 +548,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         prefix = reduce(g.longestCommonPrefix,aList)
         if prefix.strip():
             ypos = w.getYScrollPosition()
-            b = c.undoer.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h,oldYScroll=ypos)
+            b = c.undoer.beforeChangeNodeContents(p,oldYScroll=ypos)
             p.b = p.b[:i] + prefix + p.b[j:]
             w.setAllText(p.b)
             w.setInsertPoint(i+len(prefix))
@@ -581,7 +581,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if False and prefix and prefix != word and len(aList) == 1:
             s = w.getAllText()
             ypos = w.getYScrollPosition()
-            b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h,oldYScroll=ypos)
+            b = c.undoer.beforeChangeNodeContents(p,oldYScroll=ypos)
             p.b = p.b[:i] + prefix + p.b[j:]
             w.setAllText(p.b)
             w.setInsertPoint(i+len(prefix))
@@ -611,11 +611,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 w = self.w
                 s = w.getAllText()
                 ypos = w.getYScrollPosition()
-                b = c.undoer.beforeChangeNodeContents(p,oldBody=s,oldHead=p.h,oldYScroll=ypos)
+                b = c.undoer.beforeChangeNodeContents(p,oldYScroll=ypos)
                 ins = w.getInsertPoint()
                 if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins -= 1
                 i,j = g.getWord(s,ins)
-                # g.trace('ins',ins,'i',i,'j',j,s[i:j])
                 p.b = p.b[:i] + k.arg + p.b[j:]
                 w.setAllText(p.b)
                 w.setInsertPoint(i+len(k.arg))
@@ -1944,7 +1943,7 @@ class editCommandsClass (baseEditCommandsClass):
             for p in self.p.self_and_subtree():
                 if p.b:
                     # g.es("converting:",p.h)
-                    bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
+                    bunch = u.beforeChangeNodeContents(p)
                     
                     s = pp.indent(p,giveWarnings=False)
                     aList = list(s)
@@ -4102,7 +4101,7 @@ class editCommandsClass (baseEditCommandsClass):
             s2 = ''.join(lines)
             if s2 != p.b:
                 print(p.h)
-                bunch = u.beforeChangeNodeContents(p,oldBody=p.b,oldHead=p.h)
+                bunch = u.beforeChangeNodeContents(p)
                 p.b = s2
                 p.v.setDirty()
                 n += 1

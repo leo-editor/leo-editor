@@ -5346,7 +5346,7 @@ class Commands (object):
 
         for p in c.p.self_and_subtree():
             if g.scanForAtLanguage(c,p) == "c":
-                bunch = u.beforeChangeNodeContents(p,oldBody=p.b)
+                bunch = u.beforeChangeNodeContents(p)
                 s = pp.indent(p)
                 if p.b != s:
                     # g.es('changed: %s' % (p.h))
