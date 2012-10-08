@@ -696,7 +696,9 @@ class ViewRenderedController(QtGui.QWidget):
             w.setPlainText('@image: file not found:\n%s' % (path))
             return
             
-        template = '''
+        path = path.replace('\\','/')
+            
+        template = '''\
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -707,6 +709,9 @@ class ViewRenderedController(QtGui.QWidget):
     </html>
     ''' % (path)
 
+        # Only works in Python 3.x.
+        template = g.adjustTripleString(template,pc.c.tab_width).strip() # Sensitive to leading blank lines.
+        # template = g.toUnicode(template)
         pc.show()
         w.setReadOnly(False)
         w.setHtml(template)
@@ -849,7 +854,7 @@ class ViewRenderedController(QtGui.QWidget):
             s = g.adjustTripleString(s,pc.c.tab_width).strip() # Sensitive to leading blank lines.
             s = g.toEncodedString(s)
             pc.show()
-            w.load(s)
+            w.load(QtCore.QByteArray(s))
             w.show()
         else:
             # Get a filename from the headline or body text.
