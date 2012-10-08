@@ -2260,10 +2260,9 @@ class Commands (object):
         We execute the selected text, or the entire body text if no text is selected."""
 
         c = self ; script1 = script
-        if not p and not script:
-            return g.error('must give p or script to executeScript')
+
         if not script:
-            script = g.getScript(c,p,useSelectedText=useSelectedText)
+            script = g.getScript(c,p or c.p,useSelectedText=useSelectedText)
             
         script_p = p or c.p # Only for error reporting below.
 
