@@ -9636,7 +9636,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
             layout = b.layout() # a QTextLayout.
             if bunch2.s == g.u(b.text()):
-               layout.setAdditionalFormats(bunch2.ranges)
+                layout.setAdditionalFormats(bunch2.ranges)
             else:
                 return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
                     i,bunch2.s,g.u(b.text())))

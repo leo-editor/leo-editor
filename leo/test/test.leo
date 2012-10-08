@@ -961,6 +961,7 @@
 <v t="ekr.20121001135612.3174"><vh>@@edit ../core/leoApp.py</vh></v>
 <v t="ekr.20121001135612.3173"><vh>@button write color info</vh></v>
 <v t="ekr.20121001135612.3171"><vh>@button read color info</vh></v>
+<v t="ekr.20121005071615.3175"><vh>g.importFromPath</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1261,7 +1262,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="11"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -13756,5 +13757,14 @@ class RecentFilesManager:
 <t tx="ekr.20121003082727.3173">for p in c.all_unique_positions():
     p.v.colorCache=None
 print('done')</t>
+<t tx="ekr.20121005071615.3175">path = g.os_path_join(g.app.loadDir,'..','modes')
+
+for language in ('rest','plain'):
+    fileName = g.os_path_join(path,'%s.py' % (language))
+    if g.os_path_exists(fileName):
+        mode = g.importFromPath (language,path)
+    else:
+        mode = None
+    print(language,mode)</t>
 </tnodes>
 </leo_file>

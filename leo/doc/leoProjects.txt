@@ -4610,7 +4610,7 @@ def rehighlight_with_cache (self,bunch):
         b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
         layout = b.layout() # a QTextLayout.
         if bunch2.s == g.u(b.text()):
-           layout.setAdditionalFormats(bunch2.ranges)
+            layout.setAdditionalFormats(bunch2.ranges)
         else:
             return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
                 i,bunch2.s,g.u(b.text())))
@@ -4727,6 +4727,10 @@ def isValidLanguage (self,language):
     
     fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
     return g.os_path_exists(fn)
+#@+node:ekr.20121002082022.10182: *4* Fixed dabbrev commands
+@nocolor-node
+
+The commands now work, and Alt-slash and Alt-Ctrl-slash are bound as in Emacs.
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

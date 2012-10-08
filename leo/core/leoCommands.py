@@ -2260,8 +2260,13 @@ class Commands (object):
         We execute the selected text, or the entire body text if no text is selected."""
 
         c = self ; script1 = script
+        if not p and not script:
+            return g.error('must give p or script to executeScript')
         if not script:
             script = g.getScript(c,p,useSelectedText=useSelectedText)
+            
+        script_p = p or c.p # Only for error reporting below.
+
         self.redirectScriptOutput()
         try:
             oldLog = g.app.log # 2011/01/19
@@ -2271,13 +2276,13 @@ class Commands (object):
                 sys.path.insert(0,c.frame.openDirectory)
                 script += '\n' # Make sure we end the script properly.
                 try:
-                    if not p: p = c.p # Fix bug created at rev 5453.
-                    c.executeScriptHelper(args,define_g,define_name,namespace,p,script)
+                    # We *always* execute the script with p = c.p.
+                    c.executeScriptHelper(args,define_g,define_name,namespace,script)
                 except Exception:
                     if raiseFlag:
                         raise
                     else:
-                        g.handleScriptException(c,p,script,script1)
+                        g.handleScriptException(c,script_p,script,script1)
                 finally:
                     del sys.path[0]
             else:
@@ -2288,11 +2293,10 @@ class Commands (object):
             g.app.log = oldLog # 2011/01/19
             self.unredirectScriptOutput()
     #@+node:ekr.20120923063251.10651: *7* c.executeScriptHelper
-    def executeScriptHelper (self,args,define_g,define_name,namespace,p,script):
+    def executeScriptHelper (self,args,define_g,define_name,namespace,script):
 
         c = self
-        assert p
-        p = p.copy()
+        p = c.p.copy() # *Always* use c.p and pass c.p to script.
         c.setCurrentDirectoryFromContext(p)
         d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
         if define_name: d['__name__'] = define_name
