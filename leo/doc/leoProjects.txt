@@ -4731,6 +4731,36 @@ def isValidLanguage (self,language):
 @nocolor-node
 
 The commands now work, and Alt-slash and Alt-Ctrl-slash are bound as in Emacs.
+#@+node:ekr.20121011093316.10103: *4* Support TypeScript
+# Added TypeScriptScanner class and related code.
+#@+node:ekr.20121011093316.10097: *5* class TypeScriptScanner(JavaScriptScanner)
+class TypeScriptScanner (JavaScriptScanner):
+    
+    @others
+#@+node:ekr.20121011093316.10098: *6* TypeScriptScanner.__init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    JavaScriptScanner.__init__(self,importCommands,
+        atAuto=atAuto,language='typescript',
+        alternate_language='javascript')
+        
+    # Overrides of ivars.
+    self.hasClasses = True
+    self.classTags = ['module','class']
+    self.functionTags = ['function','public',]
+#@+node:ekr.20121011093316.10110: *6* getSigId (TypeScriptScanner)
+def getSigId (self,ids):
+
+    '''Return the signature's id.
+    
+    This is the last id of the ids list, or the id before extends anotherId.
+    '''
+
+    if len(ids) > 2 and ids[-2] == 'extends':
+        return ids[-3]
+    else:
+        return ids and ids[-1]
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

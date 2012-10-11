@@ -3135,9 +3135,7 @@ class baseScannerClass (scanUtility):
         return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
-        # if not tags: return False
-
-        trace = True or self.trace
+        trace = False or self.trace
         verbose = False # kind=='function'
         self.codeEnd = self.sigEnd = self.sigId = None
         self.sigStart = i
