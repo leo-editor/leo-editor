@@ -3,6 +3,2013 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
+.. @+node:ekr.20121005105428.12866: ** Ipython notebook stuff
+.. @+node:ekr.20121005105428.10112: *3* ipynb example
+{
+  "metadata": {
+    "name": "Part 2: Dataset Basics and Concepts"
+  }, 
+  "nbformat": 3, 
+  "nbformat_minor": 0, 
+  "worksheets": [
+    {
+      "cells": [
+        {
+          "cell_type": "heading", 
+          "level": 1, 
+          "metadata": {}, 
+          "source": [
+            "Part 2: Dataset Basics and Concepts"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Note*", 
+            "\n\n", 
+            "This tutorial part is also available for download as an ", 
+            "[IPython notebook][IPython notebook]:\n[", 
+            "[ipynb][ipynb]]", 
+            "- - -\n"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "A ", 
+            "[Dataset](http://pymvpa.org/generated/mvpa2.datasets.base.Dataset.html#mvpa2-datasets-base-dataset) is the basic data container in PyMVPA. It\nserves as the primary form of input data storage, but also as container for\nmore complex results returned by some algorithm. In this tutorial part we will\ntake a look at what a dataset consists of, and how it works.\n\n", 
+            "In the simplest case, a dataset only contains ", 
+            "*data* that is a matrix of\nnumerical values."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "from mvpa2.tutorial_suite import *\n", 
+            "data = [[  1,  1, -1],\n        [  2,  0,  0],\n        [  3,  1,  1],\n        [  4,  0, -1]]\n", 
+            "ds = Dataset(data)\n", 
+            "ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "len(ds)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In the above example, every row vector in the `data` matrix becomes an\nobservation or a ", 
+            "[sample](http://pymvpa.org/glossary.html#term-sample) in the dataset, and every column vector\nrepresents an individual variable or a ", 
+            "[feature](http://pymvpa.org/glossary.html#term-feature). The concepts of samples\nand features are essential for a dataset, hence we take a further, closer look.\n\n", 
+            "The dataset assumes the first axis of the data to be the samples separating\ndimension. If the dataset is created using a one-dimensional vector it will\ntherefore have as many samples as elements in the vector, and only one feature."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "one_d = [ 0, 1, 2, 3 ]\n", 
+            "one_ds = Dataset(one_d)\n", 
+            "one_ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "On the other hand, if a dataset is created from multi-dimensional data, only its\nsecond axis represents the features"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "import numpy as np\n", 
+            "m_ds = Dataset(np.random.random((3, 4, 2, 3)))\n", 
+            "m_ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "m_ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In this case we have a dataset with three samples and four features, where each\nfeature is a 2x3 matrix. In case somebody is wondering now, why not simply each\nvalue in the data array is considered as its own feature (yielding 24 features)\n-- stay tuned, as this is going to be of importance later on."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Attributes"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "What we have seen so far does not really warrant the use of a dataset over a\nplain array or a matrix with samples. However, in the MVPA context we often need\nto know more about each samples than just the value of its features.  In the\nprevious tutorial part we have already seen that per-sample ", 
+            "[target](http://pymvpa.org/glossary.html#term-target)\nvalues are required for supervised-learning algorithms, and that a dataset\noften has to be split based on the origin of specific groups of samples.  For\nthis type of auxiliary information a dataset can also contain collections of\nthree types of ", 
+            "[attribute](http://pymvpa.org/glossary.html#term-attribute)s: ", 
+            "[sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute), ", 
+            "[feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute), and\n", 
+            "[dataset attribute](http://pymvpa.org/glossary.html#term-dataset-attribute)."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 3, 
+          "metadata": {}, 
+          "source": [
+            "For Samples"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In a dataset each ", 
+            "[sample](http://pymvpa.org/glossary.html#term-sample) can have an arbitrary number of additional\nattributes. They are stored as vectors of the same length as the number of samples\nin a collection, and are accessible via the `sa` attribute. A collection is\nderived from a standard Python ", 
+            "`dict`, and hence adding sample attributes\nworks identical to adding elements to a dictionary:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['some_attr'] = [ 0., 1, 1, 3 ]\n", 
+            "ds.sa.keys()"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "However, sample attributes are not directly stored as plain data, but for\nvarious reasons as a so-called ", 
+            "[Collectable](http://pymvpa.org/generated/mvpa2.base.collections.Collectable.html#mvpa2-base-collections-collectable) that in\nturn embeds a NumPy array with the actual attribute:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "type(ds.sa['some_attr'])"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['some_attr'].value"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "This \"complication\" is done to be able to extend attributes with additional\nfunctionality that is often needed and can offer significant speed-up of\nprocessing. For example, sample attributes carry a list of their unique values.\nThis list is only computed once (upon first request) and can subsequently be\naccessed directly without repeated and expensive searches:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['some_attr'].unique"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "However, for most interactive uses of PyMVPA this type of access to attributes'\n`.value` is relatively cumbersome (too much typing), therefore collections offer direct\nattribute access by name:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa.some_attr"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Another purpose of the sample attribute collection is to preserve data\nintegrity, by disallowing improper attributes:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['invalid'] = 4"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['invalid'] = [ 1, 2, 3, 4, 5, 6 ]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "But other than basic plausibility checks no further constraints on values of\nsamples attributes exist. As long as the length of the attribute vector matches\nthe number of samples in the dataset, and the attributes values can be stored\nin a NumPy array, any value is allowed. For example, it is perfectly possible\nand supported to store literal attributes. It should also be noted that each\nattribute may have its own individual data type, hence it is possible to have\nliteral and numeric attributes in the same dataset."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['literal'] = ['one', 'two', 'three', 'four']\n", 
+            "sorted(ds.sa.keys())"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "for attr in ds.sa:\n   print \"%s: %s\" % (attr, ds.sa[attr].value.dtype.name)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 3, 
+          "metadata": {}, 
+          "source": [
+            "For Features"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "[Feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute)s are almost identical to ", 
+            "[sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute)s the ", 
+            "*only* difference is that instead of having one attribute value per\nsample, feature attributes have one value per (guess what? ...) ", 
+            "*feature*.\nMoreover, they are stored in a separate collection in the datasets that is\ncalled `fa`:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.fa['my_fav'] = [0, 1, 0]\n", 
+            "ds.fa['responsible'] = ['me', 'you', 'nobody']\n", 
+            "sorted(ds.fa.keys())"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 3, 
+          "metadata": {}, 
+          "source": [
+            "For The Dataset"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Finally, there can be also attributes, not per each sample, or each\nfeature, but for the dataset as a whole: so called ", 
+            "[dataset](http://pymvpa.org/glossary.html#term-dataset)s. Assigning such attributes and accessing them later on work in\nexactly the same way as for the other two types of attributes, except that dataset\nattributes are stored in their own collection which is accessible via the\n`a` property of the dataset.  However, in contrast to sample and feature\nattribute no constraints on the type or size are imposed -- anything can be\nstored. Let's store a list with all files in the current directory, just\nbecause we can:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "from glob import glob\n", 
+            "ds.a['pointless'] = glob(\"*\")\n", 
+            "'setup.py' in ds.a.pointless"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Slicing, resampling, feature selection"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "At this point we can already construct a dataset from simple arrays and\nenrich it with an arbitrary number of additional attributes. But just\nhaving a dataset isn't enough. From part one of this tutorial we already\nknow that we need to be able to select subsets of a dataset for further\nprocessing, and we also know that this is possible with PyMVPA's datasets.\nNow it is time to have a closer look into how it works.\n\n", 
+            "Slicing a dataset (i.e. selecting specific subsets) is very similar to\nslicing a NumPy array. It actually works ", 
+            "*almost* identical. A dataset\nsupports Python's ", 
+            "`slice` syntax, but also selection by boolean masks, and\nindices. The following three slicing operations\nresult in equivalent output datasets, by always selecting every other samples\nin the dataset:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds[::2].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "mask = np.array([True, False, True, False])\n", 
+            "ds[mask].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds[[0, 2]].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Exercise*", 
+            "\n\n", 
+            "Search the `NumPy documentation`_ for the difference between \"basic slicing\"\nand \"advanced indexing\". Especially the aspect of memory consumption\napplies to dataset slicing as well, and being aware of this fact might\nhelp to write more efficient analysis scripts. Which of the three slicing\napproaches above is the most memory-efficient?  Which of the three slicing\napproaches above might lead to unexpected side-effects if output dataset\ngets modified?"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "# you can use this cell to for this exercise"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n", 
+            "\n\n", 
+            "All three slicing-styles are equally applicable to the selection of feature\nsubsets within a dataset. Remember, features are represented on the second axis\nof a dataset."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds[:, [1,2]].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "By applying a selection by indices to the second axis, we can easily get\nthe last two features of our example dataset. Please note the ", 
+            "`:` is supplied\nas first axis slicing. This is the Python way to indicate ", 
+            "*take everything\nalong this axis*, hence including all samples.\n\n", 
+            "As you can guess, it is also possible to select subsets of samples and\nfeatures at the same time."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "subds = ds[[0,1], [0,2]]\n", 
+            "subds.samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "If you have prior experience with NumPy you might be confused now. What you\nmight have expected is this:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.samples[[0,1], [0,2]]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "The above code applies the same slicing directly to the NumPy array with\nthe samples, and the result is fundamentally different. For NumPy arrays\nthis style of slicing allows to select specific elements by their indices on\neach axis of an array. For PyMVPA's datasets this mode is not very useful,\ninstead we typically want to select rows and columns, i.e. samples and\nfeatures given by their indices."
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Exercise*", 
+            "\n\n", 
+            "Try to select samples [0,1] and features [0,2,3] simultaneously using\ndataset slicing.  Now apply the same slicing to the samples array itself\n(`ds.samples`) -- make sure that the result doesn't surprise you and find\na pure NumPy way to achieve similar selection."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "# you can use this cell to for this exercise"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n", 
+            "\n\n", 
+            "One last interesting thing to look at, in the context of dataset slicing\nare the attributes. What happens to them when a subset of samples and/or\nfeatures is chosen? Our original dataset had both samples and feature attributes:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print ds.sa.some_attr"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print ds.fa.responsible"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Now let's look at what they became in the subset-dataset we previously\ncreated:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print subds.sa.some_attr"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print subds.fa.responsible"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "We see that both attributes are still there and, moreover, also the\nappropriate subsets have been selected."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Loading fMRI data"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Enough of theoretical foreplay -- let's look at a concrete example of an\nfMRI dataset. PyMVPA has several helper functions to load data from\nspecialized formats, and the one for fMRI data is\n", 
+            "[fmri_dataset()](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset). The example dataset we are going to\nlook at is a single subject from Haxby et al. (2001) that we already\nloaded in part one of this tutorial. For more convenience, and less typing\nwe first specify the path of the directory with the fMRI data."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "path=os.path.join(tutorial_data_path, 'data')"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In the simplest case, we now let ", 
+            "[fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) do its job, by just\npointing it to the fMRI data file. The data is stored as a NIfTI file that has\nall runs of the experiment concatenated into a single file."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'))\n", 
+            "len(ds)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "We can notice two things. First, it worked! Second, we get a\ntwo-dimensional dataset with 1452 samples (these are volumes in the NIfTI\nfile), and over 160k features (these are voxels in the volume). The voxels\nare represented as a one-dimensional vector, and it seems that they have\nlost their association with the 3D-voxel-space. However, this is not the\ncase, as we will see in the next chapter.  PyMVPA represents\ndata in this simple format to make it compatible with a vast range of generic\nalgorithms that expect data to be a simple matrix.\n\n", 
+            "We just loaded all data from that NIfTI file, but usually we would be\ninterested in a subset only, i.e. \"brain voxels\".\n", 
+            "[fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) is capable of performing data masking. We just need to\nspecify a mask image. Such mask image is generated in pretty much any fMRI\nanalysis pipeline -- may it be a full-brain mask computed during\nskull-stripping, or an activation map from a functional localizer. We are going\nto use the original GLM-based localizer mask of ventral temporal cortex\nfrom Haxby et al. (2001). We already know that it comprises 577 voxels.\nLet's reload the dataset:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'),\n                  mask=os.path.join(path, 'mask_vt.nii.gz'))\n", 
+            "len(ds)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "As expected, we get the same number of samples and also only 577 features\n-- voxels corresponding to non-zero elements in the mask image. Now, let's\nexplore this dataset a little further.\n\n", 
+            "Besides samples the dataset offers number of attributes that enhance the\ndata with information that is present in the NIfTI image header in the file. Each sample has\ninformation about its volume ID in the time series and the actual acquisition\ntime (relative to the beginning of the file). Moreover, the original voxel\nindex (sometimes referred to as `ijk`) for each feature is available too.\nFinally, the dataset also contains information about the dimensionality\nof the input volumes, voxel size, and any other NIfTI-specific information\nsince it also includes a dump of the full NIfTI image header."
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Note*", 
+            "\n\n", 
+            "Previously (0.4.x versions and 0.5 development prior March 03, 2010),\nPyMVPA exposed 4D (and 3D with degenerate 1st dimension) data in `tkji`\n(corresponds to `tzyx` if volumes were axial slices in\nneurologic convention) order of dimensions.  Now it uses more convenient\norder `tijk` (corresponding to `txyz`), which will match the order exposed\nby NiBabel (PyNIfTI and NiftiImage still expose them as `tkji`).", 
+            "- - -\n"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa.time_indices[:5]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa.time_coords[:5]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.fa.voxel_indices[:5]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.a.voxel_eldim"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.a.voxel_dim"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "'imghdr' in ds.a"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In addition to all this information, the dataset also carries a key\nattribute: the ", 
+            "*mapper*. A mapper is an important concept in PyMVPA, and\nhence worth devoting the whole ", 
+            "*next tutorial chapter* to it."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print ds.a.mapper"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Having all these attributes being part of a dataset is often a useful thing\nto have, but in some cases (e.g. when it comes to efficiency, and/or very\nlarge datasets) one might want to have a leaner dataset with just the\ninformation that is really necessary. One way to achieve this, is to strip\nall unwanted attributes. The Dataset class'\n", 
+            "[AttrDataset.copy()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.copy) method can help with that."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "stripped = ds.copy(deep=False, sa=['time_coords'], fa=[], a=[])\n", 
+            "print stripped"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "We can see that all attributes besides `time_coords` have been filtered out.\nSetting the `deep` arguments to `False` causes the copy function to reuse the\ndata from the source dataset to generate the new stripped one, without\nduplicating all data in memory -- meaning both datasets now share the sample\ndata and any change done to `ds` will also affect `stripped`."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Storage"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Some data preprocessing can take a long time.  One would rather prevent\ndoing it over and over again, and instead just store the preprocessed data\ninto a file for subsequent analyses. PyMVPA offers functionality to store a\nlarge variety of objects, including datasets, into ", 
+            "[HDF5][HDF5] files. A variant\nof this format is also used by recent versions of Matlab to store data.\n\n", 
+            "For HDF5 support PyMVPA depends on the ", 
+            "[h5py][h5py] package. If it is available,\nany dataset can be saved to a file by simply calling\n", 
+            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) with the desired filename."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "import tempfile, shutil\n", 
+            "tempdir = tempfile.mkdtemp()\n", 
+            "ds.save(os.path.join(tempdir, 'mydataset.hdf5'))"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "HDF5 is a flexible format that also supports, for example, data\ncompression. To enable it, you can pass additional arguments to\n", 
+            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) that are supported by\n", 
+            "`Group.create_dataset()`. Instead of using\n", 
+            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) one can also use the ", 
+            "[h5save()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5save.html#mvpa2-base-hdf5-h5save)\nfunction in a similar way. Saving the same dataset with maximum\ngzip-compression looks like this:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), compression=9)\n", 
+            "h5save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), ds, compression=9)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Loading datasets from a file is easy too. ", 
+            "[h5load()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5load.html#mvpa2-base-hdf5-h5load) takes a filename as\nan argument and returns the stored dataset. Compressed data will be handled\ntransparently."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "loaded = h5load(os.path.join(tempdir, 'mydataset.hdf5'))\n", 
+            "np.all(ds.samples == loaded.samples)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "shutil.rmtree(tempdir, ignore_errors=True)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }
+      ], 
+      "metadata": {}
+    }
+  ]
+}
+.. @+node:ekr.20121005105428.10095: *3* << ipynb example >>
+# s = '["foo", {"bar":["baz", null, 1.0, 2]}]'
+
+s = '''
+{
+  "metadata": {
+    "name": "Part 2: Dataset Basics and Concepts"
+  }, 
+  "nbformat": 3, 
+  "nbformat_minor": 0, 
+  "worksheets": [
+    {
+      "cells": [
+        {
+          "cell_type": "heading", 
+          "level": 1, 
+          "metadata": {}, 
+          "source": [
+            "Part 2: Dataset Basics and Concepts"
+          ]
+        }
+      ]
+    }
+  ]
+}
+'''
+
+s2 = '''
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Note*", 
+            "\n\n", 
+            "This tutorial part is also available for download as an ", 
+            "[IPython notebook][IPython notebook]:\n[", 
+            "[ipynb][ipynb]]", 
+            "- - -\n"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "A ", 
+            "[Dataset](http://pymvpa.org/generated/mvpa2.datasets.base.Dataset.html#mvpa2-datasets-base-dataset) is the basic data container in PyMVPA. It\nserves as the primary form of input data storage, but also as container for\nmore complex results returned by some algorithm. In this tutorial part we will\ntake a look at what a dataset consists of, and how it works.\n\n", 
+            "In the simplest case, a dataset only contains ", 
+            "*data* that is a matrix of\nnumerical values."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "from mvpa2.tutorial_suite import *\n", 
+            "data = [[  1,  1, -1],\n        [  2,  0,  0],\n        [  3,  1,  1],\n        [  4,  0, -1]]\n", 
+            "ds = Dataset(data)\n", 
+            "ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "len(ds)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In the above example, every row vector in the `data` matrix becomes an\nobservation or a ", 
+            "[sample](http://pymvpa.org/glossary.html#term-sample) in the dataset, and every column vector\nrepresents an individual variable or a ", 
+            "[feature](http://pymvpa.org/glossary.html#term-feature). The concepts of samples\nand features are essential for a dataset, hence we take a further, closer look.\n\n", 
+            "The dataset assumes the first axis of the data to be the samples separating\ndimension. If the dataset is created using a one-dimensional vector it will\ntherefore have as many samples as elements in the vector, and only one feature."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "one_d = [ 0, 1, 2, 3 ]\n", 
+            "one_ds = Dataset(one_d)\n", 
+            "one_ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "On the other hand, if a dataset is created from multi-dimensional data, only its\nsecond axis represents the features"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "import numpy as np\n", 
+            "m_ds = Dataset(np.random.random((3, 4, 2, 3)))\n", 
+            "m_ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "m_ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In this case we have a dataset with three samples and four features, where each\nfeature is a 2x3 matrix. In case somebody is wondering now, why not simply each\nvalue in the data array is considered as its own feature (yielding 24 features)\n-- stay tuned, as this is going to be of importance later on."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Attributes"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "What we have seen so far does not really warrant the use of a dataset over a\nplain array or a matrix with samples. However, in the MVPA context we often need\nto know more about each samples than just the value of its features.  In the\nprevious tutorial part we have already seen that per-sample ", 
+            "[target](http://pymvpa.org/glossary.html#term-target)\nvalues are required for supervised-learning algorithms, and that a dataset\noften has to be split based on the origin of specific groups of samples.  For\nthis type of auxiliary information a dataset can also contain collections of\nthree types of ", 
+            "[attribute](http://pymvpa.org/glossary.html#term-attribute)s: ", 
+            "[sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute), ", 
+            "[feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute), and\n", 
+            "[dataset attribute](http://pymvpa.org/glossary.html#term-dataset-attribute)."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 3, 
+          "metadata": {}, 
+          "source": [
+            "For Samples"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In a dataset each ", 
+            "[sample](http://pymvpa.org/glossary.html#term-sample) can have an arbitrary number of additional\nattributes. They are stored as vectors of the same length as the number of samples\nin a collection, and are accessible via the `sa` attribute. A collection is\nderived from a standard Python ", 
+            "`dict`, and hence adding sample attributes\nworks identical to adding elements to a dictionary:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['some_attr'] = [ 0., 1, 1, 3 ]\n", 
+            "ds.sa.keys()"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "However, sample attributes are not directly stored as plain data, but for\nvarious reasons as a so-called ", 
+            "[Collectable](http://pymvpa.org/generated/mvpa2.base.collections.Collectable.html#mvpa2-base-collections-collectable) that in\nturn embeds a NumPy array with the actual attribute:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "type(ds.sa['some_attr'])"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['some_attr'].value"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "This \"complication\" is done to be able to extend attributes with additional\nfunctionality that is often needed and can offer significant speed-up of\nprocessing. For example, sample attributes carry a list of their unique values.\nThis list is only computed once (upon first request) and can subsequently be\naccessed directly without repeated and expensive searches:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['some_attr'].unique"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "However, for most interactive uses of PyMVPA this type of access to attributes'\n`.value` is relatively cumbersome (too much typing), therefore collections offer direct\nattribute access by name:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa.some_attr"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Another purpose of the sample attribute collection is to preserve data\nintegrity, by disallowing improper attributes:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['invalid'] = 4"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['invalid'] = [ 1, 2, 3, 4, 5, 6 ]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "But other than basic plausibility checks no further constraints on values of\nsamples attributes exist. As long as the length of the attribute vector matches\nthe number of samples in the dataset, and the attributes values can be stored\nin a NumPy array, any value is allowed. For example, it is perfectly possible\nand supported to store literal attributes. It should also be noted that each\nattribute may have its own individual data type, hence it is possible to have\nliteral and numeric attributes in the same dataset."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa['literal'] = ['one', 'two', 'three', 'four']\n", 
+            "sorted(ds.sa.keys())"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "for attr in ds.sa:\n   print \"%s: %s\" % (attr, ds.sa[attr].value.dtype.name)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 3, 
+          "metadata": {}, 
+          "source": [
+            "For Features"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "[Feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute)s are almost identical to ", 
+            "[sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute)s the ", 
+            "*only* difference is that instead of having one attribute value per\nsample, feature attributes have one value per (guess what? ...) ", 
+            "*feature*.\nMoreover, they are stored in a separate collection in the datasets that is\ncalled `fa`:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.fa['my_fav'] = [0, 1, 0]\n", 
+            "ds.fa['responsible'] = ['me', 'you', 'nobody']\n", 
+            "sorted(ds.fa.keys())"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 3, 
+          "metadata": {}, 
+          "source": [
+            "For The Dataset"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Finally, there can be also attributes, not per each sample, or each\nfeature, but for the dataset as a whole: so called ", 
+            "[dataset](http://pymvpa.org/glossary.html#term-dataset)s. Assigning such attributes and accessing them later on work in\nexactly the same way as for the other two types of attributes, except that dataset\nattributes are stored in their own collection which is accessible via the\n`a` property of the dataset.  However, in contrast to sample and feature\nattribute no constraints on the type or size are imposed -- anything can be\nstored. Let's store a list with all files in the current directory, just\nbecause we can:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "from glob import glob\n", 
+            "ds.a['pointless'] = glob(\"*\")\n", 
+            "'setup.py' in ds.a.pointless"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Slicing, resampling, feature selection"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "At this point we can already construct a dataset from simple arrays and\nenrich it with an arbitrary number of additional attributes. But just\nhaving a dataset isn't enough. From part one of this tutorial we already\nknow that we need to be able to select subsets of a dataset for further\nprocessing, and we also know that this is possible with PyMVPA's datasets.\nNow it is time to have a closer look into how it works.\n\n", 
+            "Slicing a dataset (i.e. selecting specific subsets) is very similar to\nslicing a NumPy array. It actually works ", 
+            "*almost* identical. A dataset\nsupports Python's ", 
+            "`slice` syntax, but also selection by boolean masks, and\nindices. The following three slicing operations\nresult in equivalent output datasets, by always selecting every other samples\nin the dataset:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds[::2].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "mask = np.array([True, False, True, False])\n", 
+            "ds[mask].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds[[0, 2]].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Exercise*", 
+            "\n\n", 
+            "Search the `NumPy documentation`_ for the difference between \"basic slicing\"\nand \"advanced indexing\". Especially the aspect of memory consumption\napplies to dataset slicing as well, and being aware of this fact might\nhelp to write more efficient analysis scripts. Which of the three slicing\napproaches above is the most memory-efficient?  Which of the three slicing\napproaches above might lead to unexpected side-effects if output dataset\ngets modified?"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "# you can use this cell to for this exercise"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n", 
+            "\n\n", 
+            "All three slicing-styles are equally applicable to the selection of feature\nsubsets within a dataset. Remember, features are represented on the second axis\nof a dataset."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds[:, [1,2]].samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "By applying a selection by indices to the second axis, we can easily get\nthe last two features of our example dataset. Please note the ", 
+            "`:` is supplied\nas first axis slicing. This is the Python way to indicate ", 
+            "*take everything\nalong this axis*, hence including all samples.\n\n", 
+            "As you can guess, it is also possible to select subsets of samples and\nfeatures at the same time."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "subds = ds[[0,1], [0,2]]\n", 
+            "subds.samples"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "If you have prior experience with NumPy you might be confused now. What you\nmight have expected is this:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.samples[[0,1], [0,2]]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "The above code applies the same slicing directly to the NumPy array with\nthe samples, and the result is fundamentally different. For NumPy arrays\nthis style of slicing allows to select specific elements by their indices on\neach axis of an array. For PyMVPA's datasets this mode is not very useful,\ninstead we typically want to select rows and columns, i.e. samples and\nfeatures given by their indices."
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Exercise*", 
+            "\n\n", 
+            "Try to select samples [0,1] and features [0,2,3] simultaneously using\ndataset slicing.  Now apply the same slicing to the samples array itself\n(`ds.samples`) -- make sure that the result doesn't surprise you and find\na pure NumPy way to achieve similar selection."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "# you can use this cell to for this exercise"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n", 
+            "\n\n", 
+            "One last interesting thing to look at, in the context of dataset slicing\nare the attributes. What happens to them when a subset of samples and/or\nfeatures is chosen? Our original dataset had both samples and feature attributes:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print ds.sa.some_attr"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print ds.fa.responsible"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Now let's look at what they became in the subset-dataset we previously\ncreated:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print subds.sa.some_attr"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print subds.fa.responsible"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "We see that both attributes are still there and, moreover, also the\nappropriate subsets have been selected."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Loading fMRI data"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Enough of theoretical foreplay -- let's look at a concrete example of an\nfMRI dataset. PyMVPA has several helper functions to load data from\nspecialized formats, and the one for fMRI data is\n", 
+            "[fmri_dataset()](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset). The example dataset we are going to\nlook at is a single subject from Haxby et al. (2001) that we already\nloaded in part one of this tutorial. For more convenience, and less typing\nwe first specify the path of the directory with the fMRI data."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "path=os.path.join(tutorial_data_path, 'data')"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In the simplest case, we now let ", 
+            "[fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) do its job, by just\npointing it to the fMRI data file. The data is stored as a NIfTI file that has\nall runs of the experiment concatenated into a single file."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'))\n", 
+            "len(ds)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.shape"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "We can notice two things. First, it worked! Second, we get a\ntwo-dimensional dataset with 1452 samples (these are volumes in the NIfTI\nfile), and over 160k features (these are voxels in the volume). The voxels\nare represented as a one-dimensional vector, and it seems that they have\nlost their association with the 3D-voxel-space. However, this is not the\ncase, as we will see in the next chapter.  PyMVPA represents\ndata in this simple format to make it compatible with a vast range of generic\nalgorithms that expect data to be a simple matrix.\n\n", 
+            "We just loaded all data from that NIfTI file, but usually we would be\ninterested in a subset only, i.e. \"brain voxels\".\n", 
+            "[fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) is capable of performing data masking. We just need to\nspecify a mask image. Such mask image is generated in pretty much any fMRI\nanalysis pipeline -- may it be a full-brain mask computed during\nskull-stripping, or an activation map from a functional localizer. We are going\nto use the original GLM-based localizer mask of ventral temporal cortex\nfrom Haxby et al. (2001). We already know that it comprises 577 voxels.\nLet's reload the dataset:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'),\n                  mask=os.path.join(path, 'mask_vt.nii.gz'))\n", 
+            "len(ds)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.nfeatures"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "As expected, we get the same number of samples and also only 577 features\n-- voxels corresponding to non-zero elements in the mask image. Now, let's\nexplore this dataset a little further.\n\n", 
+            "Besides samples the dataset offers number of attributes that enhance the\ndata with information that is present in the NIfTI image header in the file. Each sample has\ninformation about its volume ID in the time series and the actual acquisition\ntime (relative to the beginning of the file). Moreover, the original voxel\nindex (sometimes referred to as `ijk`) for each feature is available too.\nFinally, the dataset also contains information about the dimensionality\nof the input volumes, voxel size, and any other NIfTI-specific information\nsince it also includes a dump of the full NIfTI image header."
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "- - -\n*Note*", 
+            "\n\n", 
+            "Previously (0.4.x versions and 0.5 development prior March 03, 2010),\nPyMVPA exposed 4D (and 3D with degenerate 1st dimension) data in `tkji`\n(corresponds to `tzyx` if volumes were axial slices in\nneurologic convention) order of dimensions.  Now it uses more convenient\norder `tijk` (corresponding to `txyz`), which will match the order exposed\nby NiBabel (PyNIfTI and NiftiImage still expose them as `tkji`).", 
+            "- - -\n"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa.time_indices[:5]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.sa.time_coords[:5]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.fa.voxel_indices[:5]"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.a.voxel_eldim"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.a.voxel_dim"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "'imghdr' in ds.a"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "In addition to all this information, the dataset also carries a key\nattribute: the ", 
+            "*mapper*. A mapper is an important concept in PyMVPA, and\nhence worth devoting the whole ", 
+            "*next tutorial chapter* to it."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "print ds.a.mapper"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Having all these attributes being part of a dataset is often a useful thing\nto have, but in some cases (e.g. when it comes to efficiency, and/or very\nlarge datasets) one might want to have a leaner dataset with just the\ninformation that is really necessary. One way to achieve this, is to strip\nall unwanted attributes. The Dataset class'\n", 
+            "[AttrDataset.copy()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.copy) method can help with that."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "stripped = ds.copy(deep=False, sa=['time_coords'], fa=[], a=[])\n", 
+            "print stripped"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "We can see that all attributes besides `time_coords` have been filtered out.\nSetting the `deep` arguments to `False` causes the copy function to reuse the\ndata from the source dataset to generate the new stripped one, without\nduplicating all data in memory -- meaning both datasets now share the sample\ndata and any change done to `ds` will also affect `stripped`."
+          ]
+        }, 
+        {
+          "cell_type": "heading", 
+          "level": 2, 
+          "metadata": {}, 
+          "source": [
+            "Storage"
+          ]
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Some data preprocessing can take a long time.  One would rather prevent\ndoing it over and over again, and instead just store the preprocessed data\ninto a file for subsequent analyses. PyMVPA offers functionality to store a\nlarge variety of objects, including datasets, into ", 
+            "[HDF5][HDF5] files. A variant\nof this format is also used by recent versions of Matlab to store data.\n\n", 
+            "For HDF5 support PyMVPA depends on the ", 
+            "[h5py][h5py] package. If it is available,\nany dataset can be saved to a file by simply calling\n", 
+            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) with the desired filename."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "import tempfile, shutil\n", 
+            "tempdir = tempfile.mkdtemp()\n", 
+            "ds.save(os.path.join(tempdir, 'mydataset.hdf5'))"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "HDF5 is a flexible format that also supports, for example, data\ncompression. To enable it, you can pass additional arguments to\n", 
+            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) that are supported by\n", 
+            "`Group.create_dataset()`. Instead of using\n", 
+            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) one can also use the ", 
+            "[h5save()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5save.html#mvpa2-base-hdf5-h5save)\nfunction in a similar way. Saving the same dataset with maximum\ngzip-compression looks like this:"
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "ds.save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), compression=9)\n", 
+            "h5save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), ds, compression=9)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "markdown", 
+          "metadata": {}, 
+          "source": [
+            "\n\n", 
+            "Loading datasets from a file is easy too. ", 
+            "[h5load()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5load.html#mvpa2-base-hdf5-h5load) takes a filename as\nan argument and returns the stored dataset. Compressed data will be handled\ntransparently."
+          ]
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "loaded = h5load(os.path.join(tempdir, 'mydataset.hdf5'))\n", 
+            "np.all(ds.samples == loaded.samples)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }, 
+        {
+          "cell_type": "code", 
+          "collapsed": false, 
+          "input": [
+            "shutil.rmtree(tempdir, ignore_errors=True)"
+          ], 
+          "language": "python", 
+          "metadata": {}, 
+          "outputs": []
+        }
+      ], 
+      "metadata": {}
+    }
+  ]
+}
+'''
+.. @+node:ekr.20121005105428.10109: *3* JSON Reference
+if 0:
+    @others
+.. @+node:ekr.20121005105428.10102: *4* class NoteBookReader
+class NotebookReader(object): # From rwbase.py
+    """A class for reading notebooks."""
+
+    def reads(self, s, **kwargs):
+        """Read a notebook from a string."""
+        raise NotImplementedError("loads must be implemented in a subclass")
+
+    def read(self, fp, **kwargs):
+        """Read a notebook from a file like object"""
+        nbs = fp.read()
+        if not py3compat.PY3 and not isinstance(nbs, unicode):
+            nbs = py3compat.str_to_unicode(nbs)
+        return self.reads(nbs, **kwargs)
+.. @+node:ekr.20121005105428.10108: *4* JSONReader(NotebookReader)
+class JSONReader(NotebookReader):
+
+    def reads(self, s, **kwargs):
+        nb = json.loads(s, **kwargs)
+        nb = self.to_notebook(nb, **kwargs)
+        return nb
+
+    def to_notebook(self, d, **kwargs):
+        return restore_bytes(
+            rejoin_lines(from_dict(d))) # from_dict and rejoin_lines are in nbbase.
+.. @+node:ekr.20121005105428.10107: *4* class BytesEncoder
+class BytesEncoder(json.JSONEncoder):
+    """A JSON encoder that accepts b64 (and other *ascii*) bytestrings."""
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            return obj.decode('ascii')
+        return json.JSONEncoder.default(self, obj)
+
+.. @+node:ekr.20121005105428.10097: *4* From v3/nbjson.py
+_reader = JSONReader()
+reads = _reader.reads
+read =  _reader.read
+to_notebook = _reader.to_notebook
+.. @+node:ekr.20121005105428.10098: *4* From v3/rwbase.py
+.. @+node:ekr.20121005105428.10103: *5* fromDict
+def from_dict(d):
+    if isinstance(d, dict):
+        newd = NotebookNode()
+        for k,v in d.items():
+            newd[k] = from_dict(v)
+        return newd
+    elif isinstance(d, (tuple, list)):
+        return [from_dict(i) for i in d]
+    else:
+        return d
+.. @+node:ekr.20121005105428.10104: *5* restore_bytes
+def restore_bytes(nb):
+    """Restore bytes of image data from unicode-only formats.
+    
+    Base64 encoding is handled elsewhere.  Bytes objects in the notebook are
+    always b64-encoded. We DO NOT encode/decode around file formats.
+    """
+    for ws in nb.worksheets:
+        for cell in ws.cells:
+            if cell.cell_type == 'code':
+                for output in cell.outputs:
+                    if 'png' in output:
+                        output.png = str_to_bytes(output.png, 'ascii')
+                    if 'jpeg' in output:
+                        output.jpeg = str_to_bytes(output.jpeg, 'ascii')
+    return nb
+.. @+node:ekr.20121005105428.10105: *5* _join_lines
+def _join_lines(lines):
+    """join lines that have been written by splitlines()
+    
+    Has logic to protect against `splitlines()`, which
+    should have been `splitlines(True)`
+    """
+    if lines and lines[0].endswith(('\n', '\r')):
+        # created by splitlines(True)
+        return u''.join(lines)
+    else:
+        # created by splitlines()
+        return u'\n'.join(lines)
+.. @+node:ekr.20121005105428.10106: *5* rejoin_lines
+def rejoin_lines(nb):
+    """rejoin multiline text into strings
+    
+    For reversing effects of ``split_lines(nb)``.
+    
+    This only rejoins lines that have been split, so if text objects were not split
+    they will pass through unchanged.
+    
+    Used when reading JSON files that may have been passed through split_lines.
+    """
+    for ws in nb.worksheets:
+        for cell in ws.cells:
+            if cell.cell_type == 'code':
+                if 'input' in cell and isinstance(cell.input, list):
+                    cell.input = _join_lines(cell.input)
+                for output in cell.outputs:
+                    for key in _multiline_outputs:
+                        item = output.get(key, None)
+                        if isinstance(item, list):
+                            output[key] = _join_lines(item)
+            else: # text, heading cell
+                for key in ['source', 'rendered']:
+                    item = cell.get(key, None)
+                    if isinstance(item, list):
+                        cell[key] = _join_lines(item)
+    return nb
+.. @+node:ekr.20121008100945.10295: *3* Installation notes for ipython 0.13
+@nocolor-node
+
+- Downloaded and ran ipython-0.13.py2-win32.exe
+- Uninstalled several older IPython's using the Windows Control Panel
+
+Linux
+=====
+
+- Installed pip: sudo apt-get install python-pip
+- distribute was already installed in python2.7
+- Installed curl: sudo apt-get install curl.
+- Upgraded ipython: easy_install ipython[zmq,qtconsole,notebook,test] ipython==0.13
+- Tested Ipython: iptest  Works!!!  not available:  oct2py rpy2
+- removed home/.ipython/ipythonrc this removed the warnings on startup.
+
+Windows:
+========
+
+- Download c:\apps\distribute_setup.py.
+- python26 distribute_setup.py
+- Removed all former versions of Enthought and ActiveState Python and IPython.
 .. @+node:ekr.20121002082022.10183: ** fix crasher involving g.importFromPath
 At present I cannot reproduce the problem.
 .. @+node:ekr.20121002082022.10184: *3* report

@@ -12256,6 +12256,66 @@ function restart()
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20121011094154.3906: *5* TypeScript tests
+@language python
+#@+node:ekr.20121011094154.3911: *6* @test TypeScript class
+s = '''
+
+class Greeter {
+    greeting: string;
+    constructor (message: string) {
+        this.greeting = message;
+    }
+    greet() {
+        return "Hello, " + this.greeting;
+    }
+}
+
+var greeter = new Greeter("world");
+
+var button = document.createElement('button')
+button.innerText = "Say Hello"
+button.onclick = function() {
+    alert(greeter.greet())
+}
+
+document.body.appendChild(button)
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20121011100210.4035: *6* @test TypeScript module
+s = '''
+
+module Sayings {
+    export class Greeter {
+        greeting: string;
+        constructor (message: string) {
+            this.greeting = message;
+        }
+        greet() {
+            return "Hello, " + this.greeting;
+        }
+    }
+}
+var greeter = new Sayings.Greeter("world");
+
+var button = document.createElement('button')
+button.innerText = "Say Hello"
+button.onclick = function() {
+	alert(greeter.greet())
+}
+
+document.body.appendChild(button)
+
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 s = '''

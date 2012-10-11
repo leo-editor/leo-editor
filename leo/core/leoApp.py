@@ -325,6 +325,7 @@ class LeoApp:
             "texinfo"            : "@c",
             "tpl"                : "<!-- -->",
             "tsql"               : "-- /* */",
+            "typescript"         : "// /* */", # For typescript import test.
             "unknown"            : "#", # Set when @comment is seen.
             "unknown_language"   : '#--unknown-language--', # For unknown extensions in @shadow files.
             "uscript"            : "// /* */",
@@ -477,6 +478,7 @@ class LeoApp:
             "text"          : "txt",
             "tpl"           : "tpl",
             "tsql"          : "sql", # A guess.
+            "typescript"    : "ts",
             "unknown"       : "txt", # Set when @comment is seen.
             "uscript"       : "uc",
             "vbscript"      : "vbs",
@@ -621,6 +623,7 @@ class LeoApp:
             "tex":      "latex",
             # "tex":      "tex",
             "tpl":      "tpl",
+            "ts":       "typescript",
             "txt":      "plain",
             # "txt":      "text",
             # "txt":      "unknown", # Set when @comment is seen.

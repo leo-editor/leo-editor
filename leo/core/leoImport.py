@@ -188,6 +188,7 @@ class leoImportCommands (scanUtility):
             # '.txt':     self.scanRstText, # A reasonable default.
             # '.rest':    self.scanRstText,
             # '.rst':     self.scanRstText,
+            '.ts':      self.scanTypeScriptText,
             '.xml':     self.scanXmlText,
         }
     #@+node:ekr.20031218072017.3289: *3* Export
@@ -1518,7 +1519,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20071027111225.1: *4* scanJavaScriptText
     def scanJavaScriptText (self,s,parent,atAuto=False):
 
-        scanner = javaScriptScanner(importCommands=self,atAuto=atAuto)
+        scanner = JavaScriptScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
     #@+node:ekr.20101027055033.5967: *4* scanNSIText
@@ -1565,6 +1566,12 @@ class leoImportCommands (scanUtility):
     def scanRstText (self,s,parent,atAuto=False):
 
         scanner = rstScanner(importCommands=self,atAuto=atAuto)
+
+        scanner.run(s,parent)
+    #@+node:ekr.20121011093316.10102: *4* scanTypeScriptText
+    def scanTypeScriptText (self,s,parent,atAuto=False):
+
+        scanner = TypeScriptScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
     #@+node:ekr.20071214072145: *4* scanXmlText
@@ -1670,6 +1677,9 @@ class leoImportCommands (scanUtility):
 
     def textUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.txt')
+        
+    def typeScriptUnitTest(self,p,fileName=None,s=None,showTree=False):
+        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.ts')
 
     def xmlUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.xml')
@@ -3655,17 +3665,17 @@ class javaScanner (baseScannerClass):
 
         return ids and ids[-1]
     #@-others
-#@+node:ekr.20071027111225.2: *3* class javaScriptScanner
+#@+node:ekr.20071027111225.2: *3* class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
-class javaScriptScanner (baseScannerClass):
+class JavaScriptScanner (baseScannerClass):
 
     #@+others
-    #@+node:ekr.20071027111225.3: *4* javaScriptScanner.__init__
-    def __init__ (self,importCommands,atAuto):
+    #@+node:ekr.20071027111225.3: *4* JavaScriptScanner.__init__
+    def __init__ (self,importCommands,atAuto,language='javascript'):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='javascript')
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language=language)
             # The langauge is used to set comment delims.
 
         # Set the parser delims.
@@ -4492,6 +4502,31 @@ class rstScanner (baseScannerClass):
 
         return i,j,nows,line
     #@-others
+#@+node:ekr.20121011093316.10097: *3* class TypeScriptScanner(JavaScriptScanner)
+# The syntax for patterns causes all kinds of problems...
+
+class TypeScriptScanner (JavaScriptScanner):
+
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        JavaScriptScanner.__init__(self,importCommands,
+            atAuto=atAuto,language='typescript')
+            
+        # Overrides of ivars.
+        self.classTags = ['module','class']
+        self.functionTags = ['function']
+#@+node:ekr.20121011093316.10098: *4* TypeScriptScanner.__init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    JavaScriptScanner.__init__(self,importCommands,atAuto=atAuto,language='typescript')
+        # The langauge is used to set comment delims.
+        
+    # Overrides of JavaScript stuff.
+    self.classTags = ['module','class']
+    self.functionTags = ['function']
+   
 #@+node:ekr.20120517124200.9983: *3* class vimoutlinerScanner
 class vimoutlinerScanner(baseScannerClass):
 
