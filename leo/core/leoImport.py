@@ -1758,7 +1758,7 @@ class baseScannerClass (scanUtility):
 
     #@+others
     #@+node:ekr.20070703122141.66: *3*  ctor (baseScannerClass)
-    def __init__ (self,importCommands,atAuto,language):
+    def __init__ (self,importCommands,atAuto,language,alternate_language=None):
 
         ic = importCommands
 
@@ -1785,7 +1785,7 @@ class baseScannerClass (scanUtility):
         self.importCommands = ic
         self.indentRefFlag = None # None, True or False.
         self.isRst = False
-        self.language = language
+        self.language = language # The language used to set comment delims.
         self.lastParent = None # The last generated parent node (used only by rstScanner).
         self.methodName = ic.methodName # x, as in < < x methods > > =
         self.methodsSeen = False
@@ -1811,6 +1811,7 @@ class baseScannerClass (scanUtility):
         self.comment_delim = delim1
 
         # May be overridden in subclasses.
+        self.alternate_language = alternate_language # Optional: for @language.
         self.anonymousClasses = [] # For Delphi Pascal interfaces.
         self.blockCommentDelim1 = None
         self.blockCommentDelim2 = None
@@ -2594,7 +2595,7 @@ class baseScannerClass (scanUtility):
         c = self.c
 
         self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
-            self.rootLine,self.language,self.tab_width))
+            self.rootLine,self.alternate_language or self.language,self.tab_width))
     #@+node:ekr.20070703122141.88: *4* undentBody
     def undentBody (self,s,ignoreComments=True):
 
@@ -3136,7 +3137,7 @@ class baseScannerClass (scanUtility):
 
         # if not tags: return False
 
-        trace = False or self.trace
+        trace = True or self.trace
         verbose = False # kind=='function'
         self.codeEnd = self.sigEnd = self.sigId = None
         self.sigStart = i
@@ -3155,7 +3156,9 @@ class baseScannerClass (scanUtility):
             if self.caseInsensitive:
                 theId = theId.lower()
             if theId not in tags:
-                if trace and verbose: g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
+                if trace and verbose:
+                    # g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
+                    g.trace('%8s: ignoring %s' % (kind,theId))
                 return False
 
         if trace and verbose: g.trace('kind',kind,'id',theId)
@@ -3672,11 +3675,15 @@ class JavaScriptScanner (baseScannerClass):
 
     #@+others
     #@+node:ekr.20071027111225.3: *4* JavaScriptScanner.__init__
-    def __init__ (self,importCommands,atAuto,language='javascript'):
+    def __init__ (self,importCommands,atAuto,language='javascript',alternate_language=None):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language=language)
-            # The langauge is used to set comment delims.
+        baseScannerClass.__init__(self,importCommands,
+            atAuto=atAuto,
+            language=language,
+                # The language is used to set comment delims.
+            alternate_language = alternate_language)
+                # The language used in the @language directive.
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
@@ -3690,7 +3697,7 @@ class JavaScriptScanner (baseScannerClass):
         self.outerBlockDelim1 = None # For now, ignore outer blocks.
         self.outerBlockDelim2 = None
         self.classTags = []
-        self.functionTags = ['function']
+        self.functionTags = ['function',]
         self.sigFailTokens = [';',] # ','=',] # Just like Java.
     #@+node:ekr.20071102150937: *4* startsString
     def startsString(self,s,i):
@@ -4503,30 +4510,34 @@ class rstScanner (baseScannerClass):
         return i,j,nows,line
     #@-others
 #@+node:ekr.20121011093316.10097: *3* class TypeScriptScanner(JavaScriptScanner)
-# The syntax for patterns causes all kinds of problems...
-
 class TypeScriptScanner (JavaScriptScanner):
-
+    
+    #@+others
+    #@+node:ekr.20121011093316.10098: *4* TypeScriptScanner.__init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
         JavaScriptScanner.__init__(self,importCommands,
-            atAuto=atAuto,language='typescript')
+            atAuto=atAuto,language='typescript',
+            alternate_language='javascript')
             
         # Overrides of ivars.
+        self.hasClasses = True
         self.classTags = ['module','class']
-        self.functionTags = ['function']
-#@+node:ekr.20121011093316.10098: *4* TypeScriptScanner.__init__
-def __init__ (self,importCommands,atAuto):
+        self.functionTags = ['function','public',]
+    #@+node:ekr.20121011093316.10110: *4* getSigId (TypeScriptScanner)
+    def getSigId (self,ids):
 
-    # Init the base class.
-    JavaScriptScanner.__init__(self,importCommands,atAuto=atAuto,language='typescript')
-        # The langauge is used to set comment delims.
+        '''Return the signature's id.
         
-    # Overrides of JavaScript stuff.
-    self.classTags = ['module','class']
-    self.functionTags = ['function']
-   
+        This is the last id of the ids list, or the id before extends anotherId.
+        '''
+
+        if len(ids) > 2 and ids[-2] == 'extends':
+            return ids[-3]
+        else:
+            return ids and ids[-1]
+    #@-others
 #@+node:ekr.20120517124200.9983: *3* class vimoutlinerScanner
 class vimoutlinerScanner(baseScannerClass):
 
