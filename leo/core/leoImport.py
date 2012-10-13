@@ -702,7 +702,8 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.3306: *4* createHeadline (leoImport)
     def createHeadline (self,parent,body,headline):
 
-        # g.trace("parent,headline:",parent,headline)
+        # g.trace('*** parent: %s headline: %s' % (parent.h,headline))
+
         # Create the vnode.
         p = parent.insertAsLastChild()
 
@@ -2571,9 +2572,9 @@ class baseScannerClass (scanUtility):
         parent = self.adjustParent(parent,headline)
 
         if trace:
-            g.trace('parent',parent)
+            g.trace('parent',parent.h)
             if verbose:
-                g.trace('**body1...\n',body1)
+                # g.trace('**body1...\n',body1)
                 g.trace('**body2...\n',body2)
 
         # 2010/11/04: Fix wishlist bug 670744.
@@ -2875,7 +2876,7 @@ class baseScannerClass (scanUtility):
                         g.match(s,j,self.lineCommentDelim2)
                     ):
                         i = g.skip_to_end_of_line(s,i)
-                    if trace: g.trace('returns:',repr(s[start:i]))
+                    if trace: g.trace('returns:\n\n%s\n\n' % s[start:i])
                     return i
 
             else: i += 1
@@ -2888,7 +2889,7 @@ class baseScannerClass (scanUtility):
         else:
             if trace: g.trace('** no block')
         return start+1 # 2012/04/04: Ensure progress in caller.
-    #@+node:ekr.20070712091019: *5* skipCodeBlock
+    #@+node:ekr.20070712091019: *5* skipCodeBlock (baseScannerClass)
     def skipCodeBlock (self,s,i,kind):
 
         '''Skip the code block in a function or class definition.'''
@@ -2908,8 +2909,9 @@ class baseScannerClass (scanUtility):
             i = self.skipNewline(s,i,kind)
 
         if trace:
-            g.trace(g.callers())
-            g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
+            # g.trace(g.callers())
+            # g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
+            g.trace('returns:\n\n%s\n\n' % s[start:i])
 
         return i,True
     #@+node:ekr.20070711104014: *5* skipComment & helper
@@ -3231,7 +3233,12 @@ class baseScannerClass (scanUtility):
                 self.error('%s definition does not start a line\n%s' % (
                     kind,g.get_line(s,k)))
 
-        if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if trace:
+            if verbose:
+                g.trace(kind,'returns:\n%s' % s[self.sigStart:i])
+            else:
+                first_line = g.splitLines(s[self.sigStart:i])[0]
+                g.trace(kind,first_line.rstrip())
         return True
     #@+node:ekr.20070711104014.1: *4* startsComment
     def startsComment (self,s,i):
@@ -4521,8 +4528,10 @@ class TypeScriptScanner (JavaScriptScanner):
             
         # Overrides of ivars.
         self.hasClasses = True
-        self.classTags = ['module','class']
-        self.functionTags = ['function','public',]
+        self.classTags = ['module','class','interface',]
+        self.functionTags = [
+            'constructor','enum','function',
+            'public','private','export',]
     #@+node:ekr.20121011093316.10110: *4* getSigId (TypeScriptScanner)
     def getSigId (self,ids):
 
