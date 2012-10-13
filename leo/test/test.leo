@@ -1092,6 +1092,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20121011100948.4582"></v>
+<v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1392,7 +1394,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -12388,6 +12390,45 @@ else:
     # There is no ctor.
 
     @others
+</t>
+<t tx="ekr.20121011195530.3405">import PyV8
+
+s = '''\
+var Greeter = (function () {
+    function Greeter(message) {
+        this.greeting = message;
+    }
+    Greeter.prototype.greet = function () {
+        return "Hello, " + this.greeting;
+    };
+    return Greeter;
+})();
+var greeter = new Greeter("world");
+if (false) {
+    var button = document.createElement('button');
+    button.innerText = "Say Hello";
+    button.onclick = function () {
+        alert(greeter.greet());
+    };
+    document.body.appendChild(button);
+}
+'''
+
+if 1:
+    cx = PyV8.JSContext()   # create a context with an implicit global object
+    cx.enter()              # enter the context (also support with statement)
+    # print(cx.eval("1+2"))
+    print(cx.eval(s))
+    
+if 0:
+
+    class Global(PyV8.JSClass):
+        def hello(self):
+            print "Hello World"    
+    
+    cx = PyV8.JSContext(Global())
+    cx.enter()                    
+    cx.eval("hello()")
 </t>
 </tnodes>
 </leo_file>

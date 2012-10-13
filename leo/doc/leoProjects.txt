@@ -4747,8 +4747,10 @@ def __init__ (self,importCommands,atAuto):
         
     # Overrides of ivars.
     self.hasClasses = True
-    self.classTags = ['module','class']
-    self.functionTags = ['function','public',]
+    self.classTags = ['module','class','interface',]
+    self.functionTags = [
+        'constructor','enum','function',
+        'public','private','export',]
 #@+node:ekr.20121011093316.10110: *6* getSigId (TypeScriptScanner)
 def getSigId (self,ids):
 
