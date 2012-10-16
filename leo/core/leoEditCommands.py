@@ -1816,38 +1816,34 @@ class editCommandsClass (baseEditCommandsClass):
             w.setSelectionRange(i,j,insert=j)
                 # 2011/11/21: Bug fix: was ins=j.
             w.see(j)
-    #@+node:ekr.20110916215321.8054: *3* cToPy (leoEditCommands)
-    class C_to_python:
-        #@+<< docstring: theory of operation >>
-        #@+middle:ekr.20110918184425.6914: *4* class C_to_python
-        #@+node:ekr.20110916215321.7983: *5* << docstring: theory of operation >>
-        #@@nocolor-node
+    #@+node:ekr.20121016093159.10182: *3* c/ts/toPY
+    #@+<< docstring: theory of operation >>
+    #@+node:ekr.20121016093159.10240: *4* << docstring: theory of operation >>
+    '''
 
-        '''
-        We use a single list for all changes to the text. This eliminates stress on the
-        gc. Using multiple passes greatly simplifies the code and does not it down
-        significantly. Anyway, speed is both good and unimportant.
+    1. We use a single list, aList, for all changes to the text. This reduces
+       stress on the gc. All replacesments are done **in place** in aList.
 
-        A convention: within this class only, s denotes a *sequence*, not just a string.
-        We use this convention in methods that do not, in fact, change the sequence.
+    2. The following pattern ensures replacements do not happen in strings and comments:
 
-        No replacements are done within strings or comments. The idiom is::
+        def someScan(self,aList):
+            i = 0
+            while i < len(aList):
+                if self.is_string_or_comment(aList,i):
+                    i = skip_string_or_comment(aList,i)
+                elif < found what we are looking for >:
+                    <convert what we are looking for, setting i>
+                else: i += 1
+    '''
+    #@-<< docstring: theory of operation >>
+    #@+<< class To_Python >>
+    #@+node:ekr.20121016093159.10183: *4* << class To_Python >>
+    class To_Python:
 
-            def someScan(self,aList):
-                i = 0
-                while i < len(aList):
-                    if self.is_string_or_comment(aList,i):
-                        i = skip_string_or_comment(aList,i)
-                    elif < found what we are looking for ?>:
-                        <convert what we are looking for, setting i>
-                    else: i += 1
+        '''The base class for x-to-python commands.'''
 
-        That's all.
-        '''
-        #@-<< docstring: theory of operation >>
         #@+others
-        #@+node:ekr.20110918184425.6914: *4* class C_to_python
-        #@+node:ekr.20110916215321.8057: *5* ctor & helpers (C_to_python)
+        #@+node:ekr.20121016093159.10241: *5* ctor (To_Python)
         def __init__ (self,c):
             
             self.c = c
@@ -1855,15 +1851,494 @@ class editCommandsClass (baseEditCommandsClass):
             
             aList = g.get_directives_dict_list(self.p)
             self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
+        #@+node:ekr.20121016093159.10299: *5* go
+        def go (self):
 
+            import time
+            t1 = time.time()
+            c = self.c
+            u = c.undoer ; undoType = 'typescript-to-python'
+            pp = c.CPrettyPrinter(c)
+            
+            u.beforeChangeGroup(c.p,undoType)
+            changed, dirtyVnodeList = False,[]
+            n_files, n_nodes = 0,0
+            special = ('class ','module ','@file ','@@file ')
+            files = ('@file ','@@file ')
+            for p in self.p.self_and_subtree():
+                if p.b:
+                    n_nodes += 1
+                    if any([p.h.startswith(z) for z in special]):
+                        g.es_print(p.h)
+                        if any([p.h.startswith(z) for z in files]):
+                            n_files += 1
+                    bunch = u.beforeChangeNodeContents(p)
+                    
+                    s = pp.indent(p,giveWarnings=False)
+                    aList = list(s)
+                    self.convertCodeList(aList)
+                
+                    s = ''.join(aList)
+                    if s != p.b:
+                        p.b = s
+                        p.v.setDirty()
+                        dirtyVnodeList.append(p.v)
+                        u.afterChangeNodeContents(p,undoType,bunch)
+                        changed = True
+              
+            # Call this only once, at end.
+            if changed:
+                u.afterChangeGroup(c.p,undoType,
+                    reportFlag=False,dirtyVnodeList=dirtyVnodeList)
+
+            t2 = time.time()
+            g.es_print('done! %s files, %s nodes, %2.2f sec' % (n_files,n_nodes,t2-t1))
+        #@+node:ekr.20121016093159.10245: *5* convertCodeList (must be defined in subclasses)
+        def convertCodeList(self,aList):
+            
+            '''The main search/replace method.'''
+
+            g.trace('must be defined in subclasses.')
+        #@+node:ekr.20121016093159.10259: *5* Utils
+        #@+node:ekr.20121016093159.10260: *6* match...
+        #@+node:ekr.20121016093159.10261: *7* match
+        def match (self,s,i,pat):
+            
+            '''Return True if s[i:] matches the pat string.
+            
+            We can't use g.match because s is usually a list.
+            '''
+            
+            assert pat
+
+            j = 0
+            while i+j < len(s) and j < len(pat):
+                if s[i+j] == pat[j]:
+                    j += 1
+                    if j == len(pat):
+                        return True
+                else:
+                    return False
+
+            return False
+        #@+node:ekr.20121016093159.10293: *7* match_word
+        def match_word (self,s,i,pat):
+            
+            '''Return True if s[i:] word matches the pat string.
+            
+            We can't use g.match_word because s is usually a list
+            and g.match_word uses s.find.
+            
+            '''
+            
+            if self.match(s,i,pat):
+                j = i + len(pat)
+                if j >= len(s):
+                    return True
+                elif not pat[-1].isalnum():
+                    # Bug fix 10/16/2012: The pattern terminates the word.
+                    return True
+                else:
+                    ch = s[j]
+                    return not ch.isalnum() and ch != '_'
+            else:
+                return False
+        #@+node:ekr.20121016093159.10247: *6* insert_not
+        # This may be defined in subclasses, but is not at present.
+
+        def insert_not (self,aList):
+            
+            '''Change "!" to "not" except before "="'''
+            
+            i = 0
+            while i < len(aList):
+                if self.is_string_or_comment(aList,i):
+                    i = self.skip_string_or_comment(aList,i)
+                elif aList[i] == '!' and not self.match(aList,i+1,'='):
+                    aList[i:i+1] = list('not ')
+                    i += 4
+                else:
+                    i += 1
+        #@+node:ekr.20121016093159.10263: *6* is...
+        #@+node:ekr.20121016093159.10265: *7* is_string_or_comment
+        def is_string_or_comment (self,s,i):
+
+            # Does range checking.
+            m = self.match
+            return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
+        #@+node:ekr.20121016093159.10266: *7* is_ws and is_ws_or_nl
+        def is_ws (self,ch):
+            return ch in ' \t'
+
+        def is_ws_or_nl (self,ch):
+            return ch in ' \t\n'
+        #@+node:ekr.20121016093159.10267: *6* prevNonWsChar and prevNonWsOrNlChar
+        def prevNonWsChar (self,s,i):
+
+            i -= 1
+            while i >= 0 and self.is_ws(s[i]):
+                i -= 1
+            return i
+
+        def prevNonWsOrNlChar (self,s,i):
+
+            i -= 1
+            while i >= 0 and self.is_ws_or_nl(s[i]):
+                i -= 1
+            return i
+        #@+node:ekr.20121016093159.10268: *6* remove...
+        #@+node:ekr.20121016093159.10269: *7* removeBlankLines
+        def removeBlankLines (self,aList):
+
+            i = 0
+            while i < len(aList):
+                j = i
+                while j < len(aList) and aList[j] in " \t":
+                    j += 1
+                if j == len(aList) or aList[j] == '\n':
+                    del aList[i:j+1]
+                else:
+                    i = self.skip_past_line(aList,i)
+        #@+node:ekr.20121016093159.10270: *7* removeExcessWs
+        def removeExcessWs (self,aList):
+
+            i = 0
+            i = self.removeExcessWsFromLine(aList,i)
+            while i < len(aList):
+                if self.is_string_or_comment(aList,i):
+                    i = self.skip_string_or_comment(aList,i)
+                elif self.match(aList,i,'\n'):
+                    i += 1
+                    i = self.removeExcessWsFromLine(aList,i)
+                else: i += 1
+        #@+node:ekr.20121016093159.10271: *7* removeExessWsFromLine
+        def removeExcessWsFromLine (self,aList,i):
+
+            assert(i==0 or aList[i-1] == '\n')
+            i = self.skip_ws(aList,i)
+                # Retain the leading whitespace.
+
+            while i < len(aList):
+                if self.is_string_or_comment(aList,i):
+                    break # safe
+                elif self.match(aList,i,'\n'):
+                    break
+                elif self.match(aList,i,' ') or self.match(aList,i,'\t'):
+                    # Replace all whitespace by one blank.
+                    j = self.skip_ws(aList,i)
+                    assert(j > i)
+                    aList[i:j] = [' ']
+                    i += 1 # make sure we don't go past a newline!
+                else: i += 1
+            return i
+        #@+node:ekr.20121016093159.10272: *7* removeMatchingBrackets
+        def removeMatchingBrackets (self,aList, i):
+
+            j = self.skip_to_matching_bracket(aList, i)
+            if j > i and j < len(aList):
+                # print "del brackets:", ''.join(aList[i:j+1])
+                c = aList[j]
+                if c == ')' or c == ']' or c == '}':
+                    del aList[j:j+1]
+                    del aList[i:i+1]
+                    # print "returning:", ''.join(aList[i:j])
+                    return j - 1
+                else: return j + 1
+            else: return j
+        #@+node:ekr.20121016093159.10273: *7* removeSemicolonsAtEndOfLines
+        def removeSemicolonsAtEndOfLines (self,aList):
+
+            i = 0
+            while i < len(aList):
+                if self.is_string_or_comment(aList,i):
+                    i = self.skip_string_or_comment(aList,i)
+                elif aList[i] == ';':
+                    j = self.skip_ws(aList,i+1)
+                    if (
+                        j >= len(aList) or
+                        self.match(aList,j,'\n') or
+                        self.match(aList,j,'#') or
+                        self.match(aList,j,"//")
+                    ):
+                        del aList[i]
+                    else: i += 1
+                else: i += 1
+        #@+node:ekr.20121016093159.10274: *7* removeTrailingWs
+        def removeTrailingWs (self,aList):
+
+            i = 0
+            while i < len(aList):
+                if self.is_ws(aList[i]):
+                    j = i
+                    i = self.skip_ws(aList,i)
+                    assert(j < i)
+                    if i >= len(aList) or aList[i] == '\n':
+                        # print "removing trailing ws:", `i-j`
+                        del aList[j:i]
+                        i = j
+                else: i += 1
+        #@+node:ekr.20121016093159.10275: *6* replace... & safe_replace
+        #@+node:ekr.20121016093159.10276: *7* replace
+        def replace (self,aList,findString,changeString):
+            
+            '''# Replaces all occurances of findString by changeString.
+            changeString may be the empty string, but not None.
+            '''
+
+            if not findString: return
+            
+            changeList = list(changeString)
+            i = 0
+            while i < len(aList):
+                if self.match(aList,i,findString):
+                    aList[i:i+len(findString)] = changeList
+                    i += len(changeList)
+                else:
+                    i += 1
+        #@+node:ekr.20121016093159.10277: *7* replaceComments
+        def replaceComments (self,aList):
+
+            i = 0
+            while i < len(aList):
+                # Loop invariant: j > progress at end.
+                progress = i
+                if self.match(aList,i,"//"):
+                    aList[i:i+2] = ['#']
+                    j = self.skip_past_line(aList,i)
+                elif self.match(aList,i,"/*"):
+                    j = self.skip_c_block_comment(aList,i)
+                    k = i
+                    while k-1 >= 0 and aList[k-1] in ' \t':
+                        k -= 1
+                    assert k == 0 or aList[k-1] not in ' \t'
+                    lws = ''.join(aList[k:i])
+                    comment_body = ''.join(aList[i+2:j-2])
+                    comment_lines = g.splitLines(lws + comment_body)
+                    comment_lines = self.munge_block_comment(comment_lines)
+                    comment = '\n'.join(comment_lines) # A list of lines.
+                    comment_list = list(comment) # A list of characters.
+                    aList[k:j] = comment_list
+                    j = k + len(comment_list)
+                    progress = j - 1 # Disable the check below.
+                elif self.match(aList,i,'"') or self.match(aList,i,"'"):
+                    j = self.skip_string(aList,i)
+                else:
+                    j = i+1
+
+                # Defensive programming.
+                if j == progress:
+                    j += 1
+                assert j > progress
+                i = j
+        #@+node:ekr.20121016093159.10278: *8* munge_block_comment
+        def munge_block_comment (self,comment_lines):
+            
+            trace = False
+            n = len(comment_lines)
+            assert n > 0
+            
+            s = comment_lines[0]
+            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
+
+            if n == 1:
+                return ['%s# %s' % ((' ' * (w-1)),s.strip())]
+            
+            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
+            i,result = 0,[]
+            for i in range(len(comment_lines)):
+                s = comment_lines[i]
+                if s.strip():
+                    result.append('%s# %s' % ((' ' * w),s.strip()))
+                elif i == n-1:
+                    pass # Omit the line entirely.
+                else:
+                    result.append('') # Add a blank line
+            
+            if trace:
+                g.trace()
+                for z in result: print(repr(z))
+
+            return result
+        #@+node:ekr.20121016093159.10279: *7* replaceSectionDefs
+        def replaceSectionDefs (self,aList):
+            
+            '''Replaces < < x > > = by @c (at the start of lines).'''
+
+            i = 0
+            j = self.isSectionDef(aList,i)
+            if j > 0: aList[i:j] = list("@c ")
+
+            while i < len(aList):
+                if self.is_string_or_comment(aList,i):
+                    i = self.skip_string_or_comment(aList,i)
+                elif self.match(aList,i,"\n"):
+                    i += 1
+                    j = self.isSectionDef(aList,i)
+                    if j > i: aList[i:j] = list("@c ")
+                else: i += 1
+        #@+node:ekr.20121016093159.10280: *7* safe_replace
+        def safe_replace (self,aList,findString,changeString):
+            
+            '''Replaces occurances of findString by changeString,
+            but only outside of C comments and strings.
+            changeString may be the empty string, but not None.
+            '''
+
+            if not findString: return
+
+            changeList = list(changeString)
+            i = 0
+            if findString[0].isalpha(): # use self.match_word
+                while i < len(aList):
+                    if self.is_string_or_comment(aList,i):
+                        i = self.skip_string_or_comment(aList,i)
+                    elif self.match_word(aList,i,findString):
+                        aList[i:i+len(findString)] = changeList
+                        i += len(changeList)
+                    else:
+                        i += 1
+            else: #use self.match
+                while i < len(aList):
+                    if self.match(aList,i,findString):
+                        aList[i:i+len(findString)] = changeList
+                        i += len(changeList)
+                    else:
+                        i += 1
+        #@+node:ekr.20121016093159.10281: *6* skip
+        #@+node:ekr.20121016093159.10282: *7* skip_c_block_comment
+        def skip_c_block_comment (self,s,i):
+            
+            # if 'replaceComments' in g.callers():
+                # g.trace(repr(''.join(s[i:i+20])))
+
+            assert(self.match(s,i,"/*"))
+            i += 2
+
+            while i < len(s):
+                if self.match(s,i,"*/"):
+                    return i + 2
+                else:
+                    i += 1
+
+            return i
+        #@+node:ekr.20121016093159.10298: *7* skip_line
+        def skip_line (self,s,i):
+
+            while i < len(s) and s[i] != '\n':
+                i += 1
+            return i
+        #@+node:ekr.20121016093159.10283: *7* skip_past_line
+        def skip_past_line (self,s,i):
+
+            while i < len(s) and s[i] != '\n':
+                i += 1
+            if i < len(s) and s[i] == '\n':
+                i += 1
+            return i
+        #@+node:ekr.20121016093159.10284: *7* skip_past_word
+        def skip_past_word (self,s,i):
+
+            assert(s[i].isalpha() or s[i]=='~')
+
+            # Kludge: this helps recognize dtors.
+            if s[i]=='~':
+                i += 1
+
+            while i < len(s):
+                ch = s[i]
+                if ch.isalnum() or ch =='_':
+                    i += 1
+                else:
+                    break
+            return i
+        #@+node:ekr.20121016093159.10285: *7* skip_string
+        def skip_string (self,s,i):
+
+            delim = s[i] # handle either single or double-quoted strings
+            assert(delim == '"' or delim == "'")
+            i += 1
+
+            while i < len(s):
+                if s[i] == delim:
+                    return i + 1
+                elif s[i] == '\\':
+                    i += 2
+                else:
+                    i += 1
+            return i
+        #@+node:ekr.20121016093159.10286: *7* skip_string_or_comment
+        def skip_string_or_comment (self,s,i):
+
+            if self.match(s,i,"'") or self.match(s,i,'"'):
+                j = self.skip_string(s,i)
+            elif self.match(s,i,"//"):
+                j = self.skip_past_line(s,i)
+            elif self.match(s,i,"/*"):
+                j = self.skip_c_block_comment(s,i)
+            else: assert(0)
+            
+            # g.trace(repr(''.join(s[i:j])))
+            return j
+        #@+node:ekr.20121016093159.10287: *7* skip_to_matching_bracket
+        def skip_to_matching_bracket (self,s,i):
+
+            ch = s[i]
+            if   ch == '(': delim = ')'
+            elif ch == '{': delim = '}'
+            elif ch == '[': delim = ']'
+            else: assert(0)
+
+            i += 1
+            while i < len(s):
+                ch = s[i]
+                if self.is_string_or_comment(s,i):
+                    i = self.skip_string_or_comment(s,i)
+                elif ch == delim:
+                    return i
+                elif ch == '(' or ch == '[' or ch == '{':
+                    i = self.skip_to_matching_bracket(s,i)
+                    i += 1 # skip the closing bracket.
+                else: i += 1
+            return i
+        #@+node:ekr.20121016093159.10288: *7* skip_ws and skip_ws_and_nl
+        def skip_ws (self,aList,i):
+
+            while i < len(aList):
+                c = aList[i]
+                if c == ' ' or c == '\t':
+                    i += 1
+                else: break
+            return i
+
+        def skip_ws_and_nl (self,aList,i):
+
+            while i < len(aList):
+                c = aList[i]
+                if c == ' ' or c == '\t' or c == '\n':
+                    i += 1
+                else: break
+            return i
+        #@-others
+    #@-<< class To_Python >>
+    #@+<< class C_To_Python (To_Python) >>
+    #@+node:ekr.20121016093159.10184: *4* << class C_To_Python (To_Python) >>
+    class C_To_Python (To_Python):
+        
+        #@+others
+        #@+node:ekr.20110916215321.8057: *5* ctor & helpers (C_to_Python)
+        def __init__ (self,c):
+            
+            c.editCommands.To_Python.__init__(self,c)
+                # init the base class
+                
             # Internal state...
             self.class_name = ''
                 # The class name for the present function.  Used to modify ivars.
+
             self.ivars = []
                 # List of ivars to be converted to self.ivar
-            self.print_flag = False
-                
-            # Get user types.
+
+            
             self.get_user_types()
         #@+node:ekr.20110916215321.7984: *6* get_user_types
         #@@nocolor
@@ -1930,40 +2405,7 @@ class editCommandsClass (baseEditCommandsClass):
                     return {}
 
             return d
-        #@+node:ekr.20110916215321.8058: *5* go
-        def go (self):
-            
-            c = self.c
-            u = c.undoer ; undoType = 'c-to-python'
-            pp = c.CPrettyPrinter(c)
-            
-            u.beforeChangeGroup(c.p,undoType)
-            dirtyVnodeList = []
-            changed = False
-            
-            for p in self.p.self_and_subtree():
-                if p.b:
-                    # g.es("converting:",p.h)
-                    bunch = u.beforeChangeNodeContents(p)
-                    
-                    s = pp.indent(p,giveWarnings=False)
-                    aList = list(s)
-                    self.convertCodeList(aList)
-                
-                    s = ''.join(aList)
-                    if s != p.b:
-                        p.b = s
-                        p.v.setDirty()
-                        dirtyVnodeList.append(p.v)
-                        c.undoer.afterChangeNodeContents(p,undoType,bunch)
-                        changed = True
-              
-            # 2012/04/11: Bug fix.  Call this only once, at end.
-            if changed:
-                u.afterChangeGroup(c.p,undoType,
-                    reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-            g.es('done')
-        #@+node:ekr.20110916215321.7997: *5* convertCodeList (main pattern function)
+        #@+node:ekr.20110916215321.7997: *5* convertCodeList (C_To_Python) & helpers
         def convertCodeList(self,aList):
             
             r,sr = self.replace,self.safe_replace
@@ -2030,21 +2472,68 @@ class editCommandsClass (baseEditCommandsClass):
             self.replaceComments(aList) # should follow all calls to safe_replace
             self.removeTrailingWs(aList)
             r(aList, "\t ", "\t") # happens when deleting declarations.
-        #@+node:ekr.20110916215321.8001: *5* Scanning
-        #@+node:ekr.20110919211949.6920: *6* insert_not
-        def insert_not (self,aList):
+        #@+node:ekr.20110916215321.8011: *6* handle_all_keywords
+        def handle_all_keywords (self,aList):
             
-            '''Change "!" to "not" except before "="'''
-            
+            '''
+            converts if ( x ) to if x:
+            converts while ( x ) to while x:
+            '''
+
             i = 0
             while i < len(aList):
                 if self.is_string_or_comment(aList,i):
                     i = self.skip_string_or_comment(aList,i)
-                elif aList[i] == '!' and not self.match(aList,i+1,'='):
-                    aList[i:i+1] = list('not ')
-                    i += 4
+                elif (
+                    self.match_word(aList,i,"if") or
+                    self.match_word(aList,i,"while") or
+                    self.match_word(aList,i,"for") or
+                    self.match_word(aList,i,"elif")
+                ):
+                    i = self.handle_keyword(aList,i)
                 else:
                     i += 1
+            # print "handAllKeywords2:", ''.join(aList)
+        #@+node:ekr.20110916215321.8012: *7* handle_keyword
+        def handle_keyword (self,aList,i):
+
+            isFor = False
+            if self.match_word(aList,i,"if"):
+                i += 2
+            elif self.match_word(aList,i,"elif"):
+                i += 4
+            elif self.match_word(aList,i,"while"):
+                i += 5
+            elif self.match_word(aList,i,"for"):
+                i += 3
+                isFor = True
+            else: assert(0)
+
+            # Make sure one space follows the keyword.
+            k = i
+            i = self.skip_ws(aList,i)
+            if k == i:
+                c = aList[i]
+                aList[i:i+1] = [ ' ', c ]
+                i += 1
+
+            # Remove '(' and matching ')' and add a ':'
+            if aList[i] == "(":
+                # Look ahead.  Don't remove if we span a line.
+                j = self.skip_to_matching_bracket(aList, i)
+                k = i
+                found = False
+                while k < j and not found:
+                    found = aList[k] == '\n'
+                    k += 1
+                if not found:
+                    j = self.removeMatchingBrackets(aList,i)
+                if j > i and j < len(aList):
+                    ch = aList[j]
+                    aList[j:j+1] = [ch,":", " "]
+                    j = j + 2
+                return j
+            return i
         #@+node:ekr.20110916215321.8003: *6* mungeAllFunctions
         def mungeAllFunctions(self,aList):
             
@@ -2371,647 +2860,22 @@ class editCommandsClass (baseEditCommandsClass):
                         i = j
                 else: i += 1
             return body
-        #@+node:ekr.20110916215321.8011: *6* handle_all_keywords
-        def handle_all_keywords (self,aList):
-            
-            '''
-            converts if ( x ) to if x:
-            converts while ( x ) to while x:
-            '''
-
-            i = 0
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif (
-                    self.match_word(aList,i,"if") or
-                    self.match_word(aList,i,"while") or
-                    self.match_word(aList,i,"for") or
-                    self.match_word(aList,i,"elif")
-                ):
-                    i = self.handle_keyword(aList,i)
-                else:
-                    i += 1
-            # print "handAllKeywords2:", ''.join(aList)
-        #@+node:ekr.20110916215321.8012: *7* handle_keyword
-        def handle_keyword (self,aList,i):
-
-            isFor = False
-            if self.match_word(aList,i,"if"):
-                i += 2
-            elif self.match_word(aList,i,"elif"):
-                i += 4
-            elif self.match_word(aList,i,"while"):
-                i += 5
-            elif self.match_word(aList,i,"for"):
-                i += 3
-                isFor = True
-            else: assert(0)
-
-            # Make sure one space follows the keyword.
-            k = i
-            i = self.skip_ws(aList,i)
-            if k == i:
-                c = aList[i]
-                aList[i:i+1] = [ ' ', c ]
-                i += 1
-
-            # Remove '(' and matching ')' and add a ':'
-            if aList[i] == "(":
-                # Look ahead.  Don't remove if we span a line.
-                j = self.skip_to_matching_bracket(aList, i)
-                k = i
-                found = False
-                while k < j and not found:
-                    found = aList[k] == '\n'
-                    k += 1
-                if not found:
-                    j = self.removeMatchingBrackets(aList,i)
-                if j > i and j < len(aList):
-                    ch = aList[j]
-                    aList[j:j+1] = [ch,":", " "]
-                    j = j + 2
-                return j
-            return i
-        #@+node:ekr.20110916215321.8063: *5* Utils
-        #@+node:ekr.20110916215321.8017: *6* match...
-        #@+node:ekr.20110916215321.8020: *7* match
-        def match (self,s,i,pat):
-            
-            '''Return True if s[i:] matches the pat string.
-            
-            We can't use g.match because s is usually a list.
-            '''
-            
-            assert pat
-
-            j = 0
-            while i+j < len(s) and j < len(pat):
-                if s[i+j] == pat[j]:
-                    j += 1
-                    if j == len(pat):
-                        return True
-                else:
-                    return False
-
-            return False
-        #@+node:ekr.20110916215321.8021: *7* match_word
-        def match_word (self,s,i,pat):
-            
-            '''Return True if s[i:] word matches the pat string.'''
-
-            if self.match(s,i,pat):
-                j = i + len(pat)
-                if j >= len(s):
-                    # g.trace(i,pat)
-                    return True
-                else:
-                    ch = s[j]
-                    return not ch.isalnum() and ch != '_'
-            else:
-                return False
-        #@+node:ekr.20110916215321.8066: *6* is...
-        #@+node:ekr.20110916215321.8015: *7* isSectionDef
-        # returns the ending index if i points to < < x > > =
-        def isSectionDef (self,aList,i):
-
-            i = self.skip_ws(aList,i)
-            if not self.match(aList,i,"<<"):
-                return False
-            while i < len(aList) and aList[i] != '\n':
-                if self.match(aList,i,">>="):
-                    return i+3
-                else:
-                    i += 1
-            return False
-        #@+node:ekr.20110916215321.8016: *7* is_string_or_comment
-        def is_string_or_comment (self,s,i):
-
-            # Does range checking.
-            m = self.match
-            return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") or m(s,i,"/*")
-        #@+node:ekr.20110916215321.8014: *7* is_ws and is_ws_or_nl
-        def is_ws (self,ch):
-            return ch in ' \t'
-
-        def is_ws_or_nl (self,ch):
-            return ch in ' \t\n'
-        #@+node:ekr.20110916215321.8041: *6* prevNonWsChar and prevNonWsOrNlChar
-        def prevNonWsChar (self,s,i):
-
-            i -= 1
-            while i >= 0 and self.is_ws(s[i]):
-                i -= 1
-            return i
-
-        def prevNonWsOrNlChar (self,s,i):
-
-            i -= 1
-            while i >= 0 and self.is_ws_or_nl(s[i]):
-                i -= 1
-            return i
-        #@+node:ekr.20110916215321.8022: *6* remove...
-        #@+node:ekr.20110916215321.8028: *7* removeBlankLines
-        def removeBlankLines (self,aList):
-
-            i = 0
-            while i < len(aList):
-                j = i
-                while j < len(aList) and aList[j] in " \t":
-                    j += 1
-                if j == len(aList) or aList[j] == '\n':
-                    del aList[i:j+1]
-                else:
-                    i = self.skip_past_line(aList,i)
-        #@+node:ekr.20110916215321.8029: *7* removeExcessWs
-        def removeExcessWs (self,aList):
-
-            i = 0
-            i = self.removeExcessWsFromLine(aList,i)
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif self.match(aList,i,'\n'):
-                    i += 1
-                    i = self.removeExcessWsFromLine(aList,i)
-                else: i += 1
-        #@+node:ekr.20110916215321.8030: *7* removeExessWsFromLine
-        def removeExcessWsFromLine (self,aList,i):
-
-            assert(i==0 or aList[i-1] == '\n')
-            i = self.skip_ws(aList,i)
-                # Retain the leading whitespace.
-
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    break # safe
-                elif self.match(aList,i,'\n'):
-                    break
-                elif self.match(aList,i,' ') or self.match(aList,i,'\t'):
-                    # Replace all whitespace by one blank.
-                    j = self.skip_ws(aList,i)
-                    assert(j > i)
-                    aList[i:j] = [' ']
-                    i += 1 # make sure we don't go past a newline!
-                else: i += 1
-            return i
-        #@+node:ekr.20110916215321.8032: *7* removeMatchingBrackets
-        def removeMatchingBrackets (self,aList, i):
-
-            j = self.skip_to_matching_bracket(aList, i)
-            if j > i and j < len(aList):
-                # print "del brackets:", ''.join(aList[i:j+1])
-                c = aList[j]
-                if c == ')' or c == ']' or c == '}':
-                    del aList[j:j+1]
-                    del aList[i:i+1]
-                    # print "returning:", ''.join(aList[i:j])
-                    return j - 1
-                else: return j + 1
-            else: return j
-        #@+node:ekr.20110916215321.8033: *7* removeSemicolonsAtEndOfLines
-        def removeSemicolonsAtEndOfLines (self,aList):
-
-            i = 0
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif aList[i] == ';':
-                    j = self.skip_ws(aList,i+1)
-                    if (
-                        j >= len(aList) or
-                        self.match(aList,j,'\n') or
-                        self.match(aList,j,'#') or
-                        self.match(aList,j,"//")
-                    ):
-                        del aList[i]
-                    else: i += 1
-                else: i += 1
-        #@+node:ekr.20110916215321.8034: *7* removeTrailingWs
-        def removeTrailingWs (self,aList):
-
-            i = 0
-            while i < len(aList):
-                if self.is_ws(aList[i]):
-                    j = i
-                    i = self.skip_ws(aList,i)
-                    assert(j < i)
-                    if i >= len(aList) or aList[i] == '\n':
-                        # print "removing trailing ws:", `i-j`
-                        del aList[j:i]
-                        i = j
-                else: i += 1
-        #@+node:ekr.20110916215321.8035: *6* replace... & safe_replace
-        #@+node:ekr.20110916215321.8036: *7* replace
-        def replace (self,aList,findString,changeString):
-            
-            '''# Replaces all occurances of findString by changeString.
-            changeString may be the empty string, but not None.
-            '''
-
-            if not findString: return
-            
-            changeList = list(changeString)
-            i = 0
-            while i < len(aList):
-                if self.match(aList,i,findString):
-                    aList[i:i+len(findString)] = changeList
-                    i += len(changeList)
-                else:
-                    i += 1
-        #@+node:ekr.20110916215321.8037: *7* replaceComments
-        def replaceComments (self,aList):
-
-            i = 0
-            while i < len(aList):
-                # Loop invariant: j > progress at end.
-                progress = i
-                if self.match(aList,i,"//"):
-                    aList[i:i+2] = ['#']
-                    j = self.skip_past_line(aList,i)
-                elif self.match(aList,i,"/*"):
-                    j = self.skip_c_block_comment(aList,i)
-                    k = i
-                    while k-1 >= 0 and aList[k-1] in ' \t':
-                        k -= 1
-                    assert k == 0 or aList[k-1] not in ' \t'
-                    lws = ''.join(aList[k:i])
-                    comment_body = ''.join(aList[i+2:j-2])
-                    comment_lines = g.splitLines(lws + comment_body)
-                    comment_lines = self.munge_block_comment(comment_lines)
-                    comment = '\n'.join(comment_lines) # A list of lines.
-                    comment_list = list(comment) # A list of characters.
-                    aList[k:j] = comment_list
-                    j = k + len(comment_list)
-                    progress = j - 1 # Disable the check below.
-                elif self.match(aList,i,'"') or self.match(aList,i,"'"):
-                    j = self.skip_string(aList,i)
-                else:
-                    j = i+1
-
-                # Defensive programming.
-                if j == progress:
-                    j += 1
-                assert j > progress
-                i = j
-        #@+node:ekr.20110920063732.6935: *8* munge_block_comment
-        def munge_block_comment (self,comment_lines):
-            
-            trace = False
-            n = len(comment_lines)
-            assert n > 0
-            
-            s = comment_lines[0]
-            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
-
-            if n == 1:
-                return ['%s# %s' % ((' ' * (w-1)),s.strip())]
-            
-            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
-            i,result = 0,[]
-            for i in range(len(comment_lines)):
-                s = comment_lines[i]
-                if s.strip():
-                    result.append('%s# %s' % ((' ' * w),s.strip()))
-                elif i == n-1:
-                    pass # Omit the line entirely.
-                else:
-                    result.append('') # Add a blank line
-            
-            if trace:
-                g.trace()
-                for z in result: print(repr(z))
-
-            return result
-        #@+node:ekr.20110916215321.8038: *7* replaceSectionDefs
-        def replaceSectionDefs (self,aList):
-            
-            '''Replaces < < x > > = by @c (at the start of lines).'''
-
-            i = 0
-            j = self.isSectionDef(aList,i)
-            if j > 0: aList[i:j] = list("@c ")
-
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif self.match(aList,i,"\n"):
-                    i += 1
-                    j = self.isSectionDef(aList,i)
-                    if j > i: aList[i:j] = list("@c ")
-                else: i += 1
-        #@+node:ekr.20110916215321.8039: *7* safe_replace
-        def safe_replace (self,aList,findString,changeString):
-            
-            '''Replaces occurances of findString by changeString,
-            but only outside of C comments and strings.
-            changeString may be the empty string, but not None.
-            '''
-
-            if not findString: return
-
-            changeList = list(changeString)
-            i = 0
-            if findString[0].isalpha(): # use self.match_word
-                while i < len(aList):
-                    if self.is_string_or_comment(aList,i):
-                        i = self.skip_string_or_comment(aList,i)
-                    elif self.match_word(aList,i,findString):
-                        aList[i:i+len(findString)] = changeList
-                        i += len(changeList)
-                    else:
-                        i += 1
-            else: #use self.match
-                while i < len(aList):
-                    if self.match(aList,i,findString):
-                        aList[i:i+len(findString)] = changeList
-                        i += len(changeList)
-                    else:
-                        i += 1
-        #@+node:ekr.20110916215321.8040: *6* skip
-        #@+node:ekr.20110916215321.8042: *7* skip_c_block_comment
-        def skip_c_block_comment (self,s,i):
-            
-            # if 'replaceComments' in g.callers():
-                # g.trace(repr(''.join(s[i:i+20])))
-
-            assert(self.match(s,i,"/*"))
-            i += 2
-
-            while i < len(s):
-                if self.match(s,i,"*/"):
-                    return i + 2
-                else:
-                    i += 1
-
-            return i
-        #@+node:ekr.20110916215321.8043: *7* skip_past_line
-        def skip_past_line (self,s,i):
-
-            while i < len(s) and s[i] != '\n':
-                i += 1
-            if i < len(s) and s[i] == '\n':
-                i += 1
-            return i
-        #@+node:ekr.20110916215321.8044: *7* skip_past_word
-        def skip_past_word (self,s,i):
-
-            assert(s[i].isalpha() or s[i]=='~')
-
-            # Kludge: this helps recognize dtors.
-            if s[i]=='~':
-                i += 1
-
-            while i < len(s):
-                ch = s[i]
-                if ch.isalnum() or ch =='_':
-                    i += 1
-                else:
-                    break
-            return i
-        #@+node:ekr.20110916215321.8045: *7* skip_string
-        def skip_string (self,s,i):
-
-            delim = s[i] # handle either single or double-quoted strings
-            assert(delim == '"' or delim == "'")
-            i += 1
-
-            while i < len(s):
-                if s[i] == delim:
-                    return i + 1
-                elif s[i] == '\\':
-                    i += 2
-                else:
-                    i += 1
-            return i
-        #@+node:ekr.20110916215321.8046: *7* skip_string_or_comment
-        def skip_string_or_comment (self,s,i):
-
-            if self.match(s,i,"'") or self.match(s,i,'"'):
-                j = self.skip_string(s,i)
-            elif self.match(s,i,"//"):
-                j = self.skip_past_line(s,i)
-            elif self.match(s,i,"/*"):
-                j = self.skip_c_block_comment(s,i)
-            else: assert(0)
-            
-            # g.trace(repr(''.join(s[i:j])))
-            return j
-        #@+node:ekr.20110916215321.8047: *7* skip_to_matching_bracket
-        def skip_to_matching_bracket (self,s,i):
-
-            ch = s[i]
-            if   ch == '(': delim = ')'
-            elif ch == '{': delim = '}'
-            elif ch == '[': delim = ']'
-            else: assert(0)
-
-            i += 1
-            while i < len(s):
-                ch = s[i]
-                if self.is_string_or_comment(s,i):
-                    i = self.skip_string_or_comment(s,i)
-                elif ch == delim:
-                    return i
-                elif ch == '(' or ch == '[' or ch == '{':
-                    i = self.skip_to_matching_bracket(s,i)
-                    i += 1 # skip the closing bracket.
-                else: i += 1
-            return i
-        #@+node:ekr.20110916215321.8048: *7* skip_ws and skip_ws_and_nl
-        def skip_ws (self,aList,i):
-
-            while i < len(aList):
-                c = aList[i]
-                if c == ' ' or c == '\t':
-                    i += 1
-                else: break
-            return i
-
-        def skip_ws_and_nl (self,aList,i):
-
-            while i < len(aList):
-                c = aList[i]
-                if c == ' ' or c == '\t' or c == '\n':
-                    i += 1
-                else: break
-            return i
         #@-others
+    #@-<< class C_To_Python (To_Python) >>
+    #@+<< class TS_To_Python (To_Python) >>
+    #@+node:ekr.20121016093159.10185: *4* << class TS_To_Python (To_Python) >>
+    class TS_To_Python (To_Python):
 
-    def cToPy (self,event):
-        #@+<< docstring: c-to-python >>
-        #@+node:ekr.20110916215321.7982: *4* << docstring: c-to-python >>
-        ''' The c-to-python command converts C or C++ text to python text. The
-        conversion is not complete. Nevertheless, c2py eliminates much of the tedious
-        text manipulation that would otherwise be required.
-
-        The following is a list of the translations performed by convertCodeList:
-
-        Prepass
-        =======
-
-        These translations happen before removing all curly braces.
-
-        Suppose we are translating::
-
-            aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
-            {
-                body
-            }
-
-        Prepass part 1
-        --------------
-
-        Translates the function prototype, i.e., translates::
-
-            aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
-            
-        to::
-            
-            def aMethod(v1,...vn):
-
-        As a special case, c2py translates::
-
-            aTypeSpec aClass::aClass(t1 v1,...,tn vn)
-            
-        to::
-            
-            aClass.__init__(t1 v1,...,tn vn)
-
-        True, aClass.__init__ isn't proper Python, but retaining the class name is useful.
-
-        Prepass part 2
-        --------------
-
-        Let t denote any member of typeList or classList.  The code::
-
-            a) Removes all casts of the form (t) or (t*) or (t**), etc.
-            b) Converts t x, t *x, t **x, etc. to x.
-            c) Converts x = new t(...) to x = t(...)
-            d) For all i in ivarsDict[aClass] converts this -> i to self.i
-            e) For all i in ivarsDict[aClass] converts i to self.i
-
-        Prepass part 3
-        --------------
-
-        [No longer used.] Converts < < x > > = to @c. A Leo-specific translation.
-
-        Main Pass
-        =========
-
-        This pass does the following simple translations everywhere except in comments
-        and strings::
-
-            Changes all -> to .
-            Changes all this.self to self (This corrects problems during the prepass.)
-            Removes all curly braces
-            Changes all #if to if
-            Changes all else if to elif
-            Changes all #else to else:
-            Changes all else to else:
-            Removes all #endif
-            Changes all && to and
-            Changes all || to or
-            Changes all TRUE to True
-            Changes all FALSE to False
-            Changes all NULL to None
-            Changes all this to self
-            Changes all @code to @c.  [No longer used: aLeo-specific translation.]
-
-        Complex Pass
-        ============
-
-        This pass attempts more complex translations::
-
-            Converts if ( x ) to if x:
-            Converts elif ( x ) to elif x:
-            Converts while ( x ) to while x:
-            Converts for ( x ; y ; z ) to for x SEMI y SEMI z:
-
-        Final Pass
-        ==========
-
-        This pass completes the translation::
-
-            Removes all semicolons.
-            Removes @c if it starts the text.  [No longer used: a Leo-specific translation.]
-            Removes all blank lines.
-            Removes excess whitespace from all lines, leaving leading whitespace unchanged.
-            Replaces C/C++ comments by Python comments.
-            Removes trailing whitespace from all lines.
-
-        '''
-        #@-<< docstring: c-to-python >>
-        self.C_to_python(self.c).go()
-        self.c.bodyWantsFocus()
-    #@+node:ekr.20121015183335.10137: *3* tsToPy (leoEditCommands)
-    #@+others
-    #@+node:ekr.20121015183335.10139: *4* class TS_to_python
-    class TS_to_python:
-        # For theory of operation, see the docstring for the c-to-python command.
-        # The essential constraint: aList must always be updated in place.
         #@+others
-        #@+node:ekr.20121015183335.10141: *5* ctor & helpers (typescript_to_python)
+        #@+node:ekr.20121016093159.10297: *5* ctor (TS_To_Python)
         def __init__ (self,c):
             
-            self.c = c
-            self.p = self.c.p.copy()
-            
-            aList = g.get_directives_dict_list(self.p)
-            self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
+            c.editCommands.To_Python.__init__(self,c)
+                # init the base class
 
-            # Internal state...
             self.class_name = ''
                 # The class name for the present function.  Used to modify ivars.
-        #@+node:ekr.20121015183335.10144: *5* go
-        def go (self):
-
-            import time
-            t1 = time.time()
-            c = self.c
-            u = c.undoer ; undoType = 'typescript-to-python'
-            pp = c.CPrettyPrinter(c)
-            
-            u.beforeChangeGroup(c.p,undoType)
-            dirtyVnodeList = []
-            changed = False
-            n_files = 0
-            n_nodes = 0
-            special = ('class ','module ','@file ','@@file ')
-            files = ('@file ','@@file ')
-            for p in self.p.self_and_subtree():
-                if p.b:
-                    n_nodes += 1
-                    if any([p.h.startswith(z) for z in special]):
-                        # g.pr('\n%s' % (p.h),newline=False)
-                        # g.es(p.h)
-                        g.es_print(p.h)
-                        if any([p.h.startswith(z) for z in files]):
-                            n_files += 1
-                    else:
-                        pass # g.pr('.',newline=False)
-                    bunch = u.beforeChangeNodeContents(p)
-                    
-                    s = pp.indent(p,giveWarnings=False)
-                    aList = list(s)
-                    self.convertCodeList(aList)
-                
-                    s = ''.join(aList)
-                    if s != p.b:
-                        p.b = s
-                        p.v.setDirty()
-                        dirtyVnodeList.append(p.v)
-                        u.afterChangeNodeContents(p,undoType,bunch)
-                        changed = True
-              
-            # Call this only once, at end.
-            if changed:
-                u.afterChangeGroup(c.p,undoType,
-                    reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-            t2 = time.time()
-            # g.pr('\ndone! %s files, %s nodes, %2.2f sec' % (n_files,n_nodes,t2-t1))
-            g.es_print('done! %s files, %s nodes, %2.2f sec' % (n_files,n_nodes,t2-t1))
-        #@+node:ekr.20121015183335.10145: *5* convertCodeList (main pattern function)
+        #@+node:ekr.20121015183335.10145: *5* convertCodeList (TS_To_Python) & helpers
         def convertCodeList(self,aList):
             
             r,sr = self.replace,self.safe_replace
@@ -3081,21 +2945,118 @@ class editCommandsClass (baseEditCommandsClass):
             self.replaceComments(aList) # should follow all calls to safe_replace
             self.removeTrailingWs(aList)
             r(aList, '\t ', '\t') # happens when deleting declarations.
-        #@+node:ekr.20121015183335.10146: *5* Scanning
-        #@+node:ekr.20121015183335.10147: *6* insert_not
-        def insert_not (self,aList):
+        #@+node:ekr.20121015183335.10191: *6* comment_scope_ids
+        def comment_scope_ids (self,aList):
             
-            '''Change "!" to "not" except before "="'''
+            '''convert (public|private|export) aLine to aLine # (public|private|export)'''
             
+            scope_ids = ('public','private','export',)
+            i = 0
+            if any([self.match_word(aList,i,z) for z in scope_ids]):
+                i = self.handle_scope_keyword(aList,i)
+            while i < len(aList):
+                progress = i
+                if self.is_string_or_comment(aList,i):
+                    i = self.skip_string_or_comment(aList,i)
+                elif aList[i] == '\n':
+                    i += 1
+                    i = self.skip_ws(aList,i)
+                    if any([self.match_word(aList,i,z) for z in scope_ids]):
+                        i = self.handle_scope_keyword(aList,i)
+                else:
+                    i += 1
+                assert i > progress
+            # print "handAllKeywords2:", ''.join(aList)
+        #@+node:ekr.20121015183335.10193: *7* handle_scope_keyword
+        def handle_scope_keyword (self,aList,i):
+
+            i1 = i
+            for word in ('public','private','export'):
+                if self.match_word(aList,i,word):
+                    i += len(word)
+                    break
+            else:
+                assert False,'not a scope id: %s' % word
+                
+            # Skip any following spaces.
+            i2 = self.skip_ws(aList,i)
+            
+            # Scan to the next newline:
+            i3 = self.skip_line(aList,i)
+                
+            # Optional: move the word to a trailing comment.
+            comment = list(' # %s' % word) if False else []
+            
+            # Change the list in place.
+            aList[i1:i3] = aList[i2:i3] + comment
+            i = i1 + (i3-i2) + len(comment)
+            # g.trace(''.join(aList[i1:i]))
+            return i
+        #@+node:ekr.20121015183335.10157: *6* handle_all_keywords
+        def handle_all_keywords (self,aList):
+            
+            '''
+            converts if ( x ) to if x:
+            converts while ( x ) to while x:
+            '''
+
+            statements = ('elif','for','if','while',)
             i = 0
             while i < len(aList):
                 if self.is_string_or_comment(aList,i):
                     i = self.skip_string_or_comment(aList,i)
-                elif aList[i] == '!' and not self.match(aList,i+1,'='):
-                    aList[i:i+1] = list(' not ')
-                    i += 4
+                elif any([self.match_word(aList,i,z) for z in statements]):
+                    i = self.handle_keyword(aList,i)
+                # elif (
+                    # self.match_word(aList,i,"if") or
+                    # self.match_word(aList,i,"while") or
+                    # self.match_word(aList,i,"for") or
+                    # self.match_word(aList,i,"elif")
+                # ):
+                    # i = self.handle_keyword(aList,i)
                 else:
                     i += 1
+            # print "handAllKeywords2:", ''.join(aList)
+        #@+node:ekr.20121015183335.10158: *7* handle_keyword
+        def handle_keyword (self,aList,i):
+
+            isFor = False
+            if self.match_word(aList,i,"if"):
+                i += 2
+            elif self.match_word(aList,i,"elif"):
+                i += 4
+            elif self.match_word(aList,i,"while"):
+                i += 5
+            elif self.match_word(aList,i,"for"):
+                i += 3
+                isFor = True
+            else: assert False,'not a keyword'
+
+            # Make sure one space follows the keyword.
+            k = i
+            i = self.skip_ws(aList,i)
+            if k == i:
+                c = aList[i]
+                aList[i:i+1] = [ ' ', c ]
+                i += 1
+
+            # Remove '(' and matching ')' and add a ':'
+            if aList[i] == "(":
+                # Look ahead.  Don't remove if we span a line.
+                j = self.skip_to_matching_bracket(aList, i)
+                k = i
+                found = False
+                while k < j and not found:
+                    found = aList[k] == '\n'
+                    k += 1
+                if not found:
+                    j = self.removeMatchingBrackets(aList,i)
+                if j > i and j < len(aList):
+                    ch = aList[j]
+                    aList[j:j+1] = [ch,":", " "]
+                    j = j + 2
+                return j
+            return i
         #@+node:ekr.20121016024338.10190: *6* mungeAllClasses
         def mungeAllClasses(self,aList):
             
@@ -3129,7 +3090,7 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     i += 1
                 assert i > progress
-        #@+node:ekr.20121015183335.10148: *6* mungeAllFunctions
+        #@+node:ekr.20121015183335.10148: *6* mungeAllFunctions & helpers
         def mungeAllFunctions(self,aList):
             
             '''Scan for a '{' at the top level that is preceeded by ')' '''
@@ -3301,7 +3262,7 @@ class editCommandsClass (baseEditCommandsClass):
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
-        #@+node:ekr.20121015183335.10152: *7* massageFunctionBody & helpers
+        #@+node:ekr.20121015183335.10152: *7* massageFunctionBody & helper
         def massageFunctionBody (self,body):
 
             # body = self.massageIvars(body)
@@ -3370,572 +3331,17 @@ class editCommandsClass (baseEditCommandsClass):
                 i = j
                         
             return body
-        #@+node:ekr.20121015183335.10154: *8* massageIvars (not used)
-        if 0:
-            def massageIvars (self,body):
-
-                if self.class_name and self.ivars_dict.has_key(self.class_name):
-                    ivars = self.ivars_dict.get(self.class_name)
-                else:
-                    ivars = []
-            
-                i = 0
-                while i < len(body):
-                    if self.is_string_or_comment(body,i):
-                        i = self.skip_string_or_comment(body,i)
-                    elif body[i].isalpha():
-                        j = self.skip_past_word(body,i)
-                        word = ''.join(body[i:j])
-                        # print "looking up:", word
-                        if word in ivars:
-                            # replace word by self.word
-                            # print "replacing", word, " by self.", word
-                            word = "self." + word
-                            word = list(word)
-                            body[i:j] = word
-                            delta = len(word)-(j-i)
-                            i = j + delta
-                        else: i = j
-                    else: i += 1
-                return body
-        #@+node:ekr.20121015183335.10155: *8* removeCasts (not used)
-        if 0:
-            
-            def removeCasts (self,body):
-
-                i = 0
-                while i < len(body):
-                    if self.is_string_or_comment(body,i):
-                        i = self.skip_string_or_comment(body,i)
-                    elif self.match(body, i, '('):
-                        start = i
-                        i = self.skip_ws(body, i+1)
-                        if body[i].isalpha():
-                            j = self.skip_past_word(body,i)
-                            word = ''.join(body[i:j])
-                            i = j
-                            if word in self.class_list or word in self.type_list:
-                                i = self.skip_ws(body, i)
-                                while self.match(body,i,'*'):
-                                    i += 1
-                                i = self.skip_ws(body, i)
-                                if self.match(body,i,')'):
-                                    i += 1
-                                    # print "removing cast:", ''.join(body[start:i])
-                                    del body[start:i]
-                                    i = start
-                    else: i += 1
-                return body
-        #@+node:ekr.20121015183335.10156: *8* removeTypeNames (not used)
-        # Do _not_ remove type names when preceeded by new.
-
-        if 0:
-            def removeTypeNames (self,body):
-            
-                i = 0
-                while i < len(body):
-                    if self.is_string_or_comment(body,i):
-                        i = self.skip_string_or_comment(body,i)
-                    elif self.match_word(body, i, "new"):
-                        i = self.skip_past_word(body,i)
-                        i = self.skip_ws(body,i)
-                        # don't remove what follows new.
-                        if body[i].isalpha():
-                            i = self.skip_past_word(body,i)
-                    elif body[i].isalpha():
-                        j = self.skip_past_word(body,i)
-                        word = ''.join(body[i:j])
-                        if word in self.class_list or word in self.type_list:
-                            j = self.skip_ws(body,j)
-                            while self.match(body,j,'*'):
-                                j += 1
-                            # print "Deleting type name:", ''.join(body[i:j])
-                            j = self.skip_ws(body,j)
-                            del body[i:j]
-                        else:
-                            i = j
-                    else: i += 1
-                return body
-        #@+node:ekr.20121015183335.10157: *6* handle_all_keywords
-        def handle_all_keywords (self,aList):
-            
-            '''
-            converts if ( x ) to if x:
-            converts while ( x ) to while x:
-            '''
-
-            i = 0
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif (
-                    self.match_word(aList,i,"if") or
-                    self.match_word(aList,i,"while") or
-                    self.match_word(aList,i,"for") or
-                    self.match_word(aList,i,"elif")
-                ):
-                    i = self.handle_keyword(aList,i)
-                else:
-                    i += 1
-            # print "handAllKeywords2:", ''.join(aList)
-        #@+node:ekr.20121015183335.10158: *7* handle_keyword
-        def handle_keyword (self,aList,i):
-
-            isFor = False
-            if self.match_word(aList,i,"if"):
-                i += 2
-            elif self.match_word(aList,i,"elif"):
-                i += 4
-            elif self.match_word(aList,i,"while"):
-                i += 5
-            elif self.match_word(aList,i,"for"):
-                i += 3
-                isFor = True
-            else: assert False,'not a keyword'
-
-            # Make sure one space follows the keyword.
-            k = i
-            i = self.skip_ws(aList,i)
-            if k == i:
-                c = aList[i]
-                aList[i:i+1] = [ ' ', c ]
-                i += 1
-
-            # Remove '(' and matching ')' and add a ':'
-            if aList[i] == "(":
-                # Look ahead.  Don't remove if we span a line.
-                j = self.skip_to_matching_bracket(aList, i)
-                k = i
-                found = False
-                while k < j and not found:
-                    found = aList[k] == '\n'
-                    k += 1
-                if not found:
-                    j = self.removeMatchingBrackets(aList,i)
-                if j > i and j < len(aList):
-                    ch = aList[j]
-                    aList[j:j+1] = [ch,":", " "]
-                    j = j + 2
-                return j
-            return i
-        #@+node:ekr.20121015183335.10191: *6* comment_scope_ids
-        def comment_scope_ids (self,aList):
-            
-            '''convert (public|private|export) aLine to aLine # (public|private|export)'''
-            
-            scope_ids = ('public','private','export',)
-            i = 0
-            if any([self.match_word(aList,i,z) for z in scope_ids]):
-                i = self.handle_scope_keyword(aList,i)
-            while i < len(aList):
-                progress = i
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif aList[i] == '\n':
-                    i += 1
-                    i = self.skip_ws(aList,i)
-                    # if (self.match_word(aList,i,'public') or
-                        # self.match_word(aList,i,'private') or
-                        # self.match_word(aList,i,'export')
-                    # ):
-                        # i = self.handle_scope_keyword(aList,i)
-                    if any([self.match_word(aList,i,z) for z in scope_ids]):
-                        i = self.handle_scope_keyword(aList,i)
-                else:
-                    i += 1
-                assert i > progress
-            # print "handAllKeywords2:", ''.join(aList)
-        #@+node:ekr.20121015183335.10193: *7* handle_scope_keyword
-        def handle_scope_keyword (self,aList,i):
-
-            i1 = i
-            for word in ('public','private','export'):
-                if self.match_word(aList,i,word):
-                    i += len(word)
-                    break
-            else:
-                assert False,'not a scope id: %s' % word
-                
-            # Skip any following spaces.
-            i2 = self.skip_ws(aList,i)
-            
-            # Scan to the next newline:
-            # i3 = i2
-            # while i3 < len(aList) and aList[i3] != '\n':
-                # i3 += 1
-            i3 = self.skip_line(aList,i)
-                
-            # Optional: move the word to a trailing comment.
-            comment = list(' # %s' % word) if False else []
-            
-            # Change the list in place.
-            aList[i1:i3] = aList[i2:i3] + comment
-            i = i1 + (i3-i2) + len(comment)
-            # g.trace(''.join(aList[i1:i]))
-            return i
-        #@+node:ekr.20121015183335.10159: *5* Utils
-        #@+node:ekr.20121015183335.10160: *6* match...
-        #@+node:ekr.20121015183335.10161: *7* match
-        def match (self,s,i,pat):
-            
-            '''Return True if s[i:] matches the pat string.
-            
-            We can't use g.match because s is usually a list
-            and g.match uses s.find.
-            '''
-            
-            assert pat
-            
-            j = 0
-            while i+j < len(s):
-                if s[i+j] != pat[j]:
-                    return False
-                j += 1
-                if j == len(pat):
-                    return True
-
-            return False
-
-            # j = 0
-            # while i+j < len(s) and j < len(pat):
-                # if s[i+j] == pat[j]:
-                    # j += 1
-                    # if j == len(pat):
-                        # return True
-                # else:
-                    # return False
-
-            # return False
-        #@+node:ekr.20121015183335.10162: *7* match_word
-        def match_word (self,s,i,pat):
-            
-            '''Return True if s[i:] word matches the pat string.
-            
-            We can't use g.match_word because s is usually a list
-            and g.match_word uses s.find.
-            
-            '''
-            
-            if self.match(s,i,pat):
-                j = i + len(pat)
-                if j >= len(s):
-                    return True
-                elif not pat[-1].isalnum():
-                    # Bug fix to original c-to-python code.
-                    return True # The pattern terminates the word.
-                else:
-                    ch = s[j]
-                    return not ch.isalnum() and ch != '_'
-            else:
-                return False
-        #@+node:ekr.20121015183335.10163: *6* is...
-        #@+node:ekr.20121015183335.10165: *7* is_string_or_comment
-        def is_string_or_comment (self,s,i):
-
-            # Does range checking.
-            m = self.match
-            return m(s,i,"'") or m(s,i,'"') or m(s,i,"//") # or m(s,i,"/*")
-        #@+node:ekr.20121015183335.10166: *7* is_ws and is_ws_or_nl
-        def is_ws (self,ch):
-            return ch in ' \t'
-
-        def is_ws_or_nl (self,ch):
-            return ch in ' \t\n'
-        #@+node:ekr.20121015183335.10167: *6* prevNonWsChar and prevNonWsOrNlChar
-        def prevNonWsChar (self,s,i):
-
-            i -= 1
-            while i >= 0 and self.is_ws(s[i]):
-                i -= 1
-            return i
-
-        def prevNonWsOrNlChar (self,s,i):
-
-            i -= 1
-            while i >= 0 and self.is_ws_or_nl(s[i]):
-                i -= 1
-            return i
-        #@+node:ekr.20121015183335.10168: *6* remove...
-        #@+node:ekr.20121015183335.10169: *7* removeBlankLines
-        def removeBlankLines (self,aList):
-
-            i = 0
-            while i < len(aList):
-                j = i
-                while j < len(aList) and aList[j] in " \t":
-                    j += 1
-                if j == len(aList) or aList[j] == '\n':
-                    del aList[i:j+1]
-                else:
-                    i = self.skip_past_line(aList,i)
-        #@+node:ekr.20121015183335.10170: *7* removeExcessWs
-        def removeExcessWs (self,aList):
-
-            i = 0
-            i = self.removeExcessWsFromLine(aList,i)
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif self.match(aList,i,'\n'):
-                    i += 1
-                    i = self.removeExcessWsFromLine(aList,i)
-                else: i += 1
-        #@+node:ekr.20121015183335.10171: *7* removeExessWsFromLine
-        def removeExcessWsFromLine (self,aList,i):
-
-            assert(i==0 or aList[i-1] == '\n')
-            i = self.skip_ws(aList,i)
-                # Retain the leading whitespace.
-
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    break # safe
-                elif self.match(aList,i,'\n'):
-                    break
-                elif self.match(aList,i,' ') or self.match(aList,i,'\t'):
-                    # Replace all whitespace by one blank.
-                    j = self.skip_ws(aList,i)
-                    assert(j > i)
-                    aList[i:j] = [' ']
-                    i += 1 # make sure we don't go past a newline!
-                else: i += 1
-            return i
-        #@+node:ekr.20121015183335.10172: *7* removeMatchingBrackets
-        def removeMatchingBrackets (self,aList, i):
-
-            j = self.skip_to_matching_bracket(aList, i)
-            if j > i and j < len(aList):
-                # print "del brackets:", ''.join(aList[i:j+1])
-                c = aList[j]
-                if c == ')' or c == ']' or c == '}':
-                    del aList[j:j+1]
-                    del aList[i:i+1]
-                    # print "returning:", ''.join(aList[i:j])
-                    return j - 1
-                else: return j + 1
-            else: return j
-        #@+node:ekr.20121015183335.10173: *7* removeSemicolonsAtEndOfLines
-        def removeSemicolonsAtEndOfLines (self,aList):
-
-            i = 0
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif aList[i] == ';':
-                    j = self.skip_ws(aList,i+1)
-                    if (
-                        j >= len(aList) or
-                        self.match(aList,j,'\n') or
-                        self.match(aList,j,'#') or
-                        self.match(aList,j,"//")
-                    ):
-                        del aList[i]
-                    else: i += 1
-                else: i += 1
-        #@+node:ekr.20121015183335.10174: *7* removeTrailingWs
-        def removeTrailingWs (self,aList):
-
-            i = 0
-            while i < len(aList):
-                if self.is_ws(aList[i]):
-                    j = i
-                    i = self.skip_ws(aList,i)
-                    assert(j < i)
-                    if i >= len(aList) or aList[i] == '\n':
-                        # print "removing trailing ws:", `i-j`
-                        del aList[j:i]
-                        i = j
-                else: i += 1
-        #@+node:ekr.20121015183335.10175: *6* replace... & safe_replace
-        #@+node:ekr.20121015183335.10176: *7* replace
-        def replace (self,aList,findString,changeString):
-            
-            '''# Replaces all occurances of findString by changeString.
-            changeString may be the empty string, but not None.
-            '''
-
-            if not findString: return
-            
-            changeList = list(changeString)
-            n_find = len(findString)
-            n_change = len(changeString) # Valid to be zero.
-            i = 0
-            while i < len(aList):
-                if self.match(aList,i,findString):
-                    aList[i:i+n_find] = changeList
-                    i += n_change
-                else:
-                    i += 1
-        #@+node:ekr.20121015183335.10177: *7* replaceComments
-        def replaceComments (self,aList):
-
-            i = 0
-            while i < len(aList):
-                # Loop invariant: j > progress at end.
-                progress = i
-                if self.match(aList,i,"//"):
-                    aList[i:i+2] = ['#']
-                    j = self.skip_past_line(aList,i)
-                elif self.match(aList,i,'"') or self.match(aList,i,"'"):
-                    j = self.skip_string(aList,i)
-                else:
-                    j = i+1
-
-                # Defensive programming.
-                # if j == progress:
-                    # j += 1
-                assert j > progress
-                i = j
-        #@+node:ekr.20121015183335.10178: *8* munge_block_comment
-        def munge_block_comment (self,comment_lines):
-            
-            trace = False
-            n = len(comment_lines)
-            assert n > 0
-            
-            s = comment_lines[0]
-            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
-
-            if n == 1:
-                return ['%s# %s' % ((' ' * (w-1)),s.strip())]
-            
-            junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
-            i,result = 0,[]
-            for i in range(len(comment_lines)):
-                s = comment_lines[i]
-                if s.strip():
-                    result.append('%s# %s' % ((' ' * w),s.strip()))
-                elif i == n-1:
-                    pass # Omit the line entirely.
-                else:
-                    result.append('') # Add a blank line
-            
-            if trace:
-                g.trace()
-                for z in result: print(repr(z))
-
-            return result
-        #@+node:ekr.20121015183335.10180: *7* safe_replace
-        def safe_replace (self,aList,findString,changeString):
-            
-            '''Replaces occurances of findString by changeString,
-            but only outside of comments and strings.
-            changeString may be the empty string, but not None.
-            '''
-
-            if not findString: return
-
-            changeList = list(changeString)
-            n_find = len(findString)
-            n_change = len(changeString) # Valid to be zero.
-            match = self.match_word if findString[0].isalpha() else self.match
-            i = 0
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = self.skip_string_or_comment(aList,i)
-                elif match(aList,i,findString):
-                    aList[i:i+n_find] = changeList
-                    i += n_change
-                else:
-                    i += 1
-        #@+node:ekr.20121015183335.10181: *6* skip
-        #@+node:ekr.20121016024338.10191: *7* skip_line
-        def skip_line (self,s,i):
-
-            while i < len(s) and s[i] != '\n':
-                i += 1
-            return i
-        #@+node:ekr.20121015183335.10183: *7* skip_past_line
-        def skip_past_line (self,s,i):
-
-            while i < len(s) and s[i] != '\n':
-                i += 1
-            if i < len(s) and s[i] == '\n':
-                i += 1
-            return i
-        #@+node:ekr.20121015183335.10184: *7* skip_past_word
-        def skip_past_word (self,s,i):
-
-            assert(s[i].isalpha() or s[i]=='~')
-
-            # Kludge: this helps recognize dtors.
-            # if s[i]=='~':
-                # i += 1
-
-            while i < len(s):
-                ch = s[i]
-                if ch.isalnum() or ch =='_':
-                    i += 1
-                else:
-                    break
-            return i
-        #@+node:ekr.20121015183335.10185: *7* skip_string
-        def skip_string (self,s,i):
-
-            delim = s[i] # handle either single or double-quoted strings
-            assert(delim == '"' or delim == "'")
-            i += 1
-
-            while i < len(s):
-                if s[i] == delim:
-                    return i + 1
-                elif s[i] == '\\':
-                    i += 2
-                else:
-                    i += 1
-            return i
-        #@+node:ekr.20121015183335.10186: *7* skip_string_or_comment
-        def skip_string_or_comment (self,s,i):
-
-            if self.match(s,i,"'") or self.match(s,i,'"'):
-                j = self.skip_string(s,i)
-            elif self.match(s,i,"//"):
-                j = self.skip_past_line(s,i)
-            else: assert(0)
-            
-            # g.trace(repr(''.join(s[i:j])))
-            return j
-        #@+node:ekr.20121015183335.10187: *7* skip_to_matching_bracket
-        def skip_to_matching_bracket (self,s,i):
-
-            ch = s[i]
-            if   ch == '(': delim = ')'
-            elif ch == '{': delim = '}'
-            elif ch == '[': delim = ']'
-            else: assert(0)
-
-            i += 1
-            while i < len(s):
-                ch = s[i]
-                if self.is_string_or_comment(s,i):
-                    i = self.skip_string_or_comment(s,i)
-                elif ch == delim:
-                    return i
-                elif ch == '(' or ch == '[' or ch == '{':
-                    i = self.skip_to_matching_bracket(s,i)
-                    i += 1 # skip the closing bracket.
-                else: i += 1
-            return i
-        #@+node:ekr.20121015183335.10188: *7* skip_ws and skip_ws_and_nl
-        def skip_ws (self,aList,i):
-
-            while i < len(aList):
-                ch = aList[i]
-                if ch == ' ' or ch == '\t':
-                    i += 1
-                else: break
-            return i
-
-        def skip_ws_and_nl (self,aList,i):
-
-            while i < len(aList):
-                ch = aList[i]
-                if ch == ' ' or ch == '\t' or ch == '\n':
-                    i += 1
-                else: break
-            return i
         #@-others
-    #@-others
+    #@-<< class TS_To_Python (To_Python) >>
+
+    def cToPy (self,event):
+        
+        ''' The c-to-python command converts c or c++ text to python text.
+        The conversion is not perfect, but it eliminates a lot of tedious
+        text manipulation.'''
+
+        self.C_To_Python(self.c).go()
+        self.c.bodyWantsFocus()
 
     def tsToPy (self,event):
         
@@ -3943,12 +3349,9 @@ class editCommandsClass (baseEditCommandsClass):
         text. The conversion is not perfect, but it eliminates a lot of tedious
         text manipulation.'''
 
-        self.TS_to_python(self.c).go()
+        # Compiler stats: 35 files, 1489 nodes, 100 to 120 sec.
+        self.TS_To_Python(self.c).go()
         self.c.bodyWantsFocus()
-
-    #@+at
-    # 
-    # Compiler stats: 35 files, 1489 nodes, 100 to 120 sec.
     #@+node:ekr.20100209160132.5763: *3* cache (leoEditCommands)
     def clearAllCaches (self,event=None):
         

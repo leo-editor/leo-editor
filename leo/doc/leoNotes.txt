@@ -7066,5 +7066,86 @@ def update_style_sheet (self,w,key,value,selector=None):
                 # dy,new,vpos,vmax))
             # # after = vsb.sliderPosition()
             # # assert after == vpos,after
+#@+node:ekr.20121016093159.10296: *3* unused code from c-to-py
+if 0:
+    @others
+#@+node:ekr.20121016093159.10242: *4* get_user_types
+@nocolor
+@
+
+Change the following lists so they contain the types and classes used by your
+program. c-to-python converts::
+    
+    new aType(...)
+
+to::
+    
+    aType(...)
+    
+Change ivarsDict so it represents the instance variables (ivars) used by your
+program's classes. ivarsDict is a dictionary used to translate ivar i of class c
+to self.i. It also translates this->i to self.i.
+
+@c
+@color
+        
+def get_user_types (self):
+    
+    c = self.c
+
+    self.class_list = c.config.getData('c-to-python-class-list') or []
+    
+    self.type_list  = (
+        c.config.getData('c-to-python-type-list') or
+        ["char", "void", "short", "long", "int", "double", "float"]
+    )
+    aList = c.config.getData('c-to-python-ivars-dict')
+    if aList:
+        self.ivars_dict = self.parse_ivars_data(aList)
+    else:
+        self.ivars_dict = {}
+    
+    if 0:
+        #g.trace('class_list',self.class_list)
+        #g.trace('type_list',self.type_list)
+        g.trace('ivars_dict...')
+        d = self.ivars_dict
+        keys = list(d.keys())
+        for key in sorted(keys):
+            print('%s:' % (key))
+            for val in d.get(key):
+                print('  %s' % (val))
+    
+#@+node:ekr.20121016093159.10243: *4* parse_ivars_data
+def parse_ivars_data (self,aList):
+    
+    d,key = {},None
+    aList = [z.strip() for z in aList if z.strip()]
+    for s in aList:
+        if s.endswith(':'):
+            key = s[:-1].strip()
+        elif key:
+            ivars = [z.strip() for z in s.split(',') if z.strip()]
+            aList = d.get(key,[])
+            aList.extend(ivars)
+            d [key] = aList
+        else:
+            g.error('invalid @data c-to-python-ivars-dict',repr(s))
+            return {}
+
+    return d
+#@+node:ekr.20121016093159.10264: *4* isSectionDef
+# returns the ending index if i points to < < x > > =
+def isSectionDef (self,aList,i):
+
+    i = self.skip_ws(aList,i)
+    if not self.match(aList,i,"<<"):
+        return False
+    while i < len(aList) and aList[i] != '\n':
+        if self.match(aList,i,">>="):
+            return i+3
+        else:
+            i += 1
+    return False
 #@-all
 #@-leo

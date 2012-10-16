@@ -5946,9 +5946,9 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 #@+node:ekr.20081111084046.2: *4*  Commands C-E
-#@+node:ekr.20111104171708.3847: *5* @test C_to_python
+#@+node:ekr.20111104171708.3847: *5* @test c-to-python
 cpp = c.CPrettyPrinter(c)
-c2p = c.editCommands.C_to_python(c)
+c2p = c.editCommands.C_To_Python(c)
 fn = 'c tokenize test'
 p2 = g.findNodeInTree(c,p,fn)
 assert p2,'not found: %s' % (fn)
@@ -8666,6 +8666,73 @@ first line
         line b
 line c
 last line
+#@+node:ekr.20121016134831.3906: *5* @test typescript-to-python
+cpp = c.CPrettyPrinter(c)
+ts2p = c.editCommands.TS_To_Python(c)
+fn = 'typescript tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+ts2p.convertCodeList(aList)
+s = ''.join(aList)
+#@+node:ekr.20121016134831.3907: *6* typescript tokenize test
+@language javascript
+
+public attemptIncrementalUpdateUnit(previousScript: Script,scriptId: string,newSourceText: ISourceText,editRange: ScriptEditRange): UpdateUnitResult
+    self.logger.log("attemptIncrementalUpdateUnit(\"" + scriptId + "\")")
+    if editRange === None:
+        throw Error("editRange should be valid")
+    var scope1 = self.getEnclosingScopeContextIfSingleScopeEdit(previousScript,scriptId,newSourceText,editRange)
+    if scope1 === None:
+        return None
+    var newScopeLength = scope1.scopeStartAST.limChar - scope1.scopeStartAST.minChar + editRange.delta
+    # Heuristic: if the range to reparse is too big,bail out.
+    # This is because a full parse will be faster than an incremental parse followed by all the necessary fix-ups
+    if newScopeLength >= newSourceText.getLength()/ 2:
+        self.logger.log("  Bailing out because range of scope to reparse(" + newScopeLength + " characters)is greater than half the size of the source text")
+        return None
+    # Capture parsing errors so that they are part of "updateResult"
+    var parseErrors: TypeScript.ErrorEntry:[] = []
+    var errorCapture = function(minChar: number,charLen: number,message: string,unitIndex: number): void
+        parseErrors.push(TypeScript.ErrorEntry:(unitIndex,minChar,minChar + charLen,message))
+    var quickParseResult = TypeScript.quickParse(self.logger,scope1.scopeStartAST,newSourceText,scope1.scopeStartAST.minChar,scope1.scopeStartAST.minChar + newScopeLength,errorCapture)
+    if quickParseResult.endLexState != TypeScript.LexState.Start:
+        self.logger.log("  Bailing out because scope contains unterminated comment")
+        return None
+    var scriptFragment = quickParseResult.Script
+    if scriptFragment.vars.members.length !== 0:
+        self.logger.log("  Bailing out because new source text defines variables")
+        return None
+    #if(scriptFragment.scopes.members.length !== 1)
+    #    logger.log("  Bailing out because new source text defines more than one scope(or none)");
+    #    return null;
+    #
+    # This detects adding close curlies,since they have the side effect of having the parser
+    # parse more members in the scope range.
+    if scriptFragment.bod.members.length !== 1:
+        self.logger.log("  Bailing out because new source text defines more than one scope(or none)")
+        return None
+    var oldScope = scope1.scopeStartAST
+    var newScope = scriptFragment.bod.members[0]
+    if oldScope.nodeType != newScope.nodeType:
+        self.logger.log("  Bailing out because new source text does not define the same scope type as the existing scope")
+        return None
+    if not (<any>oldScope).leftCurlyCount or not (<any>oldScope).rightCurlyCount:
+        self.logger.log("  Bailing out because sopce doesn't have left/right curly count")
+        return None
+    if(<any>oldScope).leftCurlyCount !==(<any>newScope).leftCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)left curly braces")
+        return None
+    if(<any>oldScope).rightCurlyCount !==(<any>newScope).rightCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)right curly braces")
+        return None
+    if newScope.minChar !== 0:
+        self.logger.log("  Bailing out because new function declaration does not start at position 0")
+        return None
+    if newScope.limChar !== newScopeLength:
+        self.logger.log("  Bailing out because new function declaration does not end at the new end position")
+        return None
+    return TypeScript.UpdateUnitResult.singleScopeEdits(previousScript,scriptFragment,oldScope,newScope,editRange,parseErrors)
 #@+node:ekr.20061101121602.346: *5* @test untabify
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.347: *6* work
