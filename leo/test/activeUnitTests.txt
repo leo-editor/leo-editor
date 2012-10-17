@@ -2228,9 +2228,16 @@ for p2,h2 in table:
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
 
-if 0: # This can not be run locally: it contains another Tk event loop.
-    controller = leoBridge.controller(gui='nullGui',verbose=False)
-    g = controller.globals()
+if g.app.isExternalUnitTest:
+
+    # This can not be run locally: it contains another Tk event loop.
+    b = leoBridge.controller(gui='nullGui',verbose=False)
+    g = b.globals()
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(path)
+    c = b.openLeoFile(path)
+    assert c
+    assert c.rootPosition()
 #@+node:ekr.20110608135658.3377: *3* leoChapters
 #@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
 # cc will be None when unit tests run dynamically.

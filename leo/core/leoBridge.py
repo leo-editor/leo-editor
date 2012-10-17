@@ -91,7 +91,7 @@ class bridgeController:
         '''Init the Leo app to which this class gives access.
         This code is based on leo.run().'''
         
-        trace = False
+        trace = True
         if not self.isValidPython(): return
         #@+<< initLeo imports >>
         #@+node:ekr.20070227093629.1: *4* << initLeo imports >>
@@ -191,6 +191,7 @@ class bridgeController:
             g.app.log = g.app.gui.log = log = g.app.nullLog
             log.isNull = False
             log.enabled = True # Allow prints from nullLog.
+            log.logInited = True # Bug fix: 2012/10/17.
         elif self.guiName == 'qt':
             import leo.plugins.qtGui as qtGui
             g.app.gui = qtGui.leoQtGui()
@@ -314,7 +315,7 @@ class bridgeController:
 
         g = self.g
 
-        return g and g.app and g.app.gui
+        return bool(g and g.app and g.app.gui)
     #@+node:ekr.20070227092442.5: *3* openLeoFile & helpers (bridgeController)
     def openLeoFile (self,fileName):
 
@@ -332,9 +333,6 @@ class bridgeController:
                 g.app.gui.log = log = c.frame.log
                 log.isNull = False
                 log.enabled = True
-
-            # g.pr('createGui:','g.app:',id(g.app),g.app)
-            # g.pr('createGui:','g.app.gui',g.app.gui)
             return c
         else:
             return None
@@ -372,7 +370,7 @@ class bridgeController:
                     g.trace('g.openWithFileName: %0.2fsec' % (t2-t1))
                 if c: return c
             else:
-                g.es_print('file not found', fileName,'creating new window')
+                print('file not found: %s. creating new window' % (fileName))
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c = g.app.newCommander(fileName)
         frame = c.frame

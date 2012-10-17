@@ -2577,7 +2577,12 @@ def actualColor(color):
     }
     
     setting = d.get(color)
-    color2 = c.config.getColor(setting) or color if setting else color
+    
+    # Bug fix: 2012/10/17: c.config may not yet exist.
+    if c and c.config and setting:
+        color2 = c.config.getColor(setting)
+    else:
+        color2 = color
     
     # g.trace(color,color2)
     return color2
