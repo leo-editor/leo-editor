@@ -79,7 +79,7 @@
 </v>
 </v>
 </v>
-<v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
+<v t="ville.20090630234425.12395" a="E"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
 <v t="ville.20090630234425.12396"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
@@ -96,6 +96,7 @@
 <v t="ville.20091008194838.3931"><vh>@data contextmenu_commands</vh></v>
 <v t="ville.20120303151721.3838"><vh>@bool use_body_focus_border = False</vh></v>
 </v>
+<v t="ville.20121024204851.1498"><vh>Using your favorite editor to edit nodes</vh></v>
 </v>
 <v t="ville.20090701182804.1550"><vh>Search and replace</vh></v>
 <v t="ville.20090701182804.1551"><vh>Minibuffer</vh></v>
@@ -826,5 +827,25 @@ need to reopen the document to make it appear.
 
 g.es("p.h is " + p.h)</t>
 <t tx="ville.20120303151721.3838">Avoid red focus borders in body pane (if it's not in your aesthetic taste)</t>
+<t tx="ville.20121024204851.1498">If you occasionally want to use an alternative editor to
+edit body text (e.g. when Leo is still missing a feature
+your regular editor has), you can right click on a node and
+select "edit in FOO" (where FOO is your alternative editor).
+You can change the suggested editor by setting environment
+variable LEO_EDITOR - as an example, add this to your
+~/.bashrc:
+
+export LEO_EDITOR=gedit
+
+(you obviously need to parse ~/.bashrc before it takes
+effect).
+
+If LEO_EDITOR is not defined, EDITOR is used instead.
+
+You can also change the external editor directly from Leo by
+executing this as a Leo script:
+
+g.app.db['LEO_EDITOR'] = "gvim"
+</t>
 </tnodes>
 </leo_file>
