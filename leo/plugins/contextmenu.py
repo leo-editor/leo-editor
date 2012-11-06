@@ -92,17 +92,19 @@ def openwith_rclick(c,p, menu):
     head, bname = parts
     fname = p.anyAtFileNodeName()
 
-    if fname is None:
+    if not fname and head != "@path":
         return
 
     path = g.scanAllAtPathDirectives(c,p)
     editor = g.guessExternalEditor()
 
+
+
     # g.trace(repr(path),repr(fname))
 
     absp = g.os_path_finalize_join(path, fname)
     
-    exists = os.path.exists(absp)
+    exists = os.path.exists(absp)    
     
     def openwith_rclick_cb():
         #print "Editing", path, fname        
@@ -157,7 +159,7 @@ def openwith_rclick(c,p, menu):
         
         
 
-    if head != "@path":
+    if exists and head != "@path":
         if editor:
             action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
             action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
