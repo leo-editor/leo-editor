@@ -214,7 +214,7 @@ def scanOptions():
     add('-g', help = 'gui plugins')
     add('-p', help = 'plugins')
     add('-r', help = 'recent')
-    add('-s', help = 'suppressions')
+    # add('-s', help = 'suppressions')
     add('-t', help = 'static type checking')
     
     # Parse the options.
@@ -226,7 +226,7 @@ def scanOptions():
     elif options.g: return 'gui'
     elif options.p: return 'plugins'
     elif options.r: return 'recent'
-    elif options.s: return 'suppressions'
+    # elif options.s: return 'suppressions'
     elif options.t: return 'stc'
     else:           return 'all'
 #@-others

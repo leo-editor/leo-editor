@@ -2846,7 +2846,7 @@ def pr(*args,**keys):
         sys.stdout.write(s2)
     else:
         # Good for production: queues 'reading settings' until after signon.
-        if app.logInited:
+        if app.logInited and sys.stdout: # Bug fix: 2012/11/13.
             sys.stdout.write(s2)
         else:
             app.printWaiting.append(s2)

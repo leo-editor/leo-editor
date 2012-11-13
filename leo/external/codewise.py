@@ -372,7 +372,7 @@ def pr(*args,**keys): # (codewise!)
         s2 = g.toEncodedString(s,encoding,reportErrors=False)
 
     if 1: # Good for production: queues 'reading settings' until after signon.
-        if app.logInited:
+        if app.logInited and sys.stdout: # Bug fix: 2012/11/13.
             sys.stdout.write(s2)
         else:
             app.printWaiting.append(s2)

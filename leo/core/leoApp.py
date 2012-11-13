@@ -161,6 +161,7 @@ class LeoApp:
 
         # Unit testing...
         self.isExternalUnitTest = False # True: we are running a unit test externally.
+        self.runningAllUnitTests = False# True: we are running all unit tests (Only for local tests).
         self.unitTestDict = {}          # For communication between unit tests and code.
         self.unitTestGui = None         # A way to override the gui in external unit tests.
         self.unitTesting = False        # True if unit testing.

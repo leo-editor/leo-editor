@@ -688,9 +688,7 @@ class runTestExternallyHelperClass:
         env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
 
         if False:
-            keys = list(os.environ.keys())
-            keys.sort()
-            for z in keys:
+            for z in sorted(os.environ.keys()):
                 print(z,os.environ.get(z))
 
         if trace: g.trace('*** spawning test process',path)
@@ -734,6 +732,7 @@ class TestManager:
 
         try:
             g.unitTesting = g.app.unitTesting = True
+            g.app.runningAllUnitTests = all
             g.app.unitTestDict["fail"] = False
             g.app.unitTestDict['c'] = c
             g.app.unitTestDict['g'] = g
