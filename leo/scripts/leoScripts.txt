@@ -5888,6 +5888,7 @@ def importFiles (theDir,type=None,recursive=False):
 import os
 import time
 
+use_at_edit = False # True: create @edit nodes
 safe_at_file = True # True: create @@file nodes instead of @file nodes.
 oneFile = False # True: only import one file.
 
@@ -5936,7 +5937,16 @@ def import_dir(self,c,root,theDir,theTypes,oneFile=False,recursive=True):
         c.selectPosition(child,enableRedrawFlag=False)
     if files2:
         if oneFile: files2 = [files2[0]]
-        c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False) # '@auto' causes problems.
+        if use_at_edit:
+            for fn in files2:
+                parent = child or root
+                p = parent.insertAsLastChild()
+                p.h = fn.replace('\\','/')
+                s,e = g.readFileIntoString(fn,encoding='utf-8',kind='@edit')
+                p.b = s
+        else:
+            c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False)
+                # '@auto' causes problems.
     if dirs:
         for theDir in sorted(dirs):
             prefix = theDir
@@ -6208,7 +6218,8 @@ def post_process (self,c,p,prefix,theTypes):
     prefix = prefix.replace('\\','/')
     
     # self.dump_headlines(root.copy())
-    self.remove_empty_nodes(c,root.copy())
+    if not use_at_edit:
+        self.remove_empty_nodes(c,root.copy())
     self.minimize_headlines(c,root.copy().firstChild(),prefix,theTypes)
     self.clear_dirty_bits(c,root.copy())
     
@@ -6257,7 +6268,9 @@ def minimize_headlines (self,c,p,prefix,theTypes):
             self.minimize_headlines(c,p,prefix,theTypes)
     elif h2.find('/') <= 0 and ends_with_ext:
             if h2.startswith('/'): h2 = h2[1:]
-            if safe_at_file:
+            if use_at_edit:
+                p.h = '@edit %s' % (h2)
+            elif safe_at_file:
                 if trace: g.trace('@@file %s' % (h2))
                 p.h = '@@file %s' % (h2)
             else:
@@ -6310,7 +6323,8 @@ def run (self,c,p,theDir,theTypes,oneFile=False,recursive=True):
         n = 0
         for p in root.self_and_subtree():
             n += 1
-        self.clean_all(c,root.copy())
+        if not use_at_edit:
+            self.clean_all(c,root.copy())
         self.post_process(c,root.copy(),theDir,theTypes)
         c.undoer.afterChangeTree(p1,'recursive-import',bunch)
     finally:
