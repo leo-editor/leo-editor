@@ -74,6 +74,7 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 
 import fnmatch, re
+import threadutil
 
 from leo.plugins import qt_quicksearch
 
@@ -254,9 +255,6 @@ class LeoQuickSearchWidget(QtGui.QWidget):
                     
         self.c = c
 
-    #@+node:ville.20121118145100.3615: *3* liveUpdate
-    def liveUpdate(self):
-        self.returnPressed()
     #@+node:ekr.20111015194452.15696: *3* returnPressed
     def returnPressed(self):
 
@@ -270,12 +268,26 @@ class LeoQuickSearchWidget(QtGui.QWidget):
             self.scon.doSearch(t)
 
         # commenting out for now
-        """
         if self.scon.its:
             self.ui.listWidget.blockSignals(True) # don't jump to first hit
             self.ui.listWidget.setFocus()
             self.ui.listWidget.blockSignals(False) # ok, respond if user moves
-        """
+    #@+node:ville.20121118193144.3622: *3* liveUpdate
+    def liveUpdate(self):
+
+        t = g.u(self.ui.lineEdit.text())
+        if not t.strip():
+            return
+
+        if t == g.u('m'):
+            self.scon.doShowMarked()
+            return
+            
+        self.scon.worker.set_input(t)
+        
+        
+        
+
     #@-others
 #@+node:ekr.20111014074810.15659: ** matchLines
 def matchlines(b, miter):
@@ -297,6 +309,22 @@ class QuickSearchController:
         self.c = c
         self.lw = w = listWidget # A QListWidget.
         self.its = {} # Keys are id(w),values are tuples (p,pos)
+        self.worker = threadutil.UnitWorker()
+        def searcher(inp):
+            res =  self.bgSearch(inp)
+            print "searcher", res
+            
+        def dumper(out):
+            # always run on ui thread
+            print "dumper",out
+            hm,bm = out
+            self.addHeadlineMatches(hm)
+            self.addBodyMatches(bm)
+            
+        self.worker.set_worker(searcher)
+        self.worker.set_output_f(dumper)
+        self.worker.start()
+        
 
         # we want both single-clicks and activations (press enter)
         w.connect(w,
@@ -387,6 +415,26 @@ class QuickSearchController:
         self.addBodyMatches(bm)
 
         self.lw.insertItem(0, "%d hits"%self.lw.count())
+    #@+node:ville.20121118193144.3620: *3* bgSearch
+    def bgSearch(self, pat):
+
+        #self.clear()
+
+        if not pat.startswith('r:'):
+            hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
+            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            flags = re.IGNORECASE
+        else:
+            hpat = pat[2:]
+            bpat = pat[2:]
+            flags = 0
+
+        hm = self.c.find_h(hpat, flags)
+        #self.addHeadlineMatches(hm)
+        bm = self.c.find_b(bpat, flags)
+        #self.addBodyMatches(bm)
+        return hm, bm
+        #self.lw.insertItem(0, "%d hits"%self.lw.count())
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):
 

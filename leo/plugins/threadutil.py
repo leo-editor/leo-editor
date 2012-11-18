@@ -2,7 +2,7 @@ from PyQt4 import QtCore, QtGui
 
 import logging,time
 
-log = logging.getLogger("out")
+#log = logging.getLogger("out")
 
 
 class ThreadQueue:
@@ -21,7 +21,7 @@ class ThreadQueue:
             ne = self.threads.pop()
             ne.start()
 
-_tq = ThreadQueue()
+#_tq = ThreadQueue()
 
 
 def enq_task(r):
@@ -148,9 +148,11 @@ class UnitWorker(QtCore.QThread):
 
     def set_input(self, inp):
         self.input = inp
+        print "Input",inp
         self.cond.wakeAll()
 
     def do_work(self):
+        print "Doing work", self.worker, self.input
         output = self.worker(self.input)
         def L():
             self.output_f(output)
@@ -174,10 +176,14 @@ def main():
     # stupid test
     uw = UnitWorker()
     def W(inp):
-        print inp.upper()
+        return inp.upper()
+
+    def O(out):
+        print "output",out
 
 
     uw.set_worker(W)
+    uw.set_output_f(O)
     uw.start()
     time.sleep(1)
     uw.set_input("Hooba hey")
