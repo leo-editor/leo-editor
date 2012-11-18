@@ -246,10 +246,17 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
         self.connect(self.ui.lineEdit,
             QtCore.SIGNAL("returnPressed()"),
-            self.returnPressed)
-
+            self.returnPressed)    
+        
+        self.connect(self.ui.lineEdit, 
+            QtCore.SIGNAL("textChanged(QString)"), 
+            self.liveUpdate)
+                    
         self.c = c
 
+    #@+node:ville.20121118145100.3615: *3* liveUpdate
+    def liveUpdate(self):
+        self.returnPressed()
     #@+node:ekr.20111015194452.15696: *3* returnPressed
     def returnPressed(self):
 
@@ -262,10 +269,13 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         else:        
             self.scon.doSearch(t)
 
+        # commenting out for now
+        """
         if self.scon.its:
             self.ui.listWidget.blockSignals(True) # don't jump to first hit
             self.ui.listWidget.setFocus()
             self.ui.listWidget.blockSignals(False) # ok, respond if user moves
+        """
     #@-others
 #@+node:ekr.20111014074810.15659: ** matchLines
 def matchlines(b, miter):
