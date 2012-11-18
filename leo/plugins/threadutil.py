@@ -129,15 +129,63 @@ class NowOrLater:
                 self.scheduled = True
             else:
                 print "already sched"
-            
-            
         
-        
-        
-        
+
+class UnitWorker(QtCore.QThread):
+    """ Work on one work item at a time, start new one when it's done """
+
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        self.cond = QtCore.QWaitCondition()
+        self.mutex = QtCore.QMutex()
+        self.input = None
+
+    def set_worker(self,f):
+        self.worker = f
+
+    def set_output_f(self,f):
+        self.output_f = f
+
+    def set_input(self, inp):
+        self.input = inp
+        self.cond.wakeAll()
+
+    def do_work(self):
+        output = self.worker(self.input)
+        def L():
+            self.output_f(output)
+        later(L)
+
+
+    def run(self):
+        m = self.mutex
+
+        while 1:
+            m.lock()
+            self.cond.wait(m)
+            if self.input is not None:
+                self.do_work()
+            m.unlock()
+
+
+
         
 def main():
     # stupid test
+    uw = UnitWorker()
+    def W(inp):
+        print inp.upper()
+
+
+    uw.set_worker(W)
+    uw.start()
+    time.sleep(1)
+    uw.set_input("Hooba hey")
+    uw.set_input("Hooba haoaoaoey")
+    time.sleep(1)
+    uw.set_input("oeueoueouHooba hey")
+    time.sleep(1)
+
     f = open("/etc/passwd")
     
 
