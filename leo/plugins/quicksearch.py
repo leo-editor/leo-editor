@@ -278,6 +278,9 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         t = g.u(self.ui.lineEdit.text())
         if not t.strip():
             return
+            
+        if len(t) < 3:
+            return
 
         if t == g.u('m'):
             self.scon.doShowMarked()
@@ -310,19 +313,38 @@ class QuickSearchController:
         self.lw = w = listWidget # A QListWidget.
         self.its = {} # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
+        
         def searcher(inp):
+            print("searcher", inp)
             res =  self.bgSearch(inp)
-            print "searcher", res
             
-        def dumper(out):
+            return res
+            
+            
+        def dumper():
             # always run on ui thread
-            print "dumper",out
-            hm,bm = out
+            out = self.worker.output
+            print("dumper")
+            self.throttler.add(out)
+            
+            
+            
+        def throttledDump(lst):
+            """ dumps the last output """
+            print "Throttled dump"
+            #if not lst:
+            #    return
+            hm,bm = lst[-1]
+            self.clear()
             self.addHeadlineMatches(hm)
             self.addBodyMatches(bm)
+
             
+        self.throttler = threadutil.NowOrLater(throttledDump)        
+        
         self.worker.set_worker(searcher)
-        self.worker.set_output_f(dumper)
+        #self.worker.set_output_f(dumper)
+        self.worker.resultReady.connect(dumper)
         self.worker.start()
         
 
@@ -431,9 +453,9 @@ class QuickSearchController:
 
         hm = self.c.find_h(hpat, flags)
         #self.addHeadlineMatches(hm)
-        bm = self.c.find_b(bpat, flags)
+        #bm = self.c.find_b(bpat, flags)
         #self.addBodyMatches(bm)
-        return hm, bm
+        return hm, []
         #self.lw.insertItem(0, "%d hits"%self.lw.count())
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):

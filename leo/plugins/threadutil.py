@@ -134,11 +134,14 @@ class NowOrLater:
 class UnitWorker(QtCore.QThread):
     """ Work on one work item at a time, start new one when it's done """
 
+    resultReady = QtCore.pyqtSignal()    
+
     def __init__(self):
         QtCore.QThread.__init__(self)
         self.cond = QtCore.QWaitCondition()
         self.mutex = QtCore.QMutex()
         self.input = None
+
 
     def set_worker(self,f):
         self.worker = f
@@ -147,15 +150,18 @@ class UnitWorker(QtCore.QThread):
         self.output_f = f
 
     def set_input(self, inp):
-        self.input = inp
-        print "Input",inp
+        self.input = inp        
         self.cond.wakeAll()
 
-    def do_work(self):
-        print "Doing work", self.worker, self.input
-        output = self.worker(self.input)
+    def do_work(self, inp):
+        print("Doing work", self.worker, self.input)
+        self.output = self.worker(inp)
+        #self.output_f(output)        
+
+        self.resultReady.emit()
         def L():
-            self.output_f(output)
+            #print "Call output"
+            self.output_f(self.output)
         later(L)
 
 
@@ -165,9 +171,12 @@ class UnitWorker(QtCore.QThread):
         while 1:
             m.lock()
             self.cond.wait(m)
-            if self.input is not None:
-                self.do_work()
+            inp = self.input
+            self.input = None
             m.unlock()
+            if inp is not None:
+                self.do_work(inp)
+            
 
 
 
