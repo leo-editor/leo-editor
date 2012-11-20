@@ -81,7 +81,7 @@
 </v>
 <v t="ville.20090630234425.12395" a="E"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
 <v t="ville.20090806210322.1435"><vh>suggested style sheets</vh>
@@ -95,6 +95,7 @@
 <v t="ville.20090806182306.6324"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ville.20091008194838.3931"><vh>@data contextmenu_commands</vh></v>
 <v t="ville.20120303151721.3838"><vh>@bool use_body_focus_border = False</vh></v>
+<v t="ville.20121120220349.2862"><vh>@shortcut key bindings</vh></v>
 </v>
 <v t="ville.20121024204851.1498"><vh>Using your favorite editor to edit nodes</vh></v>
 </v>
@@ -399,7 +400,6 @@ plugins_menu.py
 leo_to_html.py
 mod_scripting.py
 quicksearch.py
-UNL.py
 contextmenu.py
 nav_qt.py
 
@@ -847,5 +847,6 @@ executing this as a Leo script:
 
 g.app.db['LEO_EDITOR'] = "gvim"
 </t>
+<t tx="ville.20121120220349.2862">go-anywhere = ctrl+g</t>
 </tnodes>
 </leo_file>

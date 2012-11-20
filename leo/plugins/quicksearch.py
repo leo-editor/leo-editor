@@ -188,10 +188,12 @@ def install_qt_quicksearch_tab(c):
     @g.command('go-anywhere')
     def find_popout_f(event):
         c = event['c']
-        w = LeoQuickSearchWidget(c, mode="popout")
+        w = LeoQuickSearchWidget(c, mode="popout", parent = c.frame.top)
+        w.setGeometry(400,50, 400, 500)
         #w.setParent(c.frame.top)
         #w.setWindowFlags(Qt.FramelessWindowHint)
         w.show()
+        w.setFocus(Qt.OtherFocusReason)
         #w.setGeometry(100,0,800,500)
         c._popout = w
         
@@ -238,7 +240,7 @@ class QuickSearchEventFilter(QtCore.QObject):
         #g.trace(eventType,eventType in kinds)
         
         if eventType == ev.KeyRelease:
-            print "key event"
+            #print "key event"
             lw = self.listWidget
             k = event.key()
             moved = False
@@ -258,11 +260,6 @@ class QuickSearchEventFilter(QtCore.QObject):
             if moved:
                 self.lineEdit.setFocus(True)
                 self.lineEdit.deselect()
-                
-                
-                
-                
-                print "up"
             #self.w.onKeyPress(event)
             
         return False
@@ -281,15 +278,20 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
 
+        # set to True after return is pressed in nav mode, to disable live updates until field is cleaned again
+        self.frozen = False
         w = self.ui.listWidget
         
         cc = QuickSearchController(c,w)
         self.scon = cc
 
         if mode == "popout":
+            self.setWindowTitle("Go anywhere")
             self.connect(self.ui.lineEdit, 
                 QtCore.SIGNAL("returnPressed()"),
                 self.selectAndDismiss)
+            self.setFocus()
+            self.ui.lineEdit.setFocus()
         else:
             self.connect(self.ui.lineEdit,
                 QtCore.SIGNAL("returnPressed()"),
@@ -309,6 +311,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
     #@+node:ekr.20111015194452.15696: *3* returnPressed
     def returnPressed(self):
 
+        self.scon.freeze()
         t = g.u(self.ui.lineEdit.text())
         if not t.strip():
             return
@@ -318,7 +321,6 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         else:        
             self.scon.doSearch(t)
 
-        # commenting out for now
         if self.scon.its:
             self.ui.listWidget.blockSignals(True) # don't jump to first hit
             self.ui.listWidget.setFocus()
@@ -332,11 +334,17 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
         t = g.u(self.ui.lineEdit.text())
         if not t.strip():
+            if self.scon.frozen:
+                self.scon.freeze(False)
+                self.clear()
             return
             
         if len(t) < 3:
             return
 
+        if self.scon.frozen:
+            return
+            
         if t == g.u('m'):
             self.scon.doShowMarked()
             return
@@ -364,13 +372,17 @@ class QuickSearchController:
     #@+node:ekr.20111015194452.15685: *3* __init__
     def __init__(self,c,listWidget):
 
+
         self.c = c
         self.lw = w = listWidget # A QListWidget.
         self.its = {} # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
-        
+
+        self.frozen = False    
         def searcher(inp):
-            print("searcher", inp)
+            #print("searcher", inp)
+            if self.frozen:
+                return
             exp = inp.replace(" ", "*")
             res =  self.bgSearch(exp)
             
@@ -379,17 +391,22 @@ class QuickSearchController:
             
         def dumper():
             # always run on ui thread
+            if self.frozen:
+                return
             out = self.worker.output
-            print("dumper")
+            #print("dumper")
             self.throttler.add(out)
             
             
             
         def throttledDump(lst):
             """ dumps the last output """
-            print "Throttled dump"
+            #print "Throttled dump"
             # we do get called with empty list on occasion
+            
             if not lst:
+                return
+            if self.frozen: 
                 return
             hm,bm = lst[-1]
             self.clear()
@@ -419,6 +436,10 @@ class QuickSearchController:
             self.onSelectItem)
             
         # Doesn't work.
+    #@+node:ville.20121120225024.3636: *3* freeze
+    def freeze(self, val = True):
+        self.frozen = val   
+     
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, poslist):
                 
@@ -497,6 +518,9 @@ class QuickSearchController:
 
         #self.clear()
 
+        if self.frozen:
+            return
+            
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
             bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")

@@ -120,15 +120,16 @@ class NowOrLater:
             self.scheduled = False
         
         if (now - self.lasttime) > self.granularity:
-            print "now"
+            #print "now"
             callit()
         else:
             if not self.scheduled:
-                print "later"
+                #print "later"
                 QtCore.QTimer.singleShot(self.granularity * 1000,callit)
                 self.scheduled = True
             else:
-                print "already sched"
+                pass
+                #print "already sched"
         
 
 class UnitWorker(QtCore.QThread):
@@ -154,7 +155,7 @@ class UnitWorker(QtCore.QThread):
         self.cond.wakeAll()
 
     def do_work(self, inp):
-        print("Doing work", self.worker, self.input)
+        #print("Doing work", self.worker, self.input)
         self.output = self.worker(inp)
         #self.output_f(output)        
 
@@ -188,7 +189,8 @@ def main():
         return inp.upper()
 
     def O(out):
-        print "output",out
+        pass
+        #print "output",out
 
 
     uw.set_worker(W)
@@ -201,8 +203,6 @@ def main():
     uw.set_input("oeueoueouHooba hey")
     time.sleep(1)
 
-    f = open("/etc/passwd")
-    
 
 if __name__ == "__main__":    
     main()    
