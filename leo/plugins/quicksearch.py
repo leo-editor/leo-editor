@@ -72,6 +72,7 @@ from leo.core import leoNodes
 from PyQt4.QtGui import QListWidget, QListWidgetItem
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+from PyQt4.QtCore import Qt
 
 import fnmatch, re
 import threadutil
@@ -133,7 +134,7 @@ def install_qt_quicksearch_tab(c):
     
     #tabw = c.frame.top.tabWidget
 
-    wdg = LeoQuickSearchWidget(c)
+    wdg = LeoQuickSearchWidget(c, mode="nav")
     qsWidgent = wdg
     c.frame.log.createTab("Nav", widget = wdg)
     #tabw.addTab(wdg, "QuickSearch")
@@ -183,6 +184,19 @@ def install_qt_quicksearch_tab(c):
         #c.frame.log.selectTab('Nav')
         wdg.scon.doShowMarked()
 
+
+    @g.command('go-anywhere')
+    def find_popout_f(event):
+        c = event['c']
+        w = LeoQuickSearchWidget(c, mode="popout")
+        #w.setParent(c.frame.top)
+        #w.setWindowFlags(Qt.FramelessWindowHint)
+        w.show()
+        #w.setGeometry(100,0,800,500)
+        c._popout = w
+        
+        
+        
     c.frame.nav = wdg            
 
     # make activating this tab activate the input box
@@ -203,26 +217,53 @@ class QuickSearchEventFilter(QtCore.QObject):
 
     #@+others
     #@+node:ekr.20111015194452.15718: *3*  ctor (leoQtEventFilter)
-    def __init__(self,c,w):
+    def __init__(self,c,w, lineedit):
 
         # Init the base class.
         QtCore.QObject.__init__(self)
         
         self.c = c
-        self.w = w
+        self.listWidget = w
+        self.lineEdit = lineedit
     #@+node:ekr.20111015194452.15719: *3* eventFilter
     def eventFilter(self,obj,event):
 
+        #print "Event filter"
         eventType = event.type()
         ev = QtCore.QEvent
         
         # QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
         kinds = [ev.KeyPress,ev.KeyRelease]
         
-        g.trace(eventType,eventType in kinds)
+        #g.trace(eventType,eventType in kinds)
         
-        if eventType in kinds:
-            self.w.onKeyPress(event)
+        if eventType == ev.KeyRelease:
+            print "key event"
+            lw = self.listWidget
+            k = event.key()
+            moved = False
+            if k == Qt.Key_Up:
+                lw.setCurrentRow(lw.currentRow()-1)
+                moved = True            
+            if k == Qt.Key_Down:
+                lw.setCurrentRow(lw.currentRow()+1)
+                moved = True
+
+            if k == Qt.Key_Return:
+                lw.setCurrentRow(lw.currentRow()+1)
+                moved = True
+
+                
+                
+            if moved:
+                self.lineEdit.setFocus(True)
+                self.lineEdit.deselect()
+                
+                
+                
+                
+                print "up"
+            #self.w.onKeyPress(event)
             
         return False
     #@-others
@@ -233,7 +274,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
     #@+others
     #@+node:ekr.20111015194452.15695: *3*  ctor
-    def __init__(self,c,parent=None):
+    def __init__(self,c, mode = "nav", parent=None):
         
         QtGui.QWidget.__init__(self, parent)
 
@@ -245,13 +286,23 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         cc = QuickSearchController(c,w)
         self.scon = cc
 
-        self.connect(self.ui.lineEdit,
-            QtCore.SIGNAL("returnPressed()"),
-            self.returnPressed)    
+        if mode == "popout":
+            self.connect(self.ui.lineEdit, 
+                QtCore.SIGNAL("returnPressed()"),
+                self.selectAndDismiss)
+        else:
+            self.connect(self.ui.lineEdit,
+                QtCore.SIGNAL("returnPressed()"),
+                self.returnPressed)    
+
         
         self.connect(self.ui.lineEdit, 
             QtCore.SIGNAL("textChanged(QString)"), 
             self.liveUpdate)
+
+        self.ev_filter = QuickSearchEventFilter(c,w, self.ui.lineEdit)
+        self.ui.lineEdit.installEventFilter(self.ev_filter)
+
                     
         self.c = c
 
@@ -272,6 +323,10 @@ class LeoQuickSearchWidget(QtGui.QWidget):
             self.ui.listWidget.blockSignals(True) # don't jump to first hit
             self.ui.listWidget.setFocus()
             self.ui.listWidget.blockSignals(False) # ok, respond if user moves
+
+    def selectAndDismiss(self):
+        self.hide()
+
     #@+node:ville.20121118193144.3622: *3* liveUpdate
     def liveUpdate(self):
 
@@ -285,7 +340,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         if t == g.u('m'):
             self.scon.doShowMarked()
             return
-            
+                    
         self.scon.worker.set_input(t)
         
         
@@ -316,7 +371,8 @@ class QuickSearchController:
         
         def searcher(inp):
             print("searcher", inp)
-            res =  self.bgSearch(inp)
+            exp = inp.replace(" ", "*")
+            res =  self.bgSearch(exp)
             
             return res
             
@@ -332,8 +388,9 @@ class QuickSearchController:
         def throttledDump(lst):
             """ dumps the last output """
             print "Throttled dump"
-            #if not lst:
-            #    return
+            # we do get called with empty list on occasion
+            if not lst:
+                return
             hm,bm = lst[-1]
             self.clear()
             self.addHeadlineMatches(hm)
@@ -362,8 +419,6 @@ class QuickSearchController:
             self.onSelectItem)
             
         # Doesn't work.
-        # ev_filter = QuickSearchEventFilter(c,w)
-        # w.installEventFilter(ev_filter)
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, poslist):
                 

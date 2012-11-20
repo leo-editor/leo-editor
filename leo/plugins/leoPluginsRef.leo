@@ -67,7 +67,7 @@
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
 <v t="ville.20090314215508.4" a="E"
 marks="ville.20121118193144.3620,"
-expanded="ville.20090314215508.2,ville.20090314215508.12,"><vh>@file quicksearch.py</vh></v>
+expanded="ekr.20111015194452.15716,ville.20090314215508.2,ville.20090314215508.12,ekr.20111015194452.15700,"><vh>@file quicksearch.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
