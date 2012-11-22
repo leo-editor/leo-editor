@@ -494,5 +494,11 @@ def init ():
     install_handlers()        
 
     return True
+#@+node:tbrown.20121123075838.19937: ** context_menu_open
+@g.command('context-menu-open')
+def context_menu_open(event):
+    """Provide a command for key binding to open the context menu"""
+    if 'c' in event:
+        event['c'].frame.tree.onContextMenu(QtCore.QPoint(0,0))
 #@-others
 #@-leo
