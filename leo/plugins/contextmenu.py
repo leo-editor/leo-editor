@@ -11,6 +11,9 @@ Examples are:
 - Refresh @thin node from disk (e.g. after editing it in external editor)
 - Go to clone
 
+A ``context-menu-open`` command is defined to allow opening the
+tree context menu from the keyboard.
+
 Here's an example on how to implement your own context menu items 
 in your plugins::
 
