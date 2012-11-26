@@ -1817,25 +1817,26 @@ class editCommandsClass (baseEditCommandsClass):
                 # 2011/11/21: Bug fix: was ins=j.
             w.see(j)
     #@+node:ekr.20121016093159.10182: *3* c/ts/toPY
-    #@+<< docstring: theory of operation >>
-    #@+node:ekr.20121016093159.10240: *4* << docstring: theory of operation >>
-    '''
-
-    1. We use a single list, aList, for all changes to the text. This reduces
-       stress on the gc. All replacesments are done **in place** in aList.
-
-    2. The following pattern ensures replacements do not happen in strings and comments:
-
-        def someScan(self,aList):
-            i = 0
-            while i < len(aList):
-                if self.is_string_or_comment(aList,i):
-                    i = skip_string_or_comment(aList,i)
-                elif < found what we are looking for >:
-                    <convert what we are looking for, setting i>
-                else: i += 1
-    '''
-    #@-<< docstring: theory of operation >>
+    #@+<< theory of operation >>
+    #@+node:ekr.20121016093159.10240: *4* << theory of operation >>
+    #@@nocolor
+    #@+at
+    # 
+    # 1. We use a single list, aList, for all changes to the text. This reduces
+    #    stress on the gc. All replacesments are done **in place** in aList.
+    # 
+    # 2. The following pattern ensures replacements do not happen in strings and comments::
+    # 
+    #     def someScan(self,aList):
+    #         i = 0
+    #         while i < len(aList):
+    #             if self.is_string_or_comment(aList,i):
+    #                 i = skip_string_or_comment(aList,i)
+    #             elif < found what we are looking for >:
+    #                 <convert what we are looking for, setting i>
+    #             else: i += 1
+    # 
+    #@-<< theory of operation >>
     #@+<< class To_Python >>
     #@+node:ekr.20121016093159.10183: *4* << class To_Python >>
     class To_Python:
@@ -1960,6 +1961,16 @@ class editCommandsClass (baseEditCommandsClass):
                 else:
                     i += 1
         #@+node:ekr.20121016093159.10263: *6* is...
+        #@+node:ekr.20121126103128.10144: *7* is_section_def/ref
+        def is_section_def (self,p):
+            
+            return self.is_section_ref(p.h)
+            
+        def is_section_ref (self,s):
+
+            n1 = s.find("<<",0)
+            n2 = s.find(">>",0)
+            return -1 < n1 < n2 and s[n1+2:n2].strip()
         #@+node:ekr.20121016093159.10265: *7* is_string_or_comment
         def is_string_or_comment (self,s,i):
 
@@ -2164,8 +2175,9 @@ class editCommandsClass (baseEditCommandsClass):
             
             '''Replaces < < x > > = by @c (at the start of lines).'''
 
+            if not aList: return
             i = 0
-            j = self.isSectionDef(aList,i)
+            j = self.is_section_def(aList[i])
             if j > 0: aList[i:j] = list("@c ")
 
             while i < len(aList):
@@ -2173,7 +2185,7 @@ class editCommandsClass (baseEditCommandsClass):
                     i = self.skip_string_or_comment(aList,i)
                 elif self.match(aList,i,"\n"):
                     i += 1
-                    j = self.isSectionDef(aList,i)
+                    j = self.is_section_def(aList[i])
                     if j > i: aList[i:j] = list("@c ")
                 else: i += 1
         #@+node:ekr.20121016093159.10280: *7* safe_replace
