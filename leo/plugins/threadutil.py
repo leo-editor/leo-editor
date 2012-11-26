@@ -9,6 +9,10 @@ import time
 #log = logging.getLogger("out")
 
 #@+others
+#@+node:ekr.20121126102050.10135: ** init
+def init():
+    
+    return True
 #@+node:ekr.20121126095734.12419: ** class ThreadQueue
 class ThreadQueue:
     #@+others
