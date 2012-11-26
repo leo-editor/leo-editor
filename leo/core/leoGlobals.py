@@ -5681,7 +5681,11 @@ def importFromPath (name,path,pluginName=None,verbose=False):
     fn = g.shortFileName(name)
     moduleName,ext = g.os_path_splitext(fn)
     path = g.os_path_normpath(path)
-    path = g.toEncodedString(path)
+    if g.isPython3:
+        assert g.isString(path)
+    else:
+        path = g.toEncodedString(path)
+    # g.trace(type(path),repr(path))
     
     if 0: # Bug fix 2011/10/28: Always import the path from the specified path!
         module = sys.modules.get(moduleName)
