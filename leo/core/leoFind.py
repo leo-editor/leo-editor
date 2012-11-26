@@ -1296,27 +1296,25 @@ class leoFind:
         '''Display the result of a successful find operation.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; p = self.p.copy() ###
+        c = self.c ; p = self.p.copy()
         if not p:
             return g.trace('can not happen: self.p is None')
 
-        ### current = c.p
-        c.frame.bringToFront() # Needed on the Mac
-
+        # Old code.  Not needed now that we always call c.selectPosition.
         # Expand ancestors and set redraw if a redraw is needed.
-        redraw1 = not p.isVisible(c)
-        if c.sparse_find:
-            # Show only the 'sparse' tree when redrawing.
-            for p2 in c.p.self_and_parents():
-                if p2.isAncestorOf(p):
-                    break
-                # 2012/05/29: don't redraw unless we actually contract something.
-                if p2.isExpanded(): 
-                    p2.contract()
-                    redraw1 = True # Important bug fix. Was redraw = True.
+        # redraw1 = not p.isVisible(c)
+        # if c.sparse_find:
+            # # Show only the 'sparse' tree when redrawing.
+            # for p2 in c.p.self_and_parents():
+                # if p2.isAncestorOf(p):
+                    # break
+                # # 2012/05/29: don't redraw unless we actually contract something.
+                # if p2.isExpanded():
+                    # p2.contract()
+                    # redraw1 = True # Important bug fix. Was redraw = True.
 
-        redraw2 = c.expandAllAncestors(self.p)
-        redraw = redraw1 or redraw2
+        # redraw2 = c.expandAllAncestors(self.p)
+        # redraw = redraw1 or redraw2
 
         # Set state vars.
         # Ensure progress in backwards searches.
@@ -1335,20 +1333,25 @@ class leoFind:
             w = c.edit_widget(p)
         else:
             w = c.frame.body.bodyCtrl
-            # This is like the logic in c.selectPosition.
-            if redraw:
-                c.redraw(p)
-            else:
-                c.selectPosition(p)
-                c.redraw_after_select(p)
+
+            # Bug fix: 2012/11/26: *Always* do the full selection logic.
+            # This ensures that the body text is inited  and recolored.
+            c.selectPosition(p)
+
+            # Old code: fails when setBodyTextAfterSelect does not call w.setAllText.
+            # if redraw:
+                # c.redraw(p)
+            # else:
+                # c.selectPosition(p)
+                # c.redraw_after_select(p)
+            
             c.bodyWantsFocus()
             if showState:
                 c.k.showStateAndMode(w)
-            if trace: g.trace('redraw:',redraw,pos,newpos,insert,p.h) ###,'body...\n',p.b)
             c.bodyWantsFocusNow()
             assert w.getAllText() == p.b
             w.setSelectionRange(pos,newpos,insert=insert)
-            ### w.seeInsertPoint()
+            # w.seeInsertPoint()
             c.outerUpdate()
         return w # Support for isearch.
     #@+node:ekr.20031218072017.1460: *4* update_ivars (leoFind)

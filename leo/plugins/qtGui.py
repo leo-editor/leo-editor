@@ -10836,7 +10836,8 @@ class jEditColorizer:
 
         '''Succeed if s[i:] is a keyword.'''
 
-        # trace = False
+        trace = False and not g.unitTesting
+        traceFail = False
         self.totalKeywordsCalls += 1
 
         # Important.  Return -len(word) for failure greatly reduces
@@ -10853,17 +10854,18 @@ class jEditColorizer:
             j += 1
 
         word = s[i:j]
+        assert word
         if self.ignore_case: word = word.lower()
         kind = self.keywordsDict.get(word)
         if kind:
             self.colorRangeWithTag(s,i,j,kind)
             self.prev = (i,j,kind)
             result = j - i
-            # if trace: g.trace('success',word,kind,j-i)
+            if trace: g.trace('success',word,kind,result)
             self.trace_match(kind,s,i,j)
             return result
         else:
-            # if trace: g.trace('fail',word,kind)
+            if trace and traceFail: g.trace('fail',word,kind)
             return -len(word) # An important new optimization.
     #@+node:ekr.20110605121601.18615: *5* match_line
     def match_line (self,s,i,kind=None,delegate='',exclude_match=False):
@@ -11430,13 +11432,14 @@ class jEditColorizer:
 
         trace = False and not g.unitTesting
         traceMatch = True
+        traceFail = False
         traceState = True
-        verbose = False
+        traceEndState = False
         
         if trace:
-            g.trace(self.language_name)
             if traceState:
-                g.trace('%-30s' % ('** start: %s' % self.showState(n)),repr(s))
+                g.trace('%s %-30s' % (self.language_name,
+                    '** start: %s' % self.showState(n)),repr(s))
             else:
                 g.trace(self.language_name,repr(s))
                     # Called from recolor.
@@ -11468,9 +11471,9 @@ class jEditColorizer:
                     i += n
                     break # Stop searching the functions.
                 elif n < 0: # Fail and skip n chars.
-                    if trace and traceMatch and verbose:
-                        g.trace('fail: %-30s %s' % (
-                            f.__name__,repr(s[i:i+n])))
+                    if trace and traceFail:
+                        g.trace('fail: n: %s %-30s %s' % (
+                            n,f.__name__,repr(s[i:i+n])))
                     i += -n
                     break # Stop searching the functions.
                 else: # Fail. Try the next function.
@@ -11481,7 +11484,7 @@ class jEditColorizer:
 
         # Don't even *think* about clearing state here.
         # We remain in the starting state unless a match happens.
-        if trace and traceState:
+        if trace and traceEndState:
             g.trace('%-30s' % ('** end:   %s' % self.showCurrentState()),repr(s))
     #@+node:ekr.20110605121601.18639: *5* restart
     def restart (self,n,s,traceMatch):

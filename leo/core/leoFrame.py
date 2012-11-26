@@ -2075,8 +2075,9 @@ class leoTree:
 
         if g.app.killed or self.tree_select_lockout: return None
         
-        trace = False and not g.unitTesting
-        if trace:
+        traceTime = False and not g.unitTesting
+
+        if traceTime:
             import time
             t1 = time.time()
 
@@ -2090,7 +2091,7 @@ class leoTree:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p,old_p)
             
-        if trace:
+        if traceTime:
             g.trace('%2.3f sec' % (time.time()-t1))
 
         return val  # Don't put a return in a finally clause.
@@ -2102,12 +2103,11 @@ class leoTree:
 
         trace = False and not g.unitTesting
         verbose = False
-        c = self.c ; frame = c.frame
-        body = w = frame.body.bodyCtrl
+        c = self.c
+        body = w = c.frame.body.bodyCtrl
         if not w: return # Defensive.
 
         old_p = c.p
-        
         call_event_handlers = p != old_p
 
         if p:
@@ -2153,23 +2153,11 @@ class leoTree:
             else:
                 select = True
             if select:
-                #@+<< select the new node >>
-                #@+node:ekr.20120325072403.7767: *5* << select the new node >> (selectHelper)
-                # Bug fix: we must always set this, even if we never edit the node.
-                self.revertHeadline = p.h
-                frame.setWrap(p)
-                self.setBodyTextAfterSelect(p,old_p)
-                #@-<< select the new node >>
+                self.selectNewNode(p,old_p)
                 c.nodeHistory.update(p) # Remember this position.
         else:
             if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-                #@+<< select the new node >>
-                #@+node:ekr.20120325072403.7767: *5* << select the new node >> (selectHelper)
-                # Bug fix: we must always set this, even if we never edit the node.
-                self.revertHeadline = p.h
-                frame.setWrap(p)
-                self.setBodyTextAfterSelect(p,old_p)
-                #@-<< select the new node >>
+                self.selectNewNode(p,old_p)
                 c.nodeHistory.update(p) # Remember this position.
             
         c.setCurrentPosition(p)
@@ -2177,7 +2165,7 @@ class leoTree:
         #@+node:ekr.20040803072955.133: *5* << set the current node >> (selectHelper)
         self.setSelectedLabelState(p)
 
-        frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+        c.frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
 
         # Was in ctor.
         use_chapters = c.config.getBool('use_chapters')
@@ -2208,10 +2196,18 @@ class leoTree:
         if call_event_handlers: # 2011/11/06
             g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    #@+node:ekr.20090608081524.6109: *4* setBodyTextAfterSelect (changed 4.10)
+    #@+node:ekr.20120325072403.7767: *4* leoTree.selectNewNode
+    def selectNewNode(self,p,old_p):
+
+        # Bug fix: we must always set this, even if we never edit the node.
+        frame = self.c.frame
+        self.revertHeadline = p.h
+        frame.setWrap(p)
+        self.setBodyTextAfterSelect(p,old_p)
+    #@+node:ekr.20090608081524.6109: *4* leoTree.setBodyTextAfterSelect
     def setBodyTextAfterSelect (self,p,old_p):
         
-        # trace = g.trace_scroll and not g.unitTesting
+        trace = False and not g.unitTesting
 
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c ; w = c.frame.body.bodyCtrl
@@ -2219,9 +2215,10 @@ class leoTree:
         old_s = w.getAllText()
 
         if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-            pass
+            if trace: g.trace('*pass',p.h,old_p.h)
         else:
             # w.setAllText destroys all color tags, so do a full recolor.
+            if trace: g.trace('*reload',p.h,old_p and old_p.h)
             w.setAllText(s)
             colorizer = c.frame.body.colorizer
             if hasattr(colorizer,'setHighlighter'):

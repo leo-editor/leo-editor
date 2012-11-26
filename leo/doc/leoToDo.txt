@@ -6785,12 +6785,11 @@ def selectHelper (self,p,scroll):
 
     trace = False and not g.unitTesting
     verbose = False
-    c = self.c ; frame = c.frame
-    body = w = frame.body.bodyCtrl
+    c = self.c
+    body = w = c.frame.body.bodyCtrl
     if not w: return # Defensive.
 
     old_p = c.p
-    
     call_event_handlers = p != old_p
 
     if p:
@@ -6822,11 +6821,11 @@ def selectHelper (self,p,scroll):
         else:
             select = True
         if select:
-            << select the new node >>
+            self.selectNewNode(p,old_p)
             c.nodeHistory.update(p) # Remember this position.
     else:
         if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-            << select the new node >>
+            self.selectNewNode(p,old_p)
             c.nodeHistory.update(p) # Remember this position.
         
     c.setCurrentPosition(p)
@@ -6863,7 +6862,7 @@ if old_p != p:
 .. @+node:ekr.20040803072955.133: *6* << set the current node >> (selectHelper)
 self.setSelectedLabelState(p)
 
-frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+c.frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
 
 # Was in ctor.
 use_chapters = c.config.getBool('use_chapters')
@@ -6877,11 +6876,6 @@ if use_chapters:
 
 c.treeFocusHelper() # 2010/12/14
 c.undoer.onSelect(old_p,p)
-.. @+node:ekr.20120325072403.7767: *6* << select the new node >> (selectHelper)
-# Bug fix: we must always set this, even if we never edit the node.
-self.revertHeadline = p.h
-frame.setWrap(p)
-self.setBodyTextAfterSelect(p,old_p)
 .. @+node:ekr.20111125072438.10216: *4* Regularize slashes and back-slashes
 @nocolor-node
 
