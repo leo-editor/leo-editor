@@ -75,8 +75,9 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import Qt
 
 import fnmatch, re
-import threadutil
 
+from leo.plugins import threadutil
+    # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
 from leo.plugins import qt_quicksearch
 
 global qsWidget
