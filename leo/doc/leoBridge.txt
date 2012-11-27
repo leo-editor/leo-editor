@@ -39,19 +39,22 @@ Python programs running independently of Leo. Let us call such a program a
 Host programs use the leoBridge module as follows::
 
     import leo.core.leoBridge as leoBridge
-    controller = leoBridge.controller(gui='nullGui')
+    
+    controller = leoBridge.controller(gui='nullGui',
+        loadPlugins=True,  # True: attempt to load plugins.
+        readSettings=True, # True: read standard settings files.
+        silent=False,      # True: don't print signon messages.
+        verbose=False)     # True: print informational messages.
+
     g = controller.globals()
     c = controller.openLeoFile(path)
 
-Let us look at these statements in detail.  The statements::
-
-    import leo.core.leoBridge as leoBridge
-    controller = leoBridge.controller(gui='nullGui')
-
-import the leoBridge module and create a **bridge controller**. In effect, these
-statements embed an invisible copy of Leo into the host program. This embedded
-copy of Leo uses a null gui, which simulates all aspects of Leo's normal gui
-code without creating any screen objects.
+Let us look at these statements in detail. The first two statements
+import the leoBridge module and create a **bridge controller**. In
+effect, these statements embed an invisible copy of Leo into the host
+program. This embedded copy of Leo uses a null gui, which simulates
+all aspects of Leo's normal gui code without creating any screen
+objects.
 
 The statement::
 

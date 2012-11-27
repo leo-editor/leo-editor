@@ -2696,6 +2696,7 @@ say, python/Lib/site-packages.
 
 This is exactly what I need:  I can make changes to important tools
 *safely* within Leo.
+#@+node:ekr.20121126213658.10142: *4* Documented all keyword args to the leoBridge.controller ctor
 #@+node:ekr.20120330040023.9781: *3* Features
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node

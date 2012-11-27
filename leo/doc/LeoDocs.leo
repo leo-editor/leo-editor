@@ -98,8 +98,7 @@
 <v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
-<v t="ekr.20100805165051.7158"
-expanded="ekr.20050901101608.4,EKR.20040524104904.140,ekr.20070317043727.3,"><vh>@file customizing.txt</vh></v>
+<v t="ekr.20100805165051.7158"><vh>@file customizing.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5799"><vh>Intermediate Topics</vh>
@@ -128,8 +127,7 @@ expanded="ekr.20050901101608.4,EKR.20040524104904.140,ekr.20070317043727.3,"><vh
 <v t="ekr.20100805165051.7173"><vh>@file atShadow.txt</vh></v>
 </v>
 <v t="ekr.20120315101404.14224"><vh>The leoInspect Module</vh>
-<v t="ekr.20120315101404.14225"
-expanded="ekr.20120315101404.14233,ekr.20120315101404.14264,"><vh>@file leoInspect.txt</vh></v>
+<v t="ekr.20120315101404.14225"><vh>@file leoInspect.txt</vh></v>
 </v>
 <v t="tbrown.20120821215353.22854"><vh>Abbreviations / templates</vh></v>
 </v>
@@ -174,8 +172,7 @@ expanded="ekr.20120315101404.14233,ekr.20120315101404.14264,"><vh>@file leoInspe
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
-<v t="ekr.20100805165051.7175"
-expanded="ekr.20101025080245.5791,ekr.20120320153011.8551,ekr.20101025080245.5805,ekr.20101104173324.5141,"><vh>@file whatsnew.txt</vh></v>
+<v t="ekr.20100805165051.7175"><vh>@file whatsnew.txt</vh></v>
 </v>
 <v t="ekr.20111127144911.5545"><vh>Other pages</vh>
 <v t="ekr.20111127144911.5546"><vh>@file download.txt</vh></v>
@@ -188,8 +185,7 @@ expanded="ekr.20101025080245.5791,ekr.20120320153011.8551,ekr.20101025080245.580
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.117,ekr.20080311060457.214,ekr.20070316182323,ekr.20070610063456,ekr.20070610063538.280,ekr.20101104091058.5045,ekr.20101104091058.4975,ekr.20101104173324.5140,ekr.20101104091058.5019,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
 <v t="ekr.20120229094652.14757"><vh>Bugs</vh>
