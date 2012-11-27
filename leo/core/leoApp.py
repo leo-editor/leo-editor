@@ -1608,7 +1608,7 @@ class LoadManager:
                 return letter
         else:
             return 'D' if kind.find('mode') == -1 else '@'
-    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
+    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings (where the crash happened)
     def computeLocalSettings (self,c,settings_d,shortcuts_d,localFlag):
         
         '''Merge the settings dicts from c's outline into *new copies of*
@@ -1619,8 +1619,11 @@ class LoadManager:
             c.shortFileName(),settings_d,shortcuts_d))
         
         lm = self
-        
+
         shortcuts_d2,settings_d2 = lm.createSettingsDicts(c,localFlag)
+        
+        assert shortcuts_d
+        assert settings_d
         
         if settings_d2:
             settings_d = settings_d.copy()
@@ -1629,6 +1632,20 @@ class LoadManager:
         if shortcuts_d2:
             shortcuts_d = lm.mergeShortcutsDicts(c,shortcuts_d,shortcuts_d2)
 
+        return settings_d,shortcuts_d
+    #@+node:ekr.20121126202114.3: *4* lm.createDefaultSettingsDicts (New)
+    def createDefaultSettingsDicts(self):
+        
+        '''Create lm.globalSettingsDict & lm.globalShortcutsDict.'''
+
+        settings_d = g.app.config.defaultsDict
+        assert isinstance(settings_d,g.TypedDict),settings_d
+        settings_d.setName('lm.globalSettingsDict')
+
+        shortcuts_d = g.TypedDictOfLists(
+            name='lm.globalShortcutsDict',
+            keyType=type('s'), valType=g.ShortcutInfo)
+            
         return settings_d,shortcuts_d
     #@+node:ekr.20120214165710.10726: *4* lm.createSettingsDicts
     def createSettingsDicts(self,c,localFlag):
@@ -1830,7 +1847,7 @@ class LoadManager:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return ok and c or None
-    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
+    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles (changed)
     def readGlobalSettingsFiles (self):
         
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
@@ -1849,23 +1866,17 @@ class LoadManager:
             lm.openSettingsFile(path) for path in (
                 lm.computeLeoSettingsPath(),
                 lm.computeMyLeoSettingsPath())]
+                
+        settings_d,shortcuts_d = lm.createDefaultSettingsDicts()
         
-        # Create lm.globalSettingsDict & lm.globalShortcutsDict.
-        settings_d = g.app.config.defaultsDict
-        assert isinstance(settings_d,g.TypedDict),settings_d
-        settings_d.setName('lm.globalSettingsDict')
-
-        shortcuts_d = g.TypedDictOfLists(
-            name='lm.globalShortcutsDict',
-            keyType=type('s'), valType=g.ShortcutInfo)
-
         for c in commanders:
             if c:
                 settings_d,shortcuts_d = lm.computeLocalSettings(
                     c,settings_d,shortcuts_d,localFlag=False)
                     
         # Adjust the name.
-        shortcuts_d.setName('lm.globalShortcuts')
+        shortcuts_d.setName('lm.globalShortcutsDict')
+
         if trace:
             if verbose:
                 for c in commanders:

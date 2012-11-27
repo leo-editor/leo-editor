@@ -91,7 +91,7 @@ class bridgeController:
         '''Init the Leo app to which this class gives access.
         This code is based on leo.run().'''
         
-        trace = True
+        trace = False
         if not self.isValidPython(): return
         #@+<< initLeo imports >>
         #@+node:ekr.20070227093629.1: *4* << initLeo imports >>
@@ -150,6 +150,11 @@ class bridgeController:
                 # reads only standard settings files, using a null gui.
                 # uses lm.files[0] to compute the local directory
                 # that might contain myLeoSettings.leo.
+        else:
+            # Bug fix: 2012/11/26: create default global settings dicts.
+            settings_d,shortcuts_d = lm.createDefaultSettingsDicts()
+            lm.globalSettingsDict = settings_d
+            lm.globalShortcutsDict = shortcuts_d
 
         self.createGui() # Create the gui *before* loading plugins.
         if self.verbose: self.reportDirectories()

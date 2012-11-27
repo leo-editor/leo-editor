@@ -2604,6 +2604,64 @@ Traceback (most recent call last):
     if b[:1] in seps:
 TypeError: Type str doesn't support the buffer API
 Can not import rest
+#@+node:ekr.20121126103128.10137: *4* Fixed missing search text bug
+@nocolor-node
+
+The fix was to always call c.selectPosition in leoFind.showSuccess.
+This ensures that leoTree.setBodyTextAfterSelect always does w.setAllText,
+which is essential to init the syntax colorer properly.
+
+The happy side effect of this change is that a lot of duplicate selection
+code in showSuccess disappears.
+
+Also converted two section references in leoTree.selectHelper to selectNewNode.
+#@+node:ekr.20121126194831.10147: *4* Fixed crasher in leoBridge
+@nocolor-node
+
+The crash happens only when the new readSettings argument to leoBridge.bridgeController is False.
+In that case, the global dicts were not inited properly.
+
+What I did:
+    
+- Created lm.createDefaultSettingsDicts, called by lm.readGlobalSettingsFiles.
+- leoBridge.initLeo calls lm.createDefaultSettingsDicts to set the global dicts.
+#@+node:ekr.20121126194831.10148: *5* report
+@nocolor-node
+
+Bug description:
+  --- Begin Python script to run from a console ------
+  import leo.core.leoBridge as b
+  bridge = b.controller(gui='nullGui',verbose=False,loadPlugins=False,readSettings=False)
+  c = bridge.openLeoFile(r'c:\users\edreamleo\test\minimal.leo')
+  --- End Python Script -----
+
+  The above script and minimal.leo are attached to this bug report.  Put
+  them in the same directory, open a console, set the current working
+  directory to the directory containing the script, and run the script.
+  You will see the this exception on the console:
+
+  2012-11-16 11:28:51 /home/ldi/tmp
+  $ python readSettingsFalse.py
+  Traceback (most recent call last):
+    File "readSettingsFalse.py", line 5, in <module>
+      cmdrUnl = bridge.openLeoFile('minimal.leo')
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 330, in openLeoFile
+      c = self.createFrame(fileName)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 367, in createFrame
+      c = g.openWithFileName(fileName)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoGlobals.py", line 1875, in openWithFileName
+      return g.app.loadManager.loadLocalFile(fileName,gui,old_c)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 2539, in loadLocalFile
+      previousSettings = lm.getPreviousSettings(fn)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1668, in getPreviousSettings
+      lm.globalSettingsDict,lm.globalShortcutsDict,localFlag=True)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1626, in computeLocalSettings
+      settings_d = settings_d.copy()
+  AttributeError: 'NoneType' object has no attribute 'copy'
+  2012-11-16 11:28:55 /home/ldi/tmp
+  $
+  ---------
+  I confirmed this bug on Leo-Editor revisions 5501 and 5505.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
