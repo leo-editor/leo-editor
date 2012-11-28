@@ -156,8 +156,9 @@ class LeoApp:
         self.idleTimeHook = False   # True: the global idleTimeHookHandler will reshedule itself.
         
         # Support for scripting...
-        self.searchDict = {}    # For communication between find/change scripts.
-        self.scriptDict = {}    # For use by scripts.
+        self.searchDict = {}          # For communication between find/change scripts.
+        self.scriptDict = {}          # For use by scripts. Cleared before running each script.
+        self.permanentScriptDict = {} # For use by scrips. Never cleared automatically.
 
         # Unit testing...
         self.isExternalUnitTest = False # True: we are running a unit test externally.

@@ -902,18 +902,6 @@ def stripPathCruft (path):
     # We want a *relative* path, not an absolute path.
     return path
 #@+node:ekr.20031218072017.3104: ** Debugging, Dumping, Timing, Tracing & Sherlock
-#@+node:ekr.20031218072017.3105: *3* g.alert
-def alert(message,c=None):
-    
-    '''Raise an alert.
-    
-    This method is deprecated: use c.alert instead.
-    '''
-
-    # The unit tests just tests the args.
-    if not g.unitTesting:
-        g.es(message)
-        g.app.gui.alert(c,message)
 #@+node:ekr.20051023083258: *3* callers & _callerName
 def callers (n=4,count=0,excludeCaller=True,files=False):
 
@@ -959,16 +947,307 @@ def _callerName (n=1,files=False):
     except Exception:
         g.es_exception()
         return '' # "<no caller name>"
-#@+node:ekr.20041105091148: *3* g.pdb
-def pdb (message=''):
+#@+node:ekr.20121128031949.12605: *3* class SherlockTracer
+class SherlockTracer:
+    
+    '''A stand-alone tracer class with many of Sherlock's features.
+    
+    This class should work in any environment in which it is possible
+    to import os and sys.'''
 
-    """Fall into pdb."""
+    #@+others
+    #@+node:ekr.20121128031949.12602: *4* __init__
+    def __init__(self,patterns,dots=True,verbose=False):
+        
+        import re
 
-    import pdb # Required: we have just defined pdb as a function!
+        self.bad_patterns = []  # List of bad patterns.
+        self.dots = dots        # True: print level dots.
+        self.n = 0              # The frame level on entry to run.
+        self.stats = {}         # Keys are full file names, values are dicts.
+        self.patterns = patterns# A list of regex patterns to match.
+        self.re = re            # Import re only once.
+        self.verbose = verbose  # True: print filename:func
 
-    if message:
-        print(message)
-    pdb.set_trace()
+        try:
+            from PyQt4 import QtCore
+            QtCore.pyqtRemoveInputHook()
+        except Exception:
+            pass
+    #@+node:ekr.20121128031949.12609: *4* dispatch
+    def dispatch(self,frame,event,arg):
+
+        if event == 'call':
+            self.do_call(frame,arg)
+
+        return self.dispatch
+    #@+node:ekr.20121128031949.12603: *4* do_call
+    def do_call(self,frame,arg): # arg not used.
+
+        import os
+
+        code = frame.f_code
+        name = code.co_name
+        fn   = code.co_filename
+
+        if self.is_enabled(fn,name,self.patterns):
+            n = 0
+            while frame:
+                frame = frame.f_back
+                n += 1
+            dots = '.' * max(0,n-self.n) if self.dots else ''
+            # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
+            if self.verbose:
+                print('%s%s:%s' % (dots,os.path.basename(fn),name))
+            else:
+                print('%s%s' % (dots,name))
+            
+        # Alwas update stats.
+        d = self.stats.get(fn,{})
+        d[name] = 1 + d.get(name,0)
+        self.stats[fn] = d
+            
+    #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
+    def fn_is_enabled (self,fn,patterns):
+        
+        '''Return True if tracing for fn is enabled.'''
+
+        try:
+            enabled = False
+            for pattern in patterns:
+                if pattern.startswith('+:'):
+                    if self.re.match(pattern[2:],fn): 
+                        enabled = True
+                elif pattern.startswith('-:'):
+                    if self.re.match(pattern[2:],fn):
+                        enabled = False
+            return enabled
+        except Exception:
+            return False
+    #@+node:ekr.20121128111829.12183: *4* is_enabled
+    def is_enabled (self,fn,name,patterns):
+        
+        '''Return True if tracing for name in fn is enabled.'''
+        
+        def oops(pattern):
+            if pattern not in self.bad_patterns:
+                self.bad_patterns.append(pattern)
+                print('ignoring bad pattern: %s' % pattern)
+        
+        enabled = False 
+        for pattern in patterns:
+            try:
+                if pattern.startswith('+:'):
+                    if self.re.match(pattern[2:],fn): 
+                        enabled = True
+                elif pattern.startswith('-:'):
+                    if self.re.match(pattern[2:],fn):
+                        enabled = False
+                elif pattern.startswith('+'):
+                    if self.re.match(pattern[1:],name):
+                        enabled = True
+                elif pattern.startswith('-'):
+                    if self.re.match(pattern[1:],name):
+                        enabled = False
+                else: oops(pattern)
+            except Exception:
+                oops(pattern)
+
+        return enabled
+        
+    #@+node:ekr.20121128111829.12182: *4* print_stats
+    def print_stats (self,patterns=None):
+        
+        import os
+        
+        print('\nSherlock statistics')
+        
+        if not patterns: patterns = ['+.*','+:.*',]
+        
+        for fn in sorted(self.stats.keys()):
+            d = self.stats.get(fn)
+            if self.fn_is_enabled(fn,patterns):
+                result = sorted(d.keys())
+            else:
+                result = [key for key in sorted(d.keys()) if self.is_enabled(fn,key,patterns)]
+            if result:
+                print('')
+                i = fn.find('\\lib\\')
+                if i == -1:
+                    print(os.path.basename(fn))
+                else:
+                    print(fn[i+1:])
+                for key in result:
+                    print('%4s %s' % (d.get(key),key))
+    #@+node:ekr.20121128031949.12614: *4* run
+    # Modified from pdb.Pdb.set_trace.
+
+    def run(self,frame=None):
+
+        '''Trace from the given frame or the caller's frame.'''
+        
+        import sys
+
+        if frame is None:
+            frame = sys._getframe().f_back
+
+        # Compute self.n, the number of frames to ignore.
+        self.n = 0
+        while frame:
+            frame = frame.f_back
+            self.n += 1
+
+        sys.settrace(self.dispatch)
+    #@+node:ekr.20121128093229.12616: *4* stop
+    def stop(self):
+        
+        '''Stop all tracing.'''
+        
+        import sys
+        sys.settrace(None)
+    #@-others
+#@+node:ekr.20080531075119.1: *3* class Tracer & g.startTracer
+class Tracer:
+
+    '''A "debugger" that computes a call graph.
+
+    To trace a function and its callers, put the following at the function's start:
+
+    g.startTracer()
+    '''
+
+    #@+others
+    #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
+    def __init__(self):
+
+        self.callDict = {}
+            # Keys are function names.
+            # Values are the number of times the function was called by the caller.
+        self.calledDict = {}
+            # Keys are function names.
+            # Values are the total number of times the function was called.
+
+        self.count = 0
+        self.inited = False
+        self.limit = 2 # 0: no limit, otherwise, limit trace to n entries deep.
+        self.stack = []
+        self.trace = False
+        self.verbose = False # True: print returns as well as calls.
+    #@+node:ekr.20080531075119.3: *4* computeName
+    def computeName (self,frame):
+
+        import inspect
+
+        if not frame: return ''
+
+        code = frame.f_code ; result = []
+
+        module = inspect.getmodule(code)
+        if module:
+            module_name = module.__name__
+            if module_name == 'leo.core.leoGlobals':
+                result.append('g')
+            else:
+                tag = 'leo.core.'
+                if module_name.startswith(tag):
+                    module_name = module_name[len(tag):]
+                result.append(module_name)
+
+        try:
+            # This can fail during startup.
+            self_obj = frame.f_locals.get('self')
+            if self_obj: result.append(self_obj.__class__.__name__)
+        except Exception:
+            pass
+
+        result.append(code.co_name)
+
+        return '.'.join(result)
+    #@+node:ekr.20080531075119.4: *4* report
+    def report (self):
+
+        if 0:
+            g.pr('\nstack')
+            for z in self.stack:
+                g.pr(z)
+
+        g.pr('\ncallDict...')
+
+        for key in sorted(self.callDict):
+
+            # Print the calling function.
+            g.pr('%d' % (self.calledDict.get(key,0)),key)
+
+            # Print the called functions.
+            d = self.callDict.get(key)
+            for key2 in sorted(d):
+                g.pr('%8d' % (d.get(key2)),key2)
+    #@+node:ekr.20080531075119.5: *4* stop
+    def stop (self):
+
+        sys.settrace(None)
+        self.report()
+    #@+node:ekr.20080531075119.6: *4* tracer
+    def tracer (self, frame, event, arg):
+
+        '''A function to be passed to sys.settrace.'''
+
+        n = len(self.stack)
+        if event == 'return': n = max(0,n-1)
+        pad = '.' * n
+
+        if event == 'call':
+            if not self.inited:
+                # Add an extra stack element for the routine containing the call to startTracer.
+                self.inited = True
+                name = self.computeName(frame.f_back)
+                self.updateStats(name)
+                self.stack.append(name)
+            name = self.computeName(frame)
+            if self.trace and (self.limit == 0 or len(self.stack) < self.limit):
+                g.trace('%scall' % (pad),name)
+            self.updateStats(name)
+            self.stack.append(name)
+            return self.tracer
+        elif event == 'return':
+            if self.stack:
+                name = self.stack.pop()
+                if self.trace and self.verbose and (self.limit == 0 or len(self.stack) < self.limit):
+                    g.trace('%sret ' % (pad),name)
+            else:
+                g.trace('return underflow')
+                self.stop()
+                return None
+            if self.stack:
+                return self.tracer
+            else:
+                self.stop()
+                return None
+        else:
+            return self.tracer
+    #@+node:ekr.20080531075119.7: *4* updateStats
+    def updateStats (self,name):
+
+        if not self.stack:
+            return
+
+        caller = self.stack[-1]
+        d = self.callDict.get(caller,{})
+            # d is a dict reprenting the called functions.
+            # Keys are called functions, values are counts.
+        d[name] = 1 + d.get(name,0)
+        self.callDict[caller] = d
+
+        # Update the total counts.
+        self.calledDict[name] = 1 + self.calledDict.get(name,0)
+    #@-others
+
+def startTracer():
+
+    import sys
+    t = g.Tracer()
+    sys.settrace(t.tracer)
+    return t
 #@+node:ekr.20031218072017.3108: *3* Dumps
 #@+node:ekr.20031218072017.3109: *4* dump
 def dump(s):
@@ -1169,6 +1448,185 @@ def file_date (theFile,format=None):
         except (ImportError,NameError):
             pass # Time module is platform dependent.
     return ""
+#@+node:ekr.20031218072017.3105: *3* g.alert
+def alert(message,c=None):
+    
+    '''Raise an alert.
+    
+    This method is deprecated: use c.alert instead.
+    '''
+
+    # The unit tests just tests the args.
+    if not g.unitTesting:
+        g.es(message)
+        g.app.gui.alert(c,message)
+#@+node:ekr.20031218072017.3127: *3* g.get_line & get_line__after
+# Very useful for tracing.
+
+def get_line (s,i):
+
+    nl = ""
+    if g.is_nl(s,i):
+        i = g.skip_nl(s,i)
+        nl = "[nl]"
+    j = g.find_line_start(s,i)
+    k = g.skip_to_end_of_line(s,i)
+    return nl + s[j:k]
+
+# Important: getLine is a completely different function.
+# getLine = get_line
+
+def get_line_after (s,i):
+
+    nl = ""
+    if g.is_nl(s,i):
+        i = g.skip_nl(s,i)
+        nl = "[nl]"
+    k = g.skip_to_end_of_line(s,i)
+    return nl + s[i:k]
+
+getLineAfter = get_line_after
+#@+node:ekr.20080729142651.1: *3* g.getIvarsDict and checkUnchangedIvars
+def getIvarsDict(obj):
+
+    '''Return a dictionary of ivars:values for non-methods of obj.'''
+
+    import types
+
+    d = dict(
+        [[key,getattr(obj,key)] for key in dir(obj)
+            if type (getattr(obj,key)) != types.MethodType])
+
+    # g.pr(g.listToString(sorted(d)))
+    return d
+
+def checkUnchangedIvars(obj,d,exceptions=None):
+
+    if not exceptions: exceptions = []
+    ok = True
+
+    for key in d:
+        if key not in exceptions:
+            if getattr(obj,key) != d.get(key):
+                g.trace('changed ivar: %s old: %s new: %s' % (
+                    key,repr(d.get(key)),repr(getattr(obj,key))))
+                ok = False
+    return ok
+#@+node:ekr.20041105091148: *3* g.pdb
+def pdb (message=''):
+
+    """Fall into pdb."""
+
+    import pdb # Required: we have just defined pdb as a function!
+
+    if message:
+        print(message)
+    pdb.set_trace()
+#@+node:ekr.20031218072017.3128: *3* pause
+def pause (s):
+
+    g.pr(s)
+
+    i = 0 ; n = long(1000) * long(1000)
+    while i < n:
+        i += 1
+#@+node:ekr.20041224080039: *3* print_dict & dictToString
+def print_dict(d,tag='',verbose=True,indent=''):
+
+    if not d:
+        if tag: g.pr('%s...{}' % tag)
+        else:   g.pr('{}')
+        return
+
+    n = 6
+    for key in sorted(d):
+        if type(key) == type(''):
+            n = max(n,len(key))
+    if tag: g.es('%s...{\n' % tag)
+    else:   g.es('{\n')
+    for key in sorted(d):
+        g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
+    g.pr('}')
+
+printDict = print_dict
+
+def dictToString(d,tag=None,verbose=True,indent=''):
+
+    if not d:
+        if tag: return '%s...{}' % tag
+        else:   return '{}'
+    n = 6
+    for key in sorted(d):
+        if g.isString(key):
+            n = max(n,len(key))
+    lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip())
+        for key in sorted(d)]
+    s = '\n'.join(lines)
+    if tag:
+        return '%s...{\n%s}\n' % (tag,s)
+    else:
+        return '{\n%s}\n' % s
+#@+node:ekr.20041126060136: *3* print_list & listToString
+def print_list(aList,tag=None,sort=False,indent=''):
+
+    if not aList:
+        if tag: g.pr('%s...[]' % tag)
+        else:   g.pr('[]')
+        return
+    if sort:
+        bList = aList[:] # Sort a copy!
+        bList.sort()
+    else:
+        bList = aList
+    if tag: g.pr('%s...[' % tag)
+    else:   g.pr('[')
+    for e in bList:
+        g.pr('%s%s' % (indent,repr(e).strip()))
+    g.pr(']')
+
+printList = print_list
+
+def listToString(aList,tag=None,sort=False,indent='',toRepr=False):
+
+    if not aList:
+        if tag: return '%s...{}' % tag
+        else:   return '[]'
+    if sort:
+        bList = aList[:] # Sort a copy!
+        bList.sort()
+    else:
+        bList = aList
+    lines = ["%s%s" % (indent,repr(e).strip()) for e in bList]
+    s = '\n'.join(lines)
+    if toRepr: s = repr(s)
+    if tag:
+        return '[%s...\n%s\n]' % (tag,s)
+    else:
+        return '[%s]' % s
+#@+node:ekr.20050819064157: *3* print_obj & toString
+def print_obj (obj,tag=None,sort=False,verbose=True,indent=''):
+
+    if type(obj) in (type(()),type([])):
+        g.print_list(obj,tag,sort,indent)
+    elif type(obj) == type({}):
+        g.print_dict(obj,tag,verbose,indent)
+    else:
+        g.pr('%s%s' % (indent,repr(obj).strip()))
+
+def toString (obj,tag=None,sort=False,verbose=True,indent=''):
+
+    if type(obj) in (type(()),type([])):
+        return g.listToString(obj,tag,sort,indent)
+    elif type(obj) == type({}):
+        return g.dictToString(obj,tag,verbose,indent)
+    else:
+        return '%s%s' % (indent,repr(obj).strip())
+#@+node:ekr.20041122153823: *3* print_stack (printStack)
+def print_stack():
+
+    traceback.print_stack()
+
+printStack = print_stack
 #@+node:ekr.20031218072017.3121: *3* redirecting stderr and stdout to Leo's log pane
 class redirectClass:
 
@@ -1279,163 +1737,6 @@ def rawPrint(s):
     redirectStdOutObj.rawPrint(s)
 #@-others
 #@-<< define convenience methods for redirecting streams >>
-#@+node:ekr.20080729142651.1: *3* g.getIvarsDict and checkUnchangedIvars
-def getIvarsDict(obj):
-
-    '''Return a dictionary of ivars:values for non-methods of obj.'''
-
-    import types
-
-    d = dict(
-        [[key,getattr(obj,key)] for key in dir(obj)
-            if type (getattr(obj,key)) != types.MethodType])
-
-    # g.pr(g.listToString(sorted(d)))
-    return d
-
-def checkUnchangedIvars(obj,d,exceptions=None):
-
-    if not exceptions: exceptions = []
-    ok = True
-
-    for key in d:
-        if key not in exceptions:
-            if getattr(obj,key) != d.get(key):
-                g.trace('changed ivar: %s old: %s new: %s' % (
-                    key,repr(d.get(key)),repr(getattr(obj,key))))
-                ok = False
-    return ok
-#@+node:ekr.20031218072017.3127: *3* g.get_line & get_line__after
-# Very useful for tracing.
-
-def get_line (s,i):
-
-    nl = ""
-    if g.is_nl(s,i):
-        i = g.skip_nl(s,i)
-        nl = "[nl]"
-    j = g.find_line_start(s,i)
-    k = g.skip_to_end_of_line(s,i)
-    return nl + s[j:k]
-
-# Important: getLine is a completely different function.
-# getLine = get_line
-
-def get_line_after (s,i):
-
-    nl = ""
-    if g.is_nl(s,i):
-        i = g.skip_nl(s,i)
-        nl = "[nl]"
-    k = g.skip_to_end_of_line(s,i)
-    return nl + s[i:k]
-
-getLineAfter = get_line_after
-#@+node:ekr.20031218072017.3128: *3* pause
-def pause (s):
-
-    g.pr(s)
-
-    i = 0 ; n = long(1000) * long(1000)
-    while i < n:
-        i += 1
-#@+node:ekr.20050819064157: *3* print_obj & toString
-def print_obj (obj,tag=None,sort=False,verbose=True,indent=''):
-
-    if type(obj) in (type(()),type([])):
-        g.print_list(obj,tag,sort,indent)
-    elif type(obj) == type({}):
-        g.print_dict(obj,tag,verbose,indent)
-    else:
-        g.pr('%s%s' % (indent,repr(obj).strip()))
-
-def toString (obj,tag=None,sort=False,verbose=True,indent=''):
-
-    if type(obj) in (type(()),type([])):
-        return g.listToString(obj,tag,sort,indent)
-    elif type(obj) == type({}):
-        return g.dictToString(obj,tag,verbose,indent)
-    else:
-        return '%s%s' % (indent,repr(obj).strip())
-#@+node:ekr.20041224080039: *3* print_dict & dictToString
-def print_dict(d,tag='',verbose=True,indent=''):
-
-    if not d:
-        if tag: g.pr('%s...{}' % tag)
-        else:   g.pr('{}')
-        return
-
-    n = 6
-    for key in sorted(d):
-        if type(key) == type(''):
-            n = max(n,len(key))
-    if tag: g.es('%s...{\n' % tag)
-    else:   g.es('{\n')
-    for key in sorted(d):
-        g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
-    g.pr('}')
-
-printDict = print_dict
-
-def dictToString(d,tag=None,verbose=True,indent=''):
-
-    if not d:
-        if tag: return '%s...{}' % tag
-        else:   return '{}'
-    n = 6
-    for key in sorted(d):
-        if g.isString(key):
-            n = max(n,len(key))
-    lines = ["%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip())
-        for key in sorted(d)]
-    s = '\n'.join(lines)
-    if tag:
-        return '%s...{\n%s}\n' % (tag,s)
-    else:
-        return '{\n%s}\n' % s
-#@+node:ekr.20041126060136: *3* print_list & listToString
-def print_list(aList,tag=None,sort=False,indent=''):
-
-    if not aList:
-        if tag: g.pr('%s...[]' % tag)
-        else:   g.pr('[]')
-        return
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    if tag: g.pr('%s...[' % tag)
-    else:   g.pr('[')
-    for e in bList:
-        g.pr('%s%s' % (indent,repr(e).strip()))
-    g.pr(']')
-
-printList = print_list
-
-def listToString(aList,tag=None,sort=False,indent='',toRepr=False):
-
-    if not aList:
-        if tag: return '%s...{}' % tag
-        else:   return '[]'
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    lines = ["%s%s" % (indent,repr(e).strip()) for e in bList]
-    s = '\n'.join(lines)
-    if toRepr: s = repr(s)
-    if tag:
-        return '[%s...\n%s\n]' % (tag,s)
-    else:
-        return '[%s]' % s
-#@+node:ekr.20041122153823: *3* print_stack (printStack)
-def print_stack():
-
-    traceback.print_stack()
-
-printStack = print_stack
 #@+node:ekr.20031218072017.3133: *3* Statistics
 #@+node:ekr.20031218072017.3134: *4* clear_stats
 def clear_stats():
@@ -1491,148 +1792,6 @@ def printDiffTime(message, start):
 
 def timeSince(start):
     return "%6.3f sec." % (time.clock()-start)
-#@+node:ekr.20080531075119.1: *3* class Tracer & g.startTracer
-class Tracer:
-
-    '''A "debugger" that computes a call graph.
-
-    To trace a function and its callers, put the following at the function's start:
-
-    g.startTracer()
-    '''
-
-    #@+others
-    #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
-    def __init__(self):
-
-        self.callDict = {}
-            # Keys are function names.
-            # Values are the number of times the function was called by the caller.
-        self.calledDict = {}
-            # Keys are function names.
-            # Values are the total number of times the function was called.
-
-        self.count = 0
-        self.inited = False
-        self.limit = 2 # 0: no limit, otherwise, limit trace to n entries deep.
-        self.stack = []
-        self.trace = False
-        self.verbose = False # True: print returns as well as calls.
-    #@+node:ekr.20080531075119.3: *4* computeName
-    def computeName (self,frame):
-
-        import inspect
-
-        if not frame: return ''
-
-        code = frame.f_code ; result = []
-
-        module = inspect.getmodule(code)
-        if module:
-            module_name = module.__name__
-            if module_name == 'leo.core.leoGlobals':
-                result.append('g')
-            else:
-                tag = 'leo.core.'
-                if module_name.startswith(tag):
-                    module_name = module_name[len(tag):]
-                result.append(module_name)
-
-        try:
-            # This can fail during startup.
-            self_obj = frame.f_locals.get('self')
-            if self_obj: result.append(self_obj.__class__.__name__)
-        except Exception:
-            pass
-
-        result.append(code.co_name)
-
-        return '.'.join(result)
-    #@+node:ekr.20080531075119.4: *4* report
-    def report (self):
-
-        if 0:
-            g.pr('\nstack')
-            for z in self.stack:
-                g.pr(z)
-
-        g.pr('\ncallDict...')
-
-        for key in sorted(self.callDict):
-
-            # Print the calling function.
-            g.pr('%d' % (self.calledDict.get(key,0)),key)
-
-            # Print the called functions.
-            d = self.callDict.get(key)
-            for key2 in sorted(d):
-                g.pr('%8d' % (d.get(key2)),key2)
-    #@+node:ekr.20080531075119.5: *4* stop
-    def stop (self):
-
-        sys.settrace(None)
-        self.report()
-    #@+node:ekr.20080531075119.6: *4* tracer
-    def tracer (self, frame, event, arg):
-
-        '''A function to be passed to sys.settrace.'''
-
-        n = len(self.stack)
-        if event == 'return': n = max(0,n-1)
-        pad = '.' * n
-
-        if event == 'call':
-            if not self.inited:
-                # Add an extra stack element for the routine containing the call to startTracer.
-                self.inited = True
-                name = self.computeName(frame.f_back)
-                self.updateStats(name)
-                self.stack.append(name)
-            name = self.computeName(frame)
-            if self.trace and (self.limit == 0 or len(self.stack) < self.limit):
-                g.trace('%scall' % (pad),name)
-            self.updateStats(name)
-            self.stack.append(name)
-            return self.tracer
-        elif event == 'return':
-            if self.stack:
-                name = self.stack.pop()
-                if self.trace and self.verbose and (self.limit == 0 or len(self.stack) < self.limit):
-                    g.trace('%sret ' % (pad),name)
-            else:
-                g.trace('return underflow')
-                self.stop()
-                return None
-            if self.stack:
-                return self.tracer
-            else:
-                self.stop()
-                return None
-        else:
-            return self.tracer
-    #@+node:ekr.20080531075119.7: *4* updateStats
-    def updateStats (self,name):
-
-        if not self.stack:
-            return
-
-        caller = self.stack[-1]
-        d = self.callDict.get(caller,{})
-            # d is a dict reprenting the called functions.
-            # Keys are called functions, values are counts.
-        d[name] = 1 + d.get(name,0)
-        self.callDict[caller] = d
-
-        # Update the total counts.
-        self.calledDict[name] = 1 + self.calledDict.get(name,0)
-    #@-others
-
-def startTracer():
-
-    import sys
-    t = g.Tracer()
-    sys.settrace(t.tracer)
-    return t
 #@+node:ekr.20031218072017.3116: ** Files & Directories...
 #@+node:ekr.20120222084734.10287: *3*  Redirection to LoadManager methods
 # For compatibility with old code.
