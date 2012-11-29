@@ -538,7 +538,19 @@ class todoController:
     #@+node:tbrown.20090119215428.24: *4* setat
     def setat(self, node, attrib, val):
         "new attrbiute setter"
-        
+
+        if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
+            if not hasattr(node, '_cached_src_vnode'):
+                src_unl = node.u['annotate']['src_unl']
+                c1 = self.c
+                p1 = c1.vnode2position(node)
+                c2, p2 = self.unl_to_pos(src_unl, p1)
+                node._cached_src_c = c2
+                node._cached_src_vnode = p2.v
+            node._cached_src_c.cleo.setat(node._cached_src_vnode, attrib, val)
+            node._cached_src_c.cleo.updateUI(k={'c': node._cached_src_c})
+            node._cached_src_c.setChanged(True)
+
         isDefault = self.testDefault(attrib, val)
 
         if (not hasattr(node,'unknownAttributes') or
@@ -1006,6 +1018,39 @@ class todoController:
                 self.ui.UI.createdTxt.setText("")
 
             
+    #@+node:tbrown.20121129095833.39490: *3* unl_to_pos
+    def unl_to_pos(self, unl, for_p):
+        """"unl may be an outline (like c) or an UNL (string)
+        
+        return c, p where c is an outline and p is a node to copy data to
+        in that outline
+        
+        for_p is the p to be copied - needed to check for invalid recursive
+        copy / move
+        """
+
+        # COPIED FROM quickMove.py
+
+        # unl is an UNL indicating where to insert
+        full_path = unl
+        path, unl = full_path.split('#')
+        c2 = g.openWithFileName(path, old_c=self.c)
+        self.c.bringToFront(c2=self.c)
+        found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
+        
+        if found:
+            
+            if (for_p == maxp or for_p.isAncestorOf(maxp)):
+                g.es("Invalid move")
+                return None, None
+            
+            nd = maxp
+        else:
+            g.es("Could not find '%s'"%full_path)
+            self.c.bringToFront(c2=self.c)
+            return None, None
+
+        return c2, nd
     #@-others
 #@+node:tbrown.20100701093750.13800: ** command inc/dec priority
 @g.command('todo-dec-pri')
