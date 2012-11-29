@@ -1072,11 +1072,9 @@ class SherlockTracer:
                 result = [key for key in sorted(d.keys()) if self.is_enabled(fn,key,patterns)]
             if result:
                 print('')
-                i = fn.find('\\lib\\')
-                if i == -1:
-                    print(os.path.basename(fn))
-                else:
-                    print(fn[i+1:])
+                fn = fn.replace('\\','/')
+                parts = fn.split('/')
+                print('/'.join(parts[-2:]))
                 for key in result:
                     print('%4s %s' % (d.get(key),key))
     #@+node:ekr.20121128031949.12614: *4* run
