@@ -196,7 +196,7 @@ For example, the following creates a dictionary of saved positions::
     for p in c.all_positions():
         d[p.v] = p.copy()
 
-.. @+node:ekr.20040403173920.9: *4* Iterators
+.. @+node:ekr.20040403173920.9: *4* Generators
 Leo scripts can easily access any node of an outline with iterator. Leo's
 iterators return positions or nodes, one after another. Iterators do not
 return lists, but you can make lists from iterators easily. For example, the
@@ -205,23 +205,31 @@ another. You can use the iterator directly, like this::
 
     for p in c.all_positions():
         print(p.h)
+        
+It is seldom a good idea to capture positions in a list: positions become
+invalid whenever the outline changes. Using an invalid position could cause
+a (soft) crash in Leo. If you do want to capture positions temporarily, the
+proper way is to call p.copy(). Like this::
 
-You can create actual lists from generators in several ways::
+    aList = [p.copy() for p in c.all_positions()]
+    
+The following will **not** work::
 
-    aList = list(c.all_positions()) # Use the list built-in function.
-    print(aList)
+    aList = list(c.all_positions())
+    
+because it is equivalent to::
 
-or::
+    aList = [p for p in c.all_positions()]
+    
+The problem is that the c.all_positions iterator uses a *single* position,
+and merely alters that position each time it is called. Thus, aList will
+contain multiple copies of an empty position!
+    
+However, the following *does* work::
 
-    aList = [p.copy() for p in c.all_positions()] # Use list comprehension.
-    print(aList)
-
-Using the list built-in is simpler, but list comprehensions can be more
-flexible. For example::
-
-    aList = [p.copy().h for p in c.all_positions()
-        if p.h.startswith('@file')]
-    print(aList)
+    aList = list(c.all_nodes())
+    
+In this case, aList will contain a list of all the *vnodes* in the outline.
 .. @+node:ekr.20040403173920.10: *5* c.all_positions & c.all_unique_positions
 The c.all_positions generator returns a list of all positions in the outline.
 This script makes a list of all the nodes in an outline::
