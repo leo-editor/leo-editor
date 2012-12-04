@@ -175,7 +175,7 @@ if g.app.gui.guiName() == "qt":
             offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
             u.dueDateOffset.addItems(offsets)
             u.dueDateOffset.setCurrentIndex(self.date_offset_default)
-            self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("currentIndexChanged(int)"),
+            self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
                 lambda v: o.set_due_date_offset())
 
             self.setDueDate = self.make_func(self.UI.dueDateEdit,
