@@ -420,6 +420,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QComboBox" name="dueDateOffset">
+         <property name="toolTip">
+          <string>+n -n days from now, or &lt;n &gt;n to subtract / add n days to existing date</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="dueDateToggle">
          <property name="text">
           <string/>

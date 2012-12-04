@@ -18,7 +18,10 @@ The plugin creates a "Task" Tab in the log pane.  It looks like this:
 Along the top are icons that you can associate with nodes.
 Just click on the icon: it will appear on the presently selected node.
 
-Next are a set of fields that allow you to associate **due dates** and **completion times** with nodes.
+Next are a set of fields that allow you to associate **due dates** and
+**completion times** with nodes. The @setting @data todo_due_date_offsets lists
+date offsets, +n -n days from now, or <n >n to subtract / add n days to existing
+date.
 
 Clicking on the Button named "Menu" reveals submenus.
 
@@ -164,9 +167,20 @@ if g.app.gui.guiName() == "qt":
                 def setter(pri=pri): o.setPri(pri)
                 self.connect(w, QtCore.SIGNAL("clicked()"), setter)
 
+            offsets = self.owner.c.config.getData('todo_due_date_offsets')
+            if not offsets:
+                offsets = '+7 +0 +1 +2 +3 +4 +5 +6 +10 +14 +21 +28 +42 +60 +90 +120 +150 ' \
+                          '>7 <7 <14 >14 <28 >28'.split()
+            self.date_offset_default = int(offsets[0].strip('>').replace('<', '-'))
+            offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
+            u.dueDateOffset.addItems(offsets)
+            u.dueDateOffset.setCurrentIndex(self.date_offset_default)
+            self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("currentIndexChanged(int)"),
+                lambda v: o.set_due_date_offset())
+
             self.setDueDate = self.make_func(self.UI.dueDateEdit,
                 self.UI.dueDateToggle, 'setDate',
-                datetime.date.today() + datetime.timedelta(7))
+                datetime.date.today() + datetime.timedelta(self.date_offset_default))
                  
             self.setDueTime = self.make_func(self.UI.dueTimeEdit,
                 self.UI.dueTimeToggle, 'setTime',
@@ -802,6 +816,8 @@ class todoController:
         else:
             self.ui.UI.dueDateToggle.setCheckState(Qt.Checked)
             self.setat(v, 'duedate', val.toPyDate())
+
+        self.updateUI()  # if change was made to date with offset selector
     #@+node:tbrown.20110213091328.16235: *4* set_due_time
     def set_due_time(self,p=None, val=None, mode='adjust'):
         "mode: `adjust` for change in time, `check` for checkbox toggle"
@@ -817,6 +833,32 @@ class todoController:
         else:
             self.ui.UI.dueTimeToggle.setCheckState(Qt.Checked)
             self.setat(v, 'duetime', val.toPyTime())
+    #@+node:tbrown.20121204084515.60965: *4* set_due_date_offset
+    def set_due_date_offset(self):
+        """set_due_date_offset - update date by selected offset
+
+        offset sytax::
+            
+            +5 five days after today
+            -5 five days before today
+            >5 move current date 5 days later
+            <5 move current date 5 days earlier
+
+        """
+
+        offset = str(self.ui.UI.dueDateOffset.currentText())
+        
+        mult = 1  # to handle '<' as a negative relative offset
+
+        date = QtCore.QDate.currentDate()
+
+        if '<' in offset or '>' in offset:
+            date = self.ui.UI.dueDateEdit.date()
+        
+        if offset.startswith('<'):
+            mult = -1
+        
+        self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))))
     #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
     #@+node:tbrown.20090119215428.41: *4* childrenTodo
     @redrawer
