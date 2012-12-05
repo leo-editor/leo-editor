@@ -2764,10 +2764,12 @@ class leoQtBody (leoFrame.leoBody):
             d = c.scanAllDirectives(p)
             if d is None: return
             wrap = d.get('wrap')
-        w.setWordWrapMode(
-            g.choose(wrap,
-                QtGui.QTextOption.WordWrap,
-                QtGui.QTextOption.NoWrap))
+            
+        # g.trace(wrap,w.verticalScrollBar())
+
+        option,qt = QtGui.QTextOption,QtCore.Qt
+        w.setHorizontalScrollBarPolicy(qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
+        w.setWordWrapMode(option.WordWrap if wrap else option.NoWrap)
     #@+node:ekr.20110605121601.18184: *6* createBindings (qtBody)
     def createBindings (self,w=None):
 
