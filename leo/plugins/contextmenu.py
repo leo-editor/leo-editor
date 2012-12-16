@@ -188,18 +188,25 @@ def refresh_rclick(c,p, menu):
     action = menu.addAction("Refresh from disk")
 
     def refresh_rclick_cb():
-        if typ.startswith('@auto'):
-            c.readAtAutoNodes()
-        elif typ =='@thin' or typ == '@file':
-            c.readAtFileNodes()
-        elif typ =='@shadow':
-            c.readAtShadowNodes()
-        else:
-            c.readAtFileNodes()
-
-        # UNSUPPORTED            
-        #if typ =='@edit':
-        #    c.readAtEditNodes()
+        
+        vnodes = [i.v for i in c.getSelectedPositions()]
+        
+        for v in vnodes:
+            
+            c.selectPosition(c.vnode2position(v))
+            
+            if typ.startswith('@auto'):
+                c.readAtAutoNodes()
+            elif typ =='@thin' or typ == '@file':
+                c.readAtFileNodes()
+            elif typ =='@shadow':
+                c.readAtShadowNodes()
+            else:
+                c.readAtFileNodes()
+    
+            # UNSUPPORTED            
+            #if typ =='@edit':
+            #    c.readAtEditNodes()
 
     action.connect(action, QtCore.SIGNAL("triggered()"), refresh_rclick_cb)
 #@+node:ville.20090701110830.10215: ** editnode_rclick
