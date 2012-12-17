@@ -3,6 +3,9 @@ Stand alone GUI free index builder for Leo's full text search system::
 
   python leoftsindex.py <file1> <file2> <file3>...
 
+If the file name starts with @ it's a assumed to be a simple
+text file listing files to be indexed.
+
 If <file> does not contain '#' it's assumed to be a .leo file
 to index, and is indexed.
 
@@ -48,7 +51,11 @@ fts = leofts.get_fts()
 fn2c = {}  # cache to avoid loading same outline twice
 done = set()  # outlines scanned, to avoid repetition repetition
 
-for item in files:
+todo = list(files)
+
+while todo:
+
+    item = todo.pop(0)
     
     print ("INDEX: %s"%item)
     
@@ -71,6 +78,11 @@ for item in files:
         else:
             # use all files listed in body
             files = [i.strip() for i in p.b.strip().split('\n')]
+
+    elif fn.startswith('@'):
+        todo.extend(open(fn[1:]).read().strip().split('\n'))
+        files = []
+
     else:
         files = [fn]
         
