@@ -4077,8 +4077,28 @@ class leoQtFrame (leoFrame.leoFrame):
             self.textWidget2 = w2 = QtGui.QLineEdit(self.statusBar)
             w1.setObjectName('status1')
             w2.setObjectName('status2')
-            self.statusBar.addWidget(w1,True)
-            self.statusBar.addWidget(w2,True)
+            splitter = QtGui.QSplitter()
+            self.statusBar.addWidget(splitter, True)
+            splitter.addWidget(w1)
+            splitter.addWidget(w2)
+            
+            c.status_line_unl_mode = 'original'
+            def cycle_unl_mode():
+                if c.status_line_unl_mode == 'original':
+                    c.status_line_unl_mode = 'canonical'
+                else:
+                    c.status_line_unl_mode = 'original'
+                verbose = c.status_line_unl_mode=='canonical'
+                w2.setText(c.p.get_UNL(with_proto=verbose))
+            
+            def add_item(event, w2=w2):
+                menu = w2.createStandardContextMenu()
+                menu.addSeparator()
+                menu.addAction("Toggle UNL mode", cycle_unl_mode)
+                menu.exec_(event.globalPos())
+                
+            w2.contextMenuEvent = add_item
+            
             self.put('')
             self.update()
             c.frame.top.setStyleSheets()

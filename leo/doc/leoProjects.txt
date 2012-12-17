@@ -4580,7 +4580,8 @@ def selectHelper (self,p,scroll):
 
     # what UNL.py used to do
     c.frame.clearStatusLine()
-    c.frame.putStatusLine(p.get_UNL())
+    verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
+    c.frame.putStatusLine(p.get_UNL(with_proto=verbose))
 
     if call_event_handlers: # 2011/11/06
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)

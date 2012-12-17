@@ -526,15 +526,17 @@ class position (object):
     hasVisBack = visBack
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
-    def get_UNL(self, with_file=True):
+    def get_UNL(self, with_file=True, with_proto=False):
         
         UNL = '-->'.join(reversed([
             i.h.replace('-->', '--%3E')
             for i in self.self_and_parents()
         ]))  
 
-        if with_file:
-            return "%s#%s" % (self.v.context.fileName(), UNL)
+        if with_proto:
+            return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
+        elif with_file:
+            return ("%s#%s" % (self.v.context.fileName(), UNL))
         else:
             return UNL
     #@+node:ekr.20080416161551.192: *4* p.hasX
