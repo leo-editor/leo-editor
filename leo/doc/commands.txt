@@ -1345,11 +1345,21 @@ You may drag a node (including all its descendants) from one place to
 another in an outline. To start a drag, press the main (left) mouse button
 while the cursor is over the icon for a node. The cursor will change to a
 hand icon. If you release the mouse button while the hand cursor is above
-the icon for another node, Leo will move the dragged node after that node.
-If you release the mouse button when the hand cursor is not over an icon,
+another node, Leo will move the dragged node after that node.
+If you release the mouse button when the hand cursor is not over a node,
 Leo will leave the outline pane as it is. Leo scrolls the outline pane as
 the result of mouse-moved events, so to continue scrolling you must keep
 moving the mouse.
+
+If the recipient node has children and is expanded, the dropped node will
+be inserted as the first child of the recipient node, otherwise the
+dropped node will be inserted after the recipient node.
+
+Holding down Shift before releasing the node will force insertion as a
+child of the recipient node, even if the recipient node is not expanded.
+
+Holding down Control before releasing the node will cause a clone to be
+dropped, leaving the original where it was.
 .. @+node:EKR.20040524104904.148: *4* Hoisting & De-hoisting nodes
 The ``hoist`` command redraws the screen so presently selected tree becomes
 the only visible part of the outline. You may hoist an outline as many
