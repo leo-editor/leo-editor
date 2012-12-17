@@ -5873,7 +5873,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 if trace or self.trace: g.trace('same node')
             else:
                 cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
-                self.intraFileDrop(cloneDrag,fn,c.p,p)
+                as_child = (int(mods) & QtCore.Qt.ShiftModifier) != 0
+                self.intraFileDrop(cloneDrag,fn,c.p,p,as_child)
         else:
             # Clone dragging between files is not allowed.
             self.interFileDrop(fn,p,s)
@@ -5926,14 +5927,14 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c.redraw_now(pasted)
         c.recolor()
     #@+node:ekr.20110605121601.18368: *7* intraFileDrop
-    def intraFileDrop (self,cloneDrag,fn,p1,p2):
+    def intraFileDrop (self,cloneDrag,fn,p1,p2,as_child=False):
 
         '''Move p1 after (or as the first child of) p2.'''
 
         c = self.c ; u = c.undoer
         c.selectPosition(p1)
 
-        if p2.hasChildren() and p2.isExpanded():
+        if as_child or p2.hasChildren() and p2.isExpanded():
             # Attempt to move p1 to the first child of p2.
             parent = p2
             def move(p1,p2):
