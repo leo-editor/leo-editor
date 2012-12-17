@@ -5873,7 +5873,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 if trace or self.trace: g.trace('same node')
             else:
                 cloneDrag = (int(mods) & QtCore.Qt.ControlModifier) != 0
-                as_child = (int(mods) & QtCore.Qt.ShiftModifier) != 0
+                as_child = (int(mods) & QtCore.Qt.AltModifier) != 0
                 self.intraFileDrop(cloneDrag,fn,c.p,p,as_child)
         else:
             # Clone dragging between files is not allowed.
