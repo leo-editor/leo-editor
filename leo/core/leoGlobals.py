@@ -6064,17 +6064,20 @@ def adjustTripleString (s,tab_width):
 
     This works around the fact that Leo nodes can't represent underindented strings.
     '''
-
+    
     # Compute the minimum leading whitespace of all non-blank lines.
     lines = g.splitLines(s)
-    w = 0 ; val = -1
+    first,w = True,0
     for line in lines:
         if line.strip():
             lws = g.get_leading_ws(line)
-            w2 = g.computeWidth(lws,tab_width)
-            # The sign of w does not matter.
-            if w == 0 or abs(w2) < w:
-                w = abs(w2)
+            # The sign of w2 does not matter.
+            w2 = abs(g.computeWidth(lws,tab_width))
+            if w2 == 0:
+                return s
+            elif first or w2 < w:
+                w = w2
+                first = False
 
     if w == 0: return s
 

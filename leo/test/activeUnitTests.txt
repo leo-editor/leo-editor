@@ -2035,12 +2035,12 @@ if not g.app.isExternalUnitTest:
     assert(p)
     
     s1 = r"""\begin{document}
-    << Document """
+<< Document """
     
     s2 = r""">>
-    % hidden comment
-    \end{document}
-    """
+% hidden comment
+\end{document}
+"""
     
     s = s1 + s2
     s = g.adjustTripleString(s,c.tab_width)
@@ -10669,9 +10669,13 @@ if 1: # The following must be indented.
 c
     d'''
 
-    s2 = 'a\n  b\n\nc\nd'
+    s2 = '    a\n      b\n\nc\n    d'
 
     result = g.adjustTripleString(s,c.tab_width)
+    # print(c.tab_width)
+    # print(result)
+    # print('=====')
+    # print(s2)
     assert result == s2,repr(result)
 
 
