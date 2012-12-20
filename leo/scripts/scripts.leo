@@ -73,7 +73,8 @@
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20051110111150"
+expanded="ekr.20051104082026,ekr.20061029095517,ekr.20061029095517.2,ekr.20051104082605,ekr.20050225161940,ekr.20051204180404,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -87,7 +88,6 @@
 <v t="ekr.20121220111212.13265"><vh>run</vh></v>
 <v t="ekr.20121220111212.13266"><vh>test</vh></v>
 <v t="ekr.20121220111212.13267"><vh>write_file</vh></v>
-<v t="ekr.20121220111212.13268"><vh>write_node</vh></v>
 </v>
 </v>
 </vnodes>
@@ -843,12 +843,15 @@ w.clipboard_append(result)</t>
 
 @others
 
+# Change test_dir as desired: it must already exist.
+test_dir = g.os_path_finalize_join(g.app.loadDir,'..','test')
+
 if 1:
     # Writes each test to a separate file in the test directory.
-    TestWriter(c,path='test').run(fn=None)    
+    TestWriter(c,path=test_dir).run(fn=None)    
 else:
     # Writes all tests to a single file: test/unit_tests.py
-    TestWriter(c,path='test').run(fn='unit_tests.py')
+    TestWriter(c,path=test_dir).run(fn='unit_tests.py')
 </t>
 <t tx="ekr.20121220111212.13258">@language rest
 
@@ -975,10 +978,6 @@ test_template = g.adjustTripleString(test_template,c.tab_width)
     for p in self.nodes:
         f.write(self.test_template % (self.clean(p.h),self.get_body(p)))
     f.close()
-</t>
-<t tx="ekr.20121220111212.13268">def write_node(self,p):
-
-    self.nodes.append(p.copy())
 </t>
 </tnodes>
 </leo_file>
