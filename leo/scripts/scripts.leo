@@ -873,16 +873,10 @@ individual needs.
 
     @others
 </t>
-<t tx="ekr.20121220111212.13260"># import imp
-# import os
-# import time
-# imp.reload(g)
-# imp.reload(stc)
+<t tx="ekr.20121220111212.13260"># Add any other common imports here.
 
 file_template = '''\
 import unittest
-import stcglobals as g
-import statictypechecking as stc
 '''
 
 file_template = g.adjustTripleString(file_template,c.tab_width)</t>
