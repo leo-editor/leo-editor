@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="30" left="347" height="1012" width="1367"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -76,11 +76,25 @@
 <v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
+<v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
+<v t="ekr.20121220111212.13258"><vh>&lt;&lt; about this script &gt;&gt;</vh></v>
+<v t="ekr.20121220111212.13259"><vh>class TestWriter</vh>
+<v t="ekr.20121220111212.13260"><vh>&lt;&lt; define file_template &gt;&gt;</vh></v>
+<v t="ekr.20121220111212.13261"><vh>&lt;&lt; define test_template &gt;&gt;</vh></v>
+<v t="ekr.20121220111212.13262"><vh> ctor</vh></v>
+<v t="ekr.20121220111212.13263"><vh>clean</vh></v>
+<v t="ekr.20121220111212.13264"><vh>get_body</vh></v>
+<v t="ekr.20121220111212.13265"><vh>run</vh></v>
+<v t="ekr.20121220111212.13266"><vh>test</vh></v>
+<v t="ekr.20121220111212.13267"><vh>write_file</vh></v>
+<v t="ekr.20121220111212.13268"><vh>write_node</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954" str_leo_pos="1"></t>
+<t tx="ekr.20070615131954"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
@@ -823,5 +837,154 @@ result = '\n'.join(result) + '\n'
 w = c.frame.body.bodyCtrl
 w.clipboard_clear()
 w.clipboard_append(result)</t>
+<t tx="ekr.20121220111212.13257">'''
+&lt;&lt; about this script &gt;&gt;
+'''
+
+@others
+
+if 1:
+    # Writes each test to a separate file in the test directory.
+    TestWriter(c,path='test').run(fn=None)    
+else:
+    # Writes all tests to a single file: test/unit_tests.py
+    TestWriter(c,path='test').run(fn='unit_tests.py')
+</t>
+<t tx="ekr.20121220111212.13258">@language rest
+
+This script transliterates @test nodes into .py file. The two main ways of
+using this script are as follows::
+
+    TestWriter(c,path='test').run(fn='unit_tests.py') # writes one file
+    TestWriter(c,path='test').run(fn=None)            # writes separate files.
+     
+The first writes all tests to test/unit_tests.py; the second writes each
+unit test to a separate .py file in the test directory.
+
+The script imports each written file and reports any syntax errors.
+
+This is a straightforward script; it should be easy to modify it to suit
+individual needs.
+</t>
+<t tx="ekr.20121220111212.13259">class TestWriter:
+    
+    &lt;&lt; define file_template &gt;&gt;
+    &lt;&lt; define test_template &gt;&gt;
+
+    @others
+</t>
+<t tx="ekr.20121220111212.13260"># import imp
+# import os
+# import time
+# imp.reload(g)
+# imp.reload(stc)
+
+file_template = '''\
+import unittest
+import stcglobals as g
+import statictypechecking as stc
+'''
+
+file_template = g.adjustTripleString(file_template,c.tab_width)</t>
+<t tx="ekr.20121220111212.13261">test_template = '''
+class %s (unittest.TestCase):
+    def runTest(self):
+%s
+'''
+
+test_template = g.adjustTripleString(test_template,c.tab_width)
+</t>
+<t tx="ekr.20121220111212.13262">def __init__(self,c,path=''):
+    
+    self.c = c
+    load_dir = g.os_path_dirname(c.fileName())
+    self.path = g.os_path_finalize_join(load_dir,path)
+    self.nodes = []
+    assert g.os_path_exists(self.path),self.path
+</t>
+<t tx="ekr.20121220111212.13263">def clean(self,s):
+    
+    '''Munge s so that it can be used as a file name.'''
+    
+    result,tag = [],'@test'
+    if s.startswith(tag):
+        s = s[len(tag):]
+    for ch in s.strip():
+        if ch.isalnum():
+            result.append(ch)
+        elif ch.isspace():
+            result.append('_')
+    s = ''.join(result)
+    if s.endswith('.py'):
+        s = s[:-3]
+    return s.strip()
+</t>
+<t tx="ekr.20121220111212.13264">def get_body(self,p):
+    
+    '''Convert p.b to a valid script.'''
+    
+    s = g.getScript(c,p,
+        useSelectedText=False,forcePythonSentinels=True,useSentinels=False)
+
+    s = ''.join([' '*8+z for z in g.splitLines(s) if z.strip()])
+    
+    return s.rstrip()
+</t>
+<t tx="ekr.20121220111212.13265">def run(self,fn=None):
+    n,p = 1,c.rootPosition()
+    while p:
+        if p.h.startswith('@ignore '):
+            p.moveToNodeAfterTree()
+        elif p.h.startswith('@test '):
+            self.nodes.append(p.copy())
+            if not fn:
+                fn2 = self.clean(p.h)+'.py'
+                self.write_file(fn2)
+                self.test(fn2)
+                self.nodes=[]
+            n += 1
+            p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+    if fn:
+        self.write_file(fn)
+        self.test(fn)
+    dest = g.os_path_join(self.path,fn) if fn else self.path
+    print('wrote %s tests to %s' % (n,dest))
+</t>
+<t tx="ekr.20121220111212.13266">def test(self,fn):
+    
+    '''Test the newly created file.'''
+    
+    import imp
+    import sys
+
+    if self.path not in sys.path:
+        sys.path.append(self.path)
+
+    assert fn.endswith('.py')
+    name = fn[:-3]
+    try:
+        f,path,desc = imp.find_module(name,[self.path])
+        imp.load_module(name,f,path,desc)
+        # print('imported %s' % (name))
+    except Exception:
+        print('can not import: %s' % (name))
+        g.es_print_exception()
+</t>
+<t tx="ekr.20121220111212.13267">def write_file(self,fn):
+
+    assert g.os_path_exists(self.path),self.path
+    fn = g.os_path_finalize_join(self.path,fn)
+    f = open(fn,'w')
+    f.write(self.file_template)
+    for p in self.nodes:
+        f.write(self.test_template % (self.clean(p.h),self.get_body(p)))
+    f.close()
+</t>
+<t tx="ekr.20121220111212.13268">def write_node(self,p):
+
+    self.nodes.append(p.copy())
+</t>
 </tnodes>
 </leo_file>
