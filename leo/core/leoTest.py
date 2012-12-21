@@ -732,7 +732,7 @@ class TestManager:
 
         try:
             g.unitTesting = g.app.unitTesting = True
-            g.app.runningAllUnitTests = all
+            g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
             g.app.unitTestDict["fail"] = False
             g.app.unitTestDict['c'] = c
             g.app.unitTestDict['g'] = g

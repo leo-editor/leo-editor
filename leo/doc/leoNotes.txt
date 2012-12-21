@@ -298,7 +298,7 @@ Configuration files
 
 EKR:  do ed-bzr
 
-Windows: c:\Users\AppData\Roaming\bazaar\2.0\.bazaar.conf
+Windows: c:\Users\edreamleo\AppData\Roaming\bazaar\2.0\bazaar.conf
 
 Linux:  ~/.bazaar/bazaar.conf
 #@+node:ekr.20090713080429.6042: *3* Bzr workflow notes
