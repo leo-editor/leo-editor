@@ -190,7 +190,9 @@ def install_qt_quicksearch_tab(c):
     def find_popout_f(event):
         c = event['c']
         w = LeoQuickSearchWidget(c, mode="popout", parent = c.frame.top)
-        w.setGeometry(400,50, 400, 500)
+        topgeo = c.frame.top.geometry()
+        wid = topgeo.width()
+        w.setGeometry(wid/2,0, wid/2, 500)
         #w.setParent(c.frame.top)
         #w.setWindowFlags(Qt.FramelessWindowHint)
         w.show()
