@@ -339,7 +339,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         if not t.strip():
             if self.scon.frozen:
                 self.scon.freeze(False)
-                self.clear()
+                self.scon.clear()
             return
             
         if len(t) < 3:
