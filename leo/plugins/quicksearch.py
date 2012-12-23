@@ -299,9 +299,8 @@ class LeoQuickSearchWidget(QtGui.QWidget):
             self.connect(self.ui.lineEdit, 
                 QtCore.SIGNAL("returnPressed()"),
                 self.selectAndDismiss)
-            self.setFocus()
-            self.ui.lineEdit.setFocus()
-            dumpfocus()
+            threadutil.later(self.ui.lineEdit.setFocus)
+            
         else:
             self.connect(self.ui.lineEdit,
                 QtCore.SIGNAL("returnPressed()"),
