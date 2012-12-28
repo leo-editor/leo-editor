@@ -270,9 +270,8 @@ class QuickSearchEventFilter(QtCore.QObject):
 #@+node:ville.20121223213319.3670: ** dumpfocus
 def dumpfocus():
     f = QtGui.QApplication.instance().focusWidget()
-    g.es("Focus: " + `f`)
-    print("Focus: " + `f`)
-    
+    g.es("Focus: " + 'f')
+    print("Focus: " + 'f')
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
 class LeoQuickSearchWidget(QtGui.QWidget):
     
