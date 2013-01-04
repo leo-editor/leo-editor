@@ -661,7 +661,7 @@ class linkItem(QtGui.QGraphicsItemGroup):
         else:
             self.setZValue(0)
             pen.setColor(QtGui.QColor(240,240,240))
-            pen.setWidth(0.5)
+            pen.setWidth(2) # (0.5)
             
         self.line.setPen(pen)
         self.addToGroup(self.line)
@@ -669,7 +669,7 @@ class linkItem(QtGui.QGraphicsItemGroup):
         self.head = QtGui.QGraphicsPolygonItem()
         
         if hierarchyLink:
-            self.head.setBrush(QtGui.QBrush(QtGui.QColor(230,230,230)))
+            self.head.setBrush(QtGui.QBrush(QtGui.QColor(180,180,180)))
         else:
             self.head.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0)))
             
