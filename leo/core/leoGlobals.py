@@ -72,7 +72,7 @@ if 0:
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
 if 0:
     # This is now done in run.
-    import leoGlobals as g # So code can use g below.
+    import leo.core.leoGlobals as g # So code can use g below.
 
 # Don't import this here: it messes up Leo's startup code.
 # import leo.core.leoTest as leoTest
@@ -915,9 +915,10 @@ def callers (n=4,count=0,excludeCaller=True,files=False):
     # The jython stack often has less than 8 entries,
     # so we must be careful to call g._callerName with smaller values of i first.
     result = []
-    i = g.choose(excludeCaller,3,2)
+    i = 3 if excludeCaller else 2
     while 1:
-        s = g._callerName(i,files=files)
+        s = _callerName(i,files=files)
+        # print(i,s)
         if s:
             result.append(s)
         if not s or len(result) >= n: break
@@ -925,10 +926,12 @@ def callers (n=4,count=0,excludeCaller=True,files=False):
 
     result.reverse()
     if count > 0: result = result[:count]
-    sep = g.choose(files,'\n',',')
+    sep = '\n' if files else ','
     return sep.join(result)
 #@+node:ekr.20031218072017.3107: *4* _callerName
 def _callerName (n=1,files=False):
+    
+    # print('_callerName: %s %s' % (n,files))
 
     try: # get the function name from the call stack.
         f1 = sys._getframe(n) # The stack frame, n levels up.
@@ -936,15 +939,16 @@ def _callerName (n=1,files=False):
         name = code1.co_name
         if name == '__init__':
             name = '__init__(%s,line %s)' % (
-                g.shortFileName(code1.co_filename),code1.co_firstlineno)
+                shortFileName(code1.co_filename),code1.co_firstlineno)
         if files:
-            return '%s:%s' % (g.shortFilename(code1.co_filename),name)
+            return '%s:%s' % (shortFilename(code1.co_filename),name)
         else:
             return name # The code name
     except ValueError:
+        print('ValueError',n)
         return '' # The stack is not deep enough.
     except Exception:
-        g.es_exception()
+        es_exception()
         return '' # "<no caller name>"
 #@+node:ekr.20121128031949.12605: *3* class SherlockTracer
 class SherlockTracer:
@@ -2764,7 +2768,7 @@ def actualColor(color):
     
     # g.trace(color,color2)
     return color2
-#@+node:ekr.20031218072017.3147: *3* g.choose
+#@+node:ekr.20031218072017.3147: *3* g.choose (deprecated)
 def choose(cond, a, b): # warning: evaluates all arguments
 
     if cond: return a
@@ -2991,7 +2995,7 @@ def pr(*args,**keys):
     
     # Compute the effective args.
     d = {'commas':False,'newline':True,'spaces':True}
-    d = g.doKeywordArgs(keys,d)
+    d = doKeywordArgs(keys,d)
     newline = d.get('newline')
 
     if sys.platform.lower().startswith('win'):
@@ -3002,22 +3006,22 @@ def pr(*args,**keys):
     else:
         encoding = 'utf-8'
 
-    s = g.translateArgs(args,d) # Translates everything to unicode.
+    s = translateArgs(args,d) # Translates everything to unicode.
     
     # Add a newline unless we are going to queue the message.
     if app.logInited and not print_immediately:
         if newline:
             s = s + '\n'
 
-    if g.isPython3:
+    if isPython3:
         if encoding.lower() in ('utf-8','utf-16'):
             s2 = s # There can be no problem.
         else:
             # Carefully convert s to the encoding.
-            s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
-            s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
+            s3 = toEncodedString(s,encoding=encoding,reportErrors=False)
+            s2 = toUnicode(s3,encoding=encoding,reportErrors=False)
     else:
-        s2 = g.toEncodedString(s,encoding,reportErrors=False)
+        s2 = toEncodedString(s,encoding,reportErrors=False)
       
     if print_immediately:
         # Good for debugging: prints messages immediately.
@@ -3030,10 +3034,12 @@ def pr(*args,**keys):
             app.printWaiting.append(s2)
 #@+node:ekr.20031218072017.2317: *3* g.trace
 def trace (*args,**keys):
+    
+    # Don't use g here: in standalone mode g is a nullObject!
 
     # Compute the effective args.
     d = {'align':0,'newline':True}
-    d = g.doKeywordArgs(keys,d)
+    d = doKeywordArgs(keys,d)
     newline = d.get('newline')
     align = d.get('align',0)
 
@@ -3058,10 +3064,10 @@ def trace (*args,**keys):
     # for z in args: print (g.isString(z),repr(z))
     result = [name]
     for arg in args:
-        if g.isString(arg):
+        if isString(arg):
             pass
-        elif g.isBytes(arg):
-            arg = g.toUnicode(arg)
+        elif isBytes(arg):
+            arg = toUnicode(arg)
         else:
             arg = repr(arg)
         if result:
@@ -3073,7 +3079,7 @@ def trace (*args,**keys):
     
     # Print the result immediately.
     if app:
-        g.pr(s,newline=newline)
+        pr(s,newline=newline)
     else:
         # g is a nullObject!
         print(s)
@@ -3097,13 +3103,13 @@ def translateArgs(args,d):
 
         # First, convert to unicode.
         if type(arg) == type('a'):
-            arg = g.toUnicode(arg,g.consoleEncoding)
+            arg = toUnicode(arg,consoleEncoding)
 
         # Now translate.
-        if not g.isString(arg):
+        if not isString(arg):
             arg = repr(arg)
         elif (n % 2) == 1:
-            arg = g.translateString(arg)
+            arg = translateString(arg)
         else:
             pass # The arg is an untranslated string.
 
@@ -3117,16 +3123,16 @@ def translateString (s):
 
     '''Return the translated text of s.'''
 
-    if g.isPython3:
-        if not g.isString(s):
+    if isPython3:
+        if not isString(s):
             s = str(s,'utf-8')
-        if g.app.translateToUpperCase:
+        if app and app.translateToUpperCase:
             s = s.upper()
         else:
             s = gettext.gettext(s)
         return s
     else:
-        if g.app.translateToUpperCase:
+        if app and app.translateToUpperCase:
             return s.upper()
         else:
             return gettext.gettext(s)
@@ -3134,7 +3140,7 @@ def translateString (s):
 tr = translateString
 #@+node:ekr.20031218072017.3150: *3* g.windows
 def windows():
-    return app.windowList
+    return app and app.windowList
 #@+node:ekr.20031218072017.2145: ** os.path wrappers (leoGlobals.py)
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
