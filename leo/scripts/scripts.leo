@@ -74,7 +74,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20051104082026,ekr.20061029095517,ekr.20061029095517.2,ekr.20051104082605,ekr.20050225161940,ekr.20051204180404,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6937,ekr.20120328102352.6938,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -88,6 +88,29 @@ expanded="ekr.20051104082026,ekr.20061029095517,ekr.20061029095517.2,ekr.2005110
 <v t="ekr.20121220111212.13265"><vh>run</vh></v>
 <v t="ekr.20121220111212.13266"><vh>test</vh></v>
 <v t="ekr.20121220111212.13267"><vh>write_file</vh></v>
+</v>
+</v>
+<v t="ekr.20121013084734.16370"><vh>Recursive import script (with cleanups)</vh>
+<v t="ekr.20121013084734.16371"><vh>class ImportController</vh>
+<v t="ekr.20121013084734.16372"><vh>Pass 1: import_dir</vh></v>
+<v t="ekr.20121013084734.16373"><vh>Pass 2: clean_all &amp; helpers</vh>
+<v t="ekr.20121013084734.16374"><vh>clean</vh></v>
+<v t="ekr.20121013084734.16375"><vh>clean_blank_lines</vh></v>
+<v t="ekr.20121013084734.16376"><vh>merge_comment_nodes</vh></v>
+<v t="ekr.20121013084734.16377"><vh>merge_extra_nodes</vh></v>
+<v t="ekr.20121013084734.16378"><vh>move_decorator_lines</vh></v>
+<v t="ekr.20121013084734.16379"><vh>move_doc_string</vh></v>
+<v t="ekr.20121013084734.16380"><vh>move_shebang_line</vh></v>
+<v t="ekr.20121013084734.16381"><vh>rename_decls</vh></v>
+</v>
+<v t="ekr.20121013084734.16382"><vh>Pass 3: post_process &amp; helpers</vh>
+<v t="ekr.20121013084734.16383"><vh>clear_dirty_bits</vh></v>
+<v t="ekr.20121013084734.16384"><vh>dump_headlines</vh></v>
+<v t="ekr.20121013084734.16385"><vh>fix_back_slashes</vh></v>
+<v t="ekr.20121013084734.16386"><vh>minimize_headlines</vh></v>
+<v t="ekr.20121013084734.16387"><vh>remove_empty_nodes</vh></v>
+</v>
+<v t="ekr.20121013084734.16388"><vh>run</vh></v>
 </v>
 </v>
 </vnodes>
@@ -837,6 +860,460 @@ result = '\n'.join(result) + '\n'
 w = c.frame.body.bodyCtrl
 w.clipboard_clear()
 w.clipboard_append(result)</t>
+<t tx="ekr.20121013084734.16370">'''Recursively import all python files in theDir and clean the result.'''
+
+# Latest change: do some fixups for languages other than python.
+
+import os
+import time
+
+use_at_edit = False # True: create @edit nodes
+safe_at_file = True # True: create @@file nodes instead of @file nodes.
+oneFile = False # True: only import one file.
+
+if 1:
+    theTypes = ('.ts',)
+    theDir = r'C:\prog\typescript-fe3bc0bfce1f\src\compiler'
+else:
+    theTypes = ('.py',)
+    theDir = r'C:\Python26\Lib\site-packages\rope'
+
+@others
+
+# g.cls()
+
+if g.os_path_exists(theDir):
+    # Import all files in theDir after c.p.
+    try:
+        ImportController().run(c,p,theDir,theTypes,
+            oneFile=oneFile,recursive=not oneFile)
+    finally:
+        c.redraw()
+else:
+    print('Does not exist: %s' % (theDir))
+</t>
+<t tx="ekr.20121013084734.16371">class ImportController():
+    
+    # There is no ctor.
+
+    @others
+</t>
+<t tx="ekr.20121013084734.16372">def import_dir(self,c,root,theDir,theTypes,oneFile=False,recursive=True):
+
+    g.es("dir: " + theDir,color="blue")
+    dirs,files,files2 = [],os.listdir(theDir),[]
+    for f in files:
+        path = g.os_path_join(theDir,f)
+        if g.os_path_isfile(path):
+            name, ext = g.os_path_splitext(f)
+            if not theTypes or ext in theTypes:
+                files2.append(path)
+        elif recursive:
+            dirs.append(path)
+    if files2 or dirs:
+        child = root.insertAsLastChild()
+        child.h = theDir
+        c.selectPosition(child,enableRedrawFlag=False)
+    if files2:
+        if oneFile: files2 = [files2[0]]
+        if use_at_edit:
+            for fn in files2:
+                parent = child or root
+                p = parent.insertAsLastChild()
+                p.h = fn.replace('\\','/')
+                s,e = g.readFileIntoString(fn,encoding='utf-8',kind='@edit')
+                p.b = s
+        else:
+            c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False)
+                # '@auto' causes problems.
+    if dirs:
+        for theDir in sorted(dirs):
+            prefix = theDir
+            self.import_dir(c,child,theDir,theTypes)
+</t>
+<t tx="ekr.20121013084734.16373">def clean_all (self,c,p):
+    
+    for p in p.self_and_subtree():
+        h = p.h
+        if h.startswith('@file') or h.startswith('@@file'):
+            i = 6 if h[1] == '@' else 5
+            path = h[i:].strip()
+            junk,ext = g.os_path_splitext(path)
+            self.clean(c,p,ext)
+</t>
+<t tx="ekr.20121013084734.16374">def clean(self,c,p,ext):
+    
+    '''
+    - Move a shebang line from the first child to the root.
+    - Move a leading docstring in the first child to the root.
+    - Use a section reference for declarations.
+    - Remove leading and trailing blank lines from all nodes.
+    - Merge a node containing nothing but comments with the next node.
+    - Merge a node containing no class or def lines with the previous node.
+    '''
+
+    root = p.copy()
+    for tag in ('@@file','@file'):
+        if p.h.startswith(tag):
+            p.h = p.h[len(tag):].strip()
+            break
+            
+    self.move_shebang_line(c,root)
+    self.move_doc_string(c,root)
+    self.rename_decls(c,root)
+
+    for p in root.self_and_subtree():
+        self.clean_blank_lines(c,p)
+        
+    # Get the single-line comment delim.
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        delim,junk,junk = g.set_delims_from_language(language)
+    else:
+        delim = None
+        
+    # g.trace('ext: %s language: %s delim: %s' % (ext,language,delim))
+        
+    if delim:
+        # Do general language-dependent cleanups.
+        for p in root.subtree():
+            self.merge_comment_nodes(c,p,delim)
+    if ext == 'py':
+        # Do python only cleanups.
+        for p in root.subtree():
+            self.merge_extra_nodes(c,p)
+        for p in root.subtree():
+            self.move_decorator_lines(c,p)
+</t>
+<t tx="ekr.20121013084734.16375">def clean_blank_lines(self,c,p):
+    
+    '''Remove leading and trailing blank lines from all nodes.
+    '''
+    
+    s = p.b
+    if not s.strip():
+        return
+    
+    result = g.splitLines(s)
+    for i in 0,-1:
+        while result:
+            if result[i].strip():
+                break
+            else:
+                del result[i]
+        
+    s = ''.join(result)
+    if not s.endswith('\n'): s = s + '\n'
+    if s != p.b:
+        p.b = s
+</t>
+<t tx="ekr.20121013084734.16376">def merge_comment_nodes(self,c,p,delim):
+    
+    '''Merge a node containing nothing but comments with the next node.'''
+    
+    if not p.hasChildren() and p.hasNext() and p.h.strip().startswith(delim):
+        p2 = p.next()
+        b = p.b.lstrip()
+        b = b + ('\n' if b.endswith('\n') else '\n\n')
+        p2.b = b + p2.b
+        p.doDelete(p2)
+        # g.trace(p2.h)
+</t>
+<t tx="ekr.20121013084734.16377">def merge_extra_nodes(self,c,p):
+    
+    '''Merge a node containing no class or def lines with the previous node'''
+    
+    s = p.b
+    if p.hasChildren() or p.h.strip().startswith('&lt;&lt;') or not s.strip():
+        return
+        
+    for s2 in g.splitLines(s):
+        if s2.strip().startswith('class') or s2.strip().startswith('def'):
+            return
+
+    p2 = p.back()
+    if p2:
+        nl = '\n' if s.endswith('\n') else '\n\n'
+        p2.b = p2.b + nl + s
+        h = p.h
+        p.doDelete(p2)
+</t>
+<t tx="ekr.20121013084734.16378">def move_decorator_lines (self,c,p):
+    
+    '''Move trailing decorator lines to the next node.'''
+    
+    trace = False
+    p2 = p.next()
+    if not p2: return False
+    
+    lines = g.splitLines(p.b)
+    n = len(lines) -1
+    while n &gt;= 0:
+        s = lines[n]
+        if s.startswith('@'):
+            i = g.skip_id(s,1,chars='-')
+            word = s[1:i]
+            if word in g.globalDirectiveList:
+                break
+            else:
+                n -= 1
+        else:
+            break
+        
+    head = ''.join(lines[:n+1])
+    tail = ''.join(lines[n+1:])
+    if not tail: return False
+
+    assert head.endswith('\n')
+    assert p.b == head+tail
+    
+    if trace:
+        if tail not in seen:
+            seen.append(tail)
+            g.trace(tail.strip())
+    
+    if 1:
+        nl = '' if tail.endswith('\n') else '\n'
+        p.b = head
+        p2.b = tail+nl+p2.b
+        
+    return True
+</t>
+<t tx="ekr.20121013084734.16379">def move_doc_string(self,c,root):
+
+    '''Move a leading docstring in the first child to the root node.'''
+    
+    # To do: copy comments before docstring
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not s: return
+    
+    # if root.h.endswith('pgen.py'):
+        # g.pdb()
+
+    result = []
+    for s2 in g.splitLines(s):
+        delim = None
+        s3 = s2.strip()
+        if not s3:
+            result.append(s2)
+        elif s3.startswith('#'):
+            result.append(s2)
+        elif s3.startswith('"""'):
+            delim = '"""'
+            break
+        elif s3.startswith("'''"):
+            delim = "'''"
+            break
+        else:
+            break
+       
+    if not delim:
+        comments = ''.join(result)
+        if comments:
+            nl = '\n\n' if root.b.strip() else ''
+            if root.b.startswith('@first #!'):
+                lines = g.splitLines(root.b)
+                root.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
+            else:
+                root.b = comments + nl + root.b
+            p.b = s[len(comments):]
+        return
+
+    i = s.find(delim)
+    assert i &gt; -1
+    i = s.find(delim,i+3)
+    if i == -1:
+        return
+        
+    doc = s[:i+3]
+    p.b = s[i+3:].lstrip()
+    
+    # Move docstring to front of root.b, but after any shebang line.
+    nl = '\n\n' if root.b.strip() else ''
+    if root.b.startswith('@first #!'):
+        lines = g.splitLines(root.b)
+        root.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
+    else:
+        root.b = doc + nl + root.b
+</t>
+<t tx="ekr.20121013084734.16380">def move_shebang_line (self,c,root):
+    
+    '''Move a shebang line from the first child to the root.'''
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if s.startswith('#!'):
+        lines = g.splitLines(s)
+        nl = '\n\n' if root.b.strip() else ''
+        root.b = '@first ' + lines[0] + nl + root.b
+        p.b = ''.join(lines[1:])
+</t>
+<t tx="ekr.20121013084734.16381">def rename_decls (self,c,root):
+    
+    '''Use a section reference for declarations.'''
+    
+    p = root.firstChild()
+    h = p and p.h or ''
+    
+    tag = 'declarations'
+    if not h.endswith(tag):
+        return
+        
+    if not p.b.strip():
+        return # The blank node will be deleted.
+
+    name = h[:-len(tag)].strip()
+    decls = g.angleBrackets(tag)
+    p.h = '%s (%s)' % (decls,name)
+    
+    i = root.b.find('@others')
+    if i == -1:
+        g.trace('can not happen')
+        return
+    else:
+        nl = '' if i == 0 else '\n'
+        root.b = root.b[:i] + nl + decls + '\n' + root.b[i:]
+
+    # p.setDirty()
+    # root.setDirty()
+    # root.setMarked()
+    # c.setChanged(True)
+
+    # self.changed += 1
+    #g.trace('%s --&gt; %s' % (p.h,root.h))
+</t>
+<t tx="ekr.20121013084734.16382">def post_process (self,c,p,prefix,theTypes):
+    
+    '''Traverse p's tree, replacing all nodes that start with prefix
+       by the smallest equivalent @path or @file node.
+    '''
+
+    assert p
+    root = p.copy()
+    self.fix_back_slashes(root.copy())
+    prefix = prefix.replace('\\','/')
+    
+    # self.dump_headlines(root.copy())
+    if not use_at_edit:
+        self.remove_empty_nodes(c,root.copy())
+    self.minimize_headlines(c,root.copy().firstChild(),prefix,theTypes)
+    self.clear_dirty_bits(c,root.copy())
+    
+    ## self.munge_at_file(c,root.copy().firstChild())
+</t>
+<t tx="ekr.20121013084734.16383">def clear_dirty_bits (self,c,p):
+    
+    c.setChanged(False)
+    for p in p.self_and_subtree():
+        p.clearDirty()
+</t>
+<t tx="ekr.20121013084734.16384">def dump_headlines (self,p):
+    
+    # show all headlines.
+    for p in p.self_and_subtree():
+        print(p.h)
+</t>
+<t tx="ekr.20121013084734.16385">def fix_back_slashes (self,p):
+    
+    '''Convert backslash to slash in all headlines.'''
+
+    for p in p.self_and_subtree():
+        s = p.h.replace('\\','/')
+        if s != p.h:
+            p.h = s
+</t>
+<t tx="ekr.20121013084734.16386">def minimize_headlines (self,c,p,prefix,theTypes):
+    
+    '''Create @path nodes to minimize the paths required in descendant nodes.'''
+
+    trace = False
+    
+    # This could only happen during testing.
+    if p.h.startswith('@'):
+        g.trace('** skipping: %s' % (p.h))
+        return
+        
+    h2 = p.h[len(prefix):].strip()
+    
+    ends_with_ext = any([h2.endswith(z) for z in theTypes])
+    
+    if p.h == prefix:
+        if trace: g.trace('@path %s' % (p.h))
+        p.h = '@path %s' % (p.h)
+        for p in p.children():
+            self.minimize_headlines(c,p,prefix,theTypes)
+    elif h2.find('/') &lt;= 0 and ends_with_ext:
+            if h2.startswith('/'): h2 = h2[1:]
+            if use_at_edit:
+                p.h = '@edit %s' % (h2)
+            elif safe_at_file:
+                if trace: g.trace('@@file %s' % (h2))
+                p.h = '@@file %s' % (h2)
+            else:
+                if trace: g.trace('@file %s' % (h2))
+                p.h = '@file %s' % (h2)
+            # We never scan the children of @file nodes.
+    else:
+        if h2.startswith('/'): h2 = h2[1:]
+        if trace:
+            print('')
+            g.trace('@path [%s/]%s' % (prefix,h2))
+        p.h = '@path %s' % (h2)
+        prefix2 = prefix if prefix.endswith('/') else prefix + '/'
+        prefix2 = prefix2 + h2
+        for p in p.children():
+            self.minimize_headlines(c,p,prefix2,theTypes)
+</t>
+<t tx="ekr.20121013084734.16387">def remove_empty_nodes (self,c,p):
+    
+    root = p.copy()
+    
+    # Restart the scan once a node is deleted.
+    changed = True
+    while changed:
+        changed = False
+        for p in root.self_and_subtree():
+            if not p.b and not p.hasChildren():
+                # g.trace('** deleting',p.h)
+                p.doDelete()
+                c.selectPosition(root)
+                changed = True
+                break
+                
+</t>
+<t tx="ekr.20121013084734.16388">def run (self,c,p,theDir,theTypes,oneFile=False,recursive=True):
+    
+    '''Import all the .py files in theDir.'''
+
+    try:
+        t1 = time.time()
+        p1 = p.copy()
+        g.app.disable_redraw = True
+        bunch = c.undoer.beforeChangeTree(p1)
+        assert p == c.p
+        root = p.insertAfter()
+        # root.h = '@path %s' % (theDir)
+        root.h = 'imported files'
+        prefix = theDir
+        self.import_dir(c,root.copy(),theDir,theTypes,oneFile=oneFile,recursive=recursive)
+        n = 0
+        for p in root.self_and_subtree():
+            n += 1
+        if not use_at_edit:
+            self.clean_all(c,root.copy())
+        self.post_process(c,root.copy(),theDir,theTypes)
+        c.undoer.afterChangeTree(p1,'recursive-import',bunch)
+    finally:
+        g.app.disable_redraw = False
+        root.contract()
+        c.redraw(root)
+    
+    t2 = time.time()
+    g.trace('imported %s nodes in %2.2f sec' % (n,t2-t1))
+</t>
 <t tx="ekr.20121220111212.13257">'''
 &lt;&lt; about this script &gt;&gt;
 '''
