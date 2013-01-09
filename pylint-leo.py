@@ -216,6 +216,7 @@ def scanOptions():
     add('-r', help = 'recent')
     # add('-s', help = 'suppressions')
     add('-t', help = 'static type checking')
+    add('--tt',help = 'stc test')
     
     # Parse the options.
     options, args = parser.parse_args()
@@ -228,6 +229,7 @@ def scanOptions():
     elif options.r: return 'recent'
     # elif options.s: return 'suppressions'
     elif options.t: return 'stc'
+    elif options.tt:return 'stc-test'
     else:           return 'all'
 #@-others
 
@@ -276,6 +278,10 @@ elif scope == 'recent':
 elif scope == 'stc':
     tables_table = (
         (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
+    )
+elif scope == 'stc-test':
+    tables_table = (
+        (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
     )
 else:
     print('bad scope',scope)
