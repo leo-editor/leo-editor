@@ -957,7 +957,7 @@ class SherlockTracer:
 
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
-    def __init__(self,patterns,dots=True,verbose=False):
+    def __init__(self,patterns,dots=True,show_return=False,verbose=False):
         
         import re
 
@@ -967,6 +967,7 @@ class SherlockTracer:
         self.stats = {}         # Keys are full file names, values are dicts.
         self.patterns = patterns# A list of regex patterns to match.
         self.re = re            # Import re only once.
+        self.show_return = show_return # True: show returns from each function.
         self.verbose = verbose  # True: print filename:func
 
         try:
@@ -979,6 +980,9 @@ class SherlockTracer:
 
         if event == 'call':
             self.do_call(frame,arg)
+            
+        elif event == 'return' and self.show_return:
+            self.do_return(frame,arg)
 
         return self.dispatch
     #@+node:ekr.20121128031949.12603: *4* do_call
@@ -997,16 +1001,34 @@ class SherlockTracer:
                 n += 1
             dots = '.' * max(0,n-self.n) if self.dots else ''
             # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
-            if self.verbose:
-                print('%s%s:%s' % (dots,os.path.basename(fn),name))
-            else:
-                print('%s%s' % (dots,name))
-            
+            path = os.path.basename(fn)+':' if self.verbose else ''
+            leadin = '+' if self.show_return else ''
+            print('%s%s%s%s' % (path,dots,leadin,name))
+
         # Alwas update stats.
         d = self.stats.get(fn,{})
         d[name] = 1 + d.get(name,0)
         self.stats[fn] = d
             
+    #@+node:ekr.20130109154743.10172: *4* do_return
+    def do_return(self,frame,arg): # arg not used.
+
+        import os
+
+        code = frame.f_code
+        name = code.co_name
+        fn   = code.co_filename
+
+        if self.is_enabled(fn,name,self.patterns):
+            n = 0
+            while frame:
+                frame = frame.f_back
+                n += 1
+            dots = '.' * max(0,n-self.n) if self.dots else ''
+            # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
+            path = os.path.basename(fn)+':' if self.verbose else ''
+            leadin = '-' if self.show_return else ''
+            print('%s%s%s%s' % (path,dots,leadin,name))
     #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
     def fn_is_enabled (self,fn,patterns):
         
