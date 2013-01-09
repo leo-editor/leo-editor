@@ -189,7 +189,6 @@ app = None # The singleton app object.
 inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 
-
 #@+others
 #@+node:ekr.20031218072017.3095: ** Checking Leo Files...
 #@+node:ekr.20031218072017.822: *3* createTopologyList
@@ -2988,8 +2987,8 @@ def pr(*args,**keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     
-    print_immediately = False # True: good for debugging.
-
+    print_immediately = False or not app # True: good for debugging.
+    
     # Compute the effective args.
     d = {'commas':False,'newline':True,'spaces':True}
     d = g.doKeywordArgs(keys,d)
@@ -3073,7 +3072,11 @@ def trace (*args,**keys):
     s = ''.join(result)
     
     # Print the result immediately.
-    g.pr(s,newline=newline)
+    if app:
+        g.pr(s,newline=newline)
+    else:
+        # g is a nullObject!
+        print(s)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 def translateArgs(args,d):
 
