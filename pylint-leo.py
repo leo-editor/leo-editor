@@ -5,7 +5,6 @@
 import optparse
 import os
 import sys
-from pylint import lint # Use the version of pylint in python26/Lib/site-packages.
 
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
@@ -115,7 +114,7 @@ def getRecentCoreList():
         # 'runLeo',
         # 'leoApp',
         # 'leoAtFile',
-        'leoBridge',
+        # 'leoBridge',
         # 'leoCache',
         # 'leoChapters',
         # 'leoCommands',
@@ -289,6 +288,10 @@ else:
     
 if tables_table and sys.platform.startswith('win'):
     os.system('cls')
+    
+from pylint import lint
+    # Use the version of pylint in python26/Lib/site-packages.
+    # Do the import *after* clearing the console.
     
 # print(lint)
 
