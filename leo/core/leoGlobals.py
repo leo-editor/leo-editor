@@ -182,8 +182,17 @@ class nullObject:
     def __setattr__(self,attr,val): return self
 #@-<< define the nullObject class >>
 tree_popup_handlers = [] # Set later.
-g = nullObject() # Set early in startup logic to this module.
-app = None # The singleton app object.
+new_load_g = True
+if new_load_g:
+    # class _Redirect:
+        # def __getattr__(self,attr):
+            # m = sys.modules.get('leo.core.leoGlobals')
+            # return getattr(m,attr)
+    # g = _Redirect()
+    g = None
+else:
+    g = nullObject() # Set early in startup logic to this module.
+app = None # The singleton app object. Set by runLeo.py.
 
 # Global status vars.
 inScript = False # A synonym for app.inScript
@@ -2687,12 +2696,13 @@ class command:
 
     def __call__(self,func):
         # register command for all future commanders
-        g.app.global_commands_dict[self.name] = func
-
-        # ditto for all current commanders
-        for co in g.app.commanders():
-            co.k.registerCommand(self.name,shortcut = None, func = func, pane='all',verbose=False)        
-
+        if g and g.app:
+            g.app.global_commands_dict[self.name] = func
+            # ditto for all current commanders
+            for co in g.app.commanders():
+                co.k.registerCommand(self.name,shortcut = None, func = func, pane='all',verbose=False)        
+        else:
+            g.error('@command decorator inside leoGlobals.py')
         return func
 
 
@@ -4835,10 +4845,6 @@ def openUrl(p):
             g.handleUrl(url,c=c,p=p)
         g.doHook("@url2",c=c,p=p,v=p)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-@g.command('open-url-under-cursor')
-def openUrlUnderCursor(event):
-    return openUrlOnClick(event)
-    
 def openUrlOnClick(event):
     '''Open the URL under the cursor.  Return it for unit testing.'''
     c = event.get('c')
@@ -5790,6 +5796,8 @@ def importModule (moduleName,pluginName=None,verbose=False):
     '''Try to import a module as Python's import command does.
 
     moduleName is the module's name, without file extension.'''
+    
+    # Important: g is Null during startup.
 
     trace = False and not g.unitTesting
     module = sys.modules.get(moduleName)
@@ -6395,4 +6403,9 @@ def init_zodb (pathToZodbStorage,verbose=True):
         init_zodb_failed [pathToZodbStorage] = True
         return None
 #@-others
+
+# set g when the import is about to complete.
+if new_load_g:
+    g = sys.modules.get('leo.core.leoGlobals')
+    assert g,sorted(sys.modules.keys())
 #@-leo

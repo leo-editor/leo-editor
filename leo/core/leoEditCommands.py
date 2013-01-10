@@ -227,7 +227,9 @@ def openUrl(event):
     if c:
         g.openUrl(c.p)
         
-
+@g.command('open-url-under-cursor')
+def openUrlUnderCursor(event):
+    return g.openUrlOnClick(event)
 #@+node:ekr.20120315062642.9745: *4* ctrlClickAtCursor (ctrl-click-at-cursor)
 @g.command('ctrl-click-at-cursor')
 def ctrlClickAtCursor(event):
