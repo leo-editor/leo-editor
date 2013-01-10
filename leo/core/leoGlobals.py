@@ -3009,9 +3009,8 @@ def pr(*args,**keys):
     s = translateArgs(args,d) # Translates everything to unicode.
     
     # Add a newline unless we are going to queue the message.
-    if app.logInited and not print_immediately:
-        if newline:
-            s = s + '\n'
+    if newline and (print_immediately or app and app.logInited):
+        s = s + '\n'
 
     if isPython3:
         if encoding.lower() in ('utf-8','utf-16'):
@@ -3022,11 +3021,12 @@ def pr(*args,**keys):
             s2 = toUnicode(s3,encoding=encoding,reportErrors=False)
     else:
         s2 = toEncodedString(s,encoding,reportErrors=False)
-      
+    
     if print_immediately:
         # Good for debugging: prints messages immediately.
         sys.stdout.write(s2)
     else:
+        assert app
         # Good for production: queues 'reading settings' until after signon.
         if app.logInited and sys.stdout: # Bug fix: 2012/11/13.
             sys.stdout.write(s2)
@@ -3076,24 +3076,22 @@ def trace (*args,**keys):
             result.append(arg)
             
     s = ''.join(result)
-    
-    # Print the result immediately.
-    if app:
-        pr(s,newline=newline)
-    else:
-        # g is a nullObject!
-        print(s)
+    pr(s,newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
+console_encoding = None
+
 def translateArgs(args,d):
 
     '''Return the concatenation of s and all args,
 
     with odd args translated.'''
+    
+    global console_encoding
 
-    if not hasattr(g,'consoleEncoding'):
+    if not console_encoding:
         e = sys.getdefaultencoding()
-        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
-        # print 'translateArgs',g.consoleEncoding
+        console_encoding = isValidEncoding(e) and e or 'utf-8'
+        # print 'translateArgs',console_encoding
 
     result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
@@ -3103,7 +3101,7 @@ def translateArgs(args,d):
 
         # First, convert to unicode.
         if type(arg) == type('a'):
-            arg = toUnicode(arg,consoleEncoding)
+            arg = toUnicode(arg,console_encoding)
 
         # Now translate.
         if not isString(arg):
