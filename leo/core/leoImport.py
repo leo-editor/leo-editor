@@ -2572,7 +2572,9 @@ class baseScannerClass (scanUtility):
         parent = self.adjustParent(parent,headline)
 
         if trace:
-            g.trace('parent',parent.h)
+            # pylint: disable=E1103
+                # Instance of str has no h member.
+            g.trace('parent',parent.h) # pylint complains.
             if verbose:
                 # g.trace('**body1...\n',body1)
                 g.trace('**body2...\n',body2)
