@@ -2664,6 +2664,11 @@ Bug description:
   I confirmed this bug on Leo-Editor revisions 5501 and 5505.
 #@+node:ekr.20121205091157.12223: *4* Don't horizontally scroll body pane if word wrapping
 The fix was in qtBody.setWrap.
+#@+node:ekr.20130111082855.10176: *4* Running unit tests no longer change the selected tab
+@nocolor-node
+
+
+The fix was to set new_c=self.c in the call to c.close in createFileFromOutline.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -2671,6 +2676,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
 The format of such local suppressions is::
 
     # pylint: disable=<message-number>
+#@+node:ekr.20130111082855.10177: *4* g.pdb now does qtGui stuff
 #@+node:ekr.20120529083658.11110: *3* Docs
 #@+node:ekr.20120529083658.11109: *4* For the FAQ: create a bzr repository before importing it into Leo
 @language rest
