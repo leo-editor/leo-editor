@@ -1013,7 +1013,7 @@ class SherlockTracer:
                 n += 1
             dots = '.' * max(0,n-self.n) if self.dots else ''
             # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
-            path = os.path.basename(fn)+':' if self.verbose else ''
+            path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
             leadin = '+' if self.show_return else ''
             print('%s%s%s%s' % (path,dots,leadin,name))
 
@@ -1038,7 +1038,7 @@ class SherlockTracer:
                 n += 1
             dots = '.' * max(0,n-self.n) if self.dots else ''
             # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
-            path = os.path.basename(fn)+':' if self.verbose else ''
+            path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
             leadin = '-' if self.show_return else ''
             print('%s%s%s%s' % (path,dots,leadin,name))
     #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
