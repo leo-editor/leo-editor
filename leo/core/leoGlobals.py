@@ -1003,6 +1003,7 @@ class SherlockTracer:
         import os
 
         code = frame.f_code
+        locals_ = frame.f_locals
         name = code.co_name
         fn   = code.co_filename
         
@@ -1018,6 +1019,13 @@ class SherlockTracer:
             # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
             path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
             leadin = '+' if self.show_return else ''
+            try:
+                user_self = locals_ and locals_.get('self',None)
+                if user_self:
+                    name = user_self.__class__.__name__ + '::' + name
+                    # g.trace('self',user_self)
+            except Exception:
+                pass
             print('%s%s%s%s' % (path,dots,leadin,name))
 
         # Alwas update stats.
@@ -1025,12 +1033,13 @@ class SherlockTracer:
         d[name] = 1 + d.get(name,0)
         self.stats[fn] = d
             
-    #@+node:ekr.20130109154743.10172: *4* do_return
+    #@+node:ekr.20130109154743.10172: *4* do_return & helper
     def do_return(self,frame,arg): # arg not used.
 
         import os
 
         code = frame.f_code
+        locals_ = frame.f_locals
         name = code.co_name
         fn   = code.co_filename
 
@@ -1040,10 +1049,30 @@ class SherlockTracer:
                 frame = frame.f_back
                 n += 1
             dots = '.' * max(0,n-self.n) if self.dots else ''
-            # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
             path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
-            leadin = '-' if self.show_return else ''
-            print('%s%s%s%s' % (path,dots,leadin,name))
+            user_self = locals_ and locals_.get('self',None)
+            if user_self:
+                name = user_self.__class__.__name__ + '::' + name
+            ret = self.format_ret(arg)
+            print('%s%s-%s%s' % (path,dots,name,ret))
+    #@+node:ekr.20130111120935.10192: *5* format_ret
+    def format_ret(self,arg):
+        
+        try:
+            if arg and isinstance(arg,(tuple,list)) and len(arg) > 1:
+                ret = ' -> %s' % ','.join([repr(z) for z in arg])
+                if len(ret) > 40:
+                    ret = ' -> [\n%s]' % ('\n,'.join([repr(z) for z in arg]))
+            else:
+                ret = ' -> %s' % (repr(arg)) if arg else ''
+                if len(ret) > 40:
+                    ret = ' ->\n    %s' % repr(arg)
+        except Exception:
+            exctype, value = sys.exc_info()[:2]
+            s = '<**exception: %s,%s arg: %s**>' % (exctype.__name__, value,repr(arg))
+            ret = ' ->\n    %s' % (s) if len(s) > 40 else ' -> %s' % (s)
+            
+        return ret
     #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
     def fn_is_enabled (self,fn,patterns):
         
