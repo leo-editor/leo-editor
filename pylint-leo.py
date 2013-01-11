@@ -172,7 +172,7 @@ def getTkPass():
         # 'templates','textnode','tkGui','toolbar',
         # 'xcc_nodes',
    )
-#@+node:ekr.20100221142603.5644: ** run
+#@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 # Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
 # From: sys.exit(self.linter.msg_status)
 # To:   print('EKR: exit status',self.linter.msg_status)
@@ -182,6 +182,7 @@ def run(theDir,fn,rpython=False):
     fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
     assert os.path.exists(rc_fn)
+    # print('run:scope:%s' % scope)
     
     args = ['--rcfile=%s' % (rc_fn)]
     args.append('--disable=I0011')
@@ -193,7 +194,102 @@ def run(theDir,fn,rpython=False):
 
     if os.path.exists(fn):
         print('pylint-leo.py: %s' % fn)
-        lint.Run(args)
+        if True and scope == 'stc-test':
+            import leo.core.leoGlobals as g
+            print('pylint-leo.py: enabling Sherlock traces')
+            sherlock = g.SherlockTracer(show_return=True,verbose=True, # verbose: show filenames.
+                patterns=[ 
+                #@+<< Sherlock patterns for pylint >>
+                #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
+                # Enable everything.
+                '+.*',
+
+                # Disable entire files.
+                # '-:.*\\lib\\.*', # Disables everything.
+
+                # Pylint files.
+                #'-:.*base.py',
+                #'-:.*bases.py',
+                '-:.*builder.py',
+                '-:.*__init__.py',
+                '-:.*format.py',
+                '-:.*interface.py', # implements
+                '-:.*rebuilder.py',
+                #'-:.*scoped_nodes',
+                # General library files.
+                '-:.*leoGlobals.py',
+                '-:.*codecs.py',
+                '-:.*config.py',
+                '-:.*configuration.py',
+                '-:.*ConfigParser.py',
+                '-:.*copy\.py',
+                '-:.*gettext.py',
+                '-:.*genericpath.py',
+                '-:.*graph.py',
+                '-:.*locale.py',
+                '-:.*optik_ext.py',
+                '-:.*optparse.py',
+                '-:.*os.py',
+                '-:.*ntpath.py',
+                '-:.*pickle.py',
+                '-:.*re.py',
+                '-:.*similar.py',
+                '-:.*shlex.py',
+                '-:.*sre_compile.py',
+                '-:.*sre_parse.py',
+                '-:.*string_escape.py',
+                '-:.*text.py',
+                '-:.*threading.py',
+                '-:.*tokenize.py',
+                '-:.*utils.py',
+
+                # Enable entire files.
+                # '+:.*base.py',
+                # '+:.*bases.py',
+                # '+:.*classes.py',
+                # '+:.*design_analysis.py',
+                # '+:.*format.py',
+                # '+:.*inference.py',
+                # '+:.*logging.py',
+                # '+:.*mixins.py',
+                # '+:.*newstyle.py',
+                # '+:.*node_classes.py',
+                # '+:.*protocols.py',
+                # '+:.*scoped_nodes.py',
+                # '+:.*typecheck.py',
+                # '+:.*variables.py',
+
+                # Disable individual methods.
+                '-close', # __init__.py
+                '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
+                '-frame','-root','-scope', # scoped_nodes
+                '-register', # various files.
+
+                # '-abspath','-normpath','-isstring','-normalize',
+                # '-splitext','-_splitext','-splitdrive','-splitstrip',
+                # '-.*option.*','-get','-set_option',
+                # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
+                # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
+                # '-_parse.*','-set_parser','-set_conflict_handler',
+                # '-append','-match',
+                # '-isbasestring',
+                # '-save.*','-memoize','-put',
+
+                # '-persistent_id',
+                # '-__next',
+                # '-nodes_of_class',
+                # '-__.*',
+                # '-_check.*',
+                # '-_.*',
+                # '-load_.*',
+                #@-<< Sherlock patterns for pylint >>
+                #@afterref
+ ])
+            sherlock.run()
+            lint.Run(args)
+            sherlock.stop()
+        else:
+            lint.Run(args)
     else:
         print('file not found:',fn)
 #@+node:ekr.20120307142211.9886: ** scanOptions
