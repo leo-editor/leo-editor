@@ -1005,6 +1005,9 @@ class SherlockTracer:
         code = frame.f_code
         name = code.co_name
         fn   = code.co_filename
+        
+        # import inspect
+        # assert inspect.iscode(code),code
 
         if self.is_enabled(fn,name,self.patterns):
             n = 0
@@ -1550,7 +1553,13 @@ def pdb (message=''):
     """Fall into pdb."""
 
     import pdb # Required: we have just defined pdb as a function!
-
+    
+    if app and not app.useIpython:
+        try:
+            import PyQt4.QtCore as QtCore
+            QtCore.pyqtRemoveInputHook()
+        except ImportError:
+            pass
     if message:
         print(message)
     pdb.set_trace()

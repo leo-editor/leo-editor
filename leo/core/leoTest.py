@@ -606,7 +606,7 @@ class runTestExternallyHelperClass:
         c2.selectPosition(c2.rootPosition())
         c2.mFileName = path
         c2.fileCommands.save(path,silent=True)
-        c2.close()
+        c2.close(new_c=self.c) # Bug fix: 2013/01/11: Retain previously-selected tab.
     #@+node:ekr.20070627135336.9: *4* createOutline & helpers (runTestExternallyHelperClass)
     def createOutline (self,c2):
 
@@ -722,7 +722,7 @@ class TestManager:
         c,tm = self.c,self
 
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
-        
+
         # This seems a bit risky when run in unitTest.leo.
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():

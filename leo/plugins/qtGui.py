@@ -1891,14 +1891,15 @@ def init():
     else:
         g.app.gui = leoQtGui()
 
-        # Override g.pdb
-        def qtPdb(message=''):
-            if message: print(message)
-            import pdb
-            if not g.app.useIpython:
-                QtCore.pyqtRemoveInputHook()
-            pdb.set_trace()
-        g.pdb = qtPdb
+        # Now done in g.pdb.
+        # # Override g.pdb
+        # def qtPdb(message=''):
+            # if message: print(message)
+            # import pdb
+            # if not g.app.useIpython:
+                # QtCore.pyqtRemoveInputHook()
+            # pdb.set_trace()
+        # g.pdb = qtPdb
 
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
@@ -2555,6 +2556,8 @@ class DynamicWindow(QtGui.QMainWindow):
     def select (self,c):
         
         '''Select the window or tab for c.'''
+        
+        # self is c.frame.top
         
         if self.leo_master:
             # A LeoTabbedTopLevel.
@@ -7160,6 +7163,8 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def select (self,c):
 
         '''Select the tab for c.'''
+        
+        # g.trace(c,g.callers())
         
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)

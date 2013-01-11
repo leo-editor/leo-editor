@@ -587,6 +587,266 @@ class Commands (object):
             g.doHook("command2",c=c,p=p,v=p,label=label)
 
         return # (for Tk) "break" # Inhibit all other handlers.
+    #@+node:ekr.20051104075904.4: *4* TM.doTests & helpers (local tests)
+    def doTests(self,all=None,marked=None,verbosity=1):
+        
+        '''Run any kind of local unit test.
+        
+        Important: this is also called from dynamicUnitTest.leo
+        to run external tests "locally" from dynamicUnitTest.leo
+        '''
+
+        trace = False ; verbose = True
+        c,tm = self.c,self
+
+        p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+
+        # This seems a bit risky when run in unitTest.leo.
+        if not c.fileName().endswith('unitTest.leo'):
+            if c.isChanged():
+                c.save() # Eliminate the need for ctrl-s.
+        
+        if trace: g.trace('marked',marked,'c',c)
+
+        try:
+            g.unitTesting = g.app.unitTesting = True
+            g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
+            g.app.unitTestDict["fail"] = False
+            g.app.unitTestDict['c'] = c
+            g.app.unitTestDict['g'] = g
+            g.app.unitTestDict['p'] = c.p.copy()
+
+            # c.undoer.clearUndoState() # New in 4.3.1.
+            changed = c.isChanged()
+            suite = unittest.makeSuite(unittest.TestCase)
+            aList = tm.findAllUnitTestNodes(all,marked)
+           
+            found = False
+            for p in aList:
+                if tm.isTestNode(p):
+                    if trace: g.trace('adding',p.h)
+                    test = tm.makeTestCase(p)
+                elif tm.isSuiteNode(p): # @suite
+                    if trace: g.trace('adding',p.h)
+                    test = tm.makeTestSuite(p)
+                elif tm.isTestClassNode(p):
+                    if trace: g.trace('adding',p.h)
+                    test = tm.makeTestClass(p) # A suite of tests.
+                else:
+                    test = None
+                if test:
+                    suite.addTest(test)
+                    found = True
+            
+            # Verbosity: 1: print just dots.
+            if not found:
+                # 2011/10/30: run the body of p as a unit test.
+                if trace: g.trace('no found: running raw body')
+                test = tm.makeTestCase(c.p)
+                if test:
+                    suite.addTest(test)
+                    found = True
+            if found:
+                res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+                # put info to db as well
+                if g.enableDB:
+                    key = 'unittest/cur/fail'
+                    archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                    c.cacher.db[key] = archive
+            else:
+                g.error('no %s@test or @suite nodes in %s outline' % (
+                    g.choose(marked,'marked ',''),
+                    g.choose(all,'entire','selected')))
+        finally:
+            c.setChanged(changed) # Restore changed state.
+            if g.app.unitTestDict.get('restoreSelectedNode',True):
+                c.contractAllHeadlines()
+                c.redraw(p1)
+            g.unitTesting = g.app.unitTesting = False
+    #@+node:ekr.20120912094259.10549: *5* get_suite_script
+    def get_suite_script(self):
+        
+        s = '''
+        
+    try:
+        g.app.scriptDict['suite'] = suite
+    except NameError:
+        pass
+        
+    '''
+        return g.adjustTripleString(s, self.c.tab_width)
+    #@+node:ekr.20120912094259.10547: *5* get_test_class_script
+    def get_test_class_script(self):
+        
+        s = '''
+        
+    try:
+        g.app.scriptDict['testclass'] = testclass
+    except NameError:
+        pass
+        
+    '''
+        return g.adjustTripleString(s,self.c.tab_width)
+    #@+node:ekr.20051104075904.13: *5* makeTestCase
+    def makeTestCase (self,p):
+
+        c = self.c
+        p = p.copy()
+
+        if p.b.strip():
+            return generalTestCase(c,p)
+        else:
+            return None
+    #@+node:ekr.20120912094259.10546: *5* makeTestClass
+    def makeTestClass (self,p):
+
+        """Create a subclass of unittest.TestCase"""
+
+        c,tm = self.c,self
+        fname = 'makeTestClass'
+        p = p.copy()
+        script = g.getScript(c,p).strip()
+        if not script:
+            print("nothing in %s" % p.h)
+            return None
+        try:
+            script = script + tm.get_test_class_script()
+            script = script + tm.get_suite_script()
+            d = {'c':c,'g':g,'p':p,'unittest':unittest}
+            if c.write_script_file:
+                scriptFile = c.writeScriptFile(script)
+                if g.isPython3:
+                    exec(compile(script,scriptFile,'exec'),d)
+                else:
+                    execfile(scriptFile,d)
+            else:
+                exec(script + '\n',d)
+            testclass = g.app.scriptDict.get('testclass')
+            suite = g.app.scriptDict.get('suite')
+            if suite and testclass:
+                print("\n%s: both 'suite' and 'testclass defined in %s" % (
+                    fname,p.h)) 
+            elif testclass:
+                suite = unittest.TestLoader().loadTestsFromTestCase(testclass)
+                return suite
+            elif suite:
+                return suite
+            else:
+                print("\n%s: neither 'suite' nor 'testclass' defined in %s" % (
+                    fname,p.h))
+                return None
+        except Exception:
+            print('\n%s: exception creating test class in %s' % (fname,p.h))
+            g.es_print_exception()
+            return None
+    #@+node:ekr.20051104075904.12: *5* makeTestSuite
+    # This code executes the script in an @suite node.
+    # This code assumes that the script sets the 'suite' var to the test suite.
+
+    def makeTestSuite (self,p):
+
+        """Create a suite of test cases by executing the script in an @suite node."""
+
+        c,tm = self.c,self
+        fname = 'makeTestSuite'
+        p = p.copy()
+        script = g.getScript(c,p).strip()
+        if not script:
+            print("no script in %s" % p.h)
+            return None
+        try:
+            script = script + tm.get_suite_script()
+            d = {'c':c,'g':g,'p':p}
+            if c.write_script_file:
+                scriptFile = c.writeScriptFile(script)
+                if g.isPython3:
+                    exec(compile(script,scriptFile,'exec'),d)
+                else:
+                    execfile(scriptFile,d)
+            else:
+                exec(script + '\n',d)
+            suite = g.app.scriptDict.get("suite")
+            if not suite:
+                print("\n%s: %s script did not set suite var" % (fname,p.h))
+            return suite
+        except Exception:
+            print('\n%s: exception creating test cases for %s' % (fname,p.h))
+            g.es_print_exception()
+            return None
+    #@+node:ekr.20080514131122.20: *4* c.outerUpdate
+    def outerUpdate (self):
+
+        trace = False and not g.unitTesting
+        verbose = True ; traceFocus = True
+        c = self ; aList = []
+        if not c.exists or not c.k:
+            return
+
+        # Suppress any requested redraw until we have iconified or diconified.
+        redrawFlag = c.requestRedrawFlag
+        c.requestRedrawFlag = False
+        
+        if trace and (verbose or aList):
+            g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
+        
+        if c.requestBringToFront:
+            if hasattr(c.frame,'bringToFront'):
+                ### c.frame.bringToFront()
+                c.requestBringToFront.frame.bringToFront()
+                    # c.requestBringToFront is a commander.
+            c.requestBringToFront = None
+
+        # The iconify requests are made only by c.bringToFront.
+        if c.requestedIconify == 'iconify':
+            if verbose: aList.append('iconify')
+            c.frame.iconify()
+
+        if c.requestedIconify == 'deiconify':
+            if verbose: aList.append('deiconify')
+            c.frame.deiconify()
+
+        if redrawFlag:
+            if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+            # A hack: force the redraw, even if we are dragging.
+            aList.append('*** redraw')
+            c.frame.tree.redraw_now(forceDraw=True)
+
+        if c.requestRecolorFlag:
+            aList.append('%srecolor' % (
+                g.choose(c.incrementalRecolorFlag,'','full ')))
+            # This should be the only call to c.recolor_now.
+            c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+        if c.requestedFocusWidget:
+            w = c.requestedFocusWidget
+            if traceFocus: aList.append('focus: %s' % (
+                g.app.gui.widget_name(w)))
+            c.set_focus(w)
+        else:
+            # We must not set the focus to the body pane here!
+            # That would make nested calls to c.outerUpdate significant.
+            pass
+
+        if trace and (verbose or aList):
+            g.trace('** end',aList)
+
+        c.incrementalRecolorFlag = False
+        c.requestRecolorFlag = None
+        c.requestRedrawFlag = False
+        c.requestedFocusWidget = None
+        c.requestedIconify = ''
+        mods = g.childrenModifiedSet
+        if mods:
+            #print(mods)
+            g.doHook("childrenModified",c=c, nodes = mods)
+            mods.clear()
+        mods = g.contentModifiedSet
+        if mods:
+            #print(mods)
+            g.doHook("contentModified",c=c, nodes = mods)
+            mods.clear()
+
+        # g.trace('after')
     #@+node:ekr.20110510052422.14618: *3* c.alert
     def alert(self,message):
         
@@ -1390,7 +1650,7 @@ class Commands (object):
         The arg and openType args come from the data arg to c.openWith.
         '''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         testing = testing or g.unitTesting
         
         def join(s1,s2):
@@ -1458,6 +1718,23 @@ class Commands (object):
             g.es('exception executing open-with command:',command)
             g.es_exception()
             return 'oops: %s' % command
+    #@+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (may be over-ridden)
+    def openWithTempFilePath (self,p,ext):
+
+        '''Return the path to the temp file corresponding to p and ext.
+
+        This is overridden in mod_tempfname plugin
+        '''
+
+        fn = '%s_LeoTemp_%s%s' % (
+            g.sanitize_filename(p.h),
+            str(id(p.v)),ext)
+        if g.isPython3: # 2010/02/07
+            fn = g.toUnicode(fn)
+        td = g.os_path_finalize(tempfile.gettempdir())
+        path = g.os_path_join(td,fn)
+
+        return path
     #@+node:ekr.20100203050306.5797: *7* c.openWithHelper
     def openWithHelper (self,p,ext):
 
@@ -1603,23 +1880,6 @@ class Commands (object):
             g.error('exception creating temp file')
             g.es_exception()
             return None
-    #@+node:ekr.20031218072017.2832: *7* c.openWithTempFilePath (may be over-ridden)
-    def openWithTempFilePath (self,p,ext):
-
-        '''Return the path to the temp file corresponding to p and ext.
-
-        This is overridden in mod_tempfname plugin
-        '''
-
-        fn = '%s_LeoTemp_%s%s' % (
-            g.sanitize_filename(p.h),
-            str(id(p.v)),ext)
-        if g.isPython3: # 2010/02/07
-            fn = g.toUnicode(fn)
-        td = g.os_path_finalize(tempfile.gettempdir())
-        path = g.os_path_join(td,fn)
-
-        return path
     #@+node:ekr.20031218072017.2834: *6* c.save
     def save (self,event=None):
 
@@ -7063,80 +7323,6 @@ class Commands (object):
         # c = self
         # c.requestedFocusWidget = None
         pass
-    #@+node:ekr.20080514131122.20: *4* c.outerUpdate
-    def outerUpdate (self):
-
-        trace = False and not g.unitTesting
-        verbose = True ; traceFocus = True
-        c = self ; aList = []
-        if not c.exists or not c.k:
-            return
-
-        # Suppress any requested redraw until we have iconified or diconified.
-        redrawFlag = c.requestRedrawFlag
-        c.requestRedrawFlag = False
-        
-        if trace and (verbose or aList):
-            g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
-        
-        if c.requestBringToFront:
-            if hasattr(c.frame,'bringToFront'):
-                ### c.frame.bringToFront()
-                c.requestBringToFront.frame.bringToFront()
-                    # c.requestBringToFront is a commander.
-            c.requestBringToFront = None
-
-        # The iconify requests are made only by c.bringToFront.
-        if c.requestedIconify == 'iconify':
-            if verbose: aList.append('iconify')
-            c.frame.iconify()
-
-        if c.requestedIconify == 'deiconify':
-            if verbose: aList.append('deiconify')
-            c.frame.deiconify()
-
-        if redrawFlag:
-            if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
-            # A hack: force the redraw, even if we are dragging.
-            aList.append('*** redraw')
-            c.frame.tree.redraw_now(forceDraw=True)
-
-        if c.requestRecolorFlag:
-            aList.append('%srecolor' % (
-                g.choose(c.incrementalRecolorFlag,'','full ')))
-            # This should be the only call to c.recolor_now.
-            c.recolor_now(incremental=c.incrementalRecolorFlag)
-
-        if c.requestedFocusWidget:
-            w = c.requestedFocusWidget
-            if traceFocus: aList.append('focus: %s' % (
-                g.app.gui.widget_name(w)))
-            c.set_focus(w)
-        else:
-            # We must not set the focus to the body pane here!
-            # That would make nested calls to c.outerUpdate significant.
-            pass
-
-        if trace and (verbose or aList):
-            g.trace('** end',aList)
-
-        c.incrementalRecolorFlag = False
-        c.requestRecolorFlag = None
-        c.requestRedrawFlag = False
-        c.requestedFocusWidget = None
-        c.requestedIconify = ''
-        mods = g.childrenModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("childrenModified",c=c, nodes = mods)
-            mods.clear()
-        mods = g.contentModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("contentModified",c=c, nodes = mods)
-            mods.clear()
-
-        # g.trace('after')
     #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
     def requestRecolor (self):
 
