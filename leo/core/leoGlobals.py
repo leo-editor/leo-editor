@@ -969,7 +969,7 @@ class SherlockTracer:
 
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
-    def __init__(self,patterns,dots=True,show_return=False,verbose=False):
+    def __init__(self,patterns,dots=True,show_return=True,verbose=True):
         
         import re
 
@@ -1009,6 +1009,14 @@ class SherlockTracer:
         
         # import inspect
         # assert inspect.iscode(code),code
+        
+        try:
+            # Always define full name for stats.
+            user_self = locals_ and locals_.get('self',None)
+            if user_self:
+                name = user_self.__class__.__name__ + '::' + name
+        except Exception:
+            pass
 
         if self.is_enabled(fn,name,self.patterns):
             n = 0
@@ -1019,13 +1027,6 @@ class SherlockTracer:
             # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
             path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
             leadin = '+' if self.show_return else ''
-            try:
-                user_self = locals_ and locals_.get('self',None)
-                if user_self:
-                    name = user_self.__class__.__name__ + '::' + name
-                    # g.trace('self',user_self)
-            except Exception:
-                pass
             print('%s%s%s%s' % (path,dots,leadin,name))
 
         # Alwas update stats.
