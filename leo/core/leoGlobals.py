@@ -1002,15 +1002,10 @@ class SherlockTracer:
         import os
         frame1 = frame
         code = frame.f_code
-        locals_ = frame.f_locals
-        name = full_name = code.co_name
         fn   = code.co_filename
-        try:
-            user_self = locals_ and locals_.get('self',None)
-            if user_self:
-                full_name = user_self.__class__.__name__ + '::' + name
-        except Exception:
-            pass
+        locals_ = frame.f_locals
+        name = code.co_name
+        full_name = self.get_full_name(locals_,name)
         if (
             self.is_enabled(fn,name,self.patterns) and
             self.is_enabled(fn,full_name,self.patterns)
@@ -1065,15 +1060,10 @@ class SherlockTracer:
 
         import os
         code = frame.f_code
+        fn = code.co_filename
         locals_ = frame.f_locals
-        name = full_name = code.co_name
-        fn   = code.co_filename
-        try:
-            user_self = locals_ and locals_.get('self',None)
-            if user_self:
-                full_name = user_self.__class__.__name__ + '::' + name
-        except Exception:
-            pass
+        name = code.co_name
+        full_name = self.get_full_name(locals_,name)
         if (
             self.is_enabled(fn,name,self.patterns) and
             self.is_enabled(fn,full_name,self.patterns)
@@ -1132,6 +1122,17 @@ class SherlockTracer:
             return enabled
         except Exception:
             return False
+    #@+node:ekr.20130112093655.10195: *4* get_full_name
+    def get_full_name(self,locals_,name):
+        
+        full_name = name
+        try:
+            user_self = locals_ and locals_.get('self',None)
+            if user_self:
+                full_name = user_self.__class__.__name__ + '::' + name
+        except Exception:
+            pass
+        return full_name
     #@+node:ekr.20121128111829.12183: *4* is_enabled
     def is_enabled (self,fn,name,patterns):
         
