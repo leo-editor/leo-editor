@@ -1000,27 +1000,21 @@ class SherlockTracer:
     def do_call(self,frame,arg): # arg not used.
 
         import os
-
         frame1 = frame
         code = frame.f_code
         locals_ = frame.f_locals
-        name = code.co_name
+        name = full_name = code.co_name
         fn   = code.co_filename
-        
-        # import inspect
-        # assert inspect.iscode(code),code
-        
         try:
-            # Always define full name for stats.
             user_self = locals_ and locals_.get('self',None)
             if user_self:
                 full_name = user_self.__class__.__name__ + '::' + name
-            else:
-                full_name = name
         except Exception:
-            full_name = name
-
-        if self.is_enabled(fn,name,self.patterns):
+            pass
+        if (
+            self.is_enabled(fn,name,self.patterns) and
+            self.is_enabled(fn,full_name,self.patterns)
+        ):
             n = 0
             while frame:
                 frame = frame.f_back
@@ -1036,13 +1030,15 @@ class SherlockTracer:
         d = self.stats.get(fn,{})
         d[full_name] = 1 + d.get(full_name,0)
         self.stats[fn] = d
-            
     #@+node:ekr.20130111185820.10194: *5* get_args
     def get_args(self,frame):
 
-        # f = self.curframe
-        # co = f.f_code
-        # dict = f.f_locals
+        def show(item):
+            if not item: return ''
+            try:
+                return item.__class__.__name__
+            except Exception:
+                return repr(item)
         code = frame.f_code
         locals_ = frame.f_locals
         name = code.co_name
@@ -1052,53 +1048,49 @@ class SherlockTracer:
         if code.co_flags & 8: n = n+1
         result = []
         for i in range(n):
-            try:
-                name = code.co_varnames[i]
-                val = locals_.get(name,'*undefined*')
-                if val in (None,(),[],{}): continue
-                try:
-                    val = val.__class__.__name__
-                except Exception:
-                    pass
-                if name == 'self':
-                    pass
-                # elif name in ('vararg','kwargs') and not val:
-                    # pass
-                else:
-                    result.append('%s=%s' % (name,val))
-            except Exception:
-                pass
+            name = code.co_varnames[i]
+            if name != 'self':
+                arg = locals_.get(name,'*undefined*')
+                if arg:
+                    if isinstance(arg,(list,tuple)):
+                        val = '[%s]' % ','.join([show(z) for z in arg if show(z)])
+                    else:
+                        val = show(arg)
+                    if val:
+                        result.append('%s=%s' % (name,val))
+
         return ','.join(result)
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
     def do_return(self,frame,arg): # arg not used.
 
         import os
-
         code = frame.f_code
         locals_ = frame.f_locals
-        name = code.co_name
+        name = full_name = code.co_name
         fn   = code.co_filename
-
-        if self.is_enabled(fn,name,self.patterns):
+        try:
+            user_self = locals_ and locals_.get('self',None)
+            if user_self:
+                full_name = user_self.__class__.__name__ + '::' + name
+        except Exception:
+            pass
+        if (
+            self.is_enabled(fn,name,self.patterns) and
+            self.is_enabled(fn,full_name,self.patterns)
+        ):
             n = 0
             while frame:
                 frame = frame.f_back
                 n += 1
             dots = '.' * max(0,n-self.n) if self.dots else ''
             path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
-            user_self = locals_ and locals_.get('self',None)
-            if user_self:
-                full_name = user_self.__class__.__name__ + '::' + name
-            else:
-                full_name = name
             ret = self.format_ret(arg)
             print('%s%s-%s%s' % (path,dots,full_name,ret))
-           
     #@+node:ekr.20130111120935.10192: *5* format_ret
     def format_ret(self,arg):
         
         try:
-            if arg and isinstance(arg,(tuple,list)):
+            if isinstance(arg,(tuple,list)):
                 try:
                     ret = ' -> [%s]' % ','.join([z.__class__.__name__ for z in arg])
                 except Exception:
