@@ -969,19 +969,18 @@ class SherlockTracer:
 
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
-    def __init__(self,patterns,dots=True,show_return=True,verbose=True):
+    def __init__(self,patterns,dots=True,show_args=True,show_return=True,verbose=True):
         
         import re
-
-        self.bad_patterns = []  # List of bad patterns.
-        self.dots = dots        # True: print level dots.
-        self.n = 0              # The frame level on entry to run.
-        self.stats = {}         # Keys are full file names, values are dicts.
-        self.patterns = patterns# A list of regex patterns to match.
-        self.re = re            # Import re only once.
-        self.show_return = show_return # True: show returns from each function.
-        self.verbose = verbose  # True: print filename:func
-
+        self.bad_patterns = []          # List of bad patterns.
+        self.dots = dots                # True: print level dots.
+        self.n = 0                      # The frame level on entry to run.
+        self.stats = {}                 # Keys are full file names, values are dicts.
+        self.patterns = patterns        # A list of regex patterns to match.
+        self.re = re                    # Import re only once.
+        self.show_args = show_args      # True: show args for each function call.
+        self.show_return = show_return  # True: show returns from each function.
+        self.verbose = verbose          # True: print filename:func
         try:
             from PyQt4 import QtCore
             QtCore.pyqtRemoveInputHook()
@@ -997,11 +996,12 @@ class SherlockTracer:
             self.do_return(frame,arg)
 
         return self.dispatch
-    #@+node:ekr.20121128031949.12603: *4* do_call
+    #@+node:ekr.20121128031949.12603: *4* do_call & helper
     def do_call(self,frame,arg): # arg not used.
 
         import os
 
+        frame1 = frame
         code = frame.f_code
         locals_ = frame.f_locals
         name = code.co_name
@@ -1014,26 +1014,61 @@ class SherlockTracer:
             # Always define full name for stats.
             user_self = locals_ and locals_.get('self',None)
             if user_self:
-                name = user_self.__class__.__name__ + '::' + name
+                full_name = user_self.__class__.__name__ + '::' + name
+            else:
+                full_name = name
         except Exception:
-            pass
+            full_name = name
 
         if self.is_enabled(fn,name,self.patterns):
             n = 0
             while frame:
                 frame = frame.f_back
                 n += 1
-            dots = '.' * max(0,n-self.n) if self.dots else ''
             # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
-            path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
+            dots   = '.' * max(0,n-self.n) if self.dots else ''
+            path   = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
             leadin = '+' if self.show_return else ''
-            print('%s%s%s%s' % (path,dots,leadin,name))
+            args = '(%s)' % self.get_args(frame1) if self.show_args else ''
+            print('%s%s%s%s%s' % (path,dots,leadin,full_name,args))
 
         # Alwas update stats.
         d = self.stats.get(fn,{})
-        d[name] = 1 + d.get(name,0)
+        d[full_name] = 1 + d.get(full_name,0)
         self.stats[fn] = d
             
+    #@+node:ekr.20130111185820.10194: *5* get_args
+    def get_args(self,frame):
+
+        # f = self.curframe
+        # co = f.f_code
+        # dict = f.f_locals
+        code = frame.f_code
+        locals_ = frame.f_locals
+        name = code.co_name
+        fn   = code.co_filename
+        n = code.co_argcount
+        if code.co_flags & 4: n = n+1
+        if code.co_flags & 8: n = n+1
+        result = []
+        for i in range(n):
+            try:
+                name = code.co_varnames[i]
+                val = locals_.get(name,'*undefined*')
+                if val in (None,(),[],{}): continue
+                try:
+                    val = val.__class__.__name__
+                except Exception:
+                    pass
+                if name == 'self':
+                    pass
+                # elif name in ('vararg','kwargs') and not val:
+                    # pass
+                else:
+                    result.append('%s=%s' % (name,val))
+            except Exception:
+                pass
+        return ','.join(result)
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
     def do_return(self,frame,arg): # arg not used.
 
@@ -1053,24 +1088,38 @@ class SherlockTracer:
             path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
             user_self = locals_ and locals_.get('self',None)
             if user_self:
-                name = user_self.__class__.__name__ + '::' + name
+                full_name = user_self.__class__.__name__ + '::' + name
+            else:
+                full_name = name
             ret = self.format_ret(arg)
-            print('%s%s-%s%s' % (path,dots,name,ret))
+            print('%s%s-%s%s' % (path,dots,full_name,ret))
+           
     #@+node:ekr.20130111120935.10192: *5* format_ret
     def format_ret(self,arg):
         
         try:
-            if arg and isinstance(arg,(tuple,list)) and len(arg) > 1:
-                ret = ' -> %s' % ','.join([repr(z) for z in arg])
+            if arg and isinstance(arg,(tuple,list)):
+                try:
+                    ret = ' -> [%s]' % ','.join([z.__class__.__name__ for z in arg])
+                except Exception:
+                    ret = ' -> [%s]' % ','.join([repr(z) for z in arg])
                 if len(ret) > 40:
-                    ret = ' -> [\n%s]' % ('\n,'.join([repr(z) for z in arg]))
+                    try:
+                        ret = ' -> [\n%s]' % ('\n,'.join([z.__class__.__name__ for z in arg]))
+                    except Exception:
+                        ret = ' -> [\n%s]' % ('\n,'.join([repr(z) for z in arg]))
+            elif arg:
+                try:
+                    ret = ' -> %s' % arg.__class__.__name__
+                except Exception:
+                    ret = ' -> %r' % arg
+                if len(ret) > 40:
+                    ret = ' ->\n    %r' % arg
             else:
-                ret = ' -> %s' % (repr(arg)) if arg else ''
-                if len(ret) > 40:
-                    ret = ' ->\n    %s' % repr(arg)
+                ret = ''
         except Exception:
             exctype, value = sys.exc_info()[:2]
-            s = '<**exception: %s,%s arg: %s**>' % (exctype.__name__, value,repr(arg))
+            s = '<**exception: %s,%s arg: %r**>' % (exctype.__name__, value,arg)
             ret = ' ->\n    %s' % (s) if len(s) > 40 else ' -> %s' % (s)
             
         return ret
