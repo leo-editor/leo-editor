@@ -185,6 +185,16 @@ if g.app.gui.guiName() == "qt":
             self.setDueTime = self.make_func(self.UI.dueTimeEdit,
                 self.UI.dueTimeToggle, 'setTime',
                 datetime.datetime.now().time())
+                
+            self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
+                lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+
+            self.UI.frmDetails.setVisible(False)
+
+            self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
+                lambda: self.owner.c.selectVisNext())
+                
+
         #@+node:ekr.20111118104929.10203: *3* make_func
         def make_func(self, edit, toggle, method, default):
 
@@ -583,7 +593,7 @@ class todoController:
                     type(node.unknownAttributes["annotate"]) != type({})):
                     node.unknownAttributes["annotate"] = {}
                     
-            node.unknownAttributes["annotate"]['created'] = datetime.datetime.now()
+            # node.unknownAttributes["annotate"]['created'] = datetime.datetime.now()
 
             node.unknownAttributes["annotate"][attrib] = val
 
@@ -1010,6 +1020,7 @@ class todoController:
 
         p = self.c.currentPosition()
         self.setat(p.v, 'priority', pri)
+        self.setat(p.v, 'prisetdate', str(datetime.date.today()))
         self.loadIcons(p)
     #@+node:tbrown.20090119215428.48: *4* showDist
     def showDist(self, p=None):
@@ -1042,12 +1053,15 @@ class todoController:
         # default is "", which is understood by setDueDate()
         self.ui.setDueTime(self.getat(v, 'duetime'))
         # ditto
+        
 
         created = self.getat(v, 'created')
         if created:
+            got_created = True
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))
             self.ui.UI.createdTxt.setToolTip(created.strftime("Created %H:%M %d %b %Y"))
         else:
+            got_created = False
             try:
                 gdate = self.c.p.v.gnx.split('.')[1][:12]
                 created = datetime.datetime.strptime(gdate, '%Y%m%d%H%M')
@@ -1058,8 +1072,20 @@ class todoController:
                 self.ui.UI.createdTxt.setToolTip(created.strftime("gnx created %H:%M %d %b %Y"))
             else:
                 self.ui.UI.createdTxt.setText("")
-
-            
+        
+        due = self.getat(v, 'duedate')
+        txt = "%s\nCreated%s %d days ago, due in %s" % (
+            self.c.p.h,
+            '' if got_created else '?',
+            (datetime.date.today() - created.date()).days,
+            (due - datetime.date.today()).days if due else 'N/A',
+        )
+        
+        self.ui.UI.txtDetails.setText(txt)
+        prisetdate = self.getat(v, 'prisetdate')
+        self.ui.UI.txtDetails.setToolTip("Priority set %s" %
+            (str(prisetdate).strip() or '?')
+        )
     #@+node:tbrown.20121129095833.39490: *3* unl_to_pos
     def unl_to_pos(self, unl, for_p):
         """"unl may be an outline (like c) or an UNL (string)

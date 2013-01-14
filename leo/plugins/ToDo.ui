@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>351</width>
+    <width>369</width>
     <height>332</height>
    </rect>
   </property>
@@ -22,11 +22,23 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <property name="margin">
+     <property name="leftMargin">
       <number>6</number>
      </property>
-     <property name="spacing">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>6</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <property name="horizontalSpacing">
       <number>2</number>
+     </property>
+     <property name="verticalSpacing">
+      <number>0</number>
      </property>
      <item row="0" column="0">
       <widget class="QPushButton" name="butPri1">
@@ -368,7 +380,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="10">
+     <item row="2" column="9">
       <widget class="QPushButton" name="butPriClr">
        <property name="toolTip">
         <string>Clear priority setting</string>
@@ -388,12 +400,114 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="10">
+      <widget class="QPushButton" name="butDetails">
+       <property name="toolTip">
+        <string>Show / hide more interface</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../Icons/Tango/16x16/actions/document-save.png</normaloff>../Icons/Tango/16x16/actions/document-save.png</iconset>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>2</number>
+     </property>
+     <item>
+      <widget class="QFrame" name="frmDetails">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="txtDetails">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::PlainText</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="butNext">
+          <property name="toolTip">
+           <string>Next node</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../Icons/Tango/16x16/actions/down.png</normaloff>../Icons/Tango/16x16/actions/down.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QTimeEdit" name="dueTimeEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="dueTimeToggle">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QDateEdit" name="dueDateEdit">
          <property name="enabled">
@@ -420,13 +534,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="dueDateOffset">
-         <property name="toolTip">
-          <string>+n -n days from now, or &lt;n &gt;n to subtract / add n days to existing date</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="dueDateToggle">
          <property name="text">
           <string/>
@@ -434,22 +541,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QTimeEdit" name="dueTimeEdit">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="dueTimeToggle">
-         <property name="text">
-          <string/>
+        <widget class="QComboBox" name="dueDateOffset">
+         <property name="toolTip">
+          <string>+n -n days from now, or &lt;n &gt;n to subtract / add n days to existing date</string>
          </property>
         </widget>
        </item>
