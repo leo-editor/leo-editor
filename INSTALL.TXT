@@ -17,8 +17,8 @@ Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 There are various fallback directories if there is no home directory.
 
-Installing the leo.py on Linux
-------------------------------
+Installing Leo on Linux
+-----------------------
 
 Download the latest version of Leo (a .zip file) from `Leo's download page`_.
 

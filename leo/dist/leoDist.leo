@@ -137,8 +137,8 @@ Leo requires Python 2.6 or above (including Python 3.x) and PyQt.
 - Download PyQt from http://www.riverbankcomputing.co.uk/news
 </t>
 <t tx="EKR.20040519090846.4">
-Installing the leo.py on Linux
-------------------------------
+Installing Leo on Linux
+-----------------------
 
 Download the latest version of Leo (a .zip file) from `Leo's download page`_.
 
