@@ -1074,10 +1074,11 @@ class todoController:
                 self.ui.UI.createdTxt.setText("")
         
         due = self.getat(v, 'duedate')
+        ago = (datetime.date.today()-created.date()).days if created else 0
         txt = "%s\nCreated%s %d days ago, due in %s" % (
-            self.c.p.h,
+            self.c and self.c.p and self.c.p.h or '',
             '' if got_created else '?',
-            (datetime.date.today() - created.date()).days,
+            ago,
             (due - datetime.date.today()).days if due else 'N/A',
         )
         
