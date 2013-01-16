@@ -11074,6 +11074,7 @@ class EnchantClass:
         if fn and g.os_path_exists(fn):
             # Merge the local and global dictionaries.
             try:
+                self.clean_dict(fn)
                 self.d = enchant.DictWithPWL(language,fn)
             except Exception:
                 g.es_exception()
@@ -11081,6 +11082,18 @@ class EnchantClass:
                 self.d = enchant.Dict(language) 
         else:
             self.d = enchant.Dict(language) 
+    #@+node:ekr.20130116142831.10185: *4* clean_dict
+    def clean_dict (self,fn):
+        
+        f = open(fn,mode='rb')
+        s = f.read()
+        f.close()
+        s2 = s.replace(b'\r',b'')
+        if s != s2:
+            g.es_print('cleaning',fn)
+            f = open(fn,mode='wb')
+            f.write(s2)
+            f.close()
     #@+node:ekr.20100904095239.5927: *4* add
     def add (self,word):
 
