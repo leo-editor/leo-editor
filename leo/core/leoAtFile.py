@@ -10,6 +10,8 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
+allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
+
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -1118,57 +1120,76 @@ class atFile:
 
         trace = False and not g.unitTesting
         verbose = False
-        at = self ; c = at.c ; indices = g.app.nodeIndices
+        at = self ; c = at.c
+        indices = g.app.nodeIndices
         parent = last = at.lastThinNode # A vnode.
         lastIndex = last.fileIndex
         gnx = indices.scanGnx(gnxString,0)
-
+        gnxDict = c.fileCommands.gnxDict
+        
         if trace and verbose: g.trace("last %s, gnx %s %s" % (
             last,gnxString,headline))
-
-        children = parent.children
-        for child in children:
-            if gnx == child.fileIndex:
-                break
-        else:
-            child = None
-
-        if at.cloneSibCount > 1:
-            n = at.cloneSibCount ; at.cloneSibCount = 0
-            if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
-            else: clonedSibs = 0
-            copies = n - clonedSibs
-            if trace: g.trace(copies,headline)
-        else:
-            if gnx == lastIndex:
-                last.setVisited()
-                    # Supress warning/deletion of unvisited nodes.
-                if trace:g.trace('found last',last)
-                return last
-            if child:
-                child.setVisited()
-                    # Supress warning/deletion of unvisited nodes.
-                if trace: g.trace('found child',child)
-                return child
-            copies = 1 # Create exactly one copy.
-
-        while copies > 0:
-            copies -= 1
-            # Create the vnode only if it does not already exist.
-            gnxDict = c.fileCommands.gnxDict
+            
+        if allow_cloned_sibs:
             v = gnxDict.get(gnxString)
+            n = parent.numberOfChildren()
             if v:
                 if gnx != v.fileIndex:
-                    g.trace('can not happen: v.fileIndex: %s gnx: %s' % (
-                        v.fileIndex,gnx))
+                    gnx_s = g.app.nodeIndices.toString(gnx)
+                    g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx_s))
             else:
                 v = leoNodes.vnode(context=c)
                 v._headString = headline # Allowed use of v._headString.
                 v.fileIndex = gnx
                 gnxDict[gnxString] = v
-
             child = v
-            child._linkAsNthChild(parent,parent.numberOfChildren())
+            child._linkAsNthChild(parent,n)
+        else:
+            children = parent.children
+            for child in children:
+                if gnx == child.fileIndex:
+                    break
+            else:
+                child = None
+            
+            if at.cloneSibCount > 1:
+                n = at.cloneSibCount ; at.cloneSibCount = 0
+                if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+                else: clonedSibs = 0
+                copies = n - clonedSibs
+                if trace: g.trace(copies,headline)
+            else:
+                if gnx == lastIndex:
+                    last.setVisited()
+                        # Supress warning/deletion of unvisited nodes.
+                    if trace:g.trace('found last',last)
+                    return last
+                if child:
+                    child.setVisited()
+                        # Supress warning/deletion of unvisited nodes.
+                    if trace: g.trace('found child',child)
+                    return child
+                copies = 1 # Create exactly one copy.
+        
+            while copies > 0:
+                copies -= 1
+                # Create the vnode only if it does not already exist.
+                v = gnxDict.get(gnxString)
+                if v:
+                    if gnx == v.fileIndex:
+                        if allow_cloned_sibs:
+                            if trace: g.trace('adding duplicate clone',gnx)
+                    else:
+                        g.internalError('v.fileIndex: %s gnx: %s' % (
+                            v.fileIndex,gnx))
+                else:
+                    v = leoNodes.vnode(context=c)
+                    v._headString = headline # Allowed use of v._headString.
+                    v.fileIndex = gnx
+                    gnxDict[gnxString] = v
+        
+                child = v
+                child._linkAsNthChild(parent,parent.numberOfChildren())
 
         if trace: g.trace('new node: %s' % child)
         child.setVisited() # Supress warning/deletion of unvisited nodes.
@@ -3856,21 +3877,27 @@ class atFile:
             at.putAtAllChild(child)
 
         at.putCloseNodeSentinel(p)
-    #@+node:ekr.20041005105605.170: *5* @others
-    #@+node:ekr.20041005105605.171: *6* inAtOthers
+    #@+node:ekr.20041005105605.170: *5* @others (write)
+    #@+node:ekr.20041005105605.171: *6* inAtOthers (write)
     def inAtOthers(self,p):
 
         """Returns True if p should be included in the expansion of the at-others directive
 
         in the body text of p's parent."""
+        
+        trace = True and not g.unitTesting
+        at = self
 
         # Return False if this has been expanded previously.
-        if  p.v.isVisited():
-            # g.trace("previously visited",p.v)
+        if allow_cloned_sibs:
+            pass
+        elif p.v.isVisited():
+            if trace: g.trace("previously visited",p.v.h)
             return False
 
         # Return False if this is a definition node.
-        h = p.h ; i = g.skip_ws(h,0)
+        h = p.h
+        i = g.skip_ws(h,0)
         isSection,junk = self.isSectionName(h,i)
         if isSection:
             # g.trace("is section",p)
@@ -3880,19 +3907,14 @@ class atFile:
             # 2010/09/29: @ignore must not stop expansion here!
             return True 
 
-        # Return False if p's body contains an @ignore directive.
-        if p.isAtIgnoreNode():
-            # g.trace("is @ignore",p)
-            return False
-        else:
-            # g.trace("ok",p)
-            return True
+        # Return True unless p's body contains an @ignore directive.
+        return not p.isAtIgnoreNode()
     #@+node:ekr.20041005105605.172: *6* putAtOthersChild
     def putAtOthersChild(self,p):
 
         at = self
-
         parent_v = p._parentVnode()
+
         clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
         if clonedSibs > 1 and thisClonedSibIndex == 1:
             at.writeError("Cloned siblings are not valid in @thin trees")
@@ -3927,15 +3949,42 @@ class atFile:
             # Use the old (bizarre) convention when writing old sentinels.
             # Note: there are *two* at signs here.
             at.putSentinel("@" + lws + "@+others")
-
-        for child in p.children():
-            if at.inAtOthers(child):
-                at.putAtOthersChild(child)
+            
+        if allow_cloned_sibs:
+            for p2 in p.children():
+                if at.validInAtOthers(p2):
+                    at.putOpenNodeSentinel(p2)
+                    at.putBody(p2) 
+                    at.putCloseNodeSentinel(p2)      
+        else: # old code
+            for child in p.children():
+                if at.inAtOthers(child):
+                    at.putAtOthersChild(child)
 
         # This is the same in both old and new sentinels.
         at.putSentinel("@-others")
-
         at.indent -= delta
+    #@+node:ekr.20130118065120.10247: *6* validInAtOthers
+    def validInAtOthers(self,p):
+
+        """Returns True if p should be included in the expansion of the at-others directive
+
+        in the body text of p's parent."""
+        
+        trace = True and not g.unitTesting
+        at = self
+        assert allow_cloned_sibs
+        i = g.skip_ws(p.h,0)
+        isSection,junk = self.isSectionName(p.h,i)
+
+        if isSection:
+            return False # A section definition node.
+        elif self.sentinels or self.atAuto or self.toString:
+            # @ignore must not stop expansion here!
+            return True
+        else:
+            # Return True unless p's body contains an @ignore directive.
+            return not p.isAtIgnoreNode()
     #@+node:ekr.20041005105605.174: *5* putCodeLine (leoAtFile)
     def putCodeLine (self,s,i):
 

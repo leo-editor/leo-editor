@@ -3916,7 +3916,7 @@ def makeTestCase (self,p):
     p = p.copy()
 
     if p.b.strip():
-        return generalTestCase(c,p)
+        return GeneralTestCase(c,p)
     else:
         return None
 #@+node:ekr.20120912094259.10546: *6* makeTestClass
