@@ -347,13 +347,13 @@ class editBodyTestCase(unittest.TestCase):
         # c.undoer.rollbackToMark(self.undoMark)
         c.undoer.clearUndoState()
     #@-others
-#@+node:ekr.20051104075904.5: ** class generalTestCase
-class generalTestCase(unittest.TestCase):
+#@+node:ekr.20051104075904.5: ** class GeneralTestCase
+class GeneralTestCase(unittest.TestCase):
 
     """Create a unit test from a snippet of code."""
 
     #@+others
-    #@+node:ekr.20051104075904.6: *3* __init__ (generalTestCase)
+    #@+node:ekr.20051104075904.6: *3* __init__ (GeneralTestCase)
     def __init__ (self,c,p):
 
          # Init the base class.
@@ -361,7 +361,7 @@ class generalTestCase(unittest.TestCase):
 
         self.c = c
         self.p = p.copy()
-    #@+node:ekr.20051104075904.7: *3*  fail (generalTestCase)
+    #@+node:ekr.20051104075904.7: *3*  fail (GeneralTestCase)
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
@@ -707,7 +707,7 @@ class TestManager:
     #@+node:ekr.20120220070422.10421: *3* TM.Factories
     def generalTestCase(self,p):
         
-        return generalTestCase(self.c,p)
+        return GeneralTestCase(self.c,p)
     #@+node:ekr.20120220070422.10419: *3* TM.Top-level
     #@+node:ekr.20051104075904.4: *4* TM.doTests & helpers (local tests)
     def doTests(self,all=None,marked=None,verbosity=1):
@@ -816,7 +816,7 @@ class TestManager:
         p = p.copy()
 
         if p.b.strip():
-            return generalTestCase(c,p)
+            return GeneralTestCase(c,p)
         else:
             return None
     #@+node:ekr.20120912094259.10546: *5* makeTestClass
