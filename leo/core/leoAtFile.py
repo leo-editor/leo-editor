@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 #@+leo-ver=5-thin
 #@+node:ekr.20041005105605.1: * @file leoAtFile.py
 #@@first
@@ -10,7 +10,7 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
+allow_cloned_sibs = False # True: allow cloned siblings in @file nodes.
 
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
@@ -1176,10 +1176,7 @@ class atFile:
                 # Create the vnode only if it does not already exist.
                 v = gnxDict.get(gnxString)
                 if v:
-                    if gnx == v.fileIndex:
-                        if allow_cloned_sibs:
-                            if trace: g.trace('adding duplicate clone',gnx)
-                    else:
+                    if gnx != v.fileIndex:
                         g.internalError('v.fileIndex: %s gnx: %s' % (
                             v.fileIndex,gnx))
                 else:
@@ -3630,12 +3627,14 @@ class atFile:
 
     def putBody(self,p,oneNodeOnly=False,fromString=''):
 
-        """ Generate the body enclosed in sentinel lines."""
+        '''Generate the body enclosed in sentinel lines.
+        Return True if the body contains an @others line.'''
 
         trace = False and not g.unitTesting
         at = self
         at_comment_seen,at_delims_seen,at_warning_given=False,False,False
             # 2011/05/25: warn if a node contains both @comment and @delims.
+        has_at_others = False
 
         # New in 4.3 b2: get s from fromString if possible.
         s = g.choose(fromString,fromString,p.b)
@@ -3725,8 +3724,14 @@ class atFile:
                     else: at.putDocLine(s,i)
             elif kind == at.othersDirective:
                 if not oneNodeOnly:
-                    if inCode: at.putAtOthersLine(s,i,p)
-                    else: at.putDocLine(s,i)
+                    if inCode:
+                        if has_at_others:
+                            at.error('multiple @others in: %s' % (p.h))
+                        else:
+                            at.putAtOthersLine(s,i,p)
+                            has_at_others = True
+                    else:
+                        at.putDocLine(s,i)
             elif kind == at.rawDirective:
                 at.raw = True
                 at.putSentinel("@@raw")
@@ -3779,6 +3784,8 @@ class atFile:
                 elif at.atAuto and not at.atEdit:
                     # Ensure all @auto nodes end in a newline!
                     at.onl()
+                    
+        return has_at_others # 2013/01/19: for new @others logic.
     #@+node:ekr.20041005105605.164: *4* writing code lines...
     #@+node:ekr.20041005105605.165: *5* @all
     #@+node:ekr.20041005105605.166: *6* putAtAllLine
@@ -3878,58 +3885,7 @@ class atFile:
 
         at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.170: *5* @others (write)
-    #@+node:ekr.20041005105605.171: *6* inAtOthers (write)
-    def inAtOthers(self,p):
-
-        """Returns True if p should be included in the expansion of the at-others directive
-
-        in the body text of p's parent."""
-        
-        trace = True and not g.unitTesting
-        at = self
-
-        # Return False if this has been expanded previously.
-        if allow_cloned_sibs:
-            pass
-        elif p.v.isVisited():
-            if trace: g.trace("previously visited",p.v.h)
-            return False
-
-        # Return False if this is a definition node.
-        h = p.h
-        i = g.skip_ws(h,0)
-        isSection,junk = self.isSectionName(h,i)
-        if isSection:
-            # g.trace("is section",p)
-            return False
-
-        if self.sentinels or self.atAuto or self.toString:
-            # 2010/09/29: @ignore must not stop expansion here!
-            return True 
-
-        # Return True unless p's body contains an @ignore directive.
-        return not p.isAtIgnoreNode()
-    #@+node:ekr.20041005105605.172: *6* putAtOthersChild
-    def putAtOthersChild(self,p):
-
-        at = self
-        parent_v = p._parentVnode()
-
-        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
-        if clonedSibs > 1 and thisClonedSibIndex == 1:
-            at.writeError("Cloned siblings are not valid in @thin trees")
-            g.error(p.h)
-
-        at.putOpenNodeSentinel(p)
-        at.putBody(p) 
-
-        # Insert expansions of all children.
-        for child in p.children():
-            if at.inAtOthers(child):
-                at.putAtOthersChild(child)
-
-        at.putCloseNodeSentinel(p)
-    #@+node:ekr.20041005105605.173: *6* putAtOthersLine
+    #@+node:ekr.20041005105605.173: *6* putAtOthersLine & helpers
     def putAtOthersLine (self,s,i,p):
 
         """Put the expansion of @others."""
@@ -3951,29 +3907,63 @@ class atFile:
             at.putSentinel("@" + lws + "@+others")
             
         if allow_cloned_sibs:
-            for p2 in p.children():
-                if at.validInAtOthers(p2):
-                    at.putOpenNodeSentinel(p2)
-                    at.putBody(p2) 
-                    at.putCloseNodeSentinel(p2)      
-        else: # old code
+            p = p.copy() # Must not change the original p.
+            after = p.nodeAfterTree()
+            p.moveToThreadNext()
+            while p and p != after:
+                at.putOpenNodeSentinel(p)
+                at_others_flag = at.putBody(p)
+                at.putCloseNodeSentinel(p)
+                if at_others_flag:
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+        else:
             for child in p.children():
-                if at.inAtOthers(child):
+                # g.trace(child.h)
+                if at.validInAtOthers(child):
                     at.putAtOthersChild(child)
 
         # This is the same in both old and new sentinels.
         at.putSentinel("@-others")
         at.indent -= delta
-    #@+node:ekr.20130118065120.10247: *6* validInAtOthers
+    #@+node:ekr.20041005105605.172: *7* putAtOthersChild
+    def putAtOthersChild(self,p):
+
+        at = self
+        parent_v = p._parentVnode()
+        
+        if not allow_cloned_sibs:
+            clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
+            if clonedSibs > 1 and thisClonedSibIndex == 1:
+                at.writeError("Cloned siblings are not valid in @thin trees")
+                g.error(p.h)
+
+        at.putOpenNodeSentinel(p)
+        at.putBody(p)
+        
+        if not allow_cloned_sibs:
+            # Insert expansions of all children.
+            for child in p.children():
+                # g.trace(child.h)
+                if at.validInAtOthers(child):
+                    at.putAtOthersChild(child)
+        
+        at.putCloseNodeSentinel(p)
+    #@+node:ekr.20041005105605.171: *7* validInAtOthers (write)
     def validInAtOthers(self,p):
 
         """Returns True if p should be included in the expansion of the at-others directive
 
         in the body text of p's parent."""
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self
-        assert allow_cloned_sibs
+        
+        if not allow_cloned_sibs and p.v.isVisited():
+            if trace: g.trace("previously visited",p.v.h)
+            return False
+        
         i = g.skip_ws(p.h,0)
         isSection,junk = self.isSectionName(p.h,i)
 
@@ -3982,9 +3972,11 @@ class atFile:
         elif self.sentinels or self.atAuto or self.toString:
             # @ignore must not stop expansion here!
             return True
+        elif p.isAtIgnoreNode():
+            g.error('did not write @ignore node',p.v.h)
+            return False
         else:
-            # Return True unless p's body contains an @ignore directive.
-            return not p.isAtIgnoreNode()
+            return True
     #@+node:ekr.20041005105605.174: *5* putCodeLine (leoAtFile)
     def putCodeLine (self,s,i):
 
