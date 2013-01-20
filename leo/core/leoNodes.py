@@ -1909,7 +1909,7 @@ class vnode (baseVnode):
         # Structure data...
         self.children = [] # Ordered list of all children of this node.
         self.parents = [] # Unordered list of all parents of this node.
-
+        
         # Other essential data...
         self.fileIndex = g.app.nodeIndices.getNewIndex()
             # The immutable file index for this vnode.
