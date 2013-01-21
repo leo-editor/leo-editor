@@ -1200,8 +1200,7 @@ class atFile:
         indices = g.app.nodeIndices
         gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
-        
-       
+
         assert parent
         # parent = at.thinNodeStack[-1]
         # n = at.thinChildIndexStack[-1]
@@ -1483,67 +1482,14 @@ class atFile:
 
         if not at.readVersion5:
             at.endSentinelStack.append(at.endNode)
-    #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helper
+    #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helpers
     def createNewThinNode (self,gnx,headline,level):
 
         at = self
-        trace = True and allow_cloned_sibs and at.readVersion5 and not g.unitTesting
 
         if at.thinNodeStack:
             if at.readVersion5:
-                if allow_cloned_sibs:
-                    oldLevel = len(at.thinNodeStack)
-                    newLevel = level-1
-                    assert oldLevel >= 1
-                    assert newLevel >= 0
-                    if trace: g.trace('old',oldLevel,'new',newLevel,headline)
-                    parent = at.changeLevel(oldLevel,newLevel)
-                    print(oldLevel,newLevel,parent.h,headline)
-                    v = at.createThinChild4(gnx,headline,parent)
-                    if newLevel > oldLevel:
-                        at.thinNodeStack.append(v)
-                        at.thinChildIndexStack.append(0)
-                    # else:
-                        # at.thinChildIndexStack[-1] += 1
-                else:
-                    oldLevel = len(at.thinNodeStack)
-                    newLevel = level - 1
-                    assert newLevel >= 0
-                    if trace: g.trace('old',oldLevel,'new',newLevel,headline)
-                    at.changeLevel(oldLevel,newLevel)
-                    v = at.createThinChild4(gnx,headline)
-                    at.thinNodeStack.append(v)
-                # Terminate a previous clone if it exists.
-                # Do not use the full terminateNode logic!
-                if allow_cloned_sibs:
-                    if v.isVisited():
-                        if hasattr(v,'tempBodyList'):
-                             delattr(v,'tempBodyList')
-                    else:
-                        # This is the only place we call v.setVisited in the read logic.
-                        v.setVisited()
-                        if hasattr(v,'tempBodyList'):
-                            # To keep pylint happy.
-                            v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
-                            delattr(v,'tempBodyList')
-                        else:
-                            # Major bug fix: 2010/07/6:
-                            # Do *not* create v.tempBodyString here!
-                            # That would tell at.copyAllTempBodyStringsToVnodes
-                            # that an older (empty) version exists!
-                            pass
-                else:
-                    if hasattr(v,'tempBodyList'):
-                        # v.tempBodyString = ''.join(v.tempBodyList)
-                        # To keep pylint happy.
-                        v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
-                        delattr(v,'tempBodyList')
-                    else:
-                        # Major bug fix: 2010/07/6:
-                        # Do *not* create v.tempBodyString here!
-                        # That would tell at.copyAllTempBodyStringsToVnodes
-                        # that an older (empty) version exists!
-                        pass
+                v = self.createV5ThinNode(gnx,headline,level)
             else:
                 assert not at.readVersion5
                 at.thinNodeStack.append(at.lastThinNode)
@@ -1591,6 +1537,68 @@ class atFile:
         at.lastThinNode = at.thinNodeStack[-1]
         
         return parent
+    #@+node:ekr.20130121102015.10272: *8* at.createV5ThinNode
+    def createV5ThinNode(self,gnx,headline,level):
+        
+        at = self
+        trace = True and allow_cloned_sibs and at.readVersion5 and not g.unitTesting
+        
+        if allow_cloned_sibs:
+            oldLevel = len(at.thinNodeStack)
+            newLevel = level-1
+            assert oldLevel >= 1
+            assert newLevel >= 0
+            if trace: g.trace('old',oldLevel,'new',newLevel,headline)
+            parent = at.changeLevel(oldLevel,newLevel)
+            print(oldLevel,newLevel,parent.h,headline)
+            v = at.createThinChild4(gnx,headline,parent)
+            if newLevel > oldLevel:
+                at.thinNodeStack.append(v)
+                at.thinChildIndexStack.append(0)
+            # else:
+                # at.thinChildIndexStack[-1] += 1
+        else:
+            oldLevel = len(at.thinNodeStack)
+            newLevel = level - 1
+            assert newLevel >= 0
+            if trace: g.trace('old',oldLevel,'new',newLevel,headline)
+            at.changeLevel(oldLevel,newLevel)
+            v = at.createThinChild4(gnx,headline)
+            at.thinNodeStack.append(v)
+
+        # Terminate a previous clone if it exists.
+        # Do not use the full terminateNode logic!
+        if allow_cloned_sibs:
+            if v.isVisited():
+                if hasattr(v,'tempBodyList'):
+                     delattr(v,'tempBodyList')
+            else:
+                # This is the only place we call v.setVisited in the read logic.
+                v.setVisited()
+                if hasattr(v,'tempBodyList'):
+                    # To keep pylint happy.
+                    v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
+                    delattr(v,'tempBodyList')
+                else:
+                    # Major bug fix: 2010/07/6:
+                    # Do *not* create v.tempBodyString here!
+                    # That would tell at.copyAllTempBodyStringsToVnodes
+                    # that an older (empty) version exists!
+                    pass
+        else:
+            if hasattr(v,'tempBodyList'):
+                # v.tempBodyString = ''.join(v.tempBodyList)
+                # To keep pylint happy.
+                v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
+                delattr(v,'tempBodyList')
+            else:
+                # Major bug fix: 2010/07/6:
+                # Do *not* create v.tempBodyString here!
+                # That would tell at.copyAllTempBodyStringsToVnodes
+                # that an older (empty) version exists!
+                pass
+
+        return v
     #@+node:ekr.20100625184546.5979: *7* at.parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
 
@@ -5273,7 +5281,7 @@ class atFile:
             # No original file to change. Return value tested by a unit test.
             self.fileChangedFlag = False 
             return False
-    #@+node:ekr.20041005105605.216: *4* warnAboutOrpanAndIgnoredNodes
+    #@+node:ekr.20041005105605.216: *4* at.warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.
 
     def warnAboutOrphandAndIgnoredNodes (self):
