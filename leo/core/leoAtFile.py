@@ -1115,107 +1115,6 @@ class atFile:
             out[k] = tag + trailingLine.rstrip() ; j -= 1
     #@+node:ekr.20041005105605.71: *3* Reading (4.x)
     #@+node:ekr.20041005105605.72: *4* at.old/new_createThinChild4
-    #@+node:ekr.20130121075058.10245: *5* old_createThinChild4
-    def old_createThinChild4 (self,gnxString,headline):
-
-        """Find or create a new *vnode* whose parent (also a vnode)
-        is at.lastThinNode. This is called only for @thin trees."""
-
-        trace = False and not g.unitTesting
-        verbose = True
-        at = self ; c = at.c
-        indices = g.app.nodeIndices
-        gnx = indices.scanGnx(gnxString,0)
-        gnxDict = c.fileCommands.gnxDict
-       
-        last = at.lastThinNode # A vnode.
-        lastIndex = last.fileIndex
-        if trace and verbose: g.trace("last %s, gnx %s %s" % (
-            last and last.h,gnxString,headline))
-        parent = last
-        children = parent.children
-        for child in children:
-            if gnx == child.fileIndex:
-                break
-        else:
-            child = None
-        
-        if at.cloneSibCount > 1:
-            n = at.cloneSibCount ; at.cloneSibCount = 0
-            if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
-            else: clonedSibs = 0
-            copies = n - clonedSibs
-            if trace: g.trace(copies,headline)
-        else:
-            if gnx == lastIndex:
-                last.setVisited()
-                    # Supress warning/deletion of unvisited nodes.
-                if trace:g.trace('found last',last)
-                return last
-            if child:
-                child.setVisited()
-                    # Supress warning/deletion of unvisited nodes.
-                if trace: g.trace('found child',child)
-                return child
-            copies = 1 # Create exactly one copy.
-
-        while copies > 0:
-            copies -= 1
-            # Create the vnode only if it does not already exist.
-            v = gnxDict.get(gnxString)
-            if v:
-                if gnx != v.fileIndex:
-                    g.internalError('v.fileIndex: %s gnx: %s' % (
-                        v.fileIndex,gnx))
-            else:
-                v = leoNodes.vnode(context=c)
-                v._headString = headline # Allowed use of v._headString.
-                v.fileIndex = gnx
-                gnxDict[gnxString] = v
-
-            child = v
-            child._linkAsNthChild(parent,parent.numberOfChildren())
-
-        if trace: g.trace('new node: %s' % child.h)
-        child.setVisited() # Supress warning/deletion of unvisited nodes.
-        return child
-    #@+node:ekr.20130121075058.10246: *5* new_createThinChild4
-    def new_createThinChild4 (self,gnxString,headline,n,parent):
-
-        """Find or create a new *vnode* whose parent (also a vnode)
-        is at.lastThinNode. This is called only for @thin trees."""
-
-        trace = False and not g.unitTesting ; verbose = True
-        at = self ; c = at.c ; indices = g.app.nodeIndices
-        if trace: g.trace(n,len(parent.children),parent.h,
-            # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
-            ' -> ',headline)
-        gnx = indices.scanGnx(gnxString,0)
-        gnxDict = c.fileCommands.gnxDict
-        v = gnxDict.get(gnxString)
-        if v:
-            if gnx == v.fileIndex:
-                assert v.h == headline
-                child = v
-                if n >= len(parent.children):
-                    child._linkAsNthChild(parent,n)
-                    if trace: g.trace('OLD n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-                else:
-                    if trace: g.trace('DUP n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-            else:
-                gnx_s = g.app.nodeIndices.toString(gnx)
-                g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx_s))
-                return None
-        else:
-            v = leoNodes.vnode(context=c)
-            v._headString = headline # Allowed use of v._headString.
-            v.fileIndex = gnx
-            gnxDict[gnxString] = v
-            child = v
-            child._linkAsNthChild(parent,n)
-            if trace: g.trace('NEW n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-        
-        return child
     #@+node:ekr.20041005105605.73: *4* at.findChild4
     def findChild4 (self,headline):
 
@@ -1460,7 +1359,7 @@ class atFile:
 
         if not at.readVersion5:
             at.endSentinelStack.append(at.endNode)
-    #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helper
+    #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helpers
     def createNewThinNode (self,gnx,headline,level):
 
         at = self
@@ -1484,16 +1383,14 @@ class atFile:
         
         at = self
         trace = False and not g.unitTesting # at.readVersion5 and 
-        
-        # at.changeLevel uses these relationships--do not change them!
-        # Warning: at.changeLevel called from readEnd/All/Others/Ref.
         oldLevel = len(at.thinNodeStack)
         newLevel = level
         assert oldLevel >= 1
         assert newLevel >= 1
+        # The invariant: top of at.thinNodeStack after changeLevel is the parent.
+        at.changeLevel(oldLevel,newLevel-1)
+        
         if allow_cloned_sibs:
-            # The invariant: top of stack after changeLevel is the parent.
-            at.changeLevel(oldLevel,newLevel-1)
             parent = at.thinNodeStack[-1]
             n = at.thinChildIndexStack[-1]
             if trace: g.trace(oldLevel,newLevel-1,n,parent.h,headline)
@@ -1510,7 +1407,6 @@ class atFile:
                 # This is the only place we call v.setVisited in the read logic.
                 v.setVisited()
         else:
-            at.changeLevel(oldLevel,newLevel-1)
             v = at.old_createThinChild4(gnx,headline)
             at.thinNodeStack.append(v)
             
@@ -1527,8 +1423,108 @@ class atFile:
             # That would tell at.copyAllTempBodyStringsToVnodes
             # that an older (empty) version exists!
             pass
-            
         return v
+    #@+node:ekr.20130121075058.10245: *8* at.old_createThinChild4
+    def old_createThinChild4 (self,gnxString,headline):
+
+        """Find or create a new *vnode* whose parent (also a vnode)
+        is at.lastThinNode. This is called only for @thin trees."""
+
+        trace = False and not g.unitTesting
+        verbose = True
+        at = self ; c = at.c
+        indices = g.app.nodeIndices
+        gnx = indices.scanGnx(gnxString,0)
+        gnxDict = c.fileCommands.gnxDict
+       
+        last = at.lastThinNode # A vnode.
+        lastIndex = last.fileIndex
+        if trace and verbose: g.trace("last %s, gnx %s %s" % (
+            last and last.h,gnxString,headline))
+        parent = last
+        children = parent.children
+        for child in children:
+            if gnx == child.fileIndex:
+                break
+        else:
+            child = None
+        
+        if at.cloneSibCount > 1:
+            n = at.cloneSibCount ; at.cloneSibCount = 0
+            if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+            else: clonedSibs = 0
+            copies = n - clonedSibs
+            if trace: g.trace(copies,headline)
+        else:
+            if gnx == lastIndex:
+                last.setVisited()
+                    # Supress warning/deletion of unvisited nodes.
+                if trace:g.trace('found last',last)
+                return last
+            if child:
+                child.setVisited()
+                    # Supress warning/deletion of unvisited nodes.
+                if trace: g.trace('found child',child)
+                return child
+            copies = 1 # Create exactly one copy.
+
+        while copies > 0:
+            copies -= 1
+            # Create the vnode only if it does not already exist.
+            v = gnxDict.get(gnxString)
+            if v:
+                if gnx != v.fileIndex:
+                    g.internalError('v.fileIndex: %s gnx: %s' % (
+                        v.fileIndex,gnx))
+            else:
+                v = leoNodes.vnode(context=c)
+                v._headString = headline # Allowed use of v._headString.
+                v.fileIndex = gnx
+                gnxDict[gnxString] = v
+
+            child = v
+            child._linkAsNthChild(parent,parent.numberOfChildren())
+
+        if trace: g.trace('new node: %s' % child.h)
+        child.setVisited() # Supress warning/deletion of unvisited nodes.
+        return child
+    #@+node:ekr.20130121075058.10246: *8* at.new_createThinChild4
+    def new_createThinChild4 (self,gnxString,headline,n,parent):
+
+        """Find or create a new *vnode* whose parent (also a vnode)
+        is at.lastThinNode. This is called only for @thin trees."""
+
+        trace = False and not g.unitTesting ; verbose = True
+        at = self ; c = at.c ; indices = g.app.nodeIndices
+        if trace: g.trace(n,len(parent.children),parent.h,
+            # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
+            ' -> ',headline)
+        gnx = indices.scanGnx(gnxString,0)
+        gnxDict = c.fileCommands.gnxDict
+        v = gnxDict.get(gnxString)
+        if v:
+            if gnx == v.fileIndex:
+                assert v.h == headline
+                child = v
+                if n >= len(parent.children):
+                    child._linkAsNthChild(parent,n)
+                    if trace: g.trace('OLD n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
+                else:
+                    if trace: g.trace('DUP n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
+            else:
+                gnx_s = g.app.nodeIndices.toString(gnx)
+                g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx_s))
+                return None
+        else:
+            v = leoNodes.vnode(context=c)
+            v._headString = headline # Allowed use of v._headString.
+            v.fileIndex = gnx
+            gnxDict[gnxString] = v
+            child = v
+            child._linkAsNthChild(parent,n)
+            if trace: g.trace('NEW n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
+        
+        return child
     #@+node:ekr.20100625184546.5979: *7* at.parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
 
@@ -2245,7 +2241,9 @@ class atFile:
 
     def changeLevel (self,oldLevel,newLevel):
 
-        '''Update data structures when changing node level.'''
+        '''Update data structures when changing node level.
+        
+        The key invariant: on exit, the top of at.thinNodeStack is the new parent node.'''
 
         at = self ; c = at.c
 
@@ -2268,6 +2266,7 @@ class atFile:
             assert len(at.thinNodeStack) == newLevel,'len(at.thinNodeStack) == newLevel'
         
         # The last node is the node at the top of the stack.
+        # This node will be the parent of any newly created node.
         at.lastThinNode = at.thinNodeStack[-1]
     #@+node:ekr.20110523201030.18288: *5* at.massageAtDocPart (new)
     def massageAtDocPart (self,s):
