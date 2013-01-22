@@ -113,7 +113,7 @@ def getRecentCoreList():
     return (
         # 'runLeo',
         # 'leoApp',
-        # 'leoAtFile',
+        'leoAtFile',
         # 'leoBridge',
         # 'leoCache',
         # 'leoChapters',
@@ -135,7 +135,7 @@ def getRecentCoreList():
         # 'leoSessions',
         # 'leoShadow',
         # 'leoTangle',
-        'leoTest',
+        # 'leoTest',
         # 'leoUndo',
 )
 #@+node:ekr.20120528063627.10137: ** getRecentPluginsList

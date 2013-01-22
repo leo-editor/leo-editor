@@ -1114,16 +1114,7 @@ class atFile:
             trailingLine = " " + lastLines[j]
             out[k] = tag + trailingLine.rstrip() ; j -= 1
     #@+node:ekr.20041005105605.71: *3* Reading (4.x)
-    #@+node:ekr.20041005105605.72: *4* at.createThinChild4
-    def createThinChild4 (self,gnxString,headline,parent=None):
-
-        """Find or create a new *vnode* whose parent (also a vnode)
-        is at.lastThinNode. This is called only for @thin trees."""
-
-        if allow_cloned_sibs:
-            return self.new_createThinChild4(gnxString,headline,parent)
-        else:
-            return self.old_createThinChild4(gnxString,headline)
+    #@+node:ekr.20041005105605.72: *4* at.old/new_createThinChild4
     #@+node:ekr.20130121075058.10245: *5* old_createThinChild4
     def old_createThinChild4 (self,gnxString,headline):
 
@@ -1189,36 +1180,28 @@ class atFile:
         child.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
     #@+node:ekr.20130121075058.10246: *5* new_createThinChild4
-    def new_createThinChild4 (self,gnxString,headline,parent):
+    def new_createThinChild4 (self,gnxString,headline,n,parent):
 
         """Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees."""
 
-        trace = True and not g.unitTesting
-        verbose = True
-        at = self ; c = at.c
-        indices = g.app.nodeIndices
+        trace = True and not g.unitTesting ; verbose = True
+        at = self ; c = at.c ; indices = g.app.nodeIndices
+        if trace: g.trace(n,len(parent.children),parent.h,
+            # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
+            ' -> ',headline)
         gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
-
-        assert parent
-        # parent = at.thinNodeStack[-1]
-        # n = at.thinChildIndexStack[-1]
-        if trace:
-            g.trace(parent.h,
-                at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
-                ' -> ',headline)
         v = gnxDict.get(gnxString)
         if v:
             if gnx == v.fileIndex:
                 assert v.h == headline
                 child = v
-                if n > len(parent.children):
+                if n >= len(parent.children):
                     child._linkAsNthChild(parent,n)
-                    if trace: g.trace('old n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-                    ### child.setVisited() # Supress warning/deletion of unvisited nodes.
+                    if trace: g.trace('OLD n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
                 else:
-                    g.trace('DUP n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
+                    if trace: g.trace('DUP n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
                     assert child.isVisited()
             else:
                 gnx_s = g.app.nodeIndices.toString(gnx)
@@ -1231,12 +1214,8 @@ class atFile:
             gnxDict[gnxString] = v
             child = v
             child._linkAsNthChild(parent,n)
-            if trace: g.trace('new n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-            
-        # Common exit code.
-        at.thinChildIndexStack[-1] += 1
-        ### Set the visited bit only after setting
-        ### child.setVisited() # Supress warning/deletion of unvisited nodes.
+            if trace: g.trace('NEW n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
+        
         return child
     #@+node:ekr.20041005105605.73: *4* at.findChild4
     def findChild4 (self,headline):
@@ -1482,7 +1461,7 @@ class atFile:
 
         if not at.readVersion5:
             at.endSentinelStack.append(at.endNode)
-    #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helpers
+    #@+node:ekr.20100625085138.5957: *7* at.createNewThinNode & helper
     def createNewThinNode (self,gnx,headline,level):
 
         at = self
@@ -1491,11 +1470,9 @@ class atFile:
             if at.readVersion5:
                 v = self.createV5ThinNode(gnx,headline,level)
             else:
-                assert not at.readVersion5
                 at.thinNodeStack.append(at.lastThinNode)
-                v = at.createThinChild4(gnx,headline)
+                v = at.old_createThinChild4(gnx,headline)
         else:
-            assert not at.thinNodeStack
             v = at.root.v
             if allow_cloned_sibs and at.readVersion5:
                 at.thinChildIndexStack.append(0)
@@ -1503,101 +1480,55 @@ class atFile:
 
         at.lastThinNode = v
         return v
-    #@+node:ekr.20100630144047.5783: *8* at.changeLevel
-    def changeLevel (self,oldLevel,newLevel):
-
-        '''Update data structures when changing node level.'''
-
-        at = self ; c = at.c
-
-        # Crucial: we must be using new-style sentinels.
-        assert at.readVersion5,'at.readVersion5'
-        assert at.thinFile,'at.thinFile'
-        assert not at.importing,'not at.importing'
-
-        if newLevel > oldLevel:
-            assert newLevel == oldLevel + 1,'newLevel == oldLevel + 1'
-            parent = at.thinNodeStack[-1]
-        else:
-            while oldLevel > newLevel:
-                oldLevel -= 1
-                if allow_cloned_sibs:
-                    at.thinChildIndexStack.pop()
-                at.indentStack.pop()
-                at.thinNodeStack.pop()
-                at.vStack.pop()
-            assert oldLevel == newLevel,'oldLevel == newLevel'
-            assert len(at.thinNodeStack) == newLevel,'len(at.thinNodeStack) == newLevel'
-            if allow_cloned_sibs:
-                assert len(at.thinChildIndexStack) == newLevel,'len(at.thinChildIndexStack) == newLevel'
-            n = max(0,len(at.thinNodeStack)-2)
-            parent = at.thinNodeStack[n]
-
-        # The last node is the node at the top of the stack.
-        at.lastThinNode = at.thinNodeStack[-1]
-        
-        return parent
     #@+node:ekr.20130121102015.10272: *8* at.createV5ThinNode
     def createV5ThinNode(self,gnx,headline,level):
         
         at = self
-        trace = True and allow_cloned_sibs and at.readVersion5 and not g.unitTesting
+        trace = True and not g.unitTesting # at.readVersion5 and 
         
+        # at.changeLevel uses these relationships--do not change them!
+        # Warning: at.changeLevel called from readEnd/All/Others/Ref.
+        oldLevel = len(at.thinNodeStack)
+        newLevel = level
+        assert oldLevel >= 1
+        assert newLevel >= 1
         if allow_cloned_sibs:
-            oldLevel = len(at.thinNodeStack)
-            newLevel = level-1
-            assert oldLevel >= 1
-            assert newLevel >= 0
-            if trace: g.trace('old',oldLevel,'new',newLevel,headline)
-            parent = at.changeLevel(oldLevel,newLevel)
-            print(oldLevel,newLevel,parent.h,headline)
-            v = at.createThinChild4(gnx,headline,parent)
-            if newLevel > oldLevel:
-                at.thinNodeStack.append(v)
-                at.thinChildIndexStack.append(0)
-            # else:
-                # at.thinChildIndexStack[-1] += 1
-        else:
-            oldLevel = len(at.thinNodeStack)
-            newLevel = level - 1
-            assert newLevel >= 0
-            if trace: g.trace('old',oldLevel,'new',newLevel,headline)
-            at.changeLevel(oldLevel,newLevel)
-            v = at.createThinChild4(gnx,headline)
+            # The invariant: top of stack after changeLevel is the parent.
+            at.changeLevel(oldLevel,newLevel-1)
+            parent = at.thinNodeStack[-1]
+            n = at.thinChildIndexStack[-1]
+            if trace: g.trace(oldLevel,newLevel-1,n,parent.h,headline)
+            v = at.new_createThinChild4(gnx,headline,n,parent)
+            at.thinChildIndexStack[-1]=n+1
             at.thinNodeStack.append(v)
-
-        # Terminate a previous clone if it exists.
-        # Do not use the full terminateNode logic!
-        if allow_cloned_sibs:
+            at.thinChildIndexStack.append(0)
+            at.lastThinNode = v
+            # Ensure that the body text is set only once.
             if v.isVisited():
                 if hasattr(v,'tempBodyList'):
-                     delattr(v,'tempBodyList')
+                    delattr(v,'tempBodyList')
             else:
                 # This is the only place we call v.setVisited in the read logic.
                 v.setVisited()
-                if hasattr(v,'tempBodyList'):
-                    # To keep pylint happy.
-                    v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
-                    delattr(v,'tempBodyList')
-                else:
-                    # Major bug fix: 2010/07/6:
-                    # Do *not* create v.tempBodyString here!
-                    # That would tell at.copyAllTempBodyStringsToVnodes
-                    # that an older (empty) version exists!
-                    pass
         else:
-            if hasattr(v,'tempBodyList'):
-                # v.tempBodyString = ''.join(v.tempBodyList)
-                # To keep pylint happy.
-                v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
-                delattr(v,'tempBodyList')
-            else:
-                # Major bug fix: 2010/07/6:
-                # Do *not* create v.tempBodyString here!
-                # That would tell at.copyAllTempBodyStringsToVnodes
-                # that an older (empty) version exists!
-                pass
-
+            at.changeLevel(oldLevel,newLevel-1)
+            v = at.old_createThinChild4(gnx,headline)
+            at.thinNodeStack.append(v)
+            
+        # Common exit code. 
+        # Terminate a previous clone if it exists.
+        # Do not use the full terminateNode logic!
+        if hasattr(v,'tempBodyList'):
+            # To keep pylint happy.
+            v.tempBodyString = ''.join(getattr(v,'tempBodyList'))
+            delattr(v,'tempBodyList')
+        else:
+            # Major bug fix: 2010/07/6:
+            # Do *not* create v.tempBodyString here!
+            # That would tell at.copyAllTempBodyStringsToVnodes
+            # that an older (empty) version exists!
+            pass
+            
         return v
     #@+node:ekr.20100625184546.5979: *7* at.parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
@@ -2310,6 +2241,35 @@ class atFile:
                 [at.sentinelName(z) for z in at.endSentinelStack],
                 g.callers(4)))
             at.badEndSentinel(expectedKind)
+    #@+node:ekr.20130121102851.10249: *5* at.changeLevel
+    # Called from various methods.
+
+    def changeLevel (self,oldLevel,newLevel):
+
+        '''Update data structures when changing node level.'''
+
+        at = self ; c = at.c
+
+        # Crucial: we must be using new-style sentinels.
+        assert at.readVersion5,'at.readVersion5'
+        assert at.thinFile,'at.thinFile'
+        assert not at.importing,'not at.importing'
+
+        if newLevel > oldLevel:
+            assert newLevel == oldLevel + 1,'newLevel == oldLevel + 1'
+        else:
+            while oldLevel > newLevel:
+                oldLevel -= 1
+                if allow_cloned_sibs:
+                    at.thinChildIndexStack.pop()
+                at.indentStack.pop()
+                at.thinNodeStack.pop()
+                at.vStack.pop()
+            assert oldLevel == newLevel,'oldLevel: %s newLevel: %s' % (oldLevel,newLevel)
+            assert len(at.thinNodeStack) == newLevel,'len(at.thinNodeStack) == newLevel'
+        
+        # The last node is the node at the top of the stack.
+        at.lastThinNode = at.thinNodeStack[-1]
     #@+node:ekr.20110523201030.18288: *5* at.massageAtDocPart (new)
     def massageAtDocPart (self,s):
         
