@@ -1952,6 +1952,53 @@ def paint_qframe (self,w,color):
     # How's this for a kludge.
     # Set this ivar for InnerBodyFrame.paintEvent.
     g.app.gui.innerBodyFrameColor = color
+#@+node:ekr.20120927164343.10092: *6* add_border (qtGui)
+def add_border(self,c,w):
+
+    state = c.k and c.k.unboundKeyAction
+    
+    if state and c.use_focus_border:
+        d = {
+            'command':  c.focus_border_command_state_color,
+            'insert':   c.focus_border_color,
+            'overwrite':c.focus_border_overwrite_state_color,
+        }
+        color = d.get(state,c.focus_border_color)
+        name = g.u(w.objectName())
+        if name =='richTextEdit':
+            w = c.frame.top.leo_body_inner_frame
+            self.paint_qframe(w,color)
+        elif name.startswith('head'):
+            pass
+        else:
+            # Always use the default border color for the tree.
+            color = c.focus_border_color
+            sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10093: *6* remove_border (qtGui)
+def remove_border(self,c,w):
+
+    if not c.use_focus_border:
+        return
+        
+    name = g.u(w.objectName())
+    width = c.focus_border_width
+    if w.objectName()=='richTextEdit':
+        w = c.frame.top.leo_body_inner_frame
+        self.paint_qframe(w,'white')
+    elif name.startswith('head'):
+        pass
+    else:
+        sheet = "border: %spx solid white" % width
+        self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10094: *6* paint_qframe (qtGui)
+def paint_qframe (self,w,color):
+    
+    assert isinstance(w,QtGui.QFrame)
+    
+    # How's this for a kludge.
+    # Set this ivar for InnerBodyFrame.paintEvent.
+    g.app.gui.innerBodyFrameColor = color
 #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget)
 def setEditorColors(self,bg,fg):
     
@@ -4145,6 +4192,53 @@ def paint_qframe (self,w,color):
     # How's this for a kludge.
     # Set this ivar for InnerBodyFrame.paintEvent.
     g.app.gui.innerBodyFrameColor = color
+#@+node:ekr.20120927164343.10092: *6* add_border (qtGui)
+def add_border(self,c,w):
+
+    state = c.k and c.k.unboundKeyAction
+    
+    if state and c.use_focus_border:
+        d = {
+            'command':  c.focus_border_command_state_color,
+            'insert':   c.focus_border_color,
+            'overwrite':c.focus_border_overwrite_state_color,
+        }
+        color = d.get(state,c.focus_border_color)
+        name = g.u(w.objectName())
+        if name =='richTextEdit':
+            w = c.frame.top.leo_body_inner_frame
+            self.paint_qframe(w,color)
+        elif name.startswith('head'):
+            pass
+        else:
+            # Always use the default border color for the tree.
+            color = c.focus_border_color
+            sheet = "border: %spx solid %s" % (c.focus_border_width,color)
+            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10093: *6* remove_border (qtGui)
+def remove_border(self,c,w):
+
+    if not c.use_focus_border:
+        return
+        
+    name = g.u(w.objectName())
+    width = c.focus_border_width
+    if w.objectName()=='richTextEdit':
+        w = c.frame.top.leo_body_inner_frame
+        self.paint_qframe(w,'white')
+    elif name.startswith('head'):
+        pass
+    else:
+        sheet = "border: %spx solid white" % width
+        self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+#@+node:ekr.20120927164343.10094: *6* paint_qframe (qtGui)
+def paint_qframe (self,w,color):
+    
+    assert isinstance(w,QtGui.QFrame)
+    
+    # How's this for a kludge.
+    # Set this ivar for InnerBodyFrame.paintEvent.
+    g.app.gui.innerBodyFrameColor = color
 #@+node:ekr.20110605121601.18143: *5* createBodyPane
 def createBodyPane (self,parent):
 
@@ -4900,6 +4994,24 @@ def getSigId (self,ids):
     else:
         return ids and ids[-1]
 #@+node:ekr.20130111120935.10193: *4* SherlockTracer now shows returned values
+#@+node:ekr.20130117143204.10205: *4* Allow clones anywhere in @file nodes
+@language rest
+
+Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
+About bug 882243: clones sometimes not saved
+
+What I did:
+
+- Added allow_cloned_sibs switch at the start of leoAtFile.py.
+  All new code enabled by this switch.
+
+- Refactored at.createNewThinNode:
+    - Renamed createThinChild4 to old_createThinChild4.
+    - Added new_createThinChild4.
+    - Added createV5ThinNode.
+    
+The key invariant in createV5ThinNode:
+    On exit from at.changeLevel, top of at.thinNodeStack is the parent.
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
