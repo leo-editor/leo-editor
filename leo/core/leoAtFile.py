@@ -1185,7 +1185,7 @@ class atFile:
         """Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees."""
 
-        trace = True and not g.unitTesting ; verbose = True
+        trace = False and not g.unitTesting ; verbose = True
         at = self ; c = at.c ; indices = g.app.nodeIndices
         if trace: g.trace(n,len(parent.children),parent.h,
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
@@ -1202,7 +1202,6 @@ class atFile:
                     if trace: g.trace('OLD n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
                 else:
                     if trace: g.trace('DUP n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-                    assert child.isVisited()
             else:
                 gnx_s = g.app.nodeIndices.toString(gnx)
                 g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx_s))
@@ -1484,7 +1483,7 @@ class atFile:
     def createV5ThinNode(self,gnx,headline,level):
         
         at = self
-        trace = True and not g.unitTesting # at.readVersion5 and 
+        trace = False and not g.unitTesting # at.readVersion5 and 
         
         # at.changeLevel uses these relationships--do not change them!
         # Warning: at.changeLevel called from readEnd/All/Others/Ref.
