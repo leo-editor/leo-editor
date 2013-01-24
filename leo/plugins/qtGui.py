@@ -28,6 +28,8 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins
     # Uses leoPlugins.TryNext.
 
+import internal_ipkernel as ipk
+
 import leo.plugins.baseNativeTree as baseNativeTree
 
 import datetime
@@ -7559,6 +7561,9 @@ class leoQtGui(leoGui.leoGui):
         
         # g.trace('(qtGui)',g.callers())
 
+        self.ipk = ipk.InternalIPKernel()
+        self.ipk.init_ipkernel('qt')
+
         self.qtApp = app = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.plainTextWidget = leoQtBaseTextWidget
@@ -7600,7 +7605,9 @@ class leoQtGui(leoGui.leoGui):
             g.app.ipm.embed_ipython()
                 # Runs main loop and calls sys.exit.
         else:
-            sys.exit(self.qtApp.exec_())
+            # ipython specific!!!!
+            g.app.gui.ipk.ipkernel.start()
+            #sys.exit(self.qtApp.exec_())
     #@+node:ekr.20110605121601.18484: *5* destroySelf
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
@@ -8131,6 +8138,7 @@ class leoQtGui(leoGui.leoGui):
         
         trace = False and not g.unitTesting
         verbose = False
+
         app = QtGui.QApplication
         w = app.focusWidget()
         if w and isinstance(w,LeoQTextBrowser):
