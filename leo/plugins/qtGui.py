@@ -7588,6 +7588,17 @@ class leoQtGui(leoGui.leoGui):
         import internal_ipkernel as ipk        
         self.ipk = ipk.InternalIPKernel()
         self.ipk.init_ipkernel('qt')
+        ns = self.ipk.namespace
+        ns['g'] = g
+        # launch the first shell, 'c' is not defined there
+        self.ipk.new_qt_console()
+
+        @g.command("ipython-new")
+        def qtshell_f(event):            
+            self.ipk.new_qt_console()
+            ns['c'] = event['c']
+
+
         # blocks forever here, equivalent of 
         # QApplication.exec_()
         g.app.gui.ipk.ipkernel.start()
