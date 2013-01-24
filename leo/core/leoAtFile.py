@@ -10,8 +10,6 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-allow_cloned_sibs = False # True: allow cloned siblings in @file nodes.
-
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -28,6 +26,11 @@ import sys
 import time
 
 #@-<< imports >>
+
+allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
+
+if allow_cloned_sibs:
+    print('** allow_cloned_sibs: True')
 
 class atFile:
 
