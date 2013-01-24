@@ -28,7 +28,7 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins
     # Uses leoPlugins.TryNext.
 
-import internal_ipkernel as ipk
+
 
 import leo.plugins.baseNativeTree as baseNativeTree
 
@@ -7561,8 +7561,6 @@ class leoQtGui(leoGui.leoGui):
         
         # g.trace('(qtGui)',g.callers())
 
-        self.ipk = ipk.InternalIPKernel()
-        self.ipk.init_ipkernel('qt')
 
         self.qtApp = app = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
@@ -7586,6 +7584,14 @@ class leoQtGui(leoGui.leoGui):
         else:
             self.frameFactory = SDIFrameFactory()
     #@+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
+    def runWithIpythonKernel(self):
+        import internal_ipkernel as ipk        
+        self.ipk = ipk.InternalIPKernel()
+        self.ipk.init_ipkernel('qt')
+        # blocks forever here, equivalent of 
+        # QApplication.exec_()
+        g.app.gui.ipk.ipkernel.start()
+
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
@@ -7602,12 +7608,13 @@ class leoQtGui(leoGui.leoGui):
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
         elif g.app.useIpython and g.app.ipm:
             # g.app.ipm exists only if IPython was imported properly.
-            g.app.ipm.embed_ipython()
+            self.runWithIpythonKernel()
+            #g.app.ipm.embed_ipython()
                 # Runs main loop and calls sys.exit.
         else:
             # ipython specific!!!!
-            g.app.gui.ipk.ipkernel.start()
-            #sys.exit(self.qtApp.exec_())
+            
+            sys.exit(self.qtApp.exec_())
     #@+node:ekr.20110605121601.18484: *5* destroySelf
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
