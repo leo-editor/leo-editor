@@ -2729,6 +2729,13 @@ https://bugs.launchpad.net/leo-editor/+bug/882243
 
 When all clones of a node are in an @file subtree, they disappear on exit
 https://bugs.launchpad.net/leo-editor/+bug/1084661
+#@+node:ekr.20130126080923.10186: *4* Improved g.trace
+@language rest
+
+A few changes that should have been done long ago:
+
+- Added support for 'before' keyword.  Prints something before the function name.
+- Use g.shortFileName(__file__) instead of "<module>"
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

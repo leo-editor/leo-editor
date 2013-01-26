@@ -3140,9 +3140,9 @@ def trace (*args,**keys):
         code1 = f1.f_code # The code object
         name = code1.co_name # The code name
     except Exception:
-        name = '?'
-    if name == "?":
-        name = "<unknown>"
+        name = g.shortFileName(__file__)
+    if name == '<module>':
+        name = g.shortFileName(__file__)
 
     # Pad the caller name.
     if align != 0 and len(name) < abs(align):
