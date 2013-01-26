@@ -2210,238 +2210,22 @@ This is exactly what I need:  I can make changes to important tools
 *safely* within Leo.
 #@+node:ekr.20121126213658.10142: *4* Documented all keyword args to the leoBridge.controller ctor
 #@+node:ekr.20120330040023.9781: *3* Features
-#@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
-@nocolor-node
-
-The new code works like leoTree.onHeadChanged.
-
-The code can be called twice, so it is a bit tricky
-to only issue warnings once.
-#@+node:ekr.20120411095406.10036: *4* Sorted statistics in profile_leo
+#@+node:ekr.20120926072255.12062: *4* @color minibuffer-foreground-color setting
 #@+node:ekr.20120410175141.10027: *4* Added --no-plugins option
-#@+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
+#@+node:ekr.20120928142052.11489: *4* Added @color log_warning_color and g.getActualColor
 @nocolor-node
 
-A simple change to k.computeCompletionList was all that was needed.
+g.es now "redirects" colors using the following settings:
 
-#@+node:ekr.20111017132257.15891: *4* IPython now works with all versions of IPython
-@nocolor-node
-
-Changed:
-
-- init (qtGui.py top level) (qtPdb)
-- runMainLoop (qtGui)
-- start_new_api
-#@+node:ekr.20120330110655.10023: *5*  Notes
-@language rest
-
-Investigate how IPython hijacks event loops
-http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
-
-pyos_inputhook is relevant
-
-IPython lib.inputhook
-http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
-
-
-* IPython seems to require Python 2.x.
-* I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
-
-From C:\prog\ipython-0.12\IPython\scripts
-
-#!/usr/bin/env python
-"""Terminal-based IPython entry point.
-"""
-
-from IPython.frontend.terminal.ipapp import launch_new_instance
-
-launch_new_instance()
-
-Here is ipapi.get::
-
-@language python
-
-    def get():
-        """Get the global InteractiveShell instance."""
-        from IPython.core.interactiveshell import InteractiveShell
-        return InteractiveShell.instance()
-#@+node:ekr.20120401144849.10152: *5*  What I did
-@language rest
-
-- Import logic looks for legacy IPython first (0.11 and prev),
-  then looks for new-style IPython (0.12 and above).
-
-- Created GlobalIPythonManager class, assigned to leoIPython.gipm and g.app.gipm.
-
-- Added self.c ivar to LeoNode class.  This is the same as p.v.context.
-#@+node:ekr.20120330110655.10025: *5* @url ipython api
-http://ipython.org/ipython-doc/rel-0.12/api/index.html
-#@+node:ekr.20120330110655.10024: *5* @url ipython-dev archive
-http://mail.scipy.org/pipermail/ipython-dev/
-#@+node:ekr.20120330110655.10026: *5* @url ipython.core.interactiveshell
-http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
-#@+node:ekr.20120419095424.9924: *4* Integrated free_layout into Leo's core
-#@+node:ekr.20120429125741.10056: *4* created parse-body command
-@nocolor-node
-
-Useful for re-parsing text that was not originally parsed properly.
-#@+node:ekr.20120517124200.9985: *4* Supported vimoutliner imports and @auto-otl
-@nocolor-node
-
-Created vimoutlinerScanner.
-
-Created at.writeAtAutoOtlFile.
-#@+node:ekr.20120519114248.9886: *4* Change focus-border color depending on input state
-@nocolor-node
-
-Leo now supports two new setting, with the indicated default::
-
-    @color focus_border_command_state_color = blue
-    @color focus_border_overwrite_state_color = green
-
-This works in conjunction with the existing border-color setting::
-
-    @color focus_border_color = red
-
-So by default, the color border is red when in insert state, and blue
-if in command state.
-
-This allows the focus border to change color depending on whether we
-are in input or command mode.  This is a workaround for the (extreme)
-difficulty of changing cursors depending on mode.
-
-When used to distinguish insert from command modes, I recommend
-changing the existing setting::
-
-    @int focus_border_width = 1
-
-to::
-
-    @int focus_border_width = 2
-
-This makes the focus border much more visible, and makes the color
-changes obvious.
-
-I tested this code without changing bindings using the set-command-
-state command.
-
-As before, if you don't want any such colored borders, just do::
-
-    @bool use_focus_border = False 
-#@+node:ekr.20120529105626.10145: *5* What I did
-Changed set-xxx-state & setInputState.
-
-Changed qtGui.add_border and remove_border.
-#@+node:ekr.20120519114248.9887: *4* Fully support :: convention in @mode nodes
-@nocolor-node
-
-If the @mode headline contains ::, everything following
-the :: is the mode prompt. For example::
-    
-    @mode abc :: xyz
-    
-Creates the enter-abc-mode command, but the prompt for the command is xyz.
-
-ParserBaseClass.createModeCommand creates this convention.
-Changed k.modeHelpHelper.
-#@+node:ekr.20120420095827.9947: *4* Completed the new support for sessions
-@nocolor-node
-
-(Done) Changed es so it always queues messages when g.app.log is None.
-(Done) complete the command-line args: --session-save and --session-restore.
-(Done) Write session info in leoTabbedTopLevel.closeEvent and g.app.onQuit.
-
-Rev 5324 finishes some session-related work. The existing
-session commands are unchanged, but Leo now fully supports
-two new command-line arguments::
-
-    --session-restore     restore previously saved session tabs at startup
-    --session-save        save session tabs on exit
-
-If you use both arguments, everything is automatic: Leo
-saves the tabs when you quit Leo, and restores tabs when you
-start Leo. Note that you can still specify file names on the
-command line in addition to whatever files --session-restore
-will open for you.
-
-If you use only --session-restore, it is up to you to save
-sessions "by hand" with one of the session commands, for
-instance, session-snapshot-save.
-#@+node:ekr.20111017102409.15875: *4* Created print-buttons command
-@nocolor-node
-
-Created print-buttons command, showing source of all @command and @button nodes.
-
-Changed ParserBaseClass.doButtons/doCommands so they return
-lists of (p.copy(),script) rather than (p.h,script)
-
-Added g.app.config.atLocalButtonsList & g.app.config.atLocalCommandsList
-for use by print-buttons command.
-#@+node:ekr.20120522160137.9907: *4* Completed apropos-regular-expressions command
-#@+node:ekr.20120523133829.14118: *4* Supported ctrl-clicks in vr panes
-#@+node:ekr.20120524082434.9923: *4* All viewrended commands now start with vr
-#@+node:ekr.20120524082434.12620: *4* help-for-command executes apropos commands
-Instead of just printing their docstrings.
-#@+node:ekr.20120525051746.9983: *4* Fixed bug 994985: Wishlist: normalize-whitespace
-@nocolor-node
-
-https://bugs.launchpad.net/bugs/994985
-Wishlist: normalize-whitespace
-
-When using @auto, the logic often complains about "abnormal" whitespace and
-refuses to write/read node normally.
-
-What I did:
-    
-1. The clean-lines command (and thus the clean-all-lines command)
-   now remove trailing whitespace while preserving newlines.
-   
-2. reportMismatch suggests using the clean-all-lines command.
-   Note: a good unit test for reportMismatch already exists.
-   
-3. Added a unit test for clean-lines.
-#@+node:ekr.20120519114248.9885: *4* Improved incremental search commands
-@nocolor-node
-
-- Documented that return ends the search.
-- Documented that deleting the entire search pattern aborts the search.
-- Removed annoying status messages printed to log.
-
-- (Can't do) If text is already highlighted, Alt-S or Alt-R should use that text.
-
+    'black':    @color log_text_foreground_color
+    'blue':     @color log_warning_color
+    'red':      @color log_error_color
+#@+node:ekr.20120622075651.10000: *4* Added c2 keyword arg to c.bringToFront
+#@+node:ekr.20120622075651.10001: *4* Added default button to dialog methods
 #@+node:ekr.20120321174708.9743: *4* Added docstrings for all commands
 @nocolor-node
 
 Help-for command translate !<command-name>! in the docstring to the binding for command-name.
-#@+node:ekr.20070521105645: *4* investigated epydoc
-@language rest
-
-http://sourceforge.net/forum/message.php?msg_id=4319363
-
-http://epydoc.sourceforge.net/epydoc.html
-By: ktenney
-
-epydoc doesn't seem active.  It produces interesting web sites,
-but a find-def function in Leo itself would be more useful.
-
-#@+node:ekr.20120527053550.10118: *5* Fixed epydoc crash
-The easy solution, as revealed on StackOverflow is to edit the offending
-line to catch the error:
-
-# markup/restructuredtext.py, line 307
-<   m = self._SUMMARY_RE.match(child.data)
----
->   try:
->      m = self._SUMMARY_RE.match(child.data)
->   except AttributeError:
->      m = None
-
-#@+node:ekr.20120415133744.10050: *4* Made sure tab completion only happens on explicit tab
-@language python
-
-# Don't show full completion list when the minibuffer becomes empty.
-#@+node:ekr.20120622075651.10000: *4* Added c2 keyword arg to c.bringToFront
-#@+node:ekr.20120622075651.10001: *4* Added default button to dialog methods
 #@+node:ekr.20120912094259.10550: *4* Added support for @testclass
 @nocolor-node
 @
@@ -2677,27 +2461,7 @@ def makeTestSuite (self,p):
         print('\n%s: exception creating test cases for %s' % (fname,p.h))
         g.es_print_exception()
         return None
-#@+node:ekr.20120926072255.12062: *4* @color minibuffer-foreground-color setting
-#@+node:ekr.20120928142052.11489: *4* Added @color log_warning_color and g.getActualColor
-@nocolor-node
-
-g.es now "redirects" colors using the following settings:
-
-    'black':    @color log_text_foreground_color
-    'blue':     @color log_warning_color
-    'red':      @color log_error_color
-#@+node:ekr.20120928081706.11455: *4* body border
-- (done) deprecate/reorganize *dynamic* body text background colors.
-    - (done) set body pane color only once. (Now done only via stylesheet).
-    - (done) use border colors to indicate state.
-#@+node:ekr.20121002023749.10190: *4* Cached syntax coloring
-#@+node:ekr.20121002082022.10182: *4* Fixed dabbrev commands
-@nocolor-node
-
-The commands now work, and Alt-slash and Alt-Ctrl-slash are bound as in Emacs.
-#@+node:ekr.20121011093316.10103: *4* Support TypeScript
-# Added TypeScriptScanner class and related code.
-#@+node:ekr.20130111120935.10193: *4* SherlockTracer now shows returned values
+#@+node:ekr.20120524082434.9923: *4* All viewrended commands now start with vr
 #@+node:ekr.20130117143204.10205: *4* Allow clones anywhere in @file nodes
 @language rest
 
@@ -2716,6 +2480,255 @@ What I did:
     
 The key invariant in createV5ThinNode:
     On exit from at.changeLevel, top of at.thinNodeStack is the parent.
+#@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
+@nocolor-node
+
+The new code works like leoTree.onHeadChanged.
+
+The code can be called twice, so it is a bit tricky
+to only issue warnings once.
+#@+node:ekr.20120928081706.11455: *4* body border
+- (done) deprecate/reorganize *dynamic* body text background colors.
+    - (done) set body pane color only once. (Now done only via stylesheet).
+    - (done) use border colors to indicate state.
+#@+node:ekr.20121002023749.10190: *4* Cached syntax coloring
+#@+node:ekr.20120519114248.9886: *4* Change focus-border color depending on input state
+@nocolor-node
+
+Leo now supports two new setting, with the indicated default::
+
+    @color focus_border_command_state_color = blue
+    @color focus_border_overwrite_state_color = green
+
+This works in conjunction with the existing border-color setting::
+
+    @color focus_border_color = red
+
+So by default, the color border is red when in insert state, and blue
+if in command state.
+
+This allows the focus border to change color depending on whether we
+are in input or command mode.  This is a workaround for the (extreme)
+difficulty of changing cursors depending on mode.
+
+When used to distinguish insert from command modes, I recommend
+changing the existing setting::
+
+    @int focus_border_width = 1
+
+to::
+
+    @int focus_border_width = 2
+
+This makes the focus border much more visible, and makes the color
+changes obvious.
+
+I tested this code without changing bindings using the set-command-
+state command.
+
+As before, if you don't want any such colored borders, just do::
+
+    @bool use_focus_border = False 
+#@+node:ekr.20120529105626.10145: *5* What I did
+Changed set-xxx-state & setInputState.
+
+Changed qtGui.add_border and remove_border.
+#@+node:ekr.20120522160137.9907: *4* Completed apropos-regular-expressions command
+#@+node:ekr.20120420095827.9947: *4* Completed the new support for sessions
+@nocolor-node
+
+(Done) Changed es so it always queues messages when g.app.log is None.
+(Done) complete the command-line args: --session-save and --session-restore.
+(Done) Write session info in leoTabbedTopLevel.closeEvent and g.app.onQuit.
+
+Rev 5324 finishes some session-related work. The existing
+session commands are unchanged, but Leo now fully supports
+two new command-line arguments::
+
+    --session-restore     restore previously saved session tabs at startup
+    --session-save        save session tabs on exit
+
+If you use both arguments, everything is automatic: Leo
+saves the tabs when you quit Leo, and restores tabs when you
+start Leo. Note that you can still specify file names on the
+command line in addition to whatever files --session-restore
+will open for you.
+
+If you use only --session-restore, it is up to you to save
+sessions "by hand" with one of the session commands, for
+instance, session-snapshot-save.
+#@+node:ekr.20120429125741.10056: *4* created parse-body command
+@nocolor-node
+
+Useful for re-parsing text that was not originally parsed properly.
+#@+node:ekr.20111017102409.15875: *4* Created print-buttons command
+@nocolor-node
+
+Created print-buttons command, showing source of all @command and @button nodes.
+
+Changed ParserBaseClass.doButtons/doCommands so they return
+lists of (p.copy(),script) rather than (p.h,script)
+
+Added g.app.config.atLocalButtonsList & g.app.config.atLocalCommandsList
+for use by print-buttons command.
+#@+node:ekr.20120525051746.9983: *4* Fixed bug 994985: Wishlist: normalize-whitespace
+@nocolor-node
+
+https://bugs.launchpad.net/bugs/994985
+Wishlist: normalize-whitespace
+
+When using @auto, the logic often complains about "abnormal" whitespace and
+refuses to write/read node normally.
+
+What I did:
+    
+1. The clean-lines command (and thus the clean-all-lines command)
+   now remove trailing whitespace while preserving newlines.
+   
+2. reportMismatch suggests using the clean-all-lines command.
+   Note: a good unit test for reportMismatch already exists.
+   
+3. Added a unit test for clean-lines.
+#@+node:ekr.20121002082022.10182: *4* Fixed dabbrev commands
+@nocolor-node
+
+The commands now work, and Alt-slash and Alt-Ctrl-slash are bound as in Emacs.
+#@+node:ekr.20120519114248.9887: *4* Fully support :: convention in @mode nodes
+@nocolor-node
+
+If the @mode headline contains ::, everything following
+the :: is the mode prompt. For example::
+    
+    @mode abc :: xyz
+    
+Creates the enter-abc-mode command, but the prompt for the command is xyz.
+
+ParserBaseClass.createModeCommand creates this convention.
+Changed k.modeHelpHelper.
+#@+node:ekr.20120524082434.12620: *4* help-for-command executes apropos commands
+Instead of just printing their docstrings.
+#@+node:ekr.20120519114248.9885: *4* Improved incremental search commands
+@nocolor-node
+
+- Documented that return ends the search.
+- Documented that deleting the entire search pattern aborts the search.
+- Removed annoying status messages printed to log.
+
+- (Can't do) If text is already highlighted, Alt-S or Alt-R should use that text.
+
+#@+node:ekr.20120419095424.9924: *4* Integrated free_layout into Leo's core
+#@+node:ekr.20070521105645: *4* investigated epydoc
+@language rest
+
+http://sourceforge.net/forum/message.php?msg_id=4319363
+
+http://epydoc.sourceforge.net/epydoc.html
+By: ktenney
+
+epydoc doesn't seem active.  It produces interesting web sites,
+but a find-def function in Leo itself would be more useful.
+
+#@+node:ekr.20120527053550.10118: *5* Fixed epydoc crash
+The easy solution, as revealed on StackOverflow is to edit the offending
+line to catch the error:
+
+# markup/restructuredtext.py, line 307
+<   m = self._SUMMARY_RE.match(child.data)
+---
+>   try:
+>      m = self._SUMMARY_RE.match(child.data)
+>   except AttributeError:
+>      m = None
+
+#@+node:ekr.20111017132257.15891: *4* IPython now works with all versions of IPython
+@nocolor-node
+
+Changed:
+
+- init (qtGui.py top level) (qtPdb)
+- runMainLoop (qtGui)
+- start_new_api
+#@+node:ekr.20120330110655.10023: *5*  Notes
+@language rest
+
+Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+
+pyos_inputhook is relevant
+
+IPython lib.inputhook
+http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
+
+
+* IPython seems to require Python 2.x.
+* I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
+
+From C:\prog\ipython-0.12\IPython\scripts
+
+#!/usr/bin/env python
+"""Terminal-based IPython entry point.
+"""
+
+from IPython.frontend.terminal.ipapp import launch_new_instance
+
+launch_new_instance()
+
+Here is ipapi.get::
+
+@language python
+
+    def get():
+        """Get the global InteractiveShell instance."""
+        from IPython.core.interactiveshell import InteractiveShell
+        return InteractiveShell.instance()
+#@+node:ekr.20120401144849.10152: *5*  What I did
+@language rest
+
+- Import logic looks for legacy IPython first (0.11 and prev),
+  then looks for new-style IPython (0.12 and above).
+
+- Created GlobalIPythonManager class, assigned to leoIPython.gipm and g.app.gipm.
+
+- Added self.c ivar to LeoNode class.  This is the same as p.v.context.
+#@+node:ekr.20120330110655.10025: *5* @url ipython api
+http://ipython.org/ipython-doc/rel-0.12/api/index.html
+#@+node:ekr.20120330110655.10024: *5* @url ipython-dev archive
+http://mail.scipy.org/pipermail/ipython-dev/
+#@+node:ekr.20120330110655.10026: *5* @url ipython.core.interactiveshell
+http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
+#@+node:ekr.20120415133744.10050: *4* Made sure tab completion only happens on explicit tab
+@language python
+
+# Don't show full completion list when the minibuffer becomes empty.
+#@+node:ekr.20130111120935.10193: *4* SherlockTracer now shows returned values
+#@+node:ekr.20120305084218.9915: *4* Show all commands after <alt-x><tab>
+@nocolor-node
+
+A simple change to k.computeCompletionList was all that was needed.
+
+#@+node:ekr.20120411095406.10036: *4* Sorted statistics in profile_leo
+#@+node:ekr.20121011093316.10103: *4* Support TypeScript
+# Added TypeScriptScanner class and related code.
+#@+node:ekr.20120523133829.14118: *4* Supported ctrl-clicks in vr panes
+#@+node:ekr.20120517124200.9985: *4* Supported vimoutliner imports and @auto-otl
+@nocolor-node
+
+Created vimoutlinerScanner.
+
+Created at.writeAtAutoOtlFile.
+#@+node:ekr.20130126062633.10184: *4* Allow cloned siblings
+@language rest
+
+A major change in Leo's read/write code.  The first "live" rev was 5584.
+At present, controlled by the allow_cloned_sibs switch in leoAtFile.py.
+
+Fixes the following bugs:
+
+clones sometimes not saved
+https://bugs.launchpad.net/leo-editor/+bug/882243
+
+When all clones of a node are in an @file subtree, they disappear on exit
+https://bugs.launchpad.net/leo-editor/+bug/1084661
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

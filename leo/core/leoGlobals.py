@@ -3129,7 +3129,7 @@ def trace (*args,**keys):
     # Don't use g here: in standalone mode g is a nullObject!
 
     # Compute the effective args.
-    d = {'align':0,'newline':True}
+    d = {'align':0,'before':'','newline':True}
     d = doKeywordArgs(keys,d)
     newline = d.get('newline')
     align = d.get('align',0)
@@ -3166,7 +3166,7 @@ def trace (*args,**keys):
         else:
             result.append(arg)
             
-    s = ''.join(result)
+    s = d.get('before')+''.join(result)
     pr(s,newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
