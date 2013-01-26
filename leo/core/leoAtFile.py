@@ -29,8 +29,8 @@ import time
 
 allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
 
-if allow_cloned_sibs:
-    print('** allow_cloned_sibs: True')
+# if allow_cloned_sibs:
+    # print('** allow_cloned_sibs: True')
 
 class atFile:
 
