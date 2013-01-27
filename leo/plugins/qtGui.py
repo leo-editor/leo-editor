@@ -7595,9 +7595,16 @@ class leoQtGui(leoGui.leoGui):
 
         @g.command("ipython-new")
         def qtshell_f(event):            
+            """ Launch new ipython shell window, associated with the same ipython kernel """
             self.ipk.new_qt_console()
             ns['c'] = event['c']
 
+        @g.command("ipython-exec")
+        def ipython_exec_f(event):
+            """ Execute script in current node in ipython namespace """
+            c = ns['c'] = event['c']
+            script = g.getScript(c,c.p)            
+            exec script in self.ipk.namespace
 
         # blocks forever here, equivalent of 
         # QApplication.exec_()
@@ -7620,11 +7627,7 @@ class leoQtGui(leoGui.leoGui):
         elif g.app.useIpython and g.app.ipm:
             # g.app.ipm exists only if IPython was imported properly.
             self.runWithIpythonKernel()
-            #g.app.ipm.embed_ipython()
-                # Runs main loop and calls sys.exit.
-        else:
-            # ipython specific!!!!
-            
+        else:                        
             sys.exit(self.qtApp.exec_())
     #@+node:ekr.20110605121601.18484: *5* destroySelf
     def destroySelf (self):
