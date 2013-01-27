@@ -7586,29 +7586,29 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
     def runWithIpythonKernel(self):
         import internal_ipkernel as ipk        
-        self.ipk = ipk.InternalIPKernel()
-        self.ipk.init_ipkernel('qt')
-        ns = self.ipk.namespace
+        g.app.ipk = ipk.InternalIPKernel()
+        g.app.ipk.init_ipkernel('qt')
+        ns = g.app.ipk.namespace
         ns['g'] = g
         # launch the first shell, 'c' is not defined there
-        self.ipk.new_qt_console()
+        g.app.ipk.new_qt_console()
 
         @g.command("ipython-new")
         def qtshell_f(event):            
             """ Launch new ipython shell window, associated with the same ipython kernel """
-            self.ipk.new_qt_console()
+            g.app.ipk.new_qt_console()
             ns['c'] = event['c']
 
         @g.command("ipython-exec")
         def ipython_exec_f(event):
             """ Execute script in current node in ipython namespace """
             c = ns['c'] = event['c']
-            self.execInNamespace(c, c.p, self.ipk.namespace)
+            self.execInNamespace(c, c.p, g.app.ipk.namespace)
             
 
         # blocks forever here, equivalent of 
         # QApplication.exec_()
-        g.app.gui.ipk.ipkernel.start()
+        g.app.ipk.ipkernel.start()
 
 
     
