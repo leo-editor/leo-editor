@@ -7638,7 +7638,7 @@ class leoQtGui(leoGui.leoGui):
         elif g.app.useIpython and g.app.ipm:
             # g.app.ipm exists only if IPython was imported properly.
             self.runWithIpythonKernel()
-        else:                        
+        else:                            
             sys.exit(self.qtApp.exec_())
     #@+node:ekr.20110605121601.18484: *5* destroySelf
     def destroySelf (self):

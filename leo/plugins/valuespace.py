@@ -163,8 +163,11 @@ def init ():
     
     # vs_reset(None)
     
-    g.vs = {} # A dictionary of dictionaries, one for each commander.
+    global controllers
+    #g.vs = {} # A dictionary of dictionaries, one for each commander.
 
+    # create global valuaspace controller for ipython
+        
     g.visit_tree_item.add(colorize_headlines_visitor)
     
     g.registerHandler('after-create-leo-frame',onCreate)
@@ -187,53 +190,48 @@ def onCreate (tag,key):
         if not vc:
             controllers [h] = vc = ValueSpaceController(c)
 #@+node:ville.20110403115003.10355: ** Commands
+#@+node:ville.20130127115643.3695: *3* get_vs
+def get_vs(c):
+    # deal with singleton "ipython" controller
+    if g.app.ipk:        
+        vsc = controllers.get('ipython')
+        if not vsc:
+            controllers['ipython'] = vsc = ValueSpaceController(c = None,
+                ns = g.app.ipk.namespace)
+
+        vsc.set_c(c) 
+        
+        return vsc
+                    
+    return controllers[c.hash()]
+    
 #@+node:ville.20110407210441.5691: *3* vs-create-tree
 @g.command('vs-create-tree')
 def vs_create_tree(event):
     
     """Create tree from all variables."""
-    
-    global controllers
-    c = event.get('c')
-    if c:
-        vc = controllers.get(c.hash())
-        if vc:
-            vc.create_tree()
+
+    get_vs(event['c']).create_tree()
+
 #@+node:ekr.20110408065137.14227: *3* vs-dump
 @g.command('vs-dump')
 def vs_dump(event):
     
     """Dump the valuespace for this commander."""
-    
-    global controllers
-    c = event.get('c')
-    if c:
-        vc = controllers.get(c.hash())
-        if vc:
-            vc.dump()
+    get_vs(event['c']).dump()    
 #@+node:ekr.20110408065137.14220: *3* vs-reset
 @g.command('vs-reset')
 def vs_reset(event):
 
     # g.vs = types.ModuleType('vs')
     # sys.modules['vs'] = g.vs
-    
-    global controllers
-    c = event.get('c')
-    if c:
-        vc = controllers.get(c.hash())
-        if vc:
-            vc.reset()
+
+    get_vs(event['c']).reset()    
 #@+node:ville.20110403115003.10356: *3* vs-update
 @g.command('vs-update')
 def vs_update(event):
-    
-    global controllers
-    c = event.get('c')
-    if c:
-        vc = controllers.get(c.hash())
-        if vc:
-            vc.update()
+
+    get_vs(event['c']).update()    
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController:
     
@@ -243,12 +241,16 @@ class ValueSpaceController:
     
     #@+others
     #@+node:ekr.20110408065137.14223: *3*  ctor
-    def __init__ (self,c):
+    def __init__ (self,c = None, ns = None ):
         
         # g.trace('(ValueSpaceController)',c)
         
         self.c = c
-        self.d = {}
+        if ns is None:
+            self.d = {}
+        else:
+            self.d = ns
+        
         self.reset()    
         self.trace = True
         self.verbose = False
@@ -306,10 +308,14 @@ class ValueSpaceController:
     def reset (self):
         
         '''The vs-reset command.'''
+
+        # do not allow resetting the dict if using ipython
+        if not g.app.ipk:
+            self.d = {}
+            self.c.vs = self.d
         
-        self.d = {}
         self.init_ns(self.d)
-        self.c.vs = self.d
+        
     #@+node:ville.20110409221110.5755: *3* init_ns
     def init_ns(self,ns):
         """ Add 'builtin' methods to namespace """
@@ -322,6 +328,13 @@ class ValueSpaceController:
         
         # xxx todo perhaps add more?
             
+    #@+node:ville.20130127122722.3696: *3* set_c
+    def set_c(self,c):
+        """ reconfigure vsc for new c
+        
+        Needed by ipython integration
+        """
+        self.c = c
     #@+node:ekr.20110408065137.14226: *3* update & helpers
     def update (self):
         

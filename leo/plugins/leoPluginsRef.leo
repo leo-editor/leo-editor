@@ -72,7 +72,8 @@ expanded="ville.20090314215508.2,"><vh>@file quicksearch.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
+<v t="ville.20110403115003.10348" a="E"
+expanded="ekr.20110408065137.14221,ville.20110403115003.10355,ekr.20110408065137.14219,ekr.20110408065137.14226,"><vh>@file valuespace.py</vh></v>
 <v t="ville.20130127035134.3685"><vh>@auto internal_ipkernel.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>

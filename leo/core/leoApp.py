@@ -176,6 +176,8 @@ class LeoApp:
         self.define_language_extension_dict()
         self.define_extension_dict()
         self.global_commands_dict = {}
+
+        self.ipk = None   # python kernel instance
     #@+node:ekr.20031218072017.1417: *4* app.define_global_constants
     def define_global_constants(self):
 
