@@ -3143,6 +3143,8 @@ def trace (*args,**keys):
         name = g.shortFileName(__file__)
     if name == '<module>':
         name = g.shortFileName(__file__)
+    if name.endswith('.pyc'):
+        name = name[:-1]
 
     # Pad the caller name.
     if align != 0 and len(name) < abs(align):
