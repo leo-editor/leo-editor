@@ -65,7 +65,7 @@
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
-<v t="ville.20090314215508.4" a="E"
+<v t="ville.20090314215508.4"
 expanded="ville.20090314215508.2,"><vh>@file quicksearch.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
@@ -73,6 +73,7 @@ expanded="ville.20090314215508.2,"><vh>@file quicksearch.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
+<v t="ville.20130127035134.3685"><vh>@auto internal_ipkernel.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
