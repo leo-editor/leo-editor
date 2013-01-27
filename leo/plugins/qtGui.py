@@ -28,6 +28,8 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins
     # Uses leoPlugins.TryNext.
 
+
+
 import leo.plugins.baseNativeTree as baseNativeTree
 
 import datetime
@@ -7559,6 +7561,7 @@ class leoQtGui(leoGui.leoGui):
         
         # g.trace('(qtGui)',g.callers())
 
+
         self.qtApp = app = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.plainTextWidget = leoQtBaseTextWidget
@@ -7581,6 +7584,25 @@ class leoQtGui(leoGui.leoGui):
         else:
             self.frameFactory = SDIFrameFactory()
     #@+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
+    def runWithIpythonKernel(self):
+        import internal_ipkernel as ipk        
+        self.ipk = ipk.InternalIPKernel()
+        self.ipk.init_ipkernel('qt')
+        ns = self.ipk.namespace
+        ns['g'] = g
+        # launch the first shell, 'c' is not defined there
+        self.ipk.new_qt_console()
+
+        @g.command("ipython-new")
+        def qtshell_f(event):            
+            self.ipk.new_qt_console()
+            ns['c'] = event['c']
+
+
+        # blocks forever here, equivalent of 
+        # QApplication.exec_()
+        g.app.gui.ipk.ipkernel.start()
+
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
@@ -7597,9 +7619,12 @@ class leoQtGui(leoGui.leoGui):
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
         elif g.app.useIpython and g.app.ipm:
             # g.app.ipm exists only if IPython was imported properly.
-            g.app.ipm.embed_ipython()
+            self.runWithIpythonKernel()
+            #g.app.ipm.embed_ipython()
                 # Runs main loop and calls sys.exit.
         else:
+            # ipython specific!!!!
+            
             sys.exit(self.qtApp.exec_())
     #@+node:ekr.20110605121601.18484: *5* destroySelf
     def destroySelf (self):
@@ -8131,6 +8156,7 @@ class leoQtGui(leoGui.leoGui):
         
         trace = False and not g.unitTesting
         verbose = False
+
         app = QtGui.QApplication
         w = app.focusWidget()
         if w and isinstance(w,LeoQTextBrowser):
