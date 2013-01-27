@@ -7603,15 +7603,23 @@ class leoQtGui(leoGui.leoGui):
         def ipython_exec_f(event):
             """ Execute script in current node in ipython namespace """
             c = ns['c'] = event['c']
-            script = g.getScript(c,c.p)
-            try:            
-                exec script in self.ipk.namespace
-            except:
-                g.es_exception()
+            self.execInNamespace(c, c.p, self.ipk.namespace)
+            
 
         # blocks forever here, equivalent of 
         # QApplication.exec_()
         g.app.gui.ipk.ipkernel.start()
+
+
+    
+    def execInNamespace(self, c, p, ns):
+        """" Needed because c.executeScript doesn't handle ns properly """
+        script = g.getScript(c,p)
+        try:
+            exec(script, ns)
+        except:
+            g.es_exception()
+
 
     def runMainLoop(self):
 
