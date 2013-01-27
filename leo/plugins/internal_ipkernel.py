@@ -15,6 +15,7 @@ def pylab_kernel(gui):
     """Launch and return an IPython kernel with pylab support for the desired gui
     """
     kernel = IPKernelApp.instance()
+    # pylab is really needed, for Qt event loop integration
     kernel.initialize(['python', '--pylab=%s' % gui,
                        #'--log-level=10'
                        ])

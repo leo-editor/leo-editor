@@ -7603,8 +7603,11 @@ class leoQtGui(leoGui.leoGui):
         def ipython_exec_f(event):
             """ Execute script in current node in ipython namespace """
             c = ns['c'] = event['c']
-            script = g.getScript(c,c.p)            
-            exec script in self.ipk.namespace
+            script = g.getScript(c,c.p)
+            try:            
+                exec script in self.ipk.namespace
+            except:
+                g.es_exception()
 
         # blocks forever here, equivalent of 
         # QApplication.exec_()
