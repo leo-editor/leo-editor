@@ -85,7 +85,11 @@ class NestedSplitterTopLevel(QtGui.QWidget):
         """Init. taking note of the FreeLayoutController which owns this"""
         self.owner = kargs['owner']
         del kargs['owner']
+        window_title = kargs.get('window_title')
+        del kargs['window_title']
         QtGui.QWidget.__init__(self, *args, **kargs)
+        if window_title:
+            self.setWindowTitle(window_title)
     #@+node:tbrown.20120418121002.25714: *3* closeEvent
     def closeEvent(self, event):
         """A top-level NestedSplitter window has been closed, check all the
@@ -745,7 +749,9 @@ class NestedSplitter(QtGui.QSplitter):
         """open a top-level window, a TopLevelFreeLayout instance, to hold a
         free-layout in addition to the one in the outline's main window"""
         
-        window = NestedSplitterTopLevel(owner=self.root)
+        ns = NestedSplitter(root=self.root)
+        
+        window = NestedSplitterTopLevel(owner=self.root, window_title=ns.get_title(action))
         # window.setStyleSheet(
         #     '\n'.join(self.c.config.getData('qt-gui-plugin-style-sheet')))
         hbox = QtGui.QHBoxLayout()
@@ -753,7 +759,6 @@ class NestedSplitter(QtGui.QSplitter):
         hbox.setContentsMargins(0,0,0,0)
         window.resize(400,300)
         
-        ns = NestedSplitter(root=self.root)
         hbox.addWidget(ns)
         
         # NestedSplitters must have two widgets so the handle carrying
@@ -1122,6 +1127,22 @@ class NestedSplitter(QtGui.QSplitter):
                             provided._ns_id = id_
                         return provided
         return None
+
+    def get_title(self, id_):
+        """Like get_provided(), but just gets a title for a window
+        """
+        
+        if id_ is None:
+            return "Leo widget window"
+        
+        for provider in self.root.providers:
+            if hasattr(provider, 'ns_title'):
+                provided = provider.ns_title(id_)
+                if provided:
+                    return provided
+                    
+        return "Leo unnamed window"
+
     #@+node:ekr.20110605121601.17990: *3* layout_to_text
     def layout_to_text(self, layout, _depth=0, _ans=[]):
         """convert the output from get_layout to indented human readable text
