@@ -222,15 +222,6 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             splitter.insert(index)
         self.add_item(insert_callback,menu,'Insert')
 
-        # Swap.
-        def swap_callback(index=index):
-            splitter.swap(index)
-        self.add_item(swap_callback,menu,
-            "Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]))
-        
-        # Rotate All.
-        self.add_item(splitter.rotate,menu,'Rotate All')
-
         # Remove, +0/-1 reversed, we need to test the one that remains
 
         # First see if a parent has more than two splits
@@ -254,6 +245,12 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
                     splitter.remove(index,i)
                 self.add_item(remove_callback,menu,'Remove %d %s' % (count[i], lr[i]))
 
+        # Swap.
+        def swap_callback(index=index):
+            splitter.swap(index)
+        self.add_item(swap_callback,menu,
+            "Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]))
+        
         # Split: only if not already split.
         for i in 0,1:
             if not neighbour[i] or neighbour[i].count() == 1:
@@ -282,6 +279,9 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
                 def add_callback(i=i,splitter=splitter):
                     splitter.add(i)
                 self.add_item(add_callback,menu,'Add %s' % (ab[i]))
+
+        # Rotate All.
+        self.add_item(splitter.rotate,menu,'Rotate All')
 
         # equalize panes
         def eq(splitter=splitter.top()):
