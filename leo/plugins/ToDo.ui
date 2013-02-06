@@ -470,6 +470,20 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="butNextTodo">
+          <property name="toolTip">
+           <string>Next TODO node</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../Icons/Tango/16x16/actions/bottom.png</normaloff>../Icons/Tango/16x16/actions/bottom.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="butNext">
           <property name="toolTip">
            <string>Next node</string>

@@ -194,7 +194,9 @@ if g.app.gui.guiName() == "qt":
             self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
                 lambda: self.owner.c.selectVisNext())
                 
-
+            self.connect(self.UI.butNextTodo, QtCore.SIGNAL("clicked()"),
+                self.owner.find_todo)
+                
         #@+node:ekr.20111118104929.10203: *3* make_func
         def make_func(self, edit, toggle, method, default):
 
