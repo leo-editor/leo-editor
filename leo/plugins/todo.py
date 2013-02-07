@@ -227,6 +227,7 @@ if g.app.gui.guiName() == "qt":
             m = menu.addMenu("Priority")
             m.addAction('Priority Sort', o.priSort)
             m.addAction('Due Date Sort', o.dueSort)
+            m.addAction('Clear Descendant Due Dates', o.dueClear)
             m.addAction('Mark children todo', o.childrenTodo)
             m.addAction('Show distribution', o.showDist)
             m.addAction('Redistribute', o.reclassify)
@@ -881,6 +882,31 @@ class todoController:
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
+    #@+node:tbrown.20130207095125.20463: *4* dueClear
+    @redrawer
+    def dueClear(self, p=None):
+        """clear due date on descendants, useful for creating a master todo
+        item with sub items which previously had their own dates"""
+        if p is None:
+            p = self.c.currentPosition()
+        for p in p.subtree():
+            self.setat(p.v, 'duedate', '')
+    #@+node:tbrown.20130207103126.28498: *4* needs_doing
+    def needs_doing(self, v=None, pri=None, due=None):
+        """needs_doing - Return true if the node is a todo node that needs doing
+
+        :Parameters:
+        - `v`: vnode
+        """
+
+        if v is not None:
+            pri = self.getat(v, 'priority')
+            due = self.getat(v, 'duedate')
+        
+        return (
+            pri in self.todo_priorities or
+            due and pri == 9999
+        )
     #@+node:tbrown.20090119215428.42: *4* find_todo
     @redrawer
     def find_todo(self, p=None, stage = 0):
@@ -894,7 +920,7 @@ class todoController:
             p = self.c.currentPosition()
 
         # see if this node is a todo
-        if stage != 0 and self.getat(p.v, 'priority') in self.todo_priorities:
+        if stage != 0 and self.needs_doing(p.v):
             if p.getParent(): 
                 self.c.selectPosition(p.getParent())
                 self.c.expandNode()

@@ -402,15 +402,29 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:tbrown.20110729101912.30820: *4* childEvent
     def childEvent(self, event):
         """If a panel client is closed not by us, there may be zero
-        splitter handles left, so add an Action button"""
+        splitter handles left, so add an Action button
+        
+        unless it was the last panel in a separate window, in which
+        case close the window"""
                     
         QtGui.QSplitter.childEvent(self, event)
         
         if not event.removed():
             return
+            
+        local_top = self.top(local=True)
+        
+        # if only non-placeholder pane in a top level window deletes 
+        # itself, delete the window
+        if (isinstance(local_top.parent(), NestedSplitterTopLevel) and
+            local_top.count() == 1 and  # one left, could be placeholder
+            isinstance(local_top.widget(0), NestedSplitterChoice)  # is placeholder
+           ):
+            local_top.parent().deleteLater()
+            return
 
         # don't leave a one widget splitter
-        if self.count() == 1 and self.top(local=True) != self:
+        if self.count() == 1 and local_top != self:
             self.parent().addWidget(self.widget(0))
             self.deleteLater()
             
