@@ -172,7 +172,13 @@ except ImportError:
 except SyntaxError:
     got_docutils = False
         # Docutils is not compatible with Python 2.7.
-    
+
+try:
+    from markdown import markdown
+    got_markdown = True
+except ImportError:
+    got_markdown = False
+
 try:
     import PyQt4.phonon as phonon
     phonon = phonon.Phonon
@@ -458,6 +464,7 @@ class ViewRenderedController(QtGui.QWidget):
             'html':         pc.update_html,
             'graphics-script':  pc.update_graphics_script,
             'image':        pc.update_image,
+            'md':           pc.update_md,
             'movie':        pc.update_movie,
             'networkx':     pc.update_networkx,
             'rst':          pc.update_rst,
@@ -717,6 +724,73 @@ class ViewRenderedController(QtGui.QWidget):
         w.setHtml(template)
         w.setReadOnly(True)
         
+    #@+node:peckj.20130207132858.3671: *4* update_md
+    def update_md (self,s,keywords):
+        
+        trace = False and not g.unitTesting
+        pc = self ; c = pc.c ;  p = c.p
+        s = s.strip().strip('"""').strip("'''").strip()
+        isHtml = s.startswith('<') and not s.startswith('<<')
+        
+        if trace: g.trace('isHtml',isHtml)
+        
+        # Do this regardless of whether we show the widget or not.
+        w = pc.ensure_text_widget()
+        assert pc.w
+        
+        if s:
+            pc.show()
+        else:
+            if pc.auto_hide:
+                pass  # needs review
+                # pc.hide()
+            return
+        
+        if got_markdown and not isHtml:
+            # Not html: convert to html.
+            path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+
+            try:
+                msg = '' # The error message from docutils.
+                if pc.title:
+                    s = pc.underline(pc.title) + s
+                    pc.title = None
+                #s = publish_string(s,writer_name='html')
+                s = markdown(s, ['extra'])
+                s = g.toUnicode(s) # 2011/03/15
+                show = True
+            except SystemMessage as sm:
+                # g.trace(sm,sm.args)
+                msg = sm.args[0]
+                if 'SEVERE' in msg or 'FATAL' in msg:
+                    s = 'MD error:\n%s\n\n%s' % (msg,s)
+
+        sb = w.verticalScrollBar()
+
+        if sb:
+            d = pc.scrollbar_pos_dict
+            if pc.node_changed:
+                # Set the scrollbar.
+                pos = d.get(p.v,sb.sliderPosition())
+                sb.setSliderPosition(pos)
+            else:
+                # Save the scrollbars
+                d[p.v] = pos = sb.sliderPosition()
+
+        if pc.kind in ('big','rst','html', 'md'):
+            w.setHtml(s)
+            if pc.kind == 'big':
+                w.zoomIn(4) # Doesn't work.
+        else:
+            w.setPlainText(s)
+            
+        if sb and pos:
+            # Restore the scrollbars
+            sb.setSliderPosition(pos)
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
         
@@ -824,7 +898,7 @@ class ViewRenderedController(QtGui.QWidget):
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
 
-        if pc.kind in ('big','rst','html'):
+        if pc.kind in ('big','rst','html', 'md'):
             w.setHtml(s)
             if pc.kind == 'big':
                 w.zoomIn(4) # Doesn't work.
