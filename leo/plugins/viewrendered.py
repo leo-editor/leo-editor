@@ -9,8 +9,11 @@ Creates a window for *live* rendering of images, movies, sounds, rst, html, etc.
 Dependencies
 ============
 
-This plugin uses docutils,http://docutils.sourceforge.net/, to render reStructuredText,
+This plugin uses docutils, http://docutils.sourceforge.net/, to render reStructuredText,
 so installing docutils is highly recommended when using this plugin.
+
+This plugin uses markdown, http://http://pypi.python.org/pypi/Markdown, to render Markdown,
+so installing markdown is highly recommended when using this plugin.
 
 Commands
 ========
@@ -88,6 +91,14 @@ will look something like:
     
 **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
 
+Rendering markdown
+==================
+Please see the markdown syntax document at http://daringfireball.net/projects/markdown/syntax
+for more information on markdown.
+
+Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be
+specified by putting it in a ``@md`` node.
+
 Special Renderings
 ===================
 
@@ -137,7 +148,7 @@ Settings
   When True, hide the rendering pane for text-only renderings.
 
 - ``@string view-rendered-default-kind = rst``
-  The default kind of rendering.  One of (big,rst,html)
+  The default kind of rendering.  One of (big,rst,md,html)
   
 Acknowledgments
 ================
@@ -147,6 +158,8 @@ and the free_layout and NestedSplitter plugins used by viewrendered.
 
 Edward K. Ream generalized this plugin and added communication
 and coordination between the free_layout, NestedSplitter and viewrendered plugins.
+
+Jacob Peck added markdown support to this plugin.
 
 '''
 #@-<< docstring >>
