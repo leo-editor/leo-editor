@@ -265,7 +265,7 @@ class LeoApp:
             "makefile"           : "#",
             "maple"              : "//",
             "matlab"             : "%", # EKR: 2011/10/21
-            "md"                 : "<!--- -->", # PeckJ: 2013/02/07
+            "md"                 : "<!-- -->", # PeckJ: 2013/02/08
             "ml"                 : "(* *)",
             "modula3"            : "(* *)",
             "moin"               : "##",
