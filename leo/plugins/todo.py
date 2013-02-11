@@ -903,10 +903,7 @@ class todoController:
             pri = self.getat(v, 'priority')
             due = self.getat(v, 'duedate')
         
-        return (
-            pri in self.todo_priorities or
-            due and pri == 9999
-        )
+        return (pri in self.todo_priorities) or (due and pri == 9999)
     #@+node:tbrown.20090119215428.42: *4* find_todo
     @redrawer
     def find_todo(self, p=None, stage = 0):
