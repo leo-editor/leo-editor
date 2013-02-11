@@ -5205,8 +5205,8 @@ For some reason, colors in the text widget do not match the colors in the canvas
 # These all cause problems on Ubuntu...
 do-nothing  = Ctrl-DnArrow  
 do-nothing  = Ctrl-UpArrow
-do-nothing  = Ctrl-PageUp
-do-nothing  = Ctrl-PageDn
+# do-nothing  = Ctrl-PageUp  # 20130210 - TNB - defined for tab-flipping,
+# do-nothing  = Ctrl-PageDn  # working in Xfce at least
 
 end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
