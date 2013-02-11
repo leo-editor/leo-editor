@@ -150,6 +150,11 @@ Settings
 - ``@string view-rendered-default-kind = rst``
   The default kind of rendering.  One of (big,rst,md,html)
   
+- ``@string view-rendered-md-extensions = extra``
+  A comma-delineated list of markdown extensions to use.
+  Suitable extensions can be seen here: 
+  http://pythonhosted.org/Markdown/extensions/index.html
+
 Acknowledgments
 ================
 
@@ -772,8 +777,9 @@ class ViewRenderedController(QtGui.QWidget):
                 if pc.title:
                     s = pc.underline(pc.title) + s
                     pc.title = None
-                #s = publish_string(s,writer_name='html')
-                s = markdown(s, ['extra'])
+                mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+                mdext = [x.strip() for x in mdext.split(',')]
+                s = markdown(s, mdext)
                 s = g.toUnicode(s) # 2011/03/15
                 show = True
             except SystemMessage as sm:
