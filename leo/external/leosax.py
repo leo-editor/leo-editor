@@ -44,6 +44,7 @@ class node:
         """Set ivars"""
         self.children = []
         self.u = {}
+        self.unknownAttributes = self.u  # for compatibility
         self.h = []
         self.b = []
         self.gnx = None
