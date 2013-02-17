@@ -3129,14 +3129,15 @@ def trace (*args,**keys):
     # Don't use g here: in standalone mode g is a nullObject!
 
     # Compute the effective args.
-    d = {'align':0,'before':'','newline':True}
+    d = {'align':0,'before':'','newline':True,'caller_level':1}
     d = doKeywordArgs(keys,d)
     newline = d.get('newline')
     align = d.get('align',0)
+    caller_level = d.get('caller_level',1)
 
     # Compute the caller name.
     try: # get the function name from the call stack.
-        f1 = sys._getframe(1) # The stack frame, one level up.
+        f1 = sys._getframe(caller_level) # The stack frame, one level up.
         code1 = f1.f_code # The code object
         name = code1.co_name # The code name
     except Exception:
