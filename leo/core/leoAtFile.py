@@ -1507,7 +1507,8 @@ class atFile:
         v = gnxDict.get(gnxString)
         if v:
             if gnx == v.fileIndex:
-                assert v.h == headline
+                if v.h != headline:
+                    g.trace('read error v.h: %s headline: %s' % (v.h,headline))
                 child = v
                 if n >= len(parent.children):
                     child._linkAsNthChild(parent,n)
