@@ -7611,7 +7611,7 @@ class leoQtGui(leoGui.leoGui):
         g.app.ipk.ipkernel.start()
 
 
-    
+
     def execInNamespace(self, c, p, ns):
         """" Needed because c.executeScript doesn't handle ns properly """
         script = g.getScript(c,p)

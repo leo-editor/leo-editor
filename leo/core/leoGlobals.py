@@ -3340,6 +3340,7 @@ def os_path_finalize (path,**keys):
     path = g.os_path_expanduser(path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
+    path = os.path.realpath(path) # Bug fix: 2013/02/25
     return path
 
 def os_path_finalize_join (*args,**keys):
@@ -3450,7 +3451,6 @@ def os_path_normpath(path):
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
 def os_path_realpath(path):
-
 
     path = g.toUnicodeFileEncoding(path)
 
