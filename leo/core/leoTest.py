@@ -720,6 +720,9 @@ class TestManager:
 
         trace = False ; verbose = True
         c,tm = self.c,self
+        
+        # 2013/02/25: clear the screen before running multiple unit tests locally.
+        if all or marked: g.cls()
 
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
 

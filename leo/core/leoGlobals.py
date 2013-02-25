@@ -3340,7 +3340,7 @@ def os_path_finalize (path,**keys):
     path = g.os_path_expanduser(path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
-    path = os.path.realpath(path) # Bug fix: 2013/02/25
+    # calling os.path.realpath here would cause problems in some situations.
     return path
 
 def os_path_finalize_join (*args,**keys):
