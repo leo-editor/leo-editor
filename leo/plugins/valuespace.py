@@ -364,7 +364,7 @@ def vs_last(kwargs):
     if 'text' in kwargs:
         txt = kwargs['text']
     else:
-        txt = str(c.vs.get('_text'))
+        txt = str(c.vs.get('_last'))
         
     editor = c.frame.body
 
