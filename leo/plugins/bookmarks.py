@@ -17,10 +17,29 @@ like ``#ToDo-->Critical`` as urls.
 
 The ``bookmarks-show`` command will add a tab or pane (if free_layout is enabled)
 showing the bookmarks **in the current subtree** with unique colors. You can
-very quickly jump around between nodes in a file using this. The free_layout
-Action button context menu will also allow you to add one of these bookmark
-panes, and the should be saved and loaded again if the layout is saved and
-loaded.'''
+very quickly jump around between nodes in a file using this. 
+
+Nodes can be added and removed from the display with the following mouse actions:
+    
+**left-click on node**
+    Jump to that node.
+**left-click on background**
+    Add a bookmark at the position clicked, unless already present,
+    in which case the existing link is highlighted.
+**control-left-click on node**
+    Remove node.
+**alt-left-click on node**
+    Edit clicked node in bookmark list, to change link text.
+**alt-left-click on background**
+    Edit bookmark list.
+    
+The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
+
+The free_layout Action button context menu will also allow you to add one of
+these bookmark panes, and they will be saved and loaded again if the layout is
+saved and loaded.
+
+'''
 #@-<< docstring >>
 
 #@@language python
@@ -134,6 +153,8 @@ class BookMarkDisplay:
         self.c = c
         self.v = v if v is not None else c.p.v
         
+        self.already = -1  # used to indicate existing link when same link added again
+        
         # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
             # Second hasattr temporary until free_layout merges with trunk
             
@@ -185,7 +206,12 @@ class BookMarkDisplay:
 
         result,urls = [],[]
         for p in p.subtree():
-            url = g.getUrlFromNode(p)
+            if p.b and p.b[0] == '#':
+                # prevent node url ending with name of file which exists being confused
+                url = p.b.split('\n', 1)[0]
+            else:
+                url = g.getUrlFromNode(p)
+            
             h = strip(p.h)
             data = (h,url)
             if url and data not in result and url not in urls:
@@ -210,27 +236,48 @@ class BookMarkDisplay:
         te.setReadOnly(True)
         te.setOpenLinks(False)
         
-        def capture_modifiers(event, te=te, prev=te.mousePressEvent):
+        def capture_modifiers(event, te=te, prev=te.mousePressEvent, owner=self):
             te.modifiers = event.modifiers()
+            if event.modifiers() & QtCore.Qt.AltModifier:
+                owner.edit_bookmark(te, event.pos())
+                return
+            if (not te.anchorAt(event.pos()) and
+                not QtCore.Qt.ControlModifier & te.modifiers):
+                owner.add_bookmark(te, event.pos())
+                return
+
             return prev(event)
         
-        # te.mousePressEvent = capture_modifiers
+        te.mousePressEvent = capture_modifiers
         
-        def anchorClicked(url, c=self.c, p=p, te=te):
-            url = str(url.toString())
-            # g.trace(url,te)
-            # if QtCore.Qt.ShiftModifier & te.modifiers():
-                # sep = '\\' if '\\' in url else '/'
-                # url = sep.join(url.split(sep)[:-1])
-            g.handleUrl(url,c=c,p=p)
+        def anchorClicked(url, c=self.c, p=p, te=te, owner=self):
+            
+            if QtCore.Qt.AltModifier & te.modifiers:
+                return
+            if QtCore.Qt.ControlModifier & te.modifiers:
+                owner.delete_bookmark(str(url.toString()))
+            else:
+                url = str(url.toString())
+                # g.trace(url,te)
+                # if QtCore.Qt.ShiftModifier & te.modifiers():
+                    # sep = '\\' if '\\' in url else '/'
+                    # url = sep.join(url.split(sep)[:-1])
+                self.show_list(self.current_list)  # to clear red highlight of double added url
+                g.handleUrl(url,c=c,p=p)
         
         te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)
         
         html = []
         
-        for name, link in links:
+        for idx, name_link in enumerate(links):
+            name, link = name_link
+            
             html.append("<a title='%s' href='%s' style='background: #%s; color: black; text-decoration: none;'>%s</a>"
-                % (link, link, self.color(name), name.replace(' ', '&nbsp;')))
+                % (link, link, 
+                   self.color(name) if self.already != idx else "ff0000", 
+                   name.replace(' ', '&nbsp;')))
+                   
+        self.already = -1  # clear error condition
         
         html = '\n'.join(html)
         
@@ -245,6 +292,101 @@ class BookMarkDisplay:
         if l != self.current_list:
             self.current_list = l
             self.show_list(self.current_list)
+        
+        return None  # do not stop processing the select1 hook
+    #@+node:tbrown.20130222093439.30271: *3* delete_bookmark
+    def delete_bookmark(self, url):
+        
+        l = [i for i in self.get_list() if i[1] != url]
+
+        if l != self.current_list:
+            self.current_list = l
+            self.show_list(self.current_list)
+            
+        for nd in self.v.children:
+            if nd.b.strip() == url.strip():
+                p0 = self.c.vnode2position(self.v)
+                p1 = self.c.vnode2position(nd)
+                p0.deletePositionsInList([p1])
+                self.c.redraw()
+                break
+        
+        return None  # do not stop processing the select1 hook
+    #@+node:tbrown.20130222093439.30275: *3* edit_bookmark
+    def edit_bookmark(self, te, pos):
+        
+        url = str(te.anchorAt(pos))
+        
+        if url:
+            
+            idx = [i[1] for i in self.current_list].index(url)
+            nd = self.c.vnode2position(self.v.children[idx])
+            
+        else:
+            
+            nd = self.c.vnode2position(self.v)
+            nd.expand()
+            
+        self.c.selectPosition(nd)
+        
+        return None  # do not stop processing the select1 hook
+    #@+node:tbrown.20130222093439.30273: *3* add_bookmark
+    def add_bookmark(self, te, pos):
+        
+        url = g.getUrlFromNode(self.c.p)
+        if not url or '//' not in url:
+            # first line starting with '#' is misinterpreted as url
+            url = None
+            
+        if not url:
+            url = '#'+self.c.p.get_UNL(with_file=False)
+            
+        # check it's not already present
+        try:
+            self.already = [i[1] for i in self.current_list].index(url)
+        except ValueError:
+            self.already = -1
+            
+        if self.already != -1:
+            g.es("Bookmark for this node already present")
+            return self.show_list(self.current_list)
+        
+        prev = str(te.anchorAt(QtCore.QPoint(pos.x()-12, pos.y())))
+        next = str(te.anchorAt(QtCore.QPoint(pos.x()+12, pos.y())))
+        
+        new_list = []
+        placed = False
+        
+        h = self.c.p.anyAtFileNodeName() or self.c.p.h
+        while h and h[0] == '@':
+            h = h[1:]
+        
+        new_anchor = h, url
+
+        for anchor in self.current_list:
+            
+            if not placed and anchor[1] == next:
+                placed = True
+                new_list.append(new_anchor)
+            
+            new_list.append(anchor)
+            
+            if not placed and anchor[1] == prev:
+                placed = True
+                new_list.append(new_anchor)
+                
+        if not placed:
+            new_list.append(new_anchor)
+            
+        idx = new_list.index(new_anchor)
+        nd = self.c.vnode2position(self.v).insertAsNthChild(idx)
+        nd.h = new_anchor[0]
+        nd.b = new_anchor[1]
+        self.c.redraw()
+            
+        self.current_list = new_list
+        
+        self.show_list(self.current_list)
         
         return None  # do not stop processing the select1 hook
     #@-others
