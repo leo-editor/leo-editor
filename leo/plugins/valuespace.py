@@ -328,14 +328,28 @@ def vs_eval(kwargs):
         c.vs['_last'] = None
         return
     
-    exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+    ans = None
     
     try:
-        ans = eval(blocks[-1], leo_globals, c.vs)
+        # execute all but the last 'block'
+        exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+        all_done = False
     except SyntaxError:
-        ans = None
-        exec blocks[-1] in leo_globals, c.vs
-        
+        # splitting of the last block caused syntax error
+        try:
+            # is the whole thing a singe expression?
+            ans = eval(txt, leo_globals, c.vs)
+        except SyntaxError:
+            exec txt in leo_globals, c.vs
+        all_done = True  # either way, the last block is used now
+    
+    if not all_done:  # last block still needs using
+        try:
+            ans = eval(blocks[-1], leo_globals, c.vs)
+        except SyntaxError:
+            ans = None
+            exec blocks[-1] in leo_globals, c.vs
+            
     if ans is None:
         key = blocks[-1].split('=', 1)[0].strip()
         if key in c.vs:
