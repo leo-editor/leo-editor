@@ -71,11 +71,10 @@ class Commands (object):
         trace = (False or g.trace_startup) and not g.unitTesting
         tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
         if trace and g.trace_startup: print('\n%s %s' % (tag,g.callers()))
-
         c = self
         
         if trace and not g.trace_startup:
-            import time ; t1 = time.clock()
+            t1 = time.clock()
         
         # Official ivars.
         self._currentPosition = self.nullPosition()
@@ -106,13 +105,13 @@ class Commands (object):
         assert c.frame.c
 
         if trace and not g.trace_startup:
-            t2 = g.printDiffTime('%s: after controllers created' % (tag),t1)
+            g.printDiffTime('%s: after controllers created' % (tag),t1)
         
         # Complete the init!
         c.finishCreate()
             
         if trace and not g.trace_startup:
-            t2 = g.printDiffTime('%s: after c.finishCreate' % (tag),t1)
+            g.printDiffTime('%s: after c.finishCreate' % (tag),t1)
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
     def computeWindowTitle(self,fileName):
         
@@ -351,17 +350,16 @@ class Commands (object):
 
         This is the last step in the startup process.'''
         
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('c.finishCreate')
-        
-        c = self ; k = c.k ; p = c.p
-        
+        # trace = (False or g.trace_startup) and not g.unitTesting
+        # if trace: print('c.finishCreate')
+        c = self
+        k = c.k
+        # p = c.p
         assert c.gui
         assert k
 
         c.frame.finishCreate()
-            
-        c.miniBufferWidget = w = c.frame.miniBufferWidget
+        c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
             
         # This costs little.
@@ -824,7 +822,7 @@ class Commands (object):
         if trace and verbose: g.trace('absbase',absbase)
 
         # Step 2: look for @path directives.
-        paths = [] ; fileName = None
+        paths = []
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
@@ -1036,9 +1034,9 @@ class Commands (object):
             t1,t2 = itertools.tee(m,2)
             try:
                 if g.isPython3:
-                    first = t1.__next__()
+                    t1.__next__()
                 else:
-                    first = t1.next()
+                    t1.next()
             except StopIteration:
                 continue
             pc = p.copy()
@@ -1272,8 +1270,7 @@ class Commands (object):
         '''Return True if fn names a file that looks like an
         external file written by Leo.'''
         
-        c = self
-        
+        # c = self    
         try:
             f = open(fn,'r')
         except IOError:
@@ -1281,9 +1278,7 @@ class Commands (object):
             
         s = f.read()
         f.close()
-        
         val = s.find('@+leo-ver=') > -1
-        # g.trace(val,fn)
         return val
     #@+node:ekr.20031218072017.1623: *6* c.new
     def new (self,event=None,gui=None):
@@ -1637,12 +1632,12 @@ class Commands (object):
     def createOpenWithTempFile (self,p,ext):
 
         trace = False and not g.unitTesting
-        c = self ; f = None
+        c = self
 
         # May be over-ridden by mod_tempfname plugin.
         fn = c.openWithTempFilePath(p,ext)
-
         try:
+            f = None
             if not g.unitTesting:
                 if g.os_path_exists(fn):
                     g.red('recreating:  ',g.shortFileName(fn))
@@ -1662,11 +1657,11 @@ class Commands (object):
             f.flush()
             f.close()
             try:
-                time = g.os_path_getmtime(fn)
-                if time and not g.unitTesting:
-                    g.es('time: ',time)
+                t1 = g.os_path_getmtime(fn)
+                if t1 and not g.unitTesting:
+                    g.es('time: ',t1)
             except:
-                time = None
+                t1 = None
 
             # Remove previous entry from app.openWithFiles if it exists.
             for d in g.app.openWithFiles[:]:
@@ -1682,7 +1677,7 @@ class Commands (object):
                 # Used by c.testForConflicts.
                 'body':s,
                 'encoding':encoding,
-                'time':time,
+                'time':t1,
                 # Used by the open_with plugin.
                 'p':p.copy(),
                 # Used by c.openWithHelper, and below.
@@ -2592,9 +2587,7 @@ class Commands (object):
             found is True if the line was found.'''
 
             trace = False and not g.unitTesting
-            c = self.c
-            
-            # if trace and not g.unitTesting and sys.platform.startswith('win'): os.system('cls')
+            # c = self.c
 
             # Start the recursion.
             n = max(0,n-1)# Convert to zero based internally.
@@ -2622,7 +2615,8 @@ class Commands (object):
                 effective_lines:The number of lines in this node and all descendant nodes.
             '''
             if trace: g.trace('='*10,n,p.h)
-            c = self.c ; ao = None
+            # c = self.c
+            ao = None
             lines = g.splitLines(p.b)
             i = 0
                 # The index of the line being scanning in this node.
@@ -2763,7 +2757,7 @@ class Commands (object):
             '''
 
             trace = False and not g.unitTesting
-            c = self.c
+            # c = self.c
             # g.trace('lines...\n',g.listToString(lines))
             gnx = None
             delim,readVersion5,thinFile = self.setDelimFromLines(lines)
@@ -2797,7 +2791,7 @@ class Commands (object):
             We compute the offset of the requested line **within the found node**.
             '''
 
-            c = self.c
+            # c = self.c
             offset = 0 # This is essentially the Tk line number.
             nodeSentinelLine = -1
             line = n - 1 # Start with the requested line.
@@ -2818,7 +2812,7 @@ class Commands (object):
             '''Handle the delim while scanning backward.'''
 
             trace = False and not g.unitTesting
-            c = self.c
+            # c = self.c
             if line == n:
                 g.es("line",str(n),"is a sentinel line")
             i += len(delim)
@@ -3024,12 +3018,10 @@ class Commands (object):
         #@+node:ekr.20100216141722.5637: *7* setup_script
         def setup_script (self,scriptData):
 
-            c = self.c
-
+            # c = self.c
             p = scriptData.get('p')
             root,fileName = self.findRoot(p)
             lines = scriptData.get('lines')
-
             return fileName,lines,p,root
         #@+node:ekr.20100216141722.5638: *7* showResults
         def showResults(self,found,p,n,n2,lines):
@@ -3102,7 +3094,7 @@ class Commands (object):
     # Test  unmatched())
     def findMatchingBracketHelper(self,s,ch,index):
 
-        c = self
+        # c = self
         open_brackets  = "([{<" ; close_brackets = ")]}>"
         brackets = open_brackets + close_brackets
         matching_brackets = close_brackets + open_brackets
@@ -3664,7 +3656,7 @@ class Commands (object):
             format = default_format
 
         try:
-            import time
+            # import time
             if gmt:
                 s = time.strftime(format,time.gmtime())
             else:
@@ -3793,11 +3785,9 @@ class Commands (object):
 
         '''Compute and return indents and leading_ws.'''
 
-        c = self
-
+        # c = self
         indents = [0,0]
         leading_ws = ["",""]
-
         for i in (0,1):
             if i < len(lines):
                 # Use the original, non-optimized leading whitespace.
@@ -4051,12 +4041,11 @@ class Commands (object):
         '''Paste an outline into the present outline from the clipboard.
         Nodes do *not* retain their original identify.'''
 
-        trace = False and not g.unitTesting
+        # trace = False and not g.unitTesting
         c = self
         s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
         undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
-
         c.endEditing()
 
         if not s or not c.canPasteOutline(s):
@@ -4674,8 +4663,7 @@ class Commands (object):
 
         """Check indentation using tabnanny."""
 
-        c = self
-
+        # c = self
         try:
             readline = g.readLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
@@ -4755,7 +4743,7 @@ class Commands (object):
         #@+node:ekr.20110917174948.6911: *8* indent & helpers
         def indent (self,p,toList=False,giveWarnings=True):
 
-            c = self.c
+            # c = self.c
             if not p.b: return
             self.p = p.copy()
             
@@ -4794,9 +4782,9 @@ class Commands (object):
             
             i,n,result = 0,len(s),[]
             while i < n:
-                token = s[i]
+                token_ = s[i] # token is a module.
                 progress = i
-                if token in ('if','for','while',):
+                if token_ in ('if','for','while',):
                     j = self.skip_ws_and_comments(s,i+1)
                     if self.match(s,j,'('):
                         j = self.skip_parens(s,j)
@@ -4830,7 +4818,7 @@ class Commands (object):
                         result.extend(s[i:j])
                     i = j
                 else:
-                    result.append(token)
+                    result.append(token_)
                     i += 1
                 assert progress < i
                     
@@ -4841,8 +4829,8 @@ class Commands (object):
         def skip_ws (self,s,i):
             
             while i < len(s):
-                token = s[i]
-                if token.startswith(' ') or token.startswith('\t'):
+                token_ = s[i] # token is a module.
+                if token_.startswith(' ') or token_.startswith('\t'):
                     i += 1
                 else:
                     break
@@ -4850,12 +4838,12 @@ class Commands (object):
             return i
         #@+node:ekr.20110918225821.6820: *10* skip_ws_and_comments
         def skip_ws_and_comments (self,s,i):
-            
+
             while i < len(s):
-                token = s[i]
-                if token.isspace():
+                token_ = s[i] # token is a module.
+                if token_.isspace():
                     i += 1
-                elif token.startswith('//') or token.startswith('/*'):
+                elif token_.startswith('//') or token_.startswith('/*'):
                     i += 1
                 else:
                     break
@@ -5136,7 +5124,7 @@ class Commands (object):
         #@+node:ekr.20040711135244.4: *8* prettyPrintNode
         def prettyPrintNode(self,p,dump):
 
-            c = self.c
+            # c = self.c
             h = p.h
             s = p.b
             if not s: return
@@ -5372,10 +5360,9 @@ class Commands (object):
         def replaceBody (self,p,lines):
 
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-            sel = c.frame.body.getInsertPoint()
+            # sel = c.frame.body.getInsertPoint()
             oldBody = p.b
             body = ''.join(lines)
-
             if oldBody != body:
                 if not self.changed:
                     # Start the group.
@@ -6321,17 +6308,15 @@ class Commands (object):
             u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@+node:ekr.20031218072017.1774: *6* promote
+    #@+node:ekr.20031218072017.1774: *6* c.promote
     def promote (self,event=None):
 
         '''Make all children of the selected nodes siblings of the selected node.'''
 
         c = self ; u = c.undoer ; p = c.p
-        command = 'Promote'
         if not p or not p.hasChildren():
             c.treeFocusHelper()
             return
-
         isAtIgnoreNode = p.isAtIgnoreNode()
         inAtIgnoreRange = p.inAtIgnoreRange()
         c.endEditing()
@@ -7089,10 +7074,9 @@ class Commands (object):
 
         Return a flag telling whether a redraw is needed.'''
 
+        # c = self
         trace = False and not g.unitTesting
-        c = self ; cc = c.chapterController
         redraw_flag = False
-
         for p in p.parents():
             if not p.isExpanded():
                 p.expand()
@@ -7258,8 +7242,7 @@ class Commands (object):
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name (self,widget):
 
-        c = self
-
+        # c = self
         return g.app.gui and g.app.gui.widget_name(widget) or ''
     #@+node:ekr.20080514131122.18: *4* c.xWantsFocus
 
@@ -7489,7 +7472,8 @@ class Commands (object):
     #@+node:ekr.20070608165544: *4* hoistLevel
     def hoistLevel (self):
 
-        c = self ; cc = c.chapterController
+        c = self
+        cc = c.chapterController
         n = len(c.hoistStack)
         if n > 0 and cc and cc.inChapter():
             n -= 1
@@ -7788,8 +7772,8 @@ class Commands (object):
     #@+node:ekr.20040311094927: *5* c.nullPosition
     def nullPosition (self):
 
-        c = self ; v = None
-        return leoNodes.position(v)
+        # c = self
+        return leoNodes.position(None)
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self,p,root=None):
 
@@ -7885,9 +7869,7 @@ class Commands (object):
 
         c = self
         context = v.context # v's commander.
-        root = c.hiddenRootNode
         assert (c == context)
-
         stack = []
         while v.parents:
             parent = v.parents[0]
@@ -7916,9 +7898,7 @@ class Commands (object):
 
         c = self
         context = v.context # v's commander.
-        root = c.hiddenRootNode
         assert (c == context)
-
         positions = []
         for immediate in v.parents:
             if v in immediate.children:
@@ -7938,9 +7918,7 @@ class Commands (object):
                 v,n = stack.pop()
                 p = leoNodes.position(v,n,stack)
                 positions.append(p)
-
         return positions
-
     #@+node:ekr.20060906211747.1: *4* Setters
     #@+node:ekr.20040315032503: *5* c.appendStringToBody
     def appendStringToBody (self,p,s):
@@ -8208,15 +8186,14 @@ class Commands (object):
 
     def endEditing(self):
 
-        c = self ; k = c.k
-
+        c = self
         p = c.p
-
         if p:
             c.frame.tree.endEditLabel()
             c.frame.tree.setSelectedLabelState(p)
 
         # The following code would be wrong; c.endEditing is a utility method.
+        # k = c.k
         # if k:
             # k.setDefaultInputState()
             # # Recolor the *body* text, **not** the headline.

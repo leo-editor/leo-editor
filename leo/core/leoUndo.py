@@ -947,15 +947,11 @@ class undoer:
         '''Return data that gets passed to afterChangeNode'''
 
         u = self
-
         bunch = u.createCommonBunch(p)
-        
         # g.trace('oldHead',oldHead,'p.h',p.h,p.v,g.callers())
-
         bunch.oldBody = oldBody or p.b
         bunch.oldHead = oldHead or p.h
         bunch.oldYScroll = oldYScroll
-
         return bunch
     #@+node:ekr.20050315134017.6: *5* beforeChangeTree
     def beforeChangeTree (self,p):

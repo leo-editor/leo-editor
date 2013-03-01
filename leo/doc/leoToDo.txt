@@ -4017,8 +4017,7 @@ def looksLikeDerivedFile (self,fn):
     '''Return True if fn names a file that looks like an
     external file written by Leo.'''
     
-    c = self
-    
+    # c = self    
     try:
         f = open(fn,'r')
     except IOError:
@@ -4026,9 +4025,7 @@ def looksLikeDerivedFile (self,fn):
         
     s = f.read()
     f.close()
-    
     val = s.find('@+leo-ver=') > -1
-    # g.trace(val,fn)
     return val
 .. @+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
 def readOutlineOnly (self,event=None):
