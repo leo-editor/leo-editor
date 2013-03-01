@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="45" left="693" height="982" width="1211"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -74,7 +74,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6937,ekr.20120328102352.6938,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6937,ekr.20120328102352.6938,ekr.20121013084734.16370,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -117,7 +117,7 @@ expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.2005022
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954"></t>
+<t tx="ekr.20070615131954" str_leo_pos="3,0,3"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
@@ -860,7 +860,7 @@ result = '\n'.join(result) + '\n'
 w = c.frame.body.bodyCtrl
 w.clipboard_clear()
 w.clipboard_append(result)</t>
-<t tx="ekr.20121013084734.16370">'''Recursively import all python files in theDir and clean the result.'''
+<t tx="ekr.20121013084734.16370">'''Recursively import all python files in a directory and clean the result.'''
 
 # Latest change: do some fixups for languages other than python.
 
@@ -873,24 +873,24 @@ oneFile = False # True: only import one file.
 
 if 1:
     theTypes = ('.ts',)
-    theDir = r'C:\prog\typescript-fe3bc0bfce1f\src\compiler'
+    dir_ = r'C:\prog\typescript-fe3bc0bfce1f\src\compiler'
 else:
     theTypes = ('.py',)
-    theDir = r'C:\Python26\Lib\site-packages\rope'
+    dir_ = r'C:\Python26\Lib\site-packages\rope'
 
 @others
 
 # g.cls()
 
-if g.os_path_exists(theDir):
-    # Import all files in theDir after c.p.
+if g.os_path_exists(dir_):
+    # Import all files in dir_ after c.p.
     try:
-        ImportController().run(c,p,theDir,theTypes,
+        ImportController().run(c,p,dir_,theTypes,
             oneFile=oneFile,recursive=not oneFile)
     finally:
         c.redraw()
 else:
-    print('Does not exist: %s' % (theDir))
+    print('Does not exist: %s' % (dir_))
 </t>
 <t tx="ekr.20121013084734.16371">class ImportController():
     
@@ -898,12 +898,12 @@ else:
 
     @others
 </t>
-<t tx="ekr.20121013084734.16372">def import_dir(self,c,root,theDir,theTypes,oneFile=False,recursive=True):
+<t tx="ekr.20121013084734.16372">def import_dir(self,c,root,dir_,theTypes,oneFile=False,recursive=True):
 
-    g.es("dir: " + theDir,color="blue")
-    dirs,files,files2 = [],os.listdir(theDir),[]
+    g.es("dir: " + dir_,color="blue")
+    dirs,files,files2 = [],os.listdir(dir_),[]
     for f in files:
-        path = g.os_path_join(theDir,f)
+        path = g.os_path_join(dir_,f)
         if g.os_path_isfile(path):
             name, ext = g.os_path_splitext(f)
             if not theTypes or ext in theTypes:
@@ -912,7 +912,7 @@ else:
             dirs.append(path)
     if files2 or dirs:
         child = root.insertAsLastChild()
-        child.h = theDir
+        child.h = dir_
         c.selectPosition(child,enableRedrawFlag=False)
     if files2:
         if oneFile: files2 = [files2[0]]
@@ -927,9 +927,9 @@ else:
             c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False)
                 # '@auto' causes problems.
     if dirs:
-        for theDir in sorted(dirs):
-            prefix = theDir
-            self.import_dir(c,child,theDir,theTypes)
+        for dir_ in sorted(dirs):
+            prefix = dir_
+            self.import_dir(c,child,dir_,theTypes)
 </t>
 <t tx="ekr.20121013084734.16373">def clean_all (self,c,p):
     
@@ -1284,9 +1284,9 @@ else:
                 break
                 
 </t>
-<t tx="ekr.20121013084734.16388">def run (self,c,p,theDir,theTypes,oneFile=False,recursive=True):
+<t tx="ekr.20121013084734.16388">def run (self,c,p,dir_,theTypes,oneFile=False,recursive=True):
     
-    '''Import all the .py files in theDir.'''
+    '''Import all the .py files in dir_.'''
 
     try:
         t1 = time.time()
@@ -1295,16 +1295,16 @@ else:
         bunch = c.undoer.beforeChangeTree(p1)
         assert p == c.p
         root = p.insertAfter()
-        # root.h = '@path %s' % (theDir)
+        # root.h = '@path %s' % (dir_)
         root.h = 'imported files'
-        prefix = theDir
-        self.import_dir(c,root.copy(),theDir,theTypes,oneFile=oneFile,recursive=recursive)
+        prefix = dir_
+        self.import_dir(c,root.copy(),dir_,theTypes,oneFile=oneFile,recursive=recursive)
         n = 0
         for p in root.self_and_subtree():
             n += 1
         if not use_at_edit:
             self.clean_all(c,root.copy())
-        self.post_process(c,root.copy(),theDir,theTypes)
+        self.post_process(c,root.copy(),dir_,theTypes)
         c.undoer.afterChangeTree(p1,'recursive-import',bunch)
     finally:
         g.app.disable_redraw = False

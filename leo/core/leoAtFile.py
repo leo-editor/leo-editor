@@ -442,7 +442,6 @@ class atFile:
         # Create a dummy, unconnected, vnode as the root.
         root_v = leoNodes.vnode(context=c)
         root = leoNodes.position(root_v)
-        theFile = g.fileLikeObject(fromString=s)
         # 2010/01/22: readOpenFiles now determines whether a file is thin or not.
         at.initReadIvars(root,fn)
         if at.errors: return
@@ -459,7 +458,7 @@ class atFile:
         This will be the private file for @shadow nodes.'''
 
         trace = False and not g.app.unitTesting
-        at = self ; c = at.c
+        at = self
 
         if fromString:
             if at.atShadow:
@@ -820,8 +819,7 @@ class atFile:
 
         '''Read all @shadow nodes in the p's tree.'''
 
-        at = self ; c = at.c
-
+        at = self
         after = p.nodeAfterTree()
         p = p.copy() # Don't change p in the caller.
         while p and p != after: # Don't use iterator.
@@ -882,10 +880,9 @@ class atFile:
     #@+node:ekr.20090225080846.3: *4* at.readOneAtEditNode
     def readOneAtEditNode (self,fn,p):
 
-        at = self ; c = at.c ; ic = c.importCommands
-
-        oldChanged = c.isChanged()
-
+        at = self
+        c = at.c
+        ic = c.importCommands
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
@@ -917,7 +914,6 @@ class atFile:
                 head = '@nocolor\n'
 
         p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
-
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
     #@+node:ekr.20080711093251.7: *4* at.readOneAtShadowNode
@@ -1497,7 +1493,7 @@ class atFile:
         """Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees."""
 
-        trace = False and not g.unitTesting ; verbose = True
+        trace = False and not g.unitTesting
         at = self ; c = at.c ; indices = g.app.nodeIndices
         if trace: g.trace(n,len(parent.children),parent.h,
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
@@ -1843,7 +1839,7 @@ class atFile:
 
         """Handle @-node sentinels."""
 
-        at = self ; c = at.c
+        at = self
 
         assert not at.readVersion5,'not at.readVersion5'
             # Must not be called for new sentinels.
@@ -1991,8 +1987,7 @@ class atFile:
 
         v = at.lastRefNode
         hasList = hasattr(v,'tempBodyList')
-        hasString = hasattr(v,'tempBodyString')
-        # g.trace('hasList',hasList,'hasString',hasString,'v',v and v.h)
+        # g.trace('hasList',hasList,'v',v and v.h)
 
         if at.readVersion5:
             if hasList and at.v.tempBodyList:
@@ -2249,7 +2244,7 @@ class atFile:
         
         The key invariant: on exit, the top of at.thinNodeStack is the new parent node.'''
 
-        at = self ; c = at.c
+        at = self
 
         # Crucial: we must be using new-style sentinels.
         assert at.readVersion5,'at.readVersion5'
@@ -2603,7 +2598,7 @@ class atFile:
         at = self
         s = g.readlineForceUnixNewline(theFile,fileName=fileName) # calls theFile.readline
         # g.trace(repr(s),g.callers(4))
-        u = g.toUnicode(s,self.encoding)
+        u = g.toUnicode(s,at.encoding)
         return u
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
     def scanHeader(self,theFile,fileName):
@@ -2711,9 +2706,9 @@ class atFile:
             assert postPass,'terminateNode'
 
         # Get the temp attributes.
-        hasString  = hasattr(v,'tempBodyString')
+        # hasString  = hasattr(v,'tempBodyString')
+        # tempString = hasString and v.tempBodyString or ''
         hasList    = hasattr(v,'tempBodyList')
-        tempString = hasString and v.tempBodyString or ''
         tempList   = hasList and ''.join(v.tempBodyList) or ''
 
         # Compute the new text.
@@ -3488,13 +3483,8 @@ class atFile:
         """Use the language implied by fn's extension if
         there is a conflict between it and c.target_language."""
 
-        at = self ; c = at.c
-
-        if c.target_language:
-            junk,target_ext = g.os_path_splitext(fn)  
-        else:
-            target_ext = ''
-
+        at = self
+        c = at.c
         junk,ext = g.os_path_splitext(fn)
 
         if ext:
@@ -4039,11 +4029,11 @@ class atFile:
             return False
         
         i = g.skip_ws(p.h,0)
-        isSection,junk = self.isSectionName(p.h,i)
+        isSection,junk = at.isSectionName(p.h,i)
 
         if isSection:
             return False # A section definition node.
-        elif self.sentinels or self.atAuto or self.toString:
+        elif at.sentinels or at.atAuto or at.toString:
             # @ignore must not stop expansion here!
             return True
         elif p.isAtIgnoreNode():
@@ -4539,24 +4529,26 @@ class atFile:
     #@+node:ekr.20041005105605.196: *3* Writing 4.x utils...
     #@+node:ekr.20090514111518.5661: *4* checkPythonCode (leoAtFile) & helpers
     def checkPythonCode (self,root,s=None,targetFn=None):
+        
+        at = self
 
-        c = self.c
+        if not targetFn: targetFn = at.targetFileName
 
-        if not targetFn: targetFn = self.targetFileName
-
-        if targetFn and targetFn.endswith('.py') and self.checkPythonCodeOnWrite:
+        if targetFn and targetFn.endswith('.py') and at.checkPythonCodeOnWrite:
 
             if not s:
-                s,e = g.readFileIntoString(self.outputFileName)
+                s,e = g.readFileIntoString(at.outputFileName)
                 if s is None: return
 
             # It's too slow to check each node separately.
-            ok = self.checkPythonSyntax(root,s)
+            ok = at.checkPythonSyntax(root,s)
 
             # Syntax checking catches most indentation problems.
-            if False and ok: self.tabNannyNode(root,s)
+            if False and ok: at.tabNannyNode(root,s)
     #@+node:ekr.20090514111518.5663: *5* checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body,supress=False):
+        
+        at = self
 
         try:
             ok = True
@@ -4567,7 +4559,7 @@ class atFile:
             compile(body + '\n',fn,'exec')
         except SyntaxError:
             if not supress:
-                self.syntaxError(p,body)
+                at.syntaxError(p,body)
             ok = False
         except Exception:
             g.trace("unexpected exception")
@@ -4670,7 +4662,7 @@ class atFile:
             # g.trace('**closing',at.outputFileName,at.outputFile)
             at.outputFile.flush()
             if at.toString:
-                at.stringOutput = self.outputFile.get()
+                at.stringOutput = at.outputFile.get()
             at.outputFile.close()
             at.outputFile = None
             return at.stringOutput
@@ -5278,16 +5270,16 @@ class atFile:
         # Don't give errors for this particular file during unit testing.
         h = 'nonexistent-directory/orphan-bit-test.txt'
         
-        if g.unitTesting and self.targetFileName.replace('\\','/').endswith(h):
+        if g.unitTesting and at.targetFileName.replace('\\','/').endswith(h):
             at.errors += 1
         else:
-            if self.errors == 0:
-                g.es_error("errors writing: " + self.targetFileName)
+            if at.errors == 0:
+                g.es_error("errors writing: " + at.targetFileName)
                 # g.trace(g.callers(5))
-            self.error(message)
+            at.error(message)
 
-        self.root.setDirty()
-        self.root.setOrphan()
+        at.root.setDirty()
+        at.root.setOrphan()
     #@+node:ekr.20041005105605.218: *4* writeException
     def writeException (self,root=None): # changed 11.
 
@@ -5514,7 +5506,7 @@ class atFile:
         setting corresponding atFile ivars.'''
 
         trace = False and not g.unitTesting
-        at = self ; c = self.c ; p1 = p.copy()
+        at = self ; c = self.c
         g.app.atPathInBodyWarning = None
         #@+<< set ivars >>
         #@+node:ekr.20080923070954.14: *4* << Set ivars >>

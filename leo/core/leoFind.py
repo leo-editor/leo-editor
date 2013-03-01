@@ -467,10 +467,11 @@ class leoFind:
             if pos1 is None: break
             count += 1
             self.batchChange(pos1,pos2)
-            s = w.getAllText()
-            i,j = g.getLine(s,pos1)
-            line = s[i:j]
-            # self.printLine(line,allFlag=True)
+            # if 0:
+                # s = w.getAllText()
+                # i,j = g.getLine(s,pos1)
+                # line = s[i:j]
+                # self.printLine(line,allFlag=True)
         p = c.p
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed:",count,"instances")
@@ -679,7 +680,7 @@ class leoFind:
     #@+node:ekr.20031218072017.3074: *4* findNext (leoFind)
     def findNext(self,initFlag=True):
 
-        c = self.c
+        # c = self.c
         if not self.checkArgs():
             return
 
@@ -786,7 +787,9 @@ class leoFind:
         Returns (pos, newpos) or (None,None)."""
 
         trace = False and not g.unitTesting
-        c = self.c ; p = self.p ; w = self.s_ctrl
+        # c = self.c
+        p = self.p
+        w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
 
@@ -1586,7 +1589,7 @@ class nullFindTab (findTab):
         #@+node:ekr.20070302090616.6: *5* << set radio buttons from ivars >>
         # In Tk, setting the var also sets the widget.
         # Here, we do so explicitly.
-        d = self.widgetsDict
+        # d = self.widgetsDict
         for ivar,key in (
             ("pattern_match","pattern-search"),
             #("script_search","script-search")
@@ -1666,7 +1669,7 @@ class nullFindTab (findTab):
 
         '''Create two columns of radio buttons & check boxes.'''
 
-        c = self.c
+        # c = self.c
         # f = self.parentFrame
         self.boxes = []
         self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.

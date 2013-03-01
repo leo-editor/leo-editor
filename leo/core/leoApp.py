@@ -1948,7 +1948,7 @@ class LoadManager:
 
         ''' Scan options, set directories and read settings.'''
 
-        trace = False
+        # trace = False
         lm = self
         lm.computeStandardDirectories()
         lm.adjustSysPath()
@@ -2789,7 +2789,7 @@ class LoadManager:
         assert theFile
         
         lm = self
-        rf = g.app.recentFilesManager
+        # rf = g.app.recentFilesManager
 
         ok = c.fileCommands.openLeoFile(theFile,fn,
             readAtFileNodesFlag=readAtFileNodesFlag)
@@ -3073,8 +3073,8 @@ class RecentFilesManager:
             i += 1
 
         if groupedEntries:  # store so we can delete them later
-            rf.groupedMenus = [i for i in dirCount
-                if dirCount[i]['entry'] is not None]
+            rf.groupedMenus = [z for z in dirCount
+                if dirCount[z]['entry'] is not None]
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
     def getRecentFiles (self):
         
@@ -3208,7 +3208,6 @@ class RecentFilesManager:
 
         # Update the recent files list in all windows.
         if fileName:
-            compareFileName = munge(fileName)
             for frame in g.app.windowList:
                 # Remove all versions of the file name.
                 for name in rf.recentFiles:
