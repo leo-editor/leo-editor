@@ -46,7 +46,7 @@ g_ipm = None
 
 g_legacy = None
     # True if IPython 0.11 or previous found.
-    
+
 g_push_history = set()
     # The IPython push history.
 #@-<< globals >>
@@ -90,7 +90,7 @@ try:
     from IPython.core.error import TryNext
     from IPython.core.hooks import CommandChainDispatcher
     from IPython.core.interactiveshell import InteractiveShell
-    
+
     g_import_ok = True
     g_legacy = False
     if g_trace_imports:
@@ -173,7 +173,7 @@ class LeoWorkbook(object):
     #@+node:ekr.20120401063816.10185: *3* __iter__
     def __iter__(self):
         """ Iterate all (even non-exposed) nodes """
-        
+
         # cells = all_cells() # Huh???
         c = g_ipm.c
         if c:
@@ -197,7 +197,7 @@ class LeoWorkbook(object):
         doc = "Currently selected node")
     #@+node:ekr.20120401063816.10187: *3* match_h
     def match_h(self,regex):
-        
+
         cmp = re.compile(regex)
         res = PosList()
         for node in self:
@@ -215,7 +215,7 @@ class LeoWorkbook(object):
         E.g. wb.require('foo') will do wb.foo.ipush()
         if it hasn't been done already.
         """
-        
+
         global g_push_history
 
         if req not in g_push_history:
@@ -229,13 +229,13 @@ if g_import_ok:
     #@+others
     #@+node:ekr.20120401082519.10036: ** class GlobalIPythonManager & g_ipm
     class GlobalIPythonManager:
-        
+
         '''A class to manage global IPython data'''
-        
+
         #@+others
         #@+node:ekr.20120401082519.10037: *3* ctor (GlobalIPythonManager)
         def __init__ (self):
-            
+
             self.c = None
                 # The current commander, set by update_commander.
             self.ip = None
@@ -252,7 +252,7 @@ if g_import_ok:
         def embed_ipython(self):
 
             '''Run the Qt main loop using IPython if possible.'''
-            
+
             if not g_import_ok:
                 sys.exit(g.app.gui.qtApp.exec_())
                     # Just run the Qt main loop.
@@ -264,7 +264,7 @@ if g_import_ok:
         def start_legacy_api(self):
 
             self.started = True
-            
+
             # No c is available: we can't get @string ipython_argv setting.
             old_argv = sys.argv
             sys.argv = ['leo.py', '-p', 'sh']         
@@ -281,7 +281,7 @@ if g_import_ok:
 
             # No c is available: we can't get @string ipython_argv setting.
             sys.argv =  ['ipython']
-            
+
             self.started = True
 
             # Prints signon.
@@ -295,9 +295,9 @@ if g_import_ok:
         #@+node:ekr.20120401144849.10084: *3* get_history
         def get_history(self,hstart = 0):
             res = []
-            
+
             ip = self.ip
-            
+
             if g_legacy:
                 ihist = ip.IP.input_hist
                 ihist_raw = ip.IP.input_hist_raw
@@ -322,26 +322,26 @@ if g_import_ok:
             return ''.join(res)
         #@+node:ekr.20120401063816.10144: *3* init_ipython
         def init_ipython(self):
-            
+
             """ This will be run by _ip.load('ipy_leo') 
 
             Leo still needs to run update_commander() after this.
 
             """
-            
+
             ip = self.ip
             # g.trace(ip)
-            
+
             if self.inited:
                 return
-            
+
             self.show_welcome()
 
             #### Shell.hijack_tk()
             ip.set_hook('complete_command',mb_completer,str_key = '%mb')
-            
+
             f = ip.expose_magic if g_legacy else ip.define_magic
-            
+
             f('mb',mb_f)
             f('lee',lee_f)
             f('leoref',leoref_f)
@@ -357,21 +357,21 @@ if g_import_ok:
             g_ipm.expose_ileo_push(g_ipm.push_ipython_script,1000)
             g_ipm.expose_ileo_push(g_ipm.push_plain_python,100)
             g_ipm.expose_ileo_push(g_ipm.push_ev_node,100)
-            
+
             ip.set_hook('pre_prompt_hook',ileo_pre_prompt_hook) 
-                
+
             # global wb
             # wb = LeoWorkbook()
             ip.user_ns['wb'] = self.wb
         #@+node:ekr.20120401144849.10094: *3* push...
         #@+node:ekr.20120401144849.10095: *4* expose_ileo_push
         def expose_ileo_push(self,f,priority=0):
-            
+
             # self.push_from_leo.add(f,priority)
             CommandChainDispatcher().add(f,priority)
         #@+node:ekr.20120401144849.10102: *4* push_position_from_leo
         def push_position_from_leo(self,p):
-            
+
             try:
                 d = CommandChainDispatcher(LeoNode(p))
                 d()
@@ -384,18 +384,18 @@ if g_import_ok:
                     raise
         #@+node:ekr.20120401144849.10142: *4* push_to_ipython
         def push_to_ipython(self):
-            
+
             c,ip = self.c,self.ip
             if not c:
                 return g.trace('can not happen: no c.')
-                
+
             if not self.ip:
                 return g.trace('can not happen: no ip.')
-                
+
             c.inCommand = False # Disable the command lockout logic
-                
+
             n = LeoNode(c.p)
-            
+
             def f(self=self,n=n):
                 self.push_ipython_script(n)
                 return True
@@ -409,7 +409,7 @@ if g_import_ok:
 
             The result is put as last child of @ipy-results node, if it exists
             """
-            
+
             c = self.c
 
             if not node.b.startswith('@cl'):
@@ -424,7 +424,7 @@ if g_import_ok:
 
         #@+node:ekr.20120401144849.10097: *4* push_ev_node
         def push_ev_node(self,node):
-            
+
             """ If headline starts with @ev, eval it and put result in body """
 
             if not node.h.startswith('@ev '):
@@ -441,7 +441,7 @@ if g_import_ok:
         def push_ipython_script(self,node):
             """ Execute the node body in IPython,
             as if it was entered in interactive prompt """
-            
+
             trace = False
             c = self.c
             ip = self.ip
@@ -450,7 +450,7 @@ if g_import_ok:
                     g.trace()
                     for z in sorted(dir(ip)):
                         print('%30s %s' % (z,getattr(ip,z).__class__))
-                
+
                 if g_legacy:
                     ihist = ip.IP.input_hist
                     ohist = ip.IP.output_hist 
@@ -464,14 +464,14 @@ if g_import_ok:
                 if trace:
                     g.trace('ihist',ihist)
                     g.trace('ohist',ohist)
-            
+
                 script = node.script()
 
                 # The current node _p needs to handle
                 # wb.require() and recursive ipushes.
                 old_p = ip.user_ns.get('_p',None)
                 ip.user_ns['_p'] = node
-                
+
                 if g_legacy:
                     ip.runlines(script)
                 else:
@@ -504,7 +504,7 @@ if g_import_ok:
 
             It will mark the node as 'pushed', for wb.require.
             """
-            
+
             global g_push_history
 
             g_push_history.add(node.h)
@@ -512,7 +512,7 @@ if g_import_ok:
             raise TryNext
         #@+node:ekr.20120401144849.10101: *4* push_plain_python
         def push_plain_python(self,node):
-            
+
             if not node.h.endswith('P'):
                 raise TryNext
 
@@ -528,7 +528,7 @@ if g_import_ok:
             es('ipy plain: %s (%d LL)' % (node.h,lines))
         #@+node:ekr.20120401144849.10104: *3* run_leo_startup_node
         def run_leo_startup_node(self):
-            
+
             c = self.c
             p = g.findNodeAnywhere(c,'@ipy-startup')
             if p:
@@ -556,11 +556,11 @@ if g_import_ok:
                 u.set_term_title('ILeo')
         #@+node:ekr.20120415174008.10063: *3* get_ip
         def get_ip (self):
-            
+
             """Get the global InteractiveShell instance."""
-            
+
             shell = InteractiveShell.instance()
-            
+
             return shell
         #@+node:ekr.20120401063816.10145: *3* update_commander
         def update_commander(self,c):
@@ -573,18 +573,18 @@ if g_import_ok:
             """
 
             ip = self.ip
-            
+
             if g_legacy:
                 assert ip
             elif not ip:
                 ip = self.ip = self.get_ip()
                 assert ip
-            
+
             if not c:
                 return
             if ip.user_ns.get('c') == c:
                 return
-                
+
             if not self.inited:
                 self.init_ipython()
 
@@ -615,7 +615,7 @@ if g_import_ok:
 
         An instance of this class called leox is typically injected
         into IPython's user_ns namespace by the init-ipython-command.'''
-        
+
         # pylint: disable=R0923
         # R0923:LeoInterface: Interface not implemented
 
@@ -650,7 +650,7 @@ if g_import_ok:
         #@+others
         #@+node:ekr.20120401063816.10190: *3* __init__ (LeoNode)
         def __init__(self,p):
-            
+
             self.c = p.v.context # New in Leo 4.10.1.
             self.p = p.copy()
 
@@ -677,7 +677,7 @@ if g_import_ok:
             return self.p.bodyString()
 
         def __set_b(self,val):
-            
+
             c = self.c
             c.setBodyString(self.p, val)
             LeoNode.last_edited = self
@@ -749,7 +749,7 @@ if g_import_ok:
             because bar is a valid python name and we don't want to crowd
             the WorkBook namespace with (possibly numerous) entries.
             """
-            
+
             c = self.c
             key = str(key)
             d = self.__children()
@@ -770,7 +770,7 @@ if g_import_ok:
 
             Allows stuff like wb.foo.clear() to remove all children
             """
-            
+
             c = self.c
             self[key].p.doDelete()
             c.redraw()
@@ -808,7 +808,7 @@ if g_import_ok:
             return g.getScript(c,self.p,useSelectedText=False,useSentinels=False)
         #@+node:ekr.20120401063816.10206: *3* __get_uA
         def __get_uA(self):
-            
+
             # Create the uA if necessary.
             p = self.p
             if not hasattr(p.v,'unknownAttributes'):
@@ -836,7 +836,7 @@ if g_import_ok:
     #@+node:ekr.20120401144849.10079: *3* edit_object_in_leo
     @generic
     def edit_object_in_leo(obj,varname):
-        
+
         """ Make it @cl node so it can be pushed back directly by alt+I """
 
         node = add_var(varname)
@@ -869,26 +869,26 @@ if g_import_ok:
         '''The push-to-ipython command.
 
         IPython must be started, but the commander need not be inited.'''
-        
+
         trace = False and not g.unitTesting
-        
+
         # Ensure that the correct commander is set.
         startIPython(event=event)
-        
+
         g_ipm.push_to_ipython()
     #@+node:ekr.20120401144849.10134: ** Top-level functions
     #@+node:ekr.20120401144849.10075: *3* add_file
     def add_file(fname):
-        
+
         c = g_ipm.c
         if c:
             p2 = c.currentPosition().insertAfter()
     #@+node:ekr.20120401144849.10076: *3* add_var
     def add_var(varname):
-        
+
         # pylint: disable=E1101
         # E1101:add_var: Class 'LeoNode' has no 'p' member
-        
+
         c = g_ipm.c
         # g.trace(varname)
         if not c:
@@ -915,7 +915,7 @@ if g_import_ok:
             c.redraw()
     #@+node:ekr.20120401144849.10077: *3* all_cells
     def all_cells():
-        
+
         # pylint: disable=E1101
         # E1101:all_cells: Class 'LeoNode' has no 'p' member
 
@@ -955,13 +955,13 @@ if g_import_ok:
         node.go()
     #@+node:ekr.20120401144849.10080: *3* es
     def es(s):
-            
+
         g.es(s,tabName='IPython')
     #@+node:ekr.20120401144849.10081: *3* eval_body
     def eval_body(body):
-        
+
         ip = g_ipm.ip
-        
+
         try:
             val = ip.ev(body)
         except Exception:
@@ -971,10 +971,10 @@ if g_import_ok:
 
     #@+node:ekr.20120401144849.10082: *3* eval_node
     def eval_node(n):
-        
+
         ip = g_ipm.ip
         if not ip: return
-        
+
         body = n.b    
         if not body.startswith('@cl'):
             # plain python repr node, just eval it
@@ -1000,7 +1000,7 @@ if g_import_ok:
     def format_for_leo(obj):
         """ Convert obj to string representiation (for editing in Leo)"""
         return pprint.pformat(obj)
-        
+
     # Just an example - note that this is a bad to actually do!
     #@verbatim
     #@format_for_leo.when_type(list)
@@ -1008,16 +1008,16 @@ if g_import_ok:
     #    return "\n".join(str(s) for s in obj)
     #@+node:ekr.20120401144849.10091: *3* mb_completer
     def mb_completer(event):
-        
+
         """ Custom completer for minibuffer """
-        
+
         c = g_ipm.c
         ip = g_ipm.ip
 
         cmd_param = event.line.split()
         if event.line.endswith(' '):
             cmd_param.append('')
-            
+
         if len(cmd_param) > 2:
             if g_legacy:
                 return ip.IP.Completer.file_matches(event.symbol)
@@ -1039,13 +1039,13 @@ if g_import_ok:
         Example:
          mb save-to-file
         """
-        
+
         c = g_ipm.c
         if c:
             c.executeMinibufferCommand(arg)
     #@+node:ekr.20120401144849.10093: *3* mkbutton
     def mkbutton(text, node_to_push):
-        
+
         c = g_ipm.c
         if c:
             ib = c.frame.getIconBarObject()
@@ -1058,10 +1058,10 @@ if g_import_ok:
 
         Note that the root is the *first* @ipy-root item found    
         """
-        
+
         # pylint: disable=E1101
         # E1101:rootnode: Class 'LeoNode' has no 'p' member
-        
+
         c = g_ipm.c
         n = g_ipm.root_node
 
@@ -1077,7 +1077,7 @@ if g_import_ok:
         """ source: http://leo.zwiki.org/CreateShadows
 
         """
-        
+
         c = g_ipm.c
         if not c:
             return
@@ -1142,7 +1142,7 @@ if g_import_ok:
     # By IPython convention, these must have "self" as the first argument.
     #@+node:ekr.20120401144849.10085: *3* ileo_pre_prompt_hook
     def ileo_pre_prompt_hook(self):
-        
+
         c = g_ipm.c
         if c:
             c.outerUpdate()
@@ -1159,7 +1159,7 @@ if g_import_ok:
             # raise TryNext
     #@+node:ekr.20120401144849.10086: *3* lee_f
     def lee_f(self,s):
-        
+
         """ Open file(s)/objects in Leo
 
         - %lee hist -> open full session history in leo
@@ -1196,7 +1196,7 @@ if g_import_ok:
             if obj is not None:
                 edit_object_in_leo(obj,s)
                 return
-                
+
             if not c:
                 # print('file not found: %s' % s)
                 return
@@ -1267,10 +1267,10 @@ if g_import_ok:
         # Set the --ipython option. 
             # global _request_immediate_connect
             # _request_immediate_connect = True.
-            
+
         if '--ipython' not in sys.argv:
             sys.argv.append ('--ipython')
-        
+
         import leo.core.runLeo
         leo.core.runLeo.run()
     #@+node:ekr.20120401144849.10089: *3* lno_f
@@ -1303,7 +1303,7 @@ if g_import_ok:
         Create shadow nodes for path (default .)
 
         """
-        
+
         c = g_ipm.c
         if c:
             if not arg.split():

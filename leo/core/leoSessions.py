@@ -27,11 +27,11 @@ class LeoSessionException(Exception):
 # These were top-level nodes of leotools.py
 
 class SessionManager:
-    
+
     #@+others
     #@+node:ekr.20120420054855.14351: *3*  ctor (LeoSessionController)
     def __init__ (self):
-        
+
         self.path = self.get_session_path()
     #@+node:ekr.20120420054855.14246: *3* clear_session
     def clear_session(self,c):
@@ -43,7 +43,7 @@ class SessionManager:
                 frame.c.close()
     #@+node:ekr.20120420054855.14417: *3* error
     # def error (self,s):
-        
+
         # # Do not use g.trace or g.es here.
         # print(s)
     #@+node:ekr.20120420054855.14245: *3* get_session
@@ -57,19 +57,19 @@ class SessionManager:
         return result
     #@+node:ekr.20120420054855.14416: *3* get_session_path
     def get_session_path (self):
-        
+
         '''Return the path to the session file.'''
-        
+
         for path in (g.app.homeLeoDir,g.app.homeDir):
             if g.os_path_exists(path):
                 return g.os_path_finalize_join(path,'leo.session')
-                
+
         return None
     #@+node:ekr.20120420054855.14247: *3* load_session
     def load_session(self,c=None,unls=None):
 
         '''Open a tab for each item in UNLs & select the indicated node in each.'''
-        
+
         if unls is None: unls = []
 
         for unl in unls:
@@ -85,9 +85,9 @@ class SessionManager:
                             break
     #@+node:ekr.20120420054855.14248: *3* load_snapshot
     def load_snapshot(self):
-        
+
         '''Load a snapshot of a session from the leo.session file.'''
-        
+
         fn = self.path
 
         if fn and g.os_path_exists(fn):
@@ -99,7 +99,7 @@ class SessionManager:
             return None
     #@+node:ekr.20120420054855.14249: *3* save_snapshot
     def save_snapshot(self,c=None):
-        
+
         '''Save a snapshot of the present session to the leo.session file.'''
 
         if self.path:
@@ -117,7 +117,7 @@ class SessionManager:
 #@+node:ekr.20120420054855.14388: *3* session-clear
 @g.command('session-clear')
 def session_clear_command(event):
-    
+
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:
@@ -137,7 +137,7 @@ def session_create_command(event):
 #@+node:ekr.20120420054855.14387: *3* session-refresh
 @g.command('session-refresh')
 def session_refresh_command(event):
-    
+
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:
@@ -159,7 +159,7 @@ def session_restore_command(event):
 #@+node:ekr.20120420054855.14390: *3* session-snapshot-load
 @g.command('session-snapshot-load')
 def session_snapshot_load_command(event):
-    
+
     c = event.get('c')
     m = g.app.sessionManager
     if c and m:

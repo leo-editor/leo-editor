@@ -36,7 +36,7 @@ def main ():
 
     # Setting verbose=True prints messages that would be sent to the log pane.
     path,gui,readSettings,silent = scanOptions()
-    
+
     # print('(leoDynamicTest.py:main)','readSettings',readSettings)
     # print('(leoDynamicTest.py:main)','silent',silent)
 
@@ -92,7 +92,7 @@ def scanOptions():
     if gui: gui = gui.lower()
     if gui not in ('qttabs','qt'):
         gui = 'nullGui'
-        
+
     # --read-settings
     read_settings = options.read_settings
 
@@ -112,5 +112,5 @@ if __name__ == '__main__':
     if trace and trace_time:
         t2 = time.time()
         print('leoDynamicUnittest.py: %0.2fsec' % (t2-t1))
-        
+
 #@-leo

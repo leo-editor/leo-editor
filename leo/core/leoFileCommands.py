@@ -591,7 +591,7 @@ class baseFileCommands:
             # Values are vnodes.
             # 2011/12/10: This dict is never re-inited.
         # g.trace('***clearing gnxDict',c)
-            
+
         self.vnodesDict = {}
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: ** Reading
@@ -642,7 +642,7 @@ class baseFileCommands:
 
         # 2011/12/10: never recreate the gnxDict.
             # self.gnxDict = {}
-        
+
         # 2011/12/12: save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
         if reassignIndices:
@@ -747,24 +747,24 @@ class baseFileCommands:
             if ok:
                 ok = fc.getLeoFileHelper(theFile,fileName,silent)
                     # Read the .leo file and create the outline.
-                    
+
                 # Remember the open file.
                 g.app.rememberOpenFile(fileName)
             else:
                 fc.mFileName = c.mFileName = None
                     # Bug fix. Clear the fileName so forgetOpenFile doesn't remove it.
-        
+
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
-                
+
                 if readAtFileNodesFlag:
                     # Redraw before reading the @file nodes so the screen isn't blank.
                     # This is important for big files like LeoPy.leo.
                     c.redraw()
                     fc.readExternalFiles(fileName)
-                
+
                 if c.config.getBool('check_outline_after_read'):
                     c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         finally:
@@ -849,7 +849,7 @@ class baseFileCommands:
         return root
     #@+node:ekr.20100701112151.5959: *6* getDiff
     def getDiff (self,s1,s2):
-        
+
         # pylint: disable=E1120
         # E1120:getDiff: No value passed for parameter 'b' in function call
 
@@ -869,7 +869,7 @@ class baseFileCommands:
     def readExternalFiles(self,fileName):
 
         c,fc = self.c,self
-        
+
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
         recoveryNode = fc.handleNodeConflicts()
 
@@ -1730,7 +1730,7 @@ class baseFileCommands:
         c = self.c
 
         self.putXMLLine()
-        
+
         # Put "created by Leo" line.
         self.put('<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->')
         self.put_nl()
@@ -1842,7 +1842,7 @@ class baseFileCommands:
         elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
         else:          forceWrite = True      # Write all other @<file> trees.
-        
+
         # if p.h.startswith('@file'): g.trace('isOrphan',isOrphan,'forceWrite',forceWrite,p.h)
 
         #@+<< Set gnx = vnode index >>
@@ -2208,7 +2208,7 @@ class baseFileCommands:
     def writeAtFileNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
-        
+
         c = self.c
 
         c.init_error_dialogs()
@@ -2228,7 +2228,7 @@ class baseFileCommands:
     def writeDirtyAtFileNodes (self,event=None):
 
         '''Write all changed @file Nodes.'''
-        
+
         c = self.c
 
         c.init_error_dialogs()

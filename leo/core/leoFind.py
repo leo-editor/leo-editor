@@ -111,7 +111,7 @@ class searchWidget:
             self.i = self.toPythonIndex(insert)
     #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
     def toPythonIndex (self,i):
-        
+
         return g.toPythonIndex(self.s,i)
     #@-others
 #@+node:ekr.20061212084717: ** class leoFind
@@ -670,7 +670,7 @@ class leoFind:
         g.es("found",count,"matches")
     #@+node:ekr.20051113110735: *5* createCloneFindAllNode
     def createCloneFindAllNode(self):
-        
+
         c = self.c
         oldRoot = c.rootPosition()
         found = oldRoot.insertAfter()
@@ -737,7 +737,7 @@ class leoFind:
                     if not s.startswith(b): s = b + s
                     if not s.endswith(b): s = s + b
                 # g.trace(self.whole_word,repr(s))
-                    
+
                 self.re_obj = re.compile(s,flags)
                 # self.re_obj = re.compile(re.escape(self.find_text),flags)
             except Exception:
@@ -1326,7 +1326,7 @@ class leoFind:
             self.wrapPosition = self.p
 
         if trace: g.trace('in_headline',self.in_headline)
-        
+
         if self.in_headline:
             c.endEditing() # 2011/06/10: A major bug fix.
             selection = pos,newpos,insert
@@ -1347,7 +1347,7 @@ class leoFind:
             # else:
                 # c.selectPosition(p)
                 # c.redraw_after_select(p)
-            
+
             c.bodyWantsFocus()
             if showState:
                 c.k.showStateAndMode(w)
@@ -1388,7 +1388,7 @@ class leoFind:
         if trace: g.trace('find',repr(s),self.find_ctrl)
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
-            
+
         # 2011/06/13: clear wrap_pos if the find_text changes.
         if s != self.find_text:
             # g.trace('clearing self.wrap_pos')
@@ -1466,7 +1466,7 @@ class findTab (leoFind):
         self.clone_find_all = True
         self.findAll()
         self.clone_find_all = False
-        
+
     def cloneFindAllFlattenedCommand (self,event=None):
 
         self.setup_command()
@@ -1536,7 +1536,7 @@ class nullFindTab (findTab):
     if 0: # Use the base class ctor.
 
         def __init__ (self,c,parentFrame):
-        
+
             findTab.__init__(self,c,parentFrame)
             # Init the base class.
                 # Calls initGui, createFrame, createBindings & init(c), in that order.
@@ -1552,7 +1552,7 @@ class nullFindTab (findTab):
 
         for key in self.newStringKeys:
             self.svarDict[key] = self.svar() # Was Tk.StringVar.
-            
+
         # Bug fix: 2011/11/13: significant for external unit tests.
         # Add the same hack as in the qtGui for the 'entire_outline' radio button.
         self.svarDict['entire-outline'] = self.svar()

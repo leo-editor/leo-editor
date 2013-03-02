@@ -35,7 +35,7 @@ if g.app: # Make sure we can import this module stand-alone.
     newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
 else:
     newAtFile = False
-    
+
 #@+others
 #@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
 #@+node:ekr.20051104075904.97: *3* factorial (a test of doctests)
@@ -388,7 +388,7 @@ class GeneralTestCase(unittest.TestCase):
         c = self.c ; p = self.p.copy()
         script = g.getScript(c,p).strip()
         self.assert_(script)
-        
+
         if c.shortFileName() == 'dynamicUnitTest.leo':
             c.write_script_file = True
 
@@ -625,7 +625,7 @@ class runTestExternallyHelperClass:
         self.seen = [] # The list of nodes to be added.
         aList  = c.testManager.findMarkForUnitTestNodes()
         aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
-        
+
         if aList2:
             for p in aList:  self.addNode(p)
             for p in aList2: self.addNode(p)
@@ -649,7 +649,7 @@ class runTestExternallyHelperClass:
             self.seen.append(p2.v)
     #@+node:ekr.20070705075604.3: *5* isUnitTestNode
     def isUnitTestNode (self,p):
-        
+
         h = p.h.lower()
 
         for tag in self.tags:
@@ -696,31 +696,31 @@ class runTestExternallyHelperClass:
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
 class TestManager:
-    
+
     '''A controller class to encapuslate test-runners.'''
-    
+
     #@+others
     #@+node:ekr.20120220070422.10418: *3*  ctor (TestManager)
     def __init__ (self,c):
-        
+
         self.c = c
     #@+node:ekr.20120220070422.10421: *3* TM.Factories
     def generalTestCase(self,p):
-        
+
         return GeneralTestCase(self.c,p)
     #@+node:ekr.20120220070422.10419: *3* TM.Top-level
     #@+node:ekr.20051104075904.4: *4* TM.doTests & helpers (local tests)
     def doTests(self,all=None,marked=None,verbosity=1):
-        
+
         '''Run any kind of local unit test.
-        
+
         Important: this is also called from dynamicUnitTest.leo
         to run external tests "locally" from dynamicUnitTest.leo
         '''
 
         trace = False ; verbose = True
         c,tm = self.c,self
-        
+
         # 2013/02/25: clear the screen before running multiple unit tests locally.
         if all or marked: g.cls()
 
@@ -730,7 +730,7 @@ class TestManager:
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
-        
+
         if trace: g.trace('marked',marked,'c',c)
 
         try:
@@ -745,7 +745,7 @@ class TestManager:
             changed = c.isChanged()
             suite = unittest.makeSuite(unittest.TestCase)
             aList = tm.findAllUnitTestNodes(all,marked)
-           
+
             found = False
             for p in aList:
                 if tm.isTestNode(p):
@@ -762,7 +762,7 @@ class TestManager:
                 if test:
                     suite.addTest(test)
                     found = True
-            
+
             # Verbosity: 1: print just dots.
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
@@ -790,26 +790,26 @@ class TestManager:
             g.unitTesting = g.app.unitTesting = False
     #@+node:ekr.20120912094259.10549: *5* get_suite_script
     def get_suite_script(self):
-        
+
         s = '''
-        
+
     try:
         g.app.scriptDict['suite'] = suite
     except NameError:
         pass
-        
+
     '''
         return g.adjustTripleString(s, self.c.tab_width)
     #@+node:ekr.20120912094259.10547: *5* get_test_class_script
     def get_test_class_script(self):
-        
+
         s = '''
-        
+
     try:
         g.app.scriptDict['testclass'] = testclass
     except NameError:
         pass
-        
+
     '''
         return g.adjustTripleString(s,self.c.tab_width)
     #@+node:ekr.20051104075904.13: *5* makeTestCase
@@ -900,14 +900,14 @@ class TestManager:
             return None
     #@+node:ekr.20070627135407: *4* TM.runTestsExternally (external tests)
     def runTestsExternally (self,all,marked):
-        
+
         '''Run any kind of external unit test.'''
-        
+
         c = self.c
-        
+
         if c.isChanged():
             c.save() # Eliminate the need for ctrl-s.
-            
+
         # g.trace('all',all,'marked',marked)
 
         runner = runTestExternallyHelperClass(c,all,marked)
@@ -918,7 +918,7 @@ class TestManager:
     # Called from @button profile in unitTest.leo.
 
     def runProfileOnNode (self,p,outputPath=None):
-        
+
         # Work around a Python distro bug: can fail on Ubuntu.
         try:
             import pstats
@@ -935,7 +935,7 @@ class TestManager:
                 g.app.loadDir,'..','test','profileStats')
 
         profile.run(s,outputPath)
-        
+
         stats = pstats.Stats(outputPath)
         stats.strip_dirs()
         stats.sort_stats('cum','file','name')
@@ -944,7 +944,7 @@ class TestManager:
     # Called from @button timeit in unitTest.leo.
 
     def runTimerOnNode (self,p,count):
-        
+
         c = self.c
         s = p.b.rstrip() + '\n'
 
@@ -1327,7 +1327,7 @@ class TestManager:
             return False
     #@+node:ekr.20051104075904.94: *4* TM.checkFileTabs
     def checkFileTabs (self,fileName,s):
-        
+
         if not tabnanny:
             return
 
@@ -1472,16 +1472,16 @@ class TestManager:
         return paths
     #@+node:ekr.20111104132424.9907: *4* TM.findAllUnitTestNodes
     def findAllUnitTestNodes(self,all,marked):
-       
+
         trace = False and not g.unitTesting
         verbose = False
         c,tm = self.c,self
         p = c.rootPosition() if all else c.p
         limit = None if all else p.nodeAfterTree()
         seen,result = [],[]
-        
+
         if trace: g.trace('all: %s marked: %s %s' % (all,marked,p.h))
-        
+
         # 2012/08/13: Add special cases only after this loop.
         while p and p != limit:
             if p.v in seen:
@@ -1536,14 +1536,14 @@ class TestManager:
                         p.moveToNodeAfterTree()
                     else:
                         p.moveToThreadNext()
-                        
+
         # Special case 1:
         # Add the selected node @test or @suite node if no tests have been found so far.
         # Important: this may be used to run a test in an @ignore tree.            
         if not result and (tm.isTestNode(c.p) or tm.isSuiteNode(c.p)):
             seen.append(p.v)
             result.append(c.p.copy())
-                        
+
         # Special case 2:
         # Look up the selected tree for @test & @suite nodes if none have been found so far.
         # Note: this applies only when executing one of the run-selected-unit-tests commands.
@@ -1552,7 +1552,7 @@ class TestManager:
                 if tm.isTestNode(p) or tm.isSuiteNode(p):
                     result.append(p.copy())
                     break
-                        
+
         # Remove duplicates.
         result2,seen = [],[]
         for p in result:
@@ -1563,7 +1563,7 @@ class TestManager:
         return result2
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
-        
+
         '''return the position of *all* non-ignored @mark-for-unit-test nodes.'''
 
         trace = False and not g.unitTesting
@@ -1584,7 +1584,7 @@ class TestManager:
                     p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
-                
+
         return result
     #@+node:ekr.20051104075904.27: *4* TM.findChildrenOf
     def findChildrenOf (self,root):
@@ -1684,7 +1684,7 @@ class TestManager:
     #@+node:ekr.20051104075904.3: *4* TM.isSuiteNode, isTestNode & isTestClassNode
     def isSuiteNode (self,p):
         return g.match_word(p.h.lower(),0,"@suite")
-        
+
     def isTestClassNode (self,p):
         '''Return True if p is an @testclass node'''
         return g.match_word(p.h.lower(),0,"@testclass")

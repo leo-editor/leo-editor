@@ -41,14 +41,14 @@ assert(g.app)
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
 #@+at To gather statistics, do the following in a console window:
-#     
+# 
 #     python profileLeo.py <list of .leo files>
 #@@c
 
 def profile_leo ():
 
     """Gather and print statistics about Leo"""
-    
+
     # Work around a Python distro bug: can fail on Ubuntu.
     try:
         import pstats

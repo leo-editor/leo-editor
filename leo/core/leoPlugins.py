@@ -307,12 +307,12 @@ class LeoPluginsController:
     #@+node:ekr.20100909065501.5952: *3* Event handlers
     #@+node:ekr.20100908125007.6016: *4* callTagHandler
     def callTagHandler (self,bunch,tag,keywords):
-        
+
         trace = False and not g.unitTesting
         traceIdle = False
 
         handler = bunch.fn ; moduleName = bunch.moduleName
-        
+
         if trace and (traceIdle or tag != 'idle'):
             c = keywords.get('c')
             name = moduleName ; tag2 = 'leo.plugins.'
@@ -346,13 +346,13 @@ class LeoPluginsController:
         """Execute all handlers for a given tag, in alphabetical order.
 
         All exceptions are caught by the caller, doHook."""
-        
+
         trace = False and not g.unitTesting
         traceIdle = False
 
         if g.app.killed:
             return None
-            
+
         if trace and (traceIdle or tag != 'idle'):
             g.trace(tag)
 
@@ -378,9 +378,9 @@ class LeoPluginsController:
 
         if g.app.killed:
             return
-            
+
         # g.trace(tag,g.callers())
-        
+
         if tag in ('start1','open0'):
             self.loadHandlers(tag,keywords)
 
@@ -416,7 +416,7 @@ class LeoPluginsController:
         return self.regularizeName(fn) in self.loadedModules
     #@+node:ekr.20100908125007.6025: *4* printHandlers
     def printHandlers (self,c,moduleName=None):
-        
+
         '''Print the handlers for each plugin.'''
 
         tabName = 'Plugins'
@@ -450,7 +450,7 @@ class LeoPluginsController:
         g.es('',''.join(lines),tabName=tabName)
     #@+node:ekr.20100908125007.6026: *4* printPlugins
     def printPlugins (self,c):
-        
+
         '''Print all enabled plugins.'''
 
         tabName = 'Plugins'
@@ -524,7 +524,7 @@ class LeoPluginsController:
 
         trace = False and not g.unitTesting
         verbose = False or verbose
-        
+
         if not g.app.enablePlugins:
             if trace: g.trace('plugins disabled')
             return None

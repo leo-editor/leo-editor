@@ -37,7 +37,7 @@ except ImportError:
     docutils = None
 except Exception:
     docutils = None
-    
+
 if g.isPython3:
     import html.parser as HTMLParser
 else:
@@ -776,7 +776,7 @@ class rstCommands:
     def writeBody (self,p):
 
         trace = False and not g.unitTesting
-       
+
         if self.getOption('ignore_noweb_definitions'):
             # 2011/06/10: Ignore section definition nodes.
             name = self.isSectionDef(p)
@@ -832,9 +832,9 @@ class rstCommands:
         self.write(s)
     #@+node:ekr.20110610144305.6749: *7* isSectionDef/Ref
     def isSectionDef (self,p):
-        
+
         return self.isSectionRef(p.h)
-        
+
     def isSectionRef (self,s):
 
         n1 = s.find("<<",0)
@@ -842,9 +842,9 @@ class rstCommands:
         return -1 < n1 < n2 and s[n1+2:n2].strip()
     #@+node:ekr.20110610144305.6750: *7* expandSectionRefs
     def expandSectionRefs (self,lines,p,seen):
-        
+
         trace = False and not g.unitTesting
-        
+
         if trace: g.trace(p.h,g.callers())
 
         result = []
@@ -873,12 +873,12 @@ class rstCommands:
         return result
     #@+node:ekr.20110610144305.6751: *7* findSectionDef
     def findSectionDef (self,name,p):
-        
+
         for p2 in p.subtree():
             name2 = self.isSectionDef(p2)
             if name2:
                 return p2
-        
+
         return None
     #@+node:ekr.20090502071837.72: *7* handleCodeMode & helper
     def handleCodeMode (self,lines):
@@ -918,7 +918,7 @@ class rstCommands:
 
                 if trace: g.trace('code line: %s' % repr(s))
                 code.append(s)
-           
+
             # elif not code: # Start the code block.
                 # result.append('')
                 # result.append(self.code_block_string)
@@ -1443,7 +1443,7 @@ class rstCommands:
 
         Such entries may arise from @rst-option or @rst-options in the headline,
         or from @ @rst-options doc parts.'''
-        
+
         trace = False and not g.unitTesting
 
         h = p.h
@@ -1454,7 +1454,7 @@ class rstCommands:
 
         # A fine point: body options over-ride headline options.
         d.update(d2)
-        
+
         if trace and d:
             g.trace(h)
             for z in sorted(d):
@@ -1745,7 +1745,7 @@ class rstCommands:
             if s and isHtml:
                 self.stringOutput = s = self.addTitleToHtml(s)
             if not s: return
-            
+
             if toString:
                 if not g.isUnicode(s):
                     s = g.toUnicode(s,'utf-8')
@@ -1834,7 +1834,7 @@ class rstCommands:
 
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
-        
+
         if ext == '.pdf':
             module = g.importFromPath(
                 name = 'leo_pdf.py',
@@ -1860,7 +1860,7 @@ class rstCommands:
             else:
                 g.error('unknown docutils extension: %s' % (ext))
                 return None
-        
+
         if ext in ('.html','.htm') and not SilverCity:
             if not self.silverCityWarningGiven:
                 self.silverCityWarningGiven = True

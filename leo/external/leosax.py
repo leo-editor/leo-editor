@@ -20,7 +20,7 @@ from binascii import unhexlify
 #@+node:ekr.20120519121124.9921: ** class node
 class node:
     """Representation of a Leo node.  Root node has itself as parent.
-    
+
     :IVariables:
         children
           python list of children
@@ -50,7 +50,7 @@ class node:
         self.gnx = None
         self.parent = self
         self.path = []
-        
+
     #@+node:ekr.20120519121124.9923: *3* __str__
     def __str__(self, level=0):
         """Return long text representation of node and
@@ -64,12 +64,12 @@ class node:
         for c in self.children:
             ans.append(c.__str__(level=level+1))
         return '\n'.join(ans)
-        
+
     #@+node:ekr.20120519121124.9924: *3* UNL
     def UNL(self):
         """Return the UNL string leading to this node"""
         return '-->'.join([i.h for i in self.path])
-        
+
     #@+node:ekr.20120519121124.9925: *3* flat
     def flat(self):
         """iterate this node and all its descendants in a flat list, 
@@ -87,7 +87,7 @@ class LeoReader(ContentHandler):
     h, b, u (unknown attribs), gnx and children information.
     Clones and derived files are ignored.  Useful for scanning
     multiple .leo files quickly.
-    
+
     :IVariables:
         root
           root node
@@ -101,7 +101,7 @@ class LeoReader(ContentHandler):
           attributes of element tag we're currentl in, used for SAX read
         path
           list of nodes leading to current node
-        
+
     """
     #@+others
     #@+node:ekr.20120519121124.9927: *3* __init__
@@ -111,10 +111,10 @@ class LeoReader(ContentHandler):
         """Set ivars"""
         ContentHandler.__init__(self, *args, **kwargs)
         self.root = node()
-        
+
         self.root.h = 'ROOT'  
         # changes type from [] to str, done by endElement() for other vnodes
-        
+
         self.cur = self.root
         self.idx = {}
         self.in_ = None
@@ -126,7 +126,7 @@ class LeoReader(ContentHandler):
         """collect information from v and t elements"""
         self.in_ = name
         self.in_attrs = attrs
-        
+
         if name == 'v':
             nd = node()
             self.cur.children.append(nd)
@@ -142,7 +142,7 @@ class LeoReader(ContentHandler):
                 if k == 'tx':
                     continue
                 self.idx[attrs['tx']].u[k] = attrs[k]
-                
+
     #@+node:ekr.20120519121124.9929: *3* endElement
     def endElement(self, name):
         """decode unknownAttributes when t element is done"""
@@ -156,7 +156,7 @@ class LeoReader(ContentHandler):
             self.cur = self.cur.parent
             if self.path:
                 del self.path[-1]
-                
+
         if name == 't':
             nd = self.idx[self.in_attrs['tx']]
             for k in nd.u:
@@ -166,16 +166,16 @@ class LeoReader(ContentHandler):
                         s = loads(unhexlify(s))
                     except Exception:
                         pass
-                        
+
                 nd.u[k] = s
-         
+
     #@+node:ekr.20120519121124.9930: *3* characters
     def characters(self, content):
         """collect body text and headlines"""
-        
+
         if self.in_ == 'vh':
             self.cur.h.append(content)
-            
+
         if self.in_ == 't':
             self.idx[self.in_attrs['tx']].b.append(content)
 

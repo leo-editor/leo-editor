@@ -2277,16 +2277,16 @@ def makeTestClass (self,p):
         return None
 #@+node:ekr.20051104075904.4: *5* TM.doTests & helpers (local tests)
 def doTests(self,all=None,marked=None,verbosity=1):
-    
+
     '''Run any kind of local unit test.
-    
+
     Important: this is also called from dynamicUnitTest.leo
     to run external tests "locally" from dynamicUnitTest.leo
     '''
 
     trace = False ; verbose = True
     c,tm = self.c,self
-    
+
     # 2013/02/25: clear the screen before running multiple unit tests locally.
     if all or marked: g.cls()
 
@@ -2296,7 +2296,7 @@ def doTests(self,all=None,marked=None,verbosity=1):
     if not c.fileName().endswith('unitTest.leo'):
         if c.isChanged():
             c.save() # Eliminate the need for ctrl-s.
-    
+
     if trace: g.trace('marked',marked,'c',c)
 
     try:
@@ -2311,7 +2311,7 @@ def doTests(self,all=None,marked=None,verbosity=1):
         changed = c.isChanged()
         suite = unittest.makeSuite(unittest.TestCase)
         aList = tm.findAllUnitTestNodes(all,marked)
-       
+
         found = False
         for p in aList:
             if tm.isTestNode(p):
@@ -2328,7 +2328,7 @@ def doTests(self,all=None,marked=None,verbosity=1):
             if test:
                 suite.addTest(test)
                 found = True
-        
+
         # Verbosity: 1: print just dots.
         if not found:
             # 2011/10/30: run the body of p as a unit test.
@@ -2356,26 +2356,26 @@ def doTests(self,all=None,marked=None,verbosity=1):
         g.unitTesting = g.app.unitTesting = False
 #@+node:ekr.20120912094259.10549: *6* get_suite_script
 def get_suite_script(self):
-    
+
     s = '''
-    
+
 try:
     g.app.scriptDict['suite'] = suite
 except NameError:
     pass
-    
+
 '''
     return g.adjustTripleString(s, self.c.tab_width)
 #@+node:ekr.20120912094259.10547: *6* get_test_class_script
 def get_test_class_script(self):
-    
+
     s = '''
-    
+
 try:
     g.app.scriptDict['testclass'] = testclass
 except NameError:
     pass
-    
+
 '''
     return g.adjustTripleString(s,self.c.tab_width)
 #@+node:ekr.20051104075904.13: *6* makeTestCase

@@ -46,7 +46,7 @@ class ParserBaseClass:
         self.localFlag = localFlag
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.
-            
+
         self.shortcutsDict = g.TypedDictOfLists(
             name='parser.shortcutsDict',
             keyType=type('shortcutName'),valType=g.ShortcutInfo)
@@ -123,7 +123,7 @@ class ParserBaseClass:
 
         # New in 4.4.1 b2: silently allow redefinitions of modes.
         d [modeName] = modeDict
-        
+
     #@+node:ekr.20041120103012: *3* error (ParserBaseClass)
     def error (self,s):
 
@@ -233,7 +233,7 @@ class ParserBaseClass:
             g.app.config.atCommonCommandsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
         if trace: g.trace(len(aList),c.shortFileName())
-        
+
         d,key = g.app.config.unitTestDict,'config.doCommands-file-names'
         aList = d.get(key,[])
         aList.append(c.shortFileName())
@@ -261,7 +261,7 @@ class ParserBaseClass:
 
         # This setting is handled differently from all other settings,
         # because the last setting must be retrieved before any commander exists.
-        
+
         # 2011/09/04: Remove comments, comment lines and blank lines.
         aList,lines = [],g.splitLines(s)
         for s in lines:
@@ -270,7 +270,7 @@ class ParserBaseClass:
             if s.strip(): aList.append(s.lstrip())
         s = ''.join(aList)
         # g.trace('\n%s' % s)
-                
+
 
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
@@ -529,7 +529,7 @@ class ParserBaseClass:
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-            
+
         if 1: # Prefer the legacy code now that the localFlag is set correctly.
             if self.localFlag:
                 self.set(p,kind='menus',name='menus',val=aList)
@@ -596,7 +596,7 @@ class ParserBaseClass:
 
         trace = False and not g.unitTesting
         c,k = self.c,self.c.k
-        
+
         if g.new_modes:
             aList = []
             for line in g.splitLines(p.b):
@@ -610,11 +610,11 @@ class ParserBaseClass:
 
             # g.trace('%20s' % (name),c.fileName())
             modeName = self.computeModeName(name)
-        
+
             d = g.TypedDictOfLists(
                 name='modeDict for %s' % (modeName),
                 keyType=type('commandName'),valType=g.ShortcutInfo)
-        
+
             s = p.b
             lines = g.splitLines(s)
             for line in lines:
@@ -641,7 +641,7 @@ class ParserBaseClass:
                             aList.extend(aList3)
                         aList.append(si)
                         d.replace(name,aList)
-                        
+
                         if 0: #### Why would we want to do this????
                             #### Old code: we have to save/restore self.shortcutsDict.
                                 #### self.set(p,"shortcut",name,aList)
@@ -653,16 +653,16 @@ class ParserBaseClass:
                                 path = gs.path
                                 if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                                     g.es("over-riding setting:",name,"from",path)
-            
+
                             # Important: we can't use c here: it may be destroyed!
                             d2 [key2] = g.GeneralSetting(
                                 kind,path=c.mFileName,val=val,tag='setting')
-        
+
                 # Restore the global shortcutsDict.
                 ##### self.shortcutsDict = old_d
-                
+
                 if trace: g.trace(d.dump())
-            
+
                 # Create the command, but not any bindings to it.
                 self.createModeCommand(modeName,name1,d)
     #@+node:ekr.20070411101643.1: *4* doOpenWith (ParserBaseClass)
@@ -750,14 +750,14 @@ class ParserBaseClass:
             self.valueError(p,kind,name,val)
     #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass)
     def doShortcuts(self,p,kind,junk_name,junk_val,s=None):
-        
+
         '''Handle an @shortcut or @shortcuts node.'''
 
         trace = False and not g.unitTesting
         c = self.c ; k = c.k
         d = self.shortcutsDict
         if s is None: s = p.b
-        
+
         fn = d.name()
         for line in g.splitLines(s):
             line = line.strip()
@@ -766,21 +766,21 @@ class ParserBaseClass:
                 assert g.isShortcutInfo(si),si
                 if si and si.stroke not in (None,'none','None'):
                     self.doOneShortcut(si,commandName,p)
-                        
+
         if trace:
             g.trace('%4d' % (len(list(self.shortcutsDict.keys()))),c.shortFileName(),p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
     def doOneShortcut(self,si,commandName,p):
-        
+
         '''Handle a regular shortcut.'''
-        
+
         trace = False and not g.unitTesting
-      
+
         d = self.shortcutsDict
         aList = d.get(commandName,[])
         aList.append(si)
         d [commandName] = aList
-        
+
         if trace: g.trace(commandName,si)
     #@+node:ekr.20041217132028: *4* doString
     def doString (self,p,kind,name,val):
@@ -915,19 +915,19 @@ class ParserBaseClass:
         return d
     #@+node:ekr.20070411101643.4: *5* parseOpenWithLine
     def parseOpenWithLine (self,line,d):
-        
+
         s = line.strip()
         if not s: return
 
         i = g.skip_ws(s,0)
         if g.match(s,i,'#'):
             return
-        
+
         # try:
             # s = str(s)
         # except UnicodeError:
             # pass
-            
+
         if 1: # new code
             j = g.skip_c_id(s,i)
             tag = s[i:j].strip()
@@ -1075,11 +1075,11 @@ class ParserBaseClass:
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
             keyType=type('settingName'),valType=g.GeneralSetting)
-        
+
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
             keyType=type('s'), valType=g.ShortcutInfo)
-            
+
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot()
         if not p:
@@ -1090,7 +1090,7 @@ class ParserBaseClass:
                     'ParserBaseClass.traverse: no settings tree for %s' % (
                         c.shortFileName()))
             return self.shortcutsDict,self.settingsDict
-            
+
         after = p.nodeAfterTree()
         while p and p != after:
             result = self.visitNode(p)
@@ -1099,7 +1099,7 @@ class ParserBaseClass:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-                
+
         # Return the raw dict, unmerged.
         return self.shortcutsDict,self.settingsDict
     #@+node:ekr.20041120094940.10: *3* valueError
@@ -1243,10 +1243,10 @@ class GlobalConfigManager:
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
     def __init__ (self):
-        
+
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('g.app.config.__init__')
-        
+
         # Set later.  To keep pylint happy.
         if 0: # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
             self.at_root_bodies_start_in_doc_mode = True
@@ -1254,7 +1254,7 @@ class GlobalConfigManager:
             self.output_newline = 'nl'
             self.redirect_execute_script_output_to_log_pane = True
             self.relative_path_base_directory = '!'
-            
+
         self.use_plugins = False # Required to keep pylint happy.
         self.create_nonexistent_directories = False # Required to keep pylint happy.
 
@@ -1320,9 +1320,9 @@ class GlobalConfigManager:
 
         # Important: The key is munged.
         gs = self.encodingIvarsDict.get(key)
-        
+
         setattr(self,gs.ivar,gs.encoding)
-        
+
         # g.trace(gs.ivar,gs.encoding)
 
         if gs.encoding and not g.isValidEncoding(gs.encoding):
@@ -1407,7 +1407,7 @@ class GlobalConfigManager:
     def exists (self,setting,kind):
 
         '''Return true if a setting of the given kind exists, even if it is None.'''
-        
+
         lm = g.app.loadManager
         d = lm.globalSettingsDict
         if d:
@@ -1419,10 +1419,10 @@ class GlobalConfigManager:
     def get (self,setting,kind):
 
         """Get the setting and make sure its type matches the expected type."""
-        
+
         trace = False and not g.unitTesting
         verbose = False
-        
+
         lm = g.app.loadManager
 
         # It *is* valid to call this method: it returns the global settings.
@@ -1451,7 +1451,7 @@ class GlobalConfigManager:
         gs = d.get(self.munge(setting))
         if not gs: return None,False
         assert isinstance(gs,g.GeneralSetting)
-        
+
         # g.trace(setting,requestedType,gs.toString())
         val = gs.val
 
@@ -1676,7 +1676,7 @@ class GlobalConfigManager:
         lm = g.app.loadManager
         suppressKind = ('shortcut','shortcuts','openwithtable')
         suppressKeys = (None,'shortcut')
-        
+
         d = c.config.settingsDict if c else lm.globalSettingsDict
         for key in sorted(list(d.keys())):
             if key not in suppressKeys:
@@ -1698,11 +1698,11 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
     #@+node:ekr.20041118104831.2: *4* c.config.ctor
     def __init__ (self,c,previousSettings=None):
-     
+
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('c.config.__init__ %s' % (c and c.shortFileName()))
         self.c = c
-        
+
         # The shortcuts and settings dicts, set in c.__init__
         # for local files.
         if previousSettings:
@@ -1726,7 +1726,7 @@ class LocalConfigManager:
                 g.app.config.default_derived_file_encoding
             self.redirect_execute_script_output_to_log_pane =\
                 g.app.config.redirect_execute_script_output_to_log_pane
-        
+
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize  = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
@@ -1745,9 +1745,9 @@ class LocalConfigManager:
         # Important: the key is munged.
         gs = g.app.config.encodingIvarsDict.get(key)
         encodingName = gs.ivar
-        
+
         encoding = self.get(encodingName,kind='string')
-        
+
 
         # Use the global setting as a last resort.
         if encoding:
@@ -1785,11 +1785,11 @@ class LocalConfigManager:
     def getCommands (self):
         '''Return the list of tuples (headline,script) for common @command nodes.'''
         return g.app.config.atCommonCommandsList # unusual.
-        
+
     def getEnabledPlugins (self):
         '''Return the body text of the @enabled-plugins node.'''
         return g.app.config.enabledPluginsString # unusual.
-        
+
     def getRecentFiles (self):
         '''Return the list of recently opened files.'''
         return g.app.config.getRecentFiles() # unusual
@@ -1832,7 +1832,7 @@ class LocalConfigManager:
             if trace and verbose and val is not None:
                 # g.trace('%35s %20s %s' % (setting,val,g.callers(3)))
                 g.trace('%40s %s' % (setting,val))
-                
+
             return val
         else:
             if trace and lm.globalSettingsDict:
@@ -1851,7 +1851,7 @@ class LocalConfigManager:
         if not gs: return None,False
 
         assert g.isGeneralSetting(gs),gs
-        
+
         # g.trace(setting,requestedType,gs.toString())
         val = gs.val
 
@@ -2037,12 +2037,12 @@ class LocalConfigManager:
     def getSettingSource (self,setting):
 
         '''return the name of the file responsible for setting.'''
-        
+
         trace = False and not g.unitTesting
         c = self.c
         d = self.settingsDict
         lm = g.app.loadManager
-        
+
         if d:
             assert g.isTypedDict(d),d
             si = d.get(setting)
@@ -2060,12 +2060,12 @@ class LocalConfigManager:
     def getShortcut (self,commandName):
 
         '''Return rawKey,accel for shortcutName'''
-        
+
         trace = False and not g.unitTesting
         c = self.c
         d = self.shortcutsDict
         lm = g.app.loadManager
-        
+
         if not c.frame.menu:
             g.trace('no menu: %s' % (commandName))
             return None,[]
@@ -2096,7 +2096,7 @@ class LocalConfigManager:
     def exists (self,c,setting,kind):
 
         '''Return true if a setting of the given kind exists, even if it is None.'''
-        
+
         d = self.settingsDict
         if d:
             junk,found = self.getValFromDict(d,setting,kind)
@@ -2131,7 +2131,7 @@ class LocalConfigManager:
         '''Return the position of the @settings tree.'''
 
         # g.trace(c,c.rootPosition())
-        
+
         c = self.c
 
         for p in c.all_unique_positions():
@@ -2179,7 +2179,7 @@ class LocalConfigManager:
 
         trace = False and not g.unitTesting
         if trace: g.trace(kind,name,val)
-        
+
         c = self.c
 
         # Note: when kind is 'shortcut', name is a command name.
@@ -2218,7 +2218,7 @@ class SettingsTreeParser (ParserBaseClass):
         """Init any settings found in node p."""
 
         # g.trace(p.h)
-        
+
         p = p.copy()
             # Bug fix 2011/11/24
             # Ensure inner traversals don't change callers's p.

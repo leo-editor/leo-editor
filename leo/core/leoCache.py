@@ -52,7 +52,7 @@ class cacher:
 
         trace = False and not g.unitTesting
         if trace: g.trace('cacher','c',c)
-        
+
         self.c = c
 
         # set by initFileDB and initGlobalDB...
@@ -87,7 +87,7 @@ class cacher:
             # Fixes bug 670108.
             self.c.db = self.db
             self.inited = True
-            
+
             if trace: g.trace('self.c.db',self.db)
     #@+node:ekr.20100208082353.5920: *4* initGlobalDb
     def initGlobalDB (self):
