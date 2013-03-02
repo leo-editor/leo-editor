@@ -23,12 +23,6 @@ if path not in sys.path:
 # Import leoGlobals, but do NOT set g.
 import leo.core.leoGlobals as leoGlobals
 
-# Set leoGlobals.g here, not in leoGlobals.py.
-if leoGlobals.new_load_g:
-    pass
-else:
-    leoGlobals.g = leoGlobals
-
 # Create g.app.
 import leo.core.leoApp as leoApp
 leoGlobals.app = leoApp.LeoApp()

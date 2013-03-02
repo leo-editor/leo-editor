@@ -319,7 +319,9 @@ def scanOptions():
     elif options.c: return 'core'
     elif options.e: return 'external'
     elif options.filename:
-        g_option_fn = options.filename.strip('"')
+        fn = options.filename
+        if fn.startswith('='): fn = fn[1:]
+        g_option_fn = fn.strip('"')
         return 'file'
     elif options.g: return 'gui'
     elif options.p: return 'plugins'

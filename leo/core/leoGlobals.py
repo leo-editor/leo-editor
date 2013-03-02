@@ -182,16 +182,7 @@ class nullObject:
     def __setattr__(self,attr,val): return self
 #@-<< define the nullObject class >>
 tree_popup_handlers = [] # Set later.
-new_load_g = True
-if new_load_g:
-    # class _Redirect:
-        # def __getattr__(self,attr):
-            # m = sys.modules.get('leo.core.leoGlobals')
-            # return getattr(m,attr)
-    # g = _Redirect()
-    g = None
-else:
-    g = nullObject() # Set early in startup logic to this module.
+# g = None
 app = None # The singleton app object. Set by runLeo.py.
 
 # Global status vars.
@@ -445,24 +436,15 @@ def get_directives_dict_list(p,scanToCursor=False):
     Returns a list of dicts containing pointers to
     the start of each directive"""
 
-    trace = False and not g.unitTesting
-
-    # if trace: time1 = g.getTime()
-
     result = []
     p1 = p.copy()
-
     for p in p1.self_and_parents():
-        if p.hasParent(): root = None
-        else:             root = [p.copy()]
-        result.append(g.get_directives_dict(p,
-            root=root,
+        root = None if p.hasParent() else [p.copy()]
+        result.append(g.get_directives_dict(p,root=root,
             scanToCursor=scanToCursor and p == p1))
-
     # if trace:
         # n = len(p1.h) + len(p1.b)
         # g.trace('%4d %s' % (n,g.timeSince(time1)))
-
     return result
 #@+node:ekr.20111010082822.15545: *4* g.getLanguageFromAncestorAtFileNode (New)
 def getLanguageFromAncestorAtFileNode(p):
@@ -1037,7 +1019,7 @@ class SherlockTracer:
         code = frame.f_code
         locals_ = frame.f_locals
         name = code.co_name
-        fn   = code.co_filename
+        # fn = code.co_filename
         n = code.co_argcount
         if code.co_flags & 4: n = n+1
         if code.co_flags & 8: n = n+1
@@ -1053,7 +1035,6 @@ class SherlockTracer:
                         val = show(arg)
                     if val:
                         result.append('%s=%s' % (name,val))
-
         return ','.join(result)
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
     def do_return(self,frame,arg): # arg not used.
@@ -1167,12 +1148,8 @@ class SherlockTracer:
     #@+node:ekr.20121128111829.12182: *4* print_stats
     def print_stats (self,patterns=None):
 
-        import os
-
         print('\nSherlock statistics')
-
         if not patterns: patterns = ['+.*','+:.*',]
-
         for fn in sorted(self.stats.keys()):
             d = self.stats.get(fn)
             if self.fn_is_enabled(fn,patterns):
@@ -1243,12 +1220,8 @@ class Tracer:
     #@+node:ekr.20080531075119.3: *4* computeName
     def computeName (self,frame):
 
-        import inspect
-
         if not frame: return ''
-
         code = frame.f_code ; result = []
-
         module = inspect.getmodule(code)
         if module:
             module_name = module.__name__
@@ -1259,16 +1232,13 @@ class Tracer:
                 if module_name.startswith(tag):
                     module_name = module_name[len(tag):]
                 result.append(module_name)
-
         try:
             # This can fail during startup.
             self_obj = frame.f_locals.get('self')
             if self_obj: result.append(self_obj.__class__.__name__)
         except Exception:
             pass
-
         result.append(code.co_name)
-
         return '.'.join(result)
     #@+node:ekr.20080531075119.4: *4* report
     def report (self):
@@ -1598,20 +1568,15 @@ def getIvarsDict(obj):
 
     '''Return a dictionary of ivars:values for non-methods of obj.'''
 
-    import types
-
     d = dict(
         [[key,getattr(obj,key)] for key in dir(obj)
             if type (getattr(obj,key)) != types.MethodType])
-
-    # g.pr(g.listToString(sorted(d)))
     return d
 
 def checkUnchangedIvars(obj,d,exceptions=None):
 
     if not exceptions: exceptions = []
     ok = True
-
     for key in d:
         if key not in exceptions:
             if getattr(obj,key) != d.get(key):
@@ -2567,19 +2532,12 @@ def printGcObjects(tag=''):
         if 0:
             #@+<< print added functions >>
             #@+node:ekr.20040703065638: *4* << print added functions >>
-            # import types
-            import inspect
-
             global lastFunctionsDict
-
             funcDict = {}
-
-            # Don't print more than 50 objects.
-            n = 0
+            n = 0 # Don't print more than 50 objects.
             for obj in gc.get_objects():
                 if type(obj) == types.FunctionType:
                     n += 1
-
             for obj in gc.get_objects():
                 if type(obj) == types.FunctionType:
                     key = repr(obj) # Don't create a pointer to the object!
@@ -2593,7 +2551,6 @@ def printGcObjects(tag=''):
                         if defaults:
                             g.pr("defaults...")
                             for s in defaults: g.pr(s)
-
             lastFunctionsDict = funcDict
             funcDict = {}
             #@-<< print added functions >>
@@ -3286,25 +3243,19 @@ def os_path_expandExpression (s,**keys):
     '''Expand {{anExpression}} in c's context.'''
 
     trace = False
-
-    s1 = s
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c',g.callers())
         return s
-
     if not s:
         if trace: g.trace('no s')
         return ''
-
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
         exp = s[i+2:j].strip()
         if exp:
             try:
-                import os
-                import sys
                 p = c.p
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
@@ -3313,7 +3264,6 @@ def os_path_expandExpression (s,**keys):
             except Exception:
                 g.trace(g.callers())
                 g.es_exception(full=True, c=c)
-
     return s
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
@@ -4233,26 +4183,20 @@ joinlines = joinLines
 def executeFile(filename, options= ''):
 
     if not os.access(filename, os.R_OK): return
-
-    cwd = os.getcwdu()
     fdir, fname = g.os_path_split(filename)
 
     # New in Leo 4.10: alway use subprocess.
     def subprocess_wrapper(cmdlst):
-
         # g.trace(cmdlst, fdir)
         # g.trace(subprocess.list2cmdline([cmdlst]))
         p = subprocess.Popen(cmdlst, cwd=fdir,
             universal_newlines=True,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
         stdo, stde = p.communicate()
         return p.wait(), stdo, stde
-
     rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
-    if rc:
-        g.pr('return code', rc)
-    g.pr(so, se)
+    if rc: g.pr('return code', rc)
+    g.pr(so,se)
 #@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
 def findNodeInChildren(c,p,headline):
 
@@ -5290,7 +5234,6 @@ def executeScript (name):
     try:
         # This code is in effect an import or a reload.
         # This allows the user to modify scripts without leaving Leo.
-        import imp
         theFile,filename,description = imp.find_module(mod_name)
         imp.load_module(mod_name,theFile,filename,description)
     except Exception:
@@ -5892,7 +5835,6 @@ def importModule (moduleName,pluginName=None,verbose=False):
 
     try:
         theFile = None
-        import imp
         try:
             # New in Leo 4.7. We no longer add Leo directories to sys.path,
             # so search extensions and external directories here explicitly.
@@ -5940,17 +5882,13 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
 
     moduleName is the module's name, without file extension.'''
 
-    # g.trace(verbose,moduleName,pluginName)
-
-    import os
-
     module = g.importModule(moduleName,pluginName=pluginName,verbose=False)
 
-    # this is basically only used for Pmw these days - we'll prevent plugins 
+    # This is basically only used for Pmw these days - we'll prevent plugins 
     # from killing all of Leo by returning None here instead
     if not module:
-        g.pr("Warning: plugin '%s' failed to import '%s'" % (pluginName, moduleName))
-
+        g.pr("Warning: plugin '%s' failed to import '%s'" % (
+            pluginName,moduleName))
     return module
 #@+node:ekr.20031218072017.2278: *4* g.importFromPath
 def importFromPath (name,path,pluginName=None,verbose=False):
@@ -6489,7 +6427,6 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@-others
 
 # set g when the import is about to complete.
-if new_load_g:
-    g = sys.modules.get('leo.core.leoGlobals')
-    assert g,sorted(sys.modules.keys())
+g = sys.modules.get('leo.core.leoGlobals')
+assert g,sorted(sys.modules.keys())
 #@-leo

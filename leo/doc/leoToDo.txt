@@ -6939,25 +6939,19 @@ def os_path_expandExpression (s,**keys):
     '''Expand {{anExpression}} in c's context.'''
 
     trace = False
-
-    s1 = s
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c',g.callers())
         return s
-
     if not s:
         if trace: g.trace('no s')
         return ''
-
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
         exp = s[i+2:j].strip()
         if exp:
             try:
-                import os
-                import sys
                 p = c.p
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
@@ -6966,7 +6960,6 @@ def os_path_expandExpression (s,**keys):
             except Exception:
                 g.trace(g.callers())
                 g.es_exception(full=True, c=c)
-
     return s
 .. @+node:ekr.20080921060401.13: *7* g.os_path_expanduser
 def os_path_expanduser(path):
