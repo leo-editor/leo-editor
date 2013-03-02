@@ -4136,24 +4136,18 @@ def insertIcon (self,event=None):
     
     '''Prompt for an icon, and insert it into the node's icon list.'''
 
-    trace = False and not g.unitTesting
     c = self.c ; p = c.p
-
     iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
     os.chdir(iconDir)
-
     paths = g.app.gui.runOpenFileDialog(
         title='Get Icons',
         filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
         defaultextension=None,
         multiple=True)
-
     if not paths: return
-
     aList = [] ; xoffset = 2
     for path in paths:
         xoffset = self.appendImageDictToList(aList,iconDir,path,xoffset)
-
     aList2 = self.getIconList(p)
     aList2.extend(aList)
     self.setIconList(p, aList2)
