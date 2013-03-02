@@ -385,21 +385,19 @@ class GeneralTestCase(unittest.TestCase):
 
         trace = False
         tm = self
-        c = self.c ; p = self.p.copy()
+        c = tm.c
+        p = tm.p.copy()
         script = g.getScript(c,p).strip()
-        self.assert_(script)
-
+        tm.assert_(script)
         if c.shortFileName() == 'dynamicUnitTest.leo':
             c.write_script_file = True
 
         # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
         g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
         if define_g:
-            d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
+            d = {'c':c,'g':g,'p':p and p.copy(),'self':tm,}
         else:
-            d = {'self':self,}
-
+            d = {'self':tm,}
         script = script + '\n'
         if trace: g.trace('p: %s c: %s write script: %s script:\n%s' % (
             p and p.h,c.shortFileName(),c.write_script_file,script))
@@ -615,8 +613,7 @@ class runTestExternallyHelperClass:
         - all children of any @mark-for-unit-tests node anywhere in the outline.
         - all @test and @suite nodes in p's outline.'''
 
-        trace = False ; verbose = True
-        c = self.c ; markTag = '@mark-for-unit-tests'
+        c = self.c
         self.copyRoot = c2.rootPosition()
         self.copyRoot.initHeadString('All unit tests')
         c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
@@ -625,7 +622,6 @@ class runTestExternallyHelperClass:
         self.seen = [] # The list of nodes to be added.
         aList  = c.testManager.findMarkForUnitTestNodes()
         aList2 = c.testManager.findAllUnitTestNodes(self.all,self.marked)
-
         if aList2:
             for p in aList:  self.addNode(p)
             for p in aList2: self.addNode(p)
@@ -663,7 +659,6 @@ class runTestExternallyHelperClass:
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
 
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-        c = self.c
         trace = False
         path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
         leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
@@ -718,12 +713,11 @@ class TestManager:
         to run external tests "locally" from dynamicUnitTest.leo
         '''
 
-        trace = False ; verbose = True
+        trace = False
         c,tm = self.c,self
 
         # 2013/02/25: clear the screen before running multiple unit tests locally.
         if all or marked: g.cls()
-
         p1 = c.p.copy() # 2011/10/31: always restore the selected position.
 
         # This seems a bit risky when run in unitTest.leo.
@@ -732,7 +726,6 @@ class TestManager:
                 c.save() # Eliminate the need for ctrl-s.
 
         if trace: g.trace('marked',marked,'c',c)
-
         try:
             g.unitTesting = g.app.unitTesting = True
             g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
@@ -745,7 +738,6 @@ class TestManager:
             changed = c.isChanged()
             suite = unittest.makeSuite(unittest.TestCase)
             aList = tm.findAllUnitTestNodes(all,marked)
-
             found = False
             for p in aList:
                 if tm.isTestNode(p):
@@ -762,7 +754,6 @@ class TestManager:
                 if test:
                     suite.addTest(test)
                     found = True
-
             # Verbosity: 1: print just dots.
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
@@ -776,7 +767,7 @@ class TestManager:
                 # put info to db as well
                 if g.enableDB:
                     key = 'unittest/cur/fail'
-                    archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                    archive = [(t.p.gnx,trace2) for (t,trace2) in res.errors]
                     c.cacher.db[key] = archive
             else:
                 g.error('no %s@test or @suite nodes in %s outline' % (
@@ -1100,7 +1091,6 @@ class TestManager:
         c = self.c
         atTest = p.copy()
         w = c.frame.body.bodyCtrl
-
         h = atTest.h
         assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
         commandName = h[6:].strip()
@@ -1110,35 +1100,27 @@ class TestManager:
         assert commandName, 'empty command name'
         command = c.commandsDict.get(commandName)
         assert command, 'no command: %s' % (commandName)
-
         work,before,after = tm.findChildrenOf(atTest)
         before_h = 'before sel='
         after_h = 'after sel='
         for node,h in ((work,'work'),(before,before_h),(after,after_h)):
             h2 = node.h
             assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
-
         sels = []
         for node,h in ((before,before_h),(after,after_h)):
             sel = node.h[len(h):].strip()
             aList = [str(z) for z in sel.split(',')]
             sels.append(tuple(aList))
         sel1,sel2 = sels
-        #g.trace(repr(sels))
-
         c.selectPosition(work)
         c.setBodyString(work,before.b)
-        #g.trace(repr(sel1[0]),repr(sel1[1]))
         w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
         c.k.simulateCommand(commandName)
         s1 = work.b ; s2 = after.b
         assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
         sel3 = w.getSelectionRange()
-        ins = w.toGuiIndex(w.getInsertPoint())
-        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
-        # g.trace(w)
         assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
         i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
         assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
@@ -1154,16 +1136,13 @@ class TestManager:
 
         # Do not set or clear g.app.unitTesting: that is only done in leoTest.runTest.
         assert g.app.unitTesting
-
         try:
-            ok = False
             c2 = None
             old_gui = g.app.gui
             c2 = g.openWithFileName(path,old_c=c)
             assert(c2)
             errors = c2.checkOutline(verbose=verbose,unittest=True,full=full)
             assert(errors == 0)
-            ok = True
         finally:
             g.app.gui = old_gui
             if c2 and c2 != c:
@@ -1593,7 +1572,7 @@ class TestManager:
     #@+node:ekr.20120220070422.10423: *4* TM.findNodeAnywhere
     def findNodeAnywhere(self,headline,breakOnError=False):
 
-        tm = self
+        # tm = self
         c = self.c
         for p in c.all_unique_positions():
             h = headline.strip().lower()
@@ -1618,7 +1597,7 @@ class TestManager:
 
         """Search for a node in p's tree matching the given headline."""
 
-        tm = self
+        # tm = self
         c = self.c
         h = headline.strip().lower()
         for p in p.subtree():

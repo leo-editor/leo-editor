@@ -2284,12 +2284,11 @@ def doTests(self,all=None,marked=None,verbosity=1):
     to run external tests "locally" from dynamicUnitTest.leo
     '''
 
-    trace = False ; verbose = True
+    trace = False
     c,tm = self.c,self
 
     # 2013/02/25: clear the screen before running multiple unit tests locally.
     if all or marked: g.cls()
-
     p1 = c.p.copy() # 2011/10/31: always restore the selected position.
 
     # This seems a bit risky when run in unitTest.leo.
@@ -2298,7 +2297,6 @@ def doTests(self,all=None,marked=None,verbosity=1):
             c.save() # Eliminate the need for ctrl-s.
 
     if trace: g.trace('marked',marked,'c',c)
-
     try:
         g.unitTesting = g.app.unitTesting = True
         g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
@@ -2311,7 +2309,6 @@ def doTests(self,all=None,marked=None,verbosity=1):
         changed = c.isChanged()
         suite = unittest.makeSuite(unittest.TestCase)
         aList = tm.findAllUnitTestNodes(all,marked)
-
         found = False
         for p in aList:
             if tm.isTestNode(p):
@@ -2328,7 +2325,6 @@ def doTests(self,all=None,marked=None,verbosity=1):
             if test:
                 suite.addTest(test)
                 found = True
-
         # Verbosity: 1: print just dots.
         if not found:
             # 2011/10/30: run the body of p as a unit test.
@@ -2342,7 +2338,7 @@ def doTests(self,all=None,marked=None,verbosity=1):
             # put info to db as well
             if g.enableDB:
                 key = 'unittest/cur/fail'
-                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                archive = [(t.p.gnx,trace2) for (t,trace2) in res.errors]
                 c.cacher.db[key] = archive
         else:
             g.error('no %s@test or @suite nodes in %s outline' % (
