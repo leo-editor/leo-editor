@@ -296,29 +296,31 @@ def run(theDir,fn,rpython=False):
 def scanOptions():
 
     '''Handle all options, remove them from sys.argv.'''
+    
+    global g_option_fn
 
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
-
-    def add(name,help):
-        add = parser.add_option(name,action="store_true",help=help)
-
-    add('-a', help = 'all')
-    add('-c', help = 'core')
-    add('-e', help = 'external')
-    add('-g', help = 'gui plugins')
-    add('-p', help = 'plugins')
-    add('-r', help = 'recent')
-    # add('-s', help = 'suppressions')
-    add('-t', help = 'static type checking')
-    add('--tt',help = 'stc test')
+    add = parser.add_option
+    add('-a', action='store_true', help = 'all')
+    add('-c', action='store_true', help = 'core')
+    add('-e', action='store_true', help = 'external')
+    add('-f', dest='filename',     help = 'filename',)
+    add('-g', action='store_true', help = 'gui plugins')
+    add('-p', action='store_true', help = 'plugins')
+    add('-r', action='store_true', help = 'recent')
+    #add('-s', action='store_true', help = 'suppressions')
+    add('-t', action='store_true', help = 'static type checking')
+    add('--tt',action='store_true', help = 'stc test')
 
     # Parse the options.
-    options, args = parser.parse_args()
-
+    options,args = parser.parse_args()
     if   options.a: return 'all'
     elif options.c: return 'core'
     elif options.e: return 'external'
+    elif options.filename:
+        g_option_fn = options.filename.strip('"')
+        return 'file'
     elif options.g: return 'gui'
     elif options.p: return 'plugins'
     elif options.r: return 'recent'
@@ -328,6 +330,7 @@ def scanOptions():
     else:           return 'all'
 #@-others
 
+g_option_fn = None
 scope = scanOptions()
 
 coreList            = getCoreList()
@@ -356,6 +359,10 @@ elif scope == 'external':
     tables_table = (
         (externalList,'external'),
     )
+elif scope == 'file':
+    tables_table = (
+        ([g_option_fn],'core'), # Default is a core file.
+    )
 elif scope == 'gui':
     tables_table = (
         (guiPluginsList,'plugins'),
@@ -383,7 +390,8 @@ else:
     tables_table = ()
 
 if tables_table and sys.platform.startswith('win'):
-    os.system('cls')
+    if scope != 'file':
+        os.system('cls')
 
 from pylint import lint
     # Use the version of pylint in python26/Lib/site-packages.
