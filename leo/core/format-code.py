@@ -259,9 +259,8 @@ class formatController:
             return self.scanOptions(p,p.b)
         else:
             # Careful: can't use g.match_word because options may have '-' chars.
-            i = g.skip_id(h,0,chars='@-')
-            word = h[0:i]
-
+            # i = g.skip_id(h,0,chars='@-')
+            # word = h[0:i]
             for option,ivar,val in (
                 ('@rst-no-head','ignore_this_headline',True),
                 ('@rst-head'  ,'show_this_headline',True),
