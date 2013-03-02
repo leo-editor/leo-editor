@@ -845,29 +845,22 @@ class position (object):
 
         # Calculate all nodes that are joined to p or parents of such nodes.
         nodes = p.findAllPotentiallyDirtyNodes()
-
         if setDescendentsDirty:
-            # N.B. Only mark _direct_ descendents of nodes.
+            # **Important**: only mark _direct_ descendents of nodes.
             # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
             for p2 in p.subtree():
                 # Only @thin nodes need to be marked.
                 if p2.v not in nodes and p2.isAnyAtFileNode():
                         # Bug fix: 2011/07/05: was p2.isAtThinFileNode():
                     nodes.append(p2.v)
-
         if trace and verbose:
             for v in nodes:
                 print (v.isDirty(),v.isAnyAtFileNode(),v)
-
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]
-        changed = len(dirtyVnodeList) > 0
-
         for v in dirtyVnodeList:
             v.setDirty()
-
         if trace: g.trace("position",dirtyVnodeList,g.callers(5))
-
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty (self,setDescendentsDirty=True):
@@ -1573,12 +1566,10 @@ class position (object):
         """Move a position to the position of the next visible node."""
 
         trace = False and not g.unitTesting
-        verbose = False
-        p = self ; limit,limitIsVisible = c.visLimit()
+        p = self
+        limit,limitIsVisible = c.visLimit()
         while p:
             if trace: g.trace('1',p.h)
-            # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
-                # p.hasChildren(),p.isExpanded(),p.h))
             # Short-circuit if possible.
             if p.hasNext() and p.hasChildren() and p.isExpanded():
                 p.moveToFirstChild()
@@ -1718,21 +1709,17 @@ class position (object):
 
         p = self
         assert(p.v)
-
         hiddenRootNode = p.v.context.hiddenRootNode
-
-        if oldRoot: oldRootNode = oldRoot.v
-        else:       oldRootNode = None
+        # if oldRoot: oldRootNode = oldRoot.v
+        # else:       oldRootNode = None
 
         # Init the ivars.
         p.stack = []
         p._childIndex = 0
-
         parent_v = hiddenRootNode
         child = p.v
         if not oldRoot: parent_v.children = []
         child._addLink(0,parent_v)
-
         return p
     #@+node:ekr.20080416161551.217: *4* p._unlink
     def _unlink (self):
@@ -1852,17 +1839,15 @@ class poslist(list):
             t1,t2 = itertools.tee(m,2)
             try:
                 if g.isPython3:
-                    first = t1.__next__()
+                    t1.__next__()
                 else:
-                    first = t1.next()
+                    t1.next()
                 # if does not raise StopIteration...
                 pc = p.copy()
                 pc.matchiter = t2
                 res.append(pc)
-
             except StopIteration:
                 pass
-
         return res
 
     #@-others
@@ -2088,7 +2073,7 @@ class vnode (baseVnode):
         
         or if the headline starts with @ignore."""
         
-        v = self
+        # v = self
         
         # 2011/10/08: honor @ignore in headlines.  Sheesh.
         if g.match_word(self._headString,0,'@ignore'):
@@ -2295,21 +2280,14 @@ class vnode (baseVnode):
 
         # Calculate all nodes that are joined to p or parents of such nodes.
         nodes = v.findAllPotentiallyDirtyNodes()
-
         if trace and verbose:
             for v in nodes:
                 print (v.isDirty(),v.isAnyAtFileNode(),v)
-
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]
-
-        changed = len(dirtyVnodeList) > 0
-
         for v in dirtyVnodeList:
             v.setDirty() # Do not call p.setDirty here!
-
-        if trace: g.trace("vnode",dirtyVnodeList)
-
+        if trace: g.trace(dirtyVnodeList)
         return dirtyVnodeList
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty (self):
