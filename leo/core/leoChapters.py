@@ -373,13 +373,10 @@ class chapterController:
 
         '''Prompt for the name of a chapter, then remove it.'''
 
-        cc = self ; c = cc.c
-
+        cc = self
         theChapter = cc.selectedChapter
         if not theChapter: return
-
         name = theChapter.name
-
         if name == 'main':
             return cc.note('can not remove the main chapter')
         else:
@@ -409,7 +406,7 @@ class chapterController:
 
         '''Use the minibuffer to get a new name for the present chapter.'''
 
-        cc = self ; c = cc.c ; k = cc.c.k
+        cc = self ; c = cc.c ; k = c.k
         tag = 'rename-chapter'
         state = k.getState(tag)
 
@@ -1076,7 +1073,8 @@ class chapter:
         '''Remember chapter info when a chapter is about to be unselected.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; cc = self.cc
+        c = self.c
+        # cc = self.cc
         self.hoistStack = c.hoistStack[:]
         self.p = c.p
         if trace: g.trace('*** %s, p: %s' % (self.name,self.p.h))
