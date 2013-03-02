@@ -6763,15 +6763,12 @@ C. Labels for panes.
 
 def selectHelper (self,p,scroll):
 
-    trace = False and not g.unitTesting
-    verbose = False
+    # trace = False and not g.unitTesting
     c = self.c
-    body = w = c.frame.body.bodyCtrl
+    w = c.frame.body.bodyCtrl
     if not w: return # Defensive.
-
     old_p = c.p
     call_event_handlers = p != old_p
-
     if p:
         # 2009/10/10: selecting a foreign position
         # will not be pretty.
@@ -6783,18 +6780,14 @@ def selectHelper (self,p,scroll):
 
     # if trace and (verbose or call_event_handlers):
         # g.trace(p and p.h,g.callers())
-
     if call_event_handlers:
         unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
     else:
         unselect = True
-
     if unselect:
         << unselect the old node >>
-
     if call_event_handlers:
         g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
     if call_event_handlers:
         if call_event_handlers:
             select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
@@ -6807,7 +6800,6 @@ def selectHelper (self,p,scroll):
         if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             self.selectNewNode(p,old_p)
             c.nodeHistory.update(p) # Remember this position.
-
     c.setCurrentPosition(p)
     << set the current node >>
     p.restoreCursorAndScroll()
@@ -6823,7 +6815,6 @@ def selectHelper (self,p,scroll):
     c.frame.clearStatusLine()
     verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
     c.frame.putStatusLine(p.get_UNL(with_proto=verbose))
-
     if call_event_handlers: # 2011/11/06
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
