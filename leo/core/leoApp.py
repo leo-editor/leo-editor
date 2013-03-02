@@ -785,12 +785,12 @@ class LeoApp:
         """A convenience routines for plugins to create the Qt gui class."""
 
         app = self
-
         try:
             # Take care to try the same imports as in qtGui.py.
             import PyQt4.QtCore
             import PyQt4.QtGui            
             import leo.plugins.qtGui as qtGui
+            if 0: g.trace(PyQt4) # To remove a pyflakes warning.
         except ImportError:
             qtGui = None
 
@@ -1307,32 +1307,22 @@ class LoadManager:
         '''Return the full path to leoSettings.leo.'''
 
         trace = False
-        lm = self
+        # lm = self
         join = g.os_path_finalize_join
         settings_fn = 'leoSettings.leo'
-
-        # machine_fn = lm.computeMachineName() + settings_fn
-
         table = (
             # First, leoSettings.leo in the home directories.
             join(g.app.homeDir,     settings_fn),
             join(g.app.homeLeoDir,  settings_fn),
-
-            # Next, <machine-name>leoSettings.leo in the home directories.
-            # join(g.app.homeDir,     machine_fn),
-            # join(g.app.homeLeoDir,  machine_fn),
-
             # Last, leoSettings.leo in leo/config directory.
             join(g.app.globalConfigDir, settings_fn)
         )
-
         for path in table:
             if trace: print('computeLeoSettingsPath',g.os_path_exists(path),repr(path))
             if g.os_path_exists(path):
                 break
         else:
             path = None
-
         return path
     #@+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
     def computeMyLeoSettingsPath (self):
@@ -1397,29 +1387,24 @@ class LoadManager:
     #@+node:ekr.20120209051836.10253: *5* lm.computeGlobalConfigDir
     def computeGlobalConfigDir(self):
 
-        lm = self
+        # lm = self
 
         # To avoid pylint complaints that sys.leo_config_directory does not exist.
         leo_config_dir = (
             hasattr(sys,'leo_config_directory') and
             getattr(sys,'leo_config_directory') or None)
-
         if leo_config_dir:
             theDir = leo_config_dir
         else:
             theDir = g.os_path_join(g.app.loadDir,"..","config")
-
         if theDir:
             theDir = g.os_path_finalize(theDir)
-
         if (
             not theDir or
             not g.os_path_exists(theDir) or
             not g.os_path_isdir(theDir)
         ):
             theDir = None
-
-        # g.trace(theDir)
         return theDir
     #@+node:ekr.20120209051836.10254: *5* lm.computeHomeDir
     def computeHomeDir(self):
@@ -1449,29 +1434,18 @@ class LoadManager:
     #@+node:ekr.20120209051836.10260: *5* lm.computeHomeLeoDir
     def computeHomeLeoDir (self):
 
-        lm = self
-
+        # lm = self
         homeLeoDir = g.os_path_finalize_join(g.app.homeDir,'.leo')
-
         if not g.os_path_exists(homeLeoDir):
             g.makeAllNonExistentDirectories(homeLeoDir,force=True)
-
-        # g.trace('homeLeoDir',homeLeoDir)
         return homeLeoDir
     #@+node:ekr.20120209051836.10255: *5* lm.computeLeoDir
     def computeLeoDir (self):
 
-        lm = self
-
+        # lm = self
         loadDir = g.app.loadDir
-        theDir  = g.os_path_dirname(loadDir)
-
-        if 0: # xxx remove this, we don't want to have this in sys.path
-            if theDir not in sys.path:
-                sys.path.append(theDir)
-
-        # g.trace(theDir)
-        return theDir
+        return g.os_path_dirname(loadDir)
+            # We don't want the result in sys.path
     #@+node:ekr.20120209051836.10256: *5* lm.computeLoadDir
     def computeLoadDir(self):
 
@@ -1548,15 +1522,12 @@ class LoadManager:
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName (self):
 
-        lm = self
+        # lm = self
 
         # Get the name of the workbook.
         fn = g.app.config.getString(setting='default_leo_file')
         fn = g.os_path_finalize(fn)
         if not fn: return
-
-        # g.trace(g.os_path_exists(fn),fn)
-
         if g.os_path_exists(fn):
             return fn
         elif g.os_path_isabs(fn):
@@ -1595,17 +1566,14 @@ class LoadManager:
     #@+node:ekr.20120130101219.10182: *4* lm.computeBindingLetter
     def computeBindingLetter(self,kind):
 
-        lm = self
-
+        # lm = self
         if not kind:
             return 'D'
-
         table = (
             ('M','myLeoSettings.leo'),
             (' ','leoSettings.leo'),
             ('F','.leo'),
         )
-
         for letter,kind2 in table:
             if kind.lower().endswith(kind2.lower()):
                 return letter
@@ -1732,7 +1700,7 @@ class LoadManager:
         Duplicates happen only if panes conflict.
         '''
 
-        lm = self
+        # lm = self
 
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         for ks in sorted(list(d.keys())):
@@ -2016,7 +1984,7 @@ class LoadManager:
     #@+node:ekr.20120219154958.10479: *5* LM.createSpecialGui
     def createSpecialGui(self,gui,pymacs,script,windowFlag):
 
-        lm = self
+        # lm = self
 
         if pymacs:
             g.app.createNullGuiWithScript(script=None)
@@ -2617,11 +2585,10 @@ class LoadManager:
     #@+node:ekr.20120223062418.10405: *6* LM.createMenu
     def createMenu(self,c,fn=None):
 
+        # lm = self
+
         # Create the menu as late as possible so it can use user commands.
-        lm = self
-
         if not g.doHook("menu1",c=c,p=c.p,v=c.p):
-
             c.frame.menu.createMenuBar(c.frame)
             g.app.recentFilesManager.updateRecentFiles(fn)
             g.doHook("menu2",c=c,p=c.p,v=c.p)
@@ -2633,7 +2600,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
     def findOpenFile(self,fn):
 
-        lm = self
+        # lm = self
 
         def munge(name):
             return g.os_path_normpath(name or '').lower()
@@ -2654,7 +2621,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10407: *6* LM.finishOpen
     def finishOpen(self,c):
 
-        lm = self
+        # lm = self
         k = c.k
         assert k
 
@@ -2679,10 +2646,7 @@ class LoadManager:
         Otherwise, create an @edit or @file node for the external file.
         '''
 
-        lm = self
-
-        # 2011/10/12: support quick edit-save mode.
-        # We will create an @edit node below for non-existent files.
+        # lm = self
 
         # Use the config params to set the size and location of the window.
         frame = c.frame
@@ -2749,12 +2713,10 @@ class LoadManager:
     #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
     def openLeoFile (self,fn):
 
-        lm = self
-
+        # lm = self
         try:
             theFile = open(fn,'rb')
             return theFile
-
         except IOError:
             # Do not use string + here: it will fail for non-ascii strings!
             if not g.unitTesting:
@@ -2763,8 +2725,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
     def openZipFile (self,fn):
 
-        lm = self
-
+        # lm = self
         try:
             theFile = zipfile.ZipFile(fn,'r')
             if not theFile: return None
@@ -2787,21 +2748,16 @@ class LoadManager:
 
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile
-
-        lm = self
-        # rf = g.app.recentFilesManager
-
+        # lm = self
         ok = c.fileCommands.openLeoFile(theFile,fn,
             readAtFileNodesFlag=readAtFileNodesFlag)
                 # closes file.
-
         if ok:
             if not c.openDirectory:
                 theDir = c.os_path_finalize(g.os_path_dirname(fn))
                 c.openDirectory = c.frame.openDirectory = theDir 
         else:
             g.app.closeLeoWindow(c.frame)
-
         return ok
     #@-others
 
