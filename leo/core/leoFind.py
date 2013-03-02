@@ -455,7 +455,6 @@ class leoFind:
 
         c = self.c ; u = c.undoer ; undoType = 'Change All'
         current = c.p
-        w = self.s_ctrl
         if not self.checkArgs(): return
         self.initInHeadline()
         saveData = self.save()
@@ -468,6 +467,7 @@ class leoFind:
             count += 1
             self.batchChange(pos1,pos2)
             # if 0:
+                # w = self.s_ctrl
                 # s = w.getAllText()
                 # i,j = g.getLine(s,pos1)
                 # line = s[i:j]

@@ -5707,19 +5707,14 @@ class editCommandsClass (baseEditCommandsClass):
     def moveWithinLineHelper (self,event,spot,extend):
 
         trace = False and not g.unitTesting
-        c = self.c ; w = self.editWidget(event)
+        w = self.editWidget(event)
         if not w: return
-
-        # g.trace(hasattr(w,'leoMoveCursorHelper'))
         
         # Bug fix: 2012/02/28: don't use the Qt end-line logic:
         # it apparently does not work for wrapped lines.
         if hasattr(w,'leoMoveCursorHelper') and spot != 'end-line':
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
-            # w.seeInsertPoint()
-            # c.frame.updateStatusLine()
-            # w.rememberSelectionAndScroll()
         else:
             s = w.getAllText()
             ins = w.getInsertPoint()
@@ -5756,11 +5751,10 @@ class editCommandsClass (baseEditCommandsClass):
         '''Move the cursor up/down one page, possibly extending the selection.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; w = self.editWidget(event)
+        w = self.editWidget(event)
         if not w: return
 
         linesPerPage = 15 # To do.
-
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(
@@ -5882,7 +5876,6 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051213094517: *5* backSentenceHelper
     def backSentenceHelper (self,event,extend):
 
-        trace = False and not g.unitTesting
         c = self.c
         w = self.editWidget(event)
         if not w: return
@@ -6200,7 +6193,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Fill the selected text.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
@@ -6286,7 +6278,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Insert a hard tab at the start of each line of the selected text.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
@@ -6342,7 +6333,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
-        n = i2-i
+        # n = i2-i
         # g.trace('moveLinesDown:',repr('%s[[%s|%s|%s]]%s' % (
         #    s[i-20:i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
         self.beginCommand(undoType='move-lines-down')
@@ -6383,7 +6374,6 @@ class editCommandsClass (baseEditCommandsClass):
         i,junk = g.getLine(s,sel_1)
         i2,j   = g.getLine(s,sel_2)
         lines  = s[i:j]
-        n = i2-i
         # g.trace('moveLinesUp:',repr('%s[[%s|%s|%s]]%s' % (
         #    s[max(0,i-20):i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
         self.beginCommand(undoType='move-lines-up')
@@ -6413,7 +6403,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Reverse the order of lines in the selected text.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
@@ -6508,11 +6497,8 @@ class editCommandsClass (baseEditCommandsClass):
         '''Scroll the present pane up or down one page
         kind is in ('up/down-half-page/line/page)'''
 
-        k = self.k ; c = k.c ; gui = g.app.gui
         w = event and event.w
-        if not w: return
-
-        if hasattr(w,'scrollDelegate'):
+        if w and hasattr(w,'scrollDelegate'):
             kind = direction + '-' + distance
             w.scrollDelegate(kind)
     #@+node:ekr.20060309060654.1: *4* scrollOutlineUp/Down/Line/Page
@@ -6685,7 +6671,7 @@ class editCommandsClass (baseEditCommandsClass):
 
     def sortLines (self,event,ignoreCase=False,reverse=False):
         '''Sort the selected lines.'''
-        c = self.c ; k = c.k ; w = self.editWidget(event)
+        w = self.editWidget(event)
         if not self._chckSel(event): return
 
         undoType = g.choose(reverse,'reverse-sort-lines','sort-lines')
@@ -6717,13 +6703,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Sort lines of selected text using only lines in the given columns to do the comparison.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not self._chckSel(event): return
         self.beginCommand(undoType='sort-columns')
         try:
             s = w.getAllText()
-            ins = w.getInsertPoint()
             sel_1,sel_2 = w.getSelectionRange()
             sint1,sint2 = g.convertPythonIndexToRowCol(s,sel_1)
             sint3,sint4 = g.convertPythonIndexToRowCol(s,sel_2)
@@ -6754,7 +6738,6 @@ class editCommandsClass (baseEditCommandsClass):
          field 1, etc. A negative argument means sort in descending order. Thus,
          minus 2 means sort by field 2 in reverse-alphabetical order.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
@@ -6795,7 +6778,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Transpose the line containing the cursor with the preceding line.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w: return
 
@@ -6879,18 +6861,15 @@ class editCommandsClass (baseEditCommandsClass):
         
         '''Swap the characters at the cursor.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w: return
 
         self.beginCommand(undoType='swap-characters')
-
         s = w.getAllText()
         i = w.getInsertPoint()
         if 0 < i < len(s):
             w.setAllText(s[:i-1] + s[i] + s[i-1] + s[i+1:])
             w.setSelectionRange(i,i,insert=i)
-
         self.endCommand(changed=True,setLabel=True)
 
     transposeCharacters = swapCharacters
@@ -6905,11 +6884,10 @@ class editCommandsClass (baseEditCommandsClass):
 
     def tabifyHelper (self,event,which):
 
-        k = self.k ; w = self.editWidget(event)
+        w = self.editWidget(event)
         if not w or not w.hasSelection(): return
 
         self.beginCommand(undoType=which)
-
         i,end = w.getSelectionRange()
         txt = w.getSelectedText()
         if which == 'tabify':
@@ -6922,7 +6900,6 @@ class editCommandsClass (baseEditCommandsClass):
         w.insert(i,ntxt)
         n = i + len(ntxt)
         w.setSelectionRange(n,n,insert=n)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20110527105255.18384: *3* uA's (leoEditCommands)
     #@+node:ekr.20110527105255.18387: *4* clearNodeUas & clearAllUas
@@ -7089,12 +7066,9 @@ class editFileCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20070921074410: *5* createCompareClones
     def createCompareClones (self,d,kind,parent):
 
-        c = self.c # Always use the visible commander.
-
         if d:
             parent = parent.insertAsLastChild()
             parent.setHeadString(kind)
-
             for key in d:
                 p = d.get(key)
                 clone = p.clone()
@@ -7169,7 +7143,6 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         '''Creates a node and puts the diff between 2 files into it.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w: return
         fn = self.getReadableTextFile()
@@ -7202,7 +7175,7 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         '''Prompt for the name of a file and put the selected text into it.'''
 
-        k = self.k ; c = k.c ; w = self.editWidget(event)
+        w = self.editWidget(event)
         if not w: return
 
         fn = self.getReadableTextFile()
@@ -7328,8 +7301,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Print a messages telling you how to get started with Leo.'''
 
         # A bug in Leo: triple quotes puts indentation before each line.
-        c = self.c
-        
+        c = self.c    
         #@+<< define s >>
         #@+node:ekr.20120522024827.9899: *4* << define s >> (helpForMinibuffer)
         #@@language rest
@@ -7359,8 +7331,7 @@ class helpCommandsClass (baseEditCommandsClass):
         Use the help-for-command command to see documentation for a particular command.
         '''
         #@-<< define s >>
-        
-        self.c.putApropos(s)
+        c.putApropos(s)
     #@+node:ekr.20060417203717: *3* helpForCommand & helpers
     def helpForCommand (self,event):
 
@@ -8407,10 +8378,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         '''A helper method for all kill commands.'''
 
-        k = self.k
         w = self.editWidget(event)
         if not w: return
-
         s = w.get(frm,to)
         if undoType: self.beginCommand(undoType=undoType)
         self.addToKillBuffer(s)
@@ -9046,17 +9015,15 @@ class macroCommandsClass (baseEditCommandsClass):
         '''Store macros in the @macros node..'''
 
         p = self.getMacrosNode()
-        
         result = []
-        
-        g.trace(list(self.namedMacros.keys()))
-
+        # g.trace(list(self.namedMacros.keys()))
         for name in self.namedMacros:
             macro = self.namedMacros.get(name)
             result.append('::%s::' % (name))
             for event in macro:
-                w_name = self.getWidgetName(event.w)
-                # result.append('%s::%s::%s' % (repr(event.char),event.stroke,w_name))
+                if 0:
+                    w_name = self.getWidgetName(event.w)
+                    result.append('%s::%s::%s' % (repr(event.char),event.stroke,w_name))
                 result.append(event.stroke)
             result.append('') # Blank line terminates
             
@@ -9289,7 +9256,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         '''Yank into the rectangle defined by the start and end of selected text.'''
 
-        c = self.c ; k = self.k
+        # c = self.c
+        k = self.k
         w = self.editWidget(event)
         if not w: return
 
@@ -9313,7 +9281,6 @@ class rectangleCommandsClass (baseEditCommandsClass):
         i = '%s.%s' % (r1,r2)
         j = '%s.%s' % (r3,r2+len(killRect[n-1]))
         w.setSelectionRange(i,j,insert=j)
-
         self.endCommand()
     #@-others
 #@+node:ekr.20050920084036.234: ** registerCommandsClass
@@ -9712,13 +9679,12 @@ class minibufferFind (baseEditCommandsClass):
         This prevents this class from caching an edit widget
         that is about to be deallocated.'''
 
-        c = self.c ; w = event and event.widget
-        bodyCtrl = self.c.frame.body and self.c.frame.body.bodyCtrl
+        c = self.c
+        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
          
         # Do not cache a pointer to a headline!
         # It will die when the minibuffer is selected.
         self.w = bodyCtrl
-
         return self.w
     #@+node:ekr.20060124140114: *4*  Options (minibufferFind)
     #@+node:ekr.20060124123133: *5* setFindScope
@@ -10097,12 +10063,12 @@ class minibufferFind (baseEditCommandsClass):
     #@+node:ekr.20060124134356: *4* setupArgs
     def setupArgs (self,forward=False,regexp=False,word=False):
 
-        h = self.finder ; k = self.k
-
-        if forward is None:
-            reverse = None
-        else:
-            reverse = not forward
+        h = self.finder
+        reverse = None if forward is None else not forward
+        # if forward is None:
+            # reverse = None
+        # else:
+            # reverse = not forward
 
         for ivar,val,in (
             ('reverse', reverse),
@@ -10617,7 +10583,8 @@ class searchCommandsClass (baseEditCommandsClass):
     def iSearchStateHandler (self,event):
 
         trace = False and not g.unitTesting
-        c = self.c ; k = self.k
+        # c = self.c
+        k = self.k
         
         stroke = event and event.stroke or None
         s = stroke.s if stroke else ''
@@ -10648,8 +10615,7 @@ class searchCommandsClass (baseEditCommandsClass):
     def iSearchBackspace (self):
 
         trace = False and not g.unitTesting
-        c = self.c ; ifinder = self.ifinder
-
+        c = self.c
         if len(self.stack) <= 1:
             self.abortSearch()
             return
@@ -10680,8 +10646,6 @@ class searchCommandsClass (baseEditCommandsClass):
 
     #@+node:ekr.20090204084607.6: *6* getStrokes
     def getStrokes (self,commandName):
-
-        c = self.c
 
         aList = self.inverseBindingDict.get(commandName,[])
         return [key for pane,key in aList]

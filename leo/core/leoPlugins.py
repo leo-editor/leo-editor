@@ -198,7 +198,6 @@ class baseLeoPlugin(object):
 
     """
     #@-<<docstring>>
-    import leo.core.leoGlobals as g
     #@+others
     #@+node:ekr.20100908125007.6012: *3* __init__ (baseLeoPlugin)
     def __init__(self, tag, keywords):
@@ -553,7 +552,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack.append(moduleName)
 
         try:
-            toplevel = __import__(moduleName)
+            __import__(moduleName)
             # need to look up through sys.modules, __import__ returns toplevel package
             result = sys.modules[moduleName]
 
@@ -574,7 +573,7 @@ class LeoPluginsController:
                 # g.es_exception()
             result = None
 
-        except Exception as e:
+        except Exception:
             g.error('exception importing plugin ' + moduleName)
             g.es_exception()
             result = None

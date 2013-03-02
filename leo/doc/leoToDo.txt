@@ -4233,12 +4233,9 @@ def createAllCompareClones(self,inserted,deleted,changed):
 .. @+node:ekr.20070921074410: *8* createCompareClones
 def createCompareClones (self,d,kind,parent):
 
-    c = self.c # Always use the visible commander.
-
     if d:
         parent = parent.insertAsLastChild()
         parent.setHeadString(kind)
-
         for key in d:
             p = d.get(key)
             clone = p.clone()

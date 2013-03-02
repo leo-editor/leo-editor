@@ -485,8 +485,6 @@ class baseTangleCommands:
 
     def cleanup (self):
 
-        c = self.c
-
         # Reinitialize the symbol tables and lists.
         self.tst = {}
         self.ust = {}
@@ -2062,9 +2060,10 @@ class baseTangleCommands:
             for part in section.parts.values():
                 assert(part.of == section.of)
                 if not part.update_flag:
-                    lp = "<< "
-                    rp = " >>"
-                    # g.es("warning:",'%s%s(%s)%s' % (lp,part.name,part.part,rp),"is not in the outline")
+                    # lp = "<< "
+                    # rp = " >>"
+                    # g.es("warning:",'%s%s(%s)%s' % (lp,part.name,part.part,rp),
+                      # "is not in the outline")
                     break # One warning per section is enough.
     #@+node:ekr.20031218072017.3544: *3* untangle
     #@+node:ekr.20031218072017.3545: *4* compare_comments
@@ -3141,7 +3140,6 @@ class baseTangleCommands:
     # side effect: sets the values within lang_dict
     # *might* lower case c.target_language
     def parent_language_comment_settings(self,p,lang_dict):
-        import re
         c = self.c
         if p.hasParent():
             p1 = p.parent()

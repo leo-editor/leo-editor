@@ -32,8 +32,7 @@ class leoKeyEvent:
     def __init__ (self,c,char,shortcut,w,x,y,x_root,y_root):
         
         trace = False and not g.unitTesting
-        k = c.k
-        
+
         if g.isStroke(shortcut):
             g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
             stroke = shortcut

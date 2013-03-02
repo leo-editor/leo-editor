@@ -21,7 +21,7 @@ class leoMenu:
     #@+node:ekr.20120124042346.12938: *3* leoMenu.Birth
     def __init__ (self,frame):
 
-        self.c = c = frame.c
+        self.c = frame.c
         self.enable_dict = {}       # Created by finishCreate.
         self.frame = frame
         self.isNull = False
@@ -275,11 +275,7 @@ class leoMenu:
     #@+node:ekr.20050921103736: *5* createCmndsMenuFromTable
     def createCmndsMenuFromTable (self):
 
-        cmdsMenu = self.createNewMenu('&Cmds')
-
-        # Now in the minibuffer table.
-            # Used in top table: q,u,x
-            # self.createMenuEntries(cmdsMenu,self.cmdsMenuTopTable)
+        self.createNewMenu('&Cmds')
 
         for name,table in (
             # &: a,b,c,d,f,g,h,i,m,n,o,p,r,s,t,u
@@ -1124,7 +1120,7 @@ class leoMenu:
         New in 4.4: this method shows the shortcut in the menu,
         but this method **never** binds any shortcuts.'''
 
-        c = self.c ; k = c.k
+        c = self.c
         if g.app.unitTesting: return
         if not menu: return
         
@@ -1319,11 +1315,9 @@ class leoMenu:
         Otherwise, Leo computes an extension based on the @language directive in effect.
     '''
 
-        trace = False and not g.unitTesting
+        # trace = False and not g.unitTesting
         c,k = self.c,self.c.k
         if not table: return
-
-        #### ?????
         g.app.openWithTable = table # Override any previous table.
         
         # Delete the previous entry.
@@ -1372,7 +1366,7 @@ class leoMenu:
         trace = False and not g.unitTesting
         # if trace: g.trace(g.callers())
 
-        c = self.c ; k = c.k
+        c = self.c
         if g.app.unitTesting: return
 
         for d in table:

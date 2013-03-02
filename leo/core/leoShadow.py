@@ -728,7 +728,7 @@ class shadowController:
             root, ext = os.path.splitext(root)
 
         delims = g.comment_delims_from_extension(filename)
-        marker = self.markerClass(delims)
+        marker = x.markerClass(delims)
         return marker
     #@+node:ekr.20080708094444.30: *4* x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):
@@ -743,7 +743,6 @@ class shadowController:
         """
 
         x = self ; mapping = [None]
-
         i = 0 ; n = len(lines)
         while i < n:
             line = lines[i]
@@ -768,9 +767,10 @@ class shadowController:
         Returns (regular_lines, sentinel_lines)
         '''
 
-        x = self ; regular_lines = [] ; sentinel_lines = []
-
-        i = 0 ; n = len(lines)
+        x = self
+        regular_lines = []
+        sentinel_lines = []
+        i = 0
         while i < len(lines):
             line = lines[i]
             if marker.isSentinel(line):
@@ -785,7 +785,6 @@ class shadowController:
             else:
                 regular_lines.append(line)
             i += 1
-
         return regular_lines, sentinel_lines 
     #@+node:ekr.20080708094444.33: *4* x.show_error & helper
     def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
@@ -861,8 +860,9 @@ class shadowController:
         #@+node:ekr.20080709062932.8: *4* setUp & helpers
         def setUp (self):
 
-            c = self.c ; p = self.p ; x = self.shadowController
-
+            c = self.c
+            p = self.p
+            # x = self.shadowController
             old = self.findNode (c,p,'old')
             new = self.findNode (c,p,'new')
 

@@ -175,7 +175,8 @@ class undoer:
         if n < 0 or n >= len(u.beads):
             return 'no bead: n = ',n
 
-        bunch = u.beads[n] ; result = []
+        # bunch = u.beads[n]
+        result = []
         result.append('-' * 10)
         result.append('len(u.beads): %s, n: %s' % (len(u.beads),n))
         for ivar in ('kind','newP','newN','p','oldN','undoHelper'):
@@ -911,7 +912,8 @@ class undoer:
 
         '''Create an undo node for sort operations'''
 
-        u = self ; c = self.c
+        u = self
+        # c = self.c
         if u.redoing or u.undoing: return
 
         bunch.dirtyVnodeList = dirtyVnodeList
