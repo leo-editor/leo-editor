@@ -14,7 +14,6 @@ import leo.core.leoGlobals as g
     # except ImportError: pass
 
 import leo.core.leoNodes as leoNodes
-
 import binascii
 import difflib
 
@@ -559,8 +558,7 @@ class baseFileCommands:
 
         # The bin param doesn't exist in Python 2.3;
         # the protocol param doesn't exist in earlier versions of Python.
-        version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
-        # self.python23 = g.CheckVersion(version,'2.3')
+        # version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
 
         # For reading
         self.checking = False # True: checking only: do *not* alter the outline.
@@ -570,7 +568,6 @@ class baseFileCommands:
         self.descendentTnodeUaDictList = []
         self.descendentVnodeUaDictList = []
         self.ratio = 0.5
-
         self.currentVnode = None
         self.rootVnode = None
 
@@ -590,8 +587,6 @@ class baseFileCommands:
             # keys are gnx strings as returned by canonicalTnodeIndex.
             # Values are vnodes.
             # 2011/12/10: This dict is never re-inited.
-        # g.trace('***clearing gnxDict',c)
-
         self.vnodesDict = {}
             # keys are gnx strings; values are ignored
     #@+node:ekr.20031218072017.3020: ** Reading
@@ -1108,30 +1103,24 @@ class baseFileCommands:
     #@+node:ekr.20060919110638.5: *4* fc.createSaxChildren & helpers
     def createSaxChildren (self, sax_node, parent_v):
 
-        c = self.c
         trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
         children = []
-
         for sax_child in sax_node.children:
             tnx = sax_child.tnx
             v = self.gnxDict.get(tnx)
-
             if v: # A clone.
                 if trace: g.trace('**clone',v)
                 v = self.createSaxVnode(sax_child,parent_v,v=v)   
             else:
                 v = self.createSaxVnode(sax_child,parent_v)
                 self.createSaxChildren(sax_child,v)
-
             children.append(v)
-
         parent_v.children = children
         for child in children:
             child.parents.append(parent_v)
             if trace: g.trace(
                 '*** added parent',parent_v,'to',child,
                 'len(child.parents)',len(child.parents))
-
         return children
     #@+node:ekr.20060919110638.7: *5* fc.createSaxVnode & helpers
     def createSaxVnode (self,sax_node,parent_v,v=None):
@@ -1783,10 +1772,8 @@ class baseFileCommands:
 
         # Populate tnodes
         tnodes = {}
-        nodeIndices = g.app.nodeIndices
         for p in theIter:
             # Make *sure* the file index has the proper form.
-            # g.trace(p.v.fileIndex)
             try:
                 theId,t,n = p.v.fileIndex
             except ValueError:
@@ -1794,7 +1781,6 @@ class baseFileCommands:
                     theId,t,n = p.v.fileIndex,''
                 except Exception:
                     raise BadLeoFile('bad p.v.fileIndex: %s' % repr(p.v.fileIndex))
-
             if n is None:
                 n = g.u('0')
             elif g.isPython3:
@@ -2096,11 +2082,8 @@ class baseFileCommands:
     #@+node:ekr.20100119145629.6106: *5* createActualFile
     def createActualFile (self,fileName,toOPML,toZip):
 
-        c = self.c
-
         if toOPML and not self.mFileName.endswith('opml'):
             fileName = self.mFileName + '.opml'
-
         if toZip:
             self.toString = True
             theActualFile = None
@@ -2122,16 +2105,11 @@ class baseFileCommands:
             but only if the original file exists.
         '''
 
-        c = self.c
-
         if g.os_path_exists(fileName):
-            # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
-
             fd,backupName = tempfile.mkstemp(text=False)
             f = open(fileName,'rb') # rb is essential.
             s = f.read()
             f.close()
-
             try:
                 try:
                     os.write(fd,s)
@@ -2142,12 +2120,10 @@ class baseFileCommands:
                 g.error('exception creating backup file')
                 g.es_exception()
                 ok,backupName = False,None
-
             if not ok and self.read_only:
                 g.error("read only")
         else:
             ok,backupName = True,None
-
         return ok,backupName
     #@+node:ekr.20100119145629.6108: *5* handleWriteLeoFileException
     def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
