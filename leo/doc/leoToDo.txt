@@ -7231,7 +7231,7 @@ def createImportParent (self,current,files):
 def createOutline (self,fileName,parent,
     atAuto=False,atShadow=False,s=None,ext=None):
 
-    c = self.c ; u = c.undoer ; s1 = s
+    c = self.c ; u = c.undoer
     w = c.frame.body
     at = c.atFileCommands
 

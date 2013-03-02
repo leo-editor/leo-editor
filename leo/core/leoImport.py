@@ -108,6 +108,11 @@ if g.isPython3:
 else:
     import StringIO
     StringIO = StringIO.StringIO
+    
+try:
+    import docutils
+except ImportError:
+    docutils = None
 #@-<< imports >>
 #@+<< class scanUtility >>
 #@+node:sps.20081112093624.1: ** << class scanUtility >>
@@ -843,7 +848,7 @@ class leoImportCommands (scanUtility):
     def createOutline (self,fileName,parent,
         atAuto=False,atShadow=False,s=None,ext=None):
 
-        c = self.c ; u = c.undoer ; s1 = s
+        c = self.c ; u = c.undoer
         w = c.frame.body
         at = c.atFileCommands
 
@@ -1667,13 +1672,9 @@ class leoImportCommands (scanUtility):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.py')
 
     def rstUnitTest(self,p,fileName=None,s=None,showTree=False):
-        try:
-            import docutils
-            # print(docutils)
+        if docutils:
             return self.scannerUnitTest(p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.rst')
-        except ImportError:
-            docutils = False
-            # print('docutils not present')
+        else:
             return None
 
     def textUnitTest(self,p,fileName=None,s=None,showTree=False):
@@ -1933,11 +1934,11 @@ class baseScannerClass (scanUtility):
 
         else: # Line-based comparison: can not possibly work for html.
             n1,n2 = len(lines1), len(lines2)
-            ok = True ; bad_i = 0
+            ok = True ; bad_i1,bad_i2 = 0,0
             for i in range(max(n1,n2)):
                 ok = self.compareHelper(lines1,lines2,i,self.strict)
                 if not ok:
-                    bad_i = i
+                    bad_1i,bad_i2 = i,i
                     break
 
         # Unit tests do not generate errors unless the mismatch line does not match.
@@ -2260,8 +2261,6 @@ class baseScannerClass (scanUtility):
 
         '''Create an unindented @others or section reference in the parent node.'''
 
-        c = self.c
-
         if self.isRst and not self.atAuto:
             return
 
@@ -2476,8 +2475,6 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070707190351: *5* appendTextToClassNode
     def appendTextToClassNode (self,class_node,s):
 
-        c = self.c
-
         self.appendStringToBody(class_node,s) 
     #@+node:ekr.20070703122141.105: *5* createClassNodePrefix
     def createClassNodePrefix (self):
@@ -2595,8 +2592,6 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070705094630: *4* putRootText
     def putRootText (self,p):
 
-        c = self.c
-
         self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
             self.rootLine,self.alternate_language or self.language,self.tab_width))
     #@+node:ekr.20070703122141.88: *4* undentBody
@@ -2625,7 +2620,6 @@ class baseScannerClass (scanUtility):
         For strict languages, add an underindentEscapeString for underindented line.'''
 
         trace = False and not g.app.unitTesting
-
         if self.isRst:
             return s # Never unindent rst code.
 
@@ -2635,7 +2629,6 @@ class baseScannerClass (scanUtility):
             lws_s = g.get_leading_ws(line)
             lws = g.computeWidth(lws_s,tab_width)
             s = g.removeLeadingWhitespace(line,undentVal,tab_width)
-            n = lws - undentVal
             # 2011/10/29: Add underindentEscapeString only for strict languages.
             if self.strict and s.strip() and lws < undentVal:
                 if trace: g.trace('undentVal: %s, lws: %s, %s' % (
@@ -2646,9 +2639,7 @@ class baseScannerClass (scanUtility):
             else:
                 if trace: g.trace(repr(s))
                 result.append(s)
-
         return ''.join(result)
-
     #@+node:ekr.20070801074524: *4* underindentedComment & underindentedLine
     def underindentedComment (self,line):
 
@@ -2782,12 +2773,12 @@ class baseScannerClass (scanUtility):
             elif self.startsId(s,i):
                 i = self.skipId(s,i)
             elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
-                i1 = i # for debugging
+                # i1 = i # for debugging
                 i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
                 # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
             else: i += 1
             if progress >= i:
-                g.pdb()
+                # g.pdb()
                 i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
@@ -3920,7 +3911,7 @@ class pascalScanner (baseScannerClass):
         self.methodName = headline
 
         # Compute the starting lines of the class.
-        prefix = self.createClassNodePrefix()
+        # prefix = self.createClassNodePrefix()
 
         # Create the class node.
         class_node = self.createHeadline(parent,'',headline)
@@ -4497,14 +4488,13 @@ class rstScanner (baseScannerClass):
             ok = (not overline and nows2 and self.isUnderLine(line2) and
                 n1 > 0 and n2 >= n1)
             if ok:
-                old_i = i
                 i += n2
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
                     self.underlines1.append(ch)
                     if trace: g.trace('*** underlines1',self.underlines1,name)
                 if trace and verbose: g.trace('\nname  %s\nline2 %s' % (
-                    repr(name),repr(line2))) # ,'\n',g.callers(4))
+                    repr(name),repr(line2)))
         return kind,name,i,ch
     #@+node:ekr.20091229075924.6234: *5* getLine
     def getLine (self,s,i):
@@ -4572,9 +4562,7 @@ class vimoutlinerScanner(baseScannerClass):
 
         '''Create Leo nodes for all vimoutliner lines.'''
 
-        trace = False and not g.unitTesting
         assert kind == 'outer' and end == len(s)
-
         while i < len(s):
             # Set k to the end of the line.
             progress = i
