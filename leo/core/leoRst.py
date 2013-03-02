@@ -189,8 +189,6 @@ class rstCommands:
     #@+node:ekr.20090502071837.102: *4*  getPublicCommands
     def getPublicCommands (self):        
 
-        c = self.c
-
         return {
             'rst3': self.rst3, # Formerly write-restructured-text.
             'code-to-rst': self.code_to_rst_command,
@@ -259,7 +257,6 @@ class rstCommands:
             self.stringOutput contains docutils output if docutils called.
         '''
 
-        trace = False and not g.unitTesting
         c = self.c
         if p: p = p.copy()
         else: p = c.p
@@ -477,7 +474,7 @@ class rstCommands:
     #@+node:ekr.20090502071837.62: *5* processTopTree
     def processTopTree (self,p,justOneFile=False):
 
-        c = self.c ; current = p.copy()
+        current = p.copy()
 
         # This strange looking code looks up and down the tree for @rst nodes.
         for p in current.self_and_parents():
@@ -490,7 +487,6 @@ class rstCommands:
                 break
         else:
             self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
-
         g.blue('done')
     #@+node:ekr.20090502071837.63: *5* processTree
     def processTree(self,p,ext=None,toString=False,justOneFile=False):
@@ -537,7 +533,6 @@ class rstCommands:
             self.stringOutput contains docutils output if docutils called.
         '''
 
-        c = self.c
         self.topNode = p.copy()
         self.topLevel = p.level()
         if toString:
@@ -567,7 +562,7 @@ class rstCommands:
 
         '''Convert p's children to slides.'''
 
-        c = self.c ; p = p.copy() ; h = p.h
+        p = p.copy() ; h = p.h
         i = g.skip_id(h,1) # Skip the '@'
         kind,fn = h[:i].strip(),h[i:].strip()
         if not fn: return g.error('%s requires file name' % (kind))
@@ -980,11 +975,10 @@ class rstCommands:
         - All doc parts get copied.
         - All code parts are ignored.'''
 
-        ignore              = self.getOption('ignore_this_headline')
+        # ignore            = self.getOption('ignore_this_headline')
         showHeadlines       = self.getOption('show_headlines')
         showThisHeadline    = self.getOption('show_this_headline')
         showOrganizers      = self.getOption('show_organizer_nodes')
-
         result = [] ; n = 0
         while n < len(lines):
             s = lines [n] ; n += 1
@@ -1631,7 +1625,7 @@ class rstCommands:
                 # print >> bwm_file
                 # print >> bwm_file, "relocate_references(1): Position, attr:"
                 # pprint.pprint((p, attr), bwm_file)
-            http_lines = attr [3:]
+                # http_lines = attr [3:]
             parser = link_htmlparserClass(self,p)
             for line in attr [3:]:
                 try:
@@ -1662,9 +1656,8 @@ class rstCommands:
                     except:
                         g.es("Skipped ", attr[line + 2])
                 else:
-                    filename = marker_parts [0]
+                    # filename = marker_parts [0]
                     try:
-                        # attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href,u'href="%s"' % http_node_ref)
                         attr [line + 2] = attr [line + 2].replace('href="%s"' % href,'href="%s"' % http_node_ref)
                     except:
                         g.es("Skipped", attr[line+2])
@@ -1828,13 +1821,11 @@ class rstCommands:
         if not docutils:
             g.error('writeToDocutils: docutils not present')
             return None
-
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding }
 
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
-
         if ext == '.pdf':
             module = g.importFromPath(
                 name = 'leo_pdf.py',
@@ -1855,12 +1846,10 @@ class rstCommands:
                 ('.s5','s5'), # 2011/03/27
                 ('.odt','odt'), # 2011/03/27
             ):
-                if ext2 == ext:
-                    break
+                if ext2 == ext: break
             else:
                 g.error('unknown docutils extension: %s' % (ext))
                 return None
-
         if ext in ('.html','.htm') and not SilverCity:
             if not self.silverCityWarningGiven:
                 self.silverCityWarningGiven = True
@@ -1872,12 +1861,10 @@ class rstCommands:
 
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
         stylesheet_path = g.os_path_finalize_join(
-            self.c.frame.openDirectory,rel_stylesheet_path)
-
+            openDirectory,rel_stylesheet_path)
         path = g.os_path_finalize_join(
             stylesheet_path,self.getOption('stylesheet_name'))
 
-        res = ""
         if self.getOption('stylesheet_embed') == False:
             rel_path = g.os_path_join(
                 rel_stylesheet_path,self.getOption('stylesheet_name'))
@@ -1899,7 +1886,7 @@ class rstCommands:
         else:
             g.error('stylesheet not found\n',path)
             if self.path:g.es_print('@path:', self.path)
-            g.es_print('open path:',self.c.frame.openDirectory)
+            g.es_print('open path:',openDirectory)
             if rel_stylesheet_path:
                 g.es_print('relative path:', rel_stylesheet_path)
         try:
