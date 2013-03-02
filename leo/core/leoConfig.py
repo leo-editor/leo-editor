@@ -689,24 +689,12 @@ class ParserBaseClass:
         """
 
         popupName = name
-        popupType = val
-
-        c = self.c ; aList = [] ; tag = '@menu'
-
-        #g.trace(p, kind, name, val, c)
-
+        # popupType = val
         aList = []
         p = p.copy()
         self.doPopupItems(p,aList)
-
-
         if not hasattr(g.app.config, 'context_menus'):
             g.app.config.context_menus = {}
-
-        #if popupName in g.app.config.context_menus:
-            #g.pr('*** duplicate popup ***', popupName)
-
-
         g.app.config.context_menus[popupName] = aList
     #@+node:bobjack.20080324141020.5: *5* doPopupItems
     def doPopupItems (self,p,aList):
@@ -754,10 +742,8 @@ class ParserBaseClass:
         '''Handle an @shortcut or @shortcuts node.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; k = c.k
-        d = self.shortcutsDict
+        c,d = self.c,self.shortcutsDict
         if s is None: s = p.b
-
         fn = d.name()
         for line in g.splitLines(s):
             line = line.strip()
@@ -766,9 +752,8 @@ class ParserBaseClass:
                 assert g.isShortcutInfo(si),si
                 if si and si.stroke not in (None,'none','None'):
                     self.doOneShortcut(si,commandName,p)
-
-        if trace:
-            g.trace('%4d' % (len(list(self.shortcutsDict.keys()))),c.shortFileName(),p.h)
+        if trace: g.trace(
+            len(list(self.shortcutsDict.keys())),c.shortFileName(),p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
     def doOneShortcut(self,si,commandName,p):
 
@@ -1005,16 +990,12 @@ class ParserBaseClass:
 
         # New in 4.4: Allow comments after the shortcut.
         # Comments must be preceded by whitespace.
-        comment = ''
         if val:
             i = val.find('#')
             if i > 0 and val[i-1] in (' ','\t'):
-                # comment = val[i:].strip()
                 val = val[:i].strip()
-
         stroke = k.strokeFromSetting(val)
         assert g.isStrokeOrNone(stroke),stroke
-        # g.trace('stroke',stroke)
         si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
         if trace: g.trace('%25s %s' % (name,si))
         return name,si
@@ -1421,8 +1402,6 @@ class GlobalConfigManager:
         """Get the setting and make sure its type matches the expected type."""
 
         trace = False and not g.unitTesting
-        verbose = False
-
         lm = g.app.loadManager
 
         # It *is* valid to call this method: it returns the global settings.
@@ -1740,14 +1719,10 @@ class LocalConfigManager:
     #@+node:ekr.20041118104414: *4* c.config.initEncoding
     def initEncoding (self,key):
 
-        c = self.c
-
         # Important: the key is munged.
         gs = g.app.config.encodingIvarsDict.get(key)
         encodingName = gs.ivar
-
         encoding = self.get(encodingName,kind='string')
-
 
         # Use the global setting as a last resort.
         if encoding:
@@ -1757,7 +1732,6 @@ class LocalConfigManager:
             encoding = getattr(g.app.config,encodingName)
             # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
             setattr(self,encodingName,encoding)
-
         if encoding and not g.isValidEncoding(encoding):
             g.es("bad", "%s: %s" % (encodingName,encoding))
     #@+node:ekr.20041118104240: *4* c.config.initIvar
@@ -1819,20 +1793,16 @@ class LocalConfigManager:
 
         """Get the setting and make sure its type matches the expected type."""
 
-        # trace = (False or g.trace_startup) and not g.unitTesting
         trace = False and not g.unitTesting
         verbose = True
-        c = self.c
         d = self.settingsDict
         lm = g.app.loadManager
-
         if d:
             assert g.isTypedDict(d),d
             val,junk = self.getValFromDict(d,setting,kind)
             if trace and verbose and val is not None:
                 # g.trace('%35s %20s %s' % (setting,val,g.callers(3)))
                 g.trace('%40s %s' % (setting,val))
-
             return val
         else:
             if trace and lm.globalSettingsDict:
@@ -1846,13 +1816,9 @@ class LocalConfigManager:
         does not (loosely) match the actual type.
         returns (val,exists)'''
 
-        c = self.c
         gs = d.get(g.app.config.munge(setting))
         if not gs: return None,False
-
         assert g.isGeneralSetting(gs),gs
-
-        # g.trace(setting,requestedType,gs.toString())
         val = gs.val
 
         # 2011/10/24: test for an explicit None.
@@ -1872,12 +1838,10 @@ class LocalConfigManager:
                 g.error('warning: ignoring',gs.kind,'',setting,'is not',requestedType)
                 g.error('there may be conflicting settings!')
             return None, False
-        # elif val in (u'None',u'none','None','none','',None):
         elif isNone:
             return '', True
                 # 2011/10/24: Exists, a *user-defined* empty value.
         else:
-            # g.trace(setting,val)
             return val, True
     #@+node:ekr.20120215072959.12521: *6* typesMatch
     def typesMatch (self,type1,type2):
@@ -2038,11 +2002,7 @@ class LocalConfigManager:
 
         '''return the name of the file responsible for setting.'''
 
-        trace = False and not g.unitTesting
-        c = self.c
-        d = self.settingsDict
-        lm = g.app.loadManager
-
+        c,d = self.c,self.settingsDict
         if d:
             assert g.isTypedDict(d),d
             si = d.get(setting)
@@ -2064,7 +2024,6 @@ class LocalConfigManager:
         trace = False and not g.unitTesting
         c = self.c
         d = self.shortcutsDict
-        lm = g.app.loadManager
 
         if not c.frame.menu:
             g.trace('no menu: %s' % (commandName))

@@ -5931,16 +5931,12 @@ def parseShortcutLine (self,kind,s):
 
     # New in 4.4: Allow comments after the shortcut.
     # Comments must be preceded by whitespace.
-    comment = ''
     if val:
         i = val.find('#')
         if i > 0 and val[i-1] in (' ','\t'):
-            # comment = val[i:].strip()
             val = val[:i].strip()
-
     stroke = k.strokeFromSetting(val)
     assert g.isStrokeOrNone(stroke),stroke
-    # g.trace('stroke',stroke)
     si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
     if trace: g.trace('%25s %s' % (name,si))
     return name,si
@@ -6723,16 +6719,12 @@ def parseShortcutLine (self,kind,s):
 
     # New in 4.4: Allow comments after the shortcut.
     # Comments must be preceded by whitespace.
-    comment = ''
     if val:
         i = val.find('#')
         if i > 0 and val[i-1] in (' ','\t'):
-            # comment = val[i:].strip()
             val = val[:i].strip()
-
     stroke = k.strokeFromSetting(val)
     assert g.isStrokeOrNone(stroke),stroke
-    # g.trace('stroke',stroke)
     si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
     if trace: g.trace('%25s %s' % (name,si))
     return name,si
