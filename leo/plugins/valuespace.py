@@ -321,51 +321,59 @@ def vs_eval(kwargs):
     blocks = re.split('\n(?=[^\\s])', txt)
 
     leo_globals = {'c':c, 'p':c.p, 'g':g}
-
-    if '\n' in blocks[-1].strip():
-        # last block not a simple expression
-        exec txt in leo_globals, c.vs
-        c.vs['_last'] = None
-        return
     
     ans = None
     
+    dbg = False
+    
     try:
         # execute all but the last 'block'
+        if dbg: print('all but last')
         exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
         all_done = False
     except SyntaxError:
         # splitting of the last block caused syntax error
         try:
-            # is the whole thing a singe expression?
+            # is the whole thing a single expression?
+            if dbg: print('one expression')
             ans = eval(txt, leo_globals, c.vs)
         except SyntaxError:
+            if dbg: print('statement block')
             exec txt in leo_globals, c.vs
         all_done = True  # either way, the last block is used now
     
     if not all_done:  # last block still needs using
         try:
+            if dbg: print('final expression')
             ans = eval(blocks[-1], leo_globals, c.vs)
         except SyntaxError:
             ans = None
+            if dbg: print('final statement')
             exec blocks[-1] in leo_globals, c.vs
             
-    if ans is None:
+    if ans is None:  # see if last block was a simple "var =" assignment
         key = blocks[-1].split('=', 1)[0].strip()
         if key in c.vs:
             ans = c.vs[key]
 
+    if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
+        key = blocks[0].split('=', 1)[0].strip()
+        if key in c.vs:
+            ans = c.vs[key]
+
     c.vs['_last'] = ans
-
-    txt = str(ans)
-    lines = txt.split('\n')
-    if len(lines) > 10:
-        txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
     
-    if len(txt) > 500:
-        txt = txt[:500] + ' <truncated>'
-
-    g.es(txt)
+    if ans is not None:  
+        # annoying to echo 'None' to the log during line by line execution
+        txt = str(ans)
+        lines = txt.split('\n')
+        if len(lines) > 10:
+            txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
+        
+        if len(txt) > 500:
+            txt = txt[:500] + ' <truncated>'
+    
+        g.es(txt)
 #@+node:tbrown.20130227164110.21223: *3* vs-last
 @g.command("vs-last")
 def vs_last(kwargs):
