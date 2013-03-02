@@ -11,6 +11,9 @@ from IPython.zmq.ipkernel import IPKernelApp
 #-----------------------------------------------------------------------------
 # Functions and classes
 #-----------------------------------------------------------------------------
+def init():
+    
+    return True # Required for Leo's unit tests.
 def pylab_kernel(gui):
     """Launch and return an IPython kernel with pylab support for the desired gui
     """
