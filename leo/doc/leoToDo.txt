@@ -5536,7 +5536,7 @@ def getShortcutForCommandName (self,commandName):
 
 def getShortcutForCommand (self,command):
 
-    k = self ; c = k.c
+    k = self
     if command:
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke),repr(stroke)
@@ -5549,7 +5549,7 @@ def getShortcutForCommand (self,command):
 .. @+node:ekr.20090518072506.8494: *7* k.isFKey
 def isFKey (self,stroke):
 
-    k = self
+    # k = self
     if not stroke: return False
     assert g.isString(stroke) or g.isStroke(stroke)
     s = stroke.s if g.isStroke(stroke) else stroke
@@ -6354,19 +6354,13 @@ def modeHelp (self,event):
     by analogy with tab completion.'''
 
     k = self ; c = k.c
-
     c.endEditing()
-
     # g.trace(k.inputModeName)
-
     if k.inputModeName:
         d = g.app.config.modeCommandsDict.get('enter-'+k.inputModeName)
         k.modeHelpHelper(d)
-
     if not k.silentMode:
         c.minibufferWantsFocus()
-
-    return
 .. @+node:ekr.20061031131434.166: *8* modeHelpHelper
 def modeHelpHelper (self,d):
 
@@ -6404,20 +6398,16 @@ def modeHelpHelper (self,d):
 .. @+node:ekr.20061031131434.164: *7* k.reinitMode (call k.createModeBindings???)
 def reinitMode (self,modeName):
 
-    k = self ; c = k.c
-
+    k = self
     d = k.modeBindingsDict
-
     k.inputModeName = modeName
     w = g.choose(k.silentMode,k.modeWidget,k.w)
     k.createModeBindings(modeName,d,w)
-
     if k.silentMode:
         k.showStateAndMode()
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-
 .. @+node:ekr.20120208064440.10199: *7* k.generalModeHandler (OLD)
 def generalModeHandler (self,event,
     commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
@@ -6437,7 +6427,7 @@ def generalModeHandler (self,event,
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
         # Careful: k.initMode can execute commands that will destroy a commander.
-        if g.app.quitting or not c.exists: return # (for Tk) 'break'
+        if g.app.quitting or not c.exists: return
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -6449,7 +6439,6 @@ def generalModeHandler (self,event,
         if commandName == 'mode-help':
             func(event)
         else:
-            savedModeName = k.inputModeName # Remember this: it may be cleared.
             self.endMode()
             if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
             # New in 4.4.1 b1: pass an event describing the original widget.
@@ -6460,8 +6449,8 @@ def generalModeHandler (self,event,
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
             if g.app.quitting or not c.exists:
-                return # (for Tk) 'break'
-            if nextMode in (None,'none'):
+                pass
+            elif nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
                 pass
@@ -6473,8 +6462,6 @@ def generalModeHandler (self,event,
             else:
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
-                # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
 .. @+node:ekr.20061031131434.156: *6* k.Modes (changed)
 .. @+node:ekr.20061031131434.163: *7* k.initMode (changed)
 def initMode (self,event,modeName):
@@ -6537,7 +6524,6 @@ def NEWgeneralModeHandler (self,event,
     k = self ; c = k.c
     state = k.getState(modeName)
     trace = (False or g.trace_modes) and not g.unitTesting
-
     if trace: g.trace(modeName,'state',state)
 
     if state == 0:
@@ -6547,7 +6533,7 @@ def NEWgeneralModeHandler (self,event,
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
         # Careful: k.initMode can execute commands that will destroy a commander.
-        if g.app.quitting or not c.exists: return # (for Tk) 'break'
+        if g.app.quitting or not c.exists: return
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -6555,12 +6541,10 @@ def NEWgeneralModeHandler (self,event,
                 c.frame.log.hideTab('Mode')
     elif not func:
         g.trace('No func: improper key binding')
-        return # (for Tk) 'break'
     else:
         if commandName == 'mode-help':
             func(event)
         else:
-            savedModeName = k.inputModeName # Remember this: it may be cleared.
             self.endMode()
             if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
             # New in 4.4.1 b1: pass an event describing the original widget.
@@ -6571,8 +6555,8 @@ def NEWgeneralModeHandler (self,event,
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
             if g.app.quitting or not c.exists:
-                return # (for Tk) 'break'
-            if nextMode in (None,'none'):
+                pass
+            elif nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
                 pass
@@ -6585,9 +6569,7 @@ def NEWgeneralModeHandler (self,event,
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
                 # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
-
-    return # (for Tk) 'break'
+                # if g.app.quitting or not c.exists: return
 .. @+node:ekr.20120228164039.10047: *5* Initing...
 .. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
