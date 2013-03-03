@@ -8094,7 +8094,7 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
                 'print-bindings':           k.printBindings,
                 'print-buttons':            k.printButtons,
                 'print-commands':           k.printCommands,
-                'propagate-key-event':      k.propagateKeyEvent,
+                # 'propagate-key-event':      k.propagateKeyEvent,
                 'repeat-complex-command':   k.repeatComplexCommand,
                 # 'scan-for-autocompleter':   k.autoCompleter.scan,
                 'set-command-state':        k.setCommandState,

@@ -2097,12 +2097,6 @@ class keyHandlerClass:
 
         # This method must exist, but it never gets called.
         pass 
-    #@+node:ekr.20070613190936: *4* k.propagateKeyEvent
-    def propagateKeyEvent (self,event):
-
-        '''Open a menu.'''
-
-        # self.oops() # Should be overridden.
     #@+node:ekr.20061031131434.117: *4* negativeArgument (redo?)
     def negativeArgument (self,event):
 
@@ -2679,7 +2673,6 @@ class keyHandlerClass:
         c.startRedrawCount = c.frame.tree.redrawCount
         k.stroke = stroke # Set this global for general use.
         char = ch = event and event.char or ''
-        # w = event and event.w
 
         # 2011/10/28: compute func if not given.
         if commandName and not func:
@@ -2710,7 +2703,6 @@ class keyHandlerClass:
         if c.macroCommands.recordingMacro:
             c.macroCommands.startRecordingMacro(event)
             # 2011/06/06: Show the key, if possible.
-            # return
 
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
@@ -2730,10 +2722,7 @@ class keyHandlerClass:
             if expanded: return
 
         if func: # Func is an argument.
-            if commandName == 'propagate-key-event':
-                # Do *nothing* with the event.
-                return k.propagateKeyEvent(event)
-            elif commandName.startswith('specialCallback'):
+            if commandName.startswith('specialCallback'):
                 # The callback function will call c.doCommand
                 if trace: g.trace('calling specialCallback for',commandName)
                 # if commandName != 'repeat-complex-command': # 2010/01/11
@@ -2749,17 +2738,14 @@ class keyHandlerClass:
                 k.endCommand(commandName)
                 c.frame.updateStatusLine()
             if traceGC: g.printNewObjects('masterCom 2')
-            return
         elif k.inState():
-            return  #Ignore unbound keys in a state.
+            pass #Ignore unbound keys in a state.
         else:
             if traceGC: g.printNewObjects('masterCom 3')
-            val = k.handleDefaultChar(event,stroke)
-            assert not val ###
+            k.handleDefaultChar(event,stroke)
             if c.exists:
                 c.frame.updateStatusLine()
             if traceGC: g.printNewObjects('masterCom 4')
-            return val
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self,event,stroke):
 
@@ -2836,7 +2822,6 @@ class keyHandlerClass:
         isPlain =  k.isPlainKey(stroke)
         #@-<< define vars >>
         assert g.isStrokeOrNone(stroke)
-
         if char in special_keys:
             if trace and verbose: g.trace('char',char)
             return None
@@ -2853,14 +2838,14 @@ class keyHandlerClass:
                 c.screenCastController.quit()
             if c.macroCommands.recordingMacro:
                 c.macroCommands.endMacro()
-                return
             else:
-                return k.masterCommand(commandName='keyboard-quit',
+                k.masterCommand(commandName='keyboard-quit',
                     event=event,func=k.keyboardQuit,stroke=stroke)
+            return
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state,stroke))
-            done,val = k.doMode(event,state,stroke)
-            if done: return val
+            done = k.doMode(event,state,stroke)
+            if done: return
 
         if traceGC: g.printNewObjects('masterKey 2')
 
@@ -2870,7 +2855,8 @@ class keyHandlerClass:
                 if trace: g.trace('autocomplete key',stroke)
             else:
                 if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
-                return k.handleUnboundKeys(event,char,stroke)
+                k.handleUnboundKeys(event,char,stroke)
+                return
 
         # 2011/02/08: Use getPandBindings for *all* keys.
         si = k.getPaneBinding(stroke,w)
@@ -2878,12 +2864,12 @@ class keyHandlerClass:
             assert g.isShortcutInfo(si),si
             if traceGC: g.printNewObjects('masterKey 3')
             if trace: g.trace('   bound',stroke,si.func.__name__)
-            return k.masterCommand(event=event,
+            k.masterCommand(event=event,
                 commandName=si.commandName,func=si.func,stroke=si.stroke)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
             if trace: g.trace(' unbound',stroke)
-            return k.handleUnboundKeys(event,char,stroke)
+            k.handleUnboundKeys(event,char,stroke)
     #@+node:ekr.20061031131434.108: *5* callStateFunction
     def callStateFunction (self,event):
 
@@ -2927,22 +2913,21 @@ class keyHandlerClass:
         # First, honor minibuffer bindings for all except user modes.
         if state in ('getArg','getFileName','full-command','auto-complete'):
             if k.handleMiniBindings(event,state,stroke):
-                return True,'break'
+                return True
 
         # Second, honor general modes.
         if state == 'getArg':
-            return True,k.getArg(event,stroke=stroke)
+            k.getArg(event,stroke=stroke)
+            return True
         elif state == 'getFileName':
-            return True,k.getFileName(event)
+            k.getFileName(event)
+            return True
         elif state in ('full-command','auto-complete'):
             # Do the default state action.
             if trace: g.trace('calling state function',k.state.kind)
             val = k.callStateFunction(event) # Calls end-command.
             if trace: g.trace('state function returns',repr(val))
-            if val == 'do-standard-keys':
-                return False,None # 2011/06/17.
-            else:
-                return True,'break'
+            return val != 'do-standard-keys'
 
         # Third, pass keys to user modes.
         d =  k.masterBindingsDict.get(state)
@@ -2955,14 +2940,14 @@ class keyHandlerClass:
                 k.generalModeHandler (event,
                     commandName=si.commandName,func=si.func,
                     modeName=state,nextMode=si.nextMode)
-                return True,'break'
+                return True
             else:
                 # New in Leo 4.5: unbound keys end mode.
                 # if trace: g.trace('unbound key ends mode',stroke,state)
                 if 0: # 2012/05/20: I dislike this warning.
                     g.warning('unbound key ends mode',stroke) # 2011/02/02
                 k.endMode()
-                return False,None
+                return False
         else:
             # New in 4.4b4.
             handler = k.getStateHandler()
@@ -2971,7 +2956,7 @@ class keyHandlerClass:
                 handler(event)
             else:
                 if trace: g.trace('No state handler for %s' % state)
-            return True,'break'
+            return True
     #@+node:ekr.20091230094319.6240: *5* getPaneBinding
     def getPaneBinding (self,stroke,w):
 
