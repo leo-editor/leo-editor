@@ -2955,8 +2955,11 @@ class baseTangleCommands:
     def copy (self, s):
 
         assert(len(self.def_stack) > 0)
-        dn = self.def_stack[-1] # Add the code at the top of the stack.
-        dn.code += s
+        # dn = self.def_stack[-1] # Add the code at the top of the stack.
+        # dn.code += s
+        self.def_stack[-1].code += s
+            # Add the code at the top of the stack.
+            # pyflakes has trouble with the commented-out code.
     #@+node:ekr.20031218072017.3579: *4* error, pathError, warning
     def error (self,s):
         self.errors += 1

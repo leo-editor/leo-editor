@@ -5362,26 +5362,21 @@ def update_style_sheet (self,w,key,value,selector=None):
 
     # Step one: update the dict.
     d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
-
     d[key] = value
-    aList = [d.get(key) for key in list(d.keys())]
+    aList = [d.get(z) for z in list(d.keys())]
     w.leo_styles_dict = d
 
     # Step two: update the stylesheet.
     s = '; '.join(aList)
-
     if selector:
         s = '%s { %s }' % (selector,s)
-
     old = str(w.styleSheet())
     if old == s:
         # if trace: g.trace('no change')
         return
-
     if trace:
         # g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
         g.trace(s)
-
     # This call is responsible for the unwanted scrolling!
     # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
     w.setStyleSheet(s)
@@ -5398,7 +5393,6 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
     gui-specific stuff.'''
 
     trace = False and not g.unitTesting
-    c = self.c
     w = self.treeWidget
     w.setCurrentItem(item)
         # Must do this first.
@@ -5406,7 +5400,6 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
     w.editItem(item)
         # Generates focus-in event that tree doesn't report.
     e = w.itemWidget(item,0) # A QLineEdit.
-
     if e:
         s = e.text() ; len_s = len(s)
         if s == 'newHeadline': selectAll=True
@@ -5421,7 +5414,6 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
         # e.setCursorPosition(ins) # Does not work.
         e.setFocus()
         wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
-
     if trace: g.trace(e,wrapper)
     return e,wrapper # 2011/02/11
 .. @+node:ekr.20110619173515.14896: *5* Fix bug: wrong modality level on autocompleter
