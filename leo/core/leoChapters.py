@@ -38,7 +38,7 @@ class chapterController:
     def finishCreate (self):
 
         '''Find or make the @chapters and @chapter trash nodes.'''
-        
+
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('cc.finishCreate',g.callers())
 
@@ -94,7 +94,7 @@ class chapterController:
 
         cc = self ; c = cc.c ; p = c.p ; u = c.undoer
         undoType = 'Clone Node To Chapter'
-        
+
         # Find the @chapter nodes and related chapter objects.
         fromChapter = cc.getSelectedChapter()
         if not fromChapter:
@@ -113,7 +113,7 @@ class chapterController:
 
         # Open the group undo.
         c.undoer.beforeChangeGroup(toRoot,undoType)
-        
+
         # Do the clone.  c.clone handles the inner undo.
         clone = c.clone()
         # Do the move.
@@ -123,7 +123,7 @@ class chapterController:
         else:
             clone.moveToLastChildOf(toRoot)
         u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
-        
+
         c.redraw(clone)
         c.setChanged(True)
         # Close the group undo.
@@ -186,7 +186,7 @@ class chapterController:
 
         cc = self ; c = cc.c ; p = c.p ; u = c.undoer
         undoType = 'Copy Node To Chapter'
-        
+
         if g.match_word(p.h,0,'@chapter'):
             return cc.note('can not copy @chapter node')
 
@@ -194,14 +194,14 @@ class chapterController:
         fromChapter = cc.getSelectedChapter()
         if not fromChapter:
             return cc.note('no @chapter %s' % (toChapterName))
-        
+
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
             return cc.note('no such chapter: %s' % toChapterName)
-            
+
         toRoot = toChapter.root()
         assert toRoot
-       
+
         # For undo, we treat the copy like a pasted (inserted) node.
         undoData = u.beforeInsertNode(toRoot,pasteAsClone=False,copiedBunchList=[])
         s = c.fileCommands.putLeoOutline()
@@ -237,7 +237,7 @@ class chapterController:
     def createChapterByName (self,name,p,undoType='Create Chapter'):
 
         cc = self ; c = cc.c
-        
+
         if not name:
             return cc.note('no name')
 
@@ -319,7 +319,7 @@ class chapterController:
 
         if g.match_word(p.h,0,'@chapter'):
             return cc.note('can not move @chapter node to another chapter')
-        
+
         # Get the chapter objects.
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
@@ -327,14 +327,14 @@ class chapterController:
             return cc.note('no selected chapter')
         if not fromChapter:
             return cc.note('no chapter: %s' % (toChapterName))
-            
+
         # Get the roots
         fromRoot,toRoot = fromChapter.root(),toChapter.root()
         if not fromRoot:
             return cc.note('no @chapter %s' % (fromChapter.name))
         if not toRoot:
             return cc.note('no @chapter %s' % (toChapter.name))
-        
+
         if toChapter.name == 'main':
             sel = (p.threadBack() != fromRoot and p.threadBack()) or p.nodeAfterTree()
         else:
@@ -370,16 +370,13 @@ class chapterController:
             cc.note('can not move the last remaining node of a chapter.')
     #@+node:ekr.20070317085437.40: *4* cc.removeChapter & helper
     def removeChapter (self,event=None):
-        
+
         '''Prompt for the name of a chapter, then remove it.'''
 
-        cc = self ; c = cc.c
-
+        cc = self
         theChapter = cc.selectedChapter
         if not theChapter: return
-
         name = theChapter.name
-
         if name == 'main':
             return cc.note('can not remove the main chapter')
         else:
@@ -391,7 +388,7 @@ class chapterController:
 
         theChapter = cc.chaptersDict.get(name)
         if not theChapter: return
-        
+
         root = theChapter.root()
         if root:
             savedRoot = root
@@ -400,7 +397,7 @@ class chapterController:
             if tt:tt.destroyTab(name)
             cc.selectChapterByName('main')
             cc.afterRemoveChapter(bunch,c.p)
-        
+
         del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
         cc.note('Removed chapter %s' % name)
         c.redraw()
@@ -409,7 +406,7 @@ class chapterController:
 
         '''Use the minibuffer to get a new name for the present chapter.'''
 
-        cc = self ; c = cc.c ; k = cc.c.k
+        cc = self ; c = cc.c ; k = c.k
         tag = 'rename-chapter'
         state = k.getState(tag)
 
@@ -432,7 +429,7 @@ class chapterController:
                 cc.renameChapterByName(k.arg)
     #@+node:ekr.20110608135633.16553: *5* cc.renameChapterByName
     def renameChapterByName (self,newName):
-        
+
         cc,c,d,tt = self,self.c,self.chaptersDict,self.tt
         chapter = cc.selectedChapter
         oldName = chapter.name
@@ -502,18 +499,18 @@ class chapterController:
 
         trace = False and not g.unitTesting
         cc = self ; c = cc.c
-        
+
         if trace:
             g.trace('old: %s, new: %s' % (
                 cc.selectedChapter and cc.selectedChapter.name,
                 chapter and chapter.name))
-            
+
         if chapter == cc.selectedChapter:
             return
 
         if cc.selectedChapter:
             cc.selectedChapter.unselect()
-            
+
         p = chapter.p
         if p and not c.positionExists(p):
             if not g.unitTesting:
@@ -547,11 +544,11 @@ class chapterController:
         p.moveToRoot(oldRoot=root)
         assert(p.v.fileIndex)
         c.setChanged(True)
-        
+
         if hasattr(c.frame.iconBar,'createChaptersIcon'):
             if not cc.tt:
                 cc.tt = c.frame.iconBar.createChaptersIcon()
-            
+
         return p
     #@+node:ekr.20070325063303.2: *4* cc.createChapterNode
     def createChapterNode (self,chapterName,p=None):
@@ -560,14 +557,14 @@ class chapterController:
         Use a clone p for the first child, or create a first child if p is None.'''
 
         cc = self ; c = cc.c
-        
+
         chaptersNode = cc.findChaptersNode() or cc.createChaptersNode()
 
         # Use a position method to avoid undo logic.
         root = chaptersNode.insertAsLastChild()
         root.initHeadString('@chapter ' + chapterName)
         root.moveToFirstChildOf(chaptersNode)
-        
+
         if p and not p.h.startswith('@chapter'):
             # Clone p and move it to the first child of the root.
             clone = p.clone()
@@ -622,7 +619,7 @@ class chapterController:
 
         '''Return the position of the first @chapter node with the given name
         anywhere in the entire outline.
-        
+
         All @chapter nodes are created as children of the @chapters node,
         but users may move them anywhere.'''
 
@@ -631,7 +628,7 @@ class chapterController:
         for p in cc.c.all_positions():
             if p.h == s:
                 return p
-        
+
         return None # Not an error.
     #@+node:ekr.20070325115102: *4* cc.getChapterNode (creates if necessary)
     def getChapterNode (self,chapterName,p=None):
@@ -654,17 +651,17 @@ class chapterController:
         g.error('Error: %s' % (s))
 
     def note (self,s,killUnitTest=False):
-        
+
         if g.unitTesting:
             if killUnitTest:
                 assert False,s
         else:
             g.note('Note: %s' % (s))
-        
+
     def warning (self,s):
-        
+
         g.es_print('Warning: %s' % (s))
-        
+
     #@+node:ekr.20070605124356: *4* cc.inChapter
     def inChapter (self):
 
@@ -688,7 +685,7 @@ class chapterController:
     def printChaptersTree(self,tag=''):
 
         cc = self ; c = cc.c
-        
+
         chaptersNode = cc.findChaptersNode()
 
         for p in c.rootPosition().self_and_siblings():
@@ -712,7 +709,7 @@ class chapterController:
         '''
         Select a chapter containing position p.
         Do nothing if p if p does not exist or is in the presently selected chapter.
-        
+
         Note: this code calls c.redraw() if the chapter changes.
         '''
 
@@ -722,7 +719,7 @@ class chapterController:
         if not p:
             if trace: g.trace('no p')
             return
-            
+
         if not c.positionExists(p):
             if trace: g.trace('does not exist',p.h) 
             return
@@ -919,7 +916,7 @@ class chapter:
             # id(self),
             # self.name,
             # self.p and self.p.h or '<no p>')
-            
+
         return '<chapter: %s, p: %s>' % (self.name,repr(self.p and self.p.h))
 
     __repr__ = __str__
@@ -929,7 +926,7 @@ class chapter:
         self.cc.error(s)
     #@+node:ekr.20110607182447.16464: *3* chapter.root
     def root (self):
-        
+
         # 2012/03/08.
         if self.name == 'main':
             return self.c.rootPosition()
@@ -960,7 +957,7 @@ class chapter:
                 name,c.positionExists(self.p),self.p))
 
         cc.selectedChapter = self
-        
+
         # 2011/06/08
         if self.p and not c.positionExists(self.p):
             self.p = self.root()
@@ -983,13 +980,13 @@ class chapter:
                 c.selectPosition(p) ##
                 w = self.findEditorInChapter(p)
                 c.frame.body.selectEditor(w) # Switches text.
-                
+
         if name != 'main' and g.match_word(p.h,0,'@chapter'):
             if p.hasChildren():
                 p = p.firstChild()
             else:
                 if trace: g.trace('can not happen: no child of @chapter node')
-                
+
         chaptersNode = cc.findChaptersNode()
 
         if name == 'main' and chaptersNode:
@@ -1007,15 +1004,15 @@ class chapter:
         trace = False and not g.unitTesting ; verbose = False
 
         c,cc = self.c,self.cc
-        
+
         if trace:
             g.trace('%s exists: %s p: %s' % (
                 self.name,c.positionExists(p1),p1))
-                
+
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.
         if self.name == 'main' and c.positionExists(p1):
             return p1
-        
+
         if not p1:
             if trace and verbose: g.trace('*** no p')
             return None
@@ -1029,7 +1026,7 @@ class chapter:
         if strict:
             if trace: g.trace('strict test fails',p1.h)
             return None
-        
+
         theIter = g.choose(self.name=='main',
             self.c.all_unique_positions,
             root.self_and_subtree)
@@ -1038,7 +1035,7 @@ class chapter:
             if p.v == p1.v:
                 if trace: g.trace('*** found vnode match',p1.h)
                 return p.copy()
-        
+
         if trace: g.trace('*** not found',p1.h)
         return None
     #@+node:ekr.20070425175522: *4* chapter.findEditorInChapter
@@ -1061,9 +1058,9 @@ class chapter:
         return p2
     #@+node:ekr.20070529171934.1: *4* chapter.rename (not used)
     def rename (self,newName):
-        
+
         cc = self.cc
-        
+
         p = cc.findChapterNode(self.name)
         if p:
             s = '@chapter ' + newName
@@ -1076,7 +1073,8 @@ class chapter:
         '''Remember chapter info when a chapter is about to be unselected.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; cc = self.cc
+        c = self.c
+        # cc = self.cc
         self.hoistStack = c.hoistStack[:]
         self.p = c.p
         if trace: g.trace('*** %s, p: %s' % (self.name,self.p.h))

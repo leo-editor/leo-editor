@@ -56,7 +56,7 @@ class shadowController:
     def __init__ (self,c,trace=False,trace_writers=False):
 
         self.c = c
-        
+
         # File encoding.
         self.encoding = c.config.default_derived_file_encoding
             # 2011/09/08
@@ -197,11 +197,11 @@ class shadowController:
 
             # Each .leo file has a separate shadow_cache in base dir
             fname = "_".join([os.path.splitext(os.path.basename(c.mFileName))[0],"shadow_cache"])
-        
+
             # On Windows incorporate the drive letter to the private file path
             if os.name == "nt":
                 fileDir = fileDir.replace(':','%')
-        
+
             # build the chache path as a subdir of the base dir            
             fileDir = "/".join([baseDir, fname, fileDir])
 
@@ -217,7 +217,7 @@ class shadowController:
         Give an error on failure.'''
 
         x = self
-        
+
         ok = g.utils_remove(filename,verbose=not silent)
         if not ok:
             x.error('can not delete %s' % (filename),silent=silent)
@@ -527,7 +527,7 @@ class shadowController:
         verbose = False
         x = self ; at = self.c.atFileCommands
         at.errors = 0
-        
+
         # A massive klude: read the file private file just to read the encoding.
         f = open(old_private_file,'rb')
             # 2011/10/21: read in 'rb' mode.
@@ -537,7 +537,7 @@ class shadowController:
 
         self.encoding = at.encoding
         if trace and verbose: g.trace(self.encoding)
-        
+
         if g.isPython3:
             try:
                 old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
@@ -560,14 +560,14 @@ class shadowController:
             except UnicodeDecodeError:
                 at.error('UnicodeDecodeError reading %s', old_private_file)
                 return None
-        
+
             # 2011/09/09: convert each line to unicode.
             def cvt(s):
                 return g.choose(g.isUnicode(s),s,g.toUnicode(s,self.encoding))
 
             old_public_lines  = [cvt(s) for s in old_public_lines]
             old_private_lines = [cvt(s) for s in old_private_lines]
-        
+
         if 0:
             g.trace('\nprivate lines...%s' % old_private_file)
             for s in old_private_lines:
@@ -596,7 +596,7 @@ class shadowController:
         exists = g.os_path_exists(fn)
         different = new_private_lines != old_private_lines
         copy = exists and different
-        
+
         if trace: g.trace('\nexists',exists,fn,'different',different,'errors',x.errors,at.errors)
 
         # 2010/01/07: check at.errors also.
@@ -728,7 +728,7 @@ class shadowController:
             root, ext = os.path.splitext(root)
 
         delims = g.comment_delims_from_extension(filename)
-        marker = self.markerClass(delims)
+        marker = x.markerClass(delims)
         return marker
     #@+node:ekr.20080708094444.30: *4* x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):
@@ -743,7 +743,6 @@ class shadowController:
         """
 
         x = self ; mapping = [None]
-
         i = 0 ; n = len(lines)
         while i < n:
             line = lines[i]
@@ -768,9 +767,10 @@ class shadowController:
         Returns (regular_lines, sentinel_lines)
         '''
 
-        x = self ; regular_lines = [] ; sentinel_lines = []
-
-        i = 0 ; n = len(lines)
+        x = self
+        regular_lines = []
+        sentinel_lines = []
+        i = 0
         while i < len(lines):
             line = lines[i]
             if marker.isSentinel(line):
@@ -785,7 +785,6 @@ class shadowController:
             else:
                 regular_lines.append(line)
             i += 1
-
         return regular_lines, sentinel_lines 
     #@+node:ekr.20080708094444.33: *4* x.show_error & helper
     def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
@@ -861,8 +860,9 @@ class shadowController:
         #@+node:ekr.20080709062932.8: *4* setUp & helpers
         def setUp (self):
 
-            c = self.c ; p = self.p ; x = self.shadowController
-
+            c = self.c
+            p = self.p
+            # x = self.shadowController
             old = self.findNode (c,p,'old')
             new = self.findNode (c,p,'new')
 

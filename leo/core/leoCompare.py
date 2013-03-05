@@ -9,7 +9,7 @@
 import leo.core.leoGlobals as g
 import filecmp
 import os
-import string
+# import string
 
 #@+others
 #@+node:ekr.20031218072017.3631: ** choose

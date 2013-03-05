@@ -90,7 +90,7 @@ class bridgeController:
 
         '''Init the Leo app to which this class gives access.
         This code is based on leo.run().'''
-        
+
         trace = False
         if not self.isValidPython(): return
         #@+<< initLeo imports >>

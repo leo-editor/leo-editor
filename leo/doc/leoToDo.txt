@@ -3862,7 +3862,7 @@ def open (self,event=None):
     fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
         title = "Open",filetypes = table,defaultextension = ".leo")
     c.bringToFront()
-    
+
     c.init_error_dialogs()
 
     ok = False
@@ -3882,7 +3882,7 @@ def open (self,event=None):
         else:
             # otherwise, create an @edit node.
             ok = c.createNodeFromExternalFile(fileName)
-            
+
     c.raise_error_dialogs(kind='write')
 
     # openWithFileName sets focus if ok.
@@ -3961,7 +3961,7 @@ def importAnyFile (self,event=None):
         defaultextension=".py",
         multiple=True)
     c.bringToFront()
-    
+
     if names:
         g.chdir(names[0])
     else:
@@ -3973,23 +3973,23 @@ def importAnyFile (self,event=None):
             c.init_error_dialogs()
             c.raise_error_dialogs(kind='read')
         return
-        
-    
-    
+
+
+
     # New in Leo 4.9: choose the type of import based on the extension.
-    
+
     c.init_error_dialogs()
-    
+
     derived = [z for z in names if c.looksLikeDerivedFile(z)]
     others = [ z for z in names if not z in derived]
-    
+
     if derived:
         ic.importDerivedFiles(parent=c.p,paths=derived)
-    
+
     for fn in others:
         junk,ext = g.os_path_splitext(fn)
         if ext.startswith('.'): ext = ext[1:]
-    
+
         if ext in ('cw','cweb'):
             ic.importWebCommand([fn],"cweb")
         elif ext in ('nw','noweb'):
@@ -3998,12 +3998,12 @@ def importAnyFile (self,event=None):
             ic.importFlattenedOutline([fn])
         else:
             ic.importFilesCommand([fn],"@file")
-            
+
         # No longer supported.
         # c.importCommands.importFilesCommand (names,"@root")
-        
+
     c.raise_error_dialogs(kind='read')
-        
+
 # Compatibility
 importAtFile = importAnyFile
 importAtRoot = importAnyFile
@@ -4013,22 +4013,19 @@ importFlattenedOutline = importAnyFile
 importNowebFiles = importAnyFile
 .. @+node:ekr.20110530124245.18248: *7* c.looksLikeDerivedFile
 def looksLikeDerivedFile (self,fn):
-    
+
     '''Return True if fn names a file that looks like an
     external file written by Leo.'''
-    
-    c = self
-    
+
+    # c = self    
     try:
         f = open(fn,'r')
     except IOError:
         return False
-        
+
     s = f.read()
     f.close()
-    
     val = s.find('@+leo-ver=') > -1
-    # g.trace(val,fn)
     return val
 .. @+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
 def readOutlineOnly (self,event=None):
@@ -4136,27 +4133,21 @@ def readAbbreviationsFromFile(self,fileName):
         g.es('can not open',fileName)
 .. @+node:ekr.20071114081313.1: *6* insertIcon
 def insertIcon (self,event=None):
-    
+
     '''Prompt for an icon, and insert it into the node's icon list.'''
 
-    trace = False and not g.unitTesting
     c = self.c ; p = c.p
-
     iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
     os.chdir(iconDir)
-
     paths = g.app.gui.runOpenFileDialog(
         title='Get Icons',
         filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
         defaultextension=None,
         multiple=True)
-
     if not paths: return
-
     aList = [] ; xoffset = 2
     for path in paths:
         xoffset = self.appendImageDictToList(aList,iconDir,path,xoffset)
-
     aList2 = self.getIconList(p)
     aList2.extend(aList)
     self.setIconList(p, aList2)
@@ -4164,7 +4155,7 @@ def insertIcon (self,event=None):
     c.redraw_after_icons_changed()
 .. @+node:ekr.20070920104110: *6* compareLeoFiles
 def compareLeoFiles (self,event):
-    
+
     '''Compare two .leo files.'''
 
     c = c1 = self.c ; w = c.frame.body.bodyCtrl
@@ -4236,12 +4227,9 @@ def createAllCompareClones(self,inserted,deleted,changed):
 .. @+node:ekr.20070921074410: *8* createCompareClones
 def createCompareClones (self,d,kind,parent):
 
-    c = self.c # Always use the visible commander.
-
     if d:
         parent = parent.insertAsLastChild()
         parent.setHeadString(kind)
-
         for key in d:
             p = d.get(key)
             clone = p.clone()
@@ -4250,7 +4238,7 @@ def createCompareClones (self,d,kind,parent):
 def createHiddenCommander(self,fn):
 
     '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
-    
+
     import leo.core.leoCommands as leoCommands
     lm = g.app.loadManager
 
@@ -4349,16 +4337,16 @@ def runAskYesNoCancelDialog(self,c,title,
 def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
 
     """Create and run an Qt open file dialog ."""
-    
+
     if g.unitTesting:
         return ''
     else:
         if startpath is None:
             startpath = os.curdir
-            
+
         parent = None
         filter = self.makeFilter(filetypes)
-    
+
         if multiple:
             lst = QtGui.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
             return [g.u(s) for s in lst]
@@ -4933,7 +4921,7 @@ def exportHeadlines (self,fileName):
 
     c = self.c ; p = c.p
     nl = g.u(self.output_newline)
-    
+
     if not p: return
     self.setEncoding()
     firstLevel = p.level()
@@ -5126,7 +5114,7 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
 
     trace = False and not g.unitTesting
     c = self.c
-    
+
     if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
 
     if widget is None:
@@ -5137,9 +5125,9 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
             # contents a wrapper.
         widget.leo_log_wrapper = contents
             # Inject an ivar into the QTextBrowser that points to the wrapper.
-            
+
         if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-        
+
         widget.setWordWrapMode(
             g.choose(self.wrap,
                 QtGui.QTextOption.WordWrap,
@@ -5156,20 +5144,20 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
             theFilter = leoQtEventFilter(c,w=self,tag='log')
             self.eventFilters.append(theFilter) # Needed!
             widget.installEventFilter(theFilter)
-            
+
         if True and tabName == 'Log':
-    
+
             assert c.frame.top.__class__.__name__ == 'DynamicWindow'
             find_widget = c.frame.top.leo_find_widget
-            
+
             # 2011/11/21: A hack: add an event filter.
             find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
             find_widget.installEventFilter(find_widget.leo_event_filter)
             if trace: g.trace('** Adding event filter for Find',find_widget)
-            
+
             # 2011/11/21: A hack: make the find_widget an official log widget.
             self.contentsDict['Find']=find_widget
-    
+
         self.contentsDict[tabName] = widget
         self.tabWidget.addTab(widget,tabName)
     else:
@@ -5178,12 +5166,12 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         widget.leo_log_wrapper = contents
             # The leo_log_wrapper is the widget itself.
         if trace: g.trace('** using',tabName,widget)
-        
+
         if 1: # Now seems to work.
             theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
             self.eventFilters.append(theFilter) # Needed!
             widget.installEventFilter(theFilter)
-    
+
         self.contentsDict[tabName] = contents
         self.tabWidget.addTab(contents,tabName)
 
@@ -5195,11 +5183,11 @@ def createFindTab (self,parent,tab_widget):
     grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
     grid.setColumnStretch(0,100)
     grid.setColumnStretch(1,100)
-    
+
     # Row 0: heading.
     lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
     grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-    
+
     # Rows 1, 2: the find/change boxes, now disabled.
     findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
     findChange  = self.createLineEdit(parent,'findChange',disabled=True)
@@ -5209,7 +5197,7 @@ def createFindTab (self,parent,tab_widget):
     grid.addWidget(lab3,2,0)
     grid.addWidget(findPattern,1,1)
     grid.addWidget(findChange,2,1)
-        
+
     # Check boxes and radio buttons.
     # Radio buttons are mutually exclusive because they have the same parent.
     def mungeName(name):
@@ -5276,7 +5264,7 @@ def createLogPane (self,parent):
     innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
     outerGrid = self.createGrid(logFrame,'logGrid')
     outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-    
+
     # 2011/10/01: Embed the Find tab in a QScrollArea.
     findScrollArea = QtGui.QScrollArea()
     findScrollArea.setObjectName('findScrollArea')
@@ -5324,7 +5312,7 @@ Leo doesn't understand .jsp.  @shadow should refuse to work for unknown language
 def add_border(self,c,w):
 
     state = c.k and c.k.unboundKeyAction
-    
+
     if state and c.use_focus_border:
         d = {
             'command':  c.focus_border_command_state_color,
@@ -5348,7 +5336,7 @@ def remove_border(self,c,w):
 
     if not c.use_focus_border:
         return
-        
+
     name = g.u(w.objectName())
     width = c.focus_border_width
     if w.objectName()=='richTextEdit':
@@ -5361,39 +5349,34 @@ def remove_border(self,c,w):
         self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
 .. @+node:ekr.20120927164343.10094: *7* paint_qframe (qtGui)
 def paint_qframe (self,w,color):
-    
+
     assert isinstance(w,QtGui.QFrame)
-    
+
     # How's this for a kludge.
     # Set this ivar for InnerBodyFrame.paintEvent.
     g.app.gui.innerBodyFrameColor = color
 .. @+node:ekr.20111026115337.16528: *6* update_style_sheet (qtGui)
 def update_style_sheet (self,w,key,value,selector=None):
-    
+
     trace = False and not g.unitTesting
-    
+
     # Step one: update the dict.
     d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
-
     d[key] = value
-    aList = [d.get(key) for key in list(d.keys())]
+    aList = [d.get(z) for z in list(d.keys())]
     w.leo_styles_dict = d
-    
+
     # Step two: update the stylesheet.
     s = '; '.join(aList)
-    
     if selector:
         s = '%s { %s }' % (selector,s)
-        
     old = str(w.styleSheet())
     if old == s:
         # if trace: g.trace('no change')
         return
-        
     if trace:
         # g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
         g.trace(s)
-
     # This call is responsible for the unwanted scrolling!
     # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
     w.setStyleSheet(s)
@@ -5410,7 +5393,6 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
     gui-specific stuff.'''
 
     trace = False and not g.unitTesting
-    c = self.c
     w = self.treeWidget
     w.setCurrentItem(item)
         # Must do this first.
@@ -5418,7 +5400,6 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
     w.editItem(item)
         # Generates focus-in event that tree doesn't report.
     e = w.itemWidget(item,0) # A QLineEdit.
-
     if e:
         s = e.text() ; len_s = len(s)
         if s == 'newHeadline': selectAll=True
@@ -5433,7 +5414,6 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
         # e.setCursorPosition(ins) # Does not work.
         e.setFocus()
         wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
-
     if trace: g.trace(e,wrapper)
     return e,wrapper # 2011/02/11
 .. @+node:ekr.20110619173515.14896: *5* Fix bug: wrong modality level on autocompleter
@@ -5471,7 +5451,7 @@ no_scroll = False
     # True: disable all calls to w.setYScrollPosition.
 no_see = False
     # True: disable all calls to w.see and w.seeInsertPoint.
-    
+
 # Tracing options...
 
 trace_scroll = False
@@ -5516,7 +5496,7 @@ def computeInverseBindingDict (self):
         for si in aList:
             assert g.isShortcutInfo(si),si
             shortcutList = d.get(si.commandName,[])
-            
+
             # The shortcutList consists of tuples (pane,stroke).
             # k.inverseBindingDict has values consisting of these tuples.
             aList = k.bindingsDict.get(stroke,g.ShortcutInfo(kind='dummy',pane='all'))
@@ -5548,7 +5528,7 @@ def getShortcutForCommandName (self,commandName):
 
 def getShortcutForCommand (self,command):
 
-    k = self ; c = k.c
+    k = self
     if command:
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke),repr(stroke)
@@ -5561,7 +5541,7 @@ def getShortcutForCommand (self,command):
 .. @+node:ekr.20090518072506.8494: *7* k.isFKey
 def isFKey (self,stroke):
 
-    k = self
+    # k = self
     if not stroke: return False
     assert g.isString(stroke) or g.isStroke(stroke)
     s = stroke.s if g.isStroke(stroke) else stroke
@@ -5640,7 +5620,7 @@ def prettyPrintKey (self,stroke,brief=False):
             s = last
     if s.endswith(' '):
         s = s[:-1]+'Space' # 2010/11/06
-        
+
     return s
 .. @+node:ekr.20061031131434.184: *7* k.strokeFromSetting
 def strokeFromSetting (self,setting,addKey=True):
@@ -5651,7 +5631,7 @@ def strokeFromSetting (self,setting,addKey=True):
     verbose = False
     if not setting:
         return None
-    
+
     assert g.isString(setting)
 
     s = g.stripBrackets(setting.strip())
@@ -5664,7 +5644,7 @@ def strokeFromSetting (self,setting,addKey=True):
 
     if trace and verbose:
         g.trace('%20s %s' % (setting,shortcut),g.callers())
-    
+
     return g.KeyStroke(shortcut) if shortcut else None
 
 canonicalizeShortcut = strokeFromSetting # For compatibility.
@@ -5733,31 +5713,31 @@ table = (
 shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
 .. @+node:ekr.20110606004638.16929: *7* k.stroke2char
 def stroke2char (self,stroke):
-    
+
     '''Convert a stroke to an (insertable) char.
-    
+
     This method allows Leo to use strokes everywhere.'''
-    
+
     trace = False and not g.unitTesting
     k = self
-    
+
     if not stroke: return ''
     s = stroke.s
-    
+
     # Allow bare angle brackets for unit tests.
     if s.startswith('<') and s.endswith('>'):
         s = s[1:-1]
-        
+
     if len(s) == 0: return ''
     if len(s) == 1: return s
-        
+
     for z in ('Alt','Ctrl','Command','Meta'):
         if s.find(z) != -1:            
             return ''
             # This is not accurate: leoQtEventFilter retains
             # the spelling of Alt-Ctrl keys because of the
             # @bool enable_alt_ctrl_bindings setting.
-            
+
     # Special case the gang of four, plus 'Escape',
     d = {
         'BackSpace':'\b',
@@ -5768,25 +5748,25 @@ def stroke2char (self,stroke):
     }
     ch = d.get(s)
     if ch: return ch
-            
+
     # First, do the common translations.
     ch = k.guiBindNamesInverseDict.get(s)
     if ch:
         if trace: g.trace(repr(stroke),repr(ch))
         return ch
-    
+
     # A much-simplified form of code in k.strokeFromSetting.
     shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
     s = s.replace('Shift+','').replace('Shift-','')
-    
+
     last = s #  Everything should have been stripped.
-    
+
     if len(s) == 1 and s.isalpha():
         if shift:
             s = last.upper()
         else:
             s = last.lower()
-    
+
     val = g.choose(len(s)==1,s,'')
 
     if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
@@ -5795,9 +5775,9 @@ def stroke2char (self,stroke):
 def addModeCommands (self):
 
     '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
-    
+
     trace = False and not g.unitTesting
-    
+
     if trace: g.trace('(k)')
 
     k = self ; c = k.c
@@ -5820,7 +5800,7 @@ def doMode(self,p,kind,name,val):
 
     trace = False and not g.unitTesting
     c,k = self.c,self.c.k
-    
+
     if g.new_modes:
         aList = []
         for line in g.splitLines(p.b):
@@ -5834,11 +5814,11 @@ def doMode(self,p,kind,name,val):
 
         # g.trace('%20s' % (name),c.fileName())
         modeName = self.computeModeName(name)
-    
+
         d = g.TypedDictOfLists(
             name='modeDict for %s' % (modeName),
             keyType=type('commandName'),valType=g.ShortcutInfo)
-    
+
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -5865,7 +5845,7 @@ def doMode(self,p,kind,name,val):
                         aList.extend(aList3)
                     aList.append(si)
                     d.replace(name,aList)
-                    
+
                     if 0: #### Why would we want to do this????
                         #### Old code: we have to save/restore self.shortcutsDict.
                             #### self.set(p,"shortcut",name,aList)
@@ -5877,16 +5857,16 @@ def doMode(self,p,kind,name,val):
                             path = gs.path
                             if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                                 g.es("over-riding setting:",name,"from",path)
-        
+
                         # Important: we can't use c here: it may be destroyed!
                         d2 [key2] = g.GeneralSetting(
                             kind,path=c.mFileName,val=val,tag='setting')
-    
+
             # Restore the global shortcutsDict.
             ##### self.shortcutsDict = old_d
-            
+
             if trace: g.trace(d.dump())
-        
+
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName,name1,d)
 .. @+node:ekr.20041120112043: *6* parseShortcutLine (ParserBaseClass)
@@ -5943,16 +5923,12 @@ def parseShortcutLine (self,kind,s):
 
     # New in 4.4: Allow comments after the shortcut.
     # Comments must be preceded by whitespace.
-    comment = ''
     if val:
         i = val.find('#')
         if i > 0 and val[i-1] in (' ','\t'):
-            # comment = val[i:].strip()
             val = val[:i].strip()
-
     stroke = k.strokeFromSetting(val)
     assert g.isStrokeOrNone(stroke),stroke
-    # g.trace('stroke',stroke)
     si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
     if trace: g.trace('%25s %s' % (name,si))
     return name,si
@@ -5972,62 +5948,62 @@ def createModeCommand (self,modeName,name,modeDict):
 
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
-    
+
 .. @+node:ekr.20120208064440.10148: *5* class ModeController
 class ModeController:
-    
+
     def __init__ (self,c):
         self.c = c
         self.d = {} # Keys are command names, values are modes.
         self.k = c.k
         g.trace(self)
-            
+
     def __repr__(self):
         return '<ModeController %s>' % self.c.shortFileName()
-        
+
     __str__ = __repr__
-            
+
     @others
 .. @+node:ekr.20120208064440.10161: *6* addModeCommands (ModeController)
 def addModeCommands(self):
-    
+
     g.trace(self,self.d)
-    
+
     for mode in self.d.values():
         mode.createModeCommand()
 .. @+node:ekr.20120208064440.10163: *6* getMode (ModeController)
 def getMode (self,modeName):
-    
+
     g.trace(self)
-    
+
     mode = self.d.get(modeName)
     g.trace(modeName,mode)
     return mode
-    
+
 .. @+node:ekr.20120208064440.10164: *6* makeMode (ModeController)
 def makeMode (self,name,aList):
 
 
     mode = ModeInfo(self.c,name,aList)
-    
+
     g.trace(self,mode.name,mode)
     self.d[mode.name] = mode
-    
+
 .. @+node:ekr.20120208064440.10150: *5* class ModeInfo
 class ModeInfo:
-    
+
     def __repr__(self):
         return '<ModeInfo %s>' % self.name
-        
+
     __str__ = __repr__
-    
+
     @others
-    
+
 .. @+node:ekr.20120208064440.10193: *6*  ctor (ModeInfo)
 def __init__ (self,c,name,aList):
-    
+
     g.trace(name,aList)
-    
+
     self.c = c
     self.d = {} # The bindings in effect for this mode.
         # Keys are names of (valid) command names, values are ShortcutInfo objects.
@@ -6058,7 +6034,7 @@ def computeModeName (self,name):
     return s + '-mode'
 .. @+node:ekr.20120208064440.10156: *6* computeModePrompt (ModeInfo)
 def computeModePrompt (self,name):
-    
+
     assert name == self.name
     s = 'enter-' + name.replace(' ','-')
     i = s.find('::')
@@ -6067,7 +6043,7 @@ def computeModePrompt (self,name):
         prompt = s[i+2:].strip()
     else:
         prompt = s
-    
+
     return prompt
 .. @+node:ekr.20120208064440.10160: *6* createModeBindings (ModeInfo) (NOT USED)
 ##### k.createModeBindings is used instead????
@@ -6097,7 +6073,7 @@ def createModeBindings (self,w):
                         '%10s' % (stroke),
                         '%20s' % (commandName),
                         si.nextMode)
-                        
+
                 assert g.isStroke(stroke)
                 k.makeMasterGuiBinding(stroke)
 
@@ -6115,22 +6091,22 @@ def createModeBindings (self,w):
                 if trace: g.trace(modeName,d2)
 .. @+node:ekr.20120208064440.10195: *6* createModeCommand (ModeInfo)
 def createModeCommand (self):
-    
+
     g.trace(self)
 
     c,k = self.c,self.k
     key = 'enter-' + self.name.replace(' ','-')
-   
+
     def enterModeCallback (event=None,self=self):
         self.enterMode()
 
     c.commandsDict[key] = f = enterModeCallback
     k.inverseCommandsDict [f.__name__] = key
-    
+
     g.trace('(ModeInfo)',f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
 .. @+node:ekr.20120208064440.10180: *6* enterMode (ModeInfo)
 def enterMode (self):
-    
+
     g.trace('(ModeInfo)')
 
     c,k = self.c,self.k
@@ -6140,13 +6116,13 @@ def enterMode (self):
     k.generalModeHandler(event,modeName=self.name)
 .. @+node:ekr.20120208064440.10153: *6* init (ModeInfo) (Can we check command names here??)
 def init (self,name,dataList):
-    
+
     '''aList is a list of tuples (commandName,si).'''
-    
+
     trace = False and not g.unitTesting
     c,d,k,modeName = self.c,self.d,self.c.k,self.name
     for name,si in dataList:
-    
+
         assert g.isShortcutInfo(si),si
         if not name:
             if trace: g.trace('entry command',si)
@@ -6171,10 +6147,10 @@ def init (self,name,dataList):
             d[name] = aList
 .. @+node:ekr.20120208064440.10158: *6* initMode (ModeInfo)
 def initMode (self):
-    
+
     trace = False and not g.unitTesting
     c,k = self.c,self.c.k
-    
+
     ####
     # d = g.app.config.modeCommandsDict.get('enter-'+modeName)
     # if not d:
@@ -6216,7 +6192,7 @@ def initMode (self):
 def __init__ (self,c):
 
     '''Create a key handler for c.'''
-    
+
     trace = (False or g.trace_startup) and not g.unitTesting
     if trace: print('k.__init__')
 
@@ -6231,15 +6207,15 @@ def __init__ (self,c):
     self.x_hasNumeric = ['sort-lines','sort-fields']
 
     self.altX_prompt = 'full-command: '
-    
+
     # Access to data types defined in leoKeys.py
     self.KeyStroke = g.KeyStroke
-    
+
     # Define all ivars...
     self.defineExternallyVisibleIvars()
     self.defineInternalIvars()
     self.defineSettingsIvars()
-    
+
     if g.new_modes:
         self.modeController = ModeController(c)
 
@@ -6257,9 +6233,9 @@ def __init__ (self,c):
 def addModeCommands (self):
 
     '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
-    
+
     trace = False and not g.unitTesting
-    
+
     if trace: g.trace('(k)')
 
     k = self ; c = k.c
@@ -6310,7 +6286,7 @@ def createModeBindings (self,modeName,d,w):
                         '%10s' % (stroke),
                         '%20s' % (commandName),
                         si.nextMode)
-                        
+
                 assert g.isStroke(stroke)
 
                 k.makeMasterGuiBinding(stroke)
@@ -6352,7 +6328,7 @@ def enterNamedMode (self,event,commandName):
     k.generalModeHandler(event,modeName=modeName)
 .. @+node:ekr.20061031131434.161: *7* k.exitNamedMode
 def exitNamedMode (self,event=None):
-    
+
     '''Exit an input mode.'''
 
     k = self
@@ -6370,19 +6346,13 @@ def modeHelp (self,event):
     by analogy with tab completion.'''
 
     k = self ; c = k.c
-
     c.endEditing()
-
     # g.trace(k.inputModeName)
-
     if k.inputModeName:
         d = g.app.config.modeCommandsDict.get('enter-'+k.inputModeName)
         k.modeHelpHelper(d)
-
     if not k.silentMode:
         c.minibufferWantsFocus()
-
-    return
 .. @+node:ekr.20061031131434.166: *8* modeHelpHelper
 def modeHelpHelper (self,d):
 
@@ -6407,7 +6377,7 @@ def modeHelpHelper (self,d):
     modeName = k.inputModeName.replace('-',' ')
     if modeName.endswith('mode'):
         modeName = modeName[:-4].strip()
-        
+
     prompt = d.get('*command-prompt*')
     if prompt:
         g.es('','%s\n\n' % (prompt.kind.strip()),tabName=tabName)
@@ -6420,20 +6390,16 @@ def modeHelpHelper (self,d):
 .. @+node:ekr.20061031131434.164: *7* k.reinitMode (call k.createModeBindings???)
 def reinitMode (self,modeName):
 
-    k = self ; c = k.c
-
+    k = self
     d = k.modeBindingsDict
-
     k.inputModeName = modeName
     w = g.choose(k.silentMode,k.modeWidget,k.w)
     k.createModeBindings(modeName,d,w)
-
     if k.silentMode:
         k.showStateAndMode()
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-
 .. @+node:ekr.20120208064440.10199: *7* k.generalModeHandler (OLD)
 def generalModeHandler (self,event,
     commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
@@ -6453,7 +6419,7 @@ def generalModeHandler (self,event,
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
         # Careful: k.initMode can execute commands that will destroy a commander.
-        if g.app.quitting or not c.exists: return # (for Tk) 'break'
+        if g.app.quitting or not c.exists: return
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -6465,7 +6431,6 @@ def generalModeHandler (self,event,
         if commandName == 'mode-help':
             func(event)
         else:
-            savedModeName = k.inputModeName # Remember this: it may be cleared.
             self.endMode()
             if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
             # New in 4.4.1 b1: pass an event describing the original widget.
@@ -6476,8 +6441,8 @@ def generalModeHandler (self,event,
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
             if g.app.quitting or not c.exists:
-                return # (for Tk) 'break'
-            if nextMode in (None,'none'):
+                pass
+            elif nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
                 pass
@@ -6489,8 +6454,6 @@ def generalModeHandler (self,event,
             else:
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
-                # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
 .. @+node:ekr.20061031131434.156: *6* k.Modes (changed)
 .. @+node:ekr.20061031131434.163: *7* k.initMode (changed)
 def initMode (self,event,modeName):
@@ -6501,7 +6464,7 @@ def initMode (self,event,modeName):
     if not modeName:
         g.trace('oops: no modeName')
         return
-        
+
     if g.new_modes:
         mode = k.modeController.getMode(modeName)
         if mode:
@@ -6522,10 +6485,10 @@ def initMode (self,event,modeName):
                 prompt = modeName
             if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
                 modeName,prompt,sorted(list(d.keys()))))
-    
+
         k.inputModeName = modeName
         k.silentMode = False
-    
+
         aList = d.get('*entry-commands*',[])
         if aList:
             for si in aList:
@@ -6539,7 +6502,7 @@ def initMode (self,event,modeName):
                 if commandName.startswith('enter-'):
                     if trace: g.trace('redirect to mode',commandName)
                     return
-    
+
         # Create bindings after we know whether we are in silent mode.
         w = g.choose(k.silentMode,k.modeWidget,k.w)
         k.createModeBindings(modeName,d,w)
@@ -6553,7 +6516,6 @@ def NEWgeneralModeHandler (self,event,
     k = self ; c = k.c
     state = k.getState(modeName)
     trace = (False or g.trace_modes) and not g.unitTesting
-
     if trace: g.trace(modeName,'state',state)
 
     if state == 0:
@@ -6563,7 +6525,7 @@ def NEWgeneralModeHandler (self,event,
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
         # Careful: k.initMode can execute commands that will destroy a commander.
-        if g.app.quitting or not c.exists: return # (for Tk) 'break'
+        if g.app.quitting or not c.exists: return
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -6571,12 +6533,10 @@ def NEWgeneralModeHandler (self,event,
                 c.frame.log.hideTab('Mode')
     elif not func:
         g.trace('No func: improper key binding')
-        return # (for Tk) 'break'
     else:
         if commandName == 'mode-help':
             func(event)
         else:
-            savedModeName = k.inputModeName # Remember this: it may be cleared.
             self.endMode()
             if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
             # New in 4.4.1 b1: pass an event describing the original widget.
@@ -6587,8 +6547,8 @@ def NEWgeneralModeHandler (self,event,
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
             if g.app.quitting or not c.exists:
-                return # (for Tk) 'break'
-            if nextMode in (None,'none'):
+                pass
+            elif nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
                 pass
@@ -6601,9 +6561,7 @@ def NEWgeneralModeHandler (self,event,
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
                 # Careful: k.initMode can execute commands that will destroy a commander.
-                if g.app.quitting or not c.exists: return # (for Tk) 'break'
-
-    return # (for Tk) 'break'
+                # if g.app.quitting or not c.exists: return
 .. @+node:ekr.20120228164039.10047: *5* Initing...
 .. @+node:ekr.20060102103625.1: *6* doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
@@ -6612,7 +6570,7 @@ def doMode(self,p,kind,name,val):
 
     trace = False and not g.unitTesting
     c,k = self.c,self.c.k
-    
+
     if g.new_modes:
         aList = []
         for line in g.splitLines(p.b):
@@ -6626,11 +6584,11 @@ def doMode(self,p,kind,name,val):
 
         # g.trace('%20s' % (name),c.fileName())
         modeName = self.computeModeName(name)
-    
+
         d = g.TypedDictOfLists(
             name='modeDict for %s' % (modeName),
             keyType=type('commandName'),valType=g.ShortcutInfo)
-    
+
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -6657,7 +6615,7 @@ def doMode(self,p,kind,name,val):
                         aList.extend(aList3)
                     aList.append(si)
                     d.replace(name,aList)
-                    
+
                     if 0: #### Why would we want to do this????
                         #### Old code: we have to save/restore self.shortcutsDict.
                             #### self.set(p,"shortcut",name,aList)
@@ -6669,16 +6627,16 @@ def doMode(self,p,kind,name,val):
                             path = gs.path
                             if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                                 g.es("over-riding setting:",name,"from",path)
-        
+
                         # Important: we can't use c here: it may be destroyed!
                         d2 [key2] = g.GeneralSetting(
                             kind,path=c.mFileName,val=val,tag='setting')
-    
+
             # Restore the global shortcutsDict.
             ##### self.shortcutsDict = old_d
-            
+
             if trace: g.trace(d.dump())
-        
+
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName,name1,d)
 .. @+node:ekr.20041120112043: *6* parseShortcutLine (ParserBaseClass)
@@ -6735,16 +6693,12 @@ def parseShortcutLine (self,kind,s):
 
     # New in 4.4: Allow comments after the shortcut.
     # Comments must be preceded by whitespace.
-    comment = ''
     if val:
         i = val.find('#')
         if i > 0 and val[i-1] in (' ','\t'):
-            # comment = val[i:].strip()
             val = val[:i].strip()
-
     stroke = k.strokeFromSetting(val)
     assert g.isStrokeOrNone(stroke),stroke
-    # g.trace('stroke',stroke)
     si = g.ShortcutInfo(kind=kind,nextMode=nextMode,pane=pane,stroke=stroke)
     if trace: g.trace('%25s %s' % (name,si))
     return name,si
@@ -6764,7 +6718,7 @@ def createModeCommand (self,modeName,name,modeDict):
 
     # New in 4.4.1 b2: silently allow redefinitions of modes.
     d [modeName] = modeDict
-    
+
 .. @+node:ekr.20110528034751.18272: *4* Use free_layout to implement body editors
 Collaborate with Terry.
 
@@ -6783,15 +6737,12 @@ C. Labels for panes.
 
 def selectHelper (self,p,scroll):
 
-    trace = False and not g.unitTesting
-    verbose = False
+    # trace = False and not g.unitTesting
     c = self.c
-    body = w = c.frame.body.bodyCtrl
+    w = c.frame.body.bodyCtrl
     if not w: return # Defensive.
-
     old_p = c.p
     call_event_handlers = p != old_p
-
     if p:
         # 2009/10/10: selecting a foreign position
         # will not be pretty.
@@ -6803,18 +6754,14 @@ def selectHelper (self,p,scroll):
 
     # if trace and (verbose or call_event_handlers):
         # g.trace(p and p.h,g.callers())
-            
     if call_event_handlers:
         unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
     else:
         unselect = True
-
     if unselect:
         << unselect the old node >>
-        
     if call_event_handlers:
         g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-        
     if call_event_handlers:
         if call_event_handlers:
             select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
@@ -6827,7 +6774,6 @@ def selectHelper (self,p,scroll):
         if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             self.selectNewNode(p,old_p)
             c.nodeHistory.update(p) # Remember this position.
-        
     c.setCurrentPosition(p)
     << set the current node >>
     p.restoreCursorAndScroll()
@@ -6843,7 +6789,6 @@ def selectHelper (self,p,scroll):
     c.frame.clearStatusLine()
     verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
     c.frame.putStatusLine(p.get_UNL(with_proto=verbose))
-
     if call_event_handlers: # 2011/11/06
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
@@ -6851,7 +6796,7 @@ def selectHelper (self,p,scroll):
 if old_p != p:
     self.endEditLabel() # sets editPosition = None
     self.setUnselectedLabelState(old_p)
-    
+
     colorizer = c.frame.body.colorizer
     if (
         colorizer
@@ -6959,25 +6904,19 @@ def os_path_expandExpression (s,**keys):
     '''Expand {{anExpression}} in c's context.'''
 
     trace = False
-    
-    s1 = s
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c',g.callers())
         return s
-
     if not s:
         if trace: g.trace('no s')
         return ''
-
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
         exp = s[i+2:j].strip()
         if exp:
             try:
-                import os
-                import sys
                 p = c.p
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
@@ -6986,7 +6925,6 @@ def os_path_expandExpression (s,**keys):
             except Exception:
                 g.trace(g.callers())
                 g.es_exception(full=True, c=c)
-
     return s
 .. @+node:ekr.20080921060401.13: *7* g.os_path_expanduser
 def os_path_expanduser(path):
@@ -7156,11 +7094,11 @@ def os_path_splitext(path):
     return head,tail
 .. @+node:ekr.20090829140232.6036: *7* g.os_startfile
 def os_startfile(fname):
-    
+
     if g.unitTesting:
         g.app.unitTestDict['os_startfile']=fname
         return
-        
+
     if fname.find('"') > -1:
         quoted_fname = "'%s'" % fname
     else:
@@ -7225,13 +7163,13 @@ for func,h,expected in table:
 .. @+node:ekr.20111108081936.9751: *8* @@file fj-test-1
 .. @+node:ekr.20031218072017.3213: *5* createImportParent (importCommands)
 def createImportParent (self,current,files):
-    
+
     '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
 
     name0,name1 = files
     prefix0, junk = g.os_path_splitext(name0)
     prefix1, junk = g.os_path_splitext(name1)
-    
+
     if prefix0 and prefix0 == prefix1:
         current = current.insertAsLastChild()
         name,junk = g.os_path_splitext(prefix1)
@@ -7243,7 +7181,7 @@ def createImportParent (self,current,files):
 def createOutline (self,fileName,parent,
     atAuto=False,atShadow=False,s=None,ext=None):
 
-    c = self.c ; u = c.undoer ; s1 = s
+    c = self.c ; u = c.undoer
     w = c.frame.body
     at = c.atFileCommands
 
@@ -9834,25 +9772,25 @@ Menu and plugin registry methods can fail if that *particular* unit test is runn
 .. @+node:ekr.20111114151846.9856: *4* Unit test: verifies class relationships
 .. @+node:ekr.20111114102224.9936: *5* << define class HighLevelInterface >>
 class HighLevelInterface(object):
-    
+
     '''A class to specify Leo's high-level editing interface
     used throughout Leo's core.
-    
+
     The interface has two parts:
-        
+
     1. Standard (immutable) methods that will never be overridden.
-    
+
     2. Other (mutable) methods that subclasses may override.
     '''
-    
+
     @others
 .. @+node:ekr.20111114102224.9950: *6* ctor (HighLevelInterface)
 def __init__ (self,c):
-    
+
     self.c = c
-    
+
     self.widget = None
-    
+
     self.mutable_methods = (
         'flashCharacter',
         'toPythonIndex',
@@ -9863,17 +9801,17 @@ def __init__ (self,c):
 .. @+node:ekr.20111114102224.9946: *7* flashCharacter
 def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
     pass
-    
+
 .. @+node:ekr.20111114102224.9943: *7* toPythonIndex (HighLevelInterface)
 def toPythonIndex (self,index):
-    
+
     s = self.getAllText()
     return g.toPythonIndex(s,index)
 
 toGuiIndex = toPythonIndex
 .. @+node:ekr.20111114102224.9945: *7* toPythonIndexRowCol (BaseTextWidget)
 def toPythonIndexRowCol(self,index):
-    
+
     # This works, but is much slower that the leoQTextEditWidget method.
     s = self.getAllText()
     i = self.toPythonIndex(index)
@@ -9935,27 +9873,27 @@ def tag_configure (self,colorName,**keys):
 def clipboard_append(self,s):
     s1 = g.app.gui.getTextFromClipboard()
     g.app.gui.replaceClipboardWith(s1 + s)
-    
+
 def clipboard_clear (self):
     g.app.gui.replaceClipboardWith('')
-    
+
 def getFocus(self):
     return g.app.gui.get_focus(self.c)
-    
+
 def rowColToGuiIndex (self,s,row,col):
     return g.convertRowColToPythonIndex(s,row,col)   
-    
+
 # def rowColToGuiIndex (self,s,row,col):
     # return self.widget and self.widget.rowColToGuiIndex(s,row,col) or 0 
 
 set_focus = setFocus
 .. @+node:ekr.20111114102224.9950: *5* ctor (HighLevelInterface)
 def __init__ (self,c):
-    
+
     self.c = c
-    
+
     self.widget = None
-    
+
     self.mutable_methods = (
         'flashCharacter',
         'toPythonIndex',

@@ -47,7 +47,7 @@ import time
 # else:
     # import urllib2 as urllib
     # import urlparse
-    
+
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
@@ -73,13 +73,13 @@ except ImportError:
 #@+<< define LeoQTextBrowser >>
 #@+node:ekr.20110605121601.18005: *3*  << define LeoQTextBrowser >>
 class LeoQTextBrowser (QtGui.QTextBrowser):
-    
+
     '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
-        
+
     #@+others
     #@+node:ekr.20110605121601.18006: *4*   ctor (LeoQTextBrowser)
     def __init__(self,parent,c,wrapper):
-        
+
         for attr in ('leo_c','leo_wrapper',):
             assert not hasattr(QtGui.QTextBrowser,attr),attr
 
@@ -88,14 +88,14 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         self.htmlFlag = True
 
         QtGui.QTextBrowser.__init__(self,parent)
-        
+
         # This event handler is the easy way to keep track of the vertical scroll position.
         self.leo_vsb = vsb = self.verticalScrollBar()
         vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
             self.onSliderChanged)
-        
+
         # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
-        
+
         # For QCompleter
         self.leo_q_completer = None
         self.leo_options = None
@@ -104,16 +104,16 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     def __repr__ (self):
 
         return '(LeoQTextBrowser) %s' % id(self)
-        
+
     __str__ = __repr__
     #@+node:ekr.20110605121601.18008: *4* Auto completion (LeoQTextBrowser)
     #@+node:ekr.20110605121601.18009: *5* class LeoQListWidget(QListWidget)
     class LeoQListWidget(QtGui.QListWidget):
-                
+
         #@+others
         #@+node:ekr.20110605121601.18010: *6* ctor (LeoQListWidget)
         def __init__(self,c):
-            
+
 
             QtGui.QListWidget.__init__(self)
             self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
@@ -130,17 +130,17 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             self.leo_w = c.frame.body.bodyCtrl.widget
                 # A LeoQTextBrowser, a subclass of QtGui.QTextBrowser.
             self.leo_c = c
-            
+
             # A weird hack.
             self.leo_geom_set = False # When true, self.geom returns global coords!
-            
+
             self.connect(self,QtCore.SIGNAL(
                 "itemClicked(QListWidgetItem *)"),self.select_callback)
         #@+node:ekr.20110605121601.18011: *6* closeEvent
         def closeEvent(self,event):
-            
+
             '''Kill completion and close the window.'''
-            
+
             self.leo_c.k.autoCompleter.abort()
         #@+node:ekr.20110605121601.18012: *6* end_completer
         def end_completer(self):
@@ -153,19 +153,19 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # This is important: it clears the autocompletion state.
             c.k.keyboardQuit()
             c.bodyWantsFocusNow()
-            
+
             self.deleteLater()
         #@+node:ekr.20110605121601.18013: *6* keyPressEvent (LeoQListWidget)
         def keyPressEvent(self,event):
-            
+
             '''Handle a key event from QListWidget.'''
-            
+
             trace = False and not g.unitTesting
             c = self.leo_c
             w = c.frame.body.bodyCtrl
             qt = QtCore.Qt
             key = event.key()
-            
+
             if event.modifiers() != qt.NoModifier and not event.text():
                 # A modifier key on it's own.
                 pass
@@ -191,13 +191,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # Replace the tail of the prefix with the completion.
             completion = self.currentItem().text()
             prefix = c.k.autoCompleter.get_autocompleter_prefix()
-            
+
             parts = prefix.split('.')
             if len(parts) > 1:
                 tail = parts[-1]
             else:
                 tail = prefix
-                
+
             if trace: g.trace('prefix',repr(prefix),'tail',repr(tail),'completion',repr(completion))
 
             if tail != completion:
@@ -218,59 +218,51 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
             trace = False and not g.unitTesting
             c = self.leo_c ; w = c.frame.body
-
             # Replace the tail of the prefix with the completion.
             completion = self.currentItem().text()
             prefix = c.k.autoCompleter.get_autocompleter_prefix()
-            
             parts = prefix.split('.')
-            
             if len(parts) < 2:
                 return
-
-            var = parts[-2]
-
+            # var = parts[-2]
             if len(parts) > 1:
                 tail = parts[-1]
             else:
                 tail = prefix
-                
-            if trace: g.trace('prefix',repr(prefix),'tail',repr(tail),'completion',repr(completion))
-
+            if trace: g.trace(
+                'prefix',repr(prefix),'tail',repr(tail),
+                'completion',repr(completion))
             w = c.k.autoCompleter.w
             i = j = w.getInsertPoint()
             text = w.getAllText()
             while (i and text[i] != '.'):
                 i -= 1
             i += 1
-
             if j > i:
                 w.delete(i,j)
-
             w.setInsertPoint(i)
-            
             c.k.autoCompleter.klass = completion
             c.k.autoCompleter.compute_completion_list()
         #@+node:ekr.20110605121601.18015: *6* set_position (LeoQListWidget)
         def set_position (self,c):
-            
+
             trace = False and not g.unitTesting
             w = self.leo_w
-            
+
             def glob(obj,pt):
                 '''Convert pt from obj's local coordinates to global coordinates.'''
                 return obj.mapToGlobal(pt)
-            
+
             vp = self.viewport()
             r = w.cursorRect()
             geom = self.geometry() # In viewport coordinates.
-                
+
             gr_topLeft = glob(w,r.topLeft())
-            
+
             # As a workaround to the setGeometry bug,
             # The window is destroyed instead of being hidden.
             assert not self.leo_geom_set
-                
+
             # This code illustrates the bug...
             # if self.leo_geom_set:
                 # # Unbelievable: geom is now in *global* coords.
@@ -278,16 +270,16 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             # else:
                 # # Per documentation, geom in local (viewport) coords.
                 # gg_topLeft = glob(vp,geom.topLeft())
-            
+
             gg_topLeft = glob(vp,geom.topLeft())
 
             delta_x = gr_topLeft.x() - gg_topLeft.x() 
             delta_y = gr_topLeft.y() - gg_topLeft.y()
-            
+
             # These offset are reasonable.
             # Perhaps they should depend on font size.
             x_offset,y_offset = 10,60
-            
+
             # Compute the new geometry, setting the size by hand.
             geom2_topLeft = QtCore.QPoint(
                 geom.x()+delta_x+x_offset,
@@ -296,7 +288,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             geom2_size = QtCore.QSize(400,100)
 
             geom2 = QtCore.QRect(geom2_topLeft,geom2_size)
-                    
+
             # These assert's fail once offsets are added.
             if x_offset == 0 and y_offset == 0:
                 if self.leo_geom_set:
@@ -321,9 +313,9 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 )
         #@+node:ekr.20110605121601.18016: *6* show_completions
         def show_completions(self,aList):
-            
+
             '''Set the QListView contents to aList.'''
-            
+
             # g.trace('(qc) len(aList)',len(aList))
 
             self.clear()
@@ -334,20 +326,16 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         #@-others
     #@+node:ekr.20110605121601.18017: *5* init_completer (LeoQTextBrowser)
     def init_completer(self,options):
-        
+
         '''Connect a QCompleter.'''
-        
+
         trace = False and not g.unitTesting
-        c = self.leo_c ; k = c.k
-        
+        c = self.leo_c
         if trace:
             g.trace('(LeoQTextBrowser) len(options): %s' % (len(options)))
-            
         self.leo_qc = qc = self.LeoQListWidget(c)
-            
         # Move the window near the body pane's cursor.
         qc.set_position(c)
-
         # Show the initial completions.
         c.in_qt_dialog = True
         qc.show()
@@ -357,13 +345,13 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         return qc
     #@+node:ekr.20110605121601.18018: *5* redirections to LeoQListWidget
     def end_completer(self):
-        
+
         if hasattr(self,'leo_qc'):
             self.leo_qc.end_completer()
             delattr(self,'leo_qc')
 
     def show_completions(self,aList):
-        
+
         if hasattr(self,'leo_qc'):
             self.leo_qc.show_completions(aList)
     #@+node:ekr.20110605121601.18019: *4* leo_dumpButton
@@ -386,7 +374,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     #@+node:ekr.20110605121601.18021: *5* mousePress/ReleaseEvent (LeoQTextBrowser)
     # def mousePressEvent (self,event):
         # QtGui.QTextBrowser.mousePressEvent(self,event)
-        
+
     def mouseReleaseEvent(self,event):
         self.onMouseUp(event)
         QtGui.QTextBrowser.mouseReleaseEvent(self,event)
@@ -399,7 +387,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             g.openUrlOnClick(event)
     #@+node:ekr.20111002125540.7021: *4* get/setYScrollPosition (LeoQTextBrowser)
     def getYScrollPosition(self):
-        
+
         trace = (False or g.trace_scroll) and not g.unitTesting
 
         w = self
@@ -409,7 +397,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         return pos
 
     def setYScrollPosition(self,pos):
-        
+
         trace = (False or g.trace_scroll) and not g.unitTesting
         w = self
 
@@ -422,25 +410,25 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
             if trace: g.trace(pos,g.callers())
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-           
+
     #@+node:ekr.20120925061642.13506: *4* onSliderChanged (LeoQTextBrowser)
     def onSliderChanged(self,arg):
-        
+
         trace = False and not g.unitTesting
         c = self.leo_c
         p = c.p
-        
+
         # Careful: changing nodes changes the scrollbars.
         if hasattr(c.frame.tree,'tree_select_lockout'):
             if c.frame.tree.tree_select_lockout:
                 if trace: g.trace('locked out: c.frame.tree.tree_select_lockout')
                 return
-                
+
         # Only scrolling in the body pane should set v.scrollBarSpot.
         if not c.frame.body or self != c.frame.body.bodyCtrl.widget:
             if trace: g.trace('**** wrong pane')
             return
-        
+
         if p:
             if trace: g.trace(arg,c.p.v.h,g.callers())
             p.v.scrollBarSpot = arg
@@ -487,19 +475,19 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
             self.widget.connect(self.widget,
                 QtCore.SIGNAL("cursorPositionChanged()"),self.onCursorPositionChanged)
-                
+
         if name in ('body','log'):
             # Monkey patch the event handler.
             #@+<< define mouseReleaseEvent >>
             #@+node:ekr.20110605121601.18026: *6* << define mouseReleaseEvent >> (leoQtBaseTextWidget)
             def mouseReleaseEvent (*args,**keys):
-                
+
                 '''Override QLineEdit.mouseReleaseEvent.
-                
+
                 Simulate alt-x if we are not in an input state.'''
-                
+
                 trace = False and not g.unitTesting
-                
+
                 # Call the base class method.
                 if len(args) == 1:
                     event = args[0]
@@ -515,14 +503,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 if QtCore.Qt.ControlModifier & event.modifiers():
                     event = {'c':c}
                     g.openUrlOnClick(event)
-                    
+
                 if name == 'body':
                     c.p.v.insertSpot = c.frame.body.getInsertPoint()
                     if trace: g.trace(c.p.v.insertSpot)
-                    
+
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
-                
+
                 # 2012/09/25: Calling k.keyboardQuit calls k.showStateColors.
                 # This used to call w.setStyleSheet, which caused unwanted scroll.
                 # The solution to this problem is to color border by
@@ -558,7 +546,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         c = self.c
         name = c.widget_name(self)
-            
+
         # Apparently, this does not cause problems
         # because it generates no events in the body pane.
         if name.startswith('body'):
@@ -588,13 +576,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         return val
 
     def setFocus (self):
-        
+
         trace = False and not g.unitTesting
 
         if trace: print('leoQtBaseTextWidget.setFocus',
             # g.app.gui.widget_name(self.widget),
             self.widget,g.callers(3))
-        
+
         # Call the base class
         assert (
             isinstance(self.widget,QtGui.QTextBrowser) or
@@ -604,7 +592,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20110605121601.18033: *5* Indices
     #@+node:ekr.20110605121601.18034: *6* toPythonIndex (leoQtBaseTextWidget)
     def toPythonIndex (self,index):
-        
+
         s = self.getAllText()
         return g.toPythonIndex(s,index)
 
@@ -630,10 +618,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20110605121601.18041: *6* getSelectedText (leoQtBaseTextWidget)
     def getSelectedText(self):
 
-        w = self.widget
-        
+        # w = self.widget
         # g.trace(w,self)
-
         i,j = self.getSelectionRange()
         if i == j:
             return ''
@@ -671,7 +657,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # self.setInsertPoint(insert)
         # Bug fix: 2012/03/25.
         self.setSelectionRange(0,'end',insert=insert)
-       
+
     #@+node:ekr.20110605121601.18045: *6* setSelectionRange & dummy helper (leoQtBaseTextWidget)
     # Note: this is used by leoQTextEditWidget.
 
@@ -759,9 +745,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # This method very seldom does anything.
         trace = False and not g.unitTesting
         verbose = True
+        w = self
         c = self.c ; p = c.p
-        tree = c.frame.tree ; w = self
-
+        tree = c.frame.tree
+        
         if w.changingText: 
             if trace and verbose: g.trace('already changing')
             return
@@ -777,7 +764,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if not p:
             if trace: g.trace('*** no p')
             return
-
         newInsert = w.getInsertPoint()
         newSel = w.getSelectionRange()
         newText = w.getAllText() # Converts to unicode.
@@ -788,10 +774,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # This can happen as the result of undo.
             # g.error('*** unexpected non-change')
             return
-
         # g.trace('**',len(newText),p.h,'\n',g.callers(8))
-
-        oldIns  = p.v.insertSpot
+        # oldIns  = p.v.insertSpot
         i,j = p.v.selectionStart,p.v.selectionLength
         oldSel  = (i,i+j)
         if trace: g.trace('oldSel',oldSel,'newSel',newSel)
@@ -800,7 +784,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,
             oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-
         # Update the vnode.
         p.v.setBodyString(newText)
         if True:
@@ -813,16 +796,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # No need to redraw the screen.
         if not self.useScintilla:
             c.recolor()
-
         if g.app.qt_use_tabs:
             if trace: g.trace(c.frame.top)
-
         if not c.changed and c.frame.initComplete:
             c.setChanged(True)
-
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
-
         if 1: # This works, and is probably better.
             # Set a hook for the old jEdit colorer.
             colorer = c.frame.body.colorizer.highlighter.colorer
@@ -835,17 +814,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def rememberSelectionAndScroll(self):
 
         trace = (False or g.trace_scroll) and not g.unitTesting
-
         w = self
         v = self.c.p.v # Always accurate.
-        v.insertSpot = ins = w.getInsertPoint()
+        v.insertSpot = w.getInsertPoint()
         i,j = w.getSelectionRange()
         if i > j: i,j = j,i
         assert(i<=j)
         v.selectionStart = i
         v.selectionLength = j-i
         v.scrollBarSpot = spot = w.getYScrollPosition()
-        
         if trace:
             g.trace(spot,v.h)
             # g.trace(id(v),id(w),i,j,ins,spot,v.h)
@@ -868,9 +845,9 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         # g.trace('(leoQLineEditWidget):widget',name,widget)
     #@+node:ekr.20110605121601.18061: *5* __repr__
     def __repr__ (self):
-        
+
         return '<leoQLineEditWidget: widget: %s' % (self.widget)
-        
+
     __str__ = __repr__
     #@+node:ekr.20110605121601.18062: *4* Widget-specific overrides (QLineEdit)
     #@+node:ekr.20110605121601.18063: *5* getAllText
@@ -915,13 +892,13 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
     def setAllText(self,s):
 
         w = self.widget
-        
+
         disabled = hasattr(w,'leo_disabled') and w.leo_disabled
         if disabled:
             w.setEnabled(True)
 
         w.setText(s)
-            
+
         if disabled:
             w.setEnabled(False)
     #@+node:ekr.20110605121601.18069: *5* setInsertPoint (QLineEdit)
@@ -1060,7 +1037,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op,mode)
-            
+
         # 2012/03/25.  Add this common code.
         self.seeInsertPoint()
         self.rememberSelectionAndScroll()
@@ -1104,27 +1081,20 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
-        n = colorer.recolorCount
-
+        # n = colorer.recolorCount
         if trace: g.trace(self.getSelectionRange())
-
         i = self.toGuiIndex(i)
         if j is None: j = i+1
         j = self.toGuiIndex(j)
         if i > j: i,j = j,i
-
         if trace: g.trace(i,j)
-
         # Set a hook for the colorer.
         colorer.initFlag = True
-
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
-
         try:
             self.changingText = True # Disable onTextChanged
-
             old_i,old_j = self.getSelectionRange()
             if i == old_i and j == old_j:
                 # Work around an apparent bug in cursor.movePosition.
@@ -1144,9 +1114,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 if trace: g.trace(self.getSelectionRange())
         finally:
             self.changingText = False
-
         sb.setSliderPosition(pos)
-
         # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
     #@+node:ekr.20110605121601.18080: *5* flashCharacter (leoQTextEditWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
@@ -1220,11 +1188,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return i,j
     #@+node:ekr.20110605121601.18084: *5* getYScrollPosition (leoQTextEditWidget)
     def getYScrollPosition(self):
-        
+
         # **Important**: There is a Qt bug here: the scrollbar position
         # is valid only if cursor is visible.  Otherwise the *reported*
         # scrollbar position will be such that the cursor *is* visible.
-        
+
         trace = False and g.trace_scroll and not g.unitTesting
 
         w = self.widget
@@ -1234,9 +1202,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return pos
     #@+node:ekr.20110605121601.18085: *5* hasSelection (leoQTextEditWidget)
     def hasSelection(self):
-        
+
         # g.trace('self widget',self.widget)
-        
+
         return self.widget.textCursor().hasSelection()
     #@+node:ekr.20110605121601.18086: *5* scrolling (QTextEditWidget)
     #@+node:ekr.20110605121601.18087: *6* indexIsVisible and linesPerPage
@@ -1278,8 +1246,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
-        n = colorer.recolorCount
-
+        # n = colorer.recolorCount
         # Set a hook for the colorer.
         colorer.initFlag = True
         i = self.toGuiIndex(i)
@@ -1293,7 +1260,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             self.changingText = False
     #@+node:ekr.20110605121601.18090: *5* see & seeInsertPoint (leoQTextEditWidget)
     def see(self,i):
-        
+
         trace = g.trace_see and not g.unitTesting
 
         if g.no_see:
@@ -1303,7 +1270,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             self.widget.ensureCursorVisible()
 
     def seeInsertPoint (self):
-        
+
         trace = g.trace_see and not g.unitTesting
 
         if g.no_see:
@@ -1341,10 +1308,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             colorizer.changingText = False
 
         if trace and verbose: g.trace(g.timeSince(t1))
-        
+
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
     def setInsertPoint(self,i):
-        
+
         # Fix bug 981849: incorrect body content shown.
         # Use the more careful code in setSelectionRangeHelper & lengthHelper.
         self.setSelectionRangeHelper(i=i,j=i,insert=i)
@@ -1405,10 +1372,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
     #@+node:ekr.20110605121601.18098: *5* setYScrollPosition (leoQTextEditWidget)
     def setYScrollPosition(self,pos):
-        
+
         trace = (False or g.trace_scroll) and not g.unitTesting
         w = self.widget
-        
+
         if g.no_scroll:
             return
         elif pos is None:
@@ -1420,7 +1387,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20110605121601.18099: *5*  PythonIndex
     #@+node:ekr.20110605121601.18100: *6* toPythonIndex (leoQTextEditWidget) (Fast)
     def toPythonIndex (self,index):
-        
+
         '''This is much faster than versions using g.toPythonIndex.'''
 
         w = self
@@ -1467,7 +1434,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return i,row,col
     #@+node:ekr.20110605121601.18102: *5* get (leoQTextEditWidget)
     def get(self,i,j=None):
-        
+
         if 1:
             # 2012/04/12: fix the following two bugs by using the vanilla code:
             # https://bugs.launchpad.net/leo-editor/+bug/979142
@@ -1488,7 +1455,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             bl = doc.findBlock(i)
             #row = bl.blockNumber()
             #col = index - bl.position()
-        
+
             # common case, e.g. one character    
             if bl.contains(j):
                 s = g.u(bl.text())
@@ -1496,9 +1463,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 ret = s[ offset : offset + (j-i)]
                 #print "fastget",ret
                 return ret
-        
+
             # This is much slower, but will have to do        
-        
+
             #g.trace('Slow get()', g.callers(5))
             s = self.getAllText()
             i = self.toGuiIndex(i)
@@ -1608,12 +1575,11 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
             row_i,col_i,row_j,col_j = w.getSelection()
             i = g.convertRowColToPythonIndex(s, row_i, col_i)
             j = g.convertRowColToPythonIndex(s, row_j, col_j)
-            if sort and i > j: sel = j,i
+            if sort and i > j:
+                i,j = j,i # 2013/03/02: real bug fix.
         else:
             i = j = self.getInsertPoint()
-
         return i,j
-
     #@+node:ekr.20110605121601.18111: *5* hasSelection
     def hasSelection(self):
 
@@ -1751,9 +1717,9 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w.setText(s)
     #@+node:ekr.20110605121601.18126: *5* setEditorColors (leoQtHeadlineWidget)
     def setEditorColors(self,bg,fg):
-        
+
         obj = self.widget # A QLineEdit
-        
+
         # g.trace('(leoQtHeadlineWidget)',bg,fg)
 
         def check(color,kind,default):
@@ -1769,7 +1735,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
 
         # if hasattr(obj,'viewport'):
             # obj = obj.viewport()
-        
+
         obj.setStyleSheet('background-color:%s; color: %s' % (bg,fg))
     #@+node:ekr.20110605121601.18128: *5* setFocus
     def setFocus (self):
@@ -1820,20 +1786,20 @@ class leoQtMinibuffer (leoQLineEditWidget):
         self.c = c
         w = c.frame.top.leo_ui.lineEdit # QLineEdit
         # g.trace('(leoQtMinibuffer)',w)
-        
+
         # Init the base class.
         leoQLineEditWidget.__init__(self,widget=w,name='minibuffer',c=c)
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
         w.installEventFilter(self.ev_filter)
-    
+
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
         #@+node:ekr.20110605121601.18132: *4* << define mouseReleaseEvent >> (leoQtMinibuffer)
         def mouseReleaseEvent (*args,**keys):
-            
+
             '''Override QLineEdit.mouseReleaseEvent.
-            
+
             Simulate alt-x if we are not in an input state.'''
 
             # Important: c and w must be unbound here.
@@ -1843,7 +1809,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
             if len(args) == 1:
                 event = args[0]
                 QtGui.QLineEdit.mouseReleaseEvent(w,event)
-                
+
             elif len(args) == 2:
                 event = args[1]
                 #QtGui.QTextBrowser.mouseReleaseEvent(*args)
@@ -1866,7 +1832,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
     def setForegroundColor(self,color):
         self.widget.setStyleSheet('color:%s' % color)
-        
+
     def setBothColors(self,background_color,foreground_color):
         self.widget.setStyleSheet('background-color:%s; color: %s' % (
             background_color,foreground_color))
@@ -1878,7 +1844,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
 #@+node:ekr.20110605121601.18134: *3* init (qtGui.py top level) (qtPdb)
 def init():
-    
+
     trace = (False or g.trace_startup) and not g.unitTesting
     if trace and g.trace_startup: print('qtGui.__init__')
 
@@ -1931,7 +1897,7 @@ class DynamicWindow(QtGui.QMainWindow):
     def __init__(self,c,parent=None):
 
         '''Create Leo's main window, c.frame.top'''
-        
+
         # For qttabs gui, parent is a LeoTabbedTopLevel.
 
         # g.trace('(DynamicWindow)',g.callers())
@@ -1942,35 +1908,29 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
-        
+
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
     #@+node:ekr.20110605121601.18139: *4* construct (DynamicWindow)
     def construct(self,master=None):
         """ Factor 'heavy duty' code out from ctor """
 
-        c = self.leo_c; top = c.frame.top
+        c = self.leo_c
+        # top = c.frame.top
         self.leo_master=master # A LeoTabbedTopLevel for tabbed windows.
         # g.trace('(DynamicWindow)',g.callers())
-
         # Init the base class.
         ui_file_name = c.config.getString('qt_ui_file_name')
         if not ui_file_name:
             ui_file_name = 'qt_main.ui'
-
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
         # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
-
         self.bigTree = c.config.getBool('big_outline_pane')
-
         if useUI:  
             self.leo_ui = uic.loadUi(ui_description_file, self)
         else:
             self.createMainWindow()
-
-
         self.iconBar = self.addToolBar("IconBar")
-
         # Set orientation if requested.
         d = {
             'bottom':QtCore.Qt.BottomToolBarArea,
@@ -1979,18 +1939,16 @@ class DynamicWindow(QtGui.QMainWindow):
             'top':QtCore.Qt.TopToolBarArea,
         }
         where = c.config.getString('qt-toolbar-location')
-        # g.trace(where)
         if where:
             where = d.get(where)
             if where: self.addToolBar(where,self.iconBar)
         self.leo_menubar = self.menuBar()
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
-
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
         self.setStyleSheets()
-        #self.setLeoWindowIcon()
+        # self.setLeoWindowIcon()
     #@+node:ekr.20110605121601.18140: *4* closeEvent (DynamicWindow)
     def closeEvent (self,event):
 
@@ -2104,7 +2062,7 @@ class DynamicWindow(QtGui.QMainWindow):
         innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
         outerGrid = self.createGrid(logFrame,'logGrid')
         outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        
+
         # 2011/10/01: Embed the Find tab in a QScrollArea.
         findScrollArea = QtGui.QScrollArea()
         findScrollArea.setObjectName('findScrollArea')
@@ -2126,34 +2084,26 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20110605121601.18146: *6* createMainLayout (DynamicWindow)
     def createMainLayout (self,parent):
 
-        c = self.leo_c
-
+        # c = self.leo_c
         vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
-
         # Splitter two is the "main" splitter, containing splitter.
         splitter2 = splitter_class(parent)
         splitter2.setOrientation(QtCore.Qt.Vertical)
         splitter2.setObjectName("splitter_2")
-
         splitter2.connect(splitter2,
             QtCore.SIGNAL("splitterMoved(int,int)"),
             self.onSplitter2Moved)
-
         splitter = splitter_class(splitter2)
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
-
         splitter.connect(splitter,
             QtCore.SIGNAL("splitterMoved(int,int)"),
             self.onSplitter1Moved)
-
         # g.trace('splitter %s splitter2 %s' % (id(splitter),id(splitter2)))
-
         # Official ivars
         self.verticalLayout = vLayout
         self.splitter = splitter
         self.splitter_2 = splitter2
-
         self.setSizePolicy(self.splitter)
         self.verticalLayout.addWidget(self.splitter_2)
     #@+node:ekr.20110605121601.18147: *6* createMenuBar (DynamicWindow)
@@ -2308,7 +2258,7 @@ class DynamicWindow(QtGui.QMainWindow):
         return w
     #@+node:ekr.20110605121601.18159: *6* createLineEdit
     def createLineEdit (self,parent,name,disabled=True):
-        
+
         w = QtGui.QLineEdit(parent)
         w.setObjectName(name)
         w.leo_disabled = disabled # Inject the ivar.
@@ -2382,13 +2332,11 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20110605121601.18167: *6* createSpellTab
     def createSpellTab (self,parent):
 
-        MainWindow = self
-
+        # MainWindow = self
         vLayout = self.createVLayout(parent,'spellVLayout',margin=2)
         spellFrame = self.createFrame(parent,'spellFrame')
         vLayout2 = self.createVLayout(spellFrame,'spellVLayout')
         grid = self.createGrid(None,'spellGrid',spacing=2)
-
         table = (
             ('Add',     'Add',          2,1),
             ('Find',    'Find',         2,0),
@@ -2405,14 +2353,10 @@ class DynamicWindow(QtGui.QMainWindow):
             QtCore.QObject.connect(button,QtCore.SIGNAL("clicked()"),func)
             # This name is significant.
             setattr(self,'leo_spell_btn_%s' % (ivar),button)
-
         self.leo_spell_btn_Hide.setCheckable(False)
-
         spacerItem = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-
         grid.addItem(spacerItem, 5, 0, 1, 1)
-
         listBox = QtGui.QListWidget(spellFrame)
         self.setSizePolicy(listBox,
             kind1 = QtGui.QSizePolicy.MinimumExpanding,
@@ -2420,23 +2364,17 @@ class DynamicWindow(QtGui.QMainWindow):
         listBox.setMinimumSize(QtCore.QSize(0, 0))
         listBox.setMaximumSize(QtCore.QSize(150, 150))
         listBox.setObjectName("leo_spell_listBox")
-
         grid.addWidget(listBox, 1, 0, 1, 2)
-
         spacerItem1 = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         grid.addItem(spacerItem1, 2, 2, 1, 1)
-
         lab = self.createLabel(spellFrame,'spellLabel','spellLabel')
-
         grid.addWidget(lab, 0, 0, 1, 2)
         vLayout2.addLayout(grid)
         vLayout.addWidget(spellFrame)
-
         QtCore.QObject.connect(listBox,
             QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),
             self.do_leo_spell_btn_FindChange)
-
         # Official ivars.
         self.spellFrame = spellFrame
         self.spellGrid = grid
@@ -2449,11 +2387,11 @@ class DynamicWindow(QtGui.QMainWindow):
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
         grid.setColumnStretch(1,100)
-        
+
         # Row 0: heading.
         lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
         grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-        
+
         # Rows 1, 2: the find/change boxes, now disabled.
         findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
         findChange  = self.createLineEdit(parent,'findChange',disabled=True)
@@ -2463,7 +2401,7 @@ class DynamicWindow(QtGui.QMainWindow):
         grid.addWidget(lab3,2,0)
         grid.addWidget(findPattern,1,1)
         grid.addWidget(findChange,2,1)
-            
+
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
         def mungeName(name):
@@ -2556,18 +2494,18 @@ class DynamicWindow(QtGui.QMainWindow):
         self.doSpellBtn('onIgnoreButton')
     #@+node:ekr.20110605121601.18173: *4* select (DynamicWindow)
     def select (self,c):
-        
+
         '''Select the window or tab for c.'''
-        
+
         # self is c.frame.top
-        
+
         if self.leo_master:
             # A LeoTabbedTopLevel.
             self.leo_master.select(c)
         else:
             w = c.frame.body.bodyCtrl
             g.app.gui.set_focus(c,w)
-        
+
     #@+node:ekr.20110605121601.18174: *4* setSplitDirection (DynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
@@ -2631,15 +2569,15 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@+node:ekr.20110605121601.18178: *4* setGeometry (DynamicWindow)
     def setGeometry (self,rect):
-        
+
         '''Set the window geometry, but only once when using the qttabs gui.'''
 
         # g.trace('(DynamicWindow)',rect,g.callers())
-        
+
         if g.app.qt_use_tabs:
             m = self.leo_master
             assert self.leo_master
-        
+
             # Only set the geometry once, even for new files.
             if not hasattr(m,'leo_geom_inited'):
                 m.leo_geom_inited = True
@@ -2672,7 +2610,7 @@ class DynamicWindow(QtGui.QMainWindow):
 class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
-    
+
     # pylint: disable=R0923
     # R0923:leoQtBody: Interface not implemented
 
@@ -2682,23 +2620,17 @@ class leoQtBody (leoFrame.leoBody):
     def __init__ (self,frame,parentFrame):
 
         trace = False and not g.unitTesting
-
         # Call the base class constructor.
         leoFrame.leoBody.__init__(self,frame,parentFrame)
-
         c = self.c
         assert c.frame == frame and frame.c == c
-
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        
         self.unselectedBackgroundColor = c.config.getColor(
             # 'unselected-background-color')
             'unselected_body_bg_color')
-            
         # 2011/03/14
         self.unselectedForegroundColor = c.config.getColor(
             'unselected_body_fg_color')
-
         # Set the actual gui widget.
         if self.useScintilla:
             self.widget = w = leoQScintillaWidget(
@@ -2710,40 +2642,31 @@ class leoQtBody (leoFrame.leoBody):
             top = c.frame.top
             sw = top.leo_ui.stackedWidget
             qtWidget = top.leo_ui.richTextEdit # A LeoQTextBrowser
-            # g.trace('(qtBody)',qtWidget)
             sw.setCurrentIndex(1)
-            self.widget = w = leoQTextEditWidget(
-                qtWidget,name = 'body',c=c)
+            self.widget = w = leoQTextEditWidget(qtWidget,name='body',c=c)
                 # Sets w.widget = qtWidget.
             self.bodyCtrl = w # The widget as seen from Leo's core.
-
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
             qtWidget.setAcceptRichText(False)
-            
             if 0: # xxx test: disable foreground color change for selected text.
                 palette = qtWidget.palette()
                 highlight_foreground_brush = palette.brush(palette.Active,palette.HighlightedText) # white.
                 highlight_background_brush = palette.brush(palette.Active,palette.Highlight) # dark blue
-                normal_brush = palette.brush(palette.Active,palette.Text)
-                
+                # normal_brush = palette.brush(palette.Active,palette.Text)
                 g.trace('foreground',highlight_foreground_brush.color().name())
                 g.trace('background',highlight_background_brush.color().name())
                 highlight_foreground_brush.setColor(QtGui.QColor('red'))
                 g.trace('foreground',highlight_foreground_brush.color().name())
                 palette.setBrush(palette.HighlightedText,highlight_foreground_brush)
-                
-
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.setWrap(c.p)
-
         # For multiple body editors.
         self.editor_name = None
         self.editor_v = None
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
-        
         # For renderer panes.
         self.canvasRenderer = None
         self.canvasRendererLabel = None
@@ -2752,7 +2675,6 @@ class leoQtBody (leoFrame.leoBody):
         self.textRendererLabel = None
         self.textRendererVisible = False
         self.textRendererWrapper = None
-
         if trace: g.trace('(qtBody)',self.widget)
     #@+node:ekr.20110605121601.18183: *6* setWrap (qtBody)
     def setWrap (self,p):
@@ -2769,7 +2691,7 @@ class leoQtBody (leoFrame.leoBody):
             d = c.scanAllDirectives(p)
             if d is None: return
             wrap = d.get('wrap')
-            
+
         # g.trace(wrap,w.verticalScrollBar())
 
         option,qt = QtGui.QTextOption,QtCore.Qt
@@ -2786,14 +2708,14 @@ class leoQtBody (leoFrame.leoBody):
         return 'body-widget'
     #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
-        
+
         trace = False and not g.unitTesting
-        
+
         c = self.c
 
         if c.use_focus_border:
             return
-          
+
         # Deprecated.  This can cause unwanted scrolling.
         obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
 
@@ -2801,7 +2723,7 @@ class leoQtBody (leoFrame.leoBody):
         if  class_name != 'LeoQTextBrowser':
             if trace: g.trace('unexpected object',obj)
             return
-        
+
         def check(color,kind,default):
             if color in ('none','None',None):
                 return default
@@ -2820,7 +2742,7 @@ class leoQtBody (leoFrame.leoBody):
         # Set the stylesheet only for the QTextBrowser itself,
         # *not* the other child widgets:
         # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
-            
+
         sheet = 'background-color: %s; color: %s' % (bg,fg)
 
         g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
@@ -2868,12 +2790,12 @@ class leoQtBody (leoFrame.leoBody):
     toGuiIndex = toPythonIndex
     #@+node:ekr.20110605121601.18192: *4* hasFocus (qtBody)
     def hasFocus(self):
-        
+
         '''Return True if the body has focus.'''
-        
+
         # Always returning True is good enough for leoMenu.updateEditMenu.
         return True
-        
+
         # Doesn't work: the focus is already in the menu!
         # w = g.app.gui.get_focus()
         # g.trace(w,self.widget.widget)
@@ -2933,15 +2855,12 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c ; p = c.p
         f = c.frame.top.leo_ui.leo_body_inner_frame
             # Valid regardless of qtGui.useUI
-        n = self.numberOfEditors
-
         # Step 1: create the editor.
         # w = QtGui.QTextBrowser(f)
         w = LeoQTextBrowser(f,c,self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = leoQTextEditWidget(w,name='body',c=c)
         self.packLabel(w)
-
         # Step 2: inject ivars, set bindings, etc.
         self.injectIvars(f,name,p,wrapper)
         self.updateInjectedIvars(w,p)
@@ -2950,20 +2869,17 @@ class leoQtBody (leoFrame.leoBody):
         self.createBindings(w=wrapper)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p,wrapper)
-
         return f,wrapper
     #@+node:ekr.20110605121601.18197: *6* assignPositionToEditor (qtBody)
     def assignPositionToEditor (self,p):
 
         '''Called *only* from tree.select to select the present body editor.'''
 
-        c = self.c ; cc = c.chapterController
+        c = self.c
         wrapper = c.frame.body.bodyCtrl
         w = wrapper.widget
-
         self.updateInjectedIvars(w,p)
         self.selectLabel(wrapper)
-
         # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
     #@+node:ekr.20110605121601.18198: *6* cycleEditorFocus (qtBody)
     # Use the base class method.
@@ -2982,7 +2898,7 @@ class leoQtBody (leoFrame.leoBody):
             # assert(w!=w2)
             # self.selectEditor(w2)
             # c.frame.body.bodyCtrl = w2
-            
+
     #@+node:ekr.20110605121601.18199: *6* deleteEditor (qtBody)
     def deleteEditor (self,event=None):
 
@@ -3119,41 +3035,32 @@ class leoQtBody (leoFrame.leoBody):
     def selectEditorHelper (self,wrapper):
 
         trace = False and not g.unitTesting
-        c = self.c ; cc = c.chapterController
-        d = self.editorWidgets
+        c = self.c
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         w = wrapper.widget
         assert isinstance(w,QtGui.QTextEdit),w
-
         if not w.leo_p:
             g.trace('no w.leo_p') 
             return 'break'
-
         # The actual switch.
         self.deactivateEditors(wrapper)
         self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
         # g.trace('c.frame.body',c.frame.body)
         # g.trace('c.frame.body.bodyCtrl',c.frame.body.bodyCtrl)
         # g.trace('wrapper',wrapper)
-        
         c.frame.body.bodyCtrl = wrapper
         c.frame.body.widget = wrapper # Major bug fix: 2011/04/06
         w.leo_active = True
-
         self.switchToChapter(wrapper)
         self.selectLabel(wrapper)
-
         if not self.ensurePositionExists(w):
             return g.trace('***** no position editor!')
         if not (hasattr(w,'leo_p') and w.leo_p):
             return g.trace('***** no w.leo_p',w)
-            
         p = w.leo_p
         assert p,p
-
         if trace: g.trace('wrapper %s old %s p %s' % (
             id(wrapper),c.p.h,p.h))
-
         c.expandAllAncestors(p)
         c.selectPosition(p)
             # Calls assignPositionToEditor.
@@ -3370,15 +3277,15 @@ class leoQtBody (leoFrame.leoBody):
     def unpackWidget (self,layout,w):
 
         trace = False and not g.unitTesting
-        
+
         if trace: g.trace(w)
 
         index = layout.indexOf(w)
         item = layout.itemAt(index)
         item.setGeometry(QtCore.QRect(0,0,0,0))
         layout.removeItem(item)
-        
-        
+
+
     #@+node:ekr.20110605121601.18217: *4* Renderer panes (qtBody)
     #@+node:ekr.20110605121601.18218: *5* hideCanvasRenderer (qtBody)
     def hideCanvasRenderer (self,event=None):
@@ -3473,25 +3380,20 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20110605121601.18220: *5* packRenderer (qtBody)
     def packRenderer (self,f,name,w):
 
-        c = self.c ; n = max(1,self.numberOfEditors)
+        n = max(1,self.numberOfEditors)
         assert isinstance(f,QtGui.QFrame),f
-
         layout = f.layout()
         f.setObjectName('%s Frame' % name)
-
         # Create the text: to do: use stylesheet to set font, height.
         lab = QtGui.QLineEdit(f)
         lab.setObjectName('%s Label' % name)
         lab.setText(name)
-
         # Pack the label and the widget.
         layout.addWidget(lab,0,max(0,n-1),QtCore.Qt.AlignVCenter)
         layout.addWidget(w,1,max(0,n-1))
         layout.setRowStretch(0,0)
         layout.setRowStretch(1,1) # Give row 1 as much as possible.
-        
         return lab
-
     #@+node:ekr.20110605121601.18221: *5* showCanvasRenderer (qtBody)
     # An override of leoFrame.addEditor.
 
@@ -3499,19 +3401,14 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Show the canvas area in the body pane, creating it if necessary.'''
 
-        trace = False and not g.unitTesting
-        
-        bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
-
+        # bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
         c = self.c
         f = c.frame.top.leo_ui.leo_body_inner_frame
         assert isinstance(f,QtGui.QFrame),f
-
         if not self.canvasRenderer:
             name = 'Graphics Renderer'
             self.canvasRenderer = w = QtGui.QGraphicsView(f)
             w.setObjectName(name)
-        
         if not self.canvasRendererVisible:
             self.canvasRendererLabel = self.packRenderer(f,name,w)
             self.canvasRendererVisible = True
@@ -3532,7 +3429,7 @@ class leoQtBody (leoFrame.leoBody):
             w.setObjectName(name)
             self.textRendererWrapper = leoQTextEditWidget(
                 w,name='text-renderer',c=c)
-                
+
         if not self.textRendererVisible:
             self.textRendererLabel = self.packRenderer(f,name,w)
             self.textRendererVisible = True
@@ -3543,14 +3440,11 @@ class leoQtBody (leoFrame.leoBody):
         '''Handle a focus-in event in the body pane.'''
 
         trace = False and not g.unitTesting
-        c = self.c
-        
         if trace: g.trace(str(obj.objectName()))
 
         # 2010/08/01: Update the history only on focus in events.
         # 2011/04/02: Update history only in leoframe.tree.select.
         # c.nodeHistory.update(c.p)
-        
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
             if wrapper and wrapper != self.bodyCtrl:
@@ -3562,27 +3456,24 @@ class leoQtBody (leoFrame.leoBody):
     def onFocusOut (self,obj):
 
         '''Handle a focus-out event in the body pane.'''
-        
+
         trace = False and not g.unitTesting
 
         if trace: g.trace(str(obj.objectName()))
-        
+
         # Apparently benign.
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-out',obj)
             obj.setReadOnly(True)
-        
+
     #@+node:ekr.20110605121601.18224: *5* onFocusColorHelper (qtBody)
     badFocusColors = []
 
     def onFocusColorHelper(self,kind,obj):
 
         trace = False and not g.unitTesting
-        
-        c = self.c ; w = c.frame.body.bodyCtrl
-        
+        c = self.c
         if trace: g.trace(kind)
-        
         if kind == 'focus-in':
             # if trace: g.trace('%9s' % (kind),'calling c.k.showStateColors()')
             c.k.showStateColors(inOutline=False,w=self.widget)
@@ -3621,7 +3512,7 @@ class leoQtFindTab (leoFind.findTab):
         # Keys are option names; values are <svars>.
         for ivar in self.intKeys:
             self.svarDict[ivar] = self.svar(owner,ivar)
-        
+
         # g.trace(self.svarDict)
 
         # Add a hack for 'entire_outline' radio button.
@@ -3908,11 +3799,11 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20110605121601.18246: *4*  Birth & Death (qtFrame)
     #@+node:ekr.20110605121601.18247: *5* __init__ (qtFrame)
     def __init__(self,c,title,gui):
-        
+
 
         # Init the base class.
         leoFrame.leoFrame.__init__(self,c,gui)
-        
+
         assert self.c == c
         leoFrame.leoFrame.instances += 1 # Increment the class var.
 
@@ -3923,7 +3814,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.minibufferVisible = True
         self.statusLineClass = self.qtStatusLineClass
         self.title = title
-        
+
         # Config settings.
         self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters      = c.config.getBool('use_chapters')
@@ -3951,7 +3842,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.statusLabel = None 
         self.top = None # This will be a class Window object.
         self.tree = None
-        
+
         # Used by event handlers...
         self.controlKeyIsDown = False # For control-drags
         self.isActive = True
@@ -3965,7 +3856,7 @@ class leoQtFrame (leoFrame.leoFrame):
         return "<leoQtFrame: %s>" % self.title
     #@+node:ekr.20110605121601.18250: *5* qtFrame.finishCreate & helpers
     def finishCreate (self):
-        
+
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('qtFrame.finishCreate')
 
@@ -4086,7 +3977,7 @@ class leoQtFrame (leoFrame.leoFrame):
             self.statusBar.addWidget(splitter, True)
             splitter.addWidget(w1)
             splitter.addWidget(w2)
-            
+
             c.status_line_unl_mode = 'original'
             def cycle_unl_mode():
                 if c.status_line_unl_mode == 'original':
@@ -4095,15 +3986,15 @@ class leoQtFrame (leoFrame.leoFrame):
                     c.status_line_unl_mode = 'original'
                 verbose = c.status_line_unl_mode=='canonical'
                 w2.setText(c.p.get_UNL(with_proto=verbose))
-            
+
             def add_item(event, w2=w2):
                 menu = w2.createStandardContextMenu()
                 menu.addSeparator()
                 menu.addAction("Toggle UNL mode", cycle_unl_mode)
                 menu.exec_(event.globalPos())
-                
+
             w2.contextMenuEvent = add_item
-            
+
             self.put('')
             self.update()
             c.frame.top.setStyleSheets()
@@ -4220,7 +4111,7 @@ class leoQtFrame (leoFrame.leoFrame):
                 def createWidget (self,parent):
                     # g.trace('leoIconBarButton',self.toolbar.buttonColor)
                     self.button = b = QtGui.QPushButton(self.text,parent)
-                    
+
                     if 0: # 2011/06/01: don't set the color.  Use the stylesheet instead.
                         g.app.gui.setWidgetColor(b,
                             widgetKind='QPushButton',
@@ -4239,7 +4130,7 @@ class leoQtFrame (leoFrame.leoFrame):
             self.w.addAction(action)
             self.actions.append(action)
             b = self.w.widgetForAction(action)
-            
+
             # Set the button's object name so we can use the stylesheet to color it.
             if not button_name: button_name = 'unnamed'
             button_name = button_name + '-button'
@@ -4299,12 +4190,9 @@ class leoQtFrame (leoFrame.leoFrame):
         def createChaptersIcon(self):
 
             # g.trace('(qtIconBarClass)')
-
             c = self.c
-            cc = c.chapterController
             f = c.frame
-
-            if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
+            if f.use_chapters and f.use_chapter_tabs:
                 return leoQtTreeTab(c,f.iconBar)
             else:
                 return None
@@ -4495,11 +4383,9 @@ class leoQtFrame (leoFrame.leoFrame):
 
         trace = False and not g.unitTesting
 
-        f = self ; c = self.c
-
+        f = self
         if trace: g.trace('%5s, %0.2f %0.2f' % (
             self.splitVerticalFlag,ratio,ratio2),g.callers(4))
-
         f.divideLeoSplitter(self.splitVerticalFlag,ratio)
         f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
     #@+node:ekr.20110605121601.18283: *5* divideLeoSplitter
@@ -4575,7 +4461,7 @@ class leoQtFrame (leoFrame.leoFrame):
     # but they could be called by LeoQTextBrowser.
 
     def OnBodyClick (self,event=None):
-        
+
         g.trace()
 
         try:
@@ -4791,7 +4677,7 @@ class leoQtFrame (leoFrame.leoFrame):
         frame = self ; c = frame.c
         w = c.get_focus()
         w_name = g.app.gui.widget_name(w)
-        
+
         # g.trace(w,w_name)
 
         if w_name in ('canvas','tree','treeWidget'):
@@ -4835,16 +4721,16 @@ class leoQtFrame (leoFrame.leoFrame):
     def minimizeAll (self,event=None):
 
         '''Minimize all Leo's windows.'''
-        
+
         for frame in g.app.windowList:
             self.minimize(frame)
 
     def minimize(self,frame):
-        
+
         # This unit test will fail when run externally.
-        
+
         if frame and frame.top:
-        
+
             # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
             # For --gui=qt,     frame.top is a DynamicWindow.
             w = frame.top.leo_master or frame.top
@@ -4860,9 +4746,9 @@ class leoQtFrame (leoFrame.leoFrame):
 
         trace = False and not g.unitTesting
         c,f = self.c,self
-        
+
         if trace: g.trace('*'*20)
-            
+
         def getRatio(w):
             sizes = w.sizes()
             if len(sizes) == 2:
@@ -4875,7 +4761,7 @@ class leoQtFrame (leoFrame.leoFrame):
             else:
                 if trace: g.trace('oops: len(sizes)',len(sizes),'default 0.5')
                 return float(0.5)
-                
+
         def getNewSizes(sizes,ratio):
             size1,size2 = sizes
             total = size1+size2
@@ -4885,32 +4771,32 @@ class leoQtFrame (leoFrame.leoFrame):
                 'ratio: %0.2f, size1: %3s, size2: %3s, total: %4s' % (
                 ratio,size1,size2,total))
             return [size1,size2]
-        
+
         # Compute the actual ratios before reorienting.
         w1,w2 = f.top.splitter, f.top.splitter_2
         r1 = getRatio(w1)
         r2 = getRatio(w2)
         f.ratio,f.secondary_ratio = r1,r2
-        
+
         # Remember the sizes before reorienting.
         sizes1 = w1.sizes()
         sizes2 = w2.sizes()
-        
+
         # Reorient the splitters.
         for w in (f.top.splitter,f.top.splitter_2):
             w.setOrientation(
                 g.choose(w.orientation() == QtCore.Qt.Horizontal,
                     QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
-                    
+
         # Fix bug 580328: toggleSplitDirection doesn't preserve existing ratio.
         if len(sizes1) == 2 and len(sizes2) == 2:
             w1.setSizes(getNewSizes(sizes1,r1))
             w2.setSizes(getNewSizes(sizes2,r2))
-            
+
         # Maintain the key invariant: self.splitVerticalFlag
         # tells the alignment of the main splitter.
         f.splitVerticalFlag = not f.splitVerticalFlag
-        
+
         # Fix bug 581031: Scrollbar position is not preserved.
         # This is better than adjust the scroll value directy.
         c.frame.tree.setItemForCurrentPosition(scroll=True)
@@ -4921,11 +4807,11 @@ class leoQtFrame (leoFrame.leoFrame):
         '''Resize the Leo window so it fill the entire screen.'''
 
         frame = self
-        
+
         # This unit test will fail when run externally.
-        
+
         if frame and frame.top:
-        
+
             # For --gui=qttabs, frame.top.leo_master is a LeoTabbedTopLevel.
             # For --gui=qt,     frame.top is a DynamicWindow.
             w = frame.top.leo_master or frame.top
@@ -5006,7 +4892,7 @@ class leoQtFrame (leoFrame.leoFrame):
 class leoQtLog (leoFrame.leoLog):
 
     """A class that represents the log pane of a Qt window."""
-    
+
     # pylint: disable=R0923
     # R0923:leoQtLog: Interface not implemented
 
@@ -5031,7 +4917,7 @@ class leoQtLog (leoFrame.leoLog):
 
         self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
             # The Qt.QTabWidget that holds all the tabs.
-        
+
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
         tw.connect(tw,QtCore.SIGNAL('currentChanged(int)'),self.onCurrentChanged)
 
@@ -5099,12 +4985,12 @@ class leoQtLog (leoFrame.leoLog):
     def forceLogUpdate (self,s):            pass
     #@+node:ekr.20120304214900.9940: *4* Event handler (leoQtLog)
     def onCurrentChanged(self,idx):
-        
+
         trace = False and not g.unitTesting
 
         tabw = self.tabWidget
         w = tabw.widget(idx)
-        
+
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely
         wrapper = hasattr(w,'leo_log_wrapper') and w.leo_log_wrapper
         if wrapper:
@@ -5113,7 +4999,7 @@ class leoQtLog (leoFrame.leoLog):
         if trace: g.trace(idx,tabw.tabText(idx),self.c.frame.title) # wrapper and wrapper.widget)
     #@+node:ekr.20111120124732.10184: *4* isLogWidget (leoQtLog)
     def isLogWidget(self,w):
-        
+
         val = w == self or w in list(self.contentsDict.values())
         # g.trace(val,w)
         return val
@@ -5127,21 +5013,17 @@ class leoQtLog (leoFrame.leoLog):
         if g.app.quitting or not c or not c.exists:
             print('qtGui.log.put fails',repr(s))
             return
-
         if color:
             color = leoColor.getColor(color,'black')
         else:
             color = leoColor.getColor('black')
-
         self.selectTab(tabName or 'Log')
 
         # Note: this must be done after the call to selectTab.
-        w = self.logCtrl.widget
-            # w is a QTextBrowser
-
+        w = self.logCtrl.widget # w is a QTextBrowser
         if w:
             sb = w.horizontalScrollBar()
-            pos = sb.sliderPosition()
+            # pos = sb.sliderPosition()
             # g.trace(pos,sb,g.callers())
             s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
@@ -5175,7 +5057,7 @@ class leoQtLog (leoFrame.leoLog):
             self.selectTab(tabName)
 
         w = self.logCtrl.widget
-        
+
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
@@ -5207,7 +5089,7 @@ class leoQtLog (leoFrame.leoLog):
 
         trace = False and not g.unitTesting
         c = self.c
-        
+
         if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
 
         if widget is None:
@@ -5218,9 +5100,9 @@ class leoQtLog (leoFrame.leoLog):
                 # contents a wrapper.
             widget.leo_log_wrapper = contents
                 # Inject an ivar into the QTextBrowser that points to the wrapper.
-                
+
             if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-            
+
             widget.setWordWrapMode(
                 g.choose(self.wrap,
                     QtGui.QTextOption.WordWrap,
@@ -5237,20 +5119,20 @@ class leoQtLog (leoFrame.leoLog):
                 theFilter = leoQtEventFilter(c,w=self,tag='log')
                 self.eventFilters.append(theFilter) # Needed!
                 widget.installEventFilter(theFilter)
-                
+
             if True and tabName == 'Log':
-        
+
                 assert c.frame.top.__class__.__name__ == 'DynamicWindow'
                 find_widget = c.frame.top.leo_find_widget
-                
+
                 # 2011/11/21: A hack: add an event filter.
                 find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
                 find_widget.installEventFilter(find_widget.leo_event_filter)
                 if trace: g.trace('** Adding event filter for Find',find_widget)
-                
+
                 # 2011/11/21: A hack: make the find_widget an official log widget.
                 self.contentsDict['Find']=find_widget
-        
+
             self.contentsDict[tabName] = widget
             self.tabWidget.addTab(widget,tabName)
         else:
@@ -5259,12 +5141,12 @@ class leoQtLog (leoFrame.leoLog):
             widget.leo_log_wrapper = contents
                 # The leo_log_wrapper is the widget itself.
             if trace: g.trace('** using',tabName,widget)
-            
+
             if 1: # Now seems to work.
                 theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
                 self.eventFilters.append(theFilter) # Needed!
                 widget.installEventFilter(theFilter)
-        
+
             self.contentsDict[tabName] = contents
             self.tabWidget.addTab(contents,tabName)
 
@@ -5273,21 +5155,16 @@ class leoQtLog (leoFrame.leoLog):
     def cycleTabFocus (self,event=None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
-        
-        trace = False and not g.unitTesting
-        c = self.c
-        w = self.tabWidget
 
+        trace = False and not g.unitTesting
+        w = self.tabWidget
         i = w.currentIndex()
         i += 1
         if i >= w.count():
             i = 0
-
         tabName = w.tabText(i)
-        
         self.selectTab(tabName,createText=False)
         if trace: g.trace(i,tabName)
-
     #@+node:ekr.20110605121601.18328: *5* deleteTab
     def deleteTab (self,tabName,force=False):
 
@@ -5308,9 +5185,9 @@ class leoQtLog (leoFrame.leoLog):
         self.selectTab('Log')
     #@+node:ekr.20111122080923.10185: *5* orderedTabNames (leoQtLog)
     def orderedTabNames (self,leoLog=None): # Unused: leoLog
-        
+
         '''Return a list of tab names in the order in which they appear in the QTabbedWidget.'''
-        
+
         w = self.tabWidget
 
         return [w.tabText(i) for i in range(w.count())]
@@ -5321,21 +5198,18 @@ class leoQtLog (leoFrame.leoLog):
         return len([val for val in self.contentsDict.values() if val != None])
             # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *5* selectTab & helper (leoQtLog)
-    def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
+    # createText is used by leoLog.selectTab.
 
-        # createText is used by leoLog.selectTab.
+    def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
 
         '''Create the tab if necessary and make it active.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; w = self.tabWidget
-        
+        # w = self.tabWidget
         if trace: g.trace(tabName,g.callers())
-
         # Step 1: See if the tab exits.
         ok = self.selectHelper(tabName)
         if ok: return
-
         # Step 2: create tab if necessary.
         self.createTab(tabName,widget=widget,wrap=wrap)
         self.selectHelper(tabName)
@@ -5348,15 +5222,15 @@ class leoQtLog (leoFrame.leoLog):
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
-                
+
                 widget = w.widget(i)
-                
+
                 # 2011/11/21: Set the .widget ivar only if there is a wrapper.
                 wrapper = hasattr(widget,'leo_log_wrapper') and widget.leo_log_wrapper
                 if wrapper:
                     self.widget = wrapper
                 if trace: g.trace(tabName,'widget',widget,'wrapper',wrapper)
-                
+
                 # Do *not* set focus here!
                     # c.widgetWantsFocus(tab_widget)
 
@@ -5364,7 +5238,7 @@ class leoQtLog (leoFrame.leoLog):
                     # the base class uses this as a flag to see if
                     # the spell system needs initing
                     self.frameDict['Spell'] = widget
-                    
+
                 self.tabName = tabName # 2011/11/20
                 return True
         else:
@@ -5379,11 +5253,10 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20110605121601.18335: *5* createFontPicker
     def createFontPicker (self,tabName):
 
-        log = self
+        # log = self
         QFont = QtGui.QFont
         font,ok = QtGui.QFontDialog.getFont()
         if not (font and ok): return
-
         style = font.style()
         table = (
             (QFont.StyleNormal,'normal'),
@@ -5391,9 +5264,10 @@ class leoQtLog (leoFrame.leoLog):
             (QFont.StyleOblique,'oblique'))
         for val,name in table:
             if style == val:
-                style = name ; break
-        else: style = ''
-
+                style = name
+                break
+        else:
+            style = ''
         weight = font.weight()
         table = (
             (QFont.Light,'light'),
@@ -5403,22 +5277,21 @@ class leoQtLog (leoFrame.leoLog):
             (QFont.Black,'black'))
         for val,name in table:
             if weight == val:
-                weight = name ; break
-        else: weight = ''
-
+                weight = name
+                break
+        else:
+            weight = ''
         table = (
             ('family',str(font.family())),
             ('size  ',font.pointSize()),
             ('style ',style),
             ('weight',weight),
         )
-
         for key,val in table:
-            if val:
-                g.es(key,val,tabName='Fonts')
+            if val: g.es(key,val,tabName='Fonts')
     #@+node:ekr.20110605121601.18336: *5* createBindings (fontPicker)
     def createBindings (self):
-        
+
         pass
     #@+node:ekr.20110605121601.18337: *5* getFont
     def getFont(self,family=None,size=12,slant='roman',weight='normal'):
@@ -5447,7 +5320,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         # Init the base class.
         leoMenu.leoMenu.__init__(self,frame)
-        
+
         self.leo_menu_label = label.replace('&','').lower()
 
         # called from createMenuFromConfigList,createNewMenu,new_menu,qtMenuWrapper.ctor.
@@ -5470,9 +5343,9 @@ class leoQtMenu (leoMenu.leoMenu):
                 c.config.defaultMenuFontSize)
     #@+node:ekr.20120306130648.9848: *4* leoQtMenu.__repr__
     def __repr__ (self):
-        
+
         return '<leoQtMenu: %s>' % self.leo_menu_label
-        
+
     __str__ = __repr__
     #@+node:ekr.20110605121601.18342: *4* Tkinter menu bindings
     # See the Tk docs for what these routines are to do
@@ -5483,32 +5356,25 @@ class leoQtMenu (leoMenu.leoMenu):
         """Wrapper for the Tkinter add_cascade menu method.
 
         Adds a submenu to the parent menu, or the menubar."""
-        
+
         # menu and parent are a qtMenuWrappers, subclasses of  QMenu.
-        c = self.c ; leoFrame = c.frame
         n = underline
         if -1 < n < len(label):
             label = label[:n] + '&' + label[n:]
-
         menu.setTitle(label)
-
         if parent:
             parent.addMenu(menu) # QMenu.addMenu.
         else:
             self.menuBar.addMenu(menu)
-            
         label = label.replace('&','').lower()
         menu.leo_menu_label = label
-
         return menu
     #@+node:ekr.20110605121601.18345: *6* add_command (leoQtMenu) (Called by createMenuEntries)
     def add_command (self,**keys):
 
         """Wrapper for the Tkinter add_command menu method."""
-        
-        trace = False and not g.unitTesting # and label.startswith('Paste')
 
-        c = self.c
+        trace = False and not g.unitTesting # and label.startswith('Paste')
         accel = keys.get('accelerator') or ''
         command = keys.get('command')
         commandName = keys.get('commandName')
@@ -5516,27 +5382,22 @@ class leoQtMenu (leoMenu.leoMenu):
         n = keys.get('underline')
         menu = keys.get('menu') or self
         if not label: return
-        
         if trace: g.trace(label)
             # command is always add_commandCallback,
             # defined in c.add_command.
-
         if -1 < n < len(label):
             label = label[:n] + '&' + label[n:]
         if accel:
             label = '%s\t%s' % (label,accel)
-
         action = menu.addAction(label)
-        
+
         # 2012/01/20: Inject the command name into the action
         # so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName
-
         if command:
             def qt_add_command_callback(label=label,command=command):
                 # g.trace(command)
                 return command()
-
             QtCore.QObject.connect(action,
                 QtCore.SIGNAL("triggered()"),qt_add_command_callback)
     #@+node:ekr.20110605121601.18346: *6* add_separator (leoQtMenu)
@@ -5604,7 +5465,7 @@ class leoQtMenu (leoMenu.leoMenu):
         """Wrapper for the Tkinter insert_cascade menu method."""
 
         menu.setTitle(label)
-        
+
         label.replace('&','').lower()
         menu.leo_menu_label = label # was leo_label
 
@@ -5612,7 +5473,7 @@ class leoQtMenu (leoMenu.leoMenu):
             parent.addMenu(menu)
         else:
             self.menuBar.addMenu(menu)
-            
+
         action = menu.menuAction()
         if action:
             action.leo_menu_label = label
@@ -5676,11 +5537,11 @@ class leoQtMenu (leoMenu.leoMenu):
         self.enableMenu(menu,name,False)
 
     def enableMenu (self,menu,name,val):
-        
+
         '''Enable or disable the item in the menu with the given name.'''
-        
+
         trace = False and name.startswith('Paste') and not g.unitTesting
-        
+
         if trace: g.trace(val,name,menu)
 
         if menu and name:
@@ -5722,21 +5583,18 @@ class leoQtMenu (leoMenu.leoMenu):
     def activateMenu (self,menuName):
 
         '''Activate the menu with the given name'''
-        
-        c = self.c
+
         menu = self.getMenu(menuName)
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
-        
         if menu:
             self.activateAllParentMenus(menu)
         else:       
             g.trace('No such menu: %s' % (menuName))
-
     #@+node:ekr.20120922041923.10607: *5* activateAllParentMenus
     def activateAllParentMenus (self,menu):
-        
+
         '''menu is a qtMenuWrapper.  Activate it and all parent menus.'''
-        
+
         parent = menu.parent()
         action = menu.menuAction()
 
@@ -5754,12 +5612,12 @@ class leoQtMenu (leoMenu.leoMenu):
     def deactivateMenuBar (self):
 
         '''Activate the menu with the given name'''
-        
+
         menubar = self.c.frame.top.leo_menubar
-        
+
         menubar.setActiveAction(None)
         menubar.repaint()
-        
+
     #@+node:ekr.20110605121601.18362: *4* getMacHelpMenu
     def getMacHelpMenu (self,table):
 
@@ -5777,10 +5635,10 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         self.setDragEnabled(True)
         self.c = c
         self.trace = False
-        
+
     def __repr__(self):
         return 'LeoQTreeWidget: %s' % id(self)
-        
+
     __str__ = __repr__
 
     def dragMoveEvent(self,ev):
@@ -5794,15 +5652,13 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''Export c.p's tree as a Leo mime-data.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; tree = c.frame.tree
+        c = self.c
         if not ev:
             g.trace('no event!')
             return
-
         md = ev.mimeData()
         if not md:
             g.trace('No mimeData!') ; return
-
         c.endEditing()
         if g.app.dragging:
             if trace or self.trace: g.trace('** already dragging')
@@ -5812,7 +5668,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             if self.trace: g.trace('set g.app.dragging')
             self.setText(md)
             if self.trace: self.dump(ev,c.p,'enter')
-
         # Always accept the drag, even if we are already dragging.
         ev.accept()
     #@+node:ekr.20110605121601.18365: *5* dropEvent & helpers
@@ -5820,12 +5675,10 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         trace = False and not g.unitTesting
         if not ev: return
-        c = self.c ; tree = c.frame.tree ; u = c.undoer
-
+        c = self.c ; tree = c.frame.tree
         # Always clear the dragging flag, no matter what happens.
         g.app.dragging = False
         if self.trace: g.trace('clear g.app.dragging')
-
         # Set p to the target of the drop.
         item = self.itemAt(ev.pos())
         if not item: return
@@ -5834,28 +5687,20 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         if not p:
             if trace or self.trace: g.trace('no p!')
             return
-
         md = ev.mimeData()
         #print "drop md",mdl
         if not md:
             g.trace('no mimeData!') ; return
-
-        #print "t",str(md.text())
-        #print "h", str(md.html())
+        # g.trace("t",str(md.text()))
+        # g.trace("h", str(md.html()))
         formats = set(str(f) for f in md.formats())
-        #print formats
-
         ev.setDropAction(QtCore.Qt.IgnoreAction)
         ev.accept()
-
-        hookres = g.doHook("outlinedrop", c=c, p=p, dropevent = ev, formats = formats)
-
+        hookres = g.doHook("outlinedrop",c=c,p=p,dropevent=ev,formats=formats)
         if hookres:
             # True => plugins handled the drop already
             return
-
         if trace or self.trace: self.dump(ev,p,'drop ')
-
         if md.hasUrls():
             self.urlDrop(ev,p)
         else:
@@ -5864,15 +5709,13 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     def outlineDrop (self,ev,p):
 
         trace = False and not g.unitTesting
-        c = self.c ; tree = c.frame.tree
+        c = self.c
         mods = ev.keyboardModifiers()
         md = ev.mimeData()
-
         fn,s = self.parseText(md)
         if not s or not fn:
             if trace or self.trace: g.trace('no fn or no s')
             return
-
         if fn == self.fileName():
             if p and p == c.p:
                 if trace or self.trace: g.trace('same node')
@@ -5888,17 +5731,15 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         '''Paste the mime data after (or as the first child of) p.'''
 
-        c = self.c ; tree = c.frame.tree
-        u = c.undoer ; undoType = 'Drag Outline'
-
+        c = self.c
+        u = c.undoer
+        undoType = 'Drag Outline'
         isLeo = g.match(s,0,g.app.prolog_prefix_string)
         if not isLeo: return
-
         c.selectPosition(p)
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
             s,reassignIndices=True)
         if not pasted: return
-        
         if c.config.getBool('inter_outline_drag_moves'):
             src_c, src_p = g.app.drag_source
             if src_p.hasVisNext(src_c):
@@ -5907,7 +5748,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 nxt = src_p.getVisBack(src_c).v
             else:
                 nxt = None
-                
             if nxt is not None:
                 src_p.doDelete()
                 src_c.selectPosition(src_c.vnode2position(nxt))
@@ -5915,7 +5755,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 src_c.redraw()
             else:
                 g.es("Can't move last node out of outline")
-
         undoData = u.beforeInsertNode(p,
             pasteAsClone=False,copiedBunchList=[])
         c.validateOutline()
@@ -5927,7 +5766,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back,0)
         # c.setRootPosition(c.findRootPosition(pasted))
-
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw_now(pasted)
         c.recolor()
@@ -5938,10 +5776,9 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         c = self.c ; u = c.undoer
         c.selectPosition(p1)
-
         if as_child or p2.hasChildren() and p2.isExpanded():
             # Attempt to move p1 to the first child of p2.
-            parent = p2
+            # parent = p2
             def move(p1,p2):
                 if cloneDrag: p1 = p1.clone()
                 p1.moveToNthChildOf(p2,0)
@@ -5950,14 +5787,13 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 return p1
         else:
             # Attempt to move p1 after p2.
-            parent = p2.parent()
+            # parent = p2.parent()
             def move(p1,p2):
                 if cloneDrag: p1 = p1.clone()
                 p1.moveAfter(p2)
                 p1.setDirty()
                 p1.setAllAncestorAtFileNodesDirty() # 2011/02/27: Fix bug 690467.
                 return p1
-
         ok = (
             # 2011/10/03: Major bug fix.
             c.checkDrag(p1,p2) and
@@ -5976,9 +5812,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             c.setChanged(True)
             u.afterMoveNode(p1,'Drag',undoData,dirtyVnodeList)
             c.redraw_now(p1)
-        else:
-            if not g.unitTesting:
-                g.trace('** move failed')
+        elif not g.unitTesting:
+            g.trace('** move failed')
     #@+node:ekr.20110605121601.18369: *6* urlDrop & helpers
     def urlDrop (self,ev,p):
 
@@ -6010,12 +5845,9 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         if sys.platform.lower().startswith('win'):
             if fn.startswith('/'):
                 fn = fn[1:]
-
-        changed = False
         if os.path.isdir(fn):
             self.doPathUrlHelper(fn,p)
             return True
-
         if g.os_path_exists(fn):
             try:
                 f = open(fn,'rb') # 2012/03/09: use 'rb'
@@ -6027,7 +5859,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
                 f.close()
                 self.doFileUrlHelper(fn,p,s)
                 return True
-
         g.es_print('not found: %s' % (fn))
         return False
     #@+node:ekr.20110605121601.18371: *8* doFileUrlHelper & helper
@@ -6062,8 +5893,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         Give a warning if a node with the same headline already exists.
         '''
 
-        c = self.c ; d = c.importCommands.importDispatchDict
-        
+        c = self.c
         c.init_error_dialogs()
         if self.isThinFile(fn,s):
             self.createAtFileTree(fn,p,s)
@@ -6125,7 +5955,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             p.clearDirty() # Don't automatically rewrite this node.
     #@+node:ekr.20120309075544.9882: *10* createUrlForBinaryFile
     def createUrlForBinaryFile(self,fn,p):
-        
+
         p.h = '@url file://%s' % fn
     #@+node:ekr.20110605121601.18377: *10* isAutoFile
     def isAutoFile (self,fn):
@@ -6140,7 +5970,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         return d.get(ext)
     #@+node:ekr.20120309075544.9881: *10* isBinaryFile
     def isBinaryFile(self,fn):
-        
+
         # The default for unknown files is True. Not great, but safe.
         junk,ext = g.os_path_splitext(fn)
         ext = ext.lower()
@@ -6155,7 +5985,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         else:
             keys = (z.lower() for z in g.app.extension_dict.keys())
             val = ext not in keys
-        
+
         # g.trace('binary',ext,val)
         return val
     #@+node:ekr.20110605121601.18376: *10* isThinFile
@@ -6380,13 +6210,9 @@ class leoQtSpellTab:
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
 
-        ui = self.c.frame.top.leo_ui
-
+        # ui = self.c.frame.top.leo_ui
         self.suggestions = alts
-
-        if not word:
-            word = ""
-
+        if not word: word = ""
         self.wordLabel.setText("Suggestions for: " + word)
         self.listBox.clear()
         if len(self.suggestions):
@@ -6450,7 +6276,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.headlineWrapper = leoQtHeadlineWidget # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-        
+
         # g.trace('leoQtTree',w)
 
         if 0: # Drag and drop
@@ -6479,9 +6305,9 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Do late-state inits.'''
 
         # Called by Leo's core.
-
-        c = self.c ; frame = c.frame
-        w = c.frame.top ; tw = self.treeWidget
+        c = self.c
+        w = c.frame.top
+        tw = self.treeWidget
 
         if not leoQtTree.callbacksInjected:
             leoQtTree.callbacksInjected = True
@@ -6490,24 +6316,19 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemDoubleClicked(QTreeWidgetItem*, int)"),
             self.onItemDoubleClicked)
-
         w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemClicked(QTreeWidgetItem*, int)"),
             self.onItemClicked)
-
         w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemSelectionChanged()"),
             self.onTreeSelect)
-
         # We don't need this.  Hooray!
         # w.connect(self.treeWidget,QtCore.SIGNAL(
                 # "itemChanged(QTreeWidgetItem*, int)"),
             # self.onItemChanged)
-
         w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemCollapsed(QTreeWidgetItem*)"),
             self.onItemCollapsed)
-
         w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemExpanded(QTreeWidgetItem*)"),
             self.onItemExpanded)
@@ -6518,7 +6339,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         tw.installEventFilter(self.ev_filter)
-
         # 2010/01/24: Do not set this here.
         # The read logic sets c.changed to indicate nodes have changed.
         # c.setChanged(False)
@@ -6642,23 +6462,21 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20110605121601.18418: *6* connectEditorWidget & helper
     def connectEditorWidget(self,e,item):
 
-        c = self.c ; w = self.treeWidget
-
         if not e: return g.trace('can not happen: no e')
 
+        # Hook up the widget.
         wrapper = self.getWrapper(e,item)
 
-        # Hook up the widget.
         def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
             # g.trace(wrapper,g.callers(5))
-            c = self.c ; w = self.treeWidget
+            c = self.c
+            w = self.treeWidget
             self.onHeadChanged(p=c.p,e=e)
             w.setCurrentItem(item)
 
         e.connect(e,QtCore.SIGNAL(
             "editingFinished()"),
             editingFinishedCallback)
-            
         return wrapper # 2011/02/12
     #@+node:ekr.20110605121601.18419: *6* contractItem & expandItem
     def contractItem (self,item):
@@ -6683,7 +6501,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         e = w.itemWidget(item,0)
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e,item)
-        
+
         if trace: g.trace(e,wrapper)
 
         return e,wrapper
@@ -6711,7 +6529,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         gui-specific stuff.'''
 
         trace = False and not g.unitTesting
-        c = self.c
         w = self.treeWidget
         w.setCurrentItem(item)
             # Must do this first.
@@ -6719,7 +6536,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.editItem(item)
             # Generates focus-in event that tree doesn't report.
         e = w.itemWidget(item,0) # A QLineEdit.
-
         if e:
             s = e.text() ; len_s = len(s)
             if s == 'newHeadline': selectAll=True
@@ -6734,7 +6550,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             # e.setCursorPosition(ins) # Does not work.
             e.setFocus()
             wrapper = self.connectEditorWidget(e,item) # Hook up the widget.
-
         if trace: g.trace(e,wrapper)
         return e,wrapper # 2011/02/11
     #@+node:ekr.20110605121601.18423: *6* getCurrentItem
@@ -6778,7 +6593,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         trace = False and not g.unitTesting
         verbose = True
         c = self.c
-        
+
         if e:
             wrapper = self.editWidgetsDict.get(e)
             if wrapper:
@@ -6894,8 +6709,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         menuPos = w.mapToGlobal(point)
         if not handlers:
             menu.addAction("No popup handlers")
-
-        p = c.currentPosition().copy()
+        p = c.p.copy()
         done = set()
         for h in handlers:
             # every handler has to add it's QActions by itself
@@ -6903,8 +6717,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 # do not run the same handler twice
                 continue
             h(c,p,menu)
-
-        a = menu.popup(menuPos)
+        menu.popup(menuPos)
         self._contextmenu = menu
     #@-others
 #@+node:ekr.20110605121601.18438: *3* class leoQtTreeTab
@@ -6979,9 +6792,9 @@ class leoQtTreeTab:
 
         if tabName not in self.tabNames:
             tt.createTab(tabName)
-            
+
         # g.trace('lockout',tt.lockout,tabName,g.callers())
-            
+
         if not tt.lockout:
             tt.cc.selectChapterByName(tabName)
             c.redraw()
@@ -7014,21 +6827,21 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     #@+others
     #@+node:ekr.20110605121601.18449: *4* __init__ (LeoTabbedTopLevel)
     def __init__(self, *args, **kwargs):
-        
+
         self.factory = kwargs['factory']
         del kwargs['factory']
         QtGui.QTabWidget.__init__(self)
         self.detached = []
-        
+
         self.setMovable(True)
-        
+
         def tabContextMenu(point):
             index = self.tabBar().tabAt(point)
             if index < 0 or (self.count() < 2 and not self.detached):
                 return
-            
+
             menu = QtGui.QMenu()
-        
+
             if self.count() > 1:
                 a = menu.addAction("Detach")
                 a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.detach(index))
@@ -7039,9 +6852,9 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             if self.detached:
                 a = menu.addAction("Re-attach All")
                 a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
-            
+
             menu.exec_(self.mapToGlobal(point))
-        
+
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.connect(self,
             QtCore.SIGNAL("customContextMenuRequested(QPoint)"), tabContextMenu)
@@ -7060,7 +6873,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             tabManager.addTab(w, name)
             tabManager.factory.leoFrames[w] = w.leo_c.frame
             event.ignore()
-            
+
         w.defaultClose = w.closeEvent
         w.closeEvent = reattach
         if platform.system() == 'Windows':
@@ -7071,20 +6884,20 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def tile(self, index, orientation='V'):
         """detach tab and tile with parent window"""
         w = self.widget(index)
-        
+
         window = w.window()
-        
+
         # window.showMaximized()
         # this doesn't happen until we've returned to main even loop
         # user needs to do it before using this function
-        
+
         fg = window.frameGeometry()
         g = window.geometry()
         x, y, fw, fh = fg.x(), fg.y(), fg.width(), fg.height()
         ww, wh = g.width(), g.height()
 
         w = self.detach(index)
-        
+
         if window.isMaximized():
             window.showNormal()
 
@@ -7113,7 +6926,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         self.detached = [i for i in self.detached if i[1] != w]
     #@+node:ekr.20110605121601.18453: *4* setChanged
     def setChanged (self,c,changed):
-        
+
         # 2011/03/01: Find the tab corresponding to c.
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
@@ -7146,12 +6959,12 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def closeEvent(self, event):
 
         noclose = False
-        
+
         # g.trace('(leoTabbedTopLevel)',g.callers())
-        
+
         if g.app.save_session and g.app.sessionManager:
             g.app.sessionManager.save_snapshot()
-        
+
         for c in g.app.commanders():
             res = c.exists and g.app.closeLeoWindow(c.frame)
             if not res:
@@ -7165,13 +6978,13 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def select (self,c):
 
         '''Select the tab for c.'''
-        
+
         # g.trace(c,g.callers())
-        
+
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
-        
+
         # Fix bug 844953: tell Unity which menu to use.
         c.enableMenuBar()
 
@@ -7179,7 +6992,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     #@-others
 #@+node:ekr.20110605121601.18458: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
-        
+
     #@+others
     #@+node:ekr.20110605121601.18459: *4* ctor and __repr__(qtMenuWrapper)
     def __init__ (self,c,frame,parent,label):
@@ -7189,21 +7002,21 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
 
         if parent is None:
             parent = c.frame.top.menuBar()
-            
+
         # g.trace('(qtMenuWrapper) label: %s parent: %s' % (label,parent))
-        
+
         QtGui.QMenu.__init__(self,parent)
         leoQtMenu.__init__(self,frame,label)
-        
+
         label = label.replace('&','').lower()
         self.leo_menu_label = label
-        
+
         action = self.menuAction()
         if action:
             action.leo_menu_label = label
-        
+
         # g.trace('(qtMenuWrappter)',label)
-        
+
         self.connect(self,QtCore.SIGNAL(
             "aboutToShow ()"),self.onAboutToShow)
 
@@ -7212,12 +7025,10 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
         return '<qtMenuWrapper %s>' % self.leo_menu_label
     #@+node:ekr.20110605121601.18460: *4* onAboutToShow & helpers (qtMenuWrapper)
     def onAboutToShow(self,*args,**keys):
-        
-        # g.trace(self,args,keys)
-        trace = False and not g.unitTesting ; verbose = True
+
+        trace = False and not g.unitTesting
         name = self.leo_menu_label
         if not name: return
-
         for action in self.actions():
             commandName = hasattr(action,'leo_command_name') and action.leo_command_name
             if commandName:
@@ -7225,7 +7036,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
                 self.leo_update_shortcut(action,commandName)
                 self.leo_enable_menu_item(action,commandName)
                 self.leo_update_menu_label(action,commandName)
-       
+
     #@+node:ekr.20120120095156.10261: *5* leo_enable_menu_item
     def leo_enable_menu_item (self,action,commandName):
 
@@ -7235,22 +7046,22 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
             val = func()
             # g.trace('%5s %20s %s' % (val,commandName,val))
             action.setEnabled(bool(val))
-            
+
     #@+node:ekr.20120124115444.10190: *5* leo_update_menu_label
     def leo_update_menu_label(self,action,commandName):
-        
+
         c = self.c
-        
+
         if action and commandName == 'mark':
             action.setText('UnMark' if c.p.isMarked() else 'Mark')
             self.leo_update_shortcut(action,commandName)
                 # Set the proper shortcut.
     #@+node:ekr.20120120095156.10260: *5* leo_update_shortcut
     def leo_update_shortcut(self,action,commandName):
-        
+
         trace = False and not g.unitTesting
         c = self.c ; k = c.k
-        
+
         if action:
             s = action.text()
             parts = s.split('\t')
@@ -7300,7 +7111,7 @@ class SDIFrameFactory:
         dw.construct()
         g.app.gui.attachLeoIcon(dw)
         dw.setWindowTitle(leoFrame.title)
-        
+
         if 1:
             # g.trace('(TabbedFrameFactor) adding bindings')
             dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
@@ -7343,7 +7154,7 @@ class TabbedFrameFactory:
             # Keys are DynamicWindows, values are frames.
         self.masterFrame = None
         self.createTabCommands()
-        
+
         # g.trace('(TabbedFrameFactory)',g.callers())
     #@+node:ekr.20110605121601.18466: *4* createFrame (TabbedFrameFactory)
     def createFrame(self, leoFrame):
@@ -7371,7 +7182,7 @@ class TabbedFrameFactory:
 
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
-        
+
         if 1:
             # g.trace('(TabbedFrameFactor) adding bindings')
             dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
@@ -7387,7 +7198,7 @@ class TabbedFrameFactory:
         return dw
     #@+node:ekr.20110605121601.18467: *4* deleteFrame (TabbedFrameFactory)
     def deleteFrame(self, wdg):
-        
+
         trace = False and not g.unitTesting
         if not wdg: return
 
@@ -7395,10 +7206,10 @@ class TabbedFrameFactory:
             # probably detached tab
             self.masterFrame.delete(wdg)
             return
-            
+
         if trace: g.trace('old',wdg.leo_c.frame.title)
             # wdg is a DynamicWindow.
-        
+
         tabw = self.masterFrame
         idx = tabw.indexOf(wdg)
         tabw.removeTab(idx)
@@ -7408,7 +7219,7 @@ class TabbedFrameFactory:
         if wdg2:
             if trace: g.trace('new',wdg2 and wdg2.leo_c.frame.title)
             g.app.selectLeoWindow(wdg2.leo_c)
-        
+
         tabw.tabBar().setVisible(
             self.alwaysShowTabs or tabw.count() > 1)
     #@+node:ekr.20110605121601.18468: *4* createMaster (TabbedFrameFactory)
@@ -7440,7 +7251,7 @@ class TabbedFrameFactory:
             mf.show()
     #@+node:ekr.20110605121601.18469: *4* setTabForCommander (TabbedFrameFactory)
     def setTabForCommander (self,c):
-        
+
         tabw = self.masterFrame # a QTabWidget
 
         for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
@@ -7450,10 +7261,10 @@ class TabbedFrameFactory:
                         tabw.setCurrentIndex(i)
                         break
                 break
-                
+
     #@+node:ekr.20110605121601.18470: *4* signal handlers (TabbedFrameFactory)
     def slotCloseRequest(self,idx):
-        
+
         trace = False and not g.unitTesting
         tabw = self.masterFrame
         w = tabw.widget(idx)
@@ -7558,19 +7369,16 @@ class leoQtGui(leoGui.leoGui):
 
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
-        
         # g.trace('(qtGui)',g.callers())
-
-
-        self.qtApp = app = QtGui.QApplication(sys.argv)
+        self.qtApp = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.plainTextWidget = leoQtBaseTextWidget
         self.iconimages = {} # Image cache set by getIconImage().
         self.mGuiName = 'qt'
-        
+
         # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
-        
+
         # Put up the splash screen()
         if (g.app.use_splash_screen and
             not g.app.batchMode and
@@ -7604,7 +7412,7 @@ class leoQtGui(leoGui.leoGui):
             """ Execute script in current node in ipython namespace """
             c = ns['c'] = event['c']
             self.execInNamespace(c, c.p, g.app.ipk.namespace)
-            
+
 
         # blocks forever here, equivalent of 
         # QApplication.exec_()
@@ -7624,9 +7432,9 @@ class leoQtGui(leoGui.leoGui):
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
-        
+
         g.app.gui.dismiss_splash_screen()
-        
+
         if self.script:
             log = g.app.log
             if log:
@@ -7649,7 +7457,7 @@ class leoQtGui(leoGui.leoGui):
     def add_border(self,c,w):
 
         state = c.k and c.k.unboundKeyAction
-        
+
         if state and c.use_focus_border:
             d = {
                 'command':  c.focus_border_command_state_color,
@@ -7673,7 +7481,7 @@ class leoQtGui(leoGui.leoGui):
 
         if not c.use_focus_border:
             return
-            
+
         name = g.u(w.objectName())
         width = c.focus_border_width
         if w.objectName()=='richTextEdit':
@@ -7686,9 +7494,9 @@ class leoQtGui(leoGui.leoGui):
             self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
     #@+node:ekr.20120927164343.10094: *5* paint_qframe (qtGui)
     def paint_qframe (self,w,color):
-        
+
         assert isinstance(w,QtGui.QFrame)
-        
+
         # How's this for a kludge.
         # Set this ivar for InnerBodyFrame.paintEvent.
         g.app.gui.innerBodyFrameColor = color
@@ -7736,7 +7544,7 @@ class leoQtGui(leoGui.leoGui):
         d.setWindowTitle('Alert')
         d.setText(message)
         d.setIcon(b.Warning)
-        yes = d.addButton('Ok',b.YesRole)
+        d.addButton('Ok',b.YesRole)
         c.in_qt_dialog = True
         d.exec_()
         c.in_qt_dialog = False
@@ -7855,7 +7663,7 @@ class leoQtGui(leoGui.leoGui):
         d = b(c.frame.top, message=message, init=init, step_min=step_min)
 
         d.setWindowTitle(title)
-        
+
         c.in_qt_dialog = True
         val = d.exec_()
         c.in_qt_dialog = False
@@ -7888,7 +7696,7 @@ class leoQtGui(leoGui.leoGui):
         """Create and run askOkCancelNumber dialog ."""
 
         if g.unitTesting: return None
-        
+
         # n,ok = QtGui.QInputDialog.getDouble(None,title,message)
         d = QtGui.QInputDialog()
         d.setWindowTitle(title)
@@ -7928,18 +7736,15 @@ class leoQtGui(leoGui.leoGui):
         """Create and run a qt askOK dialog ."""
 
         if g.unitTesting: return None
-
         b = QtGui.QMessageBox
         d = b(c.frame.top)
-
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
-        yes = d.addButton(text,b.YesRole)
+        d.addButton(text,b.YesRole)
         c.in_qt_dialog = True
         d.exec_()
         c.in_qt_dialog = False
-
     #@+node:ekr.20110605121601.18497: *5* runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self,c,title,
         message=None,
@@ -7976,21 +7781,18 @@ class leoQtGui(leoGui.leoGui):
         """Create and run an askYesNo dialog."""
 
         if g.unitTesting: return None
-
         b = QtGui.QMessageBox
         d = b(c.frame.top)
-
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
         yes = d.addButton('&Yes',b.YesRole)
-        no  = d.addButton('&No',b.NoRole)
+        d.addButton('&No',b.NoRole)
         d.setDefaultButton(yes)
         c.in_qt_dialog = True
         val = d.exec_()
         c.in_qt_dialog = False
-        return g.choose(val == 0,'yes','no')
-
+        return 'yes' if val == 0 else 'no'
     #@+node:ekr.20110605121601.18499: *5* runOpenDirectoryDialog (qtGui)
     def runOpenDirectoryDialog(self,title,startdir):
 
@@ -8003,16 +7805,16 @@ class leoQtGui(leoGui.leoGui):
     def runOpenFileDialog(self,title,filetypes,defaultextension='',multiple=False,startpath=None):
 
         """Create and run an Qt open file dialog ."""
-        
+
         if g.unitTesting:
             return ''
         else:
             if startpath is None:
                 startpath = os.curdir
-                
+
             parent = None
             filter = self.makeFilter(filetypes)
-        
+
             if multiple:
                 lst = QtGui.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
                 return [g.u(s) for s in lst]
@@ -8033,7 +7835,7 @@ class leoQtGui(leoGui.leoGui):
     def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
         """Create and run an Qt save file dialog ."""
-        
+
         if g.unitTesting:
             return ''
         else:
@@ -8088,17 +7890,16 @@ class leoQtGui(leoGui.leoGui):
                 'No handler for the "scrolledMessage" hook.\n\t%s' % (
                     g.callers()))
             #@-<< no dialog error >>
-
         #@+<< emergency fallback >>
         #@+node:ekr.20110605121601.18507: *6* << emergency fallback >>
         b = QtGui.QMessageBox
         d = b(None) # c.frame.top)
-        d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
-
+        d.setWindowFlags(QtCore.Qt.Dialog)
+            # That is, not a fixed size dialog.
         d.setWindowTitle(title)
         if msg: d.setText(msg)
         d.setIcon(b.Information)
-        yes = d.addButton('Ok',b.YesRole)
+        d.addButton('Ok',b.YesRole)
         c.in_qt_dialog = True
         d.exec_()
         c.in_qt_dialog = False
@@ -8136,7 +7937,7 @@ class leoQtGui(leoGui.leoGui):
         trace = False and not g.unitTesting
 
         if trace: g.trace(tag)
-        
+
         if c.exists and tag == 'body':
             self.active = True
             # Retain the focus that existed when the deactivate event happened.
@@ -8167,10 +7968,8 @@ class leoQtGui(leoGui.leoGui):
     def get_focus(self,c=None):
 
         """Returns the widget that has focus."""
-        
-        trace = False and not g.unitTesting
-        verbose = False
 
+        trace = False and not g.unitTesting
         app = QtGui.QApplication
         w = app.focusWidget()
         if w and isinstance(w,LeoQTextBrowser):
@@ -8181,7 +7980,6 @@ class leoQtGui(leoGui.leoGui):
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the leoQtBody.
                 w = c.frame.body
-
         if trace: g.trace('***',w,g.callers())
         return w
 
@@ -8191,7 +7989,6 @@ class leoQtGui(leoGui.leoGui):
 
         trace = False and not g.unitTesting
         gui = self
-
         if w:
             if trace: print('qtGui.set_focus',gui.widget_name(w),w,g.callers(2))
             w.setFocus()
@@ -8212,7 +8009,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110605121601.18509: *4* Font
     #@+node:ekr.20110605121601.18510: *5* qtGui.getFontFromParams
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-        
+
         trace = False and not g.unitTesting
 
         try: size = int(size)
@@ -8233,8 +8030,8 @@ class leoQtGui(leoGui.leoGui):
             family = g.app.config.defaultFontFamily
         if not family:
             family = 'DejaVu Sans Mono'
-            
-        
+
+
 
         try:
             font = QtGui.QFont(family,size,weight_val,italic)
@@ -8293,7 +8090,7 @@ class leoQtGui(leoGui.leoGui):
                     else:
                         image = QtGui.QIcon(fullname)
                         if trace: g.trace('name',fullname,'image',image)
-            
+
                     self.iconimages[name] = image
                     if trace: g.trace('new',id(image),theDir,name)
                     return image
@@ -8357,12 +8154,12 @@ class leoQtGui(leoGui.leoGui):
     setIdleTimeHookAfterDelay = setIdleTimeHook
     #@+node:ekr.20110605121601.18521: *5* qtGui.runAtIdle
     def runAtIdle (self,aFunc):
-        
+
         '''This can not be called in some contexts.'''
-        
+
         timer = QtCore.QTimer()
         timer.setSingleShot(True)
-        
+
         # print('runAtIdle',aFunc)
 
         def atIdleCallback(aFunc=aFunc):
@@ -8458,14 +8255,14 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20111215193352.10220: *4* Splash Screen (qtGui)
     #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
     def createSplashScreen (self):
-        
+
         for name in (
             'SplashScreen.jpg',
             'SplashScreen.png',
             'SplashScreen.ico',
         ):
             fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
-                
+
             if g.os_path_exists(fn):
                 qt = QtCore.Qt
                 pm = QtGui.QPixmap(fn)
@@ -8476,19 +8273,19 @@ class leoQtGui(leoGui.leoGui):
             else:
                 # g.trace('not found',fn)
                 splash = None
-        
+
         return splash
     #@+node:ekr.20110613103140.16424: *5* dismiss_splash_screen (qtGui)
     def dismiss_splash_screen (self):
-        
+
         # g.trace(g.callers())
-        
+
         gui = self
-        
+
         # Warning: closing the splash screen must be done in the main thread!
         if g.unitTesting:
             return
-        
+
         if gui.splashScreen:
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
@@ -8531,31 +8328,26 @@ class leoQtGui(leoGui.leoGui):
             g.warning('bad widget color %s for %s' % (colorName,widgetKind))
     #@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
     def update_style_sheet (self,w,key,value,selector=None):
-        
+
         trace = False and not g.unitTesting
-        
+
         # Step one: update the dict.
         d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
-
         d[key] = value
-        aList = [d.get(key) for key in list(d.keys())]
+        aList = [d.get(z) for z in list(d.keys())]
         w.leo_styles_dict = d
-        
+
         # Step two: update the stylesheet.
         s = '; '.join(aList)
-        
         if selector:
             s = '%s { %s }' % (selector,s)
-            
         old = str(w.styleSheet())
         if old == s:
             # if trace: g.trace('no change')
             return
-            
         if trace:
             # g.trace('old: %s\nnew: %s' % (str(w.styleSheet()),s))
             g.trace(s)
-
         # This call is responsible for the unwanted scrolling!
         # To avoid problems, we now set the color of the innerBodyFrame without using style sheets.
         w.setStyleSheet(s)
@@ -8623,7 +8415,7 @@ class leoQtGui(leoGui.leoGui):
             def call(*args):
                 print(msg,args)
             return call
-            
+
         # Monkey-patch.
         QtCore.QObject.connect    = self._wrapConnect(connectCall)
         QtCore.QObject.disconnect = self._wrapDisconnect(disconnectCall)
@@ -8726,7 +8518,7 @@ class leoQtEventFilter(QtCore.QObject):
         close_flashers = c.config.getString('close_flash_brackets') or ''
         open_flashers  = c.config.getString('open_flash_brackets') or ''
         self.flashers = open_flashers + close_flashers
-        
+
         # Support for ctagscompleter.py plugin.
         self.ctagscompleter_active = False
         self.ctagscompleter_onKey = None
@@ -8773,8 +8565,7 @@ class leoQtEventFilter(QtCore.QObject):
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
-            if ignore:
-                override = False
+            if ignore: override = False
             # This is extremely bad.
             # At present, it is needed to handle tab properly.
             elif self.isSpecialOverride(tkKey,ch):
@@ -8800,36 +8591,32 @@ class leoQtEventFilter(QtCore.QObject):
 
         if self.keyIsActive:
             shortcut = self.toStroke(tkKey,ch) # ch is unused.
-
             if override:
                 # Essentially *all* keys get passed to masterKeyHandler.
                 if trace and traceKey:
                     g.trace('ignore',ignore,'bound',repr(shortcut),repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 event = self.create_key_event(event,c,w,ch,tkKey,shortcut)
-                ret = k.masterKeyHandler(event)
+                k.masterKeyHandler(event)
                 c.outerUpdate()
             else:
                 if trace and traceKey and verbose:
                     g.trace(self.tag,'unbound',tkKey,shortcut)
-            
             if trace and traceEvent:
                 # Trace key events.
                 self.traceEvent(obj,event,tkKey,override)
-
         elif trace and traceEvent:
             # Trace non-key events.
             self.traceEvent(obj,event,tkKey,override)
-
         return override
     #@+node:ekr.20110605195119.16937: *3* create_key_event (leoQtEventFilter)
     def create_key_event (self,event,c,w,ch,tkKey,shortcut):
 
         trace = False and not g.unitTesting ; verbose = False
-        
+
         if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
             repr(ch),repr(tkKey),repr(shortcut)))
-            
+
         # Last-minute adjustments...
         if shortcut == 'Return':
             ch = '\n' # Somehow Qt wants to return '\r'.
@@ -8857,7 +8644,7 @@ class leoQtEventFilter(QtCore.QObject):
             }
             if tkKey in darwinmap:
                 shortcut = darwinmap[tkKey]
-                
+
         char = ch
         # Auxiliary info.
         x      = hasattr(event,'x') and event.x or 0
@@ -8865,23 +8652,23 @@ class leoQtEventFilter(QtCore.QObject):
         # Support for fastGotoNode plugin
         x_root = hasattr(event,'x_root') and event.x_root or 0
         y_root = hasattr(event,'y_root') and event.y_root or 0
-        
+
         if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
             repr(ch),repr(shortcut),ch in string.printable))
-                    
+
         return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
     #@+node:ekr.20120204061120.10088: *3* Key construction...
     #@+node:ekr.20110605121601.18543: *4* toTkKey & helpers (must not change!)
     def toTkKey (self,event):
-        
+
         '''Return tkKey,ch,ignore:
-            
+
         tkKey: the Tk spelling of the event used to look up
                bindings in k.masterGuiBindingsDict.
                **This must not ever change!**
-               
+
         ch:    the insertable key, or ''.
-        
+
         ignore: True if the key should be ignored.
                 This is **not** the same as 'not ch'.
         '''
@@ -9023,12 +8810,11 @@ class leoQtEventFilter(QtCore.QObject):
         return tkKey or ch in self.flashers
     #@+node:ekr.20110605121601.18542: *5* toStroke (leoQtEventFilter)
     def toStroke (self,tkKey,ch):  # ch is unused
-        
+
         '''Convert the official tkKey name to a stroke.'''
 
         trace = False and not g.unitTesting
-        k = self.c.k ; s = tkKey
-
+        s = tkKey
         table = (
             ('Alt-','Alt+'),
             ('Ctrl-','Ctrl+'),
@@ -9039,7 +8825,6 @@ class leoQtEventFilter(QtCore.QObject):
         )
         for a,b in table:
             s = s.replace(a,b)
-
         if trace: g.trace('tkKey',tkKey,'-->',s)
         return s
     #@+node:ekr.20110605121601.18544: *5* qtKey
@@ -9048,9 +8833,9 @@ class leoQtEventFilter(QtCore.QObject):
         '''Return the components of a Qt key event.
 
         Modifiers are handled separately.
-        
+
         Return keynum,text,toString,ch
-        
+
         keynum: event.key()
         ch:     g.u(chr(keynum)) or '' if there is an exception.
         toString:
@@ -9110,7 +8895,7 @@ class leoQtEventFilter(QtCore.QObject):
         # When g.new_keys is True, k.strokeFromSetting will canonicalize the setting.
 
         qt = QtCore.Qt
-        
+
         if sys.platform.startswith('darwin'):
             # Yet another MacOS hack:
             table = (
@@ -9120,7 +8905,7 @@ class leoQtEventFilter(QtCore.QObject):
                 # No way to generate Meta.
                 (qt.ShiftModifier,   'Shift'),
             )
-            
+
         else:
             table = (
                 (qt.AltModifier,     'Alt'),
@@ -9135,23 +8920,23 @@ class leoQtEventFilter(QtCore.QObject):
     def traceEvent (self,obj,event,tkKey,override):
 
         if g.unitTesting: return
-        
+
         traceFocus = False
         traceKey   = True
         traceLayout = False
         traceMouse = False
-        
+
         c,e = self.c,QtCore.QEvent
         eventType = event.type()
-        
+
         show = []
-        
+
         ignore = [
             e.MetaCall, # 43
             e.Timer, # 1
             e.ToolTip, # 110
         ]
-        
+
         focus_events = (
             (e.Enter,'enter'),
             (e.Leave,'leave'),
@@ -9200,14 +8985,14 @@ class leoQtEventFilter(QtCore.QObject):
             (e.MouseButtonRelease,'mouse-release'), # 3
             (e.Wheel,'mouse-wheel'), # 31
         )
-        
+
         option_table = (
             (traceFocus,focus_events),
             (traceKey,key_events),
             (traceLayout,layout_events),
             (traceMouse,mouse_events),
         )
-        
+
         for option,table in option_table:
             if option:
                 show.extend(table)
@@ -9291,7 +9076,7 @@ class leoQtColorizer:
             if trace and verbose:
                 g.trace('old: %s, new: %s, %s' % (
                     self.oldLanguageList,self.languageList,repr(p.h)))
-                    
+
             # fullRecolor is True if we can not do an incremental recolor.
             fullRecolor = (
                 oldFlag != self.flag or
@@ -9299,7 +9084,7 @@ class leoQtColorizer:
                 self.oldLanguageList != self.languageList or
                 not incremental
             )
-                    
+
             # 2012/03/09: Determine the present language from the insertion
             # point if there are more than one @language directives in effect
             # and we are about to do an incremental recolor.
@@ -9309,7 +9094,7 @@ class leoQtColorizer:
                     if trace: g.trace('** must rescan',self.c.frame.title,language)
                     fullRecolor = True
                     self.language = language
-               
+
             if fullRecolor:
                 if trace: g.trace('** calling rehighlight',g.callers())
                 self.oldLanguageList = self.languageList[:]
@@ -9324,7 +9109,7 @@ class leoQtColorizer:
         w = c.frame.body.bodyCtrl
         i = w.getInsertPoint()
         s = w.getAllText()
-        
+
         i1,i2 = g.getLine(s,i)
         tag = '@language'
         language = self.language
@@ -9333,7 +9118,7 @@ class leoQtColorizer:
                 language = s[len(tag):].strip()
 
         return language
-                
+
     #@+node:ekr.20110605121601.18554: *4* enable/disable
     def disable (self,p):
 
@@ -9365,18 +9150,16 @@ class leoQtColorizer:
         pass
     #@+node:ekr.20110605121601.18556: *4* scanColorDirectives (leoQtColorizer) & helper
     def scanColorDirectives(self,p):
-        
+
         '''Set self.language based on the directives in p's tree.'''
 
         trace = False and not g.unitTesting
         c = self.c
         if c == None: return None # self.c may be None for testing.
-        
         root = p.copy()
         self.colorCacheFlag = False
         self.language = None
         self.rootMode = None # None, "code" or "doc"
-
         for p in root.self_and_parents():
             theDict = g.get_directives_dict(p)
             # if trace: g.trace(p.h,theDict)
@@ -9391,8 +9174,6 @@ class leoQtColorizer:
             #@+node:ekr.20110605121601.18557: *5* << Test for @language >>
             if 'language' in theDict:
                 s = theDict["language"]
-                i = g.skip_ws(s,0)
-                j = g.skip_c_id(s,i)
                 aList = self.findLanguageDirectives(p)
                 # In the root node, we use the first (valid) @language directive,
                 # no matter how many @language directives the root node contains.
@@ -9416,19 +9197,17 @@ class leoQtColorizer:
                     doc = c.config.at_root_bodies_start_in_doc_mode
                     self.rootMode = g.choose(doc,"doc","code")
             #@-<< Test for @root, @root-doc or @root-code >>
-            
+
         # 2011/05/28: If no language, get the language from any @<file> node.
         if self.language:
             if trace: g.trace('found @language %s %s' % (self.language,self.languageList))
             return self.language
-            
+
         #  Attempt to get the language from the nearest enclosing @<file> node.
         self.language = g.getLanguageFromAncestorAtFileNode(root)
-
         if not self.language:
             if trace: g.trace('using default',c.target_language)
             self.language = c.target_language
-
         return self.language # For use by external routines.
     #@+node:ekr.20110605121601.18559: *5* findLanguageDirectives
     def findLanguageDirectives (self,p):
@@ -9436,7 +9215,7 @@ class leoQtColorizer:
         '''Scan p's body text for *valid* @language directives.
 
         Return a list of languages.'''
-        
+
         # Speed not very important: called only for nodes containing @language directives.
         trace = False and not g.unitTesting
         aList = []
@@ -9456,7 +9235,7 @@ class leoQtColorizer:
         return aList
     #@+node:ekr.20110605121601.18560: *5* isValidLanguage
     def isValidLanguage (self,language):
-        
+
         fn = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
         return g.os_path_exists(fn)
     #@+node:ekr.20110605121601.18561: *4* setHighlighter
@@ -9465,8 +9244,6 @@ class leoQtColorizer:
     def setHighlighter (self,p):
 
         trace = False and not g.unitTesting
-        c = self.c
-
         if self.enabled:
             self.flag = self.updateSyntaxColorer(p)
             if self.flag:
@@ -9587,7 +9364,7 @@ class leoQtColorizer:
                         # r.format = QtGui.QTextCharFormat(r.format)
                         # ranges2.append(r)
                     # aList.append(g.bunch(i=i,ranges=ranges2,s=s))
-                
+
         p.v.colorCache = g.bunch(aList=aList,n=doc.blockCount(),v=p.v)
         if trace:
             g.trace('%2.3f sec len(aList): %s v: %s' % (
@@ -9628,7 +9405,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     #@+node:ekr.20110605121601.18567: *4* highlightBlock (leoQtSyntaxHighlighter)
     def highlightBlock (self,s):
         """ Called by QSyntaxHiglighter """
-        
+
         trace = False and not g.unitTesting
 
         if self.hasCurrentBlock and not self.colorizer.killColorFlag:
@@ -9636,9 +9413,9 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
                 s = str(s)
             else:
                 s = unicode(s)
-                
+
             self.colorer.recolor(s)
-            
+
             v = self.c.p.v
             if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
                 if trace: g.trace('clearing cache',g.callers())
@@ -9651,7 +9428,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         trace = False and not g.unitTesting
         c = self.c ; tree = c.frame.tree
         self.w = c.frame.body.bodyCtrl.widget
-        
+
         if trace:
             t1 = time.time()
 
@@ -9681,9 +9458,9 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
                 self.colorer.recolorCount-n,time.time()-t1))
     #@+node:ekr.20121003051050.10201: *4* rehighlight_with_cache (leoQtSyntaxHighlighter)
     def rehighlight_with_cache (self,bunch):
-        
+
         '''Rehighlight the block from bunch, without calling QSH.rehighlight.
-        
+
         - bunch.aList: a list of bunch2 objects.
         - bunch.n: a block (line) number.
         - bunch.v: the vnode.
@@ -9816,9 +9593,9 @@ class jEditColorizer:
         self.word_chars = {} # Inited by init_keywords().
         self.setFontFromConfig()
         self.tags = [
-        
+
             # To be removed...
-        
+
                 # Used only by the old colorizer.
                 # 'bracketRange',
                 # "comment",
@@ -9827,13 +9604,13 @@ class jEditColorizer:
                 # "latexBackground","latexKeyword","latexModeKeyword",
                 # "pp",
                 # "string",
-                
+
                 # Wiki styling.  These were never user options.
                 # "bold","bolditalic","elide","italic",
-                
+
                 # Marked as Leo jEdit tags, but not used.
                 # '@color', '@nocolor','doc_part', 'section_ref',
-            
+
             # 8 Leo-specific tags.
             "blank",  # show_invisibles_space_color
             "docpart",
@@ -9843,7 +9620,7 @@ class jEditColorizer:
             "namebrackets",
             "tab", # show_invisibles_space_color
             "url",
-            
+
             # jEdit tags.
             'comment1','comment2','comment3','comment4',
             # default, # exists, but never generated.
@@ -9868,9 +9645,9 @@ class jEditColorizer:
 
         # These defaults are sure to exist.
         self.default_colors_dict = {
-        
+
             # Used in Leo rules...
-        
+
             # tag name      :( option name,                  default color),
             'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
             'docpart'       :('doc_part_color',              'red'),
@@ -9880,9 +9657,9 @@ class jEditColorizer:
             'namebrackets'  :('section_name_brackets_color', 'blue'),
             'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
             'url'           :('url_color',                   'purple'),
-            
+
             # Used by the old colorizer: to be removed.
-            
+
             # 'bracketRange'   :('bracket_range_color',     'orange'), # Forth.
             # 'comment'        :('comment_color',           'red'),
             # 'cwebName'       :('cweb_section_name_color', 'red'),
@@ -9916,9 +9693,9 @@ class jEditColorizer:
     def defineDefaultFontDict (self):
 
         self.default_font_dict = {
-        
+
             # Used in Leo rules...
-            
+
                 # tag name      : option name
                 'blank'         :'show_invisibles_space_font', # 2011/10/24.
                 'docpart'       :'doc_part_font',
@@ -9928,9 +9705,9 @@ class jEditColorizer:
                 'namebrackets'  :'section_name_brackets_font',
                 'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
                 'url'           : 'url_font',
-            
+
             # Used by old colorizer.
-            
+
                 # 'bracketRange'   :'bracketRange_font', # Forth.
                 # 'comment'       :'comment_font',
                 # 'cwebName'      :'cweb_section_name_font',
@@ -9938,9 +9715,9 @@ class jEditColorizer:
                 # 'latexBackground':'latex_background_font',
                 # 'pp'            :'directive_font',
                 # 'string'        :'string_font',
-        
+
              # jEdit tags.
-             
+
                  # tag name     : option name
                 'comment1'      :'comment1_font',
                 'comment2'      :'comment2_font',
@@ -10042,12 +9819,12 @@ class jEditColorizer:
         # g.trace(g.listToString(theDict.get('@')))
     #@+node:ekr.20111024091133.16702: *5* configure_hard_tab_width
     def configure_hard_tab_width (self):
-        
+
         # The stated default is 40, but apparently it must be set explicitly.
-        
+
         trace = False and not g.unitTesting
         c,w = self.c,self.w
-     
+
         if 0:
             # No longer used: c.config.getInt('qt-tab-width')
             hard_tab_width = abs(10*c.tab_width)
@@ -10059,12 +9836,12 @@ class jEditColorizer:
             size = info.pointSizeF()
             pixels_per_point = 1.0 # 0.9
             hard_tab_width = abs(int(pixels_per_point*size*c.tab_width))
-            
+
             if trace: g.trace(
                 'family',font.family(),'point size',size,
                 'tab_width',c.tab_width,
                 'hard_tab_width',hard_tab_width) # ,self.w)
-        
+
         w.widget.setTabStopWidth(hard_tab_width)
     #@+node:ekr.20110605121601.18578: *5* configure_tags
     def configure_tags (self):
@@ -10130,7 +9907,7 @@ class jEditColorizer:
                 else:
                     if trace and traceFonts:
                         g.trace('no fonts')
-                        
+
             if isQt and key == 'url' and font:
                 font.setUnderline(True) # 2011/03/04
 
@@ -10228,7 +10005,7 @@ class jEditColorizer:
             # Must be done to support per-language @font/@color settings.
             self.configure_tags()
             self.last_language = self.colorizer.language
-            
+
         self.configure_hard_tab_width() # 2011/10/04
     #@+node:ekr.20110605121601.18581: *5* init_mode & helpers
     def init_mode (self,name):
@@ -10237,7 +10014,6 @@ class jEditColorizer:
 
         trace = False and not g.unitTesting
         if not name: return False
-        h = self.highlighter
         language,rulesetName = self.nameToRulesetName(name)
         bunch = self.modes.get(rulesetName)
         if bunch:
@@ -10716,9 +10492,7 @@ class jEditColorizer:
     def match_section_ref (self,s,i):
 
         if self.trace_leo_matches: g.trace()
-        c = self.c ; p = c.currentPosition()
-        w = self.w
-
+        c = self.c ; p = c.p
         if not g.match(s,i,'<<'):
             return 0
         k = g.find_on_line(s,i+2,'>>')
@@ -10782,22 +10556,22 @@ class jEditColorizer:
 
     def match_url_f(self,s,i):
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_f)
-        
+
     def match_url_g(self,s,i):
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_g)
 
     def match_url_h(self,s,i):
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_h)
-        
+
     def match_url_m(self,s,i):
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_m)
-        
+
     def match_url_n(self,s,i):
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_n)
-        
+
     def match_url_p(self,s,i):
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_p)
-        
+
     def match_url_t(self,s,i):
         return self.match_compiled_regexp(s,i,kind='url',regexp=self.url_regex_t)
 
@@ -10826,7 +10600,7 @@ class jEditColorizer:
             return 0
     #@+node:ekr.20110605121601.18610: *6* match_compiled_regexp_helper
     def match_compiled_regexp_helper (self,s,i,regex):
-        
+
         '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
 
         # Match succeeds or fails more quickly than search.
@@ -10953,17 +10727,13 @@ class jEditColorizer:
 
         '''Succeed if s[i:] matches pattern.'''
 
-        trace = (False or self.verbose) and not g.unitTesting
         if not self.allow_mark_prev: return 0
-
-        # if trace: g.trace(g.callers(1),i,repr(s[i:i+20]))
-
+        # g.trace(g.callers(1),i,repr(s[i:i+20]))
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
         if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
         if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
             return 0 # 7/5/2008
-
         if g.match(s,i,pattern):
             j = i + len(pattern)
             # self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
@@ -10987,7 +10757,7 @@ class jEditColorizer:
 
         The jEdit docs are not clear about what a 'token' is, but experiments with jEdit
         show that token means a word, as defined by word_chars.'''
-        
+
         # 2011/05/31: Might we extend the concept of token?
         # If s[i] is not a word char, should we return just it?
 
@@ -11483,7 +11253,7 @@ class jEditColorizer:
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (self.language_name,tag)),i,j,s2,g.callers(2)))
             self.setTag(tag,s,i,j)
-            
+
         if tag != 'url':
             # Allow URL's *everywhere*.
             j = min(j,len(s))
@@ -11503,7 +11273,7 @@ class jEditColorizer:
         traceFail = False
         traceState = True
         traceEndState = False
-        
+
         if trace:
             if traceState:
                 g.trace('%s %-30s' % (self.language_name,
@@ -11517,7 +11287,7 @@ class jEditColorizer:
             i = self.restart(n,s,trace and traceMatch)
         if i == 0:
             self.setState(self.prevState())
-            
+
         if False and trace:
             aList = self.rulesDict.get('<')
             for f in aList:
@@ -11590,7 +11360,7 @@ class jEditColorizer:
         if not self.colorizer.flag:
             if trace and returns: g.trace('not flag')
             return
-            
+
         # Get the previous state.
         n = self.prevState() # The state at the end of the previous line.
         if trace:

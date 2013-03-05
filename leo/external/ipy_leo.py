@@ -18,7 +18,7 @@ if 1:
     # E0611: No name 'ipapi' in module 'IPython'
     # E0611: No name 'macro' in module 'IPython'
     # E0611: No name 'Shell' in module 'IPython'
-    
+
     import IPython.ipapi
     import IPython.genutils
     import IPython.generics
@@ -259,7 +259,7 @@ class LeoNode(object, UserDict.DictMixin):
     #@+node:ekr.20100120092047.6105: *3* __set_l
     def __set_l(self,val):
         self.b = '\n'.join(val )
-        
+
     l = property(
         # pylint: disable=W0108,E1101
         # E1101: LeoNode.<lambda>: Module 'IPython' has no 'genutils' member
@@ -744,7 +744,7 @@ def show_welcome():
     print("------------------")
     print("Welcome to Leo-enabled IPython session!")
     print("Try %leoref for quick reference.")
-    
+
     # E1101:show_welcome: Module 'IPython' has no 'platutils' member
     # E0611:show_welcome: No name 'platutils' in module 'IPython'
     # pylint: disable=E1101,E0611

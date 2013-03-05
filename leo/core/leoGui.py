@@ -26,14 +26,13 @@ import leo.core.leoFrame as leoFrame # for nullGui and stringTextWidget.
 class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
-    
+
     #@+others
     #@+node:ekr.20110605121601.18846: *3* ctor (leoKeyEvent)
     def __init__ (self,c,char,shortcut,w,x,y,x_root,y_root):
-        
+
         trace = False and not g.unitTesting
-        k = c.k
-        
+
         if g.isStroke(shortcut):
             g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
             stroke = shortcut
@@ -42,14 +41,14 @@ class leoKeyEvent:
 
         assert g.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
             repr(stroke),g.callers())
-            
+
         if trace: g.trace('(leoKeyEvent) stroke',stroke)
-        
+
         self.c = c
         self.char = char or ''
         self.stroke = stroke
         self.w = self.widget = w
-        
+
         # Optional ivars
         self.x = x
         self.y = y
@@ -63,7 +62,7 @@ class leoKeyEvent:
 
         return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke),repr(self.char),repr(self.w))
-            
+
     def type(self):
         return 'leoKeyEvent'
 #@+node:ekr.20031218072017.3720: ** class leoGui
@@ -99,7 +98,7 @@ class leoGui:
     #@+node:ekr.20061109212618.1: *3* Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
     def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
-        
+
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
@@ -119,7 +118,7 @@ class leoGui:
         self.scriptFileName = scriptFileName
     #@+node:ekr.20110605121601.18845: *4* event_generate (leoGui)
     def event_generate(self,c,char,shortcut,w):
-        
+
         event = self.create_key_event(c,char,shortcut,w)
         c.k.masterKeyHandler(event)
         c.outerUpdate()
@@ -313,7 +312,7 @@ class leoGui:
     #@+node:ekr.20070228154059: *3* May be defined in subclasses
     #@+node:ekr.20110613103140.16423: *4* dismiss_spash_screen (leoGui)
     def dismiss_splash_screen (self):
-        
+
         pass # May be overridden in subclasses.
     #@+node:ekr.20070219084912: *4* finishCreate (leoGui)
     def finishCreate (self):
@@ -385,7 +384,7 @@ class nullGui(leoGui):
             # g.es("\nend of batch script")
         else:
             print('**** nullGui.runMainLoop: terminating Leo.')
-            
+
         # Getting here will terminate Leo.
     #@+node:ekr.20070228155807: *3* isTextWidget (nullGui)
     def isTextWidget (self,w):
@@ -552,12 +551,12 @@ class unitTestGui(nullGui):
         pass # This method keeps pylint happy.
     #@+node:ekr.20111001155050.15484: *3* runAtIdle
     def runAtIdle (self,aFunc):
-        
+
         '''Run aFunc immediately for a unit test.
-        
+
         This is a kludge, but it is probably the best that can be done.
         '''
-        
+
         aFunc()
     #@+node:ekr.20081119083601.1: *3* toUnicode
     def toUnicode (self,s):

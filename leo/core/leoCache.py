@@ -52,7 +52,7 @@ class cacher:
 
         trace = False and not g.unitTesting
         if trace: g.trace('cacher','c',c)
-        
+
         self.c = c
 
         # set by initFileDB and initGlobalDB...
@@ -87,7 +87,7 @@ class cacher:
             # Fixes bug 670108.
             self.c.db = self.db
             self.inited = True
-            
+
             if trace: g.trace('self.c.db',self.db)
     #@+node:ekr.20100208082353.5920: *4* initGlobalDb
     def initGlobalDB (self):
@@ -192,23 +192,15 @@ class cacher:
         '''
 
         trace = False and not g.unitTesting
-        verbose = False
         c = self.c
-        # parent_v = self
         indices = g.app.nodeIndices
         gnxDict = c.fileCommands.gnxDict
-
         if gnxString is None: v = None
         else:                 v = gnxDict.get(gnxString)
         is_clone = v is not None
-        
-        # if is_clone or g.unitTesting:
-            # g.trace(gnxString,id(c),c.shortFileName(),v and v.h or 'None',len(list(gnxDict.keys())))
-
         if trace: g.trace(
             'clone','%-5s' % (is_clone),
             'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
-
         if is_clone:
             pass
         else:
@@ -219,11 +211,9 @@ class cacher:
                 gnxDict[gnxString] = v
             else:
                 g.trace('**** no gnx for',v)
-
         child_v = v
         child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
-
         return is_clone,child_v
     #@+node:ekr.20100705083838.5740: *5* casher.reportChangedClone
     def reportChangedClone (self,child_v,b,h,gnx):
@@ -330,18 +320,14 @@ class cacher:
 
         trace = False and not g.unitTesting
         verbose = True
-        c = self.c
-
         if not g.enableDB:
             if trace: g.trace('g.enableDB is False')
             return '',False,None
-
         s,e = g.readFileIntoString(fileName,raw=True,silent=True)
         if s is None:
             if trace: g.trace('empty file contents',fileName)
             return s,False,None
         assert not g.isUnicode(s)
-
         if trace and verbose:
             for i,line in enumerate(g.splitLines(s)):
                 print('%3d %s' % (i,repr(line)))
@@ -357,7 +343,6 @@ class cacher:
             # Recreate the file from the cache.
             aList = self.db.get(key)
             self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
-
         return s,ok,key
     #@+node:ekr.20100208082353.5927: *3* Writing
     #@+node:ekr.20100208071151.5901: *4* makeCacheList
@@ -420,7 +405,6 @@ class cacher:
     def writeFile(self,p,fileKey):
 
         trace = False and not g.unitTesting
-        c = self.c
 
         # Bug fix: 2010/05/26: check g.enableDB before giving internal error.
         if not g.enableDB:
@@ -433,8 +417,6 @@ class cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-            
-        # if trace: g.trace('* callers',g.callers(4))
     #@+node:ekr.20100208065621.5890: *3* test (cacher)
     def test(self):
 
@@ -700,12 +682,10 @@ class PickleShareDB:
 
         trace = False and g.unitTesting
         if trace: g.trace('(PickleShareDB)',key)
-
         try:
-            value = self[key]
+            self[key]
         except KeyError:
             return False
-
         return True
     #@+node:ekr.20100208223942.5981: *3* items
     def items(self):

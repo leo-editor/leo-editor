@@ -9,6 +9,7 @@ import leo.core.leoBridge as leoBridge
 import leo.core.leoTest as leoTest
 
 import optparse
+import sys
 #@-<< imports >>
 
 # Do not define g here.  Use the g returned by the bridge.

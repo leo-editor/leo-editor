@@ -143,12 +143,12 @@ class atFile:
             'check-python-code-on-write',default=True)
         self.underindentEscapeString = c.config.getString(
             'underindent-escape-string') or '\\-'
-                
+
         self.dispatch_dict = self.defineDispatchDict()
             # Define the dispatch dictionary used by scanText4.
     #@+node:ekr.20041005105605.9: *3* at.defineDispatchDict
     def defineDispatchDict(self):
-        
+
         '''Return the dispatch dictionary used by scanText4.'''
 
         return  {
@@ -294,7 +294,7 @@ class atFile:
 
         assert at.checkPythonCodeOnWrite is not None
         assert at.underindentEscapeString is not None
-        
+
         at.atAuto = atAuto
         at.atEdit = atEdit
         at.atShadow = atShadow
@@ -422,7 +422,7 @@ class atFile:
     # should need to override only this method.
     #@+node:ekr.20070919133659: *4* at.checkDerivedFile
     def checkDerivedFile (self, event=None):
-        
+
         '''Make sure an external file written by Leo may be read properly.'''
 
         at = self ; c = at.c ; p = c.p
@@ -442,7 +442,6 @@ class atFile:
         # Create a dummy, unconnected, vnode as the root.
         root_v = leoNodes.vnode(context=c)
         root = leoNodes.position(root_v)
-        theFile = g.fileLikeObject(fromString=s)
         # 2010/01/22: readOpenFiles now determines whether a file is thin or not.
         at.initReadIvars(root,fn)
         if at.errors: return
@@ -459,7 +458,7 @@ class atFile:
         This will be the private file for @shadow nodes.'''
 
         trace = False and not g.app.unitTesting
-        at = self ; c = at.c
+        at = self
 
         if fromString:
             if at.atShadow:
@@ -813,15 +812,14 @@ class atFile:
             g.es("no @<file> nodes in the selected tree")
 
         if use_tracer: tt.stop()
-        
+
         c.raise_error_dialogs()  # 2011/12/17
     #@+node:ekr.20080801071227.7: *4* at.readAtShadowNodes
     def readAtShadowNodes (self,p):
 
         '''Read all @shadow nodes in the p's tree.'''
 
-        at = self ; c = at.c
-
+        at = self
         after = p.nodeAfterTree()
         p = p.copy() # Don't change p in the caller.
         while p and p != after: # Don't use iterator.
@@ -840,7 +838,7 @@ class atFile:
 
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
-        
+
         if not g.os_path_exists(fileName):
             g.error('not found: @auto %s' % (fileName))
             return
@@ -858,7 +856,7 @@ class atFile:
 
         if not g.unitTesting:
             g.es("reading:",p.h)
-            
+
         try:
             # 2012/04/09: catch failed asserts in the import code.
             ic.createOutline(fileName,parent=p.copy(),atAuto=True)
@@ -882,10 +880,9 @@ class atFile:
     #@+node:ekr.20090225080846.3: *4* at.readOneAtEditNode
     def readOneAtEditNode (self,fn,p):
 
-        at = self ; c = at.c ; ic = c.importCommands
-
-        oldChanged = c.isChanged()
-
+        at = self
+        c = at.c
+        ic = c.importCommands
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
         junk,ext = g.os_path_splitext(fn)
@@ -917,7 +914,6 @@ class atFile:
                 head = '@nocolor\n'
 
         p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
-
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
     #@+node:ekr.20080711093251.7: *4* at.readOneAtShadowNode
@@ -941,7 +937,7 @@ class atFile:
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
-            
+
         if trace:
             g.trace('shadow_exists',shadow_exists,shadow_fn)
 
@@ -1045,7 +1041,7 @@ class atFile:
         # *Always* put the temp body text into at.v.tempBodyString.
         v.tempBodyString = s
         #@-<< handle first and last lines >>
-        
+
         if trace: g.trace(at.encoding,fileName) # root.v.tempBodyString)
 
         return thinFile
@@ -1236,7 +1232,7 @@ class atFile:
     def readNormalLine (self,s,i=0): # i not used.
 
         at = self
-        
+
         # g.trace('inCode',at.inCode,repr(s))
 
         if at.inCode:
@@ -1353,7 +1349,7 @@ class atFile:
 
         if not at.v:
             return # 2010/08/02: This can happen when reading strange files.
-            
+
         if allow_cloned_sibs:
             assert at.v == at.root.v or at.v.isVisited(),at.v.h
 
@@ -1383,7 +1379,7 @@ class atFile:
         return v
     #@+node:ekr.20130121102015.10272: *8* at.createV5ThinNode
     def createV5ThinNode(self,gnx,headline,level):
-        
+
         at = self
         trace = False and not g.unitTesting # at.readVersion5 and 
         oldLevel = len(at.thinNodeStack)
@@ -1392,7 +1388,7 @@ class atFile:
         assert newLevel >= 1
         # The invariant: top of at.thinNodeStack after changeLevel is the parent.
         at.changeLevel(oldLevel,newLevel-1)
-        
+
         if allow_cloned_sibs:
             parent = at.thinNodeStack[-1]
             n = at.thinChildIndexStack[-1]
@@ -1412,7 +1408,7 @@ class atFile:
         else:
             v = at.old_createThinChild4(gnx,headline)
             at.thinNodeStack.append(v)
-            
+
         # Common exit code. 
         # Terminate a previous clone if it exists.
         # Do not use the full terminateNode logic!
@@ -1439,7 +1435,7 @@ class atFile:
         indices = g.app.nodeIndices
         gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
-       
+
         last = at.lastThinNode # A vnode.
         lastIndex = last.fileIndex
         if trace and verbose: g.trace("last %s, gnx %s %s" % (
@@ -1451,7 +1447,7 @@ class atFile:
                 break
         else:
             child = None
-        
+
         if at.cloneSibCount > 1:
             n = at.cloneSibCount ; at.cloneSibCount = 0
             if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
@@ -1497,7 +1493,7 @@ class atFile:
         """Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees."""
 
-        trace = False and not g.unitTesting ; verbose = True
+        trace = False and not g.unitTesting
         at = self ; c = at.c ; indices = g.app.nodeIndices
         if trace: g.trace(n,len(parent.children),parent.h,
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
@@ -1527,7 +1523,7 @@ class atFile:
             child = v
             child._linkAsNthChild(parent,n)
             if trace: g.trace('NEW n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-        
+
         return child
     #@+node:ekr.20100625184546.5979: *7* at.parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
@@ -1843,7 +1839,7 @@ class atFile:
 
         """Handle @-node sentinels."""
 
-        at = self ; c = at.c
+        at = self
 
         assert not at.readVersion5,'not at.readVersion5'
             # Must not be called for new sentinels.
@@ -1910,7 +1906,7 @@ class atFile:
 
             # 2010/10/21: Important bug fix: always enter code mode.
             at.inCode = True
-        
+
             # Restore the node containing the section reference.
             # *Never* terminate new-sentinel nodes until the post-pass.
             at.raw = False # End raw mode.
@@ -1991,8 +1987,7 @@ class atFile:
 
         v = at.lastRefNode
         hasList = hasattr(v,'tempBodyList')
-        hasString = hasattr(v,'tempBodyString')
-        # g.trace('hasList',hasList,'hasString',hasString,'v',v and v.h)
+        # g.trace('hasList',hasList,'v',v and v.h)
 
         if at.readVersion5:
             if hasList and at.v.tempBodyList:
@@ -2246,10 +2241,10 @@ class atFile:
     def changeLevel (self,oldLevel,newLevel):
 
         '''Update data structures when changing node level.
-        
+
         The key invariant: on exit, the top of at.thinNodeStack is the new parent node.'''
 
-        at = self ; c = at.c
+        at = self
 
         # Crucial: we must be using new-style sentinels.
         assert at.readVersion5,'at.readVersion5'
@@ -2268,17 +2263,17 @@ class atFile:
                 at.vStack.pop()
             assert oldLevel == newLevel,'oldLevel: %s newLevel: %s' % (oldLevel,newLevel)
             assert len(at.thinNodeStack) == newLevel,'len(at.thinNodeStack) == newLevel'
-        
+
         # The last node is the node at the top of the stack.
         # This node will be the parent of any newly created node.
         at.lastThinNode = at.thinNodeStack[-1]
     #@+node:ekr.20110523201030.18288: *5* at.massageAtDocPart (new)
     def massageAtDocPart (self,s):
-        
+
         '''Compute the final @doc part when block comments are used.'''
-        
+
         at = self
-        
+
         if at.endSentinelComment:
             ok1 = s.startswith(at.startSentinelComment+'\n')
             ok2 = s.endswith(at.endSentinelComment+'\n')
@@ -2288,7 +2283,7 @@ class atFile:
                 s = s[n1+1:-(n2+1)]
             else:
                 at.error('invalid @doc part...\n%s' % repr(s))
-                
+
         # g.trace(repr(s))
         return s
     #@+node:ekr.20041005105605.114: *4* at.sentinelKind4 & helper (read logic)
@@ -2603,7 +2598,7 @@ class atFile:
         at = self
         s = g.readlineForceUnixNewline(theFile,fileName=fileName) # calls theFile.readline
         # g.trace(repr(s),g.callers(4))
-        u = g.toUnicode(s,self.encoding)
+        u = g.toUnicode(s,at.encoding)
         return u
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
     def scanHeader(self,theFile,fileName):
@@ -2711,9 +2706,9 @@ class atFile:
             assert postPass,'terminateNode'
 
         # Get the temp attributes.
-        hasString  = hasattr(v,'tempBodyString')
+        # hasString  = hasattr(v,'tempBodyString')
+        # tempString = hasString and v.tempBodyString or ''
         hasList    = hasattr(v,'tempBodyList')
-        tempString = hasString and v.tempBodyString or ''
         tempList   = hasList and ''.join(v.tempBodyList) or ''
 
         # Compute the new text.
@@ -2887,7 +2882,7 @@ class atFile:
                 #@-<< Write p's body >>
             at.closeWriteFile()
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-            
+
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
 
@@ -2908,7 +2903,7 @@ class atFile:
 
             # New in Leo 4.4.8: set dirty bit if there are errors.
             if not ok: at.outputFile = None
-            
+
         if trace: g.trace('root',repr(root and root.h),'outputFile',repr(at.outputFile))
 
         # New in 4.3 b2: root may be none when writing from a string.
@@ -3164,9 +3159,9 @@ class atFile:
 
     #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
     def clearAllOrphanBits (self,p):
-        
+
         '''Clear orphan bits for all nodes *except* orphan @file nodes.'''
-        
+
         # 2011/06/15: Important bug fix: retain orphan bits for @file nodes.
         for p2 in p.self_and_subtree():
             if p2.isOrphan():
@@ -3296,7 +3291,7 @@ class atFile:
 
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName,root)
-        
+
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
         at.targetFileName = g.choose(toString,"<string-file>",fileName)
@@ -3307,8 +3302,8 @@ class atFile:
             toString=toString)
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-        
-        
+
+
         if ok:
             isAtAutoOtl = root.isAtAutoOtlNode() # For traces.
             isAtAutoRst = root.isAtAutoRstNode() # For traces.
@@ -3435,7 +3430,7 @@ class atFile:
             toString=False, # True: create a fileLikeObject.  This is done below.
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
-                
+
         # g.trace('encoding',repr(at.encoding))
 
         # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
@@ -3488,13 +3483,8 @@ class atFile:
         """Use the language implied by fn's extension if
         there is a conflict between it and c.target_language."""
 
-        at = self ; c = at.c
-
-        if c.target_language:
-            junk,target_ext = g.os_path_splitext(fn)  
-        else:
-            target_ext = ''
-
+        at = self
+        c = at.c
         junk,ext = g.os_path_splitext(fn)
 
         if ext:
@@ -3580,7 +3570,7 @@ class atFile:
                 g.es("finished")
             else:
                 g.es("no @file node in the selected tree")
-            
+
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20090225080846.5: *4* at.writeOneAtEditNode
     def writeOneAtEditNode(self,p,toString,force=False):
@@ -3637,7 +3627,7 @@ class atFile:
             g.es("not written:",at.targetFileName) # 2010/10/22
             root.setDirty()
             root.setOrphan() # 2010/10/22
-            
+
         c.raise_error_dialogs(kind='write')
 
         return ok
@@ -3649,7 +3639,7 @@ class atFile:
         nosentinels=False,toString=False,fromString=''):
 
         """Do all writes except asis writes."""
-        
+
         # g.trace(self.encoding,'nosentinels',nosentinels,root.h,self.outputFile)
 
         at = self
@@ -3659,7 +3649,7 @@ class atFile:
         at.putOpenLeoSentinel("@+leo-ver=%s" % (
             g.choose(at.writeVersion5,5,4)))
                 # Use version 4 for @shadow, verion 5 otherwise.
-            
+
         at.putInitialComment()
         at.putOpenNodeSentinel(root)
         at.putBody(root,fromString=fromString)
@@ -3676,7 +3666,7 @@ class atFile:
         """Write all the *descendants* of an @auto-otl node."""
 
         at = self
-        
+
         def put(s):
             '''Take care with output newlines.'''
             at.os(s[:-1] if s.endswith('\n') else s)
@@ -3689,7 +3679,7 @@ class atFile:
                 put('%s%s' % (indent,p.h))
                 for s in p.b.splitlines(False):
                     put('%s: %s' % (indent,s))
-                
+
         root.setVisited()
         return True
     #@+node:ekr.20041005105605.160: *3* Writing 4.x
@@ -3855,7 +3845,7 @@ class atFile:
                 elif at.atAuto and not at.atEdit:
                     # Ensure all @auto nodes end in a newline!
                     at.onl()
-                    
+
         return has_at_others # 2013/01/19: for new @others logic.
     #@+node:ekr.20041005105605.164: *4* writing code lines...
     #@+node:ekr.20041005105605.165: *5* @all
@@ -3976,7 +3966,7 @@ class atFile:
             # Use the old (bizarre) convention when writing old sentinels.
             # Note: there are *two* at signs here.
             at.putSentinel("@" + lws + "@+others")
-            
+
         if allow_cloned_sibs:
             for child in p.children():
                 p = child.copy()
@@ -4006,7 +3996,7 @@ class atFile:
 
         at = self
         parent_v = p._parentVnode()
-        
+
         if not allow_cloned_sibs:
             clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
             if clonedSibs > 1 and thisClonedSibIndex == 1:
@@ -4015,14 +4005,14 @@ class atFile:
 
         at.putOpenNodeSentinel(p)
         at.putBody(p)
-        
+
         if not allow_cloned_sibs:
             # Insert expansions of all children.
             for child in p.children():
                 # g.trace(child.h)
                 if at.validInAtOthers(child):
                     at.putAtOthersChild(child)
-        
+
         at.putCloseNodeSentinel(p)
     #@+node:ekr.20041005105605.171: *7* validInAtOthers (write)
     def validInAtOthers(self,p):
@@ -4030,20 +4020,20 @@ class atFile:
         """Returns True if p should be included in the expansion of the at-others directive
 
         in the body text of p's parent."""
-        
+
         trace = False and not g.unitTesting
         at = self
-        
+
         if not allow_cloned_sibs and p.v.isVisited():
             if trace: g.trace("previously visited",p.v.h)
             return False
-        
+
         i = g.skip_ws(p.h,0)
-        isSection,junk = self.isSectionName(p.h,i)
+        isSection,junk = at.isSectionName(p.h,i)
 
         if isSection:
             return False # A section definition node.
-        elif self.sentinels or self.atAuto or self.toString:
+        elif at.sentinels or at.atAuto or at.toString:
             # @ignore must not stop expansion here!
             return True
         elif p.isAtIgnoreNode():
@@ -4540,23 +4530,25 @@ class atFile:
     #@+node:ekr.20090514111518.5661: *4* checkPythonCode (leoAtFile) & helpers
     def checkPythonCode (self,root,s=None,targetFn=None):
 
-        c = self.c
+        at = self
 
-        if not targetFn: targetFn = self.targetFileName
+        if not targetFn: targetFn = at.targetFileName
 
-        if targetFn and targetFn.endswith('.py') and self.checkPythonCodeOnWrite:
+        if targetFn and targetFn.endswith('.py') and at.checkPythonCodeOnWrite:
 
             if not s:
-                s,e = g.readFileIntoString(self.outputFileName)
+                s,e = g.readFileIntoString(at.outputFileName)
                 if s is None: return
 
             # It's too slow to check each node separately.
-            ok = self.checkPythonSyntax(root,s)
+            ok = at.checkPythonSyntax(root,s)
 
             # Syntax checking catches most indentation problems.
-            if False and ok: self.tabNannyNode(root,s)
+            if False and ok: at.tabNannyNode(root,s)
     #@+node:ekr.20090514111518.5663: *5* checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body,supress=False):
+
+        at = self
 
         try:
             ok = True
@@ -4567,7 +4559,7 @@ class atFile:
             compile(body + '\n',fn,'exec')
         except SyntaxError:
             if not supress:
-                self.syntaxError(p,body)
+                at.syntaxError(p,body)
             ok = False
         except Exception:
             g.trace("unexpected exception")
@@ -4670,7 +4662,7 @@ class atFile:
             # g.trace('**closing',at.outputFileName,at.outputFile)
             at.outputFile.flush()
             if at.toString:
-                at.stringOutput = self.outputFile.get()
+                at.stringOutput = at.outputFile.get()
             at.outputFile.close()
             at.outputFile = None
             return at.stringOutput
@@ -5272,22 +5264,22 @@ class atFile:
                     p.moveToThreadNext()
     #@+node:ekr.20041005105605.217: *4* writeError
     def writeError(self,message=None):
-        
+
         at = self
-        
+
         # Don't give errors for this particular file during unit testing.
         h = 'nonexistent-directory/orphan-bit-test.txt'
-        
-        if g.unitTesting and self.targetFileName.replace('\\','/').endswith(h):
+
+        if g.unitTesting and at.targetFileName.replace('\\','/').endswith(h):
             at.errors += 1
         else:
-            if self.errors == 0:
-                g.es_error("errors writing: " + self.targetFileName)
+            if at.errors == 0:
+                g.es_error("errors writing: " + at.targetFileName)
                 # g.trace(g.callers(5))
-            self.error(message)
+            at.error(message)
 
-        self.root.setDirty()
-        self.root.setOrphan()
+        at.root.setDirty()
+        at.root.setOrphan()
     #@+node:ekr.20041005105605.218: *4* writeException
     def writeException (self,root=None): # changed 11.
 
@@ -5386,7 +5378,7 @@ class atFile:
             return False
     #@+node:ekr.20050104132018: *4* atFile.remove
     def remove (self,fileName,verbose=True):
-        
+
         if not fileName:
             g.trace('No file name',g.callers())
             return False
@@ -5494,12 +5486,12 @@ class atFile:
         return ok == 'yes'
     #@+node:ekr.20120112084820.10001: *3* at.rememberReadPath
     def rememberReadPath(self,fn,p):
-        
+
         v = p.v
-        
+
         if not hasattr(v,'at_read'):
             v.at_read = []
-            
+
         if not fn in v.at_read:
             v.at_read.append(fn)
     #@+node:ekr.20080923070954.4: *3* at.scanAllDirectives
@@ -5514,7 +5506,7 @@ class atFile:
         setting corresponding atFile ivars.'''
 
         trace = False and not g.unitTesting
-        at = self ; c = self.c ; p1 = p.copy()
+        at = self ; c = self.c
         g.app.atPathInBodyWarning = None
         #@+<< set ivars >>
         #@+node:ekr.20080923070954.14: *4* << Set ivars >>
@@ -5675,11 +5667,11 @@ class atFile:
         return sentinelNameDict.get(kind,"<unknown sentinel: %s>" % kind)
     #@+node:ekr.20120110174009.9965: *3* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self,fn,p):
-        
+
         '''Return True if a prompt should be issued
         when writing p (an @<file> node) to fn.
         '''
-        
+
         if not g.os_path_exists(fn):
             return False
                 # No danger of overwriting fn.

@@ -527,7 +527,7 @@ class position (object):
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
     def get_UNL(self, with_file=True, with_proto=False):
-        
+
         UNL = '-->'.join(reversed([
             i.h.replace('-->', '--%3E')
             for i in self.self_and_parents()
@@ -585,7 +585,7 @@ class position (object):
         return False
     #@+node:ekr.20060920203352: *4* p.findRootPosition
     def findRootPosition (self):
-        
+
         # 2011/02/25: always use c.rootPosition
         p = self
         c = p.v.context
@@ -654,13 +654,13 @@ class position (object):
     simpleLevel = level
     #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
     def positionAfterDeletedTree (self):
-        
+
         '''Return the position corresponding to p.nodeAfterTree() after this node is
         deleted. This will be p.nodeAfterTree() unless p.next() exists.
-        
+
         This method allows scripts to traverse an outline, deleting nodes during the
         traversal. The pattern is::
-            
+
             p = c.rootPosition()
             while p:
             if <delete p?>:
@@ -669,18 +669,18 @@ class position (object):
                 p = next
             else:
                 p.moveToThreadNext()
-                
+
         This method also allows scripts to *move* nodes during a traversal, **provided**
         that nodes are moved to a "safe" spot so that moving a node does not change the
         position of any other nodes.
-        
+
         For example, the move-marked-nodes command first creates a **move node**, called
         'Clones of marked nodes'. All moved nodes become children of this move node.
         **Inserting** these nodes as children of the "move node" does not change the
         positions of other nodes. **Deleting** these nodes *may* change the position of
         nodes, but the pattern above handles this complication cleanly.
         '''
-        
+
         p = self
         next = p.next()
         if next:
@@ -845,29 +845,22 @@ class position (object):
 
         # Calculate all nodes that are joined to p or parents of such nodes.
         nodes = p.findAllPotentiallyDirtyNodes()
-
         if setDescendentsDirty:
-            # N.B. Only mark _direct_ descendents of nodes.
+            # **Important**: only mark _direct_ descendents of nodes.
             # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
             for p2 in p.subtree():
                 # Only @thin nodes need to be marked.
                 if p2.v not in nodes and p2.isAnyAtFileNode():
                         # Bug fix: 2011/07/05: was p2.isAtThinFileNode():
                     nodes.append(p2.v)
-
         if trace and verbose:
             for v in nodes:
                 print (v.isDirty(),v.isAnyAtFileNode(),v)
-
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]
-        changed = len(dirtyVnodeList) > 0
-
         for v in dirtyVnodeList:
             v.setDirty()
-
         if trace: g.trace("position",dirtyVnodeList,g.callers(5))
-
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty (self,setDescendentsDirty=True):
@@ -1260,13 +1253,13 @@ class position (object):
     #@+node:ekr.20040306060312: *4* p.moveToFirst/LastChildOf
     def moveToFirstChildOf (self,parent):
         """Move a position to the first child of parent."""
-        
+
         p = self # Do NOT copy the position!
         return p.moveToNthChildOf (parent,0)  # Major bug fix: 2011/12/04
 
     def moveToLastChildOf (self,parent):
         """Move a position to the last child of parent."""
-        
+
         p = self # Do NOT copy the position!
         n = parent.numberOfChildren()
         if p.parent() == parent:
@@ -1573,12 +1566,10 @@ class position (object):
         """Move a position to the position of the next visible node."""
 
         trace = False and not g.unitTesting
-        verbose = False
-        p = self ; limit,limitIsVisible = c.visLimit()
+        p = self
+        limit,limitIsVisible = c.visLimit()
         while p:
             if trace: g.trace('1',p.h)
-            # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
-                # p.hasChildren(),p.isExpanded(),p.h))
             # Short-circuit if possible.
             if p.hasNext() and p.hasChildren() and p.isExpanded():
                 p.moveToFirstChild()
@@ -1718,21 +1709,17 @@ class position (object):
 
         p = self
         assert(p.v)
-
         hiddenRootNode = p.v.context.hiddenRootNode
-
-        if oldRoot: oldRootNode = oldRoot.v
-        else:       oldRootNode = None
+        # if oldRoot: oldRootNode = oldRoot.v
+        # else:       oldRootNode = None
 
         # Init the ivars.
         p.stack = []
         p._childIndex = 0
-
         parent_v = hiddenRootNode
         child = p.v
         if not oldRoot: parent_v.children = []
         child._addLink(0,parent_v)
-
         return p
     #@+node:ekr.20080416161551.217: *4* p._unlink
     def _unlink (self):
@@ -1852,17 +1839,15 @@ class poslist(list):
             t1,t2 = itertools.tee(m,2)
             try:
                 if g.isPython3:
-                    first = t1.__next__()
+                    t1.__next__()
                 else:
-                    first = t1.next()
+                    t1.next()
                 # if does not raise StopIteration...
                 pc = p.copy()
                 pc.matchiter = t2
                 res.append(pc)
-
             except StopIteration:
                 pass
-
         return res
 
     #@-others
@@ -1909,7 +1894,7 @@ class vnode (baseVnode):
         # Structure data...
         self.children = [] # Ordered list of all children of this node.
         self.parents = [] # Unordered list of all parents of this node.
-        
+
         # Other essential data...
         self.fileIndex = g.app.nodeIndices.getNewIndex()
             # The immutable file index for this vnode.
@@ -1997,7 +1982,7 @@ class vnode (baseVnode):
         # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
         names = ("@auto","@auto-otl","@auto-rst",)
         return self.findAtFileName(names,h=h)
-        
+
     def atAutoOtlNodeName (self,h=None):
         names = ("@auto-otl",)
         return self.findAtFileName(names,h=h)
@@ -2053,7 +2038,7 @@ class vnode (baseVnode):
     #@+node:ekr.20040325073709: *4* isAt...FileNode (vnode)
     def isAtAutoNode (self):
         return g.choose(self.atAutoNodeName(),True,False)
-        
+
     def isAtAutoOtlNode (self):
         return g.choose(self.atAutoOtlNodeName(),True,False)
 
@@ -2085,11 +2070,11 @@ class vnode (baseVnode):
     def isAtIgnoreNode (self):
 
         """Returns True if the receiver contains @ignore in its body at the start of a line.
-        
+
         or if the headline starts with @ignore."""
-        
-        v = self
-        
+
+        # v = self
+
         # 2011/10/08: honor @ignore in headlines.  Sheesh.
         if g.match_word(self._headString,0,'@ignore'):
             return True
@@ -2197,7 +2182,7 @@ class vnode (baseVnode):
     def cleanHeadString (self):
 
         s = self._headString
-        
+
         if g.isPython3:
             return s
         else:
@@ -2295,21 +2280,14 @@ class vnode (baseVnode):
 
         # Calculate all nodes that are joined to p or parents of such nodes.
         nodes = v.findAllPotentiallyDirtyNodes()
-
         if trace and verbose:
             for v in nodes:
                 print (v.isDirty(),v.isAnyAtFileNode(),v)
-
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]
-
-        changed = len(dirtyVnodeList) > 0
-
         for v in dirtyVnodeList:
             v.setDirty() # Do not call p.setDirty here!
-
-        if trace: g.trace("vnode",dirtyVnodeList)
-
+        if trace: g.trace(dirtyVnodeList)
         return dirtyVnodeList
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty (self):
@@ -2329,7 +2307,7 @@ class vnode (baseVnode):
         self.statusBits &= ~ self.writeBit
     #@+node:ekr.20031218072017.3392: *5* v.clearOrphan
     def clearOrphan (self):
-        
+
         # if self.h.startswith('@file'): g.trace(self.h,g.callers())
 
         self.statusBits &= ~ self.orphanBit
@@ -2381,7 +2359,7 @@ class vnode (baseVnode):
         self.statusBits |= self.markedBit
     #@+node:ekr.20031218072017.3399: *5* v.setOrphan
     def setOrphan (self):
-        
+
         # if self.h.startswith('@file'): g.trace(self.h,g.callers())
 
         self.statusBits |= self.orphanBit
@@ -2417,14 +2395,14 @@ class vnode (baseVnode):
     # Called only by leoTree.selectHelper.
 
     def restoreCursorAndScroll (self):
-        
+
         trace = (False or g.trace_scroll) and not g.unitTesting
         v = self ; c = self.context
         ins = v.insertSpot
         start,n = v.selectionStart,v.selectionLength
         spot = v.scrollBarSpot
         w = c.frame.body
-        
+
         # Fix bug 981849: incorrect body content shown.
         if ins is None: ins = 0
         w.setInsertPoint(ins)
@@ -2437,19 +2415,19 @@ class vnode (baseVnode):
         if spot is not None:
             w.setYScrollPosition(spot)
         v.scrollBarSpot = spot
-            
+
         if trace: g.trace(spot,v.h)
-            
+
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self):
-        
+
         trace = (False or g.trace_scroll) and not g.unitTesting
 
         v = self ; c = v.context
         w = c.frame.body
         if not w: return
-        
+
         try:
             v.scrollBarSpot = w.getYScrollPosition()
             v.insertSpot = w.getInsertPoint()

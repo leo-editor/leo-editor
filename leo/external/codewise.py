@@ -22,27 +22,27 @@ Why this module
 
 Creating ctags data
 ===================
-    
+
 1. Make sure you have exuberant ctags (not just regular ctags)
    installed. It's an Ubuntu package, so its easy to install if
    you're using Ubuntu.
 
- 
+
 2. [Optional] Create a custom ~/.ctags file containing default
     configuration settings for ctags. See:
     http://ctags.sourceforge.net/ctags.html#FILES for more
     details.
-    
+
     The ``codewise setup`` command (see below), will leave this
     file alone if it exists; otherwise, ``codewise setup`` will
     create a ~/.ctags file containing::
-    
+
         --exclude=*.html
         --exclude=*.css
 
 3. Create the ctags data in ~/.codewise.db using this module. Execute the
    following from a console window::
-    
+
         codewise setup
             # Optional: creates ~/.ctags if it does not exist.
             # See http://ctags.sourceforge.net/ctags.html#FILES
@@ -50,25 +50,25 @@ Creating ctags data
             # Optional: deletes ~/.codewise.db if it exists.
         codewise parse <path to directory>
             # Adds ctags data to ~/.codewise.db for <directory>
-      
+
 **Note**: On Windows, use a batch file, say codewise.bat, to execute the
 above code. codewise.bat contains::
 
     python <path to leo>\leo\external\codewise.py %*
-    
+
 Using the autocompleter
 =======================
 
 After restarting Leo, type, for example, in the body pane::
 
     c.op<ctrl-space>
-    
+
 that is, use use the autocomplete-force command,
 to find all the c. methods starting with 'op' etc. 
 
 Theory of operation
 ===================
-    
+
 - ~/.codewise.db is an sqlite database with following tables:
 
 CLASS maps class id's to names.
@@ -90,7 +90,7 @@ CodeWise.get_members with a list of classes to match.
 
 If you want to match a function without a class, call CodeWise.get_functions.
 This can be much slower if you have a huge database.
-    
+
 """
 #@-<< docstring >>
 #@+<< imports >>
@@ -120,20 +120,20 @@ codewise setup
 
 codewise init
  Create/recreate the global database
- 
+
 codewise parse /my/project /other/project
  Parse specified directories (with recursion) and add results to db
 
 codewise m
  List all classes
- 
+
 codewise m MyClass
  Show all methods in MyClass
 
 codewise f PREFIX
  Show all symbols (also nonmember functiosn) starting with PREFIX.
  PREFIX can be omitted to get a list of all symbols
- 
+
 codewise parseall
  Clear database, reparse all paths previously added by 'codewise parse'
 
@@ -173,7 +173,7 @@ DEFAULT_DB = os.path.normpath(os.path.expanduser("~/.codewise.db"))
 #@+node:ekr.20110310091639.14289: *4* cmd_functions
 def cmd_functions(args):
     cw = CodeWise()
-    
+
     if args:
         funcs = cw.get_functions(args[0])
     else:
@@ -184,12 +184,12 @@ def cmd_functions(args):
     return lines # EKR
 #@+node:ekr.20110310091639.14285: *4* cmd_init
 def cmd_init(args):
-    
+
     print("Initializing CodeWise db at: %s" % DEFAULT_DB)
 
     if os.path.isfile(DEFAULT_DB):
         os.remove(DEFAULT_DB)
-    
+
     cw = CodeWise()
 
 #@+node:ekr.20110310091639.14288: *4* cmd_members
@@ -202,7 +202,7 @@ def cmd_members(args):
         lines = list(set(el + "\t" + pat for el, pat in mems))
     else:
         lines = cw.classcache.keys()
-        
+
     lines.sort()
     return lines # EKR
 #@+node:ekr.20110310091639.14283: *4* cmd_parse
@@ -214,10 +214,10 @@ def cmd_parse(args):
 
 #@+node:ekr.20110310091639.14282: *4* cmd_parseall
 def cmd_parseall(args):
-    
+
     cw = CodeWise()
     cw.parseall()
-    
+
 #@+node:ekr.20110310091639.14281: *4* cmd_scintilla
 def cmd_scintilla(args):
 
@@ -229,9 +229,9 @@ def cmd_scintilla(args):
 
 #@+node:ekr.20110310091639.14286: *4* cmd_setup
 def cmd_setup(args):
-    
+
     ctagsfile = os.path.normpath(os.path.expanduser("~/.ctags"))
-    
+
     # assert not os.path.isfile(ctagsfile)
     if os.path.isfile(ctagsfile):
         print("Using template file: %s" % ctagsfile)
@@ -611,13 +611,13 @@ else:
         return unicode(s,encoding)
 #@+node:ekr.20110310091639.14290: *3* main
 def main():
-    
+
     #g.trace()
 
     if len(sys.argv) < 2:
         print(usage)
         return
-    
+
     cmd = sys.argv[1]
     # print "cmd",cmd
     args = sys.argv[2:]
@@ -627,7 +627,7 @@ def main():
         printlines(cmd_members(args))
     elif cmd == 'f':
         printlines(cmd_functions(args))
-        
+
     elif cmd =='parse':
         cmd_parse(args)
     elif cmd =='parseall':
@@ -635,7 +635,7 @@ def main():
 
     elif cmd =='sciapi':
         cmd_scintilla(args)
-        
+
     elif cmd == 'init':
         cmd_init(args)
     elif cmd == 'setup':
@@ -657,7 +657,7 @@ def run_ctags(paths):
 
 #@+node:ekr.20110310091639.14296: *3* test
 def test (self):
-    
+
     pass
 #@+node:ekr.20110310091639.14256: ** class CodeWise
 class CodeWise:
@@ -668,11 +668,11 @@ class CodeWise:
         if dbpath is None:
             # use "current" db from env var
             dbpath = DEFAULT_DB
-            
+
         # print(dbpath)
 
         self.reset_caches()
-        
+
         if not os.path.exists(dbpath):
             self.createdb(dbpath)
         else:
@@ -689,39 +689,39 @@ class CodeWise:
     #@+node:ekr.20110310091639.14259: *3* create_caches
     def create_caches(self):
         """ read existing db and create caches """
-        
+
         c = self.cursor()
-        
+
         c.execute('select id, name from class')
         for idd, name in c:
             self.classcache[name] = idd
-            
+
         c.execute('select id, path from file')
         for idd, name in c:
             self.filecache[name] = idd
-            
+
         c.close()
         #print self.classcache
-            
+
     #@+node:ekr.20110310091639.14260: *3* reset_caches
     def reset_caches(self):
         self.classcache = {}
         self.filecache = {}
-        
+
         self.fileids_scanned = set()
-        
+
 
     #@+node:ekr.20110310091639.14261: *3* cursor
     def cursor(self):
         return self.dbconn and self.dbconn.cursor()
-        
+
     #@+node:ekr.20110310091639.14262: *3* class_id
     def class_id(self, classname):
         """ return class id. May create new class """
-        
+
         if classname is None:
             return 0
-        
+
         idd = self.classcache.get(classname)
         if idd is None:
             c = self.cursor()
@@ -733,11 +733,11 @@ class CodeWise:
 
     #@+node:ekr.20110310091639.14263: *3* get_members
     def get_members(self, classnames):
-        
+
         clset = set(classnames)
         class_by_id = dict((v,k) for k,v in self.classcache.items())
         file_by_id = dict((v,k) for k,v in self.filecache.items())
-        
+
         result = []
         for name, idd in self.classcache.items():
             if name in clset:
@@ -753,7 +753,7 @@ class CodeWise:
     def get_functions(self, prefix = None):
 
         c = self.cursor()
-              
+
         if prefix is None:
             c.execute('select name, class, file, searchpattern from function')
         else:
@@ -766,35 +766,35 @@ class CodeWise:
     def file_id(self, fname):
         if fname == '':
             return 0
-        
+
         idd = self.filecache.get(fname)
         if idd is None:
             c = self.cursor()
             c.execute('insert into file(path) values (?)', [fname] )
             idd = c.lastrowid
-            
+
             self.filecache[fname] = idd
             self.fileids_scanned.add(idd)
         else:
             if idd in self.fileids_scanned:
                 return idd
-                        
+
             # we are rescanning a file with old entries - nuke old entries
             #print "rescan", fname
             c = self.cursor()
             c.execute("delete from function where file = (?)", (idd, ))
             #self.dbconn.commit()
             self.fileids_scanned.add(idd)
-            
+
         return idd
 
     #@+node:ekr.20110310091639.14266: *3* feed_function
     def feed_function(self, func_name, class_name, file_name, aux):
         """ insert one function
-        
+
         'aux' can be a search pattern (as with ctags), signature, or description
-        
-        
+
+
         """
         clid = self.class_id(class_name)
         fid = self.file_id(file_name)
@@ -805,30 +805,30 @@ class CodeWise:
     #@+node:ekr.20110310091639.14267: *3* feed_scintilla
     def feed_scintilla(self, apifile_obj):
         """ handle scintilla api files
-        
+
         Syntax is like:
-        
+
         qt.QApplication.style?4() -> QStyle
         """
-        
+
         for l in apifile_obj:
             if not isPython3:
                 l = unicode(l, 'utf8', 'replace')
             parts = l.split('?')
             fullsym = parts[0].rsplit('.',1)
             klass, func = fullsym
-            
+
             if len(parts) == 2:
                 desc = parts[1]
             else:
                 desc = ''
-                
+
             # now our class is like qt.QApplication. We do the dirty trick and
             # remove all but actual class name
-            
+
             shortclass = klass.rsplit('.',1)[-1]
-            
-            
+
+
             #print func, klass, desc
             self.feed_function(func.strip(), shortclass.strip(), '', desc.strip())
         self.dbconn.commit()
@@ -854,7 +854,7 @@ class CodeWise:
                     klass = ext.split(':',1)[1].strip()
                     idd = self.class_id(klass)
                     #print "klass",klass, idd
-                
+
             except IndexError:
                 ext = None
                 # class id 0 = function
@@ -864,10 +864,10 @@ class CodeWise:
             #print fields
 
             fid = self.file_id(fil)
-            
+
             c.execute('insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
                       [idd, m, pat, fid])
-        
+
         self.dbconn.commit()
         #c.commit()
         #print fields
@@ -877,13 +877,13 @@ class CodeWise:
         c = self.cursor()
         c.execute('insert into datasource(type, src) values (?,?)', (type,src))
         self.dbconn.commit()
-        
+
     #@+node:ekr.20110310091639.14270: *3* sources
     def sources(self):
         c = self.cursor()
         c.execute('select type, src from datasource')
         return list(c)
-        
+
     #@+node:ekr.20110310091639.14271: *3* zap_symbols
     def zap_symbols(self):
         c = self.cursor()
@@ -891,7 +891,7 @@ class CodeWise:
         for t in tables:
             c.execute('delete from ' + t)
         self.dbconn.commit()
-        
+
     #@+node:ekr.20110310091639.14272: *3* # high level commands
     # high level commands        
     #@+node:ekr.20110310091639.14273: *3* parseall
@@ -917,9 +917,9 @@ class CodeWise:
 #@+node:ekr.20110310091639.14275: ** class ContextSniffer
 class ContextSniffer:
     """ Class to analyze surrounding context and guess class
-    
+
     For simple dynamic code completion engines
-    
+
     """
     #@+others
     #@+node:ekr.20110310091639.14276: *3* __init__ (ContextSniffer)
@@ -933,8 +933,8 @@ class ContextSniffer:
         if not vars:
             self.vars[var] = vars
         vars.append(klass)
-        
-        
+
+
     #@+node:ekr.20110310091639.14278: *3* push_declarations
     def push_declarations(self, body):
         for l in body.splitlines():
@@ -951,7 +951,7 @@ class ContextSniffer:
     def set_small_context(self, body):
         """ Set immediate function """
         self.push_declarations(body)
-        
+
 
     #@-others
 #@-others

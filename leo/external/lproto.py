@@ -79,7 +79,7 @@ class LProtoBuf:
         print("in buf",self.buf)
 #@+node:ville.20091009234538.1374: ** class LProtoServer
 class LProtoServer:
-    
+
     #@+others
     #@+node:ekr.20111012070545.7254: *3* __init__ (LProtoServer)
     def __init__(self):
@@ -87,18 +87,18 @@ class LProtoServer:
         self.srv = QtNetwork.QLocalServer()
         self.receiver = None
         self.ses = {}
-        
+
         self.is_connected = self.srv.connect(
             self.srv,
             QtCore.SIGNAL("newConnection()"),
             self.connected)
     #@+node:ekr.20111012070545.7255: *3* listen
     def listen(self,name):
-        
+
         g.trace(name,g.callers())
-        
+
         self.srv.listen(name)
-        
+
         print("lproto.py: listen on",self.srv.fullServerName())
 
     #@+node:ekr.20111012070545.7256: *3* msg_received
@@ -108,11 +108,11 @@ class LProtoServer:
             self.receiver(msg,ses)
     #@+node:ekr.20111012070545.7257: *3* set_receiver
     def set_receiver(self, receiver):
-        
+
         self.receiver = receiver
     #@+node:ekr.20111012070545.7258: *3* connected
     def connected(self):
-        
+
         '''Event handler for newConnection.'''
 
         print("hnd con")
@@ -156,28 +156,28 @@ if 0:
         #@-others
 #@+node:ville.20091010233144.10051: ** class LProtoClient
 class LProtoClient:
-    
+
     #@+others
     #@+node:ekr.20111012070545.7210: *3* ctor (LProtoClient)
     def __init__(self,fname=standard_leo_socket_name):
 
         self.socket_name = fname
-        
+
         self.is_connected = self.connect(fname)
-        
+
         if self.is_connected:
             self.recvbuf = LProtoBuf()
         else:
             self.recvbuf = None
     #@+node:ekr.20111012070545.7212: *3* connect
     def connect (self,fname):
-        
+
         '''Connect to the server.  Return True if the connection was established.'''
-        
+
         trace = False and not g.unitTesting
-        
+
         if trace: g.trace(fname,socket)
-       
+
         if hasattr(socket,'AF_UNIX'):
             try:
                 # pylint: disable=E1101
@@ -204,11 +204,11 @@ class LProtoClient:
                 return False
     #@+node:ekr.20111012070545.7211: *3* send
     def send(self,msg):
-        
+
         byts = mk_send_bytes(msg)
         self.socket.sendall(byts)
     #@-others
 
-    
+
 #@-others
 #@-leo

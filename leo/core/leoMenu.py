@@ -21,40 +21,40 @@ class leoMenu:
     #@+node:ekr.20120124042346.12938: *3* leoMenu.Birth
     def __init__ (self,frame):
 
-        self.c = c = frame.c
+        self.c = frame.c
         self.enable_dict = {}       # Created by finishCreate.
         self.frame = frame
         self.isNull = False
         self.menus = {}             # Menu dictionary.
         self.menuShortcuts = {}
-            
+
     def finishCreate (self):
 
         self.define_enable_dict()
     #@+node:ekr.20120124042346.12937: *4* define_enable_table
     def define_enable_dict (self):
-        
+
         # pylint: disable=W0108
         # W0108: Lambda may not be necessary (It is).
-        
+
         c = self.c
-        
+
         if not c.commandsDict:
             return # This is not an error: it happens during init.
 
         self.enable_dict = d = {
-        
+
             # File menu...
                 # 'revert':         True, # Revert is always enabled.               
             'open-with':            g.app.hasOpenWithMenu,
-            
+
             # Edit menu...
             'undo':                 c.undoer.canUndo,
             'redo':                 c.undoer.canRedo,
             'extract-names':        c.canExtractSectionNames,
             'extract':              c.canExtract,
             'match-brackets':       c.canFindMatchingBracket,
-            
+
             # Top-level Outline menu...
             'cut-node':             c.canCutOutline,
             'delete-node':          c.canDeleteHeadline,
@@ -64,7 +64,7 @@ class leoMenu:
             'sort-siblings':        c.canSortSiblings,
             'hoist':                c.canHoist,
             'de-hoist':             c.canDehoist,
-            
+
             # Outline:Expand/Contract menu...
             'contract-parent':      c.canContractParent,
             'contract-node':        lambda: c.p.hasChildren() and c.p.isExpanded(),
@@ -74,7 +74,7 @@ class leoMenu:
             'expand-next-level':    lambda: c.p.hasChildren(),
             'expand-to-level-1':    lambda: c.p.hasChildren() and c.p.isExpanded(),
             'expand-or-go-right':   lambda: c.p.hasChildren(),
-            
+
             # Outline:Move menu...
             'move-outline-down':    lambda: c.canMoveOutlineDown(),
             'move-outline-left':    lambda: c.canMoveOutlineLeft(),
@@ -82,7 +82,7 @@ class leoMenu:
             'move-outline-up':      lambda: c.canMoveOutlineUp(),
             'promote':              lambda: c.canPromote(),
             'demote':               lambda: c.canDemote(),
-            
+
             # Outline:Go To menu...
             'goto-prev-history-node':   lambda: c.nodeHistory.canGoToPrevVisited(),
             'goto-next-history-node':   lambda: c.nodeHistory.canGoToNextVisited(),
@@ -97,13 +97,13 @@ class leoMenu:
             'goto-parent':              lambda: c.p.hasParent(),
             'goto-prev-sibling':        lambda: c.p.hasBack(),
             'goto-next-sibling':        lambda: c.p.hasNext(),
-            
+
             # Outline:Mark menu...
             'mark-subheads':            lambda: c.p.hasChildren(),
             # too slow...
                 # 'mark-changed-items':   c.canMarkChangedHeadlines,
         }
-        
+
         for i in range(1,9):
             d ['expand-to-level-%s' % (i)] = lambda: c.p.hasChildren()
 
@@ -275,11 +275,7 @@ class leoMenu:
     #@+node:ekr.20050921103736: *5* createCmndsMenuFromTable
     def createCmndsMenuFromTable (self):
 
-        cmdsMenu = self.createNewMenu('&Cmds')
-
-        # Now in the minibuffer table.
-            # Used in top table: q,u,x
-            # self.createMenuEntries(cmdsMenu,self.cmdsMenuTopTable)
+        self.createNewMenu('&Cmds')
 
         for name,table in (
             # &: a,b,c,d,f,g,h,i,m,n,o,p,r,s,t,u
@@ -1124,10 +1120,10 @@ class leoMenu:
         New in 4.4: this method shows the shortcut in the menu,
         but this method **never** binds any shortcuts.'''
 
-        c = self.c ; k = c.k
+        c = self.c
         if g.app.unitTesting: return
         if not menu: return
-        
+
         self.traceMenuTable(table)
 
         for data in table:
@@ -1135,7 +1131,7 @@ class leoMenu:
             if done: continue
             commandName = self.getMenuEntryBindings(command,dynamicMenu,label)
             if not commandName: continue
-                
+
             masterMenuCallback = self.createMasterMenuCallback(
                 dynamicMenu,command,commandName)
 
@@ -1151,10 +1147,10 @@ class leoMenu:
                 underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* createMasterMenuCallback
     def createMasterMenuCallback(self,dynamicMenu,command,commandName):
-        
+
         trace = False and not g.unitTesting
         c = self.c
-        
+
         def setWidget():
             w = c.frame.getFocus()
             if w and sys.platform.startswith('darwin'):
@@ -1189,7 +1185,7 @@ class leoMenu:
             return masterStaticMenuCallback
     #@+node:ekr.20111028060955.16568: *5* getMenuEntryBindings
     def getMenuEntryBindings(self,command,dynamicMenu,label):
-        
+
         '''Compute commandName from command.'''
 
         trace = False and not g.unitTesting
@@ -1201,17 +1197,17 @@ class leoMenu:
         else:
             # First, get the old-style name.
             commandName = self.computeOldStyleShortcutKey(label)
-            
+
         command = c.commandsDict.get(commandName)
-            
+
         if trace and not command and not dynamicMenu:
             # This may come from a plugin that normally isn't enabled.
             g.trace('No inverse for %s' % commandName)
-            
+
         return commandName
     #@+node:ekr.20111028060955.16565: *5* getMenuEntryInfo
     def getMenuEntryInfo (self,data,menu):
-        
+
         done = False
 
         if g.isString(data):
@@ -1233,20 +1229,20 @@ class leoMenu:
                 else:
                     # Ignore shortcuts bound in menu tables.
                     label,junk,command = data
-        
+
                 if label in (None,'-'):
                     self.add_separator(menu)
                     done = True # That's all.
             else:
                 g.trace('bad data in menu table: %s' % repr(data))
                 done = True # Ignore bad data
-                
+
         return label,command,done
     #@+node:ekr.20111028060955.16563: *5* traceMenuTable
     def traceMenuTable (self,table):
-        
+
         trace = False and not g.unitTesting
-        
+
         if not trace: return
         format = '%40s %s'
         g.trace('*'*40,g.callers())
@@ -1262,7 +1258,7 @@ class leoMenu:
                 print(format % (data,''))
     #@+node:ekr.20031218072017.3784: *4* createMenuItemsFromTable
     def createMenuItemsFromTable (self,menuName,table,dynamicMenu=False):
-        
+
         trace = False
 
         try:
@@ -1309,23 +1305,21 @@ class leoMenu:
     def createOpenWithMenuFromTable (self,table):
 
         '''table is a lists of dicts:
-        
+
         - d.get('command'):  one of "os.startfile", "os.spawnl", "os.spawnv" or "exec".
         - d.get('shortcut'): the stroke (??)
         - d.get('name'):     the menu label.
-        
+
         Leo executes command(arg+path) where path is the full path to the temp file.
         If ext is not None, the temp file has the given extension.
         Otherwise, Leo computes an extension based on the @language directive in effect.
     '''
 
-        trace = False and not g.unitTesting
+        # trace = False and not g.unitTesting
         c,k = self.c,self.c.k
         if not table: return
-
-        #### ?????
         g.app.openWithTable = table # Override any previous table.
-        
+
         # Delete the previous entry.
         parent = self.getMenu("File")
         # if trace: g.trace('parent',parent)
@@ -1348,15 +1342,15 @@ class leoMenu:
                 g.trace('unexpected exception')
                 g.es_exception()
                 return
-        
+
         # Create the Open With menu.
         openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
         if not openWithMenu:
             g.trace('openWithMenu returns None')
             return
-        
+
         self.setMenu("Open With...",openWithMenu)
-        
+
         # Create the menu items in of the Open With menu.
         self.createOpenWithMenuItemsFromTable(openWithMenu,table)
 
@@ -1372,7 +1366,7 @@ class leoMenu:
         trace = False and not g.unitTesting
         # if trace: g.trace(g.callers())
 
-        c = self.c ; k = c.k
+        c = self.c
         if g.app.unitTesting: return
 
         for d in table:
@@ -1404,7 +1398,7 @@ class leoMenu:
         return openWithMenuCallback
     #@+node:tbrown.20080509212202.7: *4* deleteRecentFilesMenuItems (leoMenu)
     def deleteRecentFilesMenuItems(self,menu):
-        
+
         """Delete recent file menu entries"""
 
         rf = g.app.recentFilesManager
@@ -1421,7 +1415,7 @@ class leoMenu:
                 self.destroyMenu(i)
     #@+node:ekr.20031218072017.4117: *4* defineMenuCallback
     def defineMenuCallback(self,command,name,minibufferCommand):
-        
+
         c = self.c
 
         if minibufferCommand:
@@ -1580,7 +1574,7 @@ class nullMenu(leoMenu):
 
         # Init the base class.
         leoMenu.__init__(self,frame)
-        
+
         self.isNull = True
     #@+node:ekr.20050104094029: *3* oops
     def oops (self):

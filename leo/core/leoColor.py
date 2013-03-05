@@ -17,7 +17,7 @@ Accessor functions are provided which will normalize name requests
 before looking them up in the database.
 
 These are::
-    
+
     getColor (aka: get)
     getColorRGB (aka: getRGB)
     getColorCairo (aka: getCairo)
@@ -36,8 +36,8 @@ will return None.
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
-import re
-import string
+# import re
+# import string
 
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>

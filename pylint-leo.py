@@ -46,7 +46,7 @@ def getCoreList():
     )
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
 def getGuiPluginsList ():
-    
+
     return (
         'baseNativeTree',
         'nested_splitter',
@@ -109,7 +109,7 @@ def getPluginsList():
     )
 #@+node:ekr.20120225032124.17089: ** getRecentCoreList
 def getRecentCoreList():
-    
+
     return (
         # 'runLeo',
         # 'leoApp',
@@ -140,7 +140,7 @@ def getRecentCoreList():
 )
 #@+node:ekr.20120528063627.10137: ** getRecentPluginsList
 def getRecentPluginsList ():
-    
+
     return (
         # 'baseNativeTree',
         # 'contextmenu',
@@ -154,7 +154,7 @@ def getRecentPluginsList ():
     )
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
-    
+
     return (
         # 'EditAttributes','Library',
         # 'URLloader','UniversalScrolling','UASearch',
@@ -183,7 +183,7 @@ def run(theDir,fn,rpython=False):
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
     assert os.path.exists(rc_fn)
     # print('run:scope:%s' % scope)
-    
+
     args = ['--rcfile=%s' % (rc_fn)]
     args.append('--disable=I0011')
         # We never want to see the I0011 message: locally disabling n.
@@ -296,29 +296,33 @@ def run(theDir,fn,rpython=False):
 def scanOptions():
 
     '''Handle all options, remove them from sys.argv.'''
+    
+    global g_option_fn
 
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
-    
-    def add(name,help):
-        add = parser.add_option(name,action="store_true",help=help)
-    
-    add('-a', help = 'all')
-    add('-c', help = 'core')
-    add('-e', help = 'external')
-    add('-g', help = 'gui plugins')
-    add('-p', help = 'plugins')
-    add('-r', help = 'recent')
-    # add('-s', help = 'suppressions')
-    add('-t', help = 'static type checking')
-    add('--tt',help = 'stc test')
-    
+    add = parser.add_option
+    add('-a', action='store_true', help = 'all')
+    add('-c', action='store_true', help = 'core')
+    add('-e', action='store_true', help = 'external')
+    add('-f', dest='filename',     help = 'filename',)
+    add('-g', action='store_true', help = 'gui plugins')
+    add('-p', action='store_true', help = 'plugins')
+    add('-r', action='store_true', help = 'recent')
+    #add('-s', action='store_true', help = 'suppressions')
+    add('-t', action='store_true', help = 'static type checking')
+    add('--tt',action='store_true', help = 'stc test')
+
     # Parse the options.
-    options, args = parser.parse_args()
-    
+    options,args = parser.parse_args()
     if   options.a: return 'all'
     elif options.c: return 'core'
     elif options.e: return 'external'
+    elif options.filename:
+        fn = options.filename
+        if fn.startswith('='): fn = fn[1:]
+        g_option_fn = fn.strip('"')
+        return 'file'
     elif options.g: return 'gui'
     elif options.p: return 'plugins'
     elif options.r: return 'recent'
@@ -328,6 +332,7 @@ def scanOptions():
     else:           return 'all'
 #@-others
 
+g_option_fn = None
 scope = scanOptions()
 
 coreList            = getCoreList()
@@ -356,6 +361,10 @@ elif scope == 'external':
     tables_table = (
         (externalList,'external'),
     )
+elif scope == 'file':
+    tables_table = (
+        ([g_option_fn],'core'), # Default is a core file.
+    )
 elif scope == 'gui':
     tables_table = (
         (guiPluginsList,'plugins'),
@@ -381,14 +390,15 @@ elif scope == 'stc-test':
 else:
     print('bad scope',scope)
     tables_table = ()
-    
+
 if tables_table and sys.platform.startswith('win'):
-    os.system('cls')
-    
+    if scope != 'file':
+        os.system('cls')
+
 from pylint import lint
     # Use the version of pylint in python26/Lib/site-packages.
     # Do the import *after* clearing the console.
-    
+
 # print(lint)
 
 for table,theDir in tables_table:

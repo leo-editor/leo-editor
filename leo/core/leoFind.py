@@ -111,7 +111,7 @@ class searchWidget:
             self.i = self.toPythonIndex(insert)
     #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
     def toPythonIndex (self,i):
-        
+
         return g.toPythonIndex(self.s,i)
     #@-others
 #@+node:ekr.20061212084717: ** class leoFind
@@ -455,7 +455,6 @@ class leoFind:
 
         c = self.c ; u = c.undoer ; undoType = 'Change All'
         current = c.p
-        w = self.s_ctrl
         if not self.checkArgs(): return
         self.initInHeadline()
         saveData = self.save()
@@ -467,10 +466,12 @@ class leoFind:
             if pos1 is None: break
             count += 1
             self.batchChange(pos1,pos2)
-            s = w.getAllText()
-            i,j = g.getLine(s,pos1)
-            line = s[i:j]
-            # self.printLine(line,allFlag=True)
+            # if 0:
+                # w = self.s_ctrl
+                # s = w.getAllText()
+                # i,j = g.getLine(s,pos1)
+                # line = s[i:j]
+                # self.printLine(line,allFlag=True)
         p = c.p
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed:",count,"instances")
@@ -669,7 +670,7 @@ class leoFind:
         g.es("found",count,"matches")
     #@+node:ekr.20051113110735: *5* createCloneFindAllNode
     def createCloneFindAllNode(self):
-        
+
         c = self.c
         oldRoot = c.rootPosition()
         found = oldRoot.insertAfter()
@@ -679,7 +680,7 @@ class leoFind:
     #@+node:ekr.20031218072017.3074: *4* findNext (leoFind)
     def findNext(self,initFlag=True):
 
-        c = self.c
+        # c = self.c
         if not self.checkArgs():
             return
 
@@ -736,7 +737,7 @@ class leoFind:
                     if not s.startswith(b): s = b + s
                     if not s.endswith(b): s = s + b
                 # g.trace(self.whole_word,repr(s))
-                    
+
                 self.re_obj = re.compile(s,flags)
                 # self.re_obj = re.compile(re.escape(self.find_text),flags)
             except Exception:
@@ -786,7 +787,9 @@ class leoFind:
         Returns (pos, newpos) or (None,None)."""
 
         trace = False and not g.unitTesting
-        c = self.c ; p = self.p ; w = self.s_ctrl
+        # c = self.c
+        p = self.p
+        w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
 
@@ -1323,7 +1326,7 @@ class leoFind:
             self.wrapPosition = self.p
 
         if trace: g.trace('in_headline',self.in_headline)
-        
+
         if self.in_headline:
             c.endEditing() # 2011/06/10: A major bug fix.
             selection = pos,newpos,insert
@@ -1344,7 +1347,7 @@ class leoFind:
             # else:
                 # c.selectPosition(p)
                 # c.redraw_after_select(p)
-            
+
             c.bodyWantsFocus()
             if showState:
                 c.k.showStateAndMode(w)
@@ -1385,7 +1388,7 @@ class leoFind:
         if trace: g.trace('find',repr(s),self.find_ctrl)
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
-            
+
         # 2011/06/13: clear wrap_pos if the find_text changes.
         if s != self.find_text:
             # g.trace('clearing self.wrap_pos')
@@ -1463,7 +1466,7 @@ class findTab (leoFind):
         self.clone_find_all = True
         self.findAll()
         self.clone_find_all = False
-        
+
     def cloneFindAllFlattenedCommand (self,event=None):
 
         self.setup_command()
@@ -1533,7 +1536,7 @@ class nullFindTab (findTab):
     if 0: # Use the base class ctor.
 
         def __init__ (self,c,parentFrame):
-        
+
             findTab.__init__(self,c,parentFrame)
             # Init the base class.
                 # Calls initGui, createFrame, createBindings & init(c), in that order.
@@ -1549,7 +1552,7 @@ class nullFindTab (findTab):
 
         for key in self.newStringKeys:
             self.svarDict[key] = self.svar() # Was Tk.StringVar.
-            
+
         # Bug fix: 2011/11/13: significant for external unit tests.
         # Add the same hack as in the qtGui for the 'entire_outline' radio button.
         self.svarDict['entire-outline'] = self.svar()
@@ -1586,7 +1589,7 @@ class nullFindTab (findTab):
         #@+node:ekr.20070302090616.6: *5* << set radio buttons from ivars >>
         # In Tk, setting the var also sets the widget.
         # Here, we do so explicitly.
-        d = self.widgetsDict
+        # d = self.widgetsDict
         for ivar,key in (
             ("pattern_match","pattern-search"),
             #("script_search","script-search")
@@ -1666,7 +1669,7 @@ class nullFindTab (findTab):
 
         '''Create two columns of radio buttons & check boxes.'''
 
-        c = self.c
+        # c = self.c
         # f = self.parentFrame
         self.boxes = []
         self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.

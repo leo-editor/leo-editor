@@ -40,7 +40,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Components.
         self.c = c
         self.canvas = self # An official ivar used by Leo's core.
-        
+
         # Configuration.
         self.auto_edit = c.config.getBool('single_click_auto_edits_headline',False)
 
@@ -148,7 +148,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         trace = False and not g.app.unitTesting
         verbose = False
         c = self.c
-        
+
         if g.app.disable_redraw:
             if trace: g.trace('*** disabled',g.callers())
             return
@@ -185,7 +185,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             theTime = g.timeSince(t1)
             g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
                 self.redrawCount,scroll,self.nodeDrawCount,theTime),g.callers())
-                
+
         return p # Return the position, which may have changed.
 
     # Compatibility
@@ -241,7 +241,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         return item
     #@+node:ekr.20110605121601.17876: *4* drawTopTree
     def drawTopTree (self,p):
-        
+
         trace = False and not g.unitTesting
         c = self.c
         hPos,vPos = self.getScroll()
@@ -598,11 +598,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 g.trace('*** no e')
 
             p = self.item2position(item)
-            
+
         # 2011/07/28: End the lockout here, not at the end.
         finally:
             self.selecting = False
-            
+
         if p:
             event = None
             if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
@@ -774,7 +774,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
                 repr(p),repr(c.currentPosition())))
             p = c.p
-        
+
         # if trace: g.trace(c.p.h,g.callers())
 
         # We don't redraw during unit testing: an important speedup.
@@ -791,7 +791,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         trace = False and not g.unitTesting
 
         if self.busy(): return
-        
+
         c = self.c
 
         if trace: g.trace(p and p.h,c.p.h)
@@ -845,13 +845,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             e,wrapper = None,None # 2011/06/07: define wrapper here too.
             self.error('no item for %s' % p)
-            
+
         if trace: g.trace('p: %s e: %s' % (p and p.h,e))
 
         if e:
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
-            
+
         # 2012/09/27.
         g.app.gui.add_border(c,c.frame.tree.treeWidget)
 
@@ -1182,18 +1182,18 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         pass
     #@+node:ekr.20110605121601.17940: *3* wrapQLineEdit (nativeTree)
     def wrapQLineEdit (self,w):
-        
+
         '''A wretched kludge for MacOs k.masterMenuHandler.'''
         c = self.c
-        
+
         if isinstance(w,QtGui.QLineEdit):
             wrapper = self.edit_widget(c.p)
         else:
             wrapper = w
-            
+
         # g.trace(wrapper)
         return wrapper
-            
+
     #@+node:ekr.20110605121601.17941: ** Widget-independent helpers
     #@+node:ekr.20110605121601.17942: *3* Associating items and positions
     #@+node:ekr.20110605121601.17943: *4* item dict getters
@@ -1255,9 +1255,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         r = g.app.gui.getIconImage(
             "box%02d.GIF" % val)
-            
+
         # g.trace(r)
-        
+
         return r
     #@+node:ekr.20110605121601.17949: *4* getVnodeIcon
     def getVnodeIcon(self,p):

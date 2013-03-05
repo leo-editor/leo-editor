@@ -7,7 +7,12 @@
 Commands
 ========
 
-This plugin supports the following four commands:
+.. note::
+    
+    The last three commands, starting with `vs-eval`_, are a light weight
+    option for python calculations within Leo bodies.
+
+This plugin supports the following seven commands:
     
 vs-create-tree
 --------------
@@ -109,6 +114,43 @@ Pass 2 evaluates *<expression>* and places the result in the body pane.
 
 **TODO**: discuss SList expressions.
 
+vs-eval
+-------
+
+Execute the selected text, if any.  Select next line of text.
+    
+Tries hard to capture the result of from the last expression in the
+selected text::
+    
+    import datetime
+    today = datetime.date.today()
+    
+will captue the value of ``today`` even though the last line is a
+statement, not an expression.
+    
+Stores results in ``c.vs['_last']`` for insertion
+into body by ``vs-last`` or ``vs-last-pretty``.
+
+Removes common indentation (``textwrap.dedent()``) before executing,
+allowing execution of indented code.
+
+``g``, ``c``, and ``p`` are available to executing code, assignments
+are made in the ``c.vs`` namespace and persist for the life of ``c``.
+    
+vs-last
+-------
+
+Insert the last result from ``vs-eval``.  Inserted as a string,
+so ``"1\n2\n3\n4"`` will cover four lines and insert no quotes,
+for ``repr()`` style insertion use ``vs-last-pretty``.
+    
+vs-last-pretty
+--------------
+
+Insert the last result from ``vs-eval``.  Formatted by
+``pprint.pformat()``,  so ``"1\n2\n3\n4"`` will appear as
+'``"1\n2\n3\n4"``', see all ``vs-last``.
+
 Evaluating expressions
 ======================
 
@@ -141,7 +183,7 @@ from leo.external.stringlist import SList
 import pprint
 import re
 import types, sys
-
+import textwrap
 #@-<< imports >>
 
 controllers = {}
@@ -232,6 +274,137 @@ def vs_reset(event):
 def vs_update(event):
 
     get_vs(event['c']).update()    
+#@+node:tbrown.20130227164110.21222: *3* vs-eval
+@g.command("vs-eval")
+def vs_eval(kwargs):
+    """Execute the selected text, if any.  Select next line of text.
+    
+    Tries hard to capture the result of from the last expression in the
+    selected text::
+        
+        import datetime
+        today = datetime.date.today()
+        
+    will captue the value of ``today`` even though the last line is a
+    statement, not an expression.
+        
+    Stores results in ``c.vs['_last']`` for insertion
+    into body by ``vs-last`` or ``vs-last-pretty``.
+    
+    Removes common indentation (``textwrap.dedent()``) before executing,
+    allowing execution of indented code.
+    
+    ``g``, ``c``, and ``p`` are available to executing code, assignments
+    are made in the ``c.vs`` namespace and persist for the life of ``c``.
+    """
+    
+    c = kwargs['c']
+    
+    txt = c.frame.body.getSelectedText()
+
+    # select next line ready for next select/send cycle
+    # copied from .../plugins/leoscreen.py
+    b = c.frame.body.getAllText()
+    i = c.frame.body.getInsertPoint()
+    try:
+        j = b[i:].index('\n')+i+1
+        c.frame.body.setSelectionRange(i,j)
+    except ValueError:  # no more \n in text
+        c.frame.body.setSelectionRange(i,i)
+        pass
+        
+    if not txt:
+        return
+    
+    txt = textwrap.dedent(txt)
+        
+    blocks = re.split('\n(?=[^\\s])', txt)
+
+    leo_globals = {'c':c, 'p':c.p, 'g':g}
+    
+    ans = None
+    
+    dbg = False
+    
+    try:
+        # execute all but the last 'block'
+        if dbg: print('all but last')
+        exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+        all_done = False
+    except SyntaxError:
+        # splitting of the last block caused syntax error
+        try:
+            # is the whole thing a single expression?
+            if dbg: print('one expression')
+            ans = eval(txt, leo_globals, c.vs)
+        except SyntaxError:
+            if dbg: print('statement block')
+            exec txt in leo_globals, c.vs
+        all_done = True  # either way, the last block is used now
+    
+    if not all_done:  # last block still needs using
+        try:
+            if dbg: print('final expression')
+            ans = eval(blocks[-1], leo_globals, c.vs)
+        except SyntaxError:
+            ans = None
+            if dbg: print('final statement')
+            exec blocks[-1] in leo_globals, c.vs
+            
+    if ans is None:  # see if last block was a simple "var =" assignment
+        key = blocks[-1].split('=', 1)[0].strip()
+        if key in c.vs:
+            ans = c.vs[key]
+
+    if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
+        key = blocks[0].split('=', 1)[0].strip()
+        if key in c.vs:
+            ans = c.vs[key]
+
+    c.vs['_last'] = ans
+    
+    if ans is not None:  
+        # annoying to echo 'None' to the log during line by line execution
+        txt = str(ans)
+        lines = txt.split('\n')
+        if len(lines) > 10:
+            txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
+        
+        if len(txt) > 500:
+            txt = txt[:500] + ' <truncated>'
+    
+        g.es(txt)
+#@+node:tbrown.20130227164110.21223: *3* vs-last
+@g.command("vs-last")
+def vs_last(kwargs):
+    """Insert the last result from ``vs-eval``.  Inserted as a string,
+    so ``"1\n2\n3\n4"`` will cover four lines and insert no quotes,
+    for ``repr()`` style insertion use ``vs-last-pretty``.
+    """
+    c = kwargs['c']
+
+    if 'text' in kwargs:
+        txt = kwargs['text']
+    else:
+        txt = str(c.vs.get('_last'))
+        
+    editor = c.frame.body
+
+    insert_point = editor.getInsertPoint()
+    editor.insert(insert_point, txt+'\n')
+    editor.setInsertPoint(insert_point+len(txt)+1)
+    c.setChanged(True)
+#@+node:tbrown.20130227164110.21224: *3* vs-last-pretty
+@g.command("vs-last-pretty")
+def vs_last_pretty(kwargs):
+    """Insert the last result from ``vs-eval``.  Formatted by
+    ``pprint.pformat()``,  so ``"1\n2\n3\n4"`` will appear as
+    '``"1\n2\n3\n4"``', see all ``vs-last``.
+    """
+    
+    c = kwargs['c']
+    kwargs['text'] = pprint.pformat(c.vs.get('_last'))
+    vs_last(kwargs)
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController:
     

@@ -23,12 +23,6 @@ if path not in sys.path:
 # Import leoGlobals, but do NOT set g.
 import leo.core.leoGlobals as leoGlobals
 
-# Set leoGlobals.g here, not in leoGlobals.py.
-if leoGlobals.new_load_g:
-    pass
-else:
-    leoGlobals.g = leoGlobals
-
 # Create g.app.
 import leo.core.leoApp as leoApp
 leoGlobals.app = leoApp.LeoApp()
@@ -41,14 +35,14 @@ assert(g.app)
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
 #@+at To gather statistics, do the following in a console window:
-#     
+# 
 #     python profileLeo.py <list of .leo files>
 #@@c
 
 def profile_leo ():
 
     """Gather and print statistics about Leo"""
-    
+
     # Work around a Python distro bug: can fail on Ubuntu.
     try:
         import pstats
