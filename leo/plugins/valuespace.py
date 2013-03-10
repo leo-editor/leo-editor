@@ -326,6 +326,15 @@ def vs_eval(kwargs):
     
     dbg = False
     
+    redirects = c.config.getBool('valuespace_vs_eval_redirect')
+    if redirects:
+        old_stderr = g.stdErrIsRedirected()
+        old_stdout = g.stdOutIsRedirected()
+        if not old_stderr:
+            g.redirectStderr()
+        if not old_stdout:
+            g.redirectStdout()
+    
     try:
         # execute all but the last 'block'
         if dbg: print('all but last')
@@ -350,7 +359,13 @@ def vs_eval(kwargs):
             ans = None
             if dbg: print('final statement')
             exec blocks[-1] in leo_globals, c.vs
-            
+
+    if redirects:
+        if not old_stderr:
+            g.restoreStderr()
+        if not old_stdout:
+            g.restoreStdout()
+
     if ans is None:  # see if last block was a simple "var =" assignment
         key = blocks[-1].split('=', 1)[0].strip()
         if key in c.vs:
