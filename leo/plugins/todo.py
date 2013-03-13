@@ -947,7 +947,7 @@ class todoController:
         except ValueError:
             pa = -1
 
-        return pa
+        return pa if pa != 24 else 0
     #@+node:tbrown.20110213153425.16373: *4* duekey
     def duekey(self, v):
         """key function for sorting by due date/time"""
