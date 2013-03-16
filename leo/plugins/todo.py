@@ -103,7 +103,18 @@ if g.app.gui.guiName() == "qt":
 
             QtGui.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
+            
+            # change dir to get themed icons
+            iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+            theme = g.app.config.getString('color_theme')
+            if theme:
+                testPath = g.os_path_join(iconPath, theme, 'cleo')
+                if g.os_path_exists(testPath):
+                    iconPath = g.os_path_join(iconPath, theme)
+            os.chdir(iconPath)
+            
             form_class, base_class = uic.loadUiType(uiPath)
+            
             if logTab:
                 self.owner.c.frame.log.createTab('Task', widget = self) 
             self.UI = form_class()
@@ -420,13 +431,15 @@ class todoController:
             else:
                 fn = self.priorities[pri]["icon"]
 
-            iconDir = g.os_path_abspath(
-              g.os_path_normpath(
-                g.os_path_join(g.app.loadDir,"..","Icons")))
+            #X iconDir = g.os_path_abspath(
+            #X   g.os_path_normpath(
+            #X     g.os_path_join(g.app.loadDir,"..","Icons")))
 
-            fn = g.os_path_join(iconDir,'cleo',fn)
-
-            self.menuicons[pri] = QtGui.QIcon(fn)
+            #X    fn = g.os_path_join(iconDir,'cleo',fn)
+            
+            # use getImageImage because it's theme aware
+            fn = g.os_path_join('cleo', fn)
+            self.menuicons[pri] = QtGui.QIcon(g.app.gui.getImageImage(fn))
 
         return self.menuicons[pri]
     #@+node:tbrown.20090119215428.13: *3* redrawer

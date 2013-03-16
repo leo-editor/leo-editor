@@ -47,7 +47,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri1.png</normaloff>../Icons/cleo/pri1.png</iconset>
+         <normaloff>cleo/pri1.png</normaloff>cleo/pri1.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -67,7 +67,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/chkblk.png</normaloff>../Icons/cleo/chkblk.png</iconset>
+         <normaloff>cleo/chkblk.png</normaloff>cleo/chkblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -87,7 +87,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri2.png</normaloff>../Icons/cleo/pri2.png</iconset>
+         <normaloff>cleo/pri2.png</normaloff>cleo/pri2.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -107,7 +107,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri4.png</normaloff>../Icons/cleo/pri4.png</iconset>
+         <normaloff>cleo/pri4.png</normaloff>cleo/pri4.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -127,7 +127,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri5.png</normaloff>../Icons/cleo/pri5.png</iconset>
+         <normaloff>cleo/pri5.png</normaloff>cleo/pri5.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -147,7 +147,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/chkboxblk.png</normaloff>../Icons/cleo/chkboxblk.png</iconset>
+         <normaloff>cleo/chkboxblk.png</normaloff>cleo/chkboxblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -167,7 +167,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/xgry.png</normaloff>../Icons/cleo/xgry.png</iconset>
+         <normaloff>cleo/xgry.png</normaloff>cleo/xgry.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -187,7 +187,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/bngblk.png</normaloff>../Icons/cleo/bngblk.png</iconset>
+         <normaloff>cleo/bngblk.png</normaloff>cleo/bngblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -207,7 +207,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/xblk.png</normaloff>../Icons/cleo/xblk.png</iconset>
+         <normaloff>cleo/xblk.png</normaloff>cleo/xblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -227,7 +227,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri3.png</normaloff>../Icons/cleo/pri3.png</iconset>
+         <normaloff>cleo/pri3.png</normaloff>cleo/pri3.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -247,7 +247,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri6.png</normaloff>../Icons/cleo/pri6.png</iconset>
+         <normaloff>cleo/pri6.png</normaloff>cleo/pri6.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -267,7 +267,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri7.png</normaloff>../Icons/cleo/pri7.png</iconset>
+         <normaloff>cleo/pri7.png</normaloff>cleo/pri7.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -287,7 +287,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri8.png</normaloff>../Icons/cleo/pri8.png</iconset>
+         <normaloff>cleo/pri8.png</normaloff>cleo/pri8.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -307,7 +307,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri9.png</normaloff>../Icons/cleo/pri9.png</iconset>
+         <normaloff>cleo/pri9.png</normaloff>cleo/pri9.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -327,7 +327,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/pri0.png</normaloff>../Icons/cleo/pri0.png</iconset>
+         <normaloff>cleo/pri0.png</normaloff>cleo/pri0.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -347,7 +347,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/qryblk.png</normaloff>../Icons/cleo/qryblk.png</iconset>
+         <normaloff>cleo/qryblk.png</normaloff>cleo/qryblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -367,7 +367,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/cleo/bullet.png</normaloff>../Icons/cleo/bullet.png</iconset>
+         <normaloff>cleo/bullet.png</normaloff>cleo/bullet.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -390,7 +390,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/Tango/16x16/actions/edit-clear.png</normaloff>../Icons/Tango/16x16/actions/edit-clear.png</iconset>
+         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -410,7 +410,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../Icons/Tango/16x16/actions/document-save.png</normaloff>../Icons/Tango/16x16/actions/document-save.png</iconset>
+         <normaloff>cleo/document-save.png</normaloff>cleo/document-save.png</iconset>
        </property>
       </widget>
      </item>
@@ -479,7 +479,7 @@
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../Icons/Tango/16x16/actions/bottom.png</normaloff>../Icons/Tango/16x16/actions/bottom.png</iconset>
+            <normaloff>cleo/bottom.png</normaloff>cleo/bottom.png</iconset>
           </property>
          </widget>
         </item>
@@ -493,7 +493,7 @@
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../Icons/Tango/16x16/actions/down.png</normaloff>../Icons/Tango/16x16/actions/down.png</iconset>
+            <normaloff>cleo/down.png</normaloff>cleo/down.png</iconset>
           </property>
          </widget>
         </item>
@@ -612,7 +612,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../Icons/Tango/16x16/actions/edit-clear.png</normaloff>../Icons/Tango/16x16/actions/edit-clear.png</iconset>
+           <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -672,7 +672,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../Icons/Tango/16x16/actions/edit-clear.png</normaloff>../Icons/Tango/16x16/actions/edit-clear.png</iconset>
+           <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
          </property>
          <property name="iconSize">
           <size>

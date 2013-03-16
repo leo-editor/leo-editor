@@ -1872,6 +1872,62 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
+#@+node:tbrown.20130314091306.34409: ** find_constants_defined
+def find_constants_defined(text):
+    """find_constants - Return a dict of constants defined in the supplied text,
+    constants match::
+    
+        ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
+        i.e.
+        @foo_1-5=a
+            @foo_1-5 = a more here
+
+    :Parameters:
+    - `text`: text to search
+    """
+
+    pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+    
+    ans = {}
+    
+    text = text.replace('\\\n', '')  # merge lines ending in \
+    
+    for line in text.split('\n'):
+        test = pattern.match(line)
+        if test:
+            ans.update([test.groups()])
+
+    # constants may refer to other constants, de-reference here    
+    change = True
+    level = 0
+    while change and level < 10:
+        level += 1
+        change = False
+        for k in ans:
+            # process longest first so @solarized-base0 is not replaced
+            # when it's part of @solarized-base03
+            for o in sorted(ans, key=lambda x:len(x), reverse=True):
+                if o in ans[k]:
+                    change = True
+                    ans[k] = ans[k].replace(o, ans[o])
+    
+    if level == 10:
+        print("Ten levels of recursion processing styles, abandoned.")
+        g.es("Ten levels of recursion processing styles, abandoned.")
+        
+    return ans
+#@+node:tbrown.20130314151946.23062: ** expand_css_constants
+def expand_css_constants(sheet):
+    constants = find_constants_defined(sheet)
+    for const in constants:
+        sheet = re.sub(
+            const+"(?![-A-Za-z0-9_])",  
+            # don't replace shorter constants occuring in larger
+            constants[const],
+            sheet
+        )
+        
+    return sheet
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
 #@+node:ekr.20110605121601.18137: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic
@@ -1948,6 +2004,7 @@ class DynamicWindow(QtGui.QMainWindow):
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
         self.setStyleSheets()
+        
         # self.setLeoWindowIcon()
     #@+node:ekr.20110605121601.18140: *4* closeEvent (DynamicWindow)
     def closeEvent (self,event):
@@ -2531,10 +2588,17 @@ class DynamicWindow(QtGui.QMainWindow):
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
             sheet = '\n'.join(sheet)
+            sheet = expand_css_constants(sheet)
+            
+
             if trace: g.trace(len(sheet))
-            self.leo_ui.setStyleSheet(sheet or self.default_sheet())
+            w = self.leo_ui
+            if g.app.qt_use_tabs:
+                w = g.app.gui.frameFactory.masterFrame
+            w.setStyleSheet(sheet or self.default_sheet())
         else:
             if trace: g.trace('no style sheet')
+            
     #@+node:ekr.20110605121601.18176: *5* defaultStyleSheet
     def defaultStyleSheet (self):
 
@@ -6276,7 +6340,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.headlineWrapper = leoQtHeadlineWidget # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-
+            
         # g.trace('leoQtTree',w)
 
         if 0: # Drag and drop
@@ -6378,9 +6442,12 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         trace = False and not g.unitTesting
         userIcons = self.c.editCommands.getIconList(p)
-        if not userIcons:
-            # if trace: g.trace('no userIcons')
-            return self.getStatusIconImage(p)
+        
+        # don't take this shortcut - not theme aware, see getImageImage()
+        # which is called below - TNB 20130313
+        # if not userIcons:
+        #     # if trace: g.trace('no userIcons')
+        #     return self.getStatusIconImage(p)
 
         hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
         hash.append(str(val))
@@ -6401,7 +6468,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         height = max([i.height() for i in images])
 
         pix = QtGui.QPixmap(width,height)
-        pix.fill()
+        pix.fill(QtGui.QColor(None))  # transparent fill, default it random noise
         pix.setAlphaChannel(pix)
         painter = QtGui.QPainter(pix)
         x = 0
@@ -7375,6 +7442,8 @@ class leoQtGui(leoGui.leoGui):
         self.plainTextWidget = leoQtBaseTextWidget
         self.iconimages = {} # Image cache set by getIconImage().
         self.mGuiName = 'qt'
+        
+        self.color_theme = g.app.config.getString('color_theme')
 
         # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
@@ -8104,12 +8173,29 @@ class leoQtGui(leoGui.leoGui):
             g.es_exception()
             return None
     #@+node:ekr.20110605121601.18517: *5* getImageImage
-    def getImageImage (self,name):
-
+    def getImageImage (self, name):
         '''Load the image and return it.'''
 
         try:
-            fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
+            
+            fullname = None
+            
+            if self.color_theme:
+                pathname = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
+                if name.startswith(pathname):
+                    # try after removing icons dir from path
+                    namepart = name.replace(pathname, '').strip('\\/')
+                    fullname = g.os_path_finalize_join(pathname, self.color_theme, namepart)
+                    if not g.os_path_exists(fullname):
+                        fullname = None
+                if not fullname:
+                    # try relative to Icons dir
+                    fullname = g.os_path_finalize_join(pathname, self.color_theme, name)
+                    if not g.os_path_exists(fullname):
+                        fullname = None
+
+            if not fullname:
+                fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
 
             pixmap = QtGui.QPixmap()
             pixmap.load(fullname)

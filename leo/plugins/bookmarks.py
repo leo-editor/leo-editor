@@ -160,6 +160,8 @@ class BookMarkDisplay:
             
         self.w = QtGui.QWidget()
         
+        self.dark = c.config.getBool("color_theme_is_dark")
+        
         # stuff for pane persistence
         self.w._ns_id = '_leo_bookmarks_show:'
         c.db['_leo_bookmarks_show'] = str(self.v.gnx)
@@ -180,13 +182,14 @@ class BookMarkDisplay:
         
         g.registerHandler('select1', self.update)
     #@+node:tbrown.20110712100955.18925: *3* color
-    def color(self, text):
+    def color(self, text, dark=False):
         """make a consistent light background color for text"""
         
         if g.isPython3:
             text = g.toEncodedString(text,'utf-8')
         x = hashlib.md5(text).hexdigest()[-6:]
-        x = tuple([int(x[2*i:2*i+2], 16)//4+int('bb',16) for i in range(3)])
+        add = int('bb',16) if not dark else int('33',16)
+        x = tuple([int(x[2*i:2*i+2], 16)//4+add for i in range(3)])
         x = '%02x%02x%02x' % x
         return x
     #@+node:tbrown.20110712100955.39216: *3* get_list
@@ -272,9 +275,10 @@ class BookMarkDisplay:
         for idx, name_link in enumerate(links):
             name, link = name_link
             
-            html.append("<a title='%s' href='%s' style='background: #%s; color: black; text-decoration: none;'>%s</a>"
+            html.append("<a title='%s' href='%s' style='background: #%s; color: #%s; text-decoration: none;'>%s</a>"
                 % (link, link, 
-                   self.color(name) if self.already != idx else "ff0000", 
+                   self.color(name, dark=self.dark) if self.already != idx else "ff0000", 
+                   '073642' if not self.dark else '839496',  # FIXME, hardcoded, from solarized
                    name.replace(' ', '&nbsp;')))
                    
         self.already = -1  # clear error condition
