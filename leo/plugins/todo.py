@@ -105,12 +105,23 @@ if g.app.gui.guiName() == "qt":
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
             
             # change dir to get themed icons
-            iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+            
             theme = g.app.config.getString('color_theme')
             if theme:
-                testPath = g.os_path_join(iconPath, theme, 'cleo')
+                testPath = g.os_path_join(
+                    g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
                 if g.os_path_exists(testPath):
-                    iconPath = g.os_path_join(iconPath, theme)
+                    iconPath = g.os_path_dirname(testPath)
+                else:
+                    testPath = g.os_path_join(
+                        g.app.loadDir, '..', 'themes', theme, 'Icons', 'cleo')
+                    if g.os_path_exists(testPath):
+                        iconPath = g.os_path_dirname(testPath)
+                    else:
+                        iconPath = g.os_path_join(g.app.leoDir, 'Icons') 
+            else:
+                iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+            
             os.chdir(iconPath)
             
             form_class, base_class = uic.loadUiType(uiPath)

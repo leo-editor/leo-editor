@@ -8174,38 +8174,86 @@ class leoQtGui(leoGui.leoGui):
             return None
     #@+node:ekr.20110605121601.18517: *5* getImageImage
     def getImageImage (self, name):
-        '''Load the image and return it.'''
+        '''Load the image in file named `name` and return it.
+        
+        If self.color_theme, set from @settings -> @string color_theme is set,
+        
+         - look first in $HOME/.leo/themes/<theme_name>/Icons,
+         - then in .../leo/themes/<theme_name>/Icons,
+         - then in .../leo/Icons,
+         - as well as trying absolute path
+        '''
+
+        fullname = self.getImageImageFinder(name)
 
         try:
-            
-            fullname = None
-            
-            if self.color_theme:
-                pathname = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
-                if name.startswith(pathname):
-                    # try after removing icons dir from path
-                    namepart = name.replace(pathname, '').strip('\\/')
-                    fullname = g.os_path_finalize_join(pathname, self.color_theme, namepart)
-                    if not g.os_path_exists(fullname):
-                        fullname = None
-                if not fullname:
-                    # try relative to Icons dir
-                    fullname = g.os_path_finalize_join(pathname, self.color_theme, name)
-                    if not g.os_path_exists(fullname):
-                        fullname = None
-
-            if not fullname:
-                fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
-
             pixmap = QtGui.QPixmap()
             pixmap.load(fullname)
 
             return pixmap
 
         except Exception:
-            g.es("exception loading:",fullname)
+            g.es("exception loading:",name)
             g.es_exception()
             return None
+
+    #@+node:tbrown.20130316075512.28478: *5* getImageImageFinder
+    def getImageImageFinder(self, name):
+        '''Theme aware image (icon) path searching
+        
+        If self.color_theme, set from @settings -> @string color_theme is set,
+        
+         - look first in $HOME/.leo/themes/<theme_name>/Icons,
+         - then in .../leo/themes/<theme_name>/Icons,
+         - then in .../leo/Icons,
+         - as well as trying absolute path
+        '''
+
+        if self.color_theme:
+            
+            # normal, unthemed path to image
+            pathname = g.os_path_finalize_join(g.app.loadDir,"..","Icons")
+            pathname = g.os_path_normpath(g.os_path_realpath(pathname))
+            
+            if g.os_path_isabs(name):
+                testname = g.os_path_normpath(g.os_path_realpath(name))
+            else:
+                testname = name
+                
+            #D print(name, self.color_theme)
+            #D print('pathname', pathname)
+            #D print('testname', testname)
+            
+            if testname.startswith(pathname):
+                # try after removing icons dir from path
+                namepart = testname.replace(pathname, '').strip('\\/')
+            else:
+                namepart = testname
+                
+            # home dir first
+            fullname = g.os_path_finalize_join(
+                g.app.homeLeoDir, 'themes',
+                self.color_theme, 'Icons', namepart)
+                
+            #D print('namepart', namepart)
+            #D print('fullname', fullname)
+            
+            if g.os_path_exists(fullname):
+                return fullname
+                
+            # then load dir
+            fullname = g.os_path_finalize_join(
+                g.app.loadDir, "..", 'themes',
+                self.color_theme, 'Icons', namepart)
+            
+            #D print('fullname', fullname)
+            
+            if g.os_path_exists(fullname):
+                return fullname
+
+        # original behavior, if name is absolute this will just return it
+        #D print(g.os_path_finalize_join(g.app.loadDir,"..","Icons",name))
+        return g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
     #@+node:ekr.20110605121601.18518: *5* getTreeImage (test)
     def getTreeImage (self,c,path):
 
