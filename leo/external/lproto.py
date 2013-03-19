@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20130319124904.18693: * @file /home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/external/lproto.py
+#@+node:tbrown.20130319131551.18713: * @file /mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/dark/../trunk/leo/external/lproto.py
 #@@language python
 
 #@+<< docstring >>
@@ -109,7 +109,7 @@ class LProtoServer:
     #@+node:ekr.20111012070545.7255: *3* listen
     def listen(self,name):
 
-        g.trace(name,g.callers())
+        # g.trace(name,g.callers())
 
         self.srv.listen(name)
 

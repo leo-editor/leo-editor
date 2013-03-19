@@ -61,7 +61,7 @@ def leoserv_start(event):
     g.app.leoserv = lps = lproto.LProtoServer()
 
     def dispatch_script(msg, ses):
-        print("leoremote.py: dispatch script", msg)
+        # print("leoremote.py: dispatch script", msg)
         fd, pth = tempfile.mkstemp(suffix='.py')
         f = os.fdopen(fd,"w")
         f.write(msg)
@@ -70,9 +70,9 @@ def leoserv_start(event):
         if 'pydict' not in ses:
             ses['pydict'] = {'g' : g }
 
-        print("run file",pth)
+        # print("run file",pth)
         execfile(pth, ses['pydict'])
-        print("run done")
+        # print("run done")
 
     lps.set_receiver(dispatch_script)
     
