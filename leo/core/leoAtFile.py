@@ -412,7 +412,7 @@ class atFile:
     #   blank. Again, this can never cause any harm, because nodes must be terminated
     #   (in the external file), by a newline the precedes the next sentinel.
     #   Eliminating @nonl and @nl sentinels simplifies the appearance of the external
-    #   file an reduces spurious sccs diffs.
+    #   file and reduces spurious sccs diffs.
     # 
     # - Leo always writes private @shadow files using old sentines. This guarantees
     #   permanent compatibility with older versions of Leo.

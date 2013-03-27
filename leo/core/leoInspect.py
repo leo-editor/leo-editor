@@ -1609,7 +1609,7 @@ def g_node_after_tree (tree):
             tree = parent(tree)
 
     if trace:
-        info = self.info
+        info = self.info # A bug found by stc.ScopeBinder!
         for z in (ast.Module,ast.ClassDef,ast.FunctionDef):
             if isinstance(tree1,z):
                 g.trace('node: %22s, parent: %22s, after: %22s' % (
