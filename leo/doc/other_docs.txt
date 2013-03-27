@@ -537,7 +537,11 @@ to write your own plugins.
 .. @+node:ekr.20091107093823.6807: *5* Contacts
 - Leo’s home page:  google edreamleo or http://leoeditor.com/front.html
 
-- Edward K. Ream:  edreamleo@charter.net, 166 N. Prospect Ave., Madison WI 53726, (608) 886-5730
+- Edward K. Ream
+  166 N. Prospect Ave.
+  Madison WI 53726
+  edreamleo@gmail.com
+  (608) 886-5730
 .. @+node:ekr.20101025080245.5542: ** Review of leo-editor
 The following nodes contain links to important discussions on the leo-editor web
 site.
