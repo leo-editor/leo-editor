@@ -1,5 +1,5 @@
 
-.. _`Leo's home page`: http://webpages.charter.net/edreamleo/front.html
+.. _`Leo's home page`: http://leoeditor.com/front.html
 
 .. Leo documentation documentation master file, created by
    sphinx-quickstart on Mon Mar 30 16:39:02 2009.

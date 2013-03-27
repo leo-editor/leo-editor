@@ -2018,23 +2018,21 @@ Leo 4.3.3 final                 September 17, 2005
 
 Leo 4.3.3 fixes several bugs reported in Leo 4.3.2 final in the last several days.
 
-To learn about Leo, see: http://webpages.charter.net/edreamleo/intro.html
+To learn about Leo, see: http://leoeditor.com/intro.html
 
 The highlights of 4.3.3 (and 4.3.2)
 -----------------------------------
 
 - Improved Leo's documentation:
-    - A tutorial introduction to Leo:
-      http://webpages.charter.net/edreamleo/intro.html
-    - A 5-minute guide to programming with Leo:
-      http://webpages.charter.net/edreamleo/intro.html#quick-start-for-programmers
+    - A tutorial introduction to Leo: http://leoeditor.com/intro.html
+    - A 5-minute guide to programming with Leo: http://leoeditor.com/intro.html#quick-start-for-programmers
 
 - The new rst3 plugin creates .html and .tex files from reStructuredText
   embedded in Leo files. Any node of the source outline may contain options for
   the rst3 plugin, which makes this plugin much more useful and flexible than
   the previous rst plugins. All of Leo's documentation was created using this
   plugin from sources in LeoDocs.leo. For full documentation for rst3 see:
-  http://webpages.charter.net/edreamleo/rstplugin3.html.
+  http://leoeditor.com/rstplugin3.html.
 
 - The spellpyx (spell checking) plugin is now much easier to use.
 
@@ -2155,7 +2153,7 @@ test.leo had some non-@ignore'd @thin nodes for files not in the distribution.
 - Leo's distribution checklist now has an item to check that the distributed test.leo can be opened without errors.
 #@+node:ekr.20050917092557.8: *5* New and improved  plugins
 #@+node:ekr.20050917092557.9: *6* New rst3 plugin
-See http://webpages.charter.net/edreamleo/rstplugin3.html for full documentation
+See http://leoeditor.com/rstplugin3.html for full documentation
 of this plugin.
 
 The rst3 plugin creates output files from Leo outlines containing
@@ -2211,23 +2209,23 @@ The new Pretty Print code has the following improvements:
 #@+node:ekr.20050913131848: *4* 4.3.2 final
 Leo 4.3.2 final                 September 16, 2005
 
-To learn about Leo, see: http://webpages.charter.net/edreamleo/intro.html
+To learn about Leo, see: http://leoeditor.com/intro.html
 
 The highlights of 4.3.2:
 -----------------------
 
 - Improved Leo's documentation:
     - A tutorial introduction to Leo:
-      http://webpages.charter.net/edreamleo/intro.html
+      http://leoeditor.com/intro.html
     - A 5-minute guide to programming with Leo:
-      http://webpages.charter.net/edreamleo/intro.html#quick-start-for-programmers
+      http://leoeditor.com/intro.html#quick-start-for-programmers
 
 - The new rst3 plugin creates .html and .tex files from reStructuredText
   embedded in Leo files. Any node of the source outline may contain options for
   the rst3 plugin, which makes this plugin much more useful and flexible than
   the previous rst plugins. All of Leo's documentation was created using this
   plugin from sources in LeoDocs.leo. For full documentation for rst3 see:
-  http://webpages.charter.net/edreamleo/rstplugin3.html.
+  http://leoeditor.com/rstplugin3.html.
 
 - The spellpyx (spell checking) plugin is now much easier to use.
 
@@ -2344,7 +2342,7 @@ test.leo had some non-@ignore'd @thin nodes for files not in the distribution.
 - Leo's distribution checklist now has an item to check that the distributed test.leo can be opened without errors.
 #@+node:ekr.20050908164150: *5* New and improved  plugins
 #@+node:ekr.20050908164150.1: *6* New rst3 plugin
-See http://webpages.charter.net/edreamleo/rstplugin3.html for full documentation
+See http://leoeditor.com/rstplugin3.html for full documentation
 of this plugin.
 
 The rst3 plugin creates output files from Leo outlines containing
@@ -2400,23 +2398,23 @@ The new Pretty Print code has the following improvements:
 #@+node:ekr.20050906104918: *4* 4.3.2 beta 1
 Leo 4.3.2 beta 1                  September 10, 2005
 
-To learn about Leo, see: http://webpages.charter.net/edreamleo/intro.html
+To learn about Leo, see: http://leoeditor.com/intro.html
 
 The highlights of 4.3.2:
 -----------------------
 
 - Improved Leo's documentation:
     - A tutorial introduction to Leo:
-      http://webpages.charter.net/edreamleo/intro.html
+      http://leoeditor.com/intro.html
     - A 5-minute guide to programming with Leo:
-      http://webpages.charter.net/edreamleo/intro.html#quick-start-for-programmers
+      http://leoeditor.com/intro.html#quick-start-for-programmers
 
 - The new rst3 plugin creates .html and .tex files from reStructuredText
   embedded in Leo files. Any node of the source outline may contain options for
   the rst3 plugin, which makes this plugin much more useful and flexible than
   the previous rst plugins. All of Leo's documentation was created using this
   plugin from sources in LeoDocs.leo. For full documentation for rst3 see:
-  http://webpages.charter.net/edreamleo/rstplugin3.html.
+  http://leoeditor.com/rstplugin3.html.
 
 - The spellpyx (spell checking) plugin is now much easier to use.
 
@@ -4352,7 +4350,7 @@ This will be the last alpha version of Leo 4.4. Beta 1 is coming in about a
 week. You should be able to use this version safely; there are no known serious
 bugs.
 
-To learn about Leo, see: http://webpages.charter.net/edreamleo/intro.html
+To learn about Leo, see: http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 ----------------------------------
@@ -4494,7 +4492,7 @@ You should be able to use this version safely. There are no known serious bugs,
 but several minibuffer commands are not ready for prime time. All the major
 features of 4.4 are in place.
 
-To learn about Leo, see: http://webpages.charter.net/edreamleo/intro.html
+To learn about Leo, see: http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 ----------------------------------
@@ -5112,7 +5110,7 @@ The code is stable; there are no known serious bugs. Some features are
 incomplete.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -5134,11 +5132,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060116174906.2: *5* Bugs fixed
 #@+node:ekr.20060116174906.3: *6* Fixed minor headline problems
 A 'backward' delete at the start of a headline deletes the first character.
@@ -5315,7 +5313,7 @@ This version fixes dozens of bugs, improves performance and polishes the user
 interface. The code is stable; there are no known serious bugs.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4b2:
 ----------------------------
@@ -5351,11 +5349,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060206111508.2: *5* Bugs fixed
 #@+node:ekr.20060206111508.3: *6* Fixed crasher in Save button
 @nocolor
@@ -5932,7 +5930,7 @@ Besides fixing the fatal problems with Leo 4.4b2, this version fixes two minor b
 and adds some new settings in leoSettings.leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4 b2 and a6:
 ----------------------------
@@ -5968,11 +5966,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060217071505.1: *5* Fixed urgent compatibility problems
 The new scheme binds to keystrokes, not commands.  This should be as portable
 and robust as all previous versions (except b2, which was broken).
@@ -6010,7 +6008,7 @@ This version fixes some minor problems with Leo 4.4a6 and adds autocompletion
 and calltips.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6034,11 +6032,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060227102028.2: *5* Bugs Fixed
 #@+node:ekr.20060227102028.3: *6* Fixed binding bug
 # http://sourceforge.net/forum/message.php?msg_id=3583335
@@ -6086,7 +6084,7 @@ This version fixes some minor problems and adds various features.  This code
 has been in use for several weeks without any major problems reported.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6110,11 +6108,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060328171518.1: *5* New features
 #@+node:ekr.20060328171518.10: *6* Added scroll outline pane commands
 http://sourceforge.net/forum/message.php?msg_id=3608246
@@ -6305,7 +6303,7 @@ your environment before recommending this version of Leo to others, (such as
 your students).
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6329,11 +6327,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060421070409.1: *5* Bugs
 #@+node:ekr.20060421070602: *6* Fixed rename-buffer command
 #@+node:ekr.20060421070409.2: *6* Investigated problems with legacy bindings
@@ -6503,7 +6501,7 @@ This version fixes a few minor bug reported in 4.4b4 and adds 9 new commands.
 The open-outline-by-name command supports filename completion.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6527,11 +6525,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060428084553.2: *5* Bugs
 #@+node:ekr.20060428084957: *6* Fixed rename-buffer command
 #@+node:ekr.20060428084553.4: *6* Fixed bug when cutting text in headline
@@ -6590,7 +6588,7 @@ Leo 4.4 Final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6615,11 +6613,11 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080311060457.214: *3* 4.4.x
 #@+node:ekr.20060822140418: *4* 4.4.1...new colorizer, slideshow, multiple editors
 #@+node:ekr.20060830141224: *5* 4.4.1 final
@@ -6629,7 +6627,7 @@ Leo 4.4.1 final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -6638,7 +6636,7 @@ The highlights of Leo 4.4.1:
 - A new shadow files plugin that allows external files not to have sentinel lines.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
-- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- Support for external debuggers: see http://leoeditor.com/debuggers.html
 - The scripting plugin now creates a Debug Script button.
 - Several new commands including run-unit-test, python-help, toggle-invisibles,
   and scroll-outline-left/right.
@@ -6647,11 +6645,11 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060830141224.2: *6* Removed warning about changed nodes
 # Possibly a less intrusive warning should be used.
 #@+node:ekr.20060830141224.13: *6* Bugs fixed
@@ -6722,7 +6720,7 @@ Leo 4.4.1 beta 4 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -6731,7 +6729,7 @@ The highlights of Leo 4.4.1:
 - A new shadow files plugin that allows external files not to have sentinel lines.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
-- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- Support for external debuggers: see http://leoeditor.com/debuggers.html
 - The scripting plugin now creates a Debug Script button.
 - Several new commands including run-unit-test, python-help, toggle-invisibles,
   and scroll-outline-left/right.
@@ -6740,11 +6738,11 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060822140418.3: *6* Bugs fixed
 #@+node:ekr.20060822140418.4: *7* Added bindings to text panes for show-font command
 http://sourceforge.net/forum/forum.php?thread_id=1542384&forum_id=10228
@@ -6797,7 +6795,7 @@ Leo 4.4.1 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -6805,7 +6803,7 @@ The highlights of Leo 4.4.1:
   At present this plugin only reliably colors @language python code.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
-- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- Support for external debuggers: see http://leoeditor.com/debuggers.html
 - The scripting plugin now creates a Debug Script button.
 - Several new commands including run-unit-test, python-help and toggle-invisibles.
 - The help-for-command commands now contains information for almost all commands.
@@ -6813,11 +6811,11 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060601101958.1: *6* Fixed bugs
 #@+node:ekr.20060601101958.56: *7* The Open Python Window command runs Idle in a separate process
 This fixes all conflicts between Leo and Idle.
@@ -6863,7 +6861,7 @@ This runs the winpdb debugger in a separate process.
 
 The winpdb debugger must be installed for this command to work.
 
-For more details, see: http://webpages.charter.net/edreamleo/debuggers.html
+For more details, see: http://leoeditor.com/debuggers.html
 #@+node:ekr.20060601101958.58: *7* Added Debug button to scripting plugin
 #@+node:ekr.20060603072938: *7* Added python-help command
 This prompts for a string s, then puts the result of help(s) in Leo's log pane.
@@ -6923,7 +6921,7 @@ Leo 4.4.1 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -6931,7 +6929,7 @@ The highlights of Leo 4.4.1:
   At present this plugin only reliably colors @language python code.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
-- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- Support for external debuggers: see http://leoeditor.com/debuggers.html
 - The scripting plugin now creates a Debug Script button.
 - Several new commands including run-unit-test, python-help and toggle-invisibles.
 - The help-for-command commands now contains information for almost all commands.
@@ -6939,11 +6937,11 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060620094645.34: *6* Bugs fixed
 #@+node:ekr.20060620094645.35: *7* Made sure calltip always adds '('
 #@+node:ekr.20060620094645.43: *7* word matches now succeed if first character of the pattern is not in word-chars.
@@ -7132,11 +7130,11 @@ What I did:
 
 http://sourceforge.net/forum/message.php?msg_id=3784292
 
-http://webpages.charter.net/edreamleo/installing.html#updating-settings-from-previous-versions-of-leo
+http://leoeditor.com/installing.html#updating-settings-from-previous-versions-of-leo
 #@+node:ekr.20060622130553.2: *7* Documented how to turn @buttons into plugins
 http://sourceforge.net/forum/message.php?msg_id=3778946
 
-http://webpages.charter.net/edreamleo/writingPlugins.html#turning-script-buttons-into-plugins
+http://leoeditor.com/writingPlugins.html#turning-script-buttons-into-plugins
 #@+node:ekr.20060620094645.302: *6* Plugins
 #@+node:ekr.20060620094645.303: *7* Added doc-only option to rst3
 @nocolor
@@ -7243,7 +7241,7 @@ Leo 4.4.1 beta 3 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -7251,7 +7249,7 @@ The highlights of Leo 4.4.1:
   At present this plugin only reliably colors @language python code.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
-- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- Support for external debuggers: see http://leoeditor.com/debuggers.html
 - The scripting plugin now creates a Debug Script button.
 - Several new commands including run-unit-test, python-help and toggle-invisibles.
 - The help-for-command commands now contains information for almost all commands.
@@ -7259,11 +7257,11 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060629083935.2: *6* Bugs fixed
 #@+node:ekr.20060629083935.3: *7* Fixed recent bug: Ctrl-g does not work in @mode nodes
 #@+node:ekr.20060629083935.8: *7* Update column display when typing
@@ -7339,7 +7337,7 @@ Leo 4.4.1.1 corrects a serious last-minute unicode bug in Leo 4.4.1.
 This version also adds the new slideshow plugin.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -7349,7 +7347,7 @@ The highlights of Leo 4.4.1:
 - A new slide show plugin allows you to use Leo outlines as slide shows.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
-- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- Support for external debuggers: see http://leoeditor.com/debuggers.html
 - The scripting plugin now creates a Debug Script button.
 - Several new commands including run-unit-test, python-help, toggle-invisibles,
   and scroll-outline-left/right.
@@ -7358,11 +7356,11 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20061008190905: *4* 4.4.2... opml, zodb, sax, myLeoSettings, leoPymacs, autocontract, outline nav
 #@+node:ekr.20060928172040: *5* 4.4.2 beta 1
 Leo 4.4.2 beta 1                                  September 29, 2006
@@ -7371,7 +7369,7 @@ Leo 4.4.2 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -7393,11 +7391,11 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20060928172525.81: *6* The 'big reorg':  vnode, tnode and position classes are independent of the rest of Leo
 What I did:
 
@@ -7568,7 +7566,7 @@ Leo 4.4.2 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -7592,11 +7590,11 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20061008190633.248: *6* Bugs
 #@+node:ekr.20061008190633.249: *7* Fixed rst3 problem
 http://sourceforge.net/forum/message.php?msg_id=3932641
@@ -7799,7 +7797,7 @@ are no known major bugs in Leo.  This will be the last beta release before
 Leo 4.4.2 final.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -7823,12 +7821,12 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:        http://webpages.charter.net/edreamleo/front.html
-What's new: http://webpages.charter.net/edreamleo/new-4-4-2.html
+Leo:        http://leoeditor.com/front.html
+What's new: http://leoeditor.com/new-4-4-2.html
 Home:       http://sourceforge.net/projects/leo/
 Download:   http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:        http://leo.tigris.org/source/browse/leo/
-Quotes:     http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:     http://leoeditor.com/testimonials.html
 #@+node:ekr.20061020155235.1: *6* Bugs
 #@+node:ekr.20061020155235.2: *7* Fixed crash when searching for headllines containing unicode chars
 #@+node:ekr.20061020155235.9: *7* Fixed bugs in cycle-all-focus command
@@ -7998,7 +7996,7 @@ significant bugs in this version of Leo.
 Leo 4.4.2 final fixes a few bugs and adds support for pymacs. 
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -8022,12 +8020,12 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:        http://webpages.charter.net/edreamleo/front.html
-What's new: http://webpages.charter.net/edreamleo/new-4-4-2.html
+Leo:        http://leoeditor.com/front.html
+What's new: http://leoeditor.com/new-4-4-2.html
 Home:       http://sourceforge.net/projects/leo/
 Download:   http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:        http://leo.tigris.org/source/browse/leo/
-Quotes:     http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:     http://leoeditor.com/testimonials.html
 #@+node:ekr.20061026095922.1: *6* Bugs
 #@+node:ekr.20061026095922.2: *7* Changed leo_rst.css to pass the w3 validator
 #@+node:ekr.20061026095922.3: *7* Fixed 'Run on string' message when typing
@@ -8056,7 +8054,7 @@ Leo 4.4.3 alpha 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Important: the wxGui plugin is still alpha-quality code at present.
 
@@ -8069,11 +8067,11 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070122070634.1: *6* Bugs
 #@+node:ekr.20070122070634.2: *7* Fixed an escape bug in new colorizer
 Example:
@@ -8246,7 +8244,7 @@ distribution because not all plugins have been tested on the reorganized code
 base.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8260,11 +8258,11 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070316182341.1: *6* Fixed Bugs
 #@+node:ekr.20070316182341.2: *7* Fixed bugs in undo/redoNodeContents
 #@+node:ekr.20070316182341.6: *7* Fixed minor xml problem
@@ -8437,7 +8435,7 @@ Leo 4.4.3 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8455,11 +8453,11 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070513111526.1: *6* New features
 #@+node:ekr.20070513112414: *7* Added support for chapters to Leo's core
 - Added support for chapters to Leo's core
@@ -8553,7 +8551,7 @@ Leo 4.4.3 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8573,11 +8571,11 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070610063538.1: *6* Fixed bugs
 #@+node:ekr.20070610063538.2: *7* Fixed noweb hangs
 http://sourceforge.net/forum/message.php?msg_id=4315027
@@ -8666,7 +8664,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 This release fixes all known bugs and adds several new features.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8686,11 +8684,11 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070622090350.1: *6* Fixed bugs
 #@+node:ekr.20070622090350.8: *7* Fixed a bug that disabled icon button colors on Linux
 #@+node:ekr.20070622090350.22: *7* Switch chapters if new position isn't in current chapter
@@ -8731,7 +8729,7 @@ Leo 4.4.3 final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8751,11 +8749,11 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070702162421: *5* 4.4.3.1
 Leo 4.4.3.1                                 July 3, 2006
 
@@ -8763,7 +8761,7 @@ Leo 4.4.3.1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.3.1:
 ----------------------------
@@ -8772,11 +8770,11 @@ The highlights of Leo 4.4.3.1:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070703095207.1: *6* Bugs
 #@+node:ekr.20070703095207.2: *7* Fixed improper can not open myLeoSettings message
 #@+node:ekr.20070703095207.5: *7* Fixed import problem in leoDynamicTest.py
@@ -8829,7 +8827,7 @@ Leo 4.4.4 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.4:
 ----------------------------
@@ -8842,11 +8840,11 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070806090226.1: *6* Added support for @mark-for-unit-tests node
 The run-unit-tests command now includes *all* @mark-for-unit-test trees.
 #@+node:ekr.20070806090226.14: *6* Created threading_colorizer
@@ -8954,7 +8952,7 @@ Leo 4.4.4 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.4:
 ----------------------------
@@ -8969,11 +8967,11 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20070915101157.1: *6* Bug fixes
 #@+node:ekr.20070915101157.3: *7* Fixed UNL bug1
 Email from Terry Brown
@@ -9119,7 +9117,7 @@ Leo 4.4.4 contains many important features originally planned for later releases
 It's been a good month :-)
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.4:
 ----------------------------
@@ -9149,11 +9147,11 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071004101443.1: *6* Bugs fixed
 #@+node:ekr.20071004101443.18: *7* Greatly improved speed of unmark-all
 #@+node:ekr.20071004101443.26: *7* Made sure dirty bits get updated in xemacs plugin
@@ -9418,7 +9416,7 @@ New option: add-ws-to-kill-ring (or kill-ws-adds-to-kill-ring)
 #@+node:ekr.20071021111856.458: *7* Improved debug command
 http://sourceforge.net/forum/message.php?msg_id=4568499
 #@+node:ekr.20071021111856.459: *7* Added the @bool rst3 strip_at_file_prefixes setting
-From the documentation at: http://webpages.charter.net/edreamleo/rstplugin3.html#options
+From the documentation at: http://leoeditor.com/rstplugin3.html#options
 
 strip_at_file_prefixes (default: True)
 
@@ -9442,7 +9440,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 This beta 4 version fixes all bugs reported against Leo 4.4.4 beta 3.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Leo 4.4.4 contains many important features originally planned for later releases.
 
@@ -9477,11 +9475,11 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071026053931.1: *6* Fixed bugs
 #@+node:ekr.20071026053931.13: *7* Fixed bug: utf-8 files now get imported properly
 http://sourceforge.net/forum/message.php?msg_id=4574271
@@ -9544,7 +9542,7 @@ Leo 4.4.4 Final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Leo 4.4.4 contains many important features originally planned for later releases.
 
@@ -9579,11 +9577,11 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071101162751: *6* Fixed bugs
 #@+node:ekr.20071101162751.2: *7* Fixed bug that caused rClick plugin to crash
 http://sourceforge.net/forum/message.php?msg_id=4591494
@@ -9616,7 +9614,7 @@ Leo 4.4.5 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Leo 4.4.5 fixes several long-delayed bug fixes and adds several new features.
 
@@ -9632,11 +9630,11 @@ The highlights of Leo 4.4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071115102156.5: *6* Fixed bugs
 #@+node:ekr.20071115102156.2: *7* Removed all references to pluginsManager.txt
 #@+node:ekr.20071115102156.6: *7* Fixed hung windows
@@ -9891,7 +9889,7 @@ This beta 2 release fixes several recently reported bugs.  A final release
 is due in about a week.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Leo 4.4.5 fixes several long-delayed bug fixes and adds several new features.
 
@@ -9907,11 +9905,11 @@ The highlights of Leo 4.4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071206093323.1: *6* Fixed bugs
 #@+node:ekr.20071206093323.2: *7* Fixed two crashers in the @noref logic
 pylint reported the following errors:
@@ -10015,7 +10013,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.5 fixes several long-delayed bug fixes and adds several new features.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.5:
 ----------------------------
@@ -10029,11 +10027,11 @@ The highlights of Leo 4.4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080106114331: *4* 4.4.6 bug fixes
 #@+node:ekr.20071217092250: *5* leo 4.4.6 b1
 Leo 4.4.6 beta 1                           December 17, 2007
@@ -10044,7 +10042,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.6 fixes several recently reported bugs, all minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.6:
 ----------------------------
@@ -10054,11 +10052,11 @@ The highlights of Leo 4.4.6:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20071217092203.1: *6* Bugs fixed
 #@+node:ekr.20071217092203.2: *7* Fixed undo (dirty bit) problem)
 http://sourceforge.net/forum/message.php?msg_id=4668960
@@ -10136,7 +10134,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.6 fixes several recently reported bugs, all minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.6:
 ----------------------------
@@ -10146,11 +10144,11 @@ The highlights of Leo 4.4.6:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080106114648: *6* Fixed bugs
 #@+node:ekr.20080106114203.1: *7* Fixed bug in nav_buttons plugin
 http://sourceforge.net/forum/message.php?msg_id=4682598
@@ -10180,7 +10178,7 @@ modes/shellscript.py
 #@+node:ekr.20080106114203.4: *7* Leo issues better messages if Image can not be imported
 http://sourceforge.net/forum/message.php?msg_id=4687706
 #@+node:ekr.20080115093848.18: *7* Added convenience methods for icons
-See http://webpages.charter.net/edreamleo/scripting.html#inserting-and-deleting-icons
+See http://leoeditor.com/scripting.html#inserting-and-deleting-icons
 #@+node:ekr.20080115093848.19: *7* Fixed undo bug
 http://sourceforge.net/forum/message.php?msg_id=4712329
 #@+node:ekr.20080115093848.23: *7* Don't mark nodes dirty if insert-icon is cancelled
@@ -10194,7 +10192,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.6 fixes several recently reported bugs, all minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.6:
 ----------------------------
@@ -10204,11 +10202,11 @@ The highlights of Leo 4.4.6:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080218154129: *4* 4.4.7 ipython plugin
 #@+node:ekr.20080212221734: *5* leo 4.4.7 b1
 Leo 4.4.7 beta 1                           February 12, 2008
@@ -10217,28 +10215,28 @@ Leo 4.4.7 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features the ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo's main discussion is now at: http://groups.google.com/group/leo-editor
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.7:
 ----------------------------
 - The ipython plugin creates a simple, powerful, effective bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 - Improved handling of unicode encodings in @auto files.
 - All import commands now support @path directives in ancestor nodes.
 - Fixed several minor bugs.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080212221711.1: *6* Fixed bugs
 #@+node:ekr.20080212221711.2: *7* Fixed perl syntax coloring bug
 #@+node:ekr.20080212221711.4: *7* Removed warnings while typing @language directives
@@ -10276,26 +10274,26 @@ Leo 4.4.7 final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.7:
 ----------------------------
 - The ipython plugin creates a simple, powerful, effective bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 - Improved handling of unicode encodings in @auto files.
 - All import commands now support @path directives in ancestor nodes.
 - Fixed several minor bugs.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080218153931.1: *6* Fixed bugs
 #@+node:ekr.20080218153931.2: *7* Fixed perl syntax coloring bug
 #@+node:ekr.20080218153931.3: *7* Removed warnings while typing @language directives
@@ -10335,10 +10333,10 @@ Leo 4.4.8 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10349,16 +10347,16 @@ The highlights of Leo 4.4.8:
 - The first, third, fifth etc. arguments to g.es and g.es_print
   can now be translated using Python's gettext.gettext function.
 - Completed ILeo: a bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 - Added support for arguments to minibuffer commands.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080304112802.1: *6* Allow arguments to minibuffer commands
 http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
@@ -10410,10 +10408,10 @@ Leo 4.4.8 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10424,7 +10422,7 @@ The highlights of Leo 4.4.8:
 - The first, third, fifth etc. arguments to g.es and g.es_print
   can now be translated using Python's gettext.gettext function.
 - Completed ILeo: a bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 - Added support for arguments to minibuffer commands.
 - @menu trees can now refer to commands created by
   @command and @button nodes
@@ -10432,11 +10430,11 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080311060457.210: *6* b1
 #@+node:ekr.20080311060457.211: *7* Allow arguments to minibuffer commands
 http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
@@ -10544,10 +10542,10 @@ Leo 4.4.8 beta 3 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10555,7 +10553,7 @@ The highlights of Leo 4.4.8:
 - Leo's discussion is now hosted by Google Groups: see link below.
 - Arguments to g.es and g.es_print can be translated using gettext.
 - Completed ILeo: a bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 - Minibuffer commands may have arguments.
 - @menu trees can now refer to commands created by
   @command and @button nodes.
@@ -10563,11 +10561,11 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080328074117.2: *6* Fixed bugs
 #@+node:ekr.20080328074117.3: *7* Corrected docs: unit tests are in test/unitTest.leo
 #@+node:ekr.20080328074117.4: *7* Removed '.' from leoID
@@ -10620,10 +10618,10 @@ Leo 4.4.8 rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10631,7 +10629,7 @@ The highlights of Leo 4.4.8:
 - Leo's discussion is now hosted by Google Groups: see link below.
 - Arguments to g.es and g.es_print can be translated using gettext.
 - Completed ILeo: a bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 - Minibuffer commands may have arguments.
 - @menu trees can now refer to commands created by
   @command and @button nodes.
@@ -10639,11 +10637,11 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080403065258.6: *6* Fixed delete-editor problem
 http://groups.google.com/group/leo-editor/browse_thread/thread/ed5d82429e1ec821
 
@@ -10661,10 +10659,10 @@ Leo 4.4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10672,7 +10670,7 @@ The highlights of Leo 4.4.8:
 - Leo's discussion is now hosted by Google Groups: see link below.
 - Arguments to g.es and g.es_print can be translated using gettext.
 - Completed ILeo: a bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 - Minibuffer commands may have arguments.
 - @menu trees can now refer to commands created by
   @command and @button nodes.
@@ -10680,11 +10678,11 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080405074410.7: *5* Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist
 #@+node:ekr.20080405074410.9: *5* Fixed big performance bug in find/spell commands.
 #@+node:ekr.20080405074410.38: *5* Fixed several unit testing bugs relating to doTests(all=True)
@@ -10696,7 +10694,7 @@ Leo 4.5 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -10709,11 +10707,11 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080624093059.2: *5* Bug fixes
 #@+node:ekr.20080624093059.3: *6* Fixed bug in appendToRecentFiles
 #@+node:ekr.20080624093059.4: *6* Fixed bug in install script
@@ -11188,7 +11186,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11206,11 +11204,11 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080806211440.188: *5* Major new features
 .. _`v.uA's`: http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
 
@@ -11301,7 +11299,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11319,11 +11317,11 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080815093141.90: *5* Major new features
 - Added support for @shadow files.
   This is a major breakthrough.
@@ -11418,7 +11416,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11436,11 +11434,11 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080827175609.56: *5* Major new features
 - Added support for @shadow files.
   This is a major breakthrough.
@@ -11533,7 +11531,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11551,11 +11549,11 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080830082008.2: *5* Major new features
 - Added support for @shadow files.
   This is a major breakthrough.
@@ -11646,7 +11644,7 @@ Leo 4.5 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11669,11 +11667,11 @@ redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080902080930.3: *5* Major new features
 - Added support for @shadow files.
   This is a major breakthrough.
@@ -11770,7 +11768,7 @@ Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
 - Improved Leo's installer.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11793,11 +11791,11 @@ redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20080912143702.138: *5* Fixed line number problems
 # goToLineNumber was always complaining about a missing private shadow file.
 #@+node:ekr.20080912143702.139: *5* Fixed problems with @shadow files with unknown file extensions
@@ -11816,7 +11814,7 @@ Leo 4.6 b1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -11829,11 +11827,11 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090324085713.285: *5* Bugs fixed
 #@+node:ekr.20090324085713.292: *6* Fixed goto-global-line crasher
 #@+node:ekr.20090324085713.326: *6* Fixed bug that prevented Leo from opening files on the XP desktop
@@ -12039,7 +12037,7 @@ Leo 4.6 b2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -12058,11 +12056,11 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090620073906.11073: *5* Bugs
 #@+node:ekr.20090620073906.11083: *6* Added patch for startup logic
 A patch at the start of loadOnePlugin prevents leo from crashing and allows the
@@ -12263,7 +12261,7 @@ Leo 4.6 rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -12282,11 +12280,11 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090709084001.5945: *5* Bugs
 #@+node:ekr.20090709084001.5968: *6* Fixed unicode problem with spell checker
 #@+node:ekr.20090709084001.6086: *6* Ensure newline at end of each @auto node
@@ -12371,7 +12369,7 @@ Leo 4.6 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -12390,11 +12388,11 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090717084250.10809: *5* Bug fixes
 #@+node:ekr.20090717084250.10810: *6* Bugs fixed in 4.6 b2
 #@+node:ekr.20090717084250.10811: *7* Added patch for startup logic
@@ -12798,7 +12796,7 @@ Leo 4.6.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Leo 4.6.1 fixes several minor bugs in Leo 4.6.
 
@@ -12820,11 +12818,11 @@ The highlights of Leo 4.6
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090718092032.10406: *5* Bug fixes
 #@+node:ekr.20090718092032.10407: *6* Bugs fixed in 4.6 b2
 #@+node:ekr.20090718092032.10408: *7* Added patch for startup logic
@@ -13228,7 +13226,7 @@ Leo 4.6.2 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
 
@@ -13249,11 +13247,11 @@ The highlights of Leo 4.6
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090803084828.5800: *5* Bugs fixed
 - AltGr properly handled as Alt+Ctrl.
   Created a setting: @bool enable_alt_ctrl_bindings.
@@ -13271,7 +13269,7 @@ Leo 4.6.3 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 Leo 4.6.3 fixes a significant caching bug in Leo 4.6.2.
 Leo 4.6.3 also comes with an executable installer for Windows.
@@ -13294,11 +13292,11 @@ The highlights of Leo 4.6
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20091006093902.6559: *5* Bugs fixed
 - Leo marks nodes dirty if the nodes changed during read.
 
@@ -13317,7 +13315,7 @@ Leo 4.7 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 This version of Leo is labeled a beta version because it contains some new,
 relatively untested plugins.  However, Leo's core should be quite reliable.
@@ -13341,11 +13339,11 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20090909083000.6556: *5* Added new Windows installer
 Unlike previous installers, the manifest is created from the
 @button make leo.nsi script in dist.leo.
@@ -13397,7 +13395,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 beta 1 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -13419,11 +13417,11 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100118181428.7557: *5* Bugs
 #@+node:ekr.20100118181428.7559: *6* Fixed calltips on leo3k
 They wiped out the newly-inserted selection range.
@@ -13764,7 +13762,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 beta 3 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -13784,11 +13782,11 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100201192329.7095: *5* Bugs fixed in Leo 4.7 b3
 #@+node:ekr.20100201192329.7141: *6* Fixed unicode problems
 'utf-8' is now the official, explicit unicode encoding unless overridden when
@@ -13827,7 +13825,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -13849,11 +13847,11 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100205152016.14054: *5* Recovering from clone conflicts
 Leo now has a simple, robust, and extremely useful scheme to recover from clone
 battles, no matter how they may arise. This removes all the dread from "node
@@ -14051,7 +14049,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 final fixes all known bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -14073,11 +14071,11 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100223063657.7264: *5* Bug fixed
 #@+node:ekr.20100223063657.7182: *6* Fixed calls to sort in 6 places
 # This fixed a Python 3.x compatibility problem.
@@ -14110,7 +14108,7 @@ converted external file and .leo file together, making it impossible to lose
 data.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -14132,11 +14130,11 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20100225102026.7140: *5* Changes made to Leo 4.7.1
 - Fixed a dangerous bug that could cause data loss when converting @file nodes
   from file-like to thin-like sentinels. The problem arose because it was too
@@ -14169,7 +14167,7 @@ Leo 4.8 alpha 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -14196,11 +14194,11 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20101114081049.5004: *4* 4.8 b1
 @nocolor
 
@@ -14210,7 +14208,7 @@ Leo 4.8 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -14238,11 +14236,11 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20101104091058.4975: *4* 4.8 rc1
 @nocolor
 
@@ -14252,7 +14250,7 @@ Leo 4.8 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -14280,11 +14278,11 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20101104091058.4976: *5* Known problems
 There are at least 2 installer issues outstanding:
 
@@ -15000,7 +14998,7 @@ Leo 4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -15028,11 +15026,11 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20101124102457.5136: *5* Known problems
 There are at least 2 installer issues outstanding:
 
@@ -15751,7 +15749,7 @@ Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
-See: http://webpages.charter.net/edreamleo/intro.html
+See: http://leoeditor.com/intro.html
 
 The highlights of Leo 4.9:
 --------------------------
@@ -15785,11 +15783,11 @@ The highlights of Leo 4.9:
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 #@+node:ekr.20110601105631.19359: *4* Deprecated/removed features
 - Leo no longer supports the Tk gui. The Qt gui now does everything
   the Tk gui did, and more, and better.

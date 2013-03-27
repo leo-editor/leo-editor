@@ -68,7 +68,7 @@ What's New in Leo
     shell-command
     shell-command-on-region
     
-.. _`The leoInspect Module`: http://webpages.charter.net/edreamleo/leoInspect.html
+.. _`The leoInspect Module`: http://leoeditor.com/leoInspect.html
     
 - The leoInspect module allows scripts to interrogate static code.
   For full details, see `The leoInspect Module`_ chapter.
@@ -1353,7 +1353,7 @@ This makes Leo a superb environment for using rST.
 - \@menu items may not refer to commands created by @button and @command nodes.
 .. @+node:ekr.20080314081157.128: *5* New and improved plugins
 - The ipython plugin creates a simple, powerful, effective bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  See http://leoeditor.com/IPythonBridge.html
 
 - Improved marks/recent buttons plugin.
 .. @+node:ekr.20080314081157.125: *5* New settings
@@ -1813,7 +1813,7 @@ The main features of Leo 4.4.1 are:
 - Multiple editors in Leo's body pane and
 - A new colorizer plugin controlled by jEdit language description files.
 - Search commands now support regex replace patterns: \1, \2, etc.
-- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- Support for external debuggers: see http://leoeditor.com/debuggers.html
 - The scripting plugin now creates a Debug Script button.
 - Several new commands including run-unit-test, python-help and toggle-invisibles.
 - The help-for-command commands now contains information for almost all commands.
