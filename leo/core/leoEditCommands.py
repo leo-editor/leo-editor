@@ -496,12 +496,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
                 val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
 
-        if c.abbrev_subst_start and c.abbrev_place_start:
-            new_pos = val.find(c.abbrev_place_start)
-            new_end = val.find(c.abbrev_place_end)
-        else:
-            new_pos = -1
-
         if trace: g.trace('**inserting',repr(val))
         oldSel = j,j
         c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
@@ -509,15 +503,36 @@ class abbrevCommandsClass (baseEditCommandsClass):
         w.insert(i,val)
         c.frame.body.forceFullRecolor() # 2011/10/21
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
-        if new_pos > -1:
-            c.frame.body.setInsertPoint(
-                j+new_end-len(word)+1+len(c.abbrev_place_end)
-            )
-            c.frame.body.setSelectionRange(
-                j+new_pos-len(word)+1, 
-                j+new_end-len(word)+1+len(c.abbrev_place_end)
-            )
+
+        if c.abbrev_subst_start:
+            new_text, start, end = self.next_place(c.frame.body.getAllText())
+            c.frame.body.setAllText(new_text)
+            # setInsertPoint() clears selection raise, so must come first
+            c.frame.body.setInsertPoint(end)
+            c.frame.body.setSelectionRange(start, end)
+            
         return True
+    #@+node:tbrown.20130326094709.25669: *4* next_place
+    def next_place(self, text):
+        """Given text containing a placeholder like <|block01|>,
+        return text2, start, end where text2 is the text without
+        the <| and |>, and start, end are the positions of the
+        beginning and end of block0.
+        """
+
+        c = self.c
+        new_pos = text.find(c.abbrev_place_start)
+        new_end = text.find(c.abbrev_place_end)
+        if new_pos < 0 or new_end < 0:
+            return text, len(text), len(text)
+
+        start = new_pos
+        place_holder_delim = text[new_pos:new_end+len(c.abbrev_place_end)]
+        place_holder = place_holder_delim[
+            len(c.abbrev_place_start):-len(c.abbrev_place_end)]
+        text2 = text[:start]+place_holder+text[start+len(place_holder_delim):]
+        
+        return text2, start, start+len(place_holder)
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion C-M-/
     def dynamicCompletion (self,event=None):

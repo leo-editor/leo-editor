@@ -465,7 +465,7 @@ class NestedSplitter(QtGui.QSplitter):
 
         if isinstance(self.parent(), NestedSplitter):
             # don't add new splitter if not needed, i.e. we're the
-            # only child of a previosly more populated splitter
+            # only child of a previously more populated splitter
             if w is None:
                 w = NestedSplitterChoice(self.parent())
 

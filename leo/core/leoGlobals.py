@@ -2906,6 +2906,9 @@ def es(*args,**keys):
     if color == 'suppress': return # New in 4.3.
     elif log and color is None:
         color = g.actualColor('black')
+        
+    color = g.actualColor(color)
+        
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args,d)
