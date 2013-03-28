@@ -71,7 +71,7 @@ The `Glossary`_ is also worth reading.
 .. Links used in this document...
 
 .. _`Leo's forum`:      http://groups.google.com/group/leo-editor
-.. _`Leo's home page`:  http://webpages.charter.net/edreamleo/front.html
+.. _`Leo's home page`:  http://leoeditor.com/front.html
 .. _`Python`:           http://www.python.org/
 .. _`XML`:              http://en.wikipedia.org/wiki/XML
 

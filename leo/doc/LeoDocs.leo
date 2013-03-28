@@ -47,6 +47,7 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
+<v t="ekr.20130327143919.5868"><vh>@file front.html</vh></v>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -655,7 +656,7 @@ Leo 4.10 final                                         March 29, 2012
 Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
 
 Leo is a text editor, data organizer, project manager and much more.
-http://webpages.charter.net/edreamleo/intro.html
+See http://leoeditor.com/intro.html
 
 Leo 4.10 contains 9 months of intense work on Leo. Several very important
 features are subtle; you could almost call them Easter Eggs, so please read
@@ -704,11 +705,11 @@ alt-4,... Several seemingly innocuous changes made this work without
 
 Links:
 ------
-Leo:      http://webpages.charter.net/edreamleo/front.html
+Leo:      http://leoeditor.com/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+Quotes:   http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20120229094652.14518"></t>
 <t tx="ekr.20120229094652.14520">The following tabs remain.  They are Leo-specific, not jEdit specific:
@@ -1654,7 +1655,7 @@ button in your browser attached.  The body text of the corresponding
 bookmark node created in Leo is:
 
     Leo's Home Page
-        http://webpages.charter.net/edreamleo/front.html
+        http://leoeditor.com/front.html
 
         Tags: leo, python
 
@@ -1830,7 +1831,7 @@ code. leoInspect is an elegant and easy-to-use front end for Python's AST
 (Abstract Syntax Tree) trees *and* a window into a richly connected set of
 semantic data built *from* AST trees.
 
-For details, see http://webpages.charter.net/edreamleo/leoInspect.html</t>
+For details, see http://leoeditor.com/leoInspect.html</t>
 <t tx="ekr.20120229094652.15138">http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
 
 Leo now reports bzr version numbers and dates automatically.  Very important.
@@ -2557,7 +2558,7 @@ The fix was to the "important special case" in TM.findAllUnitTestNodes.
 The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 </t>
 <t tx="ekr.20120328102352.5942"></t>
-<t tx="ekr.20120328102352.5946">http://webpages.charter.net/edreamleo/front.html
+<t tx="ekr.20120328102352.5946">http://leoeditor.com/front.html
 
 - Added link to home page from the TOC.
 

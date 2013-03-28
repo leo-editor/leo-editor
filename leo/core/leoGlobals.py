@@ -303,6 +303,7 @@ def findLanguageDirectives(c,p):
     return language
 #@+node:ekr.20031218072017.1385: *4* g.findReference
 # Called from the syntax coloring method that colorizes section references.
+# Also called from write at.putRefAt.
 
 def findReference(c,name,root):
 
@@ -2905,6 +2906,9 @@ def es(*args,**keys):
     if color == 'suppress': return # New in 4.3.
     elif log and color is None:
         color = g.actualColor('black')
+        
+    color = g.actualColor(color)
+        
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args,d)

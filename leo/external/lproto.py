@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20091010232339.6117: * @file ../external/lproto.py
+#@+node:tbrown.20130319131551.18713: * @file /mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/dark/../trunk/leo/external/lproto.py
 #@@language python
 
 #@+<< docstring >>
@@ -30,6 +30,20 @@ else:
     standard_leo_socket_name = '(172.16.0.0:1)' # A hack.
 
 #@+others
+#@+node:tbrown.20130319124904.18711: ** lprint
+def lprint(*args):
+    """lprint "Log Print" - print args
+    
+    To replace all the print() statements so the can be
+    easily dis/enabled
+
+    :Parameters:
+    - `*args`: args to print
+    """
+
+    # print(args)
+    
+    return
 #@+node:ville.20091010205847.1363: ** sending
 def mk_send_bytes(msg):
 
@@ -63,20 +77,20 @@ class LProtoBuf:
         if self.plen == -1:
             lendesc = byts[0:4]
             intlen = struct.unpack('I', lendesc)[0]
-            print("have", intlen, "bytes")
+            lprint("have", intlen, "bytes")
             self.plen = intlen
             self.buf = byts[4:]
         else:
             self.buf = self.buf + byts
 
         if len(self.buf) == self.plen:
-            print("dispatch msg", self.buf)
+            lprint("dispatch msg", self.buf)
             self.recv_cb(self.buf)
             self.buf = ""
             self.plen = -1
             return
 
-        print("in buf",self.buf)
+        lprint("in buf",self.buf)
 #@+node:ville.20091009234538.1374: ** class LProtoServer
 class LProtoServer:
 
@@ -95,11 +109,11 @@ class LProtoServer:
     #@+node:ekr.20111012070545.7255: *3* listen
     def listen(self,name):
 
-        g.trace(name,g.callers())
+        # g.trace(name,g.callers())
 
         self.srv.listen(name)
 
-        print("lproto.py: listen on",self.srv.fullServerName())
+        lprint("lproto.py: listen on",self.srv.fullServerName())
 
     #@+node:ekr.20111012070545.7256: *3* msg_received
     def msg_received(self,msg,ses):
@@ -115,9 +129,9 @@ class LProtoServer:
 
         '''Event handler for newConnection.'''
 
-        print("hnd con")
+        lprint("hnd con")
         lsock = self.srv.nextPendingConnection()
-        print("conn", lsock)
+        lprint("conn", lsock)
 
         buf =  LProtoBuf()
 
@@ -129,7 +143,7 @@ class LProtoServer:
         buf.set_recv_cb( msg_recv_cb )
 
         def readyread_cb():
-            print("read ready")
+            lprint("read ready")
             allbytes = lsock.readAll()
             buf = ses_ent['_buf']
             buf.push_bytes(allbytes)
@@ -152,7 +166,7 @@ if 0:
 
         def connect(self,name):
             self.cl.connectToServer(name)
-            print("client connected")
+            lprint("client connected")
         #@-others
 #@+node:ville.20091010233144.10051: ** class LProtoClient
 class LProtoClient:

@@ -69,7 +69,8 @@
 expanded="ville.20090314215508.2,"><vh>@file quicksearch.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
+<v t="tbrown.20090119215428.2" a="E"
+expanded="tbrown.20090119215428.9,tbrown.20090119215428.40,"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20110403115003.10348" a="E"
@@ -218,7 +219,8 @@ expanded="ekr.20110408065137.14221,ville.20110403115003.10355,ekr.20110408065137
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
-<v t="tbrown.20090119215428.2"></v>
+<v t="tbrown.20090119215428.2" a="E"
+expanded="tbrown.20090119215428.9,tbrown.20090119215428.40,"></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 </v>

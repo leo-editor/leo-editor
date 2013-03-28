@@ -70,8 +70,8 @@ capabilities for power users. We'll discuss these features later.
 .. _`Leo's Google Group`:   http://groups.google.com/group/leo-editor
 
 .. Hard links to Leo's web site...
-.. _ListManagerDocs.html: http://webpages.charter.net/edreamleo/ListManagerDocs.html
-.. _wxListManager.leo:    http://webpages.charter.net/edreamleo/wxListManager.leo
+.. _ListManagerDocs.html: http://leoeditor.com/ListManagerDocs.html
+.. _wxListManager.leo:    http://leoeditor.com/wxListManager.leo
 .. @+node:ekr.20100810203016.4296: *3* @rst-ignore
 .. @+node:ekr.20050818163826.6: *4* Options that set command names
 .. EKR: This kind of "flexibility" is a really bad idea.

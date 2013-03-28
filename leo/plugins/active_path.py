@@ -406,7 +406,7 @@ def openDir(c,parent,d):
 
     # compare folder content to children
     try:
-        path, dirs, files = os.walk(d).next()
+        path, dirs, files = next(os.walk(d))
     except StopIteration:
         # directory deleted?
         c.setHeadString(parent,'*'+parent.h.strip('*')+'*')

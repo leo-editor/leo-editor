@@ -34,12 +34,12 @@ general scripts do not.
 .. _Idle:                       http://www.python.org/idle/
 .. _pdb:                        http://docs.python.org/lib/module-pdb.html
 .. _winpdb:                     http://www.digitalpeers.com/pythondebugger/
-.. _`the FAQ`:                  http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
+.. _`the FAQ`:                  http://leoeditor.com/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
 .. _`embedded winpdb`:          http://www.digitalpeers.com/pythondebugger/embedded.htm
 .. _`Leo's forums`:             http://sourceforge.net/forum/?group_id=3458
-.. _`work flow`:                http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+.. _`work flow`:                http://leoeditor.com/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
 
-.. .. _`running Leo in a console`: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-run-leo-from-a-console-window
+.. .. _`running Leo in a console`: http://leoeditor.com/FAQ.html#how-can-i-run-leo-from-a-console-window
 .. _`running Leo from a console window`:    installing.html#running-leo-from-a-console-window
 .. _`run Leo in a console window`:          installing.html#running-leo-from-a-console-window
 .. _`console window`:                       installing.html#running-leo-from-a-console-window
