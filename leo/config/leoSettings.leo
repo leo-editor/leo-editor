@@ -1603,14 +1603,14 @@
 </v>
 </v>
 <v t="tbrown.20130327180636.20857"><vh>Themes</vh>
-<v t="tbrown.20130327180636.20936" a="E"><vh>solarized_dark theme settings</vh>
+<v t="tbrown.20130327180636.20936"><vh>solarized_dark theme settings</vh>
 <v t="tbrown.20130327180636.20937"><vh>README</vh></v>
 <v t="tbrown.20130327180636.20938"><vh>@string color_theme = solarized_dark</vh></v>
 <v t="tbrown.20130327180636.20939"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="tbrown.20130327180636.20940" a="E"><vh>stylesheet &amp; source</vh>
 <v t="tbrown.20130327180636.20941"><vh>config</vh></v>
-<v t="tbrown.20130327180636.20942"><vh>Color styles</vh>
-<v t="tbrown.20130327180636.20943"><vh>@ignore base</vh></v>
+<v t="tbrown.20130327180636.20942" a="E"><vh>Color styles</vh>
+<v t="tbrown.20130327180636.20943"><vh>base</vh></v>
 <v t="tbrown.20130327180636.20944"><vh>body editor</vh></v>
 <v t="tbrown.20130327180636.20945"><vh>tree</vh></v>
 <v t="tbrown.20130327180636.20946"><vh>log</vh></v>
@@ -1632,7 +1632,7 @@
 <v t="tbrown.20130327180636.20961"><vh>mini-buffer &amp; status</vh></v>
 </v>
 <v t="tbrown.20130327180636.20962"><vh>@ignore Spare parts</vh></v>
-<v t="tbrown.20130327180636.20963"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="tbrown.20130327194832.20317"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
 <v t="tbrown.20130327180636.20964"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20130327180636.20965"><vh>Solarized colors (Reference)</vh></v>
@@ -9930,11 +9930,12 @@ under the @settings node. You may need to move any existing `@color` and
 in individual themes for more information.</t>
 <t tx="tbrown.20130327180636.20936">Copy into mySetting.leo under @settings to enable theme</t>
 <t tx="tbrown.20130327180636.20937">@language rest
-
 A theme's folder should be in either .../leo/themes or
 $HOME/.leo/themes.
-NOTE: to use with a non-dark desktop theme, switch '@ignore base' below
-      to 'base' and `run-script` on the `stylesheet &amp; source` node.
+
+NOTE: to use with a dark desktop theme, switch 'base' below
+      to '@ignore base' and `run-script` on the `stylesheet &amp; source`
+       node.  That should allow more of the native dark style to apply.
 
 A theme is a combination of @color settings, a stylesheet, and,
 optionally, some icons. Icons go in &lt;theme_dir&gt;/Icons.
@@ -10306,10 +10307,163 @@ XXQMenuBar {
 }
 
 *[name~='preview'] { color: green; }</t>
-<t tx="tbrown.20130327180636.20963">/*
+<t tx="tbrown.20130327180636.20964">Use these settings to get something like the solarized colors.</t>
+<t tx="tbrown.20130327180636.20965">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+
+# These can be used as usual, in *both* light and dark
+
+yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+
+Dark
+====
+
+    base1 optional emphasized content (keywords)
+  * base0 default (body text)
+    
+    base01 comments
+    base02 background highlights (selected background)
+  * base03 background
+    
+Light
+=====
+
+    base01 optional emphasized content (keywords)
+  * base00 default (body text)
+    base1 comments
+    base2 background highlights (selected background)
+  * base3 background
+</t>
+<t tx="tbrown.20130327180636.20966"></t>
+<t tx="tbrown.20130327180636.20967"></t>
+<t tx="tbrown.20130327180636.20968"></t>
+<t tx="tbrown.20130327180636.20969"></t>
+<t tx="tbrown.20130327180636.20970">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20130327180636.20971">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20130327180636.20972">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20130327180636.20973">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20130327180636.20974">was #00aa00 (Idle comment green)
+
+Solarize green      #859900
+Solarized cyan      #2aa198
+Solarized violet    #6c71c4
+Solarized orange    #cb4b16</t>
+<t tx="tbrown.20130327180636.20975"></t>
+<t tx="tbrown.20130327180636.20976"></t>
+<t tx="tbrown.20130327180636.20977"></t>
+<t tx="tbrown.20130327180636.20978">was black</t>
+<t tx="tbrown.20130327180636.20979">was firebrick3
+
+Solarized colors:
+    
+magenta   #d33682
+
+Dark comments   base01
+Light comments  base1 comments
+</t>
+<t tx="tbrown.20130327180636.20980"></t>
+<t tx="tbrown.20130327180636.20981"></t>
+<t tx="tbrown.20130327180636.20982"></t>
+<t tx="tbrown.20130327180636.20983"></t>
+<t tx="tbrown.20130327180636.20984"></t>
+<t tx="tbrown.20130327180636.20985"></t>
+<t tx="tbrown.20130327180636.20986">Background color of body text.  This setting *is* used in the QtGui.
+
+#ffecea
+
+Note: this setting can be overridden by the x_mode_bg_color settings.</t>
+<t tx="tbrown.20130327180636.20987">#f9f0f4 light pink
+#fbfdfd very light blue
+
+For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
+<t tx="tbrown.20130327180636.20988"></t>
+<t tx="tbrown.20130327180636.20989">Foreground color of body text.  This setting *is* used in the QtGui.
+
+Note: this setting can be overridden by the x_mode_fg_color settings.</t>
+<t tx="tbrown.20130327180636.20990">Overrides body_text_background_color.
+
+#fdf5f5 A light pink.
+#f0fde1 A light green.
+#f9e6dd A light orange.</t>
+<t tx="tbrown.20130327180636.20991">Overrides body_text_foreground_color.</t>
+<t tx="tbrown.20130327180636.20992"></t>
+<t tx="tbrown.20130327180636.20993">Background color of unselected headline text.
+
+LavenderBlush1</t>
+<t tx="tbrown.20130327180636.20994">Foreground color of unselected headline text.</t>
+<t tx="tbrown.20130327180636.20995">Background color of selected headline text that is not being edited.
+
+LavenderBlush2</t>
+<t tx="tbrown.20130327180636.20996">Foreground color of selected headline text that is not being edited.
+
+DodgerBlue4</t>
+<t tx="tbrown.20130327180636.20997">Background color of unselected headline text in a headline that is being edited.
+
+Foreground color must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20130327180636.20998">Foreground color of unselected headline text in a headline that is being edited.
+
+Background color must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20130327180636.20999">Foreground color of selected text headline text in a headline that is being edited.
+
+Background must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20130327180636.21000">Background color of selected text headline text in a headline that is being edited.
+
+Foreground must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20130327180636.21001">Background color of outline pane itself.
+
+LavenderBlush1
+#ffffe1 # a little too yellow.
+#ffffec
+LightSteelBlue1 # Good for testing.</t>
+<t tx="tbrown.20130327180636.21002"></t>
+<t tx="tbrown.20130327180636.21003">Color for error messages written to the log window.</t>
+<t tx="tbrown.20130327180636.21004"></t>
+<t tx="tbrown.20130327180636.21005">Foreground color of log text.
+
+</t>
+<t tx="tbrown.20130327180636.21006">Background color of log text.</t>
+<t tx="tbrown.20130327180636.21007">LightYellow1
+
+#f2fdff</t>
+<t tx="tbrown.20130327180636.21008">#d6c7d3
+#d2cad0
+#c6d3d7</t>
+<t tx="tbrown.20130327180636.21009">#d6c7d3
+#d2cad0
+#c6d3d7
+#ffffec # Same as outline.</t>
+<t tx="tbrown.20130327180636.21010"></t>
+<t tx="tbrown.20130327180636.21011"></t>
+<t tx="tbrown.20130327180636.21012"></t>
+<t tx="tbrown.20130327180636.21013">from leo.plugins.qtGui import expand_css_constants
+g.app.gui.frameFactory.masterFrame.setStyleSheet(
+    expand_css_constants(p.b))
+print expand_css_constants(p.b)</t>
+<t tx="tbrown.20130327194832.20317">/*
   AUTOMATICALLY GENERATED FROM:
-  file:///home/tbrown/.leo/myLeoSettings.leo#@settings--&gt;solarized_dark%20theme%20settings--&gt;stylesheet%20&amp;%20source
-  2013-03-25 13:52
+  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/leoSettings.leo#Themes--&gt;solarized_dark%20theme%20settings--&gt;stylesheet%20&amp;%20source
+  2013-03-27 19:49
 */
 
 /*### config ################################################################*/
@@ -10359,6 +10513,24 @@ constants:
 
 /*### Color styles ##########################################################*/
 
+
+/*### Color styles--&gt;base ###################################################*/
+QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+  border-color: @solarized-base1; 
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+  background: @solarized-base03; }
+
+
+QScrollBar::handle { 
+  background: @solarized-base01; color: @solarized-base01; }
+QScrollBar::handle:hover { 
+  background: @solarized-base0; color: @solarized-base0; }
+   
+/* to make these show up, remove the ::handle style above... bug? */
+QScrollBar::add-line, QScrollBar::sub-line { 
+  background: @solarized-base01; color: @solarized-base01; }
 
 /*### Color styles--&gt;body editor ############################################*/
 QTextEdit#richTextEdit {
@@ -10541,159 +10713,6 @@ QLineEdit#status2 {
 }
 
 </t>
-<t tx="tbrown.20130327180636.20964">Use these settings to get something like the solarized colors.</t>
-<t tx="tbrown.20130327180636.20965">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
-base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
-base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
-base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
-base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
-base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
-base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
-base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
-
-# These can be used as usual, in *both* light and dark
-
-yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
-orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
-red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
-magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
-violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
-blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
-cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
-green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
-
-Dark
-====
-
-    base1 optional emphasized content (keywords)
-  * base0 default (body text)
-    
-    base01 comments
-    base02 background highlights (selected background)
-  * base03 background
-    
-Light
-=====
-
-    base01 optional emphasized content (keywords)
-  * base00 default (body text)
-    base1 comments
-    base2 background highlights (selected background)
-  * base3 background
-</t>
-<t tx="tbrown.20130327180636.20966"></t>
-<t tx="tbrown.20130327180636.20967"></t>
-<t tx="tbrown.20130327180636.20968"></t>
-<t tx="tbrown.20130327180636.20969"></t>
-<t tx="tbrown.20130327180636.20970">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20971">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20972">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20973">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20974">was #00aa00 (Idle comment green)
-
-Solarize green      #859900
-Solarized cyan      #2aa198
-Solarized violet    #6c71c4
-Solarized orange    #cb4b16</t>
-<t tx="tbrown.20130327180636.20975"></t>
-<t tx="tbrown.20130327180636.20976"></t>
-<t tx="tbrown.20130327180636.20977"></t>
-<t tx="tbrown.20130327180636.20978">was black</t>
-<t tx="tbrown.20130327180636.20979">was firebrick3
-
-Solarized colors:
-    
-magenta   #d33682
-
-Dark comments   base01
-Light comments  base1 comments
-</t>
-<t tx="tbrown.20130327180636.20980"></t>
-<t tx="tbrown.20130327180636.20981"></t>
-<t tx="tbrown.20130327180636.20982"></t>
-<t tx="tbrown.20130327180636.20983"></t>
-<t tx="tbrown.20130327180636.20984"></t>
-<t tx="tbrown.20130327180636.20985"></t>
-<t tx="tbrown.20130327180636.20986">Background color of body text.  This setting *is* used in the QtGui.
-
-#ffecea
-
-Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="tbrown.20130327180636.20987">#f9f0f4 light pink
-#fbfdfd very light blue
-
-For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
-<t tx="tbrown.20130327180636.20988"></t>
-<t tx="tbrown.20130327180636.20989">Foreground color of body text.  This setting *is* used in the QtGui.
-
-Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="tbrown.20130327180636.20990">Overrides body_text_background_color.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.</t>
-<t tx="tbrown.20130327180636.20991">Overrides body_text_foreground_color.</t>
-<t tx="tbrown.20130327180636.20992"></t>
-<t tx="tbrown.20130327180636.20993">Background color of unselected headline text.
-
-LavenderBlush1</t>
-<t tx="tbrown.20130327180636.20994">Foreground color of unselected headline text.</t>
-<t tx="tbrown.20130327180636.20995">Background color of selected headline text that is not being edited.
-
-LavenderBlush2</t>
-<t tx="tbrown.20130327180636.20996">Foreground color of selected headline text that is not being edited.
-
-DodgerBlue4</t>
-<t tx="tbrown.20130327180636.20997">Background color of unselected headline text in a headline that is being edited.
-
-Foreground color must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.20998">Foreground color of unselected headline text in a headline that is being edited.
-
-Background color must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.20999">Foreground color of selected text headline text in a headline that is being edited.
-
-Background must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.21000">Background color of selected text headline text in a headline that is being edited.
-
-Foreground must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.21001">Background color of outline pane itself.
-
-LavenderBlush1
-#ffffe1 # a little too yellow.
-#ffffec
-LightSteelBlue1 # Good for testing.</t>
-<t tx="tbrown.20130327180636.21002"></t>
-<t tx="tbrown.20130327180636.21003">Color for error messages written to the log window.</t>
-<t tx="tbrown.20130327180636.21004"></t>
-<t tx="tbrown.20130327180636.21005">Foreground color of log text.
-
-</t>
-<t tx="tbrown.20130327180636.21006">Background color of log text.</t>
-<t tx="tbrown.20130327180636.21007">LightYellow1
-
-#f2fdff</t>
-<t tx="tbrown.20130327180636.21008">#d6c7d3
-#d2cad0
-#c6d3d7</t>
-<t tx="tbrown.20130327180636.21009">#d6c7d3
-#d2cad0
-#c6d3d7
-#ffffec # Same as outline.</t>
-<t tx="tbrown.20130327180636.21010"></t>
-<t tx="tbrown.20130327180636.21011"></t>
-<t tx="tbrown.20130327180636.21012"></t>
-<t tx="tbrown.20130327180636.21013">from leo.plugins.qtGui import expand_css_constants
-g.app.gui.frameFactory.masterFrame.setStyleSheet(
-    expand_css_constants(p.b))
-print expand_css_constants(p.b)</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
