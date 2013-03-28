@@ -2088,7 +2088,7 @@ class vnode (baseVnode):
 
         flag, i = g.is_special(self._bodyString,0,"@others")
         return flag
-    #@+node:ekr.20031218072017.3353: *4* matchHeadline
+    #@+node:ekr.20031218072017.3353: *4* v.matchHeadline
     def matchHeadline (self,pattern):
 
         """Returns True if the headline matches the pattern ignoring whitespace and case.
@@ -2096,9 +2096,10 @@ class vnode (baseVnode):
         The headline may contain characters following the successfully matched pattern."""
 
         v = self
-
         h = g.toUnicode(v.headString())
         h = h.lower().replace(' ','').replace('\t','')
+        
+        #####
 
         pattern = g.toUnicode(pattern)
         pattern = pattern.lower().replace(' ','').replace('\t','')

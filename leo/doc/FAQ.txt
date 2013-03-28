@@ -279,8 +279,8 @@ data loss, without being aware of the loss for an arbitrarily long period of
 time. Even with a source code control system this would be an intolerable
 situation.
 .. @+node:ekr.20110531155858.20559: *4* How does EKR (Leo's developer) use Leo?
-.. _`This FAQ entry`: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-.. _`about clones and views`: http://webpages.charter.net/edreamleo/intro.html#clones-views
+.. _`This FAQ entry`: http://leoeditor.com/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+.. _`about clones and views`: http://leoeditor.com/intro.html#clones-views
 
 Here is the workflow I use to develop Leo. The intention is to help
 present and potential developers use Leo effectively.

@@ -674,7 +674,7 @@ You can change this identifier at any time by editing .leoID.txt.
 .. @+node:ekr.20101128120258.5091: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\installation\_build\html\slide-005.html
 .. @+node:ekr.20100821182153.4350: *3* @slide Free software
-.. _`Edward K. Ream`:   http://webpages.charter.net/edreamleo/ekr.html
+.. _`Edward K. Ream`:   http://leoeditor.com/ekr.html
 .. _`leo-editor`:       http://groups.google.com/group/leo-editor
 .. _`Python Tutorial`:  http://docs.python.org/tutorial/
 
@@ -1094,8 +1094,8 @@ body text of a node as a Leo script.
 .. @+node:ekr.20101121125326.4962: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-001.html
 .. @+node:ekr.20101119112650.5368: *3* @slide c, g and p
-.. _`Scripting Chapter`: http://webpages.charter.net/edreamleo/scripting.html
-.. _`Leo's Users Guide`: http://webpages.charter.net/edreamleo/leo_toc.html
+.. _`Scripting Chapter`: http://leoeditor.com/scripting.html
+.. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
 
 Leo scripts execute in an environment containing
 three predefined objects: c, g and p.
@@ -1275,8 +1275,8 @@ full-screen `Pudb debugger`_ instead of pdb.
 .. @+node:ekr.20101121130516.4962: *4* @url built slide
 c:\leo.repo\trunk\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
 .. @+node:ekr.20101121021109.5352: *3* @slide Further reading
-.. _`Scripting Chapter`: http://webpages.charter.net/edreamleo/scripting.html
-.. _`Leo's Users Guide`: http://webpages.charter.net/edreamleo/leo_toc.html
+.. _`Scripting Chapter`: http://leoeditor.com/scripting.html
+.. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
 
 This concludes our brief introduction to scripting in Leo.
 

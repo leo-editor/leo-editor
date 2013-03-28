@@ -535,9 +535,13 @@ Leo’s Users Guide. The file leoPlugins.leo contains all plugins that are
 presently distributed with Leo; studying these plugins is a good way of learning
 to write your own plugins.
 .. @+node:ekr.20091107093823.6807: *5* Contacts
-- Leo’s home page:  google edreamleo or http://webpages.charter.net/edreamleo/front.html
+- Leo’s home page:  google edreamleo or http://leoeditor.com/front.html
 
-- Edward K. Ream:  edreamleo@charter.net, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766
+- Edward K. Ream
+  166 N. Prospect Ave.
+  Madison WI 53726
+  edreamleo@gmail.com
+  (608) 886-5730
 .. @+node:ekr.20101025080245.5542: ** Review of leo-editor
 The following nodes contain links to important discussions on the leo-editor web
 site.
@@ -644,7 +648,7 @@ http://groups.google.com/group/leo-editor/topics?start=360&sa=N
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
 | license = [[Python (programming language)|Python]] License
-| website = http://webpages.charter.net/edreamleo/front.html
+| website = http://leoeditor.com/front.html
 }}
 
 '''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is a [[text editor]]
@@ -674,7 +678,7 @@ Views are simply nodes whose children contain clones. A single outline may conta
 arbitrarily many views of the nodes contained therein.
 Views and clones turn Leo into a supremely flexible filing cabinet: any node may be filed
 in arbitrarily many places.
-<ref>[http://webpages.charter.net/edreamleo/nutshell.html Leo documentation: Leo in a Nutshell]</ref>
+<ref>[http://leoeditor.com/nutshell.html Leo documentation: Leo in a Nutshell]</ref>
 
 ==External files==
 
@@ -695,9 +699,10 @@ Leo's scripting environment takes full advantage of outline structure:
 
 * The body text of any node may contain a Leo script, a Python script executed in the context of a Leo outline.
 
-* A simple [[API]] <ref>[http://webpages.charter.net/edreamleo/scripting.html Leo documentation: Scripting Leo with Python]</ref> gives Leo scripts full access to all data in loaded outlines, as well as full access to Leo's own source code. The API includes Python [[iterators]] that allow scripts to traverse outlines easily.
+* A simple [[API]] <ref>[http://leoeditor.com/scripting.html Leo documentation: Scripting Leo with Python]</ref> gives Leo scripts full access to all data in loaded outlines, as well as full access to Leo's own source code. The API includes Python [[iterators]] that allow scripts to traverse outlines easily.
 
-* Scripts may be composed of any tree of nodes. A [[markup language]] similar to [[noweb]] <ref>[http://webpages.charter.net/edreamleo/intro.html#section-references Leo documentation: Tutorial]</ref> tells Leo how to create scripts from (parts of) an outline.
+* Scripts may be composed of any tree of nodes.
+  A [[markup language]] similar to [[noweb]] <ref>[http://leoeditor.com/intro.html#section-references Leo documentation: Tutorial]</ref> tells Leo how to create scripts from (parts of) an outline.
 
 * Headlines naturally control and guide scripts.
 
@@ -707,7 +712,7 @@ Leo's scripting environment takes full advantage of outline structure:
 
 ==External links==
 {{Portal|Free software}}
-*[http://webpages.charter.net/edreamleo/front.html Leo's homepage]
+*[http://leoeditor.com/front.html Leo's homepage]
 *[http://sourceforge.net/projects/leo/ Leo at SourceForge],[http://sourceforge.net/project/screenshots.php?group_id=3458&ssid=22298 screenshots]
 *[http://groups.google.com/group/leo-editor leo-editor Google Group]
 *{{cite web | title=Literate Programming and Leo | publisher = [[Slashdot]] | date=2002-08-28 | url=http://developers.slashdot.org/article.pl?sid=02/08/28/1655207 }}

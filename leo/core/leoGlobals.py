@@ -303,6 +303,7 @@ def findLanguageDirectives(c,p):
     return language
 #@+node:ekr.20031218072017.1385: *4* g.findReference
 # Called from the syntax coloring method that colorizes section references.
+# Also called from write at.putRefAt.
 
 def findReference(c,name,root):
 

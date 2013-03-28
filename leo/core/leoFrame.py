@@ -1061,6 +1061,15 @@ class leoBody (HighLevelInterface):
         __set_bodyCtrl,
         doc = "body.bodyCtrl property"
     )
+    #@+node:ekr.20130303133655.10213: *3* leoBody.attribute_test
+    # def pyflake_test(self):
+        
+        # # Pylint two correct find attribute errors: xyzzy22 and def_stack.
+        # print(self.xyzzy22)
+        
+        # # pyflakes incorrectly complains that dn is not used.
+        # dn = self.def_stack[-1] # Add the code at the top of the stack.
+        # dn.code += 'abc'
     #@-others
 #@+node:ekr.20031218072017.3678: ** class leoFrame
 class leoFrame:
