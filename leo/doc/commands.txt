@@ -1397,7 +1397,7 @@ that each fills half of the main window.
     two files, one containing sentinels and one not.
 .. @+node:EKR.20040524104904.157: *3* Help commands
 -   The About Leo command puts up a dialog box showing the version of Leo.
--   The Online Home Page command opens Leo's home page at http://leoeditor.com/front.html.
+-   The Online Home Page command opens Leo's home page at http://leoeditor.com.
 -   The Open Online Tutorial command opens Joe Orr's excellent ScreenBook tutorial at
     http://www.evisa.com/e/sbooks/leo/sbframetoc_ie.htm.
 -   The Open Offline Tutorial command opens the file sbooks.chm if it exists.

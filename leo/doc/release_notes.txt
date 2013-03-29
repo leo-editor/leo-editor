@@ -5132,7 +5132,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
@@ -5349,7 +5349,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
@@ -5966,7 +5966,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
@@ -6032,7 +6032,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
@@ -6108,7 +6108,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
@@ -6327,7 +6327,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
@@ -6525,7 +6525,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -6613,7 +6613,7 @@ create new tabs. The Completion tab shows possible typing completions.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -6645,7 +6645,7 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -6738,7 +6738,7 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -6811,7 +6811,7 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -6937,7 +6937,7 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -7257,7 +7257,7 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -7356,7 +7356,7 @@ The highlights of Leo 4.4.1:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -7391,7 +7391,7 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -7590,7 +7590,7 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -7821,7 +7821,7 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:        http://leoeditor.com/front.html
+Leo:        http://leoeditor.com
 What's new: http://leoeditor.com/new-4-4-2.html
 Home:       http://sourceforge.net/projects/leo/
 Download:   http://sourceforge.net/project/showfiles.php?group_id=3458
@@ -8020,7 +8020,7 @@ The highlights of Leo 4.4.2:
 
 Links:
 ------
-Leo:        http://leoeditor.com/front.html
+Leo:        http://leoeditor.com
 What's new: http://leoeditor.com/new-4-4-2.html
 Home:       http://sourceforge.net/projects/leo/
 Download:   http://sourceforge.net/project/showfiles.php?group_id=3458
@@ -8067,7 +8067,7 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8258,7 +8258,7 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8453,7 +8453,7 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8571,7 +8571,7 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8684,7 +8684,7 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8749,7 +8749,7 @@ The highlights of Leo 4.4.3:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8770,7 +8770,7 @@ The highlights of Leo 4.4.3.1:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8840,7 +8840,7 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -8967,7 +8967,7 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -9147,7 +9147,7 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -9475,7 +9475,7 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -9577,7 +9577,7 @@ The highlights of Leo 4.4.4:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -9630,7 +9630,7 @@ The highlights of Leo 4.4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -9905,7 +9905,7 @@ The highlights of Leo 4.4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -10027,7 +10027,7 @@ The highlights of Leo 4.4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -10052,7 +10052,7 @@ The highlights of Leo 4.4.6:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -10144,7 +10144,7 @@ The highlights of Leo 4.4.6:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -10202,7 +10202,7 @@ The highlights of Leo 4.4.6:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -10232,7 +10232,7 @@ The highlights of Leo 4.4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -10289,7 +10289,7 @@ The highlights of Leo 4.4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
@@ -10352,7 +10352,7 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -10430,7 +10430,7 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -10561,7 +10561,7 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -10637,7 +10637,7 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -10678,7 +10678,7 @@ The highlights of Leo 4.4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -10707,7 +10707,7 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -11204,7 +11204,7 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -11317,7 +11317,7 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -11434,7 +11434,7 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -11549,7 +11549,7 @@ The highlights of Leo 4.5:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -11667,7 +11667,7 @@ redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -11791,7 +11791,7 @@ redefine my personal computer experience and the ideas behind computing.
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -11827,7 +11827,7 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -12056,7 +12056,7 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -12280,7 +12280,7 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -12388,7 +12388,7 @@ The highlights of Leo 4.6:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -12818,7 +12818,7 @@ The highlights of Leo 4.6
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -13247,7 +13247,7 @@ The highlights of Leo 4.6
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -13292,7 +13292,7 @@ The highlights of Leo 4.6
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -13339,7 +13339,7 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -13417,7 +13417,7 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -13782,7 +13782,7 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -13847,7 +13847,7 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -14071,7 +14071,7 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -14130,7 +14130,7 @@ The highlights of Leo 4.7:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -14159,7 +14159,7 @@ Quotes:   http://leoeditor.com/testimonials.html
 - Corrected date in trunk/license.txt.
 #@+node:ekr.20101104091058.5045: *3* 4.8 Simpler sentinels, better installer, recovery nodes
 #@+node:ekr.20101024234254.5433: *4* 4.8 a1
-@nocolor
+@language rest
 
 Leo 4.8 alpha 1                    October 29, 2010
 
@@ -14194,7 +14194,7 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -14236,7 +14236,7 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -14278,7 +14278,7 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -15026,7 +15026,7 @@ The highlights of Leo 4.8:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -15783,7 +15783,7 @@ The highlights of Leo 4.9:
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/

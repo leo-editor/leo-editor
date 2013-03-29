@@ -47,13 +47,13 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
-<v t="ekr.20130327143919.5868"><vh>@file front.html</vh></v>
+<v t="ekr.20130327143919.5868"><vh>@@file front.html</vh></v>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -416,7 +416,7 @@
 <t tx="EKR.20040524104904.99"></t>
 <t tx="TL.20080804095315.1"></t>
 <t tx="ekr.20040414161647">@pagewidth 70
-@nocolor-node
+@language rest
 
 These are the sources for Leo's users guide.
 
@@ -487,13 +487,13 @@ Removes @ignore, @nocolor, @wrap directives.
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
 <t tx="ekr.20050831195331.4"></t>
-<t tx="ekr.20050831195449">@nocolor
+<t tx="ekr.20050831195449">@language rest
 
 For instruction about installing Leo see:
-http://webpages.charter.net/edreamleo/installing.html
+http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 For help, please ask questions at:
 http://groups.google.com/group/leo-editor</t>
@@ -705,7 +705,7 @@ alt-4,... Several seemingly innocuous changes made this work without
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -1655,7 +1655,7 @@ button in your browser attached.  The body text of the corresponding
 bookmark node created in Leo is:
 
     Leo's Home Page
-        http://leoeditor.com/front.html
+        http://leoeditor.com
 
         Tags: leo, python
 
@@ -2558,7 +2558,7 @@ The fix was to the "important special case" in TM.findAllUnitTestNodes.
 The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 </t>
 <t tx="ekr.20120328102352.5942"></t>
-<t tx="ekr.20120328102352.5946">http://leoeditor.com/front.html
+<t tx="ekr.20120328102352.5946">http://leoeditor.com
 
 - Added link to home page from the TOC.
 
@@ -2571,6 +2571,16 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 - Added scaled screen shot to Leo's home page.
 
 - Brought screen shots up to date.
+</t>
+<t tx="ekr.20130327143919.5868">&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Leo's home page has moved&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Leo's home page has moved.&lt;/h1&gt;
+&lt;p&gt;This page has moved to &lt;a href="http://leoeditor.com"&gt;http://leoeditor.com&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

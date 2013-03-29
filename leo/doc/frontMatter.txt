@@ -33,7 +33,7 @@ Front Matter
 
 .. Relative links...
 .. _clones:             intro.html#clones-views
-.. _leo:                front.html
+.. _leo:                index.html
 .. _outline:            intro.html#introduction
 .. _outlines:           intro.html#introduction
 .. _plugins:            intro.html#plugins-settings
