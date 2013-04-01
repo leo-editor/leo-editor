@@ -599,7 +599,8 @@ class todoController:
         "new attrbiute setter"
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
-            if not hasattr(node, '_cached_src_vnode'):
+            if (not hasattr(node, '_cached_src_vnode') or 
+                not node._cached_src_vnode):
                 src_unl = node.u['annotate']['src_unl']
                 c1 = self.c
                 p1 = c1.vnode2position(node)
