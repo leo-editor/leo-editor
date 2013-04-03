@@ -222,7 +222,20 @@ class FreeLayoutController:
         else:
             return None
     #@+node:ekr.20120419095424.9927: *3* loadLayouts (FreeLayoutController)
-    def loadLayouts(self,tag,keys):
+    def loadLayouts(self, tag, keys, reloading=False):
+        """loadLayouts - Load the outlines layout
+
+        :Parameters:
+        - `tag`: from hook event
+        - `keys`: from hook event
+        - `reloading`: True if this is not the initial load, see below
+        
+        When called from the `after-create-leo-frame2` hook this defaults
+        to False.  When called from the `resotre-layout` command, this is set
+        True, and the layout the outline had *when first loaded* is restored.
+        Useful if you want to temporarily switch to a different layout and then
+        back, without having to remember the original layouts name.
+        """
 
         c = self.c
 
@@ -237,7 +250,13 @@ class FreeLayoutController:
             layout = json.loads('\n'.join(layout))
 
         if '_ns_layout' in c.db:
-            name = c.db['_ns_layout']
+            if not reloading: 
+                name = c.db['_ns_layout']
+                c.free_layout.original_layout = name
+            else:
+                name = c.free_layout.original_layout
+                c.db['_ns_layout'] = name
+
             if layout:
                 g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
                     "overrides saved layout "+name)
@@ -315,6 +334,7 @@ class FreeLayoutController:
             ans.append({'Load layout': [(k, '_fl_load_layout:'+k) for k in d]})
             ans.append({'Delete layout': [(k, '_fl_delete_layout:'+k) for k in d]})
             ans.append(('Forget layout', '_fl_forget_layout:'))
+            ans.append(('Restore layout', '_fl_restore_layout:'))
 
         return ans
     #@+node:tbrown.20110628083641.11732: *3* ns_do_context
@@ -371,6 +391,10 @@ class FreeLayoutController:
                 del self.c.db['_ns_layout']
             return True
 
+        if id_.startswith('_fl_restore_layout:'):
+            self.loadLayouts("reload", {'c':self.c}, reloading=True)
+            return True
+
         return False
     #@+node:tbrown.20120119080604.22982: *3* embed
     def embed(self): 
@@ -404,5 +428,16 @@ class FreeLayoutController:
 
         c.redraw()
     #@-others
+#@+node:tbrown.20130403081644.25265: ** @g.command free-layout-restore
+@g.command('free_layout_restore')
+def free_layout_restore(kwargs):
+    """free_layout_restore - restore layout outline had when it was loaded
+
+    :Parameters:
+    - `kwargs`: from command callback
+    """
+
+    c = kwargs['c']
+    c.free_layout.loadLayouts('reload', {'c':c}, reloading=True)
 #@-others
 #@-leo
