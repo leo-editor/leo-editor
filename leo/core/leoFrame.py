@@ -1062,14 +1062,14 @@ class leoBody (HighLevelInterface):
         doc = "body.bodyCtrl property"
     )
     #@+node:ekr.20130303133655.10213: *3* leoBody.attribute_test
-    # def pyflake_test(self):
+    def pyflake_test(self):
         
-        # # Pylint two correct find attribute errors: xyzzy22 and def_stack.
-        # print(self.xyzzy22)
+        # Pylint correctly finds attribute errors: xyzzy22 and def_stack.
+        print(self.xyzzy22)
         
-        # # pyflakes incorrectly complains that dn is not used.
-        # dn = self.def_stack[-1] # Add the code at the top of the stack.
-        # dn.code += 'abc'
+        # pyflakes incorrectly complains that dn is not used.
+        dn = self.def_stack[-1] # Add the code at the top of the stack.
+        dn.code += 'abc'
     #@-others
 #@+node:ekr.20031218072017.3678: ** class leoFrame
 class leoFrame:
@@ -2453,6 +2453,7 @@ class nullFrame (leoFrame):
         return 600,500,20,20
     def lift (self):            pass
     def setWrap (self,flag):    pass
+    def update(self):           pass
 
     #@-others
 #@+node:ekr.20070301164543: ** class nullIconBarClass

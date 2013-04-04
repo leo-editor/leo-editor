@@ -2309,14 +2309,18 @@ def doTests(self,all=None,marked=None,verbosity=1):
         changed = c.isChanged()
         suite = unittest.makeSuite(unittest.TestCase)
         aList = tm.findAllUnitTestNodes(all,marked)
+        setup_script = None
         found = False
         for p in aList:
-            if tm.isTestNode(p):
+            if tm.isTestSetupNode(p):
+                setup_script = p.b
+                test = None
+            elif tm.isTestNode(p):
                 if trace: g.trace('adding',p.h)
-                test = tm.makeTestCase(p)
+                test = tm.makeTestCase(p,setup_script)
             elif tm.isSuiteNode(p): # @suite
                 if trace: g.trace('adding',p.h)
-                test = tm.makeTestSuite(p)
+                test = tm.makeTestSuite(p,setup_script)
             elif tm.isTestClassNode(p):
                 if trace: g.trace('adding',p.h)
                 test = tm.makeTestClass(p) # A suite of tests.
@@ -2375,13 +2379,13 @@ except NameError:
 '''
     return g.adjustTripleString(s,self.c.tab_width)
 #@+node:ekr.20051104075904.13: *6* makeTestCase
-def makeTestCase (self,p):
+def makeTestCase (self,p,setup_script):
 
     c = self.c
     p = p.copy()
 
     if p.b.strip():
-        return GeneralTestCase(c,p)
+        return GeneralTestCase(c,p,setup_script)
     else:
         return None
 #@+node:ekr.20120912094259.10546: *6* makeTestClass
@@ -2430,7 +2434,7 @@ def makeTestClass (self,p):
 # This code executes the script in an @suite node.
 # This code assumes that the script sets the 'suite' var to the test suite.
 
-def makeTestSuite (self,p):
+def makeTestSuite (self,p,setup_script):
 
     """Create a suite of test cases by executing the script in an @suite node."""
 
@@ -2441,6 +2445,8 @@ def makeTestSuite (self,p):
     if not script:
         print("no script in %s" % p.h)
         return None
+    if setup_script:
+        script = setup_script + script
     try:
         script = script + tm.get_suite_script()
         d = {'c':c,'g':g,'p':p}
