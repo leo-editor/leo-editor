@@ -1479,7 +1479,7 @@ class TestManager:
             if g.match_word(p.h,0,'@ignore'):
                 if trace and verbose: g.trace(p.h)
                 p.moveToNodeAfterTree()
-            elif tm.isTestSetupNode(p): # @test-setup
+            elif tm.isTestSetupNode(p): # @testsetup
                 if trace: g.trace('adding',p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
@@ -1519,19 +1519,33 @@ class TestManager:
                         p.moveToNodeAfterTree()
                     elif (tm.isTestNode(p) or # @test 
                           tm.isSuiteNode(p) or # @suite
-                          tm.isTestClassNode(p) # @testclass
+                          tm.isTestClassNode(p) or # @testclass
+                          tm.isTestSetupNode(p) # @testsetup
                     ):
                         if trace: g.trace(p.h)
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
                     else:
                         p.moveToThreadNext()
+                        
+        # Special case 0:
+        # Look backward for the first @testsetup node.
+        if not any([tm.isTestSetupNode(z) for z in result]):
+            p2 = p.threadBack()
+            while p2:
+                if tm.isTestSetupNode(p2):
+                    if trace: g.trace(p2.h)
+                    result.insert(0,p2.copy())
+                    break
+                else:
+                    p2.moveToThreadBack()
 
         # Special case 1:
         # Add the selected node @test or @suite node if no tests have been found so far.
         # Important: this may be used to run a test in an @ignore tree.            
         if not result and (tm.isTestNode(c.p) or tm.isSuiteNode(c.p)):
             seen.append(p.v)
+            if trace: g.trace(p.h)
             result.append(c.p.copy())
 
         # Special case 2:
@@ -1540,6 +1554,7 @@ class TestManager:
         if not result and not marked and not all:
             for p in c.p.parents():
                 if tm.isTestNode(p) or tm.isSuiteNode(p):
+                    if trace: g.trace(p.h)
                     result.append(p.copy())
                     break
 
