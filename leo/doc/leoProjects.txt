@@ -2745,6 +2745,10 @@ A few changes that should have been done long ago:
 @language rest
 
 This is a major step forward.  It is a much cleaner solution than exec(g.findTestScript)
+#@+node:ekr.20130329063228.10304: *4* Allow periods before section names in headlines
+@nocolor-node
+
+Skip '.' before section names in headlines.
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
