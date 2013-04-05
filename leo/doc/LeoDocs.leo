@@ -406,6 +406,7 @@
 <v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
 </v>
 </v>
+<v t="ekr.20130404104418.5951"><vh>*Everything* an implementor must know</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2582,6 +2583,19 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
+<t tx="ekr.20130404104418.5951">@language rest
+
+- Don't read code: use g.trace and g.pdb instead.
+- Where the bodies are hidden.
+    - self.w in leoEditCommands.py
+- Complex code that *can't* be simplified.
+- The top 20 methods.  You must understand these *in general*.
+    - k.masterKeyHandler.
+    - qt.eventFilter.
+    - 
+    
+    
+** Add mandatory _kind fields to all g.Bunches.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

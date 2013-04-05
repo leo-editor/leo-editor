@@ -2098,12 +2098,9 @@ class vnode (baseVnode):
         v = self
         h = g.toUnicode(v.headString())
         h = h.lower().replace(' ','').replace('\t','')
-        
-        #####
-
+        h = h.lstrip('.') # 2013/04/05. Allow leading period before section names.
         pattern = g.toUnicode(pattern)
         pattern = pattern.lower().replace(' ','').replace('\t','')
-
         return h.startswith(pattern)
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
