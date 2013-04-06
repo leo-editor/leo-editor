@@ -4303,6 +4303,7 @@ class Commands (object):
                 p = current.insertAsNthChild(0)
         else:
             p = current.insertAfter()
+        g.doHook('create-node',c=c,p=p)
         p.setDirty(setDescendentsDirty=False)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         c.setChanged(True)
