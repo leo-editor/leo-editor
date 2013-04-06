@@ -1459,7 +1459,7 @@ class TestManager:
     #@+node:ekr.20111104132424.9907: *4* TM.findAllUnitTestNodes
     def findAllUnitTestNodes(self,all,marked):
 
-        trace = False and not g.unitTesting
+        trace = False
         verbose = False
         c,tm = self.c,self
         p = c.rootPosition() if all else c.p
@@ -1534,7 +1534,7 @@ class TestManager:
             p2 = p.threadBack()
             while p2:
                 if tm.isTestSetupNode(p2):
-                    if trace: g.trace(p2.h)
+                    if trace: g.trace('special case 0',p2.h)
                     result.insert(0,p2.copy())
                     break
                 else:
@@ -1565,6 +1565,8 @@ class TestManager:
                 seen.append(p.v)
                 result2.append(p)
 
+        if trace:
+            g.trace([z.h for z in result2])
         return result2
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
