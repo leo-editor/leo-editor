@@ -2088,6 +2088,7 @@ class leoTree:
             unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         else:
             unselect = True
+        # g.trace(call_event_handlers,'old',old_p and old_p.h,'new',p and p.h)
         if unselect:
             #@+<< unselect the old node >>
             #@+node:ekr.20120325072403.7771: *5* << unselect the old node >> (selectHelper)
@@ -2107,9 +2108,9 @@ class leoTree:
         if call_event_handlers:
             if unselect:
                 g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-            if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-                self.selectNewNode(p,old_p)
-                c.nodeHistory.update(p) # Remember this position.
+            g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        self.selectNewNode(p,old_p)
+        c.nodeHistory.update(p) # Remember this position.
         c.setCurrentPosition(p)
         #@+<< set the current node >>
         #@+node:ekr.20040803072955.133: *5* << set the current node >> (selectHelper)
