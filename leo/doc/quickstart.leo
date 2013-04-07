@@ -79,9 +79,9 @@
 </v>
 </v>
 </v>
-<v t="ville.20090630234425.12395" a="E"><vh>Configuration (enabling plugins etc.)</vh>
+<v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
 <v t="ville.20090806210322.1435"><vh>suggested style sheets</vh>
