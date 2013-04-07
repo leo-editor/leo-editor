@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.45" body_secondary_ratio="0.57">
-	<global_window_position top="58" left="465" height="987" width="1134"/>
+	<global_window_position top="37" left="220" height="750" width="1134"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -565,7 +565,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8,0"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -843,8 +843,7 @@ False:
     be expanded when Leo opens an outline.
 </t>
 <t tx="ekr.20101220161557.6013"></t>
-<t tx="ekr.20101220161557.6016"># 770 tests with Python 3.x.  A few less with Python 2.x.
-</t>
+<t tx="ekr.20101220161557.6016"></t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>

@@ -2105,16 +2105,8 @@ class leoTree:
                     colorizer.write_colorizer_cache(old_p)
             #@-<< unselect the old node >>
         if call_event_handlers:
-            g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-        if call_event_handlers:
-            if call_event_handlers:
-                select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-            else:
-                select = True
-            if select:
-                self.selectNewNode(p,old_p)
-                c.nodeHistory.update(p) # Remember this position.
-        else:
+            if unselect:
+                g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
                 self.selectNewNode(p,old_p)
                 c.nodeHistory.update(p) # Remember this position.
