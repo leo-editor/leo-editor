@@ -1295,7 +1295,6 @@ class Commands (object):
         g.app.lockLog()
         c = g.app.newCommander(fileName=None,gui=gui)
         frame = c.frame
-        g.doHook("new",old_c=self,c=c,new_c=c)
         g.app.unlockLog()
 
         frame.setInitialWindowGeometry()
@@ -1307,6 +1306,7 @@ class Commands (object):
         lm.createMenu(c)
         lm.finishOpen(c)
         g.app.writeWaitingLog(c)
+        g.doHook("new",old_c=self,c=c,new_c=c)
         c.setLog()
         c.redraw()
         return c # For unit tests and scripts.
