@@ -366,6 +366,7 @@ class nullGui(leoGui):
         self.theDict = {}
         self.focusWidget = None
         self.frameFactory = g.nullObject()
+        self.iconimages = {}
         self.script = None
         self.lastFrame = None
         self.isNullGui = True

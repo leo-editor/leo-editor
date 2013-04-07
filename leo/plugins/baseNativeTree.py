@@ -271,6 +271,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.repaint()
     #@+node:ekr.20110605121601.17877: *4* drawTree
     def drawTree (self,p,parent_item=None):
+        
+        if g.app.gui.isNullGui:
+            return
 
         # Draw the (visible) parent node.
         item = self.drawNode(p,parent_item)
@@ -1247,7 +1250,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def getIconImage(self,p):
 
         # User icons are not supported in the base class.
-        return self.getStatusIconImage(p)
+        if g.app.gui.isNullGui:
+            return None
+        else:
+            return self.getStatusIconImage(p)
     #@+node:ekr.20110605121601.17948: *4* getStatusIconImage
     def getStatusIconImage (self,p):
 

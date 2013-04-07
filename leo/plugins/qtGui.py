@@ -7439,8 +7439,8 @@ class leoQtGui(leoGui.leoGui):
         # g.trace('(qtGui)',g.callers())
         self.qtApp = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
+        self.iconimages = {}
         self.plainTextWidget = leoQtBaseTextWidget
-        self.iconimages = {} # Image cache set by getIconImage().
         self.mGuiName = 'qt'
         
         self.color_theme = g.app.config.getString('color_theme')
