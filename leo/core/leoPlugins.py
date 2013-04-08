@@ -354,7 +354,8 @@ class LeoPluginsController:
             return None
 
         if trace and (traceIdle or tag != 'idle'):
-            g.trace(tag,g.callers(6))
+            event_p = keywords.get('new_p') or keywords.get('p')
+            g.trace(tag,event_p.h if event_p else '')
 
         if tag in self.handlers:
             bunches = self.handlers.get(tag)
