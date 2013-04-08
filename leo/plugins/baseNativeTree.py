@@ -94,7 +94,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         pass
     #@+node:ekr.20110605121601.17868: ** Debugging & tracing
     def error (self,s):
-        g.trace('*** %s' % (s),g.callers(8))
+        if not g.app.unitTesting:
+            g.trace('(baseNativeTree) Error: %s' % (s),g.callers())
 
     def traceItem(self,item):
         if item:
