@@ -300,9 +300,15 @@ def run(self):
     assert rst,'rst'
     assert html,'html'
     # Kludge: disregard version of docutils.
-    html = html.replace('Docutils 0.8.1:','Docutils 0.8:')
-    html = html.replace('Docutils 0.6:','Docutils 0.8:')
-    html = html.replace('Docutils 0.7:','Docutils 0.8:')
+    if 1:
+        import re
+        html = re.sub('Docutils [\.0-9]*:','Docutils VER:',html)
+    else:
+        html = html.replace('Docutils 0.8.1:','Docutils VER:')
+        html = html.replace('Docutils 0.6:','Docutils VER:')
+        html = html.replace('Docutils 0.7:','Docutils VER:')
+        html = html.replace('Docutils 0.8:','Docutils VER:')
+        html = html.replace('Docutils 0.10:','Docutils VER:')
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
@@ -15398,7 +15404,7 @@ This is the body of the section.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -15671,7 +15677,7 @@ This is the body of the section.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -15970,7 +15976,7 @@ This is the body of the section.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -16253,7 +16259,7 @@ This is the body of the section.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -16556,7 +16562,7 @@ it has two lines.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -16838,7 +16844,7 @@ it has two lines.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -17140,7 +17146,7 @@ it has two lines.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -17420,7 +17426,7 @@ it has two lines.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -17728,7 +17734,7 @@ This is the body of the section.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -18012,7 +18018,7 @@ This is the body of the section.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title>Title</title>
 <style type="text/css">
 
@@ -18302,7 +18308,7 @@ End of test.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title></title>
 <style type="text/css">
 
@@ -18571,7 +18577,7 @@ End of test.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
 <title></title>
 <style type="text/css">
 
