@@ -2809,7 +2809,9 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 <t tx="ekr.20130410093135.5966"></t>
 <t tx="ekr.20130410093135.5969">@language rest
 
-This tutoial tells how to use Leo's find and replace commands.
+==== Intro
+
+This tutorial tells how to use Leo's find and replace commands.
 
 Type Ctrl-F to start searching.
 The cursor moves to the minibuffer.
@@ -2819,7 +2821,7 @@ Underlined characters are keyboard hints.
 Alt-Ctrl-W toggles the Whole Word checkbox, and so on.
 
 Type the search string in the minibuffer.
-Typing the enter key starts the search.
+The enter key starts the search.
 
 As always, Ctrl-G puts the cursor in the body pane and stops the search.
 
@@ -2827,24 +2829,25 @@ To search again, type F3.
 
 To search backwards, type F2.
 
------
+==== Replace
 
-To replace text, enter the find string as before.
-
-but type Ctrl-R instead of enter.
+To replace text, type Ctrl-F and enter the find string as before.
+Instead of enter, type Ctrl-R.
 
 Type the replacement string.
 
-Tthe enter key starts the search as before.
+The enter key starts the search as before.
 
 When a match is found, type the equal key to make the replacement,
 or type type the minus sign to replace and find again.
 
 The F2 and F3 keys work as before.
 
------
+==== Incremental search.
 
+Leo also has incremental search commands.
 Alt-S starts an incremental search.
+Alt-R starts a reverse incremental search.
 
 Whatever characters you types extend the search.
 
@@ -2852,9 +2855,7 @@ The backspace key reverses the search.
 
 Type the enter key or Ctrl-G to stop the search.
 
-While searching, Alt-S finds the next instance of the present search string.
-
-Alt-R starts a reverse incremental search.
+While searching, Alt-S finds the next instance of the search string.
 
 Thanks for watching this tutorial.
 </t>

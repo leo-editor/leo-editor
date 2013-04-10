@@ -2173,6 +2173,11 @@ The fix was in qtBody.setWrap.
 
 
 The fix was to set new_c=self.c in the call to c.close in createFileFromOutline.
+#@+node:ekr.20130410075228.10310: *4* Increased the width of find/change text
+@language rest
+
+dw.createFindTab now creates a third column with a minimum width.
+The find/change text widgets span the second and third columns.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
