@@ -10471,8 +10471,8 @@ class searchCommandsClass (baseEditCommandsClass):
         w = self.setWidget()
         s = w.getAllText()
         i,j = w.getSelectionRange()
-        if again:   ins = g.choose(reverse,i,j+len(pattern))
-        else:       ins = g.choose(reverse,j+len(pattern),i)
+        if again: ins = i if reverse else j+len(pattern)
+        else:     ins = j+len(pattern) if reverse else i
         ifinder.init_s_ctrl(s,ins)
         # Do the search!
         pos, newpos = ifinder.findNextMatch()
@@ -10491,10 +10491,10 @@ class searchCommandsClass (baseEditCommandsClass):
             # g.es("end of wrapped search")
             k.setLabelRed('end of wrapped search')
         else:
-            # k.setLabelRed("not found: %s" % (pattern))
-            # g.es("not found","'%s'" % (pattern))
-            event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
-            k.updateLabel(event)
+            g.es("not found: %s" % (pattern))
+            if not again:
+                event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
+                k.updateLabel(event)
     #@+node:ekr.20050920084036.264: *6* iSearchStateHandler
     # Called from the state manager when the state is 'isearch'
 
@@ -10507,7 +10507,7 @@ class searchCommandsClass (baseEditCommandsClass):
         stroke = event and event.stroke or None
         s = stroke.s if stroke else ''
 
-        if trace: g.trace('s',repr(s))
+        if trace: g.trace('again',stroke in self.iSearchStrokes,'s',repr(s))
 
         # No need to recognize ctrl-z.
         if s in ('Escape','\n','Return'):
