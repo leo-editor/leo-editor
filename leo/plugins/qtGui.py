@@ -2463,6 +2463,7 @@ class DynamicWindow(QtGui.QMainWindow):
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
         grid.setColumnStretch(1,100)
+        grid.setColumnMinimumWidth(2,150)
 
         # Row 0: heading.
         lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
@@ -2475,8 +2476,8 @@ class DynamicWindow(QtGui.QMainWindow):
         lab3 = self.createLabel(parent,'changeLabel','Change:')
         grid.addWidget(lab2,1,0)
         grid.addWidget(lab3,2,0)
-        grid.addWidget(findPattern,1,1)
-        grid.addWidget(findChange,2,1)
+        grid.addWidget(findPattern,1,1,1,2)
+        grid.addWidget(findChange,2,1,1,2)
 
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
