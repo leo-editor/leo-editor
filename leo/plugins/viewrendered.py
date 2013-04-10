@@ -903,12 +903,17 @@ class ViewRenderedController(QtGui.QWidget):
                     QtGui.QTextBrowser.mouseReleaseEvent(w,event)
             
             # Monkey patch a click handler.
-            if g.isPython3:
-                def mouseReleaseEvent(event):
-                    mouseReleaseHelper(w,event)
-            else:
-                def mouseReleaseEvent(w,event):
-                    mouseReleaseHelper(w,event)
+            # 2012/04/10: Use the same pattern for mouseReleaseEvents
+            # that is used in Leo's core:
+            def mouseReleaseEvent(*args,**keys):
+                if len(args) == 1:
+                    event = args[0]
+                elif len(args) == 2:
+                    event = args[1]
+                else:
+                    g.trace('can not happen',args)
+                    return
+                mouseReleaseHelper(w,event)
             
             w.mouseReleaseEvent = mouseReleaseEvent
             pc.embed_widget(w) # Creates w.wrapper

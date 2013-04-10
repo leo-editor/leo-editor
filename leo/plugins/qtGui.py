@@ -375,9 +375,24 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     # def mousePressEvent (self,event):
         # QtGui.QTextBrowser.mousePressEvent(self,event)
 
-    def mouseReleaseEvent(self,event):
-        self.onMouseUp(event)
-        QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+    def mouseReleaseEvent(self,*args,**keys):
+        # g.trace('LeoQTextBrowser')
+        # self.onMouseUp(event)
+        # QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+        
+        # Call the base class method.
+        # 2012/04/10: Use the same pattern for mouseReleaseEvents
+        # as in other parts of Leo's core.
+        if len(args) == 1:
+            event = args[0]
+            self.onMouseUp(event)
+            QtGui.QTextBrowser.mouseReleaseEvent(event) # widget is unbound.
+        elif len(args) == 2:
+            event = args[1]
+            QtGui.QTextBrowser.mouseReleaseEvent(*args)
+        else:
+            g.trace('can not happen')
+            return
     #@+node:ekr.20110605121601.18022: *5* onMouseUp (LeoQTextBrowser)
     def onMouseUp(self,event=None):
 
@@ -487,6 +502,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 Simulate alt-x if we are not in an input state.'''
 
                 trace = False and not g.unitTesting
+                
+                # g.trace('(leoQtBaseTextWidget)')
 
                 # Call the base class method.
                 if len(args) == 1:
@@ -1355,7 +1372,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         assert(i<=j)
         v.selectionStart = i
         v.selectionLength = j-i
-        v.scrollBarSpot = spot = w.getYScrollPosition()
+        v.scrollBarSpot = spot = w.verticalScrollBar().value()
         if trace:
             g.trace(spot,v.h)
             # g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
@@ -1801,6 +1818,8 @@ class leoQtMinibuffer (leoQLineEditWidget):
             '''Override QLineEdit.mouseReleaseEvent.
 
             Simulate alt-x if we are not in an input state.'''
+            
+            # g.trace('(leoQtMinibuffer)')
 
             # Important: c and w must be unbound here.
             k = c.k
