@@ -411,12 +411,14 @@
 <v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
 <v t="ekr.20071021102946"><vh>Enabling idle time event handlers</vh></v>
 </v>
-<v t="ekr.20130410093135.5966"><vh>Tutorial scripts</vh>
-<v t="ekr.20130410093135.5969"><vh>Find</vh></v>
-<v t="ekr.20130410093135.5970"><vh>The screenshots plugin</vh></v>
-<v t="ekr.20130410093135.5971"><vh>The contextmenu plugin</vh></v>
-<v t="ekr.20130410093135.5972"><vh>The bookmarks plugin</vh></v>
-<v t="ekr.20130410093135.5973"><vh>The todo plugin</vh></v>
+<v t="ekr.20130411023340.5976"><vh>Tutorial scripts</vh>
+<v t="ekr.20130411023340.5977"><vh>Find</vh></v>
+<v t="ekr.20130411023340.5978"><vh>Scripting</vh></v>
+<v t="ekr.20130411023340.5979"><vh>External files</vh></v>
+<v t="ekr.20130411023340.5980"><vh>The screenshots plugin</vh></v>
+<v t="ekr.20130411023340.5981"><vh>The contextmenu plugin</vh></v>
+<v t="ekr.20130411023340.5982"><vh>The bookmarks plugin</vh></v>
+<v t="ekr.20130411023340.5983"><vh>The todo plugin</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2806,8 +2808,8 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
     
     
 ** Add mandatory _kind fields to all g.Bunches.</t>
-<t tx="ekr.20130410093135.5966"></t>
-<t tx="ekr.20130410093135.5969">@language rest
+<t tx="ekr.20130411023340.5976"></t>
+<t tx="ekr.20130411023340.5977">@language rest
 
 ==== Intro
 
@@ -2859,13 +2861,15 @@ While searching, Alt-S finds the next instance of the search string.
 
 Thanks for watching this tutorial.
 </t>
-<t tx="ekr.20130410093135.5970"></t>
-<t tx="ekr.20130410093135.5971">@language rest
+<t tx="ekr.20130411023340.5978"></t>
+<t tx="ekr.20130411023340.5979"></t>
+<t tx="ekr.20130411023340.5980"></t>
+<t tx="ekr.20130411023340.5981">@language rest
 
 Adds configurable right-click menu items to nodes.
 </t>
-<t tx="ekr.20130410093135.5972"></t>
-<t tx="ekr.20130410093135.5973"></t>
+<t tx="ekr.20130411023340.5982"></t>
+<t tx="ekr.20130411023340.5983"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
