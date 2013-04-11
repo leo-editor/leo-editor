@@ -447,6 +447,21 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if p:
             if trace: g.trace(arg,c.p.v.h,g.callers())
             p.v.scrollBarSpot = arg
+    #@+node:tbrown.20130411145310.18855: *4* wheelEvent
+    def wheelEvent(self, event):
+        
+        if QtCore.Qt.ControlModifier & event.modifiers():
+            
+            if event.delta() < 0:
+                zoom_out({'c': self.leo_c})
+            else:
+                zoom_in({'c': self.leo_c})
+            
+            event.accept()
+            
+            return
+        
+        QtGui.QTextBrowser.wheelEvent(self, event)
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -1891,6 +1906,26 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
+#@+node:tbrown.20130411145310.18857: *3* zoom_in/out
+@g.command("zoom-in")
+def zoom_in(event=None, delta=1):
+    """increase body font size by one
+    
+    requires that @font-size-body is being used in stylesheet
+    """
+
+    c = event['c']
+    c.font_size_delta += delta
+    ss = g.expand_css_constants(c.active_stylesheet, c.font_size_delta)
+    c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
+    
+@g.command("zoom-out")
+def zoom_out(event=None):
+    """decrease body font size by one
+    
+    requires that @font-size-body is being used in stylesheet
+    """
+    zoom_in(event=event, delta=-1)
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
 #@+node:ekr.20110605121601.18137: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic

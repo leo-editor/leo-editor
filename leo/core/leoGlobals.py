@@ -5255,7 +5255,8 @@ def expand_css_constants(sheet, font_size_delta=0):
     # easily extendable to @font-size-*
     if font_size_delta and "@font-size-body" in constants:
         size = constants["@font-size-body"].replace("px", "")
-        size = int(size) + font_size_delta
+        size = min(250, max(1, int(size) + font_size_delta))
+        
         constants["@font-size-body"] = "%spx" % size
     
     for const in constants:
