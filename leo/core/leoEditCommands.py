@@ -7730,11 +7730,77 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of of Leo's find commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20060209082023.1: *4* << define s >> (aproposFindCommands)_
-        # @pagewidth 40
+        #@+node:ekr.20130411023826.16595: *4* << define s >> (apropos-find-commands)
         #@@language rest
 
         s = '''
+
+        Here is a summary of Leo's find and replace commands.
+
+        Finding text
+        ------------
+
+        **Ctrl-F** starts searching.
+        The cursor moves to the minibuffer.
+
+        To abandon a search, type **Ctrl-G**.
+
+        The Find Tab shows the present settings.
+        Underlined characters are keyboard hints.
+        **Alt-Ctrl-W** toggles the Whole Word checkbox, and so on.
+
+        Type the search string in the minibuffer.
+
+        The **Enter** key starts the search.
+
+        **F3** searches again.
+
+        **F2** searches backwards.
+
+
+        Replacing text
+        --------------
+
+        Type **Ctrl-F** and enter the find string as before.
+
+        Type **Ctrl-R** instead of **Enter**.
+
+        Type the replacement string.
+
+        The **Enter** key starts the search.
+        When a match is found:
+
+            The **=** key makes the replacement.
+            
+            The **-** key replaces and finds again.
+            
+            The **F2** and **F3** keys work as before.
+
+        Incremental searching
+        ---------------------
+
+        **Alt-S** starts an incremental search.
+
+        **Alt-R** starts a reverse incremental search.
+
+        Any characters you type extend the search.
+
+        During an incremental search:
+
+            **Backspace** moves to the previous spot.
+
+            **Enter** or **Ctrl-G** stops the search.
+
+            **Alt-S** finds the search string again.
+
+        '''
+        #@-<< define s >>
+        #@+<< define old_s >>
+        #@+node:ekr.20060209082023.1: *4* << define old_s >> (aproposFindCommands)_
+        # @pagewidth 40
+        #@@language rest
+
+        old_s = '''
         +++++++++++++++++++
         About Find Commands
         +++++++++++++++++++
@@ -7950,7 +8016,7 @@ class helpCommandsClass (baseEditCommandsClass):
         You may use backspace to backtrack. To
         repeat an incremental search, type the
         shortcut for that command again.'''
-        #@-<< define s >>
+        #@-<< define old_s >>
 
         self.c.putApropos(s)
     #@+node:ekr.20120522024827.9897: *3* aproposRegularExpressions
