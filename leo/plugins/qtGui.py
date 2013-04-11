@@ -1872,6 +1872,8 @@ def init():
 
     if not QtCore:
         return False
+    
+    g.font_size_delta = 0  # for adjusting font sizes dynamically
 
     if g.app.gui:
         return g.app.gui.guiName() == 'qt'
@@ -1938,6 +1940,12 @@ def find_constants_defined(text):
 #@+node:tbrown.20130314151946.23062: ** expand_css_constants
 def expand_css_constants(sheet):
     constants = find_constants_defined(sheet)
+    
+    if "@font-size-body" in constants:
+        size = constants["@font-size-body"].replace("px", "")
+        size = int(size) + g.font_size_delta
+        constants["@font-size-body"] = "%spx" % size
+    
     for const in constants:
         sheet = re.sub(
             const+"(?![-A-Za-z0-9_])",  

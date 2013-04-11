@@ -94,7 +94,7 @@
 </v>
 <v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20110611092035.16470"><vh>Appearance</vh>
+<v t="ekr.20110611092035.16470" a="E"><vh>Appearance</vh>
 <v t="ekr.20111024091133.16701"><vh>@@@int qt-tab-width = 40</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
@@ -514,7 +514,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -526,7 +526,7 @@
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
 <v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
 </v>
-<v t="ekr.20110611092035.16470"></v>
+<v t="ekr.20110611092035.16470" a="E"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
@@ -5651,6 +5651,10 @@ If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081018053140.11"></t>
 <t tx="ekr.20081018053140.12">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
+/* constant used by zoom-in/out commands - *parsed from this comment*
+   @font-size-body = 12px
+*/
+
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
 
 /*
@@ -5766,7 +5770,7 @@ QTextEdit#richTextEdit {
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
     /* font-family: Courier New; */
-    font-size: 12px;
+    font-size: @font-size-body;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
