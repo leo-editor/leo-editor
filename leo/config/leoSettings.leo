@@ -5651,8 +5651,21 @@ If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081018053140.11"></t>
 <t tx="ekr.20081018053140.12">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
-/* constant used by zoom-in/out commands - *parsed from this comment*
+/* constants - *parsed from this comment*
+
+   needed for zoom in / out
+   
    @font-size-body = 12px
+
+   change focused-border-style to solid to enable focused pane highlighting
+   
+   @focused-border-style = none
+   @focused-border-width = 1px
+   @focused-border-focus-color = red
+   @focused-border-unfocus-color = none
+   
+   replace the 'none' on the previous line with a color, if you wish
+
 */
 
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
@@ -5863,6 +5876,18 @@ QPlainTextEdit#screencastcaption {
     font-size: 18pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
+}
+
+/* focused pane border highlight */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
 }
 </t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
