@@ -447,6 +447,21 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if p:
             if trace: g.trace(arg,c.p.v.h,g.callers())
             p.v.scrollBarSpot = arg
+    #@+node:tbrown.20130411145310.18855: *4* wheelEvent
+    def wheelEvent(self, event):
+        
+        if QtCore.Qt.ControlModifier & event.modifiers():
+            
+            if event.delta() < 0:
+                zoom_out({'c': self.leo_c})
+            else:
+                zoom_in({'c': self.leo_c})
+            
+            event.accept()
+            
+            return
+        
+        QtGui.QTextBrowser.wheelEvent(self, event)
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -1872,7 +1887,7 @@ def init():
 
     if not QtCore:
         return False
-
+    
     if g.app.gui:
         return g.app.gui.guiName() == 'qt'
     else:
@@ -1891,62 +1906,26 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
-#@+node:tbrown.20130314091306.34409: ** find_constants_defined
-def find_constants_defined(text):
-    """find_constants - Return a dict of constants defined in the supplied text,
-    constants match::
+#@+node:tbrown.20130411145310.18857: *3* zoom_in/out
+@g.command("zoom-in")
+def zoom_in(event=None, delta=1):
+    """increase body font size by one
     
-        ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
-        i.e.
-        @foo_1-5=a
-            @foo_1-5 = a more here
-
-    :Parameters:
-    - `text`: text to search
+    requires that @font-size-body is being used in stylesheet
     """
 
-    pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+    c = event['c']
+    c.font_size_delta += delta
+    ss = g.expand_css_constants(c.active_stylesheet, c.font_size_delta)
+    c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
     
-    ans = {}
+@g.command("zoom-out")
+def zoom_out(event=None):
+    """decrease body font size by one
     
-    text = text.replace('\\\n', '')  # merge lines ending in \
-    
-    for line in text.split('\n'):
-        test = pattern.match(line)
-        if test:
-            ans.update([test.groups()])
-
-    # constants may refer to other constants, de-reference here    
-    change = True
-    level = 0
-    while change and level < 10:
-        level += 1
-        change = False
-        for k in ans:
-            # process longest first so @solarized-base0 is not replaced
-            # when it's part of @solarized-base03
-            for o in sorted(ans, key=lambda x:len(x), reverse=True):
-                if o in ans[k]:
-                    change = True
-                    ans[k] = ans[k].replace(o, ans[o])
-    
-    if level == 10:
-        print("Ten levels of recursion processing styles, abandoned.")
-        g.es("Ten levels of recursion processing styles, abandoned.")
-        
-    return ans
-#@+node:tbrown.20130314151946.23062: ** expand_css_constants
-def expand_css_constants(sheet):
-    constants = find_constants_defined(sheet)
-    for const in constants:
-        sheet = re.sub(
-            const+"(?![-A-Za-z0-9_])",  
-            # don't replace shorter constants occuring in larger
-            constants[const],
-            sheet
-        )
-        
-    return sheet
+    requires that @font-size-body is being used in stylesheet
+    """
+    zoom_in(event=event, delta=-1)
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
 #@+node:ekr.20110605121601.18137: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic
@@ -1983,6 +1962,8 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
+
+        c.font_size_delta = 0  # for adjusting font sizes dynamically
 
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
     #@+node:ekr.20110605121601.18139: *4* construct (DynamicWindow)
@@ -2608,9 +2589,13 @@ class DynamicWindow(QtGui.QMainWindow):
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
             sheet = '\n'.join(sheet)
-            sheet = expand_css_constants(sheet)
             
-
+            # store *before* expanding, so later expansions get new zoom
+            c.active_stylesheet = sheet
+            
+            sheet = g.expand_css_constants(sheet, c.font_size_delta)
+            print c.font_size_delta
+            
             if trace: g.trace(len(sheet))
             w = self.leo_ui
             if g.app.qt_use_tabs:
@@ -2792,6 +2777,8 @@ class leoQtBody (leoFrame.leoBody):
         return 'body-widget'
     #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
+
+        return  # handled by stylesheet
 
         trace = False and not g.unitTesting
 
@@ -7545,9 +7532,12 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20120927164343.10092: *5* add_border (qtGui)
     def add_border(self,c,w):
 
+        return  # handled by stylesheet
+
         state = c.k and c.k.unboundKeyAction
 
         if state and c.use_focus_border:
+        
             d = {
                 'command':  c.focus_border_command_state_color,
                 'insert':   c.focus_border_color,
@@ -7567,6 +7557,8 @@ class leoQtGui(leoGui.leoGui):
                 self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
     #@+node:ekr.20120927164343.10093: *5* remove_border (qtGui)
     def remove_border(self,c,w):
+
+        return  # handled by stylesheet
 
         if not c.use_focus_border:
             return
@@ -8482,6 +8474,8 @@ class leoQtGui(leoGui.leoGui):
             g.warning('bad widget color %s for %s' % (colorName,widgetKind))
     #@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
     def update_style_sheet (self,w,key,value,selector=None):
+        
+        # NOT USED / DON'T USE - interferes with styles, zooming etc.
 
         trace = False and not g.unitTesting
 
