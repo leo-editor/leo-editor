@@ -7735,63 +7735,55 @@ class helpCommandsClass (baseEditCommandsClass):
 
         s = '''
 
-        Here is a summary of Leo's find and replace commands.
+        .. |br| raw:: html
+
+           <br />
 
         Finding text
         ------------
 
-        **Ctrl-F** starts searching.
-        The cursor moves to the minibuffer.
-
+        **Ctrl-F** starts searching. |br|\
+        The cursor moves to the minibuffer. |br|\
         To abandon a search, type **Ctrl-G**.
 
-        The Find Tab shows the present settings.
-        Underlined characters are keyboard hints.
+        The Find Tab shows the present settings. |br|\
+        Underlined characters are keyboard hints: |br|\
         **Alt-Ctrl-W** toggles the Whole Word checkbox, and so on.
 
-        Type the search string in the minibuffer.
+        Type the search string in the minibuffer. |br|\
+        Type the **Enter** key to start the search.
 
-        The **Enter** key starts the search.
-
-        **F3** searches again.
-
-        **F2** searches backwards.
-
+        Once searching has begun:
+            **F3** searches again. |br|\
+            **F2** searches backwards.
 
         Replacing text
         --------------
 
-        Type **Ctrl-F** and enter the find string as before.
-
+        Type **Ctrl-F** and enter the find string as before. |br|\
         Type **Ctrl-R** instead of **Enter**.
 
-        Type the replacement string.
-
+        Type the replacement string. |br|\
         The **Enter** key starts the search.
-        When a match is found:
 
-            The **=** key makes the replacement.
-            
-            The **-** key replaces and finds again.
-            
+        When a match is found:
+            The **=** key makes the replacement. |br|\
+            The **-** key replaces and finds again. |br|\
             The **F2** and **F3** keys work as before.
 
         Incremental searching
         ---------------------
 
-        **Alt-S** starts an incremental search.
-
+        **Alt-S** starts an incremental search. |br|\
         **Alt-R** starts a reverse incremental search.
 
-        Any characters you type extend the search.
+        Any characters you type extend the search. |br|\
+        **Backspace** retracts the search. 
 
         During an incremental search:
-
-            **Backspace** moves to the previous spot.
-
-            **Enter** or **Ctrl-G** stops the search.
-
-            **Alt-S** finds the search string again.
+            **Enter** or **Ctrl-G** stops the search. |br|\
+            **Alt-S** finds the search string again. |br|\
+            **Alt-R** does the same during a reverse search.
 
         '''
         #@-<< define s >>
