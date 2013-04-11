@@ -234,26 +234,24 @@ def ctrlClickAtCursor(event):
         g.openUrlOnClick(event)
 #@+node:tbrown.20130410232859.25384: *3* zoom_in/out
 @g.command("zoom-in")
-def zoom_in(self, event=None):
-    """increase body font size by one, global
+def zoom_in(event=None, delta=1):
+    """increase body font size by one
     
     requires that @font-size-body is being used in stylesheet
     """
-    
-    g.font_size_delta += 1
-    c = g.app.commanders()[0]
-    c.frame.top.setStyleSheets()
+
+    c = event['c']
+    c.font_size_delta += delta
+    ss = g.expand_css_constants(c.active_stylesheet, c.font_size_delta)
+    c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
     
 @g.command("zoom-out")
-def zoom_out(self, event=None):
-    """increase body font size by one, global
+def zoom_out(event=None):
+    """decrease body font size by one
     
     requires that @font-size-body is being used in stylesheet
     """
-    
-    g.font_size_delta -= 1
-    c = g.app.commanders()[0]
-    c.frame.top.setStyleSheets()
+    zoom_in(event=event, delta=-1)
 #@+node:ekr.20120211121736.10817: ** class EditCommandsManager
 class EditCommandsManager:
 

@@ -5246,6 +5246,27 @@ def executeScript (name):
 
     if theFile:
         theFile.close()
+#@+node:tbrown.20130411121812.28336: *3* g.expand_css_constants
+def expand_css_constants(sheet, font_size_delta=0):
+    
+    constants = find_constants_defined(sheet)
+    
+    # adjust @font-size-body by font_size_delta
+    # easily extendable to @font-size-*
+    if font_size_delta and "@font-size-body" in constants:
+        size = constants["@font-size-body"].replace("px", "")
+        size = int(size) + font_size_delta
+        constants["@font-size-body"] = "%spx" % size
+    
+    for const in constants:
+        sheet = re.sub(
+            const+"(?![-A-Za-z0-9_])",  
+            # don't replace shorter constants occuring in larger
+            constants[const],
+            sheet
+        )
+        
+    return sheet
 #@+node:ekr.20040331083824.1: *3* g.fileLikeObject
 # Note: we could use StringIo for this.
 
@@ -5313,6 +5334,50 @@ class fileLikeObject:
 
             self.list.append(s)
     #@-others
+#@+node:tbrown.20130411121812.28335: *3* g.find_constants_defined
+def find_constants_defined(text):
+    """find_constants - Return a dict of constants defined in the supplied text,
+    constants match::
+    
+        ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
+        i.e.
+        @foo_1-5=a
+            @foo_1-5 = a more here
+
+    :Parameters:
+    - `text`: text to search
+    """
+
+    pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+    
+    ans = {}
+    
+    text = text.replace('\\\n', '')  # merge lines ending in \
+    
+    for line in text.split('\n'):
+        test = pattern.match(line)
+        if test:
+            ans.update([test.groups()])
+
+    # constants may refer to other constants, de-reference here    
+    change = True
+    level = 0
+    while change and level < 10:
+        level += 1
+        change = False
+        for k in ans:
+            # process longest first so @solarized-base0 is not replaced
+            # when it's part of @solarized-base03
+            for o in sorted(ans, key=lambda x:len(x), reverse=True):
+                if o in ans[k]:
+                    change = True
+                    ans[k] = ans[k].replace(o, ans[o])
+    
+    if level == 10:
+        print("Ten levels of recursion processing styles, abandoned.")
+        g.es("Ten levels of recursion processing styles, abandoned.")
+        
+    return ans
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod
 #@+at The following is taken from page 188 of the Python Cookbook.
 # 
