@@ -1435,7 +1435,7 @@
 <v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
-<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext =</vh></v>
+<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext = ▼</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
@@ -1637,7 +1637,7 @@
 </v>
 <v t="tbrown.20130411154439.14772"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20130411154439.14773"><vh>Solarized colors (Reference)</vh></v>
-<v t="tbrown.20130411154439.14774" a="E"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="tbrown.20130411154439.14774"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="tbrown.20130411154439.14775"><vh>@color blank_color = grey</vh></v>
 <v t="tbrown.20130411154439.14776"><vh>@color tab_color = red</vh></v>
 <v t="tbrown.20130411154439.14777"><vh>@color label_color = red</vh></v>
@@ -9644,13 +9644,21 @@ loading files</t>
 <t tx="tbrown.20100304170159.5189">Should active_path load docstrings for python files?</t>
 <t tx="tbrown.20100401100336.16108">controls the maximum time active_path will spend on a recursive operation.</t>
 <t tx="tbrown.20100401100336.31583">controls the maximum size file active_path will open without query.</t>
-<t tx="tbrown.20100524101550.4704">text appended to @button headlines which have submenu items *in addition* to the
-standard Goto Script and Remove Button items.  Additional submenu items are
-added by @rclick nodes directly following the @button, and, if the @button has
-no '@others', as children of the @button. 
+<t tx="tbrown.20100524101550.4704">@wrap
 
-Unicode chars like ▾ and … can be used here.
-</t>
+This setting specifies **indicator text** that indicates that an @button button has right-click menu items created by @rclick nodes.
+
+Unicode chars like ▼ ▾ and … are typical choices for this text.
+
+For each @button node, Leo adds right-click menu items for:
+
+- @rclick nodes directly *following* the @button.
+
+- @rclick nodes that are *children* of the @button node, provided that the @button node has no ``@others`` directive.
+
+**Important**: Leo adds two standard right-click menu items for each @button node: ``Remove Button`` and ``Goto Script``.
+
+Leo adds the ind</t>
 <t tx="tbrown.20110212091818.20118">Set to False, dragging nodes between different outlines
 creates copies.  Set to True, the node is moved and no
 longer exists in the source outline.</t>
