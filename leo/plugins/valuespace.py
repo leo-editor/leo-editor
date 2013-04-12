@@ -338,7 +338,8 @@ def vs_eval(kwargs):
     try:
         # execute all but the last 'block'
         if dbg: print('all but last')
-        exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+        # exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+        exec('\n'.join(blocks[:-1]), leo_globals, c.vs) # Compatible with Python 3.x.
         all_done = False
     except SyntaxError:
         # splitting of the last block caused syntax error
@@ -348,7 +349,8 @@ def vs_eval(kwargs):
             ans = eval(txt, leo_globals, c.vs)
         except SyntaxError:
             if dbg: print('statement block')
-            exec txt in leo_globals, c.vs
+            # exec txt in leo_globals, c.vs
+            exec(txt, leo_globals, c.vs) # Compatible with Python 3.x.
         all_done = True  # either way, the last block is used now
     
     if not all_done:  # last block still needs using
@@ -358,7 +360,8 @@ def vs_eval(kwargs):
         except SyntaxError:
             ans = None
             if dbg: print('final statement')
-            exec blocks[-1] in leo_globals, c.vs
+            # exec blocks[-1] in leo_globals, c.vs
+            exec(blocks[-1], leo_globals, c.vs) # Compatible with Python 3.x.
 
     if redirects:
         if not old_stderr:
