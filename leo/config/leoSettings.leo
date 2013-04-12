@@ -9658,7 +9658,7 @@ For each @button node, Leo adds right-click menu items for:
 
 **Important**: Leo adds two standard right-click menu items for each @button node: ``Remove Button`` and ``Goto Script``.
 
-Leo adds the ind</t>
+Leo adds the indicator text only if the right-click menu items contain items created by @rclick nodes.</t>
 <t tx="tbrown.20110212091818.20118">Set to False, dragging nodes between different outlines
 creates copies.  Set to True, the node is moved and no
 longer exists in the source outline.</t>
