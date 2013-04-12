@@ -499,7 +499,8 @@ class scriptingController:
         trace = False and not g.app.unitTesting and not g.app.batchMode
         c = self.c ; h = p.h
         shortcut = self.getShortcut(h)
-        statusLine = 'Local script button'
+        docstring = g.getDocString(p.b)
+        statusLine = docstring if docstring else 'Local script button'
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
             
@@ -729,6 +730,10 @@ class scriptingController:
     def createBalloon (self,w,label):
 
         'Create a balloon for a widget.'
+
+        if g.app.gui.guiName().startswith('qt'):
+            # w is a leoIconBarButton.
+            w.button.setToolTip(label)
     #@+node:ekr.20060328125248.26: *4* deleteButton
     def deleteButton(self,button,**kw):
 

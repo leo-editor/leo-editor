@@ -4273,7 +4273,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@+node:ekr.20110605121601.18271: *5* setCommandForButton (@rclick nodes)
+        #@+node:ekr.20110605121601.18271: *5* qtIconBarClass.setCommandForButton (@rclick nodes)
         def setCommandForButton(self,button,command):
 
             if command:
@@ -4285,7 +4285,6 @@ class leoQtFrame (leoFrame.leoFrame):
                     # can get here from @buttons in the current outline, in which
                     # case p exists, or from @buttons in @settings elsewhere, in
                     # which case it doesn't
-
                     return
 
                 # 20100518 - TNB command is instance of callable class with
@@ -4294,6 +4293,9 @@ class leoQtFrame (leoFrame.leoFrame):
                     command.c.selectPosition(command.p)
                     command.c.redraw()
                 b = button.button
+                docstring = g.getDocString(command.p.b)
+                if docstring:
+                    b.setToolTip(docstring)
                 b.goto_script = gts = QtGui.QAction('Goto Script', b)
                 b.addAction(gts)
                 gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
@@ -4309,21 +4311,21 @@ class leoQtFrame (leoFrame.leoFrame):
                         rclicks.append(i.copy())
                     else:
                         break
-
                 if rclicks:
                     b.setText(g.u(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
-
                 for rclick in rclicks:
-
                     def cb(event=None, ctrl=command.controller, p=rclick, 
                            c=command.c, b=command.b, t=rclick.h[8:]):
                         ctrl.executeScriptFromButton(p,b,t)
                         if c.exists:
                             c.outerUpdate()
-
-                    rc = QtGui.QAction(rclick.h[8:], b)
+                    rc = QtGui.QAction(rclick.h[8:].strip(),b)
+                    # This code has no effect.
+                    # docstring = g.getDocString(rclick.b).strip()
+                    # if docstring:
+                        # rc.setToolTip(docstring)
                     rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
-                    b.insertAction(b.actions()[-2], rc)  # insert rc before Remove Button
+                    b.insertAction(b.actions()[-2],rc)  # insert rc before Remove Button
         #@-others
     #@+node:ekr.20110605121601.18272: *4* Minibuffer methods (Qt)
     #@+node:ekr.20110605121601.18273: *5* f.setMinibufferBindings
