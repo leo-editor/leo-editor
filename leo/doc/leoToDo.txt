@@ -5,7 +5,6 @@
 .. @+all
 .. @+node:ekr.20130412022445.12389: ** First
 .. @+node:ekr.20130411131638.10311: *3* ** ask the qt people about leaving foreground text unchanged
-.. @+node:ekr.20130411023826.12372: *3* ** Buttons must have documentation!
 .. @+node:ekr.20130408095053.10307: *3* ** guide for the next leaders
 # Use bookmarks?
 .. @+node:ekr.20130411080735.10309: *3* ** rename the apropos command to help-about...

@@ -2754,6 +2754,10 @@ This is a major step forward.  It is a much cleaner solution than exec(g.findTes
 @nocolor-node
 
 Skip '.' before section names in headlines.
+#@+node:ekr.20130412141141.10332: *4* All @button nodes now show call tips
+@language rest
+
+These are generated from the @button node's docstring, if it exists.
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
