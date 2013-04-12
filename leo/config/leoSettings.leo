@@ -1087,6 +1087,8 @@
 <v t="ekr.20070925144534.276"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
 <v t="ekr.20110607054506.16815"><vh>@menu &amp;Help commands...</vh>
+<v t="ekr.20130412173637.11774"><vh>@item help</vh></v>
+<v t="ekr.20130412173637.11775"><vh>@item -</vh></v>
 <v t="ekr.20110607054506.16816"><vh>@item apropos-abbreviations</vh></v>
 <v t="ekr.20110607054506.16817"><vh>@item apropos-autocompletion</vh></v>
 <v t="ekr.20110607054506.16818"><vh>@item apropos-bindings</vh></v>
@@ -1292,6 +1294,7 @@
 <v t="ekr.20090628075121.8432"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20070925144534.416"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20070925144534.417"><vh>@item -</vh></v>
+<v t="ekr.20130412173637.11776"><vh>@item *help</vh></v>
 <v t="ekr.20070925144534.418"><vh>@item *he&amp;lp-for-minibuffer</vh></v>
 <v t="ekr.20070925144534.419"><vh>@item *help-for-&amp;command</vh></v>
 <v t="ekr.20070925144534.420"><vh>@item -</vh></v>
@@ -9552,7 +9555,8 @@ When True, bindings that appear to specify the control key actually specify the 
 <t tx="ekr.20120229173025.20627">print('hi from leoSettings.leo')</t>
 <t tx="ekr.20120229173025.20628"></t>
 <t tx="ekr.20120305084218.11271"># Unbound F-Keys cause problems on Ubuntu
-help-for-command= F1
+# help-for-command= F1
+help            = F1
 # find-prev     = F2    # Set elsewhere
 # find-next     = F3    # Set elsewhere
 do-nothing      = F4
@@ -9594,6 +9598,9 @@ do-nothing = Shift-F12</t>
 <t tx="ekr.20120520053551.11241"></t>
 <t tx="ekr.20120926072255.11432"></t>
 <t tx="ekr.20120928142052.11488"></t>
+<t tx="ekr.20130412173637.11774"></t>
+<t tx="ekr.20130412173637.11775"></t>
+<t tx="ekr.20130412173637.11776"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files

@@ -7208,6 +7208,7 @@ class helpCommandsClass (baseEditCommandsClass):
             'apropos-debugging-commands': self.aproposDebuggingCommands,
             'apropos-find-commands':    self.aproposFindCommands,
             'apropos-regular-expressions': self.aproposRegularExpressions,
+            'help':                     self.help,
             'help-for-command':         self.helpForCommand,
             'help-for-minibuffer':      self.helpForMinibuffer,
             'help-for-python':          self.pythonHelp,
@@ -7687,6 +7688,22 @@ class helpCommandsClass (baseEditCommandsClass):
         '''
         #@-<< define s >>
 
+        self.c.putApropos(s)
+    #@+node:ekr.20130412173637.10333: *3* help
+    def help (self,event=None):
+
+        '''Prints a discussion of keyboard bindings.'''
+
+        #@+<< define s >>
+        #@+node:ekr.20130412173637.10330: *4* << define s >> (F1)
+        s = '''
+
+        Welcome to Leo's help system.
+
+        Type apropos-<tab> to get a list of topics.
+
+        '''
+        #@-<< define s >>
         self.c.putApropos(s)
     #@+node:ekr.20070501092655: *3* aproposDebuggingCommands
     def aproposDebuggingCommands (self,event=None):
