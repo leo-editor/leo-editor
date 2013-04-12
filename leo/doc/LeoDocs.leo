@@ -412,7 +412,7 @@
 <v t="ekr.20071021102946"><vh>Enabling idle time event handlers</vh></v>
 </v>
 <v t="ekr.20130411023340.5976"><vh>Tutorial scripts</vh>
-<v t="ekr.20130411023340.5977"><vh>Find</vh></v>
+<v t="ekr.20130411135403.5972"><vh>What makes Leo special</vh></v>
 <v t="ekr.20130411023340.5978"><vh>Scripting</vh></v>
 <v t="ekr.20130411023340.5979"><vh>External files</vh></v>
 <v t="ekr.20130411023340.5980"><vh>The screenshots plugin</vh></v>
@@ -2809,58 +2809,6 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
     
 ** Add mandatory _kind fields to all g.Bunches.</t>
 <t tx="ekr.20130411023340.5976"></t>
-<t tx="ekr.20130411023340.5977">@language rest
-
-==== Intro
-
-This tutorial tells how to use Leo's find and replace commands.
-
-Type Ctrl-F to start searching.
-The cursor moves to the minibuffer.
-
-The Find Tab shows the present settings.
-Underlined characters are keyboard hints.
-Alt-Ctrl-W toggles the Whole Word checkbox, and so on.
-
-Type the search string in the minibuffer.
-The enter key starts the search.
-
-As always, Ctrl-G puts the cursor in the body pane and stops the search.
-
-To search again, type F3.
-
-To search backwards, type F2.
-
-==== Replace
-
-To replace text, type Ctrl-F and enter the find string as before.
-Instead of enter, type Ctrl-R.
-
-Type the replacement string.
-
-The enter key starts the search as before.
-
-When a match is found, type the equal key to make the replacement,
-or type type the minus sign to replace and find again.
-
-The F2 and F3 keys work as before.
-
-==== Incremental search.
-
-Leo also has incremental search commands.
-Alt-S starts an incremental search.
-Alt-R starts a reverse incremental search.
-
-Whatever characters you types extend the search.
-
-The backspace key reverses the search.
-
-Type the enter key or Ctrl-G to stop the search.
-
-While searching, Alt-S finds the next instance of the search string.
-
-Thanks for watching this tutorial.
-</t>
 <t tx="ekr.20130411023340.5978"></t>
 <t tx="ekr.20130411023340.5979"></t>
 <t tx="ekr.20130411023340.5980"></t>
@@ -2870,6 +2818,34 @@ Adds configurable right-click menu items to nodes.
 </t>
 <t tx="ekr.20130411023340.5982"></t>
 <t tx="ekr.20130411023340.5983"></t>
+<t tx="ekr.20130411135403.5972">@language rest
+
+Leo looks like relatively ordinary outline editor,
+but it has unique scripting and data-organizing abilities.
+
+Scripting
+---------
+
+- Any node in the outline may contain a Leo script.
+- Leo can *compose* scripts from a node and its descendants.
+- Leo scripts can *easily* access all the data in any outline.
+
+Leo scripts can do things that can't be *imagined* in other editors.
+
+Data-organizing
+---------------
+
+- Cloned nodes may appear many times in the same outline.
+- Clones create views of data that persist indefinitely.
+  Any set of nodes may appear in arbitrirly many views of the data.
+- Headlines naturally describe the data contained in nodes.
+
+
+Script nodes
+------------
+
+There are many ways to combine these capabilities.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
