@@ -1609,7 +1609,6 @@
 <v t="tbrown.20130411154439.14742"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="tbrown.20130411154439.14743"><vh>stylesheet &amp; source</vh>
 <v t="tbrown.20130411154439.14744"><vh>config</vh></v>
-<v t="tbrown.20130411154439.14746"><vh>border</vh></v>
 <v t="tbrown.20130411154439.14747"><vh>Color styles</vh>
 <v t="tbrown.20130411154439.14748"><vh>ase</vh></v>
 <v t="tbrown.20130411154439.14749"><vh>body editor</vh></v>
@@ -1632,7 +1631,9 @@
 <v t="tbrown.20130411154439.14765"><vh>log</vh></v>
 <v t="tbrown.20130411154439.14766"><vh>mini-buffer &amp; status</vh></v>
 </v>
-<v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh></v>
+<v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh>
+<v t="tbrown.20130411154439.14746"><vh>@ignore border</vh></v>
+</v>
 <v t="tbrown.20130411155428.5767"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
 <v t="tbrown.20130411154439.14772"><vh>Solarized colorizing settings</vh>
@@ -5657,15 +5658,6 @@ If there are more than this number, a new row is created.</t>
    needed for zoom in / out
    
    @font-size-body = 12px
-
-   change focused-border-style to solid to enable focused pane highlighting
-   
-   @focused-border-style = none
-   @focused-border-width = 1px
-   @focused-border-focus-color = red
-   @focused-border-unfocus-color = none
-   
-   replace the 'none' on the previous line with a color, if you wish
 
 */
 
@@ -10090,7 +10082,8 @@ constants:
 
 
 </t>
-<t tx="tbrown.20130411154439.14746">QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+<t tx="tbrown.20130411154439.14746">/* unneeded alternative active pane highlighting */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
   border-style: @focused-border-style;
   border-width: @focused-border-width; 
   border-color: @focused-border-unfocus-color; 

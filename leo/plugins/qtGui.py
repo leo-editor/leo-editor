@@ -2594,7 +2594,6 @@ class DynamicWindow(QtGui.QMainWindow):
             c.active_stylesheet = sheet
             
             sheet = g.expand_css_constants(sheet, c.font_size_delta)
-            print c.font_size_delta
             
             if trace: g.trace(len(sheet))
             w = self.leo_ui
@@ -2603,7 +2602,6 @@ class DynamicWindow(QtGui.QMainWindow):
             w.setStyleSheet(sheet or self.default_sheet())
         else:
             if trace: g.trace('no style sheet')
-            
     #@+node:ekr.20110605121601.18176: *5* defaultStyleSheet
     def defaultStyleSheet (self):
 
@@ -2777,8 +2775,8 @@ class leoQtBody (leoFrame.leoBody):
         return 'body-widget'
     #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
-
-        return  # handled by stylesheet
+        
+        return # handled by stylesheet
 
         trace = False and not g.unitTesting
 
@@ -7532,8 +7530,6 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20120927164343.10092: *5* add_border (qtGui)
     def add_border(self,c,w):
 
-        ### return  # handled by stylesheet
-
         state = c.k and c.k.unboundKeyAction
 
         if state and c.use_focus_border:
@@ -7557,8 +7553,6 @@ class leoQtGui(leoGui.leoGui):
                 self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
     #@+node:ekr.20120927164343.10093: *5* remove_border (qtGui)
     def remove_border(self,c,w):
-
-        ### return  # handled by stylesheet
 
         if not c.use_focus_border:
             return
