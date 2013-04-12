@@ -7532,7 +7532,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20120927164343.10092: *5* add_border (qtGui)
     def add_border(self,c,w):
 
-        return  # handled by stylesheet
+        ### return  # handled by stylesheet
 
         state = c.k and c.k.unboundKeyAction
 
@@ -7558,7 +7558,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20120927164343.10093: *5* remove_border (qtGui)
     def remove_border(self,c,w):
 
-        return  # handled by stylesheet
+        ### return  # handled by stylesheet
 
         if not c.use_focus_border:
             return
