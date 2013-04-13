@@ -412,6 +412,7 @@
 <v t="ekr.20071021102946"><vh>Enabling idle time event handlers</vh></v>
 </v>
 <v t="ekr.20130411023340.5976"><vh>Tutorial scripts</vh>
+<v t="ekr.20130413153344.14589"><vh>What makes Leo special: shorter</vh></v>
 <v t="ekr.20130411135403.5972"><vh>What makes Leo special</vh></v>
 <v t="ekr.20130411023340.5978"><vh>Scripting</vh></v>
 <v t="ekr.20130411023340.5979"><vh>External files</vh></v>
@@ -2846,6 +2847,41 @@ Script nodes
 
 There are many ways to combine these capabilities.
 </t>
+<t tx="ekr.20130413153344.14589">@wrap
+@language rest
+
+.. |br| raw:: html
+
+   &lt;br /&gt;
+   
+**Leo completely integrates scripting and outlines.** |br|
+Leo outlines are true Python objects, not just text.
+
+\1. **Headlines naturally define types**, such as:
+
+**@file** trees create external files. |br|
+**@test** nodes and trees create unit tests. |br|
+**@button** nodes create **script buttons**. |br|
+**@command** nodes create user-defined commands. |br|
+**@html** trees create web pages. |br|
+**@settings** trees contain Leo settings.
+
+\2. **Any node may contain a Leo script**:
+
+A simple outline-aware markup language creates scripts |br|
+and external files from outline nodes and trees.
+
+\3. **Leo scripts have *easy* access to all outline data**:
+
+All Leo scripts execute with these **predefined symbols**: |br|
+**c** gives access to all outline data and all of Leo's code. |br|
+**p** is the presently selected node in the script. |br|
+**p.h** is the headline text; **p.b** is the body text. |br|
+**g** is a module containing utility functions &amp; classes.
+
+\4. **All parts of Leo are scriptable**, including: |br|
+
+.. In short, all outline data are completely scriptable.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
