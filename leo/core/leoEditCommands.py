@@ -8145,12 +8145,16 @@ class helpCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             s = k.arg.strip()
             if s:
-                g.redirectStderr()
-                g.redirectStdout()
-                try: help(str(s))
-                except Exception: pass
-                g.restoreStderr()
-                g.restoreStdout()
+                # Capture the output of Python's help command.
+                old = sys.stdout
+                try:
+                    sys.stdout = stdout = g.fileLikeObject()
+                    help(str(s))
+                    s2 = stdout.read()
+                finally:
+                    sys.stdout = old
+                # Send it to the vr pane.
+                c.putApropos(s2)
     #@+node:ekr.20070418074444: *3* printSettings
     def printSettings (self,event=None):
 

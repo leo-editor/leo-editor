@@ -247,6 +247,7 @@ def show_scrolled_message(tag, kw):
 
     if g.unitTesting:
         return # This just slows the unit tests.
+    # g.trace(tag,kw)
     c = kw.get('c')
     vr = viewrendered(event=kw)
     title = kw.get('short_title','').strip()
@@ -260,6 +261,10 @@ def show_scrolled_message(tag, kw):
     s = '\n'.join(s)
     vr.locked = False
     vr.active = True
+    # Kludge: disable update until we change nodes.
+    vr.gnx = c.p.v.gnx
+    vr.length = len(c.p.b)
+    kw['force'] = True
     vr.update_rst(s, kw)
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
