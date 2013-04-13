@@ -7708,24 +7708,25 @@ class helpCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20130412173637.10330: *4* << define s >> (F1)
         s = '''
 
-        Getting Help
-        ============
+        **Welcome to Leo's help system.**
 
-        Welcome to Leo's help system.
-
-        To learn about <Alt-X> commands, type::
+        To learn about ``<Alt-X>`` commands, type::
             
-            <Alt-X> help-for-minibuffer <Enter>
+            <Alt-X>help-for-minibuffer<Enter>
             
         To get a list of help topics, type::
             
-            <Alt-X> help-<tab>
+            <Alt-X>help-<tab>
             
-        To get help about a particular Leo command, type::
+        For Leo commands (tab completion allowed), type::
             
-            <Alt-X> help-for-command <Enter>
+            <Alt-X>help-for-command<Enter>
+            <a Leo command name><Enter>
             
-        You may also execute help commands from the Help menu.
+        To use Python's help system, type::
+            
+            <Alt-X>help-for-python<Enter>
+            <a python symbol><Enter>
 
         '''
         #@-<< define s >>

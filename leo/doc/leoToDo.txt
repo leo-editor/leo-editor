@@ -3,6 +3,28 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
+.. @+node:ekr.20130413061407.10366: ** The big picture
+@wrap
+
+Release the next version of Leo:
+
+    Rewrite in screencast-script style:
+    
+        - Docstrings for the most important plugins.
+        - All help-for-<topic> text.
+        - Leo's tutorials.
+    
+    - Fix the most important bugs, and little bugs that have hung around far too long.
+
+Concurrently with release-related matters:
+
+    - Use bookmarks to describe everything a future project leader needs to know about Leo.
+
+After the release:
+
+    - Revisit some of the worst parts of Leo's code, especially undo and headline editing.
+    
+    - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 .. @+node:ekr.20130412022445.12389: ** First
 .. @+node:ekr.20130411131638.10311: *3* ** ask the qt people about leaving foreground text unchanged
 .. @+node:ekr.20130408095053.10307: *3* ** guide for the next leaders
