@@ -7202,17 +7202,17 @@ class helpCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'apropos-abbreviations':    self.aproposAbbreviations,
-            'apropos-autocompletion':   self.aproposAutocompletion,
-            'apropos-bindings':         self.aproposBindings,
-            'apropos-debugging-commands': self.aproposDebuggingCommands,
-            'apropos-find-commands':    self.aproposFindCommands,
-            'apropos-regular-expressions': self.aproposRegularExpressions,
-            'help':                     self.help,
-            'help-for-command':         self.helpForCommand,
-            'help-for-minibuffer':      self.helpForMinibuffer,
-            'help-for-python':          self.pythonHelp,
-            'print-settings':           self.printSettings,
+        'help':                         self.help,
+        'help-for-abbreviations':       self.aproposAbbreviations,
+        'help-for-autocompletion':      self.aproposAutocompletion,
+        'help-for-bindings':            self.aproposBindings,
+        'help-for-command':             self.helpForCommand,
+        'help-for-debugging-commands':  self.aproposDebuggingCommands,
+        'help-for-find-commands':       self.aproposFindCommands,
+        'help-for-minibuffer':          self.helpForMinibuffer,
+        'help-for-python':              self.pythonHelp,
+        'help-for-regular-expressions': self.aproposRegularExpressions,
+        'print-settings':               self.printSettings,
         }
     #@+node:ekr.20051014170754: *3* helpForMinibuffer
     def helpForMinibuffer (self,event=None):
@@ -7257,6 +7257,16 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prompts for a command name and prints the help message for that command.'''
 
         k = self.k
+        #@+<< define s >>
+        #@+node:ekr.20130412180825.10342: *4* << define s >> (help-for-command)
+        s = '''
+
+        Type the name of the command, followed by Return.
+
+        '''
+
+        #@-<< define s >>
+        self.c.putApropos(s)
         k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
 
     #@+node:ekr.20120521114035.9870: *4* getBindingsForCommand
@@ -7692,15 +7702,30 @@ class helpCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20130412173637.10333: *3* help
     def help (self,event=None):
 
-        '''Prints a discussion of keyboard bindings.'''
+        '''Prints and introduction to Leo's help system.'''
 
         #@+<< define s >>
         #@+node:ekr.20130412173637.10330: *4* << define s >> (F1)
         s = '''
 
+        Getting Help
+        ============
+
         Welcome to Leo's help system.
 
-        Type apropos-<tab> to get a list of topics.
+        To learn about <Alt-X> commands, type::
+            
+            <Alt-X> help-for-minibuffer <Enter>
+            
+        To get a list of help topics, type::
+            
+            <Alt-X> help-<tab>
+            
+        To get help about a particular Leo command, type::
+            
+            <Alt-X> help-for-command <Enter>
+            
+        You may also execute help commands from the Help menu.
 
         '''
         #@-<< define s >>

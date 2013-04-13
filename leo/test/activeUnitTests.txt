@@ -7430,7 +7430,7 @@ p3 = c.p
 # print(p3)
 # assert p == p3
 #@+node:ekr.20100212104817.5351: *5* @test help-for-command
-result = c.helpCommands.getBindingsForCommand('help-for-command')
+result = c.helpCommands.getBindingsForCommand('help')
 assert result.strip().lower()=='f1'
 #@+node:ekr.20061101121602.266: *5* @test indent-relative
 c.testManager.runEditCommandTest(p)

@@ -245,10 +245,10 @@ def onCreate(tag, keys):
 #@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
 
+    if g.unitTesting:
+        return # This just slows the unit tests.
     c = kw.get('c')
-    
     vr = viewrendered(event=kw)
-    
     title = kw.get('short_title','').strip()
     vr.setWindowTitle(title)
     s = [
@@ -258,96 +258,11 @@ def show_scrolled_message(tag, kw):
         kw.get('msg')
     ]
     s = '\n'.join(s)
-
+    vr.locked = False
+    vr.active = True
     vr.update_rst(s, kw)
-    vr.locked = True
-    vr.active = False
-    
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
-@g.command('vr-hide')
-def hide_rendering_pane(event):
-    
-    '''Close the rendering pane.'''
-
-    global controllers
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.deactivate()
-            vr.deleteLater()
-            
-            h = c.hash()
-            if vr == controllers.get(h):
-                del controllers[h]
-            else:
-                g.trace('Can not happen: no controller for %s' % (c))
-            
-# Compatibility
-close_rendering_pane = hide_rendering_pane
-#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock-toggle')
-@g.command('vr-lock-toggle')
-def lock_unlock_rendering_pane(event):
-    
-    '''Pause or play a movie in the rendering pane.'''
-
-    c = event.get('c')
-    if c:
-        
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
-            if vr.locked:
-                vr.unlock()
-            else:
-                vr.lock()
-#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
-@g.command('vr-pause-play')
-def pause_play_movie(event):
-    
-    '''Pause or play a movie in the rendering pane.'''
-
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
-            if vr and vr.vp:
-                vp = vr.vp
-                if vp.isPlaying():
-                    vp.pause()
-                else:
-                    vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show-toggle')
-@g.command('vr-show-toggle')
-def toggle_rendering_pane(event):
-    
-    '''Show or hide the rendering pane.'''
-
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if vr:
-            hide_rendering_pane(event)
-        else:
-            viewrendered(event)
-#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
-@g.command('vr-update')
-def update_rendering_pane (event):
-    
-    '''Hide the rendering pane, but do not delete it.'''
-
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
-            vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
@@ -378,6 +293,93 @@ def viewrendered(event):
             vr.resize(600, 600)
             vr.show()
     return vr
+#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
+@g.command('vr-hide')
+def hide_rendering_pane(event):
+    
+    '''Close the rendering pane.'''
+
+    global controllers
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            vr.deactivate()
+            vr.deleteLater()
+            h = c.hash()
+            if vr == controllers.get(h):
+                del controllers[h]
+            else:
+                g.trace('Can not happen: no controller for %s' % (c))
+            
+# Compatibility
+close_rendering_pane = hide_rendering_pane
+#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
+@g.command('vr-lock')
+def lock_unlock_rendering_pane(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr and not vr.locked:
+            vr.lock()
+#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
+@g.command('vr-pause-play')
+def pause_play_movie(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            if vr and vr.vp:
+                vp = vr.vp
+                if vp.isPlaying():
+                    vp.pause()
+                else:
+                    vp.play()
+#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
+@g.command('vr-show')
+def toggle_rendering_pane(event):
+    
+    '''Show or hide the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            pass # hide_rendering_pane(event)
+        else:
+            viewrendered(event)
+#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
+@g.command('vr-unlock')
+def lock_unlock_rendering_pane(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr and vr.locked:
+            vr.unlock()
+#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
+@g.command('vr-update')
+def update_rendering_pane (event):
+    
+    '''Update the rendering pane'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            g.es('Open a viewrendered pane first')
+        else:
+            vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
@@ -516,7 +518,10 @@ class ViewRenderedController(QtGui.QWidget):
         trace = False and not g.unitTesting
         pc = self ; c = pc.c ; p = c.p ; w = pc.w
         force = keywords.get('force')
-        s, val = pc.must_update(keywords)
+        if force:
+            s,val = p.b,True
+        else:
+            s, val = pc.must_update(keywords)
         
         if not force and not val:
             # Save the scroll position.
@@ -529,15 +534,17 @@ class ViewRenderedController(QtGui.QWidget):
                     self.deactivate()
                 if sb:
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-            # g.trace('no update')
+            # if trace: g.trace('no update')
             return
+            
+        if trace: g.trace(p.h)
             
         # Suppress updates until we change nodes.
         pc.node_changed = pc.gnx != p.v.gnx
         pc.gnx = p.v.gnx
         pc.length = len(p.b) # Use p.b, not s.
 
-        if pc.s:
+        if pc.s and not force:
             if trace: g.trace('docstring',len(pc.s))
             # A plugin docstring.
             s = pc.s
@@ -776,7 +783,7 @@ class ViewRenderedController(QtGui.QWidget):
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         
-        if trace: g.trace('isHtml',isHtml)
+        if trace: g.trace('isHtml',isHtml,p.h)
         
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_text_widget()
