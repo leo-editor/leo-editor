@@ -8153,7 +8153,8 @@ class helpCommandsClass (baseEditCommandsClass):
                     s2 = stdout.read()
                 finally:
                     sys.stdout = old
-                # Send it to the vr pane.
+                # Send it to the vr pane as a <pre> block
+                s2 = '<pre>' + s2 + '</pre>'
                 c.putApropos(s2)
     #@+node:ekr.20070418074444: *3* printSettings
     def printSettings (self,event=None):
