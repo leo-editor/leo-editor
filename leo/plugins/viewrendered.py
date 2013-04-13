@@ -290,6 +290,33 @@ def viewrendered(event):
             vr.resize(600, 600)
             vr.show()
     return vr
+#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
+@g.command('vr-contract')
+def contract_rendering_pane(event):
+    
+    '''Expand the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        if vr:
+            vr.contract()
+        else:
+            # Just open the pane.
+            viewrendered(event)
+#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
+@g.command('vr-expand')
+def expand_rendering_pane(event):
+    
+    '''Expand the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        if not vr:
+            vr = viewrendered(event)
+        if vr:
+            vr.expand()
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
@@ -330,16 +357,15 @@ def pause_play_movie(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
         if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
-            if vr and vr.vp:
-                vp = vr.vp
-                if vp.isPlaying():
-                    vp.pause()
-                else:
-                    vp.play()
+            vr = viewrendered(event)
+        if vr and vr.vp:
+            vp = vr.vp
+            if vp.isPlaying():
+                vp.pause()
+            else:
+                vp.play()
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def toggle_rendering_pane(event):
@@ -374,8 +400,8 @@ def update_rendering_pane (event):
     if c:
         vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
         if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
+            vr = viewrendered(event)
+        if vr:
             vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
 class ViewRenderedProvider:
@@ -402,7 +428,7 @@ class ViewRenderedProvider:
             # return ViewRenderedController(self.c)
             return vr
     #@-others
-#@+node:ekr.20110317024548.14375: ** class ViewRenderedController
+#@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtGui.QWidget):
     
     '''A class to control rendering in a rendering pane.'''
@@ -467,7 +493,27 @@ class ViewRenderedController(QtGui.QWidget):
         
         self.deactivate()
 
-    #@+node:ekr.20110317080650.14381: *3* activate
+    #@+node:ekr.20130413061407.10363: *3* contract & expand
+    def contract(self):
+        self.change_size(-100)
+
+    def expand(self):
+        self.change_size(100)
+        
+    def change_size(self,delta):
+        if hasattr(self.c,'free_layout'):
+            splitter = self.parent()
+            i = splitter.indexOf(self)
+            assert i > -1
+            sizes = splitter.sizes()
+            n = len(sizes)
+            for j in range(len(sizes)):
+                if j == i:
+                    sizes[j] = max(0,sizes[i]+delta)
+                else:
+                    sizes[j] = max(0,sizes[j]-int(delta/(n-1)))
+            splitter.setSizes(sizes)
+    #@+node:ekr.20110317080650.14381: *3* activate (creates idle-time hook)
     def activate (self):
         
         pc = self
@@ -612,6 +658,9 @@ class ViewRenderedController(QtGui.QWidget):
             return True
         if c != keywords.get('c') or not pc.active:
             if trace: g.trace('not active')
+            return False
+        if pc.locked:
+            if trace: g.trace('locked')
             return False
         if pc.gnx != p.v.gnx:
             if trace: g.trace('changed node')

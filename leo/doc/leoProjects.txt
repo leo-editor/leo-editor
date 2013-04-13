@@ -2758,6 +2758,7 @@ Skip '.' before section names in headlines.
 @language rest
 
 These are generated from the @button node's docstring, if it exists.
+#@+node:ekr.20130412173637.11777: *4* help-for-python now uses vr window
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
