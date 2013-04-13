@@ -439,7 +439,7 @@ class ViewRenderedController(QtGui.QWidget):
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
-        self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
+        # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.node_changed = True
         
