@@ -181,9 +181,11 @@ from leo.external.stringlist import SList
     # Uses leoPlugins.TryNext.
 
 import pprint
+import os
 import re
 import types, sys
 import textwrap
+import json
 #@-<< imports >>
 
 controllers = {}
@@ -542,6 +544,8 @@ class ValueSpaceController:
 
         - Evaluate all @= nodes and assign them to variables
         - Evaluate the body of the *parent* nodes for all @a nodes.
+        - Read in @vsi nodes and assign to variables
+        
         '''
         
         c = self.c
@@ -657,7 +661,10 @@ class ValueSpaceController:
     #@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) & helper
     def update_vs(self):    
         
-        '''Evaluate @r <expr> nodes, puting the result in their body text.'''
+        '''
+        Evaluate @r <expr> nodes, puting the result in their body text.
+        Output @vso nodes, based on file extension    
+        '''
         
         c = self.c
         for p in c.all_unique_positions():
@@ -675,6 +682,30 @@ class ValueSpaceController:
                     
                 if self.trace: print("Eval:",expr,"result:",repr(result))
                 self.render_value(p,result)
+            
+            if h.startswith("@vso "):
+                expr = h[5:].strip()
+                bname, ext = os.path.splitext(expr)            
+                try:
+                    result = eval(bname,self.d)
+                except:
+                    
+                    g.es_exception()
+                    g.es("@vso failed: " + h)
+                    continue
+                if ext.lower() == '.json':
+                    self.render_value(p,json.dumps(result, indent = 2))
+                else:
+                    g.es_error("Unknown vso extension (should be .json, ...): " + ext)
+                                    
+                    
+                    
+                    # dump file as json
+                    
+                    
+                    
+                
+                pass
     #@+node:ekr.20110407174428.5784: *5* render_value
     def render_value(self,p,value):
         
