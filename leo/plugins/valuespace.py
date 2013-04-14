@@ -558,9 +558,14 @@ class ValueSpaceController:
                 if self.trace and self.verbose: g.trace('pass1',p.h)  
                 tail = h[2:].strip()
                 parent = p.parent()
+                
                 if tail:
                     self.let_body(tail,self.untangle(parent))                
-                self.parse_body(parent)
+                try:
+                    self.parse_body(parent)
+                except:
+                    g.es_exception()
+                    g.es("Error parsing " + parent.h)
         # g.trace(self.d)
     #@+node:ekr.20110407174428.5777: *5* let & let_body
     def let(self,var,val):
@@ -586,7 +591,11 @@ class ValueSpaceController:
         firstline = body[0:lend]
         rest = firstline[4:].strip()
         print("rest",rest)  
-        translator = eval(rest, self.d)
+        try:
+            translator = eval(rest, self.d)
+        except:
+            g.es_exception()
+            g.es("Can't instantate @cl xlator: " + rest)
         translated = translator(body[lend+1:])
         self.let(var, translated)
         
