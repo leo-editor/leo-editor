@@ -646,7 +646,7 @@ class ValueSpaceController:
             useSelectedText=False,
             useSentinels=False)
     #@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) & helper
-    def update_vs(self):
+    def update_vs(self):    
         
         '''Evaluate @r <expr> nodes, puting the result in their body text.'''
         
@@ -656,7 +656,12 @@ class ValueSpaceController:
             if h.startswith('@r '):
                 if self.trace and self.verbose: g.trace('pass2:',p.h)
                 expr = h[3:].strip()
-                result = eval(expr,self.d)
+                try:
+                    result = eval(expr,self.d)
+                except:
+                    
+                    g.es_exception()
+                    g.es("Failed to render " + h)
                 if self.trace: print("Eval:",expr,"result:",repr(result))
                 self.render_value(p,result)
     #@+node:ekr.20110407174428.5784: *5* render_value
