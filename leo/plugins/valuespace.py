@@ -694,7 +694,13 @@ class ValueSpaceController:
                     g.es("@vso failed: " + h)
                     continue
                 if ext.lower() == '.json':
-                    self.render_value(p,json.dumps(result, indent = 2))
+                    cnt = json.dumps(result, indent = 2)
+                    pth = os.path.join(c.getNodePath(p), expr)
+                    self.render_value(p, cnt)
+                    g.es("Writing @vso: " + pth)
+                    open(pth, "w").write(cnt)
+                    
+                    
                 else:
                     g.es_error("Unknown vso extension (should be .json, ...): " + ext)
                                     
