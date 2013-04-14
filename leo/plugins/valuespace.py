@@ -662,6 +662,8 @@ class ValueSpaceController:
                     
                     g.es_exception()
                     g.es("Failed to render " + h)
+                    continue
+                    
                 if self.trace: print("Eval:",expr,"result:",repr(result))
                 self.render_value(p,result)
     #@+node:ekr.20110407174428.5784: *5* render_value
