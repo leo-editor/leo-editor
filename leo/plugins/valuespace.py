@@ -558,6 +558,20 @@ class ValueSpaceController:
                 self.d['p'] = p.copy() # g.vs.p = p.copy()
                 var = h[3:].strip()
                 self.let_body(var,self.untangle(p))
+            elif h.startswith("@vsi "):
+                fname = h[5:]
+                bname, ext = os.path.splitext(fname)
+                g.es("@vsi " + bname +" " + ext)
+                if ext.lower() == '.json':
+                    pth = c.getNodePath(p)
+                    fn = os.path.join(pth, fname)
+                    g.es("vsi read from  " + fn)
+                    if os.path.isfile(fn):
+                        cont = open(fn).read()
+                        val = json.loads(cont)
+                        self.d[bname] = val
+                        p.b = cont
+                        
             elif h == '@a' or h.startswith('@a '):
                 if self.trace and self.verbose: g.trace('pass1',p.h)  
                 tail = h[2:].strip()
@@ -604,17 +618,10 @@ class ValueSpaceController:
         self.let(var, translated)
         
     def let_body(self,var,val):
-        # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
-        
-        #lend = val.find('\n')
-        #firstline = val[0:lend]
-        
-        #lines = val.strip().split('\n')
         if val.startswith('@cl '):
             self.let_cl(var, val)
             return
             
-        #self.let(var,SList(lines))
         self.let(var,val)
         
         
