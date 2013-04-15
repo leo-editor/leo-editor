@@ -570,7 +570,7 @@ class ViewRenderedController(QtGui.QWidget):
             pc.length = len(p.b) # not s
         
             # Remove Leo directives.
-            s = keywords.get('s') if keywords.has_key('s') else p.b
+            s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
             # Dispatch based on the computed kind.
             kind = pc.get_kind(p)
