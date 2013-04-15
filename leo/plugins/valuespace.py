@@ -445,7 +445,7 @@ class ValueSpaceController:
             self.d = ns
         
         self.reset()    
-        self.trace = True
+        self.trace = False
         self.verbose = False
         
         # changed g.vs.__dict__ to self.d
@@ -569,8 +569,9 @@ class ValueSpaceController:
                     if os.path.isfile(fn):
                         cont = open(fn).read()
                         val = json.loads(cont)
-                        self.d[bname] = val
-                        p.b = cont
+                        self.let(bname, val)                    
+                        self.render_value(p, cont)
+                        
                         
             elif h == '@a' or h.startswith('@a '):
                 if self.trace and self.verbose: g.trace('pass1',p.h)  
