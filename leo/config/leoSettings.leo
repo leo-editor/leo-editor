@@ -9954,11 +9954,16 @@ if that's an abbreviation linked to next_place(), see
 <t tx="tbrown.20130310101647.34744"># if set to True, g.redirectStdout/err will be used to
 # redirect stdout and stderr to the log pane when vs-eval is used</t>
 <t tx="tbrown.20130327180636.20857">Enable themes by copying their nodes into your myLeoSettings.leo file,
-under the @settings node. You may need to move any existing `@color` and
-`@data qt-gui-plugin-style-sheet` nodes out of the way.  See README node
-in individual themes for more information.</t>
-<t tx="tbrown.20130411154439.14739">Copy into mySetting.leo under @settings to enable theme</t>
+as the last node under the @settings node. You may need to move any
+existing `@color` and `@data qt-gui-plugin-style-sheet` nodes out of the
+way. See README node in individual themes for more information.</t>
+<t tx="tbrown.20130411154439.14739">Copy into mySettings.leo under @settings to enable theme
+
+Place this node at the *bottom* of the list of nodes under
+@settings to ensure it overrides other style settings.</t>
 <t tx="tbrown.20130411154439.14740">@language rest
+
+See parent nodes for installation notes.
 
 A theme's folder should be in either .../leo/themes or
 $HOME/.leo/themes.
