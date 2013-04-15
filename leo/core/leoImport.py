@@ -113,6 +113,11 @@ try:
     import docutils
 except ImportError:
     docutils = None
+except NameError:
+    docutils = None
+except Exception:
+    docutils = None
+    g.es_print_exception()
 #@-<< imports >>
 #@+<< class scanUtility >>
 #@+node:sps.20081112093624.1: ** << class scanUtility >>
