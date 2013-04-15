@@ -2792,11 +2792,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20110916215321.8008: *8* massageIvars
         def massageIvars (self,body):
 
-            if self.class_name and self.ivars_dict.has_key(self.class_name):
-                ivars = self.ivars_dict.get(self.class_name)
-            else:
-                ivars = []
-
+            ivars = self.ivars_dict.get(self.class_name,[])
             i = 0
             while i < len(body):
                 if self.is_string_or_comment(body,i):

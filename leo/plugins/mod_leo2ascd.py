@@ -26,7 +26,7 @@ class   _AssignUniqueConstantValue:
         pass
     #@+node:ekr.20101110094152.5827: *3* __setattr__
     def __setattr__(self,name,value):
-        # if self.__dict__.has_key(name):
+
         if name in self.__dict__:
             if name != "UniqueInternalValue":
                 raise self.ConstError("Can't rebind const(%s)"%name)
