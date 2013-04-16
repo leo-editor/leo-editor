@@ -11,29 +11,20 @@ Modelled after Emacs and Vim commands.'''
 #@+node:ekr.20050710151017: ** << imports >> (leoEditCommands)
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind
-
+import difflib   
+docutils = g.importExtension('docutils',pluginName='leoEditCommands.py')
 try:
     import enchant
 except ImportError:
     enchant = None
-
-import difflib
 import os
 import re
+if g.isPython3:
+    from functools import reduce
 import shlex
 import string
 import subprocess # Always exists in Python 2.6 and above.
 import sys
-
-# if g.isPython3:
-    # import pickle # Only pickle exists in Python 3.x.
-# else:
-    # import cPickle as pickle 
-
-if g.isPython3:
-    from functools import reduce
-
-# subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-<< imports >>
 
 #@+<< define class baseEditCommandsClass >>
@@ -7700,9 +7691,9 @@ class helpCommandsClass (baseEditCommandsClass):
 
         '''Prints and introduction to Leo's help system.'''
 
-        #@+<< define s >>
-        #@+node:ekr.20130412173637.10330: *4* << define s >> (F1)
-        s = '''
+        #@+<< define rst_s >>
+        #@+node:ekr.20130412173637.10330: *4* << define rst_s >> (F1)
+        rst_s = '''
 
         **Welcome to Leo's help system.**
 
@@ -7725,8 +7716,8 @@ class helpCommandsClass (baseEditCommandsClass):
             <a python symbol><Enter>
 
         '''
-        #@-<< define s >>
-        self.c.putApropos(s)
+        #@-<< define rst_s >>
+        self.c.putApropos(rst_s)
     #@+node:ekr.20070501092655: *3* aproposDebuggingCommands
     def aproposDebuggingCommands (self,event=None):
 

@@ -169,9 +169,10 @@ try:
     got_docutils = True
 except ImportError:
     got_docutils = False
+    g.es_exception()
 except SyntaxError:
     got_docutils = False
-        # Docutils is not compatible with Python 2.7.
+    g.es_exception()
     
 try:
     import PyQt4.phonon as phonon
@@ -806,13 +807,11 @@ class ViewRenderedController(QtGui.QWidget):
         pc = self ; c = pc.c ;  p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
-        
         if trace: g.trace('isHtml',isHtml,p.h)
         
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_text_widget()
         assert pc.w
-        
         if s:
             pc.show()
         # else:
@@ -820,7 +819,6 @@ class ViewRenderedController(QtGui.QWidget):
                 # pass  # needs review
                 # # pc.hide()
             # return
-        
         if got_docutils and not isHtml:
             # Not html: convert to html.
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
@@ -828,7 +826,6 @@ class ViewRenderedController(QtGui.QWidget):
                 path = os.path.dirname(path)
             if os.path.isdir(path):
                 os.chdir(path)
-
             try:
                 msg = '' # The error message from docutils.
                 if pc.title:
@@ -844,7 +841,6 @@ class ViewRenderedController(QtGui.QWidget):
                     s = 'RST error:\n%s\n\n%s' % (msg,s)
 
         sb = w.verticalScrollBar()
-
         if sb:
             d = pc.scrollbar_pos_dict
             if pc.node_changed:
@@ -854,14 +850,12 @@ class ViewRenderedController(QtGui.QWidget):
             else:
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
-
         if pc.kind in ('big','rst','html'):
             w.setHtml(s)
             if pc.kind == 'big':
                 w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
-            
         if sb and pos:
             # Restore the scrollbars
             sb.setSliderPosition(pos)

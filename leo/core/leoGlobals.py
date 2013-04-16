@@ -5895,14 +5895,12 @@ def importModule (moduleName,pluginName=None,verbose=False):
     moduleName is the module's name, without file extension.'''
 
     # Important: g is Null during startup.
-
     trace = False and not g.unitTesting
     module = sys.modules.get(moduleName)
-    if module:  return module
-
-    g.blue('loading %s' % moduleName)
+    if module:
+        return module
+    if verbose: g.blue('loading %s' % moduleName)
     exceptions = [] 
-
     try:
         theFile = None
         try:
@@ -5931,20 +5929,22 @@ def importModule (moduleName,pluginName=None,verbose=False):
                         exceptions.append(v)
             else:
                 #unable to load module, display all exception messages
-                for e in exceptions:
-                    g.warning(e) 
+                if verbose:
+                    for e in exceptions:
+                        g.warning(e) 
         except Exception: # Importing a module can throw exceptions other than ImportError.
-            t, v, tb = sys.exc_info()
-            del tb  # don't need the traceback
-            v = v or str(t) # in case v is empty, we'll at least have the execption type
-            g.es_exception(v)
+            if verbose:
+                t, v, tb = sys.exc_info()
+                del tb  # don't need the traceback
+                v = v or str(t) # in case v is empty, we'll at least have the execption type
+                g.es_exception(v)
     finally:
         if theFile: theFile.close()
 
-    if not module:
+    if not module and verbose:
         g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
     return module
-#@+node:ekr.20041219071407: *4* g.importExtension & helpers
+#@+node:ekr.20041219071407: *4* g.importExtension
 def importExtension (moduleName,pluginName=None,verbose=False,required=False):
 
     '''Try to import a module.  If that fails,
@@ -5952,12 +5952,9 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
 
     moduleName is the module's name, without file extension.'''
 
-    module = g.importModule(moduleName,pluginName=pluginName,verbose=False)
-
-    # This is basically only used for Pmw these days - we'll prevent plugins 
-    # from killing all of Leo by returning None here instead
+    module = g.importModule(moduleName,pluginName=pluginName,verbose=verbose)
     if not module:
-        g.pr("Warning: plugin '%s' failed to import '%s'" % (
+        g.pr("Warning: '%s' failed to import '%s'" % (
             pluginName,moduleName))
     return module
 #@+node:ekr.20031218072017.2278: *4* g.importFromPath

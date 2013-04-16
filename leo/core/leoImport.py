@@ -100,24 +100,14 @@
 # Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
 
+docutils = g.importExtension('docutils',pluginName='leoImport.py')
 import string
-
 if g.isPython3:
     import io
     StringIO = io.StringIO
 else:
     import StringIO
     StringIO = StringIO.StringIO
-    
-try:
-    import docutils
-except ImportError:
-    docutils = None
-except NameError:
-    docutils = None
-except Exception:
-    docutils = None
-    g.es_print_exception()
 #@-<< imports >>
 #@+<< class scanUtility >>
 #@+node:sps.20081112093624.1: ** << class scanUtility >>

@@ -1105,8 +1105,8 @@ class Commands (object):
 
         c = self
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
-
-        # g.trace('\n',s)
+        if s.startswith('<') and not s.startswith('<<'):
+            pass # how to do selective replace??
 
         pc = g.app.pluginsController
         vr = pc.loadOnePlugin('viewrendered.py')
