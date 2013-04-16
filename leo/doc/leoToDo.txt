@@ -769,6 +769,9 @@ undoer...
                                     undo:  52 undo
 676 commands
 .. @+node:ekr.20130412022445.12390: *3* ** Prepare to release 4.11
+.. @+node:ekr.20130413061407.10365: *3* ** Ignore @url lines and @rclick nodes in scripts
+.. @+node:ekr.20130413061407.10367: *3* ** Screencast style for plugins
+.. @+node:ekr.20130413061407.10368: *3* ** Screencast style for tutorials
 .. @+node:ekr.20110921094450.6956: ** To do: 4.11
 @language rest
 

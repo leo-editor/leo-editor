@@ -20,57 +20,51 @@ if 0:
 
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
-import leo.core.leoGlobals as g
-
 verbose = False
-
-try:
-    import docutils
-    if verbose: print('docutils imported')
-    import docutils.parsers.rst
-    if verbose: print('docutils.parsers.rst imported')
-    import docutils.core
-    if verbose: print('docutils.core imported')
-    import docutils.io
-    if verbose: print('docutils.io imported')
-except ImportError:
-    docutils = None
-except Exception:
-    docutils = None
-
+import leo.core.leoGlobals as g
+docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=True)
+if docutils:
+    try:
+        if verbose: print('leoRst.py',docutils)
+        from docutils import parsers
+        if verbose or not parsers: print('leoRst.py',parsers)
+        from docutils.parsers import rst
+        if verbose or not rst: print('leoRst.py',rst)
+        if not parsers or not rst:
+            docutils = None
+    except ImportError:
+        docutils = None
+    except Exception:
+        g.es_exception()
+        docutils = None
 if g.isPython3:
     import html.parser as HTMLParser
 else:
     import HTMLParser
-
-# import os
-import pprint
-import re
-
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import StringIO
-    StringIO = StringIO.StringIO
-
-# import sys
-# import tempfile
-
 try:
     import leo.plugins.mod_http as mod_http
 except ImportError:
     mod_http = None
 except Exception:
     # Don't let a problem with a plugin crash Leo's core!
-    g.es_print('leoRst: can not import leo.plugins.mod_http')
-    g.es_exception()
+    # g.es_print('leoRst: can not import leo.plugins.mod_http')
+    # g.es_exception()
     mod_http = None
-
+# import os
+import pprint
+import re
 try:
     import SilverCity
 except ImportError:
     SilverCity = None
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import StringIO
+    StringIO = StringIO.StringIO
+# import sys
+# import tempfile
 #@-<< imports >>
 
 #@+others
@@ -109,6 +103,7 @@ if docutils:
     code_block.options = {
         'language':
         docutils.parsers.rst.directives.unchanged # Return the text argument, unchanged.
+        ### rst.directives.unchanged # Return the text argument, unchanged.
     }
     code_block.content = 1 # True if content is allowed.
 
