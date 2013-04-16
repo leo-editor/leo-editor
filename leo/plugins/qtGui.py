@@ -4318,7 +4318,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     headline = rclick.h[8:]
                     rc = QtGui.QAction(headline.strip(),b)
                     
-                    if '-' in headline and headline.strip().strip('-') == '':
+                    if '---' in headline and headline.strip().strip('-') == '':
                         rc.setSeparator(True)
                     else:
                         def cb(event=None, ctrl=command.controller, p=rclick, 
