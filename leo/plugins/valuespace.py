@@ -301,7 +301,8 @@ def vs_eval(kwargs):
     """
     
     c = kwargs['c']
-    
+    vsc = get_vs(c)
+    cvs = vsc.d
     txt = c.frame.body.getSelectedText()
 
     # select next line ready for next select/send cycle
@@ -341,29 +342,29 @@ def vs_eval(kwargs):
         # execute all but the last 'block'
         if dbg: print('all but last')
         # exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
-        exec('\n'.join(blocks[:-1]), leo_globals, c.vs) # Compatible with Python 3.x.
+        exec('\n'.join(blocks[:-1]), leo_globals, cvs) # Compatible with Python 3.x.
         all_done = False
     except SyntaxError:
         # splitting of the last block caused syntax error
         try:
             # is the whole thing a single expression?
             if dbg: print('one expression')
-            ans = eval(txt, leo_globals, c.vs)
+            ans = eval(txt, leo_globals, cvs)
         except SyntaxError:
             if dbg: print('statement block')
             # exec txt in leo_globals, c.vs
-            exec(txt, leo_globals, c.vs) # Compatible with Python 3.x.
+            exec(txt, leo_globals, cvs) # Compatible with Python 3.x.
         all_done = True  # either way, the last block is used now
     
     if not all_done:  # last block still needs using
         try:
             if dbg: print('final expression')
-            ans = eval(blocks[-1], leo_globals, c.vs)
+            ans = eval(blocks[-1], leo_globals, cvs)
         except SyntaxError:
             ans = None
             if dbg: print('final statement')
             # exec blocks[-1] in leo_globals, c.vs
-            exec(blocks[-1], leo_globals, c.vs) # Compatible with Python 3.x.
+            exec(blocks[-1], leo_globals, cvs) # Compatible with Python 3.x.
 
     if redirects:
         if not old_stderr:
@@ -373,15 +374,15 @@ def vs_eval(kwargs):
 
     if ans is None:  # see if last block was a simple "var =" assignment
         key = blocks[-1].split('=', 1)[0].strip()
-        if key in c.vs:
-            ans = c.vs[key]
+        if key in cvs:
+            ans = cvs[key]
 
     if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
         key = blocks[0].split('=', 1)[0].strip()
-        if key in c.vs:
-            ans = c.vs[key]
+        if key in cvs:
+            ans = cvs[key]
 
-    c.vs['_last'] = ans
+    cvs['_last'] = ans
     
     if ans is not None:  
         # annoying to echo 'None' to the log during line by line execution
@@ -406,7 +407,7 @@ def vs_last(kwargs):
     if 'text' in kwargs:
         txt = kwargs['text']
     else:
-        txt = str(c.vs.get('_last'))
+        txt = str(get_vs(c).d.get('_last'))
         
     editor = c.frame.body
 
@@ -423,7 +424,7 @@ def vs_last_pretty(kwargs):
     """
     
     c = kwargs['c']
-    kwargs['text'] = pprint.pformat(c.vs.get('_last'))
+    kwargs['text'] = pprint.pformat(get_vs(c).d.get('_last'))
     vs_last(kwargs)
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController:
