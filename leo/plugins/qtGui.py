@@ -4314,18 +4314,29 @@ class leoQtFrame (leoFrame.leoFrame):
                 if rclicks:
                     b.setText(g.u(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
                 for rclick in rclicks:
-                    def cb(event=None, ctrl=command.controller, p=rclick, 
-                           c=command.c, b=command.b, t=rclick.h[8:]):
-                        ctrl.executeScriptFromButton(p,b,t)
-                        if c.exists:
-                            c.outerUpdate()
-                    rc = QtGui.QAction(rclick.h[8:].strip(),b)
+                    
+                    headline = rclick.h[8:]
+                    rc = QtGui.QAction(headline.strip(),b)
+                    
+                    if '-' in headline and headline.strip().strip('-') == '':
+                        rc.setSeparator(True)
+                    else:
+                        def cb(event=None, ctrl=command.controller, p=rclick, 
+                               c=command.c, b=command.b, t=rclick.h[8:]):
+                            ctrl.executeScriptFromButton(p,b,t)
+                            if c.exists:
+                                c.outerUpdate()
+                        rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+                        
                     # This code has no effect.
                     # docstring = g.getDocString(rclick.b).strip()
                     # if docstring:
                         # rc.setToolTip(docstring)
-                    rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
                     b.insertAction(b.actions()[-2],rc)  # insert rc before Remove Button
+                if rclicks:
+                    rc = QtGui.QAction('---',b)
+                    rc.setSeparator(True)
+                    b.insertAction(b.actions()[-2],rc)
         #@-others
     #@+node:ekr.20110605121601.18272: *4* Minibuffer methods (Qt)
     #@+node:ekr.20110605121601.18273: *5* f.setMinibufferBindings
