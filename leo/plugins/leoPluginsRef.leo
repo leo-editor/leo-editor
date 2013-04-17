@@ -74,7 +74,7 @@ expanded="tbrown.20090119215428.9,tbrown.20090119215428.40,"><vh>@file todo.py</
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20110403115003.10348" a="E"
-expanded="ekr.20110408065137.14221,ville.20110403115003.10355,ekr.20110408065137.14219,ekr.20110408065137.14226,ekr.20110407174428.5781,ekr.20110407174428.5782,"><vh>@file valuespace.py</vh></v>
+expanded="ekr.20110408065137.14221,ville.20110403115003.10355,ekr.20110408065137.14219,ekr.20110408065137.14226,ekr.20110407174428.5781,ekr.20110407174428.5780,ekr.20110407174428.5782,"><vh>@file valuespace.py</vh></v>
 <v t="ville.20130127035134.3685"><vh>@auto internal_ipkernel.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>

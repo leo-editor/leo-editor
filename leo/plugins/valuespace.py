@@ -186,6 +186,8 @@ import re
 import types, sys
 import textwrap
 import json
+import StringIO
+import yaml
 #@-<< imports >>
 
 controllers = {}
@@ -620,6 +622,19 @@ class ValueSpaceController:
         self.let(var, translated)
         
     def let_body(self,var,val):
+        if var.endswith(".yaml"):
+            sio = StringIO.StringIO(val)
+            try:
+                d = yaml.load(sio)
+            except:
+                
+                g.es_exception()
+                g.es("yaml error for: " + var)
+                return
+            parts = os.path.splitext(var)        
+            self.let(parts[0], d)
+            return        
+        
         if val.startswith('@cl '):
             self.let_cl(var, val)
             return
