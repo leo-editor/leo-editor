@@ -7,6 +7,8 @@ Open Document Format (ODF) Writer.
 
 """
 
+from future_builtins import map ###
+
 VERSION = '1.0a'
 
 __docformat__ = 'reStructuredText'
