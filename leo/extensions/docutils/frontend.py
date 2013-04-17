@@ -218,7 +218,11 @@ def make_paths_absolute(pathdict, keys, base_path=None):
     `OptionParser.relative_path_settings`.
     """
     if base_path is None:
-        base_path = os.getcwdu() # type(base_path) == unicode
+        ### 2to3:
+        if sys.version_info < (3,0):
+            base_path = os.getcwdu() # type(base_path) == unicode
+        else:
+            base_path = os.getcwd()
         # to allow combining non-ASCII cwd with unicode values in `pathdict`
     for key in keys:
         if key in pathdict:
