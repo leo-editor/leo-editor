@@ -37,7 +37,7 @@ import unicodedata
 if sys.version_info < (3,0):
     from punctuation2 import openers,closers,delimiters,closing_delimiters
 else:
-    from punctuation3 import openers,closers,delimiters,closing_delimiters
+    from .punctuation3 import openers,closers,delimiters,closing_delimiters
 
 ### Original code.
 # openers = ur"""\"\'\(\<\[\{༺༼᚛⁅⁽₍〈❨❪❬❮❰❲❴⟅⟦⟨⟪⟬⟮⦃⦅⦇⦉⦋⦍⦏⦑⦓⦕⦗⧘⧚⧼⸢⸤⸦⸨〈《「『【〔〖〘〚〝〝﴾︗︵︷︹︻︽︿﹁﹃﹇﹙﹛﹝（［｛｟｢«‘“‹⸂⸄⸉⸌⸜⸠‚„»’”›⸃⸅⸊⸍⸝⸡‛‟"""
