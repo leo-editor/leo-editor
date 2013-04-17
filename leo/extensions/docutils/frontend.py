@@ -74,9 +74,8 @@ def validate_encoding(setting, value, option_parser,
     try:
         codecs.lookup(value)
     except LookupError:
-        raise (LookupError('setting "%s": unknown encoding: "%s"'
-                           % (setting, value)),
-               None, sys.exc_info()[2])
+        raise LookupError('setting "%s": unknown encoding: "%s"'
+                           % (setting, value))
     return value
 
 def validate_encoding_error_handler(setting, value, option_parser,
@@ -84,12 +83,11 @@ def validate_encoding_error_handler(setting, value, option_parser,
     try:
         codecs.lookup_error(value)
     except LookupError:
-        raise (LookupError(
+        raise LookupError(
             'unknown encoding error handler: "%s" (choices: '
             '"strict", "ignore", "replace", "backslashreplace", '
             '"xmlcharrefreplace", and possibly others; see documentation for '
-            'the Python ``codecs`` module)' % value),
-               None, sys.exc_info()[2])
+            'the Python ``codecs`` module)' % value)
     return value
 
 def validate_encoding_and_error_handler(
@@ -125,8 +123,7 @@ def validate_boolean(setting, value, option_parser,
     try:
         return option_parser.booleans[value.strip().lower()]
     except KeyError:
-        raise (LookupError('unknown boolean value: "%s"' % value),
-               None, sys.exc_info()[2])
+        raise LookupError('unknown boolean value: "%s"' % value)
 
 def validate_ternary(setting, value, option_parser,
                      config_parser=None, config_section=None):
@@ -157,8 +154,7 @@ def validate_threshold(setting, value, option_parser,
         try:
             return option_parser.thresholds[value.lower()]
         except (KeyError, AttributeError):
-            raise (LookupError('unknown threshold: %r.' % value),
-                   None, sys.exc_info[2])
+            raise LookupError('unknown threshold: %r.' % value)
 
 def validate_colon_separated_string_list(
     setting, value, option_parser, config_parser=None, config_section=None):
@@ -316,10 +312,9 @@ class Option(optparse.Option):
                 try:
                     new_value = self.validator(setting, value, parser)
                 except Exception as error:
-                    raise (optparse.OptionValueError(
+                    raise optparse.OptionValueError(
                         'Error in option "%s":\n    %s'
-                        % (opt, ErrorString(error))),
-                           None, sys.exc_info()[2])
+                        % (opt, ErrorString(error)))
                 setattr(values, setting, new_value)
             if self.overrides:
                 setattr(values, self.overrides, None)
@@ -798,12 +793,12 @@ Skipping "%s" configuration file.
                             setting, value, option_parser,
                             config_parser=self, config_section=section)
                     except Exception as error:
-                        raise (ValueError(
+                        raise ValueError(
                             'Error in config file "%s", section "[%s]":\n'
                             '    %s\n'
                             '        %s = %s'
                             % (filename, section, ErrorString(error),
-                               setting, value)), None, sys.exc_info()[2])
+                               setting, value))
                     self.set(section, setting, new_value)
                 if option.overrides:
                     self.set(section, option.overrides, None)
