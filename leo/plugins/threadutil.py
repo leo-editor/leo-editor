@@ -6,6 +6,7 @@
 from PyQt4 import QtCore, QtGui
 import logging
 import time
+import leo.core.leoGlobals as g
 #log = logging.getLogger("out")
 
 #@+others
@@ -223,7 +224,9 @@ class SysProcessRunner:
         # dict of lists (queues)
         self.q = {}
         self.cur = {}
-        self.procs = []
+        self.default_cb = None
+
+
     def add(self, key, argv, cb = None):
         """ argv = [program, arg1, ...] """
         ent = {
@@ -233,9 +236,6 @@ class SysProcessRunner:
         self.q.setdefault(key, []).append(ent)
         self.sched()
 
-    def finished(self, code, status):
-        print "fin", code, status
-
     def sched(self):
         for k,q in self.q.items():
             if q and k not in self.cur:
@@ -244,22 +244,38 @@ class SysProcessRunner:
                 self.run_one(ent, k)
 
     def run_one(self, ent, key):
-        p = QtCore.QProcess()
+        p = ent['proc'] = QtCore.QProcess()
+
         def fini(code, status):
-            print "fini", code, status
             del self.cur[key]
             out = str(p.readAllStandardOutput())
             err = str(p.readAllStandardError())
-            print "out", out
-            print "err", err
-            ent['cb'](out, err, status)
+            cb = ent['cb'] or self.default_cb
             later(self.sched)
+            cb(out, err, status, ent)
+
 
         cmd = ent['arg'][0]
         args = ent['arg'][1:]
         p.start(cmd, args)
         p.finished.connect(fini)
-        self.procs.append(p)
+
+def leo_echo_cb(out, err, code, ent):
+    arg = ent['arg']
+    g.es("> " + arg[0] + " " + `arg[1:]`    )
+    if out:
+        g.es(out)
+    if err:
+        g.es_error(err)
+
+def init():
+    """ set up leo runner instance """
+    g.procs = SysProcessRunner()
+    g.procs.default_cb = leo_echo_cb
+
+
+
+init()
 
 
 
@@ -269,12 +285,8 @@ def main():
     # stupid test
     a = QtGui.QApplication([])
     b = QtGui.QPushButton("Say hello", None)
-    sp = SysProcessRunner()
-    def L(*args):
-        print "In callback", args
-        pass
-    sp.add("", ['ls', '/tmp'], L)
-    sp.add("", ['ls', '-la'], L)
+    g.procs.add("", ['ls', '/tmp'])
+    g.procs.add("", ['ls', '-la'])
     #a.setMainWidget(b)
     b.show()
     a.exec_()
