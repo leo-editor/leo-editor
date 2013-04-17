@@ -7,6 +7,7 @@ from PyQt4 import QtCore, QtGui
 import logging
 import time
 import leo.core.leoGlobals as g
+from collections import deque
 #log = logging.getLogger("out")
 
 #@+others
@@ -227,19 +228,19 @@ class SysProcessRunner:
         self.default_cb = None
 
 
-    def add(self, key, argv, cb = None):
+    def add(self, argv, key = "", cb = None):
         """ argv = [program, arg1, ...] """
         ent = {
             'arg' : argv,
             'cb' : cb
         }
-        self.q.setdefault(key, []).append(ent)
+        self.q.setdefault(key, deque()).append(ent)
         self.sched()
 
     def sched(self):
         for k,q in self.q.items():
             if q and k not in self.cur:
-                ent = q.pop()
+                ent = q.popleft()
                 self.cur[k] = ent
                 self.run_one(ent, k)
 
@@ -285,8 +286,8 @@ def main():
     # stupid test
     a = QtGui.QApplication([])
     b = QtGui.QPushButton("Say hello", None)
-    g.procs.add("", ['ls', '/tmp'])
-    g.procs.add("", ['ls', '-la'])
+    g.procs.add(['ls', '/tmp'])
+    g.procs.add(['ls', '-la'])
     #a.setMainWidget(b)
     b.show()
     a.exec_()
