@@ -48,17 +48,30 @@ class Node(object):
 
     line = None
     """The line number (1-based) of the beginning of this Node in `source`."""
+    
+    if sys.version_info < (3,0): ###
+        def __nonzero__(self):
+            """
+            Node instances are always true, even if they're empty.  A node is more
+            than a simple container.  Its boolean "truth" does not depend on
+            having one or more subnodes in the doctree.
 
-    def __nonzero__(self):
-        """
-        Node instances are always true, even if they're empty.  A node is more
-        than a simple container.  Its boolean "truth" does not depend on
-        having one or more subnodes in the doctree.
+            Use `len()` to check node length.  Use `None` to represent a boolean
+            false value.
+            """
+            return True
+            
+    else:
+        def __bool__(self):
+            """
+            Node instances are always true, even if they're empty.  A node is more
+            than a simple container.  Its boolean "truth" does not depend on
+            having one or more subnodes in the doctree.
 
-        Use `len()` to check node length.  Use `None` to represent a boolean
-        false value.
-        """
-        return True
+            Use `len()` to check node length.  Use `None` to represent a boolean
+            false value.
+            """
+            return True
 
     if sys.version_info < (3,):
         # on 2.x, str(node) will be a byte string with Unicode
