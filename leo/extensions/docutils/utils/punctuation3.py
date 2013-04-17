@@ -23,10 +23,10 @@ closing_delimiters = r"\.\,\;\!\?"
 # From manpage.py.
 
 replace_pairs = [
-    (u'-', ur'\-'),
-    (u'\'', ur'\(aq'),
-    (u'´', ur'\''),
-    (u'`', ur'\(ga'),
+    (u'-', r'\-'),
+    (u'\'', r'\(aq'),
+    (u'´', r'\''),
+    (u'`', r'\(ga'),
 ]
 
 # From writers/latex2e/__init__.py
