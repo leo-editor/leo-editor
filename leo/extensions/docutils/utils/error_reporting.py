@@ -78,12 +78,16 @@ class SafeString(object):
                                         self.encoding_errors))
                         for arg in self.data.args]
                 return ', '.join(args)
-            if isinstance(self.data, unicode):
-                if sys.version_info > (3,0):
-                    return self.data
-                else:
-                    return self.data.encode(self.encoding,
-                                            self.encoding_errors)
+            
+            ### 2to3:
+            ### if isinstance(self.data, unicode):
+            if (
+                sys.version_info >= (3,) and isinstance(self.data,str) or
+                sys.version_info < (3,) and isinstance(self.data,unicode)
+            ):
+                return self.data
+            else:
+                return self.data.encode(self.encoding,self.encoding_errors)
             raise
 
     def __unicode__(self):
@@ -156,10 +160,15 @@ class ErrorOutput(object):
         elif not(stream):
             stream = False
         # if `stream` is a file name, open it
-        elif isinstance(stream, str):
-            stream = open(stream, 'w')
-        elif isinstance(stream, unicode):
-            stream = open(stream.encode(sys.getfilesystemencoding()), 'w')
+        ### 2to3:
+        elif sys.version_info >= (3,):
+            if isinstance(stream, str):
+                stream = open(stream.encode(sys.getfilesystemencoding()), 'w')
+        else:
+            if isinstance(stream, str):
+                stream = open(stream, 'w')
+            elif isinstance(stream, unicode):
+                stream = open(stream.encode(sys.getfilesystemencoding()), 'w')
 
         self.stream = stream
         """Where warning output is sent."""

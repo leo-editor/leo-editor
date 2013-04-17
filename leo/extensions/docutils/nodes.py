@@ -531,8 +531,10 @@ class Element(Node):
             if isinstance(value, list):
                 values = [serial_escape('%s' % (v,)) for v in value]
                 value = ' '.join(values)
-            else:
+            elif sys.version_info < (3,): ###
                 value = unicode(value)
+            else: ###
+                value = str(value) ###
             value = quoteattr(value)
             parts.append(u'%s=%s' % (name, value))
         return u'<%s>' % u' '.join(parts)
