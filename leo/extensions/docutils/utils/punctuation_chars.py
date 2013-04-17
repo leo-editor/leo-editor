@@ -195,17 +195,17 @@ if __name__ == '__main__':
     (o, c, d, cd) = punctuation_samples()
     ### 2to3: ur -> r
     if o != openers:
-        print('- openers = r"""%s"""' % openers.encode('utf8'))
-        print('+ openers = r"""%s"""' % o.encode('utf8'))
+        print(('- openers = r"""%s"""' % openers.encode('utf8')))
+        print(('+ openers = r"""%s"""' % o.encode('utf8')))
     if c != closers:
-        print('- closers = r"""%s"""' % closers.encode('utf8'))
-        print('+ closers = r"""%s"""' % c.encode('utf8'))
+        print(('- closers = r"""%s"""' % closers.encode('utf8')))
+        print(('+ closers = r"""%s"""' % c.encode('utf8')))
     if d != delimiters:
-        print('- delimiters = r"%s"' % delimiters.encode('utf8'))
-        print('+ delimiters = r"%s"' % d.encode('utf8'))
+        print(('- delimiters = r"%s"' % delimiters.encode('utf8')))
+        print(('+ delimiters = r"%s"' % d.encode('utf8')))
     if cd != closing_delimiters:
-        print('- closing_delimiters = r"%s"' % closing_delimiters.encode('utf8'))
-        print('+ closing_delimiters = r"%s"' % cd.encode('utf8'))
+        print(('- closing_delimiters = r"%s"' % closing_delimiters.encode('utf8')))
+        print(('+ closing_delimiters = r"%s"' % cd.encode('utf8')))
 
     # # test prints
     # print 'openers = ', repr(openers)

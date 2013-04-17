@@ -1453,7 +1453,7 @@ class system_message(Special, BackLinkable, PreBibliographic, Element):
         try:
             Element.__init__(self, '', *children, **attributes)
         except:
-            print('system_message: children=%r' % (children,))
+            print(('system_message: children=%r' % (children,)))
             raise
 
     def astext(self):

@@ -104,6 +104,8 @@ How To Use This Module
        sm.unlink()
 """
 
+from __future__ import print_function ###
+
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -213,15 +215,15 @@ class StateMachine:
         self.line_offset = -1
         self.current_state = initial_state or self.initial_state
         if self.debug:
-            print >>self._stderr, (
+            print((
                 u'\nStateMachine.run: input_lines (line_offset=%s):\n| %s'
-                % (self.line_offset, u'\n| '.join(self.input_lines)))
+                % (self.line_offset, u'\n| '.join(self.input_lines))), file=self._stderr)
         transitions = None
         results = []
         state = self.get_state()
         try:
             if self.debug:
-                print >>self._stderr, '\nStateMachine.run: bof transition'
+                print('\nStateMachine.run: bof transition', file=self._stderr)
             context, result = state.bof(context)
             results.extend(result)
             while True:
@@ -231,17 +233,17 @@ class StateMachine:
                         if self.debug:
                             source, offset = self.input_lines.info(
                                 self.line_offset)
-                            print >>self._stderr, (
+                            print((
                                 u'\nStateMachine.run: line (source=%r, '
                                 u'offset=%r):\n| %s'
-                                % (source, offset, self.line))
+                                % (source, offset, self.line)), file=self._stderr)
                         context, next_state, result = self.check_line(
                             context, state, transitions)
                     except EOFError:
                         if self.debug:
-                            print >>self._stderr, (
+                            print((
                                 '\nStateMachine.run: %s.eof transition'
-                                % state.__class__.__name__)
+                                % state.__class__.__name__), file=self._stderr)
                         result = state.eof(context)
                         results.extend(result)
                         break
@@ -251,10 +253,10 @@ class StateMachine:
                     self.previous_line() # back up for another try
                     transitions = (exception.args[0],)
                     if self.debug:
-                        print >>self._stderr, (
+                        print((
                               '\nStateMachine.run: TransitionCorrection to '
                               'state "%s", transition %s.'
-                              % (state.__class__.__name__, transitions[0]))
+                              % (state.__class__.__name__, transitions[0])), file=self._stderr)
                     continue
                 except StateCorrection as exception: ### 2to3.
                     self.previous_line() # back up for another try
@@ -264,10 +266,10 @@ class StateMachine:
                     else:
                         transitions = (exception.args[1],)
                     if self.debug:
-                        print >>self._stderr, (
+                        print((
                               '\nStateMachine.run: StateCorrection to state '
                               '"%s", transition %s.'
-                              % (next_state, transitions[0]))
+                              % (next_state, transitions[0])), file=self._stderr)
                 else:
                     transitions = None
                 state = self.get_state(next_state)
@@ -288,11 +290,11 @@ class StateMachine:
         """
         if next_state:
             if self.debug and next_state != self.current_state:
-                print >>self._stderr, (
+                print((
                     '\nStateMachine.get_state: Changing state from '
                     '"%s" to "%s" (input line %s).'
                     % (self.current_state, next_state,
-                       self.abs_line_number()))
+                       self.abs_line_number())), file=self._stderr)
             self.current_state = next_state
         try:
             return self.states[self.current_state]
@@ -445,24 +447,24 @@ class StateMachine:
             transitions =  state.transition_order
         state_correction = None
         if self.debug:
-            print >>self._stderr, (
+            print((
                   '\nStateMachine.check_line: state="%s", transitions=%r.'
-                  % (state.__class__.__name__, transitions))
+                  % (state.__class__.__name__, transitions)), file=self._stderr)
         for name in transitions:
             pattern, method, next_state = state.transitions[name]
             match = pattern.match(self.line)
             if match:
                 if self.debug:
-                    print >>self._stderr, (
+                    print((
                           '\nStateMachine.check_line: Matched transition '
                           '"%s" in state "%s".'
-                          % (name, state.__class__.__name__))
+                          % (name, state.__class__.__name__)), file=self._stderr)
                 return method(match, context, next_state)
         else:
             if self.debug:
-                print >>self._stderr, (
+                print((
                       '\nStateMachine.check_line: No match in state "%s".'
-                      % state.__class__.__name__)
+                      % state.__class__.__name__), file=self._stderr)
             return state.no_match(context, transitions)
 
     def add_state(self, state_class):
@@ -494,10 +496,10 @@ class StateMachine:
     def error(self):
         """Report error details."""
         type, value, module, line, function = _exception_data()
-        print >>self._stderr, u'%s: %s' % (type, value)
-        print >>self._stderr, 'input line %s' % (self.abs_line_number())
-        print >>self._stderr, (u'module %s, line %s, function %s' %
-                               (module, line, function))
+        print(u'%s: %s' % (type, value), file=self._stderr)
+        print('input line %s' % (self.abs_line_number()), file=self._stderr)
+        print((u'module %s, line %s, function %s' %
+                               (module, line, function)), file=self._stderr)
 
     def attach_observer(self, observer):
         """
@@ -1333,7 +1335,7 @@ class ViewList:
     def pprint(self):
         """Print the list in `grep` format (`source:offset:value` lines)"""
         for line in self.xitems():
-            print("%s:%d:%s" % line)  ### 2to3.
+            print(("%s:%d:%s" % line))  ### 2to3.
 
 
 class StringList(ViewList):

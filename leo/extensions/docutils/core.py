@@ -12,6 +12,8 @@ custom component objects first, and pass *them* to
 .. _The Docutils Publisher: http://docutils.sf.net/docs/api/publisher.html
 """
 
+from __future__ import print_function ###
+
 __docformat__ = 'reStructuredText'
 
 import sys
@@ -243,24 +245,24 @@ class Publisher:
         if not self.document:
             return
         if self.settings.dump_settings:
-            print >>self._stderr, '\n::: Runtime settings:'
-            print >>self._stderr, pprint.pformat(self.settings.__dict__)
+            print('\n::: Runtime settings:', file=self._stderr)
+            print(pprint.pformat(self.settings.__dict__), file=self._stderr)
         if self.settings.dump_internals:
-            print >>self._stderr, '\n::: Document internals:'
-            print >>self._stderr, pprint.pformat(self.document.__dict__)
+            print('\n::: Document internals:', file=self._stderr)
+            print(pprint.pformat(self.document.__dict__), file=self._stderr)
         if self.settings.dump_transforms:
-            print >>self._stderr, '\n::: Transforms applied:'
-            print >>self._stderr, (' (priority, transform class, '
-                                 'pending node details, keyword args)')
-            print >>self._stderr, pprint.pformat(
+            print('\n::: Transforms applied:', file=self._stderr)
+            print((' (priority, transform class, '
+                                 'pending node details, keyword args)'), file=self._stderr)
+            print(pprint.pformat(
                 [(priority, '%s.%s' % (xclass.__module__, xclass.__name__),
                   pending and pending.details, kwargs)
                  for priority, xclass, pending, kwargs
-                 in self.document.transformer.applied])
+                 in self.document.transformer.applied]), file=self._stderr)
         if self.settings.dump_pseudo_xml:
-            print >>self._stderr, '\n::: Pseudo-XML:'
-            print >>self._stderr, self.document.pformat().encode(
-                'raw_unicode_escape')
+            print('\n::: Pseudo-XML:', file=self._stderr)
+            print(self.document.pformat().encode(
+                'raw_unicode_escape'), file=self._stderr)
 
     def report_Exception(self, error):
         if isinstance(error, utils.SystemMessage):
@@ -275,19 +277,19 @@ class Publisher:
                 u'Unable to open destination file for writing:\n'
                 u'  %s\n' % ErrorString(error))
         else:
-            print >>self._stderr, u'%s' % ErrorString(error)
-            print >>self._stderr, ("""\
+            print(u'%s' % ErrorString(error), file=self._stderr)
+            print(("""\
 Exiting due to error.  Use "--traceback" to diagnose.
 Please report errors to <docutils-users@lists.sf.net>.
 Include "--traceback" output, Docutils version (%s [%s]),
 Python version (%s), your OS type & version, and the
 command line used.""" % (__version__, __version_details__,
-                         sys.version.split()[0]))
+                         sys.version.split()[0])), file=self._stderr)
 
     def report_SystemMessage(self, error):
-        print >>self._stderr, ('Exiting due to level-%s (%s) system message.'
+        print(('Exiting due to level-%s (%s) system message.'
                              % (error.level,
-                                utils.Reporter.levels[error.level]))
+                                utils.Reporter.levels[error.level])), file=self._stderr)
 
     def report_UnicodeError(self, error):
         data = error.object[error.start:error.end]
