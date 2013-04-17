@@ -11,7 +11,7 @@ import time
 #@+others
 #@+node:ekr.20121126102050.10135: ** init
 def init():
-    
+
     return True
 #@+node:ekr.20121126095734.12419: ** class ThreadQueue
 class ThreadQueue:
@@ -19,7 +19,7 @@ class ThreadQueue:
     #@+node:ekr.20121126095734.12420: *3* __init__
     def __init__(self):
         self.threads = []
-        
+
     #@+node:ekr.20121126095734.12421: *3* add
     def add(self,r):
         empty = not self.threads
@@ -27,7 +27,7 @@ class ThreadQueue:
         r.finished.connect(self.pop)
         if empty:
             r.start()
-        
+
     #@+node:ekr.20121126095734.12422: *3* pop
     def pop(self):
         if self.threads:
@@ -39,8 +39,8 @@ class ThreadQueue:
 #_tq = ThreadQueue()
 #@+node:ekr.20121126095734.12423: ** enq_task
 def enq_task(r):
-    _tq.add(r)  
-    
+    _tq.add(r)
+
 #@+node:ekr.20121126095734.12424: ** class RRunner
 class RRunner(QtCore.QThread):
     #@+others
@@ -58,16 +58,16 @@ class RRunner(QtCore.QThread):
 #@+node:ekr.20121126095734.12427: ** class Repeater
 class Repeater(QtCore.QThread):
     """ execute f forever, signal on every run """
-    
-    fragment = QtCore.pyqtSignal(object)    
-    
+
+    fragment = QtCore.pyqtSignal(object)
+
     #@+others
     #@+node:ekr.20121126095734.12428: *3* __init__
     def __init__(self, f, parent = None):
 
         QtCore.QThread.__init__(self, parent)
         self.f = f
-        
+
     #@+node:ekr.20121126095734.12429: *3* run
     def run(self):
         while 1:
@@ -82,22 +82,22 @@ class Repeater(QtCore.QThread):
 garbage = []
 
 def log_filedes(f, level):
-    
+
     def reader():
         line = f.readline()
         if not line:
-            
+
             raise StopIteration
-        return line        
-        
+        return line
+
     def output(line):
         log.log(level, line.rstrip())
-    
+
     def finished():
         log.log(logging.INFO, "<EOF>")
-        
+
     rr = Repeater(reader)
-    
+
     rr.fragment.connect(output)
     rr.finished.connect(finished)
     garbage.append(rr)
@@ -105,22 +105,22 @@ def log_filedes(f, level):
 #@+node:ekr.20121126095734.12431: ** later
 def later(f):
     QtCore.QTimer.singleShot(0,f)
-        
+
 #@+node:ekr.20121126095734.12432: ** async_syscmd
 def async_syscmd(cmd, onfinished):
     proc = QtCore.QProcess()
-    
+
     def cmd_handler(exitstatus):
         out = proc.readAllStandardOutput()
         err = proc.readAllStandardError()
         #print "got",out, "e", err, "r", exitstatus
         onfinished(exitstatus, out, err)
-                
+
     proc.finished[int].connect(cmd_handler)
-    
+
     proc.start(cmd)
     #garbage.append(proc)
-    
+
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others
@@ -128,27 +128,27 @@ class NowOrLater:
 
     def __init__(self, worker, gran = 1.0):
         """ worker takes list of tasks, does something for it """
-        
+
         self.w = worker
         self.l = []
         self.lasttime = 1
         self.granularity = gran
         self.scheduled = False
-        
+
     #@+node:ekr.20121126095734.12435: *3* add
     def add(self,task):
         now = time.time()
         self.l.append(task)
         # if last called one sec ago, call now
-        
+
         def callit():
-            
+
             self.lasttime = time.time()
             work = self.l
             self.l = []
             self.w(work)
             self.scheduled = False
-        
+
         if (now - self.lasttime) > self.granularity:
             #print "now"
             callit()
@@ -160,14 +160,14 @@ class NowOrLater:
             else:
                 pass
                 #print "already sched"
-        
+
 
     #@-others
 #@+node:ekr.20121126095734.12436: ** class UnitWorker
 class UnitWorker(QtCore.QThread):
     """ Work on one work item at a time, start new one when it's done """
 
-    resultReady = QtCore.pyqtSignal()    
+    resultReady = QtCore.pyqtSignal()
 
     #@+others
     #@+node:ekr.20121126095734.12437: *3* __init__
@@ -188,14 +188,14 @@ class UnitWorker(QtCore.QThread):
 
     #@+node:ekr.20121126095734.12440: *3* set_input
     def set_input(self, inp):
-        self.input = inp        
+        self.input = inp
         self.cond.wakeAll()
 
     #@+node:ekr.20121126095734.12441: *3* do_work
     def do_work(self, inp):
         #print("Doing work", self.worker, self.input)
         self.output = self.worker(inp)
-        #self.output_f(output)        
+        #self.output_f(output)
 
         self.resultReady.emit()
         def L():
@@ -216,34 +216,70 @@ class UnitWorker(QtCore.QThread):
             m.unlock()
             if inp is not None:
                 self.do_work(inp)
-            
+
+
+class SysProcessRunner:
+    def __init__(self):
+        # dict of lists (queues)
+        self.q = {}
+        self.cur = {}
+        self.procs = []
+    def add(self, key, argv, cb = None):
+        """ argv = [program, arg1, ...] """
+        ent = {
+            'arg' : argv,
+            'cb' : cb
+        }
+        self.q.setdefault(key, []).append(ent)
+        self.sched()
+
+    def finished(self, code, status):
+        print "fin", code, status
+
+    def sched(self):
+        for k,q in self.q.items():
+            if q and k not in self.cur:
+                ent = q.pop()
+                self.cur[k] = ent
+                self.run_one(ent, k)
+
+    def run_one(self, ent, key):
+        p = QtCore.QProcess()
+        def fini(code, status):
+            print "fini", code, status
+            del self.cur[key]
+            out = str(p.readAllStandardOutput())
+            err = str(p.readAllStandardError())
+            print "out", out
+            print "err", err
+            ent['cb'](out, err, status)
+            later(self.sched)
+
+        cmd = ent['arg'][0]
+        args = ent['arg'][1:]
+        p.start(cmd, args)
+        p.finished.connect(fini)
+        self.procs.append(p)
 
 
 
-        
     #@-others
 #@+node:ekr.20121126095734.12443: ** main
 def main():
     # stupid test
-    uw = UnitWorker()
-    def W(inp):
-        return inp.upper()
-
-    def O(out):
+    a = QtGui.QApplication([])
+    b = QtGui.QPushButton("Say hello", None)
+    sp = SysProcessRunner()
+    def L(*args):
+        print "In callback", args
         pass
-        #print "output",out
-
-    uw.set_worker(W)
-    uw.set_output_f(O)
-    uw.start()
-    time.sleep(1)
-    uw.set_input("Hooba hey")
-    uw.set_input("Hooba haoaoaoey")
-    time.sleep(1)
-    uw.set_input("oeueoueouHooba hey")
-    time.sleep(1)
+    sp.add("", ['ls', '/tmp'], L)
+    sp.add("", ['ls', '-la'], L)
+    #a.setMainWidget(b)
+    b.show()
+    a.exec_()
 #@-others
 
-if __name__ == "__main__":    
-    main()    
+if __name__ == "__main__":
+    main()
 #@-leo
