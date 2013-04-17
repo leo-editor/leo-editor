@@ -498,7 +498,7 @@ class SimpleTableParser(TableParser):
         """
         # "Infinite" value for a dummy last column's beginning, used to
         # check for text overflow:
-        columns.append((sys.maxint, None))
+        columns.append((sys.maxsize, None))
         lastcol = len(columns) - 2
         # combining characters do not contribute to the column width
         lines = [strip_combining_chars(line) for line in lines]
