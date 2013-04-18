@@ -1522,8 +1522,8 @@ class pending(Special, Invisible, Element):
               '     .transform: %s.%s' % (self.transform.__module__,
                                           self.transform.__name__),
               '     .details:']
-        details = self.details.items()
-        details.sort()
+        details = sorted(self.details.items())
+        ### details.sort()
         for key, value in details:
             if isinstance(value, Node):
                 internals.append('%7s%s:' % ('', key))
