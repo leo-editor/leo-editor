@@ -1,9 +1,9 @@
-#@+leo-ver=4-thin
-#@+node:ville.20090213231648.1:@thin ~/leo-editor/setup.py
+#@+leo-ver=5-thin
+#@+node:maphew.20130415133445.2159: * @file leo-editor/setup.py
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:ville.20090213231648.2:setup declarations
+#@+node:ville.20090213231648.2: ** setup declarations
 
 #from setuptools import setup,find_packages
 
@@ -19,8 +19,7 @@ from distutils.core import setup
 from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
 import os,fnmatch
-#@-node:ville.20090213231648.2:setup declarations
-#@+node:ville.20090213231648.3:fullsplit
+#@+node:ville.20090213231648.3: ** fullsplit
 import sys
 
 def fullsplit(path, result=None):
@@ -37,17 +36,14 @@ def fullsplit(path, result=None):
         return result
     return fullsplit(head, [tail] + result)
 
-#@-node:ville.20090213231648.3:fullsplit
-#@+node:ville.20090213231648.4:purelib hack
+#@+node:ville.20090213231648.4: ** purelib hack
 # Tell distutils to put the data_files in platform-specific installation
 # locations. See here for an explanation:
 # http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
 for scheme in list(INSTALL_SCHEMES.values()):
     scheme['data'] = scheme['purelib']
-#@+node:ville.20090213233714.2:@url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
-#@-node:ville.20090213233714.2:@url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
-#@-node:ville.20090213231648.4:purelib hack
-#@+node:ville.20090213231648.5:collect (and filter) files
+#@+node:ville.20090213233714.2: *3* @url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
+#@+node:ville.20090213231648.5: ** collect (and filter) files
 # Compile the list of packages available, because distutils doesn't have
 # an easy way to do this.
 packages, data_files = [], []
@@ -87,14 +83,12 @@ pprint.pprint(packages)
 #cleanup unwanted data files
 
 
-#@-node:ville.20090213231648.5:collect (and filter) files
-#@+node:ville.20090213231648.6:bdist_wininst hack
+#@+node:ville.20090213231648.6: ** bdist_wininst hack
 # Small hack for working with bdist_wininst.
 # See http://mail.python.org/pipermail/distutils-sig/2004-August/004134.html
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
     for file_info in data_files:
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
-#@-node:ville.20090213231648.6:bdist_wininst hack
 #@-others
 
 
@@ -102,22 +96,56 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
 datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '*.txt', '.html',  '.iix',  '.w']
 #print data_files
 
+# variable order matches order on pkg info page, but that's just a niceity
+# https://testpypi.python.org/pypi?name=leo-editor&version=4.10-final&:action=submit_form
 setup(
     name = 'leo-editor',
-    version = "4.7.1",
+    version = "4.10-final",
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
-    url = 'http://webpages.charter.net/edreamleo/front.html',
+    #maintainer = '',
+    #maintainer_email = '',
+    url = 'http://leoeditor.com',
+    license = 'MIT License',
+    description = "Leonine Editor with Outlines",
+    long_description = """
+Leo is an outline-oriented IDE written in 100% pure Python.
+Leo features a multi-window outlining editor, Python colorizing,
+powerful outline commands and many other things, including 
+unlimited Undo/Redo and an integrated Python shell(IDLE) window.
+Leo requires Python 2.6 or above.  Leo works with Python 3.x.
+Requires PyQt and SIP preinstalled.
+    """,
+    #keywords = [],
+    platforms = ['linux','windows'],
+    download_url = 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip/download',
+    #bugtrack_url = 'https://bugs.launchpad.net/leo-editor',    #only py3?
+
+    # only include dependencies which can be installed by pip
+    requires = ['docutils'],
+
+    #provides = [],
+    #obsoletes= [],    
+    classifiers = [
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Win32 (MS Windows)',
+        'Environment :: X11 Applications :: Qt',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 3',
+        'Topic :: Software Development',
+        'Topic :: Text Editors',
+        'Topic :: Text Processing',
+        ],
+
     packages = packages,
     data_files = data_files,
     package_data = {'leo.plugins' : datapats },
-    description = "A programmer's editor/outliner, and much more",
-    long_description = """
-Leo is an outline-oriented editor written in 100% pure Python.
-Leo features a multi-window outlining editor, syntax colorizing,
-powerful outline commands and many other things, including 
-unlimited Undo/Redo and scriptability.
-    """,
     scripts = ['leo/scripts/leo'],
 
     #entry_points = {
@@ -130,5 +158,4 @@ unlimited Undo/Redo and scriptability.
     #    }
 
 )
-#@-node:ville.20090213231648.1:@thin ~/leo-editor/setup.py
 #@-leo
