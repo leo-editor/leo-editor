@@ -1442,9 +1442,15 @@ class leoFrame:
             return
 
         c.endEditing()
+
         time = c.getTime(body=False)
         s = p.h.rstrip()
-        c.setHeadString(p,'%s %s' % (s,time))
+        if s:
+            hdl = ' '.join([s, time])
+        else:
+            hdl = time
+        p.h = hdl
+        
         c.redrawAndEdit(p,selectAll=True)
     #@+node:ekr.20031218072017.3680: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3683: *4* Config...
