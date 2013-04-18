@@ -375,18 +375,18 @@ class Babel(object):
             self.quotes = (r'\glqq{}', r'\grqq{}')
             ### self.literal_double_quote = ur'\dq{}'
             if sys.version_info < (3,0):
-                from punctuation2 import literal_double_quote
+                from ...punctuation2 import literal_double_quote
             else:
-                from punctuation3 import literal_double_quote
+                from ...punctuation3 import literal_double_quote
             self.literal_double_quote = literal_double_quote
         if self.language == 'french':
             self.quotes = (r'\og{}', r'\fg{}')
         if self.language == 'italian':
             ###self.literal_double_quote = ur'{\char`\"}'
             if sys.version_info < (3,0):
-                from punctuation2 import italian_literal_double_quote
+                from ...punctuation2 import italian_literal_double_quote
             else:
-                from punctuation3 import italian_literal_double_quote
+                from ...punctuation3 import italian_literal_double_quote
             self.literal_double_quote = italian_literal_double_quote
 
     def __call__(self):
@@ -701,9 +701,9 @@ class CharMaps(object):
     """LaTeX representations for active and Unicode characters."""
     
     if sys.version_info < (3,0):
-        from punctuation2 import special,unsupported_unicode,utf8_supported_unicode,textcomp,pifont
+        from ...punctuation2 import special,unsupported_unicode,utf8_supported_unicode,textcomp,pifont
     else:
-        from punctuation3 import special,unsupported_unicode,utf8_supported_unicode,textcomp,pifont
+        from ...punctuation3 import special,unsupported_unicode,utf8_supported_unicode,textcomp,pifont
 
     # characters that always need escaping:
     #~ special = {
@@ -1445,9 +1445,9 @@ class LaTeXTranslator(nodes.NodeVisitor):
         if self.font_encoding in ['OT1', ''] and not self.is_xetex:
             # * out-of-order characters in cmtt
             if sys.version_info < (3,0):
-                from punctuation2 import table_reflectbox,table_textbar,table_textless,table_textgreater,table_tilde
+                from ...punctuation2 import table_reflectbox,table_textbar,table_textless,table_textgreater
             else:
-                from punctuation3 import table_reflectbox,table_textbar,table_textless,table_textgreater,table_tilde
+                from ...punctuation3 import table_reflectbox,table_textbar,table_textless,table_textgreater
             if self.literal:
                 # replace underscore by underlined blank,
                 # because this has correct width.
@@ -1467,6 +1467,10 @@ class LaTeXTranslator(nodes.NodeVisitor):
                 table[ord('>')] = table_textgreater
         if self.insert_non_breaking_blanks:
             ### table[ord(' ')] = ur'~'
+            if sys.version_info < (3,0):
+                from ...punctuation2 import table_tilde
+            else:
+                from ...punctuation3 import table_tilde
             table[ord(' ')] = table_tilde
         if self.literal:
             # double quotes are 'active' in some languages
@@ -2647,9 +2651,9 @@ class LaTeXTranslator(nodes.NodeVisitor):
         # We need to escape #, \, and % if we use the URL in a command.
         ###
         if sys.version_info < (3,0):
-            from punctuation2 import special_chars
+            from ...punctuation2 import special_chars
         else:
-            from punctuation3 import special_chars
+            from ...punctuation3 import special_chars
         #~ special_chars = {ord('#'): ur'\#',
                          #~ ord('%'): ur'\%',
                          #~ ord('\\'): ur'\\',

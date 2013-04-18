@@ -90,6 +90,8 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 ..
 """)
 
+import sys ###
+
 class Writer(writers.Writer):
 
     supported = ('manpage',)
@@ -281,9 +283,9 @@ class Translator(nodes.NodeVisitor):
         text = text.replace('\\','\\e')
         ###
         if sys.version_info < (3,0):
-            from punctuation2 import replace_pairs
+            from ..punctuation2 import replace_pairs
         else:
-            from punctuation3 import replace_pairs
+            from ..punctuation3 import replace_pairs
         ###
         #replace_pairs = [
         #    (u'-', ur'\-'),
