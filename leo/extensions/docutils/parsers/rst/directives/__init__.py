@@ -298,12 +298,19 @@ def unicode_code(code):
     """
     try:
         if code.isdigit():                  # decimal number
-            return unichr(int(code))
+            if sys.version_info < (3,):
+                return unichr(int(code))
+            else:
+                return str(int(code))
         else:
             match = unicode_pattern.match(code)
             if match:                       # hex number
                 value = match.group(1) or match.group(2)
-                return unichr(int(value, 16))
+                ### return unichr(int(value, 16))
+                if sys.version_info < (3,):
+                    return unichr(int(value, 16))
+                else:
+                    return str(int(value, 16))
             else:                           # other text
                 return code
     except OverflowError as detail:

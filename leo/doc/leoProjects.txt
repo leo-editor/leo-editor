@@ -2867,9 +2867,6 @@ A fixes:
 --fix=xrange ### Several changes.  Can be done automatically.
 --fix=xreadlines # no changes.
 
-
-
-
 B fixes:
 --fix=basestring
     OK: docutils\nodes.py

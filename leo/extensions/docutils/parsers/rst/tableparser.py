@@ -286,13 +286,13 @@ class GridTableParser(TableParser):
         From the data collected by `scan_cell()`, convert to the final data
         structure.
         """
-        rowseps = self.rowseps.keys()   # list of row boundaries
-        rowseps.sort()
+        rowseps = sorted(self.rowseps.keys())   # list of row boundaries
+        ### rowseps.sort()
         rowindex = {}
         for i in range(len(rowseps)):
             rowindex[rowseps[i]] = i    # row boundary -> row number mapping
-        colseps = self.colseps.keys()   # list of column boundaries
-        colseps.sort()
+        colseps = sorted(self.colseps.keys())   # list of column boundaries
+        ### colseps.sort()
         colindex = {}
         for i in range(len(colseps)):
             colindex[colseps[i]] = i    # column boundary -> col number map

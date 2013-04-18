@@ -1161,7 +1161,11 @@ class ViewList:
             return self.data[i]
 
     def __setitem__(self, i, item):
-        if isinstance(i, types.SliceType):
+        ### if isinstance(i, types.SliceType):
+        if (
+            (sys.version_info < (3,0) and isinstance(i,types.SliceType)) or
+            (sys.version_info >=(3,0) and isinstance(i,slice))
+        ):
             assert i.step in (None, 1), 'cannot handle slice with stride'
             if not isinstance(item, ViewList):
                 raise TypeError('assigning non-ViewList to ViewList slice')
@@ -1302,7 +1306,7 @@ class ViewList:
         self.parent = None
 
     def sort(self, *args):
-        tmp = zip(self.data, self.items)
+        tmp = list(zip(self.data, self.items)) ### 2to3.
         tmp.sort(*args)
         self.data = [entry[0] for entry in tmp]
         self.items = [entry[1] for entry in tmp]
