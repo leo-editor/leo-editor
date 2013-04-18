@@ -1446,10 +1446,9 @@ class leoFrame:
         time = c.getTime(body=False)
         s = p.h.rstrip()
         if s:
-            hdl = ' '.join([s, time])
+            p.h = ' '.join([s, time])
         else:
-            hdl = time
-        p.h = hdl
+            p.h = time
         
         c.redrawAndEdit(p,selectAll=True)
     #@+node:ekr.20031218072017.3680: *3* Must be defined in subclasses
