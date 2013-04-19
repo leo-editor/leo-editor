@@ -983,7 +983,7 @@ class LeoActions:
     <html><head><style>
     body {font-family:mono; font-size: 80%%;}
     th {text-align:right}
-    </style>
+    </style><title>Leo Add Bookmark</title>
     </head><body onload='document.getElementById("tags").focus();'>
     <form method='GET' action='/_/add/bkmk/'>
     <input type='hidden' name='_form' value='1'/>
