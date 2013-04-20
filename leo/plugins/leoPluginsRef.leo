@@ -58,24 +58,22 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
+<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
 <v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
-<v t="ville.20090314215508.4"
-expanded="ville.20090314215508.2,"><vh>@file quicksearch.py</vh></v>
+<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2" a="E"
-expanded="tbrown.20090119215428.9,tbrown.20090119215428.40,"><vh>@file todo.py</vh></v>
+<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="ville.20110403115003.10348" a="E"
-expanded="ekr.20110408065137.14221,ville.20110403115003.10355,ekr.20110408065137.14219,ekr.20110408065137.14226,ekr.20110407174428.5781,ekr.20110407174428.5780,ekr.20110407174428.5782,"><vh>@file valuespace.py</vh></v>
-<v t="ville.20130127035134.3685"><vh>@auto internal_ipkernel.py</vh></v>
+<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
+<v t="ville.20130127035134.3685"><vh>@file internal_ipkernel.py</vh></v>
+<v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
@@ -219,8 +217,7 @@ expanded="ekr.20110408065137.14221,ville.20110403115003.10355,ekr.20110408065137
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
-<v t="tbrown.20090119215428.2" a="E"
-expanded="tbrown.20090119215428.9,tbrown.20090119215428.40,"></v>
+<v t="tbrown.20090119215428.2"></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 </v>
