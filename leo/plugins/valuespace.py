@@ -186,7 +186,7 @@ import re
 import types, sys
 import textwrap
 import json
-import StringIO
+from io import BytesIO
 import yaml
 #@-<< imports >>
 
@@ -623,7 +623,8 @@ class ValueSpaceController:
         
     def let_body(self,var,val):
         if var.endswith(".yaml"):
-            sio = StringIO.StringIO(val)
+            #print "set to yaml", `val`
+            sio = BytesIO(val)
             try:
                 d = yaml.load(sio)
             except:
