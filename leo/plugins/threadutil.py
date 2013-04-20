@@ -263,7 +263,7 @@ class SysProcessRunner:
 
 def leo_echo_cb(out, err, code, ent):
     arg = ent['arg']
-    g.es("> " + arg[0] + " " + `arg[1:]`    )
+    g.es("> " + arg[0] + " " + repr(arg[1:])    )
     if out:
         g.es(out)
     if err:
