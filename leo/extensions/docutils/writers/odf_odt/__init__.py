@@ -580,7 +580,7 @@ class Writer(writers.Writer):
         localtime = time.localtime(time.time())
         zinfo = zipfile.ZipInfo(name, localtime)
         # Add some standard UNIX file access permissions (-rw-r--r--).
-        zinfo.external_attr = (0x81a4 & 0xFFFF) << 16L
+        zinfo.external_attr = (0x81a4 & 0xFFFF) << 16 ### was 16L
         zinfo.compress_type = compress_type
         zfile.writestr(zinfo, bytes)
 
