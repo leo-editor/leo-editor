@@ -19,10 +19,16 @@ timestamps in the filenames.
 Commands
 --------
 
-screen-capture-5sec
-  Wait five second, then take a screen shot.
-screen-capture-now
+``screen-capture-5sec``
+  Wait five seconds, then take a screen shot.
+``screen-capture-now``
   Take a screen shot.
+
+Settings
+--------
+
+``@string screen-capture-save-path``
+  Save screen shots here instead of ~/.leo/screen_captures
 
 Terry Brown, Terry_N_Brown@yahoo.com, Fri Apr 19 16:33:45 2013
 """
@@ -177,11 +183,15 @@ def screen_capture_now(kwargs={}):
     if not hasattr(g, '_recorder'):
         g._recorder = Recorder()
         
-    dirname = g.os_path_join(
-        g.computeHomeDir(),
-        '.leo',
-        'screen_captures'
-    )
+    c = g.app.commanders()[0]
+    dirname = c.config.getString("screen-capture-save-path")
+    if not dirname:
+        dirname = g.os_path_join(
+            g.computeHomeDir(),
+            '.leo',
+            'screen_captures'
+        )
+    dirname = g.os_path_expanduser(dirname)
     if not g.os_path_isdir(dirname):
         os.makedirs(dirname)
     filename = g.os_path_join(
