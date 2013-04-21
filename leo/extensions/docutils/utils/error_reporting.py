@@ -72,22 +72,18 @@ class SafeString(object):
     def __str__(self):
         try:
             return str(self.data)
-        except UnicodeEncodeError as err:
+        except UnicodeEncodeError, err:
             if isinstance(self.data, Exception):
                 args = [str(SafeString(arg, self.encoding,
                                         self.encoding_errors))
                         for arg in self.data.args]
                 return ', '.join(args)
-            
-            ### 2to3:
-            ### if isinstance(self.data, unicode):
-            if (
-                sys.version_info >= (3,) and isinstance(self.data,str) or
-                sys.version_info < (3,) and isinstance(self.data,unicode)
-            ):
-                return self.data
-            else:
-                return self.data.encode(self.encoding,self.encoding_errors)
+            if isinstance(self.data, unicode):
+                if sys.version_info > (3,0):
+                    return self.data
+                else:
+                    return self.data.encode(self.encoding,
+                                            self.encoding_errors)
             raise
 
     def __unicode__(self):
@@ -107,7 +103,7 @@ class SafeString(object):
             if isinstance(self.data, EnvironmentError):
                 u = u.replace(": u'", ": '") # normalize filename quoting
             return u
-        except UnicodeError as error: # catch ..Encode.. and ..Decode.. errors
+        except UnicodeError, error: # catch ..Encode.. and ..Decode.. errors
             if isinstance(self.data, EnvironmentError):
                 return  u"[Errno %s] %s: '%s'" % (self.data.errno,
                     SafeString(self.data.strerror, self.encoding,
@@ -160,15 +156,10 @@ class ErrorOutput(object):
         elif not(stream):
             stream = False
         # if `stream` is a file name, open it
-        ### 2to3:
-        elif sys.version_info >= (3,):
-            if isinstance(stream, str):
-                stream = open(stream.encode(sys.getfilesystemencoding()), 'w')
-        else:
-            if isinstance(stream, str):
-                stream = open(stream, 'w')
-            elif isinstance(stream, unicode):
-                stream = open(stream.encode(sys.getfilesystemencoding()), 'w')
+        elif isinstance(stream, str):
+            stream = open(stream, 'w')
+        elif isinstance(stream, unicode):
+            stream = open(stream.encode(sys.getfilesystemencoding()), 'w')
 
         self.stream = stream
         """Where warning output is sent."""

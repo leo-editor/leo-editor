@@ -48,30 +48,17 @@ class Node(object):
 
     line = None
     """The line number (1-based) of the beginning of this Node in `source`."""
-    
-    if sys.version_info < (3,0): ###
-        def __nonzero__(self):
-            """
-            Node instances are always true, even if they're empty.  A node is more
-            than a simple container.  Its boolean "truth" does not depend on
-            having one or more subnodes in the doctree.
 
-            Use `len()` to check node length.  Use `None` to represent a boolean
-            false value.
-            """
-            return True
-            
-    else:
-        def __bool__(self):
-            """
-            Node instances are always true, even if they're empty.  A node is more
-            than a simple container.  Its boolean "truth" does not depend on
-            having one or more subnodes in the doctree.
+    def __nonzero__(self):
+        """
+        Node instances are always true, even if they're empty.  A node is more
+        than a simple container.  Its boolean "truth" does not depend on
+        having one or more subnodes in the doctree.
 
-            Use `len()` to check node length.  Use `None` to represent a boolean
-            false value.
-            """
-            return True
+        Use `len()` to check node length.  Use `None` to represent a boolean
+        false value.
+        """
+        return True
 
     if sys.version_info < (3,):
         # on 2.x, str(node) will be a byte string with Unicode
@@ -261,11 +248,7 @@ class Node(object):
         if include_self and descend and not siblings:
             if condition is None:
                 return self._all_traverse()
-            ### elif isinstance(condition, (types.ClassType, type)):
-            elif (
-                (sys.version_info < (3,0) and isinstance(condition, (types.ClassType, type))) or
-                (sys.version_info >=(3,0) and isinstance(condition, type))
-            ):
+            elif isinstance(condition, (types.ClassType, type)):
                 return self._fast_traverse(condition)
         # Check if `condition` is a class (check for TypeType for Python
         # implementations that use only new-style classes, like PyPy).
@@ -322,9 +305,8 @@ if sys.version_info < (3,):
         def __repr__(self):
             return unicode.__repr__(self)[1:]
 else:
-    ### EKR: this makes no sense
-    ### reprunicode = unicode
-    reprunicode = str
+    reprunicode = unicode
+
 
 class Text(Node, reprunicode):
 
@@ -531,10 +513,8 @@ class Element(Node):
             if isinstance(value, list):
                 values = [serial_escape('%s' % (v,)) for v in value]
                 value = ' '.join(values)
-            elif sys.version_info < (3,): ###
+            else:
                 value = unicode(value)
-            else: ###
-                value = str(value) ###
             value = quoteattr(value)
             parts.append(u'%s=%s' % (name, value))
         return u'<%s>' % u' '.join(parts)
@@ -553,75 +533,47 @@ class Element(Node):
     def __contains__(self, key):
         # support both membership test for children and attributes
         # (has_key is translated to "in" by 2to3)
-        ### if isinstance(key, basestring):
-        if (
-            (sys.version_info < (3,0) and isinstance(key, basestring)) or
-            (sys.version_info >=(3,0) and isinstance(key, str))
-        ):
+        if isinstance(key, basestring):
             return key in self.attributes
         return key in self.children
 
     def __getitem__(self, key):
-        ### if isinstance(key, basestring):
-        if (
-            (sys.version_info < (3,0) and isinstance(key, basestring)) or
-            (sys.version_info >=(3,0) and isinstance(key, str))
-        ):
+        if isinstance(key, basestring):
             return self.attributes[key]
         elif isinstance(key, int):
             return self.children[key]
-        ### elif isinstance(key, types.SliceType):
-        elif (
-            (sys.version_info < (3,0) and isinstance(key, types.SliceType)) or
-            (sys.version_info >=(3,0) and isinstance(key, slice))
-        ):
+        elif isinstance(key, types.SliceType):
             assert key.step in (None, 1), 'cannot handle slice with stride'
             return self.children[key.start:key.stop]
         else:
-            raise TypeError('element index must be an integer, a slice, or '  ### 2to3.
+            raise TypeError, ('element index must be an integer, a slice, or '
                               'an attribute name string')
 
     def __setitem__(self, key, item):
-        ### if isinstance(key, basestring):
-        if (
-            (sys.version_info < (3,0) and isinstance(key, basestring)) or
-            (sys.version_info >=(3,0) and isinstance(key, str))
-        ):
+        if isinstance(key, basestring):
             self.attributes[str(key)] = item
         elif isinstance(key, int):
             self.setup_child(item)
             self.children[key] = item
-        ### elif isinstance(key, types.SliceType):
-        elif (
-            (sys.version_info < (3,0) and isinstance(key, types.SliceType)) or
-            (sys.version_info >=(3,0) and isinstance(key, slice))
-        ):
+        elif isinstance(key, types.SliceType):
             assert key.step in (None, 1), 'cannot handle slice with stride'
             for node in item:
                 self.setup_child(node)
             self.children[key.start:key.stop] = item
         else:
-            raise TypeError('element index must be an integer, a slice, or ' ### 2to3.
+            raise TypeError, ('element index must be an integer, a slice, or '
                               'an attribute name string')
 
     def __delitem__(self, key):
-        ### if isinstance(key, basestring):
-        if (
-            (sys.version_info < (3,0) and isinstance(key, basestring)) or
-            (sys.version_info >=(3,0) and isinstance(key, str))
-        ):
+        if isinstance(key, basestring):
             del self.attributes[key]
         elif isinstance(key, int):
             del self.children[key]
-        ### elif isinstance(key, types.SliceType):
-        elif (
-            (sys.version_info < (3,0) and isinstance(key, types.SliceType)) or
-            (sys.version_info >=(3,0) and isinstance(key, slice))
-        ):
+        elif isinstance(key, types.SliceType):
             assert key.step in (None, 1), 'cannot handle slice with stride'
             del self.children[key.start:key.stop]
         else:
-            raise TypeError('element index must be an integer, a simple '
+            raise TypeError, ('element index must be an integer, a simple '
                               'slice, or an attribute name string')
 
     def __add__(self, other):
@@ -651,9 +603,8 @@ class Element(Node):
 
     def attlist(self):
         attlist = self.non_default_attributes().items()
-        ### attlist.sort()
-        ### return attlist
-        return sorted(attlist)
+        attlist.sort()
+        return attlist
 
     def get(self, key, failobj=None):
         return self.attributes.get(key, failobj)
@@ -764,7 +715,7 @@ class Element(Node):
                        'Losing "%s" attribute: %s' % (att, self[att])
         self.parent.replace(self, new)
 
-    def first_child_matching_class(self, childclass, start=0, end=sys.maxsize): ### 2to3: was sys.maxint.
+    def first_child_matching_class(self, childclass, start=0, end=sys.maxint):
         """
         Return the index of the first child whose class exactly matches.
 
@@ -784,7 +735,7 @@ class Element(Node):
         return None
 
     def first_child_not_matching_class(self, childclass, start=0,
-                                       end=sys.maxsize): ### 2to3: was sys.maxint.
+                                       end=sys.maxint):
         """
         Return the index of the first child whose class does *not* match.
 
@@ -1468,7 +1419,7 @@ class system_message(Special, BackLinkable, PreBibliographic, Element):
         try:
             Element.__init__(self, '', *children, **attributes)
         except:
-            print(('system_message: children=%r' % (children,)))
+            print 'system_message: children=%r' % (children,)
             raise
 
     def astext(self):
@@ -1522,8 +1473,8 @@ class pending(Special, Invisible, Element):
               '     .transform: %s.%s' % (self.transform.__module__,
                                           self.transform.__name__),
               '     .details:']
-        details = sorted(self.details.items())
-        ### details.sort()
+        details = self.details.items()
+        details.sort()
         for key, value in details:
             if isinstance(value, Node):
                 internals.append('%7s%s:' % ('', key))
@@ -1908,11 +1859,7 @@ def make_id(string):
     .. _CSS1 spec: http://www.w3.org/TR/REC-CSS1
     """
     id = string.lower()
-    ### if not isinstance(id, unicode):
-    if (
-        (sys.version_info < (3,0) and not isinstance(id,unicode)) or
-        (sys.version_info >=(3,0) and not isinstance(id,str))
-    ):
+    if not isinstance(id, unicode):
         id = id.decode()
     id = id.translate(_non_id_translate_digraphs)
     id = id.translate(_non_id_translate)

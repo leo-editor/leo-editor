@@ -65,7 +65,7 @@ __version_details__ = 'release'
 
 import sys
 
-class ApplicationError(Exception): ### 2to3: StandardError -> Exception.
+class ApplicationError(StandardError):
     # Workaround:
     # In Python < 2.6, unicode(<exception instance>) calls `str` on the
     # arg and therefore, e.g., unicode(StandardError(u'\u234')) fails

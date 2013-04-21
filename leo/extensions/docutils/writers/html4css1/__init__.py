@@ -177,10 +177,7 @@ class Writer(writers.Writer):
 
     def apply_template(self):
         template_file = open(self.document.settings.template, 'rb')
-        if sys.version_info < (3,0): ###
-            template = unicode(template_file.read(), 'utf-8')
-        else:
-            template = str(template_file.read(), 'utf-8')
+        template = unicode(template_file.read(), 'utf-8')
         template_file.close()
         subs = self.interpolation_dict()
         return template % subs
@@ -337,10 +334,7 @@ class HTMLTranslator(nodes.NodeVisitor):
     def encode(self, text):
         """Encode special characters in `text` & return."""
         # @@@ A codec to do these and all other HTML entities would be nice.
-        if sys.version_info < (3,0): ### 2to3.
-            text = unicode(text)
-        else:
-            text = str(text)
+        text = unicode(text)
         return text.translate({
             ord('&'): u'&amp;',
             ord('<'): u'&lt;',
@@ -382,7 +376,7 @@ class HTMLTranslator(nodes.NodeVisitor):
                 content = io.FileInput(source_path=path,
                                        encoding='utf-8').read()
                 self.settings.record_dependencies.add(path)
-            except IOError as err:
+            except IOError, err:
                 msg = u"Cannot embed stylesheet '%s': %s." % (
                                 path, SafeString(err.strerror))
                 self.document.reporter.error(msg)
@@ -438,7 +432,7 @@ class HTMLTranslator(nodes.NodeVisitor):
                     # Non-empty tag.  Place the auxiliary <span> tag
                     # *inside* the element, as the first child.
                     suffix += '<span id="%s"></span>' % id
-        attlist = list(atts.items()) ### 2to3.
+        attlist = atts.items()
         attlist.sort()
         parts = [tagname]
         for name, value in attlist:
@@ -450,9 +444,8 @@ class HTMLTranslator(nodes.NodeVisitor):
                 parts.append('%s="%s"' % (name.lower(),
                                           self.attval(' '.join(values))))
             else:
-                z = unicode(value) if sys.version_info < (3,0) else str(value)
-                parts.append('%s="%s"' % (name.lower(),z))
-                    ### self.attval(unicode(value))))
+                parts.append('%s="%s"' % (name.lower(),
+                                          self.attval(unicode(value))))
         if empty:
             infix = ' /'
         else:
@@ -1221,7 +1214,7 @@ class HTMLTranslator(nodes.NodeVisitor):
             try:
                 mathml_tree = parse_latex_math(math_code, inline=not(math_env))
                 math_code = ''.join(mathml_tree.xml())
-            except SyntaxError as err:
+            except SyntaxError, err:
                 err_node = self.document.reporter.error(err, base_node=node)
                 self.visit_system_message(err_node)
                 self.body.append(self.starttag(node, 'p'))

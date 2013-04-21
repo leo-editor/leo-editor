@@ -7,8 +7,6 @@ I/O classes provide a uniform API for low-level input and output.  Subclasses
 exist for a variety of input/output mechanisms.
 """
 
-from __future__ import print_function ###
-
 __docformat__ = 'reStructuredText'
 
 import sys
@@ -90,11 +88,7 @@ class Input(TransformSpec):
             assert isinstance(data, unicode), (
                 'input encoding is "unicode" '
                 'but input is not a unicode object')
-        ### if isinstance(data, unicode): ### 2to3.
-        if (
-            (sys.version_info < (3,0) and isinstance(data, unicode)) or
-            (sys.version_info >=(3,0) and isinstance(data,str))
-        ):
+        if isinstance(data, unicode):
             # Accept unicode even if self.encoding != 'unicode'.
             return data
         if self.encoding:
@@ -120,7 +114,7 @@ class Input(TransformSpec):
                 self.successful_encoding = enc
                 # Return decoded, removing BOMs.
                 return decoded.replace(u'\ufeff', u'')
-            except (UnicodeError, LookupError) as err:
+            except (UnicodeError, LookupError), err:
                 error = err # in Python 3, the <exception instance> is
                             # local to the except clause
         raise UnicodeError(
@@ -196,11 +190,7 @@ class Output(TransformSpec):
                 'the encoding given is "unicode" but the output is not '
                 'a Unicode string')
             return data
-        ### if not isinstance(data, unicode):
-        if (
-            (sys.version_info < (3,0) and isinstance(data, unicode)) or
-            (sys.version_info >=(3,0) and isinstance(data,str))
-        ):
+        if not isinstance(data, unicode):
             # Non-unicode (e.g. bytes) output.
             return data
         else:
@@ -244,7 +234,7 @@ class FileInput(Input):
 
                 try:
                     self.source = open(source_path, mode, **kwargs)
-                except IOError as error:
+                except IOError, error:
                     raise InputError(error.errno, error.strerror, source_path)
             else:
                 self.source = sys.stdin
@@ -273,7 +263,7 @@ class FileInput(Input):
                     data = b('\n').join(data.splitlines()) + b('\n')
                 else:
                     data = self.source.read()
-            except (UnicodeError, LookupError) as err: # (in Py3k read() decodes)
+            except (UnicodeError, LookupError), err: # (in Py3k read() decodes)
                 if not self.encoding and self.source_path:
                     # re-read in binary mode and decode with heuristics
                     b_source = open(self.source_path, 'rb')
@@ -345,9 +335,9 @@ class FileOutput(Output):
         elif (# destination is file-type object -> check mode:
               mode and hasattr(self.destination, 'mode')
               and mode != self.destination.mode):
-                print(('Warning: Destination mode "%s" '
+                print >>self._stderr, ('Warning: Destination mode "%s" '
                                'differs from specified mode "%s"' %
-                               (self.destination.mode, mode)), file=self._stderr)
+                               (self.destination.mode, mode))
         if not destination_path:
             try:
                 self.destination_path = self.destination.name
@@ -363,7 +353,7 @@ class FileOutput(Output):
             kwargs = {}
         try:
             self.destination = open(self.destination_path, self.mode, **kwargs)
-        except IOError as error:
+        except IOError, error:
             raise OutputError(error.errno, error.strerror,
                               self.destination_path)
         self.opened = True
@@ -386,7 +376,7 @@ class FileOutput(Output):
         try: # In Python < 2.5, try...except has to be nested in try...finally.
             try:
                 self.destination.write(data)
-            except TypeError as e:
+            except TypeError, e:
                 if sys.version_info >= (3,0) and isinstance(data, bytes):
                     try:
                         self.destination.buffer.write(data)
@@ -399,7 +389,7 @@ class FileOutput(Output):
                                 self.destination.encoding, self.encoding))
                         else:
                             raise e
-            except (UnicodeError, LookupError) as err:
+            except (UnicodeError, LookupError), err:
                 raise UnicodeError(
                     'Unable to encode output data. output-encoding is: '
                     '%s.\n(%s)' % (self.encoding, ErrorString(err)))

@@ -33,11 +33,7 @@ import os
 import os.path
 import sys
 import warnings
-### 2to3.
-if sys.version_info < (3,0):
-    import ConfigParser as CP
-else:
-    import configparser as CP
+import ConfigParser as CP
 import codecs
 import optparse
 from optparse import SUPPRESS_HELP
@@ -56,7 +52,7 @@ def store_multiple(option, opt, value, parser, *args, **kwargs):
     """
     for attribute in args:
         setattr(parser.values, attribute, None)
-    for key, value in list(kwargs.items()): ### 2to3.
+    for key, value in kwargs.items():
         setattr(parser.values, key, value)
 
 def read_config_file(option, opt, value, parser):
@@ -65,7 +61,7 @@ def read_config_file(option, opt, value, parser):
     """
     try:
         new_settings = parser.get_config_file_settings(value)
-    except ValueError as error:
+    except ValueError, error:
         parser.error(error)
     parser.values.update(new_settings, parser)
 
@@ -74,8 +70,9 @@ def validate_encoding(setting, value, option_parser,
     try:
         codecs.lookup(value)
     except LookupError:
-        raise LookupError('setting "%s": unknown encoding: "%s"'
-                           % (setting, value))
+        raise (LookupError('setting "%s": unknown encoding: "%s"'
+                           % (setting, value)),
+               None, sys.exc_info()[2])
     return value
 
 def validate_encoding_error_handler(setting, value, option_parser,
@@ -83,11 +80,12 @@ def validate_encoding_error_handler(setting, value, option_parser,
     try:
         codecs.lookup_error(value)
     except LookupError:
-        raise LookupError(
+        raise (LookupError(
             'unknown encoding error handler: "%s" (choices: '
             '"strict", "ignore", "replace", "backslashreplace", '
             '"xmlcharrefreplace", and possibly others; see documentation for '
-            'the Python ``codecs`` module)' % value)
+            'the Python ``codecs`` module)' % value),
+               None, sys.exc_info()[2])
     return value
 
 def validate_encoding_and_error_handler(
@@ -123,7 +121,8 @@ def validate_boolean(setting, value, option_parser,
     try:
         return option_parser.booleans[value.strip().lower()]
     except KeyError:
-        raise LookupError('unknown boolean value: "%s"' % value)
+        raise (LookupError('unknown boolean value: "%s"' % value),
+               None, sys.exc_info()[2])
 
 def validate_ternary(setting, value, option_parser,
                      config_parser=None, config_section=None):
@@ -154,7 +153,8 @@ def validate_threshold(setting, value, option_parser,
         try:
             return option_parser.thresholds[value.lower()]
         except (KeyError, AttributeError):
-            raise LookupError('unknown threshold: %r.' % value)
+            raise (LookupError('unknown threshold: %r.' % value),
+                   None, sys.exc_info[2])
 
 def validate_colon_separated_string_list(
     setting, value, option_parser, config_parser=None, config_section=None):
@@ -218,11 +218,7 @@ def make_paths_absolute(pathdict, keys, base_path=None):
     `OptionParser.relative_path_settings`.
     """
     if base_path is None:
-        ### 2to3:
-        if sys.version_info < (3,0):
-            base_path = os.getcwdu() # type(base_path) == unicode
-        else:
-            base_path = os.getcwd()
+        base_path = os.getcwdu() # type(base_path) == unicode
         # to allow combining non-ASCII cwd with unicode values in `pathdict`
     for key in keys:
         if key in pathdict:
@@ -315,10 +311,11 @@ class Option(optparse.Option):
                 value = getattr(values, setting)
                 try:
                     new_value = self.validator(setting, value, parser)
-                except Exception as error:
-                    raise optparse.OptionValueError(
+                except Exception, error:
+                    raise (optparse.OptionValueError(
                         'Error in option "%s":\n    %s'
-                        % (opt, ErrorString(error)))
+                        % (opt, ErrorString(error))),
+                           None, sys.exc_info()[2])
                 setattr(values, setting, new_value)
             if self.overrides:
                 setattr(values, self.overrides, None)
@@ -571,7 +568,7 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
         if read_config_files and not self.defaults['_disable_config']:
             try:
                 config_settings = self.get_standard_config_settings()
-            except ValueError as error:
+            except ValueError, error:
                 self.error(error)
             self.set_defaults_from_dict(config_settings.__dict__)
 
@@ -734,11 +731,7 @@ Skipping "%s" configuration file.
         """Wrapper around sys.stderr catching en-/decoding errors"""
 
     def read(self, filenames, option_parser):
-        ### if type(filenames) in (str, unicode):
-        if (
-            (sys.version_info < (3,0) and type(filenames) in (str, unicode)) or
-            (sys.version_info >=(3,0) and type(filenames) in (str,))
-        ):
+        if type(filenames) in (str, unicode):
             filenames = [filenames]
         for filename in filenames:
             try:
@@ -796,13 +789,13 @@ Skipping "%s" configuration file.
                         new_value = option.validator(
                             setting, value, option_parser,
                             config_parser=self, config_section=section)
-                    except Exception as error:
-                        raise ValueError(
+                    except Exception, error:
+                        raise (ValueError(
                             'Error in config file "%s", section "[%s]":\n'
                             '    %s\n'
                             '        %s = %s'
                             % (filename, section, ErrorString(error),
-                               setting, value))
+                               setting, value)), None, sys.exc_info()[2])
                     self.set(section, setting, new_value)
                 if option.overrides:
                     self.set(section, option.overrides, None)

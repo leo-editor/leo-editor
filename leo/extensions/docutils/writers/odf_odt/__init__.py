@@ -7,8 +7,6 @@ Open Document Format (ODF) Writer.
 
 """
 
-from future_builtins import map ###
-
 VERSION = '1.0a'
 
 __docformat__ = 'reStructuredText'
@@ -37,18 +35,18 @@ try:
     #from lxml import etree
     #WhichElementTree = 'lxml'
     raise ImportError('Ignoring lxml')
-except ImportError as e:
+except ImportError, e:
     try:
         # 2. Try to use ElementTree from the Python standard library.
         from xml.etree import ElementTree as etree
         WhichElementTree = 'elementtree'
-    except ImportError as e:
+    except ImportError, e:
         try:
             # 3. Try to use a version of ElementTree installed as a separate
             #    product.
             from elementtree import ElementTree as etree
             WhichElementTree = 'elementtree'
-        except ImportError as e:
+        except ImportError, e:
             s1 = 'Must install either a version of Python containing ' \
                  'ElementTree (Python version >=2.5) or install ElementTree.'
             raise ImportError(s1)
@@ -60,7 +58,7 @@ try:
     import pygments.lexers
     from pygmentsformatter import OdtPygmentsProgFormatter, \
         OdtPygmentsLaTeXFormatter
-except ImportError as exp:
+except ImportError, exp:
     pygments = None
 
 # check for the Python Imaging Library
@@ -301,7 +299,7 @@ def add_ns(tag, nsdict=CNSD):
         nstag, name = tag.split(':')
         ns = nsdict.get(nstag)
         if ns is None:
-            raise RuntimeError('Invalid namespace prefix: %s' % nstag)
+            raise RuntimeError, 'Invalid namespace prefix: %s' % nstag
         tag = '{%s}%s' % (ns, name,)
     return tag
 
@@ -582,8 +580,7 @@ class Writer(writers.Writer):
         localtime = time.localtime(time.time())
         zinfo = zipfile.ZipInfo(name, localtime)
         # Add some standard UNIX file access permissions (-rw-r--r--).
-        ### zinfo.external_attr = (0x81a4 & 0xFFFF) << 16L
-        zinfo.external_attr = (0x81a4 & 0xFFFF) << 16
+        zinfo.external_attr = (0x81a4 & 0xFFFF) << 16L
         zinfo.compress_type = compress_type
         zfile.writestr(zinfo, bytes)
 
@@ -596,7 +593,7 @@ class Writer(writers.Writer):
                 # encode/decode
                 destination1 = destination.decode('latin-1').encode('utf-8')
                 zfile.write(source, destination1)
-            except OSError as e:
+            except OSError, e:
                 self.document.reporter.warning(
                     "Can't open file %s." % (source, ))
 
@@ -892,7 +889,7 @@ class ODFTranslator(nodes.GenericNodeVisitor):
             s2 = zfile.read('content.xml')
             zfile.close()
         else:
-            raise RuntimeError('stylesheet path (%s) must be %s or .xml file' %(stylespath, extension))
+            raise RuntimeError, 'stylesheet path (%s) must be %s or .xml file' %(stylespath, extension)
         self.str_stylesheet = s1
         self.str_stylesheetcontent = s2
         self.dom_stylesheet = etree.fromstring(self.str_stylesheet)
@@ -1097,12 +1094,12 @@ class ODFTranslator(nodes.GenericNodeVisitor):
                     'd1', 'd2', 'd3', 'd4', 'd5',
                     's', 't', 'a'):
                     msg = 'bad field spec: %%%s%%' % (item[1], )
-                    raise RuntimeError(msg)
+                    raise RuntimeError, msg
                 el1 = self.make_field_element(parent,
                     item[1], style_name, automatic_styles)
                 if el1 is None:
                     msg = 'bad field spec: %%%s%%' % (item[1], )
-                    raise RuntimeError(msg)
+                    raise RuntimeError, msg
                 else:
                     current_element = el1
             else:
@@ -2080,7 +2077,7 @@ class ODFTranslator(nodes.GenericNodeVisitor):
                     imgfile2.close()
                     imgfilename = imgfile2.name
                     source = imgfilename
-                except urllib2.HTTPError as e:
+                except urllib2.HTTPError, e:
                     self.document.reporter.warning(
                         "Can't open image url %s." % (source, ))
                 spec = (source, destination,)
@@ -2120,7 +2117,7 @@ class ODFTranslator(nodes.GenericNodeVisitor):
                 unit = 'px'
             try:
                 size = float(size)
-            except ValueError as e:
+            except ValueError, e:
                 self.document.reporter.warning(
                     'Invalid %s for image: "%s"' % (
                         attr, node.attributes[attr]))
@@ -2136,7 +2133,7 @@ class ODFTranslator(nodes.GenericNodeVisitor):
                         'scale out of range (%s), using 1.' % (scale, ))
                     scale = 1
                 scale = scale * 0.01
-            except ValueError as e:
+            except ValueError, e:
                 self.document.reporter.warning(
                     'Invalid scale for image: "%s"' % (
                         node.attributes['scale'], ))
