@@ -174,7 +174,7 @@ class XMLTranslator(nodes.GenericNodeVisitor):
             xml_string = xml_string.encode('utf8')
         try:
             self.xmlparser.parse(StringIO(xml_string))
-        except xml.sax._exceptions.SAXParseException as error:
+        except xml.sax._exceptions.SAXParseException, error:
             col_num = self.the_handle.locator.getColumnNumber()
             line_num =  self.the_handle.locator.getLineNumber()
             srcline = node.line

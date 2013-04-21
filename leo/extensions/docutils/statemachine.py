@@ -104,8 +104,6 @@ How To Use This Module
        sm.unlink()
 """
 
-from __future__ import print_function ###
-
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -114,9 +112,6 @@ import types
 import unicodedata
 from docutils import utils
 from docutils.utils.error_reporting import ErrorOutput
-
-if sys.version_info < (3,0): ###
-    from future_builtins import zip ###
 
 
 class StateMachine:
@@ -182,7 +177,7 @@ class StateMachine:
 
     def unlink(self):
         """Remove circular references to objects no longer required."""
-        for state in list(self.states.values()):
+        for state in self.states.values():
             state.unlink()
         self.states = None
 
@@ -218,15 +213,15 @@ class StateMachine:
         self.line_offset = -1
         self.current_state = initial_state or self.initial_state
         if self.debug:
-            print((
+            print >>self._stderr, (
                 u'\nStateMachine.run: input_lines (line_offset=%s):\n| %s'
-                % (self.line_offset, u'\n| '.join(self.input_lines))), file=self._stderr)
+                % (self.line_offset, u'\n| '.join(self.input_lines)))
         transitions = None
         results = []
         state = self.get_state()
         try:
             if self.debug:
-                print('\nStateMachine.run: bof transition', file=self._stderr)
+                print >>self._stderr, '\nStateMachine.run: bof transition'
             context, result = state.bof(context)
             results.extend(result)
             while True:
@@ -236,32 +231,32 @@ class StateMachine:
                         if self.debug:
                             source, offset = self.input_lines.info(
                                 self.line_offset)
-                            print((
+                            print >>self._stderr, (
                                 u'\nStateMachine.run: line (source=%r, '
                                 u'offset=%r):\n| %s'
-                                % (source, offset, self.line)), file=self._stderr)
+                                % (source, offset, self.line))
                         context, next_state, result = self.check_line(
                             context, state, transitions)
                     except EOFError:
                         if self.debug:
-                            print((
+                            print >>self._stderr, (
                                 '\nStateMachine.run: %s.eof transition'
-                                % state.__class__.__name__), file=self._stderr)
+                                % state.__class__.__name__)
                         result = state.eof(context)
                         results.extend(result)
                         break
                     else:
                         results.extend(result)
-                except TransitionCorrection as exception: ### 2to3.
+                except TransitionCorrection, exception:
                     self.previous_line() # back up for another try
                     transitions = (exception.args[0],)
                     if self.debug:
-                        print((
+                        print >>self._stderr, (
                               '\nStateMachine.run: TransitionCorrection to '
                               'state "%s", transition %s.'
-                              % (state.__class__.__name__, transitions[0])), file=self._stderr)
+                              % (state.__class__.__name__, transitions[0]))
                     continue
-                except StateCorrection as exception: ### 2to3.
+                except StateCorrection, exception:
                     self.previous_line() # back up for another try
                     next_state = exception.args[0]
                     if len(exception.args) == 1:
@@ -269,10 +264,10 @@ class StateMachine:
                     else:
                         transitions = (exception.args[1],)
                     if self.debug:
-                        print((
+                        print >>self._stderr, (
                               '\nStateMachine.run: StateCorrection to state '
                               '"%s", transition %s.'
-                              % (next_state, transitions[0])), file=self._stderr)
+                              % (next_state, transitions[0]))
                 else:
                     transitions = None
                 state = self.get_state(next_state)
@@ -293,11 +288,11 @@ class StateMachine:
         """
         if next_state:
             if self.debug and next_state != self.current_state:
-                print((
+                print >>self._stderr, (
                     '\nStateMachine.get_state: Changing state from '
                     '"%s" to "%s" (input line %s).'
                     % (self.current_state, next_state,
-                       self.abs_line_number())), file=self._stderr)
+                       self.abs_line_number()))
             self.current_state = next_state
         try:
             return self.states[self.current_state]
@@ -421,7 +416,7 @@ class StateMachine:
                                                     flush_left)
             self.next_line(len(block) - 1)
             return block
-        except UnexpectedIndentationError as err: ### 2to3.
+        except UnexpectedIndentationError, err:
             block = err.args[0]
             self.next_line(len(block) - 1) # advance to last line of block
             raise
@@ -450,24 +445,24 @@ class StateMachine:
             transitions =  state.transition_order
         state_correction = None
         if self.debug:
-            print((
+            print >>self._stderr, (
                   '\nStateMachine.check_line: state="%s", transitions=%r.'
-                  % (state.__class__.__name__, transitions)), file=self._stderr)
+                  % (state.__class__.__name__, transitions))
         for name in transitions:
             pattern, method, next_state = state.transitions[name]
             match = pattern.match(self.line)
             if match:
                 if self.debug:
-                    print((
+                    print >>self._stderr, (
                           '\nStateMachine.check_line: Matched transition '
                           '"%s" in state "%s".'
-                          % (name, state.__class__.__name__)), file=self._stderr)
+                          % (name, state.__class__.__name__))
                 return method(match, context, next_state)
         else:
             if self.debug:
-                print((
+                print >>self._stderr, (
                       '\nStateMachine.check_line: No match in state "%s".'
-                      % state.__class__.__name__), file=self._stderr)
+                      % state.__class__.__name__)
             return state.no_match(context, transitions)
 
     def add_state(self, state_class):
@@ -499,10 +494,10 @@ class StateMachine:
     def error(self):
         """Report error details."""
         type, value, module, line, function = _exception_data()
-        print(u'%s: %s' % (type, value), file=self._stderr)
-        print('input line %s' % (self.abs_line_number()), file=self._stderr)
-        print((u'module %s, line %s, function %s' %
-                               (module, line, function)), file=self._stderr)
+        print >>self._stderr, u'%s: %s' % (type, value)
+        print >>self._stderr, 'input line %s' % (self.abs_line_number())
+        print >>self._stderr, (u'module %s, line %s, function %s' %
+                               (module, line, function))
 
     def attach_observer(self, observer):
         """
@@ -1148,11 +1143,7 @@ class ViewList:
     # just works.
 
     def __getitem__(self, i):
-        ### if isinstance(i, types.SliceType):
-        if (
-            (sys.version_info < (3,0) and isinstance(i,types.SliceType)) or
-            (sys.version_info >=(3,0) and isinstance(i,slice))
-        ):
+        if isinstance(i, types.SliceType):
             assert i.step in (None, 1),  'cannot handle slice with stride'
             return self.__class__(self.data[i.start:i.stop],
                                   items=self.items[i.start:i.stop],
@@ -1161,11 +1152,7 @@ class ViewList:
             return self.data[i]
 
     def __setitem__(self, i, item):
-        ### if isinstance(i, types.SliceType):
-        if (
-            (sys.version_info < (3,0) and isinstance(i,types.SliceType)) or
-            (sys.version_info >=(3,0) and isinstance(i,slice))
-        ):
+        if isinstance(i, types.SliceType):
             assert i.step in (None, 1), 'cannot handle slice with stride'
             if not isinstance(item, ViewList):
                 raise TypeError('assigning non-ViewList to ViewList slice')
@@ -1306,7 +1293,7 @@ class ViewList:
         self.parent = None
 
     def sort(self, *args):
-        tmp = list(zip(self.data, self.items)) ### 2to3.
+        tmp = zip(self.data, self.items)
         tmp.sort(*args)
         self.data = [entry[0] for entry in tmp]
         self.items = [entry[1] for entry in tmp]
@@ -1342,14 +1329,14 @@ class ViewList:
     def pprint(self):
         """Print the list in `grep` format (`source:offset:value` lines)"""
         for line in self.xitems():
-            print(("%s:%d:%s" % line))  ### 2to3.
+            print "%s:%d:%s" % line
 
 
 class StringList(ViewList):
 
     """A `ViewList` with string-specific methods."""
 
-    def trim_left(self, length, start=0, end=sys.maxsize): ### 2to3: was maxint.
+    def trim_left(self, length, start=0, end=sys.maxint):
         """
         Trim `length` characters off the beginning of each item, in-place,
         from index `start` to `end`.  No whitespace-checking is done on the

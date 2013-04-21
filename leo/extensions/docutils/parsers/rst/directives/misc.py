@@ -73,12 +73,12 @@ class Include(Directive):
             include_file = io.FileInput(source_path=path,
                                         encoding=encoding,
                                         error_handler=e_handler)
-        except UnicodeEncodeError as error:
+        except UnicodeEncodeError, error:
             raise self.severe(u'Problems with "%s" directive path:\n'
                               'Cannot encode input file path "%s" '
                               '(wrong locale?).' %
                               (self.name, SafeString(path)))
-        except IOError as error:
+        except IOError, error:
             raise self.severe(u'Problems with "%s" directive path:\n%s.' %
                       (self.name, ErrorString(error)))
         startline = self.options.get('start-line', None)
@@ -89,7 +89,7 @@ class Include(Directive):
                 rawtext = ''.join(lines[startline:endline])
             else:
                 rawtext = include_file.read()
-        except UnicodeError as error:
+        except UnicodeError, error:
             raise self.severe(u'Problem with "%s" directive:\n%s' %
                               (self.name, ErrorString(error)))
         # start-after/end-before: no restrictions on newlines in match-text,
@@ -210,12 +210,12 @@ class Raw(Directive):
                 # TODO: currently, raw input files are recorded as
                 # dependencies even if not used for the chosen output format.
                 self.state.document.settings.record_dependencies.add(path)
-            except IOError as error:
+            except IOError, error:
                 raise self.severe(u'Problems with "%s" directive path:\n%s.'
                                   % (self.name, ErrorString(error)))
             try:
                 text = raw_file.read()
-            except UnicodeError as error:
+            except UnicodeError, error:
                 raise self.severe(u'Problem with "%s" directive:\n%s'
                     % (self.name, ErrorString(error)))
             attributes['source'] = path
@@ -227,7 +227,7 @@ class Raw(Directive):
             import urllib2
             try:
                 raw_text = urllib2.urlopen(source).read()
-            except (urllib2.URLError, IOError, OSError) as error:
+            except (urllib2.URLError, IOError, OSError), error:
                 raise self.severe(u'Problems with "%s" directive URL "%s":\n%s.'
                     % (self.name, self.options['url'], ErrorString(error)))
             raw_file = io.StringInput(source=raw_text, source_path=source,
@@ -235,7 +235,7 @@ class Raw(Directive):
                                       error_handler=e_handler)
             try:
                 text = raw_file.read()
-            except UnicodeError as error:
+            except UnicodeError, error:
                 raise self.severe(u'Problem with "%s" directive:\n%s'
                                   % (self.name, ErrorString(error)))
             attributes['source'] = source
@@ -317,7 +317,7 @@ class Unicode(Directive):
         for code in codes:
             try:
                 decoded = directives.unicode_code(code)
-            except ValueError as error:
+            except ValueError, error:
                 raise self.error(u'Invalid character code: %s\n%s'
                     % (code, ErrorString(error)))
             element += nodes.Text(decoded)
@@ -403,7 +403,7 @@ class Role(Directive):
                 self.state.parse_directive_block(
                 self.content[1:], self.content_offset, converted_role,
                 option_presets={}))
-        except states.MarkupError as detail:
+        except states.MarkupError, detail:
             error = self.state_machine.reporter.error(
                 'Error in "%s" directive:\n%s.' % (self.name, detail),
                 nodes.literal_block(self.block_text, self.block_text),
@@ -412,7 +412,7 @@ class Role(Directive):
         if 'class' not in options:
             try:
                 options['class'] = directives.class_option(new_role_name)
-            except ValueError as detail:
+            except ValueError, detail:
                 error = self.state_machine.reporter.error(
                     u'Invalid argument for "%s" directive:\n%s.'
                     % (self.name, SafeString(detail)), nodes.literal_block(

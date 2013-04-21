@@ -90,8 +90,6 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 ..
 """)
 
-import sys ###
-
 class Writer(writers.Writer):
 
     supported = ('manpage',)
@@ -281,18 +279,12 @@ class Translator(nodes.NodeVisitor):
     def visit_Text(self, node):
         text = node.astext()
         text = text.replace('\\','\\e')
-        ###
-        if sys.version_info < (3,0):
-            from ..punctuation2 import replace_pairs
-        else:
-            from ..punctuation3 import replace_pairs
-        ###
-        #replace_pairs = [
-        #    (u'-', ur'\-'),
-        #    (u'\'', ur'\(aq'),
-        #    (u'´', ur'\''),
-        #    (u'`', ur'\(ga'),
-        #    ]
+        replace_pairs = [
+            (u'-', ur'\-'),
+            (u'\'', ur'\(aq'),
+            (u'´', ur'\''),
+            (u'`', ur'\(ga'),
+            ]
         for (in_char, out_markup) in replace_pairs:
             text = text.replace(in_char, out_markup)
         # unicode
@@ -719,7 +711,7 @@ class Translator(nodes.NodeVisitor):
         pass
 
     def visit_header(self, node):
-        raise NotImplementedError(node.astext())
+        raise NotImplementedError, node.astext()
 
     def depart_header(self, node):
         pass
@@ -853,7 +845,7 @@ class Translator(nodes.NodeVisitor):
         self.depart_literal_block(node)
 
     def visit_meta(self, node):
-        raise NotImplementedError(node.astext())
+        raise NotImplementedError, node.astext()
 
     def depart_meta(self, node):
         pass

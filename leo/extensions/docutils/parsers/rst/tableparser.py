@@ -286,13 +286,13 @@ class GridTableParser(TableParser):
         From the data collected by `scan_cell()`, convert to the final data
         structure.
         """
-        rowseps = sorted(self.rowseps.keys())   # list of row boundaries
-        ### rowseps.sort()
+        rowseps = self.rowseps.keys()   # list of row boundaries
+        rowseps.sort()
         rowindex = {}
         for i in range(len(rowseps)):
             rowindex[rowseps[i]] = i    # row boundary -> row number mapping
-        colseps = sorted(self.colseps.keys())   # list of column boundaries
-        ### colseps.sort()
+        colseps = self.colseps.keys()   # list of column boundaries
+        colseps.sort()
         colindex = {}
         for i in range(len(colseps)):
             colindex[colseps[i]] = i    # column boundary -> col number map
@@ -498,7 +498,7 @@ class SimpleTableParser(TableParser):
         """
         # "Infinite" value for a dummy last column's beginning, used to
         # check for text overflow:
-        columns.append((sys.maxsize, None))
+        columns.append((sys.maxint, None))
         lastcol = len(columns) - 2
         # combining characters do not contribute to the column width
         lines = [strip_combining_chars(line) for line in lines]

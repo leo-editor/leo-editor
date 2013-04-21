@@ -150,6 +150,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -565,7 +566,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -832,6 +833,82 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100205235740.5392">import os
+
+# The files in leoGuiPlugins.leo.
+guiPluginsList = (
+    'cursesGui','ironPythonGui','swing_gui','tkGui','wxGui',
+)
+
+passList = (
+    '__init__','FileActions',
+    'active_path','add_directives','attrib_edit',
+    'backlink','baseNativeTree','bibtex','bookmarks',
+    'codewisecompleter','colorize_headlines','contextmenu',
+    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
+    # 'detect_urls',
+    'dtest','empty_leo_file','enable_gc','initinclass',
+    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
+    # 'leoN',
+    'leoOPML','leoremote','lineNumbers',
+    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+    'mod_scripting','mod_speedups','mod_timestamp',
+    'nav_qt','niceNosent','nodeActions',
+    'open_shell','outline_export','quit_leo',
+    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
+    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'quickMove','quicksearch','redirect_to_log','rst3','run_nodes',
+    'screenshots',
+    # 'scrolledmessage',
+    'setHomeDirectory','slideshow','spydershell','startfile',
+    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+    'vim','xemacs',
+)
+core_files = (
+    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
+    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
+    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
+    'leoPlugins','leoShadow','leoTangle','leoUndo',
+)
+external_files = (
+    'ipy_leo','lproto',
+)
+
+recent = (
+    #'leo_interface',
+)
+
+# The files in scripts.leo.
+scriptsList = (
+    'convert_to_shadow','leoFindScript','LinixInstall',
+    'tangle_done','untangle_done',
+)
+
+table = (
+    ('plugins',recent),
+    ('plugins',passList),
+    ('plugins',guiPluginsList),
+    ('core',core_files),
+    ('external',external_files),
+    ('scripts',scriptsList),
+)
+files = []
+for theDir,aList in table:
+    for z in aList:
+        if not z.endswith('.py'): z = z + '.py'
+        fn = os.path.abspath(os.path.join('leo',theDir,z))
+        if os.path.exists(fn): files.append(fn)
+        else: print('*** file not found: %s' % (fn))
+
+failed = []
+for z in files:
+    fn = g.shortFileName(z)
+    s,e = g.readFileIntoString(z)
+    if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
+        failed.append(fn)
+
+assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
+</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -868,9 +945,15 @@ nodeA
 nodeB
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
-<t tx="ekr.20111112093605.4679">run-marked-unit-tests-externally = Alt-4 # Standard binding, unchanged.
-run-selected-unit-tests-externally = Alt-5 # Standard binding, unchanged.
-run-selected-unit-tests-locally = Alt-6</t>
+<t tx="ekr.20111112093605.4679"># run-marked-unit-tests-externally = Alt-4 # Standard binding, unchanged.
+# run-selected-unit-tests-externally = Alt-5 # Standard binding, unchanged.
+# run-selected-unit-tests-locally = Alt-6
+
+# From stc.leo.
+run-selected-unit-tests-locally = Alt-4
+run-marked-unit-tests-locally = Alt-5
+run-all-unit-tests-locally = Alt-6
+</t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
