@@ -325,7 +325,7 @@ def assemble_option_dict(option_list, options_spec):
             raise DuplicateOptionError('duplicate option "%s"' % name)
         try:
             options[name] = convertor(value)
-        except (ValueError, TypeError), detail:
+        except (ValueError, TypeError) as detail:
             raise detail.__class__('(option: "%s"; value: %r)\n%s'
                                    % (name, value, ' '.join(detail.args)))
     return options

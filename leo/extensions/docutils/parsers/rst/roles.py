@@ -109,7 +109,7 @@ def role(role_name, language_module, lineno, reporter):
         canonicalname = None
         try:
             canonicalname = language_module.roles[normname]
-        except AttributeError, error:
+        except AttributeError as error:
             msg_text.append('Problem retrieving role entry from language '
                             'module %r: %s.' % (language_module, error))
         except KeyError:
@@ -327,7 +327,7 @@ def code_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
     try:
         tokens = Lexer(utils.unescape(text, 1), language,
                        inliner.document.settings.syntax_highlight)
-    except LexerError, error:
+    except LexerError as error:
         msg = inliner.reporter.warning(error)
         prb = inliner.problematic(rawtext, rawtext, msg)
         return [prb], [msg]

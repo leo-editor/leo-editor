@@ -72,7 +72,7 @@ class SafeString(object):
     def __str__(self):
         try:
             return str(self.data)
-        except UnicodeEncodeError, err:
+        except UnicodeEncodeError as err:
             if isinstance(self.data, Exception):
                 args = [str(SafeString(arg, self.encoding,
                                         self.encoding_errors))
@@ -103,7 +103,7 @@ class SafeString(object):
             if isinstance(self.data, EnvironmentError):
                 u = u.replace(": u'", ": '") # normalize filename quoting
             return u
-        except UnicodeError, error: # catch ..Encode.. and ..Decode.. errors
+        except UnicodeError as error: # catch ..Encode.. and ..Decode.. errors
             if isinstance(self.data, EnvironmentError):
                 return  u"[Errno %s] %s: '%s'" % (self.data.errno,
                     SafeString(self.data.strerror, self.encoding,

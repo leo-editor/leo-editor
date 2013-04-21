@@ -53,7 +53,7 @@ class MetaBody(states.SpecializedBody):
             try:
                 attname, val = utils.extract_name_value(token)[0]
                 node[attname.lower()] = val
-            except utils.NameValueError, detail:
+            except utils.NameValueError as detail:
                 line = self.state_machine.line
                 msg = self.reporter.error(
                       'Error parsing meta tag attribute "%s": %s.'

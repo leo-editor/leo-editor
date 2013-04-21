@@ -2110,9 +2110,8 @@ class Container(object):
 
   def escape(self, line, replacements = EscapeConfig.entities):
     "Escape a line with replacements from elyxer.a map"
-    pieces = replacements.keys()
+    pieces = sorted(replacements.keys())
     # do them in order
-    pieces.sort()
     for piece in pieces:
       if piece in line:
         line = line.replace(piece, replacements[piece])

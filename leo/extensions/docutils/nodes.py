@@ -546,7 +546,7 @@ class Element(Node):
             assert key.step in (None, 1), 'cannot handle slice with stride'
             return self.children[key.start:key.stop]
         else:
-            raise TypeError, ('element index must be an integer, a slice, or '
+            raise TypeError('element index must be an integer, a slice, or '
                               'an attribute name string')
 
     def __setitem__(self, key, item):
@@ -561,7 +561,7 @@ class Element(Node):
                 self.setup_child(node)
             self.children[key.start:key.stop] = item
         else:
-            raise TypeError, ('element index must be an integer, a slice, or '
+            raise TypeError('element index must be an integer, a slice, or '
                               'an attribute name string')
 
     def __delitem__(self, key):
@@ -573,7 +573,7 @@ class Element(Node):
             assert key.step in (None, 1), 'cannot handle slice with stride'
             del self.children[key.start:key.stop]
         else:
-            raise TypeError, ('element index must be an integer, a simple '
+            raise TypeError('element index must be an integer, a simple '
                               'slice, or an attribute name string')
 
     def __add__(self, other):
@@ -602,8 +602,7 @@ class Element(Node):
         return atts
 
     def attlist(self):
-        attlist = self.non_default_attributes().items()
-        attlist.sort()
+        attlist = sorted(self.non_default_attributes().items())
         return attlist
 
     def get(self, key, failobj=None):
@@ -1419,7 +1418,7 @@ class system_message(Special, BackLinkable, PreBibliographic, Element):
         try:
             Element.__init__(self, '', *children, **attributes)
         except:
-            print 'system_message: children=%r' % (children,)
+            print('system_message: children=%r' % (children,))
             raise
 
     def astext(self):
@@ -1473,8 +1472,7 @@ class pending(Special, Invisible, Element):
               '     .transform: %s.%s' % (self.transform.__module__,
                                           self.transform.__name__),
               '     .details:']
-        details = self.details.items()
-        details.sort()
+        details = sorted(self.details.items())
         for key, value in details:
             if isinstance(value, Node):
                 internals.append('%7s%s:' % ('', key))

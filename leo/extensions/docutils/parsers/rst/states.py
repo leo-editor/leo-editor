@@ -449,7 +449,7 @@ def build_regexp(definition, compile=True):
     name, prefix, suffix, parts = definition
     part_strings = []
     for part in parts:
-        if type(part) is tuple:
+        if isinstance(part, tuple):
             part_strings.append(build_regexp(part, None))
         else:
             part_strings.append(part)
@@ -1442,7 +1442,7 @@ class Body(RSTState):
         optionlist = nodes.option_list()
         try:
             listitem, blank_finish = self.option_list_item(match)
-        except MarkupError, error:
+        except MarkupError as error:
             # This shouldn't happen; pattern won't match.
             msg = self.reporter.error(u'Invalid option list marker: %s' %
                                       error)
@@ -1628,7 +1628,7 @@ class Body(RSTState):
                              + 1)
                 table = self.build_table(tabledata, tableline)
                 nodelist = [table] + messages
-            except tableparser.TableMarkupError, err:
+            except tableparser.TableMarkupError as err:
                 nodelist = self.malformed_table(block, ' '.join(err.args),
                                                 offset=err.offset) + messages
         else:
@@ -1640,7 +1640,7 @@ class Body(RSTState):
         blank_finish = 1
         try:
             block = self.state_machine.get_text_block(flush_left=True)
-        except statemachine.UnexpectedIndentationError, err:
+        except statemachine.UnexpectedIndentationError as err:
             block, src, srcline = err.args
             messages.append(self.reporter.error('Unexpected indentation.',
                                                 source=src, line=srcline))
@@ -2070,7 +2070,7 @@ class Body(RSTState):
             arguments, options, content, content_offset = (
                 self.parse_directive_block(indented, line_offset,
                                            directive, option_presets))
-        except MarkupError, detail:
+        except MarkupError as detail:
             error = self.reporter.error(
                 'Error in "%s" directive:\n%s.' % (type_name,
                                                    ' '.join(detail.args)),
@@ -2081,7 +2081,7 @@ class Body(RSTState):
             content_offset, block_text, self, self.state_machine)
         try:
             result = directive_instance.run()
-        except docutils.parsers.rst.DirectiveError, error:
+        except docutils.parsers.rst.DirectiveError as error:
             msg_node = self.reporter.system_message(error.level, error.msg,
                                                     line=lineno)
             msg_node += nodes.literal_block(block_text, block_text)
@@ -2198,11 +2198,11 @@ class Body(RSTState):
             return 0, 'invalid option block'
         try:
             options = utils.extract_extension_options(node, option_spec)
-        except KeyError, detail:
+        except KeyError as detail:
             return 0, ('unknown option: "%s"' % detail.args[0])
-        except (ValueError, TypeError), detail:
+        except (ValueError, TypeError) as detail:
             return 0, ('invalid option value: %s' % ' '.join(detail.args))
-        except utils.ExtensionOptionError, detail:
+        except utils.ExtensionOptionError as detail:
             return 0, ('invalid option data: %s' % ' '.join(detail.args))
         if blank_finish:
             return 1, options
@@ -2289,7 +2289,7 @@ class Body(RSTState):
             if expmatch:
                 try:
                     return method(self, expmatch)
-                except MarkupError, error:
+                except MarkupError as error:
                     lineno = self.state_machine.abs_line_number()
                     message = ' '.join(error.args)
                     errors.append(self.reporter.warning(message, line=lineno))
@@ -2712,7 +2712,7 @@ class Text(RSTState):
         msg = None
         try:
             block = self.state_machine.get_text_block(flush_left=True)
-        except statemachine.UnexpectedIndentationError, err:
+        except statemachine.UnexpectedIndentationError as err:
             block, src, srcline = err.args
             msg = self.reporter.error('Unexpected indentation.',
                                       source=src, line=srcline)

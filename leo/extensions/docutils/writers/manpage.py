@@ -711,7 +711,7 @@ class Translator(nodes.NodeVisitor):
         pass
 
     def visit_header(self, node):
-        raise NotImplementedError, node.astext()
+        raise NotImplementedError(node.astext())
 
     def depart_header(self, node):
         pass
@@ -845,7 +845,7 @@ class Translator(nodes.NodeVisitor):
         self.depart_literal_block(node)
 
     def visit_meta(self, node):
-        raise NotImplementedError, node.astext()
+        raise NotImplementedError(node.astext())
 
     def depart_meta(self, node):
         pass

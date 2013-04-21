@@ -286,8 +286,7 @@ class GridTableParser(TableParser):
         From the data collected by `scan_cell()`, convert to the final data
         structure.
         """
-        rowseps = self.rowseps.keys()   # list of row boundaries
-        rowseps.sort()
+        rowseps = sorted(self.rowseps.keys())   # list of row boundaries
         rowindex = {}
         for i in range(len(rowseps)):
             rowindex[rowseps[i]] = i    # row boundary -> row number mapping
