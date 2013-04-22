@@ -3014,8 +3014,10 @@ for i in sorted(d.keys()):
     g.es('%5s, # %s' % (i,d.get(i)))
 #@+node:ekr.20130417081749.10495: *4* Script: check syntax of all docutils files
 # The following files fail on Python 3 because of Python 2.x syntax for unicode characters:
-# utils/punctuation_chars.py, utils/math/latex2mathml.py,
-# writers/manpage.py, writers/latex2e/__init__.py
+# (now passes) utils/punctuation_chars.py, 
+# utils/math/latex2mathml.py,
+# writers/manpage.py,
+# writers/latex2e/__init__.py
 
 g.cls()
 import os
