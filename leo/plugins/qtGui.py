@@ -4969,6 +4969,8 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace('(qtFrame)',x,y,w,h,self.top,g.callers())
         if self.top:
             self.top.setGeometry(QtCore.QRect(x,y,w,h))
+    def update(self,*args,**keys):
+        self.top.update()
     #@-others
 #@+node:ekr.20110605121601.18312: *3* class leoQtLog (leoLog)
 class leoQtLog (leoFrame.leoLog):
