@@ -196,7 +196,7 @@ def screen_capture_now(kwargs={}):
         os.makedirs(dirname)
     filename = g.os_path_join(
         dirname,
-        time.strftime('%Y-%m-%dT%H:%M:%S')+'.png'
+        time.strftime('%Y-%m-%dT%H-%M-%S')+'.png'
     )
     g._recorder.grab_frame(filename=filename)
     
