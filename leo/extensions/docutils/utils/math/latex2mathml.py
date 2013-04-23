@@ -413,7 +413,8 @@ def parse_latex_math(string, inline=True):
                 node = entry
                 skip = 2
             else:
-                raise SyntaxError(ur'Syntax error: "%s%s"' % (c, c2))
+                raise SyntaxError(u'Syntax error: "%s%s"' % (c, c2))
+                    ### ur'Syntax error: "%s%s"' % (c, c2))
         elif c.isalpha():
             node = node.append(mi(c))
         elif c.isdigit():
@@ -454,7 +455,8 @@ def parse_latex_math(string, inline=True):
             node.close().append(entry)
             node = entry
         else:
-            raise SyntaxError(ur'Illegal character: "%s"' % c)
+            raise SyntaxError(u'Illegal character: "%s"' % c)
+                ### ur'Illegal character: "%s"' % c)
         string = string[skip:]
     return tree
 
@@ -475,15 +477,18 @@ def handle_keyword(name, node, string):
         node = entry
     elif name == 'end':
         if not string.startswith('{matrix}'):
-            raise SyntaxError(ur'Expected "\end{matrix}"!')
+            raise SyntaxError(u'Expected "\\end{matrix}"!')
+                ### ur'Expected "\end{matrix}"!')
         skip += 8
         node = node.close().close().close()
     elif name in ('text', 'mathrm'):
         if string[0] != '{':
-            raise SyntaxError(ur'Expected "\text{...}"!')
+            raise SyntaxError(u'Expected "\\text{...}"!')
+                ### ur'Expected "\text{...}"!')
         i = string.find('}')
         if i == -1:
-            raise SyntaxError(ur'Expected "\text{...}"!')
+            raise SyntaxError(u'Expected "\\text{...}"!')
+                ### ur'Expected "\text{...}"!')
         node = node.append(mtext(string[1:i]))
         skip += i + 1
     elif name == 'sqrt':
@@ -521,7 +526,8 @@ def handle_keyword(name, node, string):
             if string.startswith(operator):
                 break
         else:
-            raise SyntaxError(ur'Expected something to negate: "\not ..."!')
+            raise SyntaxError(u'Expected something to negate: "\\not ..."!')
+                ### ur'Expected something to negate: "\not ..."!')
         node = node.append(mo(negatables[operator]))
         skip += len(operator)
     elif name == 'mathbf':
@@ -530,12 +536,14 @@ def handle_keyword(name, node, string):
         node = style
     elif name == 'mathbb':
         if string[0] != '{' or not string[1].isupper() or string[2] != '}':
-            raise SyntaxError(ur'Expected something like "\mathbb{A}"!')
+            raise SyntaxError(u'Expected something like "\\mathbb{A}"!')
+                ### ur'Expected something like "\mathbb{A}"!')
         node = node.append(mi(mathbb[string[1]]))
         skip += 3
     elif name in ('mathscr', 'mathcal'):
         if string[0] != '{' or string[2] != '}':
-            raise SyntaxError(ur'Expected something like "\mathscr{A}"!')
+            raise SyntaxError(u'Expected something like "\\mathscr{A}"!')
+                ### ur'Expected something like "\mathscr{A}"!')
         node = node.append(mi(mathscr[string[1]]))
         skip += 3
     elif name == 'colon': # "normal" colon, not binary operator

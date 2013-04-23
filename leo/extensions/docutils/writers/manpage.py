@@ -280,11 +280,11 @@ class Translator(nodes.NodeVisitor):
         text = node.astext()
         text = text.replace('\\','\\e')
         replace_pairs = [
-            (u'-', ur'\-'),
-            (u'\'', ur'\(aq'),
-            (u'´', ur'\''),
-            (u'`', ur'\(ga'),
-            ]
+            (u'-',  u'\\-'),     ### (u'-', ur'\-'),
+            (u'\'', u'\\(aq'),   ### (u'\'', ur'\(aq'),
+            (u'´',  u"\\'"),     ### (u'´', ur'\''),
+            (u'`',  u'\\(ga'),   ### (u'`', ur'\(ga'),
+        ]
         for (in_char, out_markup) in replace_pairs:
             text = text.replace(in_char, out_markup)
         # unicode
