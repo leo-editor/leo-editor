@@ -21,6 +21,8 @@ import sys, re
 import unicodedata
 isPython2 = sys.version_info < (3,)
 
+from docutils.utils.u import u ###
+
 # punctuation characters around inline markup
 # ===========================================
 #
@@ -712,16 +714,16 @@ def punctuation_samples():
 
     # low quotation marks are also used as closers (e.g. in Greek)
     # move them to category Pi:
-    ucharlists['Ps'].remove(u'‚') # 201A  SINGLE LOW-9 QUOTATION MARK
-    ucharlists['Ps'].remove(u'„') # 201E  DOUBLE LOW-9 QUOTATION MARK
-    ucharlists['Pi'] += [u'‚', u'„']
+    ucharlists['Ps'].remove(u('‚')) # 201A  SINGLE LOW-9 QUOTATION MARK
+    ucharlists['Ps'].remove(u('„')) # 201E  DOUBLE LOW-9 QUOTATION MARK
+    ucharlists['Pi'] += [u('‚'), u('„')]
 
-    ucharlists['Pi'].remove(u'‛') # 201B  SINGLE HIGH-REVERSED-9 QUOTATION MARK
-    ucharlists['Pi'].remove(u'‟') # 201F  DOUBLE HIGH-REVERSED-9 QUOTATION MARK
-    ucharlists['Pf'] += [u'‛', u'‟']
+    ucharlists['Pi'].remove(u('‛')) # 201B  SINGLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pi'].remove(u('‟')) # 201F  DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pf'] += [u('‛'), u('‟')]
 
     # 301F  LOW DOUBLE PRIME QUOTATION MARK misses the opening pendant:
-    ucharlists['Ps'].insert(ucharlists['Pe'].index(u'\u301f'), u'\u301d')
+    ucharlists['Ps'].insert(ucharlists['Pe'].index(u('\u301f')), u('\u301d'))
 
     # print u''.join(ucharlists['Ps']).encode('utf8')
     # print u''.join(ucharlists['Pe']).encode('utf8')
@@ -758,7 +760,7 @@ def punctuation_samples():
     #     print '%4d    %s    %s' % (i, openers[i].encode('utf8'),
     #                                closers[i].encode('utf8'))
 
-    return [u''.join(chars)
+    return [u('').join(chars)
             for chars in (openers, closers, delimiters, closing_delimiters)]
 
 
