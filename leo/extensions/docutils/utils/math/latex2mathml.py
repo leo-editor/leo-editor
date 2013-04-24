@@ -21,27 +21,29 @@
 
 import docutils.utils.math.tex2unichar as tex2unichar
 
+from docutils.utils.u import u ###
+
 #        TeX      spacing    combining
-over = {'acute':    u'\u00B4', # u'\u0301',
-        'bar':      u'\u00AF', # u'\u0304',
-        'breve':    u'\u02D8', # u'\u0306',
-        'check':    u'\u02C7', # u'\u030C',
-        'dot':      u'\u02D9', # u'\u0307',
-        'ddot':     u'\u00A8', # u'\u0308',
-        'dddot':               u'\u20DB',
-        'grave':    u'`',      # u'\u0300',
-        'hat':      u'^',      # u'\u0302',
-        'mathring': u'\u02DA', # u'\u030A',
-        'overleftrightarrow':  u'\u20e1',
+over = {'acute':    u('\u00B4'), # u'\u0301',
+        'bar':      u('\u00AF'), # u'\u0304',
+        'breve':    u('\u02D8'), # u'\u0306',
+        'check':    u('\u02C7'), # u'\u030C',
+        'dot':      u('\u02D9'), # u'\u0307',
+        'ddot':     u('\u00A8'), # u'\u0308',
+        'dddot':               u('\u20DB'),
+        'grave':    u('`'),      # u'\u0300',
+        'hat':      u('^'),      # u'\u0302',
+        'mathring': u('\u02DA'), # u'\u030A',
+        'overleftrightarrow':  u('\u20e1'),
         # 'overline':        # u'\u0305',
-        'tilde':    u'\u02DC', # u'\u0303',
-        'vec':               u'\u20D7'}
+        'tilde':    u('\u02DC'), # u'\u0303',
+        'vec':               u('\u20D7')}
 
 Greek = { # Capital Greek letters: (upright in TeX style)
-    'Phi':u'\u03a6', 'Xi':u'\u039e', 'Sigma':u'\u03a3',
-    'Psi':u'\u03a8', 'Delta':u'\u0394', 'Theta':u'\u0398',
-    'Upsilon':u'\u03d2', 'Pi':u'\u03a0', 'Omega':u'\u03a9',
-    'Gamma':u'\u0393', 'Lambda':u'\u039b'}
+    'Phi':u('\u03a6'), 'Xi':u('\u039e'), 'Sigma':u('\u03a3'),
+    'Psi':u('\u03a8'), 'Delta':u('\u0394'), 'Theta':u('\u0398'),
+    'Upsilon':u('\u03d2'), 'Pi':u('\u03a0'), 'Omega':u('\u03a9'),
+    'Gamma':u('\u0393'), 'Lambda':u('\u039b')}
 
 letters = tex2unichar.mathalpha
 
@@ -67,92 +69,92 @@ functions = ['arccos', 'arcsin', 'arctan', 'arg', 'cos',  'cosh',
 
 
 mathbb = {
-          'A': u'\U0001D538',
-          'B': u'\U0001D539',
-          'C': u'\u2102',
-          'D': u'\U0001D53B',
-          'E': u'\U0001D53C',
-          'F': u'\U0001D53D',
-          'G': u'\U0001D53E',
-          'H': u'\u210D',
-          'I': u'\U0001D540',
-          'J': u'\U0001D541',
-          'K': u'\U0001D542',
-          'L': u'\U0001D543',
-          'M': u'\U0001D544',
-          'N': u'\u2115',
-          'O': u'\U0001D546',
-          'P': u'\u2119',
-          'Q': u'\u211A',
-          'R': u'\u211D',
-          'S': u'\U0001D54A',
-          'T': u'\U0001D54B',
-          'U': u'\U0001D54C',
-          'V': u'\U0001D54D',
-          'W': u'\U0001D54E',
-          'X': u'\U0001D54F',
-          'Y': u'\U0001D550',
-          'Z': u'\u2124',
+          'A': u('\U0001D538'),
+          'B': u('\U0001D539'),
+          'C': u('\u2102'),
+          'D': u('\U0001D53B'),
+          'E': u('\U0001D53C'),
+          'F': u('\U0001D53D'),
+          'G': u('\U0001D53E'),
+          'H': u('\u210D'),
+          'I': u('\U0001D540'),
+          'J': u('\U0001D541'),
+          'K': u('\U0001D542'),
+          'L': u('\U0001D543'),
+          'M': u('\U0001D544'),
+          'N': u('\u2115'),
+          'O': u('\U0001D546'),
+          'P': u('\u2119'),
+          'Q': u('\u211A'),
+          'R': u('\u211D'),
+          'S': u('\U0001D54A'),
+          'T': u('\U0001D54B'),
+          'U': u('\U0001D54C'),
+          'V': u('\U0001D54D'),
+          'W': u('\U0001D54E'),
+          'X': u('\U0001D54F'),
+          'Y': u('\U0001D550'),
+          'Z': u('\u2124'),
          }
 
 mathscr = {
-           'A': u'\U0001D49C',
-           'B': u'\u212C',     # bernoulli function
-           'C': u'\U0001D49E',
-           'D': u'\U0001D49F',
-           'E': u'\u2130',
-           'F': u'\u2131',
-           'G': u'\U0001D4A2',
-           'H': u'\u210B',     # hamiltonian
-           'I': u'\u2110',
-           'J': u'\U0001D4A5',
-           'K': u'\U0001D4A6',
-           'L': u'\u2112',     # lagrangian
-           'M': u'\u2133',     # physics m-matrix
-           'N': u'\U0001D4A9',
-           'O': u'\U0001D4AA',
-           'P': u'\U0001D4AB',
-           'Q': u'\U0001D4AC',
-           'R': u'\u211B',
-           'S': u'\U0001D4AE',
-           'T': u'\U0001D4AF',
-           'U': u'\U0001D4B0',
-           'V': u'\U0001D4B1',
-           'W': u'\U0001D4B2',
-           'X': u'\U0001D4B3',
-           'Y': u'\U0001D4B4',
-           'Z': u'\U0001D4B5',
-           'a': u'\U0001D4B6',
-           'b': u'\U0001D4B7',
-           'c': u'\U0001D4B8',
-           'd': u'\U0001D4B9',
-           'e': u'\u212F',
-           'f': u'\U0001D4BB',
-           'g': u'\u210A',
-           'h': u'\U0001D4BD',
-           'i': u'\U0001D4BE',
-           'j': u'\U0001D4BF',
-           'k': u'\U0001D4C0',
-           'l': u'\U0001D4C1',
-           'm': u'\U0001D4C2',
-           'n': u'\U0001D4C3',
-           'o': u'\u2134',     # order of
-           'p': u'\U0001D4C5',
-           'q': u'\U0001D4C6',
-           'r': u'\U0001D4C7',
-           's': u'\U0001D4C8',
-           't': u'\U0001D4C9',
-           'u': u'\U0001D4CA',
-           'v': u'\U0001D4CB',
-           'w': u'\U0001D4CC',
-           'x': u'\U0001D4CD',
-           'y': u'\U0001D4CE',
-           'z': u'\U0001D4CF',
+           'A': u('\U0001D49C'),
+           'B': u('\u212C'),     # bernoulli function
+           'C': u('\U0001D49E'),
+           'D': u('\U0001D49F'),
+           'E': u('\u2130'),
+           'F': u('\u2131'),
+           'G': u('\U0001D4A2'),
+           'H': u('\u210B'),     # hamiltonian
+           'I': u('\u2110'),
+           'J': u('\U0001D4A5'),
+           'K': u('\U0001D4A6'),
+           'L': u('\u2112'),     # lagrangian
+           'M': u('\u2133'),     # physics m-matrix
+           'N': u('\U0001D4A9'),
+           'O': u('\U0001D4AA'),
+           'P': u('\U0001D4AB'),
+           'Q': u('\U0001D4AC'),
+           'R': u('\u211B'),
+           'S': u('\U0001D4AE'),
+           'T': u('\U0001D4AF'),
+           'U': u('\U0001D4B0'),
+           'V': u('\U0001D4B1'),
+           'W': u('\U0001D4B2'),
+           'X': u('\U0001D4B3'),
+           'Y': u('\U0001D4B4'),
+           'Z': u('\U0001D4B5'),
+           'a': u('\U0001D4B6'),
+           'b': u('\U0001D4B7'),
+           'c': u('\U0001D4B8'),
+           'd': u('\U0001D4B9'),
+           'e': u('\u212F'),
+           'f': u('\U0001D4BB'),
+           'g': u('\u210A'),
+           'h': u('\U0001D4BD'),
+           'i': u('\U0001D4BE'),
+           'j': u('\U0001D4BF'),
+           'k': u('\U0001D4C0'),
+           'l': u('\U0001D4C1'),
+           'm': u('\U0001D4C2'),
+           'n': u('\U0001D4C3'),
+           'o': u('\u2134'),     # order of
+           'p': u('\U0001D4C5'),
+           'q': u('\U0001D4C6'),
+           'r': u('\U0001D4C7'),
+           's': u('\U0001D4C8'),
+           't': u('\U0001D4C9'),
+           'u': u('\U0001D4CA'),
+           'v': u('\U0001D4CB'),
+           'w': u('\U0001D4CC'),
+           'x': u('\U0001D4CD'),
+           'y': u('\U0001D4CE'),
+           'z': u('\U0001D4CF'),
           }
 
-negatables = {'=': u'\u2260',
-              '\in': u'\u2209',
-              '\equiv': u'\u2262'}
+negatables = {'=': u('\u2260'),
+              '\in': u('\u2209'),
+              '\equiv': u('\u2262')}
 
 # LaTeX to MathML translation stuff:
 class math:
@@ -298,14 +300,14 @@ class msubsup(math):
 
     def xml(self):
         if self.reversed:
-##            self.children[1:3] = self.children[2:0:-1]
+    ##            self.children[1:3] = self.children[2:0:-1]
             self.children[1:3] = [self.children[2], self.children[1]]
             self.reversed = False
         return math.xml(self)
 
 class mfenced(math):
-    translation = {'\\{': '{', '\\langle': u'\u2329',
-                   '\\}': '}', '\\rangle': u'\u232A',
+    translation = {'\\{': '{', '\\langle': u('\u2329'),
+                   '\\}': '}', '\\rangle': u('\u232A'),
                    '.': ''}
     def __init__(self, par):
         self.openpar = par
@@ -413,8 +415,7 @@ def parse_latex_math(string, inline=True):
                 node = entry
                 skip = 2
             else:
-                raise SyntaxError(u'Syntax error: "%s%s"' % (c, c2))
-                    ### ur'Syntax error: "%s%s"' % (c, c2))
+                raise SyntaxError(u(r'Syntax error: "%s%s"') % (c, c2))
         elif c.isalpha():
             node = node.append(mi(c))
         elif c.isdigit():
@@ -455,8 +456,7 @@ def parse_latex_math(string, inline=True):
             node.close().append(entry)
             node = entry
         else:
-            raise SyntaxError(u'Illegal character: "%s"' % c)
-                ### ur'Illegal character: "%s"' % c)
+            raise SyntaxError(u(r'Illegal character: "%s"') % c)
         string = string[skip:]
     return tree
 
@@ -468,8 +468,9 @@ def handle_keyword(name, node, string):
         skip = 1
     if name == 'begin':
         if not string.startswith('{matrix}'):
-            raise SyntaxError(u'Environment not supported! '
-                              u'Supported environment: "matrix".')
+            ### --fix=unifified_unicode doesn't handle this properly.
+            raise SyntaxError(u('Environment not supported! ' + ###
+                              u('Supported environment: "matrix".')))
         skip += 8
         entry = mtd()
         table = mtable(mtr(entry))
@@ -477,18 +478,15 @@ def handle_keyword(name, node, string):
         node = entry
     elif name == 'end':
         if not string.startswith('{matrix}'):
-            raise SyntaxError(u'Expected "\\end{matrix}"!')
-                ### ur'Expected "\end{matrix}"!')
+            raise SyntaxError(u(r'Expected "\end{matrix}"!'))
         skip += 8
         node = node.close().close().close()
     elif name in ('text', 'mathrm'):
         if string[0] != '{':
-            raise SyntaxError(u'Expected "\\text{...}"!')
-                ### ur'Expected "\text{...}"!')
+            raise SyntaxError(u(r'Expected "\text{...}"!'))
         i = string.find('}')
         if i == -1:
-            raise SyntaxError(u'Expected "\\text{...}"!')
-                ### ur'Expected "\text{...}"!')
+            raise SyntaxError(u(r'Expected "\text{...}"!'))
         node = node.append(mtext(string[1:i]))
         skip += i + 1
     elif name == 'sqrt':
@@ -504,7 +502,7 @@ def handle_keyword(name, node, string):
             if string.startswith(par):
                 break
         else:
-            raise SyntaxError(u'Missing left-brace!')
+            raise SyntaxError(u('Missing left-brace!'))
         fenced = mfenced(par)
         node.append(fenced)
         row = mrow()
@@ -516,7 +514,7 @@ def handle_keyword(name, node, string):
             if string.startswith(par):
                 break
         else:
-            raise SyntaxError(u'Missing right-brace!')
+            raise SyntaxError(u('Missing right-brace!'))
         node = node.close()
         node.closepar = par
         node = node.close()
@@ -526,8 +524,7 @@ def handle_keyword(name, node, string):
             if string.startswith(operator):
                 break
         else:
-            raise SyntaxError(u'Expected something to negate: "\\not ..."!')
-                ### ur'Expected something to negate: "\not ..."!')
+            raise SyntaxError(u(r'Expected something to negate: "\not ..."!'))
         node = node.append(mo(negatables[operator]))
         skip += len(operator)
     elif name == 'mathbf':
@@ -536,14 +533,12 @@ def handle_keyword(name, node, string):
         node = style
     elif name == 'mathbb':
         if string[0] != '{' or not string[1].isupper() or string[2] != '}':
-            raise SyntaxError(u'Expected something like "\\mathbb{A}"!')
-                ### ur'Expected something like "\mathbb{A}"!')
+            raise SyntaxError(u(r'Expected something like "\mathbb{A}"!'))
         node = node.append(mi(mathbb[string[1]]))
         skip += 3
     elif name in ('mathscr', 'mathcal'):
         if string[0] != '{' or string[2] != '}':
-            raise SyntaxError(u'Expected something like "\\mathscr{A}"!')
-                ### ur'Expected something like "\mathscr{A}"!')
+            raise SyntaxError(u(r'Expected something like "\mathscr{A}"!'))
         node = node.append(mi(mathscr[string[1]]))
         skip += 3
     elif name == 'colon': # "normal" colon, not binary operator
@@ -563,6 +558,6 @@ def handle_keyword(name, node, string):
         node.append(ovr)
         node = ovr
     else:
-        raise SyntaxError(u'Unknown LaTeX command: ' + name)
+        raise SyntaxError(u('Unknown LaTeX command: ') + name)
 
     return node, skip

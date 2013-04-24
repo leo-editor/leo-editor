@@ -3536,6 +3536,79 @@ print(rst)
 import docutils.parsers.rst
 print(docutils.parsers.rst)
 from docutils.parsers.rst import directives
+#@+node:ekr.20130422193953.10774: *3* Files with u and ur constants
+ur constants:
+    
+writers\manpage.py
+writers\latex2e\__init__.py
+utils\math\latex2matchml.py
+
+u constants:
+
+core.py
+frontend.py
+io.py
+nodes.py
+statemachine.py
+__init__.py
+languages\ca.py
+languages\cs.py
+languages\eo.py
+languages\es.py
+languages\fi.py
+languages\fr.py
+languages\gl.py
+languages\he.py
+languages\ja.py
+languages\lt.py
+languages\pl.py
+languages\pt_br.py
+languages\ru.py
+languages\sk.py
+languages\sv.py
+languages\zh_cn.py
+languages\zh_tw.py
+parsers\rst\states.py
+parsers\rst\directives\body.py
+parsers\rst\directives\misc.py
+parsers\rst\directives\tables.py
+parsers\rst\directives\__init__.py
+parsers\rst\languages\af.py
+parsers\rst\languages\ca.py
+parsers\rst\languages\cs.py
+parsers\rst\languages\de.py
+parsers\rst\languages\eo.py
+parsers\rst\languages\es.py
+parsers\rst\languages\fi.py
+parsers\rst\languages\fr.py
+parsers\rst\languages\gl.py
+parsers\rst\languages\he.py
+parsers\rst\languages\it.py
+parsers\rst\languages\ja.py
+parsers\rst\languages\lt.py
+parsers\rst\languages\nl.py
+parsers\rst\languages\pl.py
+parsers\rst\languages\pt_br.py
+parsers\rst\languages\ru.py
+parsers\rst\languages\sk.py
+parsers\rst\languages\sv.py
+parsers\rst\languages\zh_cn.py
+parsers\rst\languages\zh_tw.py
+transforms\parts.py
+transforms\references.py
+utils\error_reporting.py
+utils\punctuation_chars.py
+utils\smartquotes.py
+utils\__init__.py
+utils\math\latex2mathml.py
+utils\math\math2html.py
+utils\math\tex2unichar.py
+utils\math\unichar2tex.py
+writers\manpage.py
+writers\html4css1\__init__.py
+writers\latex2e\__init__.py
+writers\odf_odt\__init__.py
+writers\xetex\__init__.py
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

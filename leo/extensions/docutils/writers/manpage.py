@@ -52,6 +52,8 @@ try:
     import roman
 except ImportError:
     import docutils.utils.roman as roman
+    
+from docutils.utils.u import u ### just like six.
 
 FIELD_LIST_INDENT = 7
 DEFINITION_LIST_INDENT = 7
@@ -272,19 +274,19 @@ class Translator(nodes.NodeVisitor):
         return ''.join(self.head + self.body + self.foot)
 
     def deunicode(self, text):
-        text = text.replace(u'\xa0', '\\ ')
-        text = text.replace(u'\u2020', '\\(dg')
+        text = text.replace(u('\xa0'), '\\ ')
+        text = text.replace(u('\u2020'), '\\(dg')
         return text
 
     def visit_Text(self, node):
         text = node.astext()
         text = text.replace('\\','\\e')
         replace_pairs = [
-            (u'-',  u'\\-'),     ### (u'-', ur'\-'),
-            (u'\'', u'\\(aq'),   ### (u'\'', ur'\(aq'),
-            (u'´',  u"\\'"),     ### (u'´', ur'\''),
-            (u'`',  u'\\(ga'),   ### (u'`', ur'\(ga'),
-        ]
+            (u('-'),  u(r'\-')),
+            (u('\''), u(r'\(aq')),
+            (u('´'),  u(r'\'')),
+            (u('`'),  u(r'\(ga')),
+            ]
         for (in_char, out_markup) in replace_pairs:
             text = text.replace(in_char, out_markup)
         # unicode
