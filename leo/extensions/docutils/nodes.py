@@ -714,7 +714,7 @@ class Element(Node):
                        'Losing "%s" attribute: %s' % (att, self[att])
         self.parent.replace(self, new)
 
-    def first_child_matching_class(self, childclass, start=0, end=sys.maxint):
+    def first_child_matching_class(self, childclass, start=0, end=sys.maxsize):
         """
         Return the index of the first child whose class exactly matches.
 
@@ -734,7 +734,7 @@ class Element(Node):
         return None
 
     def first_child_not_matching_class(self, childclass, start=0,
-                                       end=sys.maxint):
+                                       end=sys.maxsize):
         """
         Return the index of the first child whose class does *not* match.
 

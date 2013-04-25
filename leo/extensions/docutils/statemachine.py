@@ -1338,7 +1338,7 @@ class StringList(ViewList):
 
     """A `ViewList` with string-specific methods."""
 
-    def trim_left(self, length, start=0, end=sys.maxint):
+    def trim_left(self, length, start=0, end=sys.maxsize):
         """
         Trim `length` characters off the beginning of each item, in-place,
         from index `start` to `end`.  No whitespace-checking is done on the
