@@ -2265,9 +2265,12 @@ def setGlobalOpenDir (fileName):
         g.app.globalOpenDir = g.os_path_dirname(fileName)
         # g.es('current directory:',g.app.globalOpenDir)
 #@+node:ekr.20031218072017.3125: *3* g.shortFileName & shortFilename
-def shortFileName (fileName):
-
-    return g.os_path_basename(fileName)
+def shortFileName (fileName,n=None):
+    
+    if n is None or n < 1:
+        return g.os_path_basename(fileName)
+    else:
+        return '\\'.join(fileName.split('\\')[-n:])
 
 shortFilename = shortFileName
 #@+node:ekr.20050104135720: *3* Used by tangle code & leoFileCommands
