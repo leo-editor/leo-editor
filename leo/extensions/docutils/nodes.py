@@ -305,7 +305,7 @@ if sys.version_info < (3,):
         def __repr__(self):
             return unicode.__repr__(self)[1:]
 else:
-    reprunicode = unicode
+    reprunicode = str ### was unicode
 
 
 class Text(Node, reprunicode):

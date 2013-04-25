@@ -162,7 +162,7 @@ g.assertUi('qt')
 
 import os
 
-
+docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=True)
 try:
     from docutils.core import publish_string
     from docutils.utils import SystemMessage

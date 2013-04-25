@@ -2790,11 +2790,6 @@ Workflow:
 5. bzr qdiff then shows all cleanups.
 6. bzr commit if all goes well.
 #@+node:ekr.20130417081749.10492: ** porting docutils
-#@+node:ekr.20130424134801.11599: *3* calls to six.x in docutils
-six.u
-six.text_type
-
-text_type = str if isPython3 else unicode
 #@+node:ekr.20130417081749.10503: *3* 2to3 fixers
 A fixes:
 --fix=except
