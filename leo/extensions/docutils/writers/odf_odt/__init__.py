@@ -20,7 +20,11 @@ import zipfile
 from xml.dom import minidom
 import time
 import re
-import StringIO
+if sys.version_info < (3,):
+    import StringIO
+else:
+    import io as StringIO ### As clause added.
+
 import copy
 import urllib2
 import docutils
@@ -304,7 +308,7 @@ def add_ns(tag, nsdict=CNSD):
     return tag
 
 def ToString(et):
-    outstream = StringIO.StringIO()
+    outstream = StringIO.StringIO() if sys.version_info < (3,) else io.StringIO()
     if sys.version_info >= (3, 2):
         et.write(outstream, encoding="unicode")
     else:
@@ -792,7 +796,10 @@ class ODFTranslator(nodes.GenericNodeVisitor):
         self.language = languages.get_language(lcode, document.reporter)
         self.format_map = { }
         if self.settings.odf_config_file:
-            from ConfigParser import ConfigParser
+            if sys.version_info < (3,): ### Changed indentation.
+                from ConfigParser import ConfigParser
+            else:
+                from configparser import ConfigParser
 
             parser = ConfigParser()
             parser.read(self.settings.odf_config_file)

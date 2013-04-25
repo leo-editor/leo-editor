@@ -33,7 +33,11 @@ import os
 import os.path
 import sys
 import warnings
-import ConfigParser as CP
+if sys.version_info < (3,):
+    import ConfigParser as CP
+else:
+    import configparser as CP
+
 import codecs
 import optparse
 from optparse import SUPPRESS_HELP

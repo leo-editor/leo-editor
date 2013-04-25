@@ -25,7 +25,11 @@ if "_xmlplus" in xml.__path__[0]: # PyXML sub-module
     xml.__path__.reverse() # If both are available, prefer stdlib over PyXML
 
 import xml.sax.saxutils
-from StringIO import StringIO
+if sys.version_info < (3,):
+    from StringIO import StringIO
+else:
+    from io import StringIO
+
 
 import docutils
 from docutils import frontend, writers, nodes
