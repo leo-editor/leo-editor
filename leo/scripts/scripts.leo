@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="45" left="693" height="982" width="1211"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -74,7 +74,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6937,ekr.20120328102352.6938,ekr.20121013084734.16370,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6937,ekr.20120328102352.6938,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -113,11 +113,12 @@ expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.2005022
 <v t="ekr.20121013084734.16388"><vh>run</vh></v>
 </v>
 </v>
+<v t="ekr.20130425050120.12671"><vh>Script: replace in directory</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954" str_leo_pos="3,0,3"></t>
+<t tx="ekr.20070615131954"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
@@ -1455,6 +1456,39 @@ test_template = g.adjustTripleString(test_template,c.tab_width)
     for p in self.nodes:
         f.write(self.test_template % (self.clean(p.h),self.get_body(p)))
     f.close()
+</t>
+<t tx="ekr.20130425050120.12671">'''Replace a search pattern with a replacement pattern in a directory.'''
+# Adapted from 2to3's crlf fixer.
+
+g.cls()
+write = False
+path = g.os_path_finalize_join(g.app.loadDir,'..','extensions','docutils_modernize_bad')
+find = 'import six'
+change = 'from docutils.utils.u import u,text_type'
+import os
+
+def fix(filename):
+    if g.os_path_isdir(filename):
+        # print filename, "Directory!"
+        return
+    s = open(filename,"rb").read()
+    if '\0' in s:
+        print('binary: %s' % filename)
+        return
+    new_s = s.replace(find,change)
+    if new_s != s:
+        print('changed: %s' % g.shortFileName(filename,n=2))
+        if write:
+            f = open(filename,"wb")
+            f.write(new_s)
+            f.close()
+
+for root, dirs, files in os.walk(path):
+    for fn in files:
+        if fn.endswith('.py'):
+            fn = g.os_path_join(root,fn)
+            fix(fn)
+print('done')
 </t>
 </tnodes>
 </leo_file>
