@@ -20,6 +20,7 @@
 import sys, re
 import unicodedata
 isPython2 = sys.version_info < (3,)
+u_chr = unichr if isPython2 else chr
 
 from docutils.utils.u import u ###
 
@@ -153,7 +154,7 @@ openers_ords = [
     8223, # DOUBLE HIGH-REVERSED-9 QUOTATION MARK
 ]
 #@-<< define openers_ords >>
-openers = ''.join([unichr(n) for n in openers_ords])
+openers = ''.join([u_chr(n) for n in openers_ords])
 #@+<< define closers_ords >>
 #@+node:ekr.20130422090029.10774: ** << define closers_ords >>
 # closers = ur"""\"\'\)\>\]\}༻༽᚜⁆⁾₎〉❩❫❭❯❱❳❵⟆⟧⟩⟫⟭⟯⦄⦆⦈⦊⦌⦎⦐⦒⦔⦖⦘⧙⧛⧽⸣⸥⸧⸩〉》」』】〕〗〙〛〞〟﴿︘︶︸︺︼︾﹀﹂﹄﹈﹚﹜﹞）］｝｠｣»’”›⸃⸅⸊⸍⸝⸡‛‟«‘“‹⸂⸄⸉⸌⸜⸠‚„"""
@@ -265,7 +266,7 @@ closers_ords = [
     8222, # DOUBLE LOW-9 QUOTATION MARK
 ]
 #@-<< define closers_ords >>
-closers = ''.join([unichr(n) for n in closers_ords])
+closers = ''.join([u_chr(n) for n in closers_ords])
 #@+<< define delimiter_ords >>
 #@+node:ekr.20130422090029.10773: ** << define delimiter_ords >>
 # delimiters_original = ur"\-\/\:֊־᐀᠆‐‑‒–—―⸗⸚〜〰゠︱︲﹘﹣－¡·¿;·՚՛՜՝՞՟։׀׃׆׳״؉؊،؍؛؞؟٪٫٬٭۔܀܁܂܃܄܅܆܇܈܉܊܋܌܍߷߸߹࠰࠱࠲࠳࠴࠵࠶࠷࠸࠹࠺࠻࠼࠽࠾।॥॰෴๏๚๛༄༅༆༇༈༉༊་༌།༎༏༐༑༒྅࿐࿑࿒࿓࿔၊။၌၍၎၏჻፡።፣፤፥፦፧፨᙭᙮᛫᛬᛭᜵᜶។៕៖៘៙៚᠀᠁᠂᠃᠄᠅᠇᠈᠉᠊᥄᥅᧞᧟᨞᨟᪠᪡᪢᪣᪤᪥᪦᪨᪩᪪᪫᪬᪭᭚᭛᭜᭝᭞᭟᭠᰻᰼᰽᰾᰿᱾᱿᳓‖‗†‡•‣․‥…‧‰‱′″‴‵‶‷‸※‼‽‾⁁⁂⁃⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁓⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞⳹⳺⳻⳼⳾⳿⸀⸁⸆⸇⸈⸋⸎⸏⸐⸑⸒⸓⸔⸕⸖⸘⸙⸛⸞⸟⸪⸫⸬⸭⸮⸰⸱、。〃〽・꓾꓿꘍꘎꘏꙳꙾꛲꛳꛴꛵꛶꛷꡴꡵꡶꡷꣎꣏꣸꣹꣺꤮꤯꥟꧁꧂꧃꧄꧅꧆꧇꧈꧉꧊꧋꧌꧍꧞꧟꩜꩝꩞꩟꫞꫟꯫︐︑︒︓︔︕︖︙︰﹅﹆﹉﹊﹋﹌﹐﹑﹒﹔﹕﹖﹗﹟﹠﹡﹨﹪﹫！＂＃％＆＇＊，．／：；？＠＼｡､･𐄀𐄁𐎟𐏐𐡗𐤟𐤿𐩐𐩑𐩒𐩓𐩔𐩕𐩖𐩗𐩘𐩿𐬹𐬺𐬻𐬼𐬽𐬾𐬿𑂻𑂼𑂾𑂿𑃀𑃁𒑰𒑱𒑲𒑳"
@@ -639,7 +640,7 @@ delimiter_ords = [
     65381, # HALFWIDTH KATAKANA MIDDLE DOT
 ]
 #@-<< define delimiter_ords >>
-delimiters = ''.join([unichr(n) for n in delimiter_ords])
+delimiters = ''.join([u_chr(n) for n in delimiter_ords])
 # closing_delimiters_original = ur"\.\,\;\!\?"
 if isPython2:
     closing_delimiters = unicode("\\.\\,\\;\\!\\?")
@@ -682,12 +683,12 @@ def unicode_charlists(categories, cp_min=0, cp_max=None):
     # categories with not too high characters):
     if cp_max is None:
         cp_max = max(x for x in xrange(sys.maxunicode + 1)
-                     if unicodedata.category(unichr(x)) in categories)
+                     if unicodedata.category(u_chr(x)) in categories)
         # print cp_max # => 74867 for unicode_punctuation_categories
     charlists = {}
     for cat in categories:
-        charlists[cat] = [unichr(x) for x in xrange(cp_min, cp_max+1)
-                          if unicodedata.category(unichr(x)) == cat]
+        charlists[cat] = [u_chr(x) for x in xrange(cp_min, cp_max+1)
+                          if unicodedata.category(u_chr(x)) == cat]
     return charlists
 
 
@@ -793,10 +794,9 @@ quote_pairs_ord_d = {
 }
 quote_pairs = {}
 d = quote_pairs_ord_d
-to_chr = unichr if isPython2 else chr
 for n in d.keys():
-    ch = to_chr(n)
-    quote_pairs [ch] = ''.join([to_chr(n2) for n2 in d.get(n)])
+    ch = u_chr(n)
+    quote_pairs [ch] = ''.join([u_chr(n2) for n2 in d.get(n)])
 # assert quote_pairs == quote_pairs_original
 
 def match_chars(c1, c2):

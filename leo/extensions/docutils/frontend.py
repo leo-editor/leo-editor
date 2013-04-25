@@ -35,8 +35,10 @@ import sys
 import warnings
 if sys.version_info < (3,):
     import ConfigParser as CP
+    text_type = unicode ###
 else:
     import configparser as CP
+    text_type = str ###
 
 import codecs
 import optparse
@@ -158,7 +160,7 @@ def validate_threshold(setting, value, option_parser,
 
 def validate_colon_separated_string_list(
     setting, value, option_parser, config_parser=None, config_section=None):
-    if isinstance(value, unicode):
+    if isinstance(value, text_type): ###
         value = value.split(':')
     else:
         last = value.pop()
@@ -171,7 +173,7 @@ def validate_comma_separated_list(setting, value, option_parser,
     """
     # `value` is already a list when  given as command line option
     # and "action" is "append"
-    if isinstance(value, unicode):
+    if isinstance(value, text_type):###
         value = [value]
     # this function is called for every option added to `value`
     # -> split the last item and apped the result:
@@ -730,7 +732,7 @@ Skipping "%s" configuration file.
         """Wrapper around sys.stderr catching en-/decoding errors"""
 
     def read(self, filenames, option_parser):
-        if type(filenames) in (str, unicode):
+        if type(filenames) in (str, text_type): ###
             filenames = [filenames]
         for filename in filenames:
             try:
