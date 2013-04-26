@@ -763,7 +763,7 @@ class TestManager:
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
                 if trace: g.trace('no found: running raw body')
-                test = tm.makeTestCase(c.p)
+                test = tm.makeTestCase(c.p,setup_script)
                 if test:
                     suite.addTest(test)
                     found = True

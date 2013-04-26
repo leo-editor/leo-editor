@@ -524,7 +524,7 @@ class LeoPluginsController:
     def loadOnePlugin (self,moduleOrFileName,tag='open0',verbose=False):
 
         trace = False and not g.unitTesting
-        verbose = False or verbose
+        verbose = True or verbose
 
         if not g.app.enablePlugins:
             if trace: g.trace('plugins disabled')
@@ -558,7 +558,7 @@ class LeoPluginsController:
             result = sys.modules[moduleName]
 
         except g.UiTypeException:
-            if not g.unitTesting and not g.app.batchMode:
+            if trace or (not g.unitTesting and not g.app.batchMode):
                 g.es_print('Plugin %s does not support %s gui' % (
                     moduleName,g.app.gui.guiName()))
             result = None
@@ -597,7 +597,7 @@ class LeoPluginsController:
                         self.loadedModules[moduleName] = result
                         self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
                     else:
-                        if verbose and not g.app.initing:
+                        if trace and verbose and not g.app.initing:
                             g.error('loadOnePlugin: failed to load module',moduleName)
                         result = None
                 except Exception:
@@ -617,15 +617,14 @@ class LeoPluginsController:
                     self.loadedModules[moduleName] = result
             self.loadingModuleNameStack.pop()
 
-        if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        if g.app.batchMode or g.app.inBridge or g.unitTesting:
             pass
         elif result:
-            if trace or verbose:
+            if trace and verbose:
                 g.blue('loadOnePlugin: loaded',moduleName)
-        else:
-            if trace or self.warn_on_failure or (verbose and not g.app.initing):
-                if trace or tag == 'open0':
-                    g.error('loadOnePlugin: can not load enabled plugin:',moduleName)
+        elif trace or self.warn_on_failure or (trace and verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.error('loadOnePlugin: can not load enabled plugin:',moduleName)
 
         return result
     #@+node:ekr.20031218072017.1318: *4* plugin_signon
