@@ -1933,7 +1933,7 @@ class leoTree:
 
         '''End editing of a headline and update p.h.'''
 
-        trace = False and g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c ; k = c.k ; p = c.p
 
         if trace: g.trace('leoTree',p and p.h,g.callers(4))

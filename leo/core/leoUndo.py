@@ -1448,6 +1448,9 @@ class undoer:
         if not c.p:
             if trace: g.trace('no current position')
             return
+            
+        # Bug fix: 2013/4/26: End editing *before* getting state.
+        c.endEditing()
 
         if not u.canRedo():
             if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
@@ -1461,7 +1464,7 @@ class undoer:
 
         u.redoing = True 
         u.groupCount = 0
-        c.endEditing()
+        ### c.endEditing()
         if u.redoHelper:
             u.redoHelper()
         else:
@@ -1811,6 +1814,9 @@ class undoer:
 
         if not c.p:
             return g.trace('no current position')
+            
+        # Bug fix: 2013/4/26: End editing *before* getting state.
+        c.endEditing()
 
         if u.per_node_undo: # 2011/05/19
             u.setIvarsFromVnode(c.p)
@@ -1827,7 +1833,7 @@ class undoer:
 
         u.undoing = True
         u.groupCount = 0
-        c.endEditing()
+        ### c.endEditing()
         if u.undoHelper:
             u.undoHelper()
         else:

@@ -884,7 +884,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         '''Officially change a headline.'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
 
         c = self.c ; u = c.undoer
         if not p:
@@ -898,7 +898,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if not e:
             e = self.getTreeEditorForItem(item)
         if not e:
-            if trace and verbose: g.trace('** not editing')
+            if trace and verbose: g.trace('(nativeTree) ** not editing')
             return
 
         s = g.u(e.text())
@@ -911,7 +911,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         changed = s != oldHead
         if changed:
             # New in Leo 4.10.1.
-            if trace: g.trace('new',repr(s),'old',repr(p.h))
+            if trace: g.trace('(nativeTree) new',repr(s),'old',repr(p.h))
             #@+<< truncate s if it has multiple lines >>
             #@+node:ekr.20120409185504.10028: *4* << truncate s if it has multiple lines >>
             # Remove trailing newlines before warning of truncation.

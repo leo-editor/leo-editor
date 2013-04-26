@@ -14591,8 +14591,12 @@ try:
     assert p.back().h == 'A', 'fail 1'
     assert p.next().h == 'B', 'fail 2'
     c.undoer.undo()
+    # With the new undo logic, it takes 2 undoes.
+    # The first undo undoes the headline changes,
+    # the second undo undoes the insert node.
+    c.undoer.undo() 
     p = c.p
-    assert p == p2,         'fail 3'
+    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
     assert p.next() == p3,  'fail 4'
     c.undoer.redo()
     p = c.p
