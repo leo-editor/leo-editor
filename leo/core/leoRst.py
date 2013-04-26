@@ -22,7 +22,7 @@ if 0:
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
 verbose = False
 import leo.core.leoGlobals as g
-docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=True)
+docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=False)
 if docutils:
     try:
         if verbose: print('leoRst.py',docutils)

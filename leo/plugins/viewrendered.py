@@ -162,17 +162,20 @@ g.assertUi('qt')
 
 import os
 
-docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=True)
-try:
-    from docutils.core import publish_string
-    from docutils.utils import SystemMessage
-    got_docutils = True
-except ImportError:
+docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
+if docutils:
+    try:
+        from docutils.core import publish_string
+        from docutils.utils import SystemMessage
+        got_docutils = True
+    except ImportError:
+        got_docutils = False
+        g.es_exception()
+    except SyntaxError:
+        got_docutils = False
+        g.es_exception()
+else:
     got_docutils = False
-    g.es_exception()
-except SyntaxError:
-    got_docutils = False
-    g.es_exception()
     
 try:
     import PyQt4.phonon as phonon
@@ -814,12 +817,10 @@ class ViewRenderedController(QtGui.QWidget):
         assert pc.w
         if s:
             pc.show()
-        # else:
-            # if pc.auto_hide:
-                # pass  # needs review
-                # # pc.hide()
-            # return
-        if got_docutils and not isHtml:
+        if not got_docutils:
+            isHtml = True
+            s = '<pre>\n%s</pre>' % s
+        if not isHtml:
             # Not html: convert to html.
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
@@ -831,6 +832,7 @@ class ViewRenderedController(QtGui.QWidget):
                 if pc.title:
                     s = pc.underline(pc.title) + s
                     pc.title = None
+                # Call docutils to get the string.
                 s = publish_string(s,writer_name='html')
                 s = g.toUnicode(s) # 2011/03/15
                 show = True

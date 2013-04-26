@@ -5956,7 +5956,7 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
     moduleName is the module's name, without file extension.'''
 
     module = g.importModule(moduleName,pluginName=pluginName,verbose=verbose)
-    if not module:
+    if not module and verbose:
         g.pr("Warning: '%s' failed to import '%s'" % (
             pluginName,moduleName))
     return module
