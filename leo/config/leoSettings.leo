@@ -514,8 +514,8 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
@@ -9913,23 +9913,6 @@ def close_xml():
 \:    else:
 \:        return "&lt;/"
 
-def next_place():
-\:    """select the text of the next template placeholder
-\:       see @string abbrev-place-start"""
-\:    from PyQt4 import QtCore
-\:    txt = c.p.b
-\:    new_pos = txt.find(c.abbrev_place_start)
-\:    if new_pos &lt; 0:
-\:        i = j = len(txt)
-\:    else:
-\:        new_end = txt.find(c.abbrev_place_end)
-\:        i = new_pos-len(_abr)+1
-\:        j = new_end-len(_abr)+1+len(c.abbrev_place_end)
-\:    def later(c=c, i=i, j=j):
-\:        c.frame.body.setInsertPoint(i)
-\:        c.frame.body.setSelectionRange(i, j)
-\:    QtCore.QTimer.singleShot(0, later)
-
 def django_tag():
 \:    """expand {block content} to 
 \:       {% block content %}\n{% end_block content %} with proper
@@ -10020,10 +10003,8 @@ csv-table;;=.. csv-table::
 \:
 \:   &lt;|data|&gt;
 
-# see abbreviations-subst-env - `antid;;;` will expand to
-# `antidisestablishmentarianism` if `antidisestablishmentarianism`
-# already occurs in the text
-,,={|{next_place();x=''}|}
+# special case, causes core to select next place holder for editing
+,,={|{x='__NEXT_PLACEHOLDER'}|}
 
 # make balanced indented Django web template tags, see @data abbreviations-subst-env
 };;={|{django_tag();x=''}|}
