@@ -380,7 +380,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                         del aList[idx]
                     idx -= 1
 
-                g.do_exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
+                exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
 
         else:
             c.abbrev_subst_start = False
@@ -483,7 +483,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 content, rest = content
                 c.abbrev_subst_env['_abr'] = word
 
-                g.do_exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
+                exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
 
                 val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
 

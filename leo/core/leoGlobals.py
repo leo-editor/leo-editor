@@ -6126,24 +6126,6 @@ def isStroke(obj):
 
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj,KeyStroke)
-#@+node:tbrown.20120829105603.29180: *3* g.do_exec
-def do_exec(what, global_context=None, local_context=None):
-    """Python 2 and 3 compatible exec"""
-
-    # not sure if just passing None would have this effect
-    if global_context is None:
-        global_context = globals()
-    if local_context is None:
-        local_context = locals()
-
-    if g.isPython3:
-        exec(what, global_context, local_context)
-    else:
-        # exec is a statement so you can't eval it directly.  eval
-        # is done in the local context, where `global_context` and
-        # `local_context` are what they should be
-        eval(compile('exec what in global_context, local_context',
-            "<string>", "exec"))
 #@+node:ekr.20031218072017.3197: ** Whitespace...
 #@+node:ekr.20031218072017.3198: *3* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
