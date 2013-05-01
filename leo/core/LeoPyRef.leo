@@ -42,7 +42,7 @@ marks="ekr.20111116103733.9818,"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
 </v>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
@@ -51,7 +51,8 @@ marks="ekr.20111116103733.9818,"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
-<v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
+<v t="ekr.20050710142719" a="E"
+expanded="ekr.20050920084036.13,ekr.20100901080826.6002,ekr.20100901080826.6155,ekr.20050920084036.53,ekr.20071114081313,ekr.20080108092811,"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>

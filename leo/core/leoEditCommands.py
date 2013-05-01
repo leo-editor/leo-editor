@@ -475,7 +475,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
             return False
 
         if c.abbrev_subst_start:
+            
             while c.abbrev_subst_start in val:
+                
                 prefix, rest = val.split(c.abbrev_subst_start, 1)
                 content = rest.split(c.abbrev_subst_end, 1)
                 if len(content) != 2:
@@ -486,6 +488,14 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
 
                 val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
+                
+        if val == "__NEXT_PLACEHOLDER":
+            # user explicitly called for next placeholder in an abbrev.
+            # inserted previously
+            val = ''
+            do_placeholder = True
+        else:
+            do_placeholder = False 
 
         if trace: g.trace('**inserting',repr(val))
         oldSel = j,j
@@ -495,27 +505,35 @@ class abbrevCommandsClass (baseEditCommandsClass):
         c.frame.body.forceFullRecolor() # 2011/10/21
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
 
-        if c.abbrev_subst_start:
-            new_text, start, end = self.next_place(c.frame.body.getAllText())
-            c.frame.body.setAllText(new_text)
-            # setInsertPoint() clears selection raise, so must come first
-            c.frame.body.setInsertPoint(end)
-            c.frame.body.setSelectionRange(start, end)
+        if (do_placeholder or
+            c.abbrev_place_start and c.abbrev_place_start in val):
+            new_text, start, end = self.next_place(c.frame.body.getAllText(), offset=i)
+            if start is not None:
+                c.frame.body.setAllText(new_text)
+                # setInsertPoint() clears selection raise, so must come first
+                c.frame.body.setInsertPoint(end)
+                c.frame.body.setSelectionRange(start, end)
             
         return True
     #@+node:tbrown.20130326094709.25669: *4* next_place
-    def next_place(self, text):
+    def next_place(self, text, offset=0):
         """Given text containing a placeholder like <|block01|>,
         return text2, start, end where text2 is the text without
         the <| and |>, and start, end are the positions of the
-        beginning and end of block0.
+        beginning and end of block01.
         """
 
         c = self.c
-        new_pos = text.find(c.abbrev_place_start)
-        new_end = text.find(c.abbrev_place_end)
+        new_pos = text.find(c.abbrev_place_start, offset)
+        new_end = text.find(c.abbrev_place_end, offset)
+        if (new_pos < 0 or new_end < 0) and offset:
+            new_pos = text.find(c.abbrev_place_start)
+            new_end = text.find(c.abbrev_place_end)
+            if not(new_pos < 0 or new_end < 0):
+                g.es("Found placeholder earlier in body")
+            
         if new_pos < 0 or new_end < 0:
-            return text, len(text), len(text)
+            return text, None, None
 
         start = new_pos
         place_holder_delim = text[new_pos:new_end+len(c.abbrev_place_end)]
