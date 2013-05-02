@@ -11,6 +11,7 @@
 3. *Good* documentation exists for all importatant plugins and features.
 4. Future project leaders (FPL's) know how to change Leo like I do.
     - Secondary: FPL's have the same general knowledge about Leo that I do.
+5. Fix important bugs.
 .. @+node:ekr.20130413061407.10366: ** The big picture
 @wrap
 
@@ -33,15 +34,58 @@ After the release:
     - Revisit some of the worst parts of Leo's code, especially undo and headline editing.
     
     - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
-.. @+node:ekr.20130412022445.12389: ** First
-.. @+node:ekr.20130411131638.10311: *3* ** ask the qt people about leaving foreground text unchanged
-.. @+node:ekr.20130408095053.10307: *3* ** guide for the next leaders
-# Use bookmarks?
-.. @+node:ekr.20130411141456.10314: *3* ** Ask Ville what he thinks the Aha is
-.. @+node:ekr.20130412022445.12388: *3* Use vr (and @wrap) to view all setting documentation
-.. @+node:ekr.20111019104425.15865: *3* Make sure docstrings include present documentation
+.. @+node:ekr.20130412022445.12389: ** Next actions
+@language rest
+.. @+node:ekr.20130502113223.10589: *3* Look at failing unit tests
+# https://gist.github.com/gatesphere/432a20651399ce43f7c8
+.. @+node:ekr.20130502104323.10581: *3* Get github working
+bzr ci => git commit -a
+bzr add => git add
+bzr push => git push
+bzr revert => git reset --hard
+.. @+node:ekr.20130501171351.10494: *3* Organize Leo bugs
+.. @+node:ekr.20130501035328.10476: *4* Re-open bug report about disappearing lines
+.. @+node:ekr.20130501035328.12634: *3* Use Leo for email?
+m = imaplib.IMAP4_SSL('imap.gmail.com',993) # Require SSL: Yes
+m.login('edreamleo',<<my password>>)
+print('connected to edreamleo@gmail.com')
+try:
+    box = 'INBOX'
+    m.select(box,True) # readonly.
+    ok, aList = m.search(None,'ALL')
+    if ok == 'OK':
+        aList = [g.toUnicode(z) for z in aList]
+        nums = aList[0].split()
+        for num in nums:
+            ok,data = m.fetch(num, '(RFC822)')
+            if ok == 'OK':
+                print('reading %s %s' % (box.lower(),num))
+                child = p.insertAsLastChild()
+                child.h = '%s %s' % (box.lower(),num)
+                result = [g.toUnicode(repr(z)) for z in data]
+                s = '\n'.join(result)
+                s = s.replace('\\r\\n','\n')
+                child.b = s
+                break # testing
+        c.redraw()
+    else:
+        print('search %s failed' % (box.lower()))
+finally:
+    m.close()
+    m.logout()
+print('done')
+.. @+node:ekr.20130411131638.10311: *3* Ask the qt people about leaving foreground text unchanged
+.. @+node:ekr.20130501171351.10495: *3* Complete write-up of Leo sprint
+.. @+node:ekr.20130501171351.10493: *3* Complete move to leo-editor.com
+* Fix links in search window.
+.. @+node:ekr.20130502071141.10569: *3* Leo 4.11
+@language rest
+.. @+node:ekr.20130502071141.10570: *4* 4.11 Bugs
+.. @+node:ekr.20130502071141.10571: *5* Fix disappearing lines bug
+.. @+node:ekr.20130502071141.10572: *4* 4.11 Docs
+.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
 Every command should have a **complete** docstring.
-.. @+node:ekr.20120527143117.11089: *4* Print commands & docstrings
+.. @+node:ekr.20120527143117.11089: *6* Print commands & docstrings
 '''print a summary, sorted by class, of commands & their docstrings.'''
 
 d = c.commandsDict
@@ -69,7 +113,7 @@ for group in sorted(groups.keys()):
 
 
 print('%s commands' % (len(list(d.keys()))))
-.. @+node:ekr.20120527150031.10130: *4* output
+.. @+node:ekr.20120527150031.10130: *6* output
 @killcolor
 
 AutoCompleterClass...
@@ -776,10 +820,14 @@ undoer...
                                     redo:  43 redo
                                     undo:  52 undo
 676 commands
-.. @+node:ekr.20130412022445.12390: *3* ** Prepare to release 4.11
-.. @+node:ekr.20130413061407.10365: *3* ** Ignore @url lines and @rclick nodes in scripts
-.. @+node:ekr.20130413061407.10367: *3* ** Screencast style for plugins
-.. @+node:ekr.20130413061407.10368: *3* ** Screencast style for tutorials
+.. @+node:ekr.20130413061407.10367: *5* Screencast style for plugins
+.. @+node:ekr.20130413061407.10368: *5* Screencast style for tutorials
+.. @+node:ekr.20130412022445.12388: *5* ?Use vr (and @wrap) to view all setting documentation
+.. @+node:ekr.20130408095053.10307: *5* guide for the next leaders
+# Use bookmarks?
+.. @+node:ekr.20130502071141.10576: *4* 4.11 Features
+.. @+node:ekr.20130413061407.10365: *5* ?Ignore @url lines and @rclick nodes in scripts
+.. @+node:ekr.20130502071141.10573: *4* 4.11 Installation
 .. @+node:ekr.20110921094450.6956: ** To do: 4.11
 @language rest
 
