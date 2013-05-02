@@ -9,8 +9,11 @@ Creates a window for *live* rendering of images, movies, sounds, rst, html, etc.
 Dependencies
 ============
 
-This plugin uses docutils,http://docutils.sourceforge.net/, to render reStructuredText,
+This plugin uses docutils, http://docutils.sourceforge.net/, to render reStructuredText,
 so installing docutils is highly recommended when using this plugin.
+
+This plugin uses markdown, http://http://pypi.python.org/pypi/Markdown, to render Markdown,
+so installing markdown is highly recommended when using this plugin.
 
 Commands
 ========
@@ -88,6 +91,14 @@ will look something like:
     
 **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
 
+Rendering markdown
+==================
+Please see the markdown syntax document at http://daringfireball.net/projects/markdown/syntax
+for more information on markdown.
+
+Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be
+specified by putting it in a ``@md`` node.
+
 Special Renderings
 ===================
 
@@ -137,8 +148,13 @@ Settings
   When True, hide the rendering pane for text-only renderings.
 
 - ``@string view-rendered-default-kind = rst``
-  The default kind of rendering.  One of (big,rst,html)
+  The default kind of rendering.  One of (big,rst,md,html)
   
+- ``@string view-rendered-md-extensions = extra``
+  A comma-delineated list of markdown extensions to use.
+  Suitable extensions can be seen here: 
+  http://pythonhosted.org/Markdown/extensions/index.html
+
 Acknowledgments
 ================
 
@@ -147,6 +163,8 @@ and the free_layout and NestedSplitter plugins used by viewrendered.
 
 Edward K. Ream generalized this plugin and added communication
 and coordination between the free_layout, NestedSplitter and viewrendered plugins.
+
+Jacob Peck added markdown support to this plugin.
 
 '''
 #@-<< docstring >>
@@ -176,6 +194,13 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
+
+## markdown support, non-vital
+try:
+    from markdown import markdown
+    got_markdown = True
+except ImportError:
+    got_markdown = False
     
 try:
     import PyQt4.phonon as phonon
@@ -486,6 +511,7 @@ class ViewRenderedController(QtGui.QWidget):
             'html':         pc.update_html,
             'graphics-script':  pc.update_graphics_script,
             'image':        pc.update_image,
+            'md':           pc.update_md,
             'movie':        pc.update_movie,
             'networkx':     pc.update_networkx,
             'rst':          pc.update_rst,
@@ -752,6 +778,74 @@ class ViewRenderedController(QtGui.QWidget):
         w.setHtml(template)
         w.setReadOnly(True)
         
+    #@+node:peckj.20130207132858.3671: *4* update_md
+    def update_md (self,s,keywords):
+        
+        trace = False and not g.unitTesting
+        pc = self ; c = pc.c ;  p = c.p
+        s = s.strip().strip('"""').strip("'''").strip()
+        isHtml = s.startswith('<') and not s.startswith('<<')
+        
+        if trace: g.trace('isHtml',isHtml)
+        
+        # Do this regardless of whether we show the widget or not.
+        w = pc.ensure_text_widget()
+        assert pc.w
+        
+        if s:
+            pc.show()
+        else:
+            if pc.auto_hide:
+                pass  # needs review
+                # pc.hide()
+            return
+        
+        if got_markdown and not isHtml:
+            # Not html: convert to html.
+            path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+
+            try:
+                msg = '' # The error message from docutils.
+                if pc.title:
+                    s = pc.underline(pc.title) + s
+                    pc.title = None
+                mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+                mdext = [x.strip() for x in mdext.split(',')]
+                s = markdown(s, mdext)
+                s = g.toUnicode(s) # 2011/03/15
+                show = True
+            except SystemMessage as sm:
+                # g.trace(sm,sm.args)
+                msg = sm.args[0]
+                if 'SEVERE' in msg or 'FATAL' in msg:
+                    s = 'MD error:\n%s\n\n%s' % (msg,s)
+
+        sb = w.verticalScrollBar()
+
+        if sb:
+            d = pc.scrollbar_pos_dict
+            if pc.node_changed:
+                # Set the scrollbar.
+                pos = d.get(p.v,sb.sliderPosition())
+                sb.setSliderPosition(pos)
+            else:
+                # Save the scrollbars
+                d[p.v] = pos = sb.sliderPosition()
+
+        if pc.kind in ('big','rst','html', 'md'):
+            w.setHtml(s)
+            if pc.kind == 'big':
+                w.zoomIn(4) # Doesn't work.
+        else:
+            w.setPlainText(s)
+            
+        if sb and pos:
+            # Restore the scrollbars
+            sb.setSliderPosition(pos)
     #@+node:ekr.20110320120020.14481: *4* update_movie
     def update_movie (self,s,keywords):
         
@@ -852,7 +946,8 @@ class ViewRenderedController(QtGui.QWidget):
             else:
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
-        if pc.kind in ('big','rst','html'):
+
+        if pc.kind in ('big','rst','html', 'md'):
             w.setHtml(s)
             if pc.kind == 'big':
                 w.zoomIn(4) # Doesn't work.

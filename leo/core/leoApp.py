@@ -265,6 +265,7 @@ class LeoApp:
             "makefile"           : "#",
             "maple"              : "//",
             "matlab"             : "%", # EKR: 2011/10/21
+            "md"                 : "<!-- -->", # PeckJ: 2013/02/08
             "ml"                 : "(* *)",
             "modula3"            : "(* *)",
             "moin"               : "##",
@@ -428,6 +429,7 @@ class LeoApp:
             "makefile"      : "mak",
             "maple"         : "mpl",
             "matlab"        : "m",
+            "md"            : "md", # PeckJ: 2013/02/07
             "ml"            : "ml",
             "modula3"       : "mod",
             "moin"          : "wiki",
@@ -573,6 +575,7 @@ class LeoApp:
             "ly":       "lilypond",
             "m":        "matlab", # EKR: 2011/10/21
             "mak":      "makefile",
+            "md":       "md", # PeckJ 2013/02/07
             "ml":       "ml",
             "mm":       "objective_c", # Only one extension is valid: .m
             "mod":      "modula3",
