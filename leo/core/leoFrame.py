@@ -1062,14 +1062,14 @@ class leoBody (HighLevelInterface):
         doc = "body.bodyCtrl property"
     )
     #@+node:ekr.20130303133655.10213: *3* leoBody.attribute_test
-    # def pyflake_test(self):
+    def pyflake_test(self):
         
-        # # Pylint two correct find attribute errors: xyzzy22 and def_stack.
-        # print(self.xyzzy22)
+        # Pylint correctly finds attribute errors: xyzzy22 and def_stack.
+        print(self.xyzzy22)
         
-        # # pyflakes incorrectly complains that dn is not used.
-        # dn = self.def_stack[-1] # Add the code at the top of the stack.
-        # dn.code += 'abc'
+        # pyflakes incorrectly complains that dn is not used.
+        dn = self.def_stack[-1] # Add the code at the top of the stack.
+        dn.code += 'abc'
     #@-others
 #@+node:ekr.20031218072017.3678: ** class leoFrame
 class leoFrame:
@@ -1442,9 +1442,14 @@ class leoFrame:
             return
 
         c.endEditing()
+
         time = c.getTime(body=False)
         s = p.h.rstrip()
-        c.setHeadString(p,'%s %s' % (s,time))
+        if s:
+            p.h = ' '.join([s, time])
+        else:
+            p.h = time
+        
         c.redrawAndEdit(p,selectAll=True)
     #@+node:ekr.20031218072017.3680: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3683: *4* Config...
@@ -1928,7 +1933,7 @@ class leoTree:
 
         '''End editing of a headline and update p.h.'''
 
-        trace = False and g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c ; k = c.k ; p = c.p
 
         if trace: g.trace('leoTree',p and p.h,g.callers(4))
@@ -2082,8 +2087,7 @@ class leoTree:
             # We may be in the process of changing roots.
             return None # Not an error.
 
-        # if trace and (verbose or call_event_handlers):
-            # g.trace(p and p.h,g.callers())
+        # Part 1: Unselect.
         if call_event_handlers:
             unselect = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         else:
@@ -2106,18 +2110,17 @@ class leoTree:
             #@-<< unselect the old node >>
         if call_event_handlers:
             g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+        
+        # Part 2a: Start selecting:
         if call_event_handlers:
-            if call_event_handlers:
-                select = not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-            else:
-                select = True
-            if select:
-                self.selectNewNode(p,old_p)
-                c.nodeHistory.update(p) # Remember this position.
+            select = not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         else:
-            if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-                self.selectNewNode(p,old_p)
-                c.nodeHistory.update(p) # Remember this position.
+            select = True  
+        if select:
+            self.selectNewNode(p,old_p)
+            c.nodeHistory.update(p) # Remember this position.
+            
+        # Part 2b: Finish selecting.
         c.setCurrentPosition(p)
         #@+<< set the current node >>
         #@+node:ekr.20040803072955.133: *5* << set the current node >> (selectHelper)
@@ -2453,6 +2456,7 @@ class nullFrame (leoFrame):
         return 600,500,20,20
     def lift (self):            pass
     def setWrap (self,flag):    pass
+    def update(self):           pass
 
     #@-others
 #@+node:ekr.20070301164543: ** class nullIconBarClass

@@ -375,9 +375,24 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
     # def mousePressEvent (self,event):
         # QtGui.QTextBrowser.mousePressEvent(self,event)
 
-    def mouseReleaseEvent(self,event):
-        self.onMouseUp(event)
-        QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+    def mouseReleaseEvent(self,*args,**keys):
+        # g.trace('LeoQTextBrowser')
+        # self.onMouseUp(event)
+        # QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+        
+        # Call the base class method.
+        # 2012/04/10: Use the same pattern for mouseReleaseEvents
+        # as in other parts of Leo's core.
+        if len(args) == 1:
+            event = args[0]
+            self.onMouseUp(event)
+            QtGui.QTextBrowser.mouseReleaseEvent(event) # widget is unbound.
+        elif len(args) == 2:
+            event = args[1]
+            QtGui.QTextBrowser.mouseReleaseEvent(*args)
+        else:
+            g.trace('can not happen')
+            return
     #@+node:ekr.20110605121601.18022: *5* onMouseUp (LeoQTextBrowser)
     def onMouseUp(self,event=None):
 
@@ -432,6 +447,21 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
         if p:
             if trace: g.trace(arg,c.p.v.h,g.callers())
             p.v.scrollBarSpot = arg
+    #@+node:tbrown.20130411145310.18855: *4* wheelEvent
+    def wheelEvent(self, event):
+        
+        if QtCore.Qt.ControlModifier & event.modifiers():
+            
+            if event.delta() < 0:
+                zoom_out({'c': self.leo_c})
+            else:
+                zoom_in({'c': self.leo_c})
+            
+            event.accept()
+            
+            return
+        
+        QtGui.QTextBrowser.wheelEvent(self, event)
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define leoQtBaseTextWidget class >>
@@ -487,6 +517,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 Simulate alt-x if we are not in an input state.'''
 
                 trace = False and not g.unitTesting
+                
+                # g.trace('(leoQtBaseTextWidget)')
 
                 # Call the base class method.
                 if len(args) == 1:
@@ -1355,7 +1387,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         assert(i<=j)
         v.selectionStart = i
         v.selectionLength = j-i
-        v.scrollBarSpot = spot = w.getYScrollPosition()
+        v.scrollBarSpot = spot = w.verticalScrollBar().value()
         if trace:
             g.trace(spot,v.h)
             # g.trace('i: %s j: %s ins: %s spot: %s %s' % (i,j,ins,spot,v.h))
@@ -1801,6 +1833,8 @@ class leoQtMinibuffer (leoQLineEditWidget):
             '''Override QLineEdit.mouseReleaseEvent.
 
             Simulate alt-x if we are not in an input state.'''
+            
+            # g.trace('(leoQtMinibuffer)')
 
             # Important: c and w must be unbound here.
             k = c.k
@@ -1853,7 +1887,7 @@ def init():
 
     if not QtCore:
         return False
-
+    
     if g.app.gui:
         return g.app.gui.guiName() == 'qt'
     else:
@@ -1872,62 +1906,26 @@ def init():
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True
-#@+node:tbrown.20130314091306.34409: ** find_constants_defined
-def find_constants_defined(text):
-    """find_constants - Return a dict of constants defined in the supplied text,
-    constants match::
+#@+node:tbrown.20130411145310.18857: *3* zoom_in/out
+@g.command("zoom-in")
+def zoom_in(event=None, delta=1):
+    """increase body font size by one
     
-        ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
-        i.e.
-        @foo_1-5=a
-            @foo_1-5 = a more here
-
-    :Parameters:
-    - `text`: text to search
+    requires that @font-size-body is being used in stylesheet
     """
 
-    pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+    c = event['c']
+    c.font_size_delta += delta
+    ss = g.expand_css_constants(c.active_stylesheet, c.font_size_delta)
+    c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
     
-    ans = {}
+@g.command("zoom-out")
+def zoom_out(event=None):
+    """decrease body font size by one
     
-    text = text.replace('\\\n', '')  # merge lines ending in \
-    
-    for line in text.split('\n'):
-        test = pattern.match(line)
-        if test:
-            ans.update([test.groups()])
-
-    # constants may refer to other constants, de-reference here    
-    change = True
-    level = 0
-    while change and level < 10:
-        level += 1
-        change = False
-        for k in ans:
-            # process longest first so @solarized-base0 is not replaced
-            # when it's part of @solarized-base03
-            for o in sorted(ans, key=lambda x:len(x), reverse=True):
-                if o in ans[k]:
-                    change = True
-                    ans[k] = ans[k].replace(o, ans[o])
-    
-    if level == 10:
-        print("Ten levels of recursion processing styles, abandoned.")
-        g.es("Ten levels of recursion processing styles, abandoned.")
-        
-    return ans
-#@+node:tbrown.20130314151946.23062: ** expand_css_constants
-def expand_css_constants(sheet):
-    constants = find_constants_defined(sheet)
-    for const in constants:
-        sheet = re.sub(
-            const+"(?![-A-Za-z0-9_])",  
-            # don't replace shorter constants occuring in larger
-            constants[const],
-            sheet
-        )
-        
-    return sheet
+    requires that @font-size-body is being used in stylesheet
+    """
+    zoom_in(event=event, delta=-1)
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
 #@+node:ekr.20110605121601.18137: *3* class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic
@@ -1964,6 +1962,8 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
+
+        c.font_size_delta = 0  # for adjusting font sizes dynamically
 
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
     #@+node:ekr.20110605121601.18139: *4* construct (DynamicWindow)
@@ -2444,6 +2444,7 @@ class DynamicWindow(QtGui.QMainWindow):
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
         grid.setColumnStretch(1,100)
+        grid.setColumnMinimumWidth(2,150)
 
         # Row 0: heading.
         lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
@@ -2456,8 +2457,8 @@ class DynamicWindow(QtGui.QMainWindow):
         lab3 = self.createLabel(parent,'changeLabel','Change:')
         grid.addWidget(lab2,1,0)
         grid.addWidget(lab3,2,0)
-        grid.addWidget(findPattern,1,1)
-        grid.addWidget(findChange,2,1)
+        grid.addWidget(findPattern,1,1,1,2)
+        grid.addWidget(findChange,2,1,1,2)
 
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
@@ -2588,9 +2589,12 @@ class DynamicWindow(QtGui.QMainWindow):
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
             sheet = '\n'.join(sheet)
-            sheet = expand_css_constants(sheet)
             
-
+            # store *before* expanding, so later expansions get new zoom
+            c.active_stylesheet = sheet
+            
+            sheet = g.expand_css_constants(sheet, c.font_size_delta)
+            
             if trace: g.trace(len(sheet))
             w = self.leo_ui
             if g.app.qt_use_tabs:
@@ -2598,7 +2602,6 @@ class DynamicWindow(QtGui.QMainWindow):
             w.setStyleSheet(sheet or self.default_sheet())
         else:
             if trace: g.trace('no style sheet')
-            
     #@+node:ekr.20110605121601.18176: *5* defaultStyleSheet
     def defaultStyleSheet (self):
 
@@ -2772,6 +2775,8 @@ class leoQtBody (leoFrame.leoBody):
         return 'body-widget'
     #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
+        
+        return # handled by stylesheet
 
         trace = False and not g.unitTesting
 
@@ -4268,7 +4273,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
-        #@+node:ekr.20110605121601.18271: *5* setCommandForButton (@rclick nodes)
+        #@+node:ekr.20110605121601.18271: *5* qtIconBarClass.setCommandForButton (@rclick nodes)
         def setCommandForButton(self,button,command):
 
             if command:
@@ -4280,7 +4285,6 @@ class leoQtFrame (leoFrame.leoFrame):
                     # can get here from @buttons in the current outline, in which
                     # case p exists, or from @buttons in @settings elsewhere, in
                     # which case it doesn't
-
                     return
 
                 # 20100518 - TNB command is instance of callable class with
@@ -4289,6 +4293,9 @@ class leoQtFrame (leoFrame.leoFrame):
                     command.c.selectPosition(command.p)
                     command.c.redraw()
                 b = button.button
+                docstring = g.getDocString(command.p.b)
+                if docstring:
+                    b.setToolTip(docstring)
                 b.goto_script = gts = QtGui.QAction('Goto Script', b)
                 b.addAction(gts)
                 gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
@@ -4304,21 +4311,32 @@ class leoQtFrame (leoFrame.leoFrame):
                         rclicks.append(i.copy())
                     else:
                         break
-
                 if rclicks:
                     b.setText(g.u(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
-
                 for rclick in rclicks:
-
-                    def cb(event=None, ctrl=command.controller, p=rclick, 
-                           c=command.c, b=command.b, t=rclick.h[8:]):
-                        ctrl.executeScriptFromButton(p,b,t)
-                        if c.exists:
-                            c.outerUpdate()
-
-                    rc = QtGui.QAction(rclick.h[8:], b)
-                    rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
-                    b.insertAction(b.actions()[-2], rc)  # insert rc before Remove Button
+                    
+                    headline = rclick.h[8:]
+                    rc = QtGui.QAction(headline.strip(),b)
+                    
+                    if '---' in headline and headline.strip().strip('-') == '':
+                        rc.setSeparator(True)
+                    else:
+                        def cb(event=None, ctrl=command.controller, p=rclick, 
+                               c=command.c, b=command.b, t=rclick.h[8:]):
+                            ctrl.executeScriptFromButton(p,b,t)
+                            if c.exists:
+                                c.outerUpdate()
+                        rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+                        
+                    # This code has no effect.
+                    # docstring = g.getDocString(rclick.b).strip()
+                    # if docstring:
+                        # rc.setToolTip(docstring)
+                    b.insertAction(b.actions()[-2],rc)  # insert rc before Remove Button
+                if rclicks:
+                    rc = QtGui.QAction('---',b)
+                    rc.setSeparator(True)
+                    b.insertAction(b.actions()[-2],rc)
         #@-others
     #@+node:ekr.20110605121601.18272: *4* Minibuffer methods (Qt)
     #@+node:ekr.20110605121601.18273: *5* f.setMinibufferBindings
@@ -4951,6 +4969,8 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace('(qtFrame)',x,y,w,h,self.top,g.callers())
         if self.top:
             self.top.setGeometry(QtCore.QRect(x,y,w,h))
+    def update(self,*args,**keys):
+        self.top.update()
     #@-others
 #@+node:ekr.20110605121601.18312: *3* class leoQtLog (leoLog)
 class leoQtLog (leoFrame.leoLog):
@@ -7439,8 +7459,8 @@ class leoQtGui(leoGui.leoGui):
         # g.trace('(qtGui)',g.callers())
         self.qtApp = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
+        self.iconimages = {}
         self.plainTextWidget = leoQtBaseTextWidget
-        self.iconimages = {} # Image cache set by getIconImage().
         self.mGuiName = 'qt'
         
         self.color_theme = g.app.config.getString('color_theme')
@@ -7528,6 +7548,7 @@ class leoQtGui(leoGui.leoGui):
         state = c.k and c.k.unboundKeyAction
 
         if state and c.use_focus_border:
+        
             d = {
                 'command':  c.focus_border_command_state_color,
                 'insert':   c.focus_border_color,
@@ -8462,6 +8483,8 @@ class leoQtGui(leoGui.leoGui):
             g.warning('bad widget color %s for %s' % (colorName,widgetKind))
     #@+node:ekr.20111026115337.16528: *5* update_style_sheet (qtGui)
     def update_style_sheet (self,w,key,value,selector=None):
+        
+        # NOT USED / DON'T USE - interferes with styles, zooming etc.
 
         trace = False and not g.unitTesting
 

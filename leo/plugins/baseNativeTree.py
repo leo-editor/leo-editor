@@ -94,7 +94,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         pass
     #@+node:ekr.20110605121601.17868: ** Debugging & tracing
     def error (self,s):
-        g.trace('*** %s' % (s),g.callers(8))
+        if not g.app.unitTesting:
+            g.trace('(baseNativeTree) Error: %s' % (s),g.callers())
 
     def traceItem(self,item):
         if item:
@@ -271,6 +272,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.repaint()
     #@+node:ekr.20110605121601.17877: *4* drawTree
     def drawTree (self,p,parent_item=None):
+        
+        if g.app.gui.isNullGui:
+            return
 
         # Draw the (visible) parent node.
         item = self.drawNode(p,parent_item)
@@ -880,7 +884,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         '''Officially change a headline.'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
 
         c = self.c ; u = c.undoer
         if not p:
@@ -894,7 +898,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if not e:
             e = self.getTreeEditorForItem(item)
         if not e:
-            if trace and verbose: g.trace('** not editing')
+            if trace and verbose: g.trace('(nativeTree) ** not editing')
             return
 
         s = g.u(e.text())
@@ -907,7 +911,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         changed = s != oldHead
         if changed:
             # New in Leo 4.10.1.
-            if trace: g.trace('new',repr(s),'old',repr(p.h))
+            if trace: g.trace('(nativeTree) new',repr(s),'old',repr(p.h))
             #@+<< truncate s if it has multiple lines >>
             #@+node:ekr.20120409185504.10028: *4* << truncate s if it has multiple lines >>
             # Remove trailing newlines before warning of truncation.
@@ -1247,7 +1251,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def getIconImage(self,p):
 
         # User icons are not supported in the base class.
-        return self.getStatusIconImage(p)
+        if g.app.gui.isNullGui:
+            return None
+        else:
+            return self.getStatusIconImage(p)
     #@+node:ekr.20110605121601.17948: *4* getStatusIconImage
     def getStatusIconImage (self,p):
 

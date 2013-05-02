@@ -34,6 +34,14 @@ The plugin uses icons in the leo/Icons/cleo folder. These icons are generated
 from the file cleo_icons.svg in the same directory. You may replace the PNG
 images with any others you wish.
 
+@Settings
+=========
+
+Most seeting documented elsewhere (http://leo.zwiki.org/Tododoc).
+
+todo_compact_interface
+  Hide one line of the interface to preserve original height
+
 '''
 
 
@@ -210,8 +218,8 @@ if g.app.gui.guiName() == "qt":
                 
             self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
                 lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
-
-            self.UI.frmDetails.setVisible(False)
+            if self.owner.c.config.getBool("todo_compact_interface"):
+                self.UI.frmDetails.setVisible(False) 
 
             self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
                 lambda: self.owner.c.selectVisNext())
@@ -591,7 +599,8 @@ class todoController:
         "new attrbiute setter"
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
-            if not hasattr(node, '_cached_src_vnode'):
+            if (not hasattr(node, '_cached_src_vnode') or 
+                not node._cached_src_vnode):
                 src_unl = node.u['annotate']['src_unl']
                 c1 = self.c
                 p1 = c1.vnode2position(node)

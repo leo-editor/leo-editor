@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20130319131551.18713: * @file /mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/dark/../trunk/leo/external/lproto.py
+#@+node:ville.20091010232339.6117: * @file ../external/lproto.py
 #@@language python
 
 #@+<< docstring >>

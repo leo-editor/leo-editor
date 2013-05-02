@@ -354,13 +354,14 @@ class GeneralTestCase(unittest.TestCase):
 
     #@+others
     #@+node:ekr.20051104075904.6: *3* __init__ (GeneralTestCase)
-    def __init__ (self,c,p):
+    def __init__ (self,c,p,setup_script=None):
 
          # Init the base class.
         unittest.TestCase.__init__(self)
 
         self.c = c
         self.p = p.copy()
+        self.setup_script = setup_script
     #@+node:ekr.20051104075904.7: *3*  fail (GeneralTestCase)
     def fail (self,msg=None):
 
@@ -377,9 +378,7 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.8: *3* setUp
     def setUp (self):
 
-        c = self.c ; p = self.p
-
-        c.selectPosition(p.copy()) # 2010/02/03
+        self.c.selectPosition(self.p.copy()) # 2010/02/03
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest (self,define_g = True):
 
@@ -388,6 +387,8 @@ class GeneralTestCase(unittest.TestCase):
         c = tm.c
         p = tm.p.copy()
         script = g.getScript(c,p).strip()
+        if self.setup_script: 
+            script = self.setup_script + '\n' + script
         tm.assert_(script)
         if c.shortFileName() == 'dynamicUnitTest.leo':
             c.write_script_file = True
@@ -738,14 +739,18 @@ class TestManager:
             changed = c.isChanged()
             suite = unittest.makeSuite(unittest.TestCase)
             aList = tm.findAllUnitTestNodes(all,marked)
+            setup_script = None
             found = False
             for p in aList:
-                if tm.isTestNode(p):
+                if tm.isTestSetupNode(p):
+                    setup_script = p.b
+                    test = None
+                elif tm.isTestNode(p):
                     if trace: g.trace('adding',p.h)
-                    test = tm.makeTestCase(p)
+                    test = tm.makeTestCase(p,setup_script)
                 elif tm.isSuiteNode(p): # @suite
                     if trace: g.trace('adding',p.h)
-                    test = tm.makeTestSuite(p)
+                    test = tm.makeTestSuite(p,setup_script)
                 elif tm.isTestClassNode(p):
                     if trace: g.trace('adding',p.h)
                     test = tm.makeTestClass(p) # A suite of tests.
@@ -758,7 +763,7 @@ class TestManager:
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
                 if trace: g.trace('no found: running raw body')
-                test = tm.makeTestCase(c.p)
+                test = tm.makeTestCase(c.p,setup_script)
                 if test:
                     suite.addTest(test)
                     found = True
@@ -804,13 +809,13 @@ class TestManager:
     '''
         return g.adjustTripleString(s,self.c.tab_width)
     #@+node:ekr.20051104075904.13: *5* makeTestCase
-    def makeTestCase (self,p):
+    def makeTestCase (self,p,setup_script):
 
         c = self.c
         p = p.copy()
 
         if p.b.strip():
-            return GeneralTestCase(c,p)
+            return GeneralTestCase(c,p,setup_script)
         else:
             return None
     #@+node:ekr.20120912094259.10546: *5* makeTestClass
@@ -859,7 +864,7 @@ class TestManager:
     # This code executes the script in an @suite node.
     # This code assumes that the script sets the 'suite' var to the test suite.
 
-    def makeTestSuite (self,p):
+    def makeTestSuite (self,p,setup_script):
 
         """Create a suite of test cases by executing the script in an @suite node."""
 
@@ -870,6 +875,8 @@ class TestManager:
         if not script:
             print("no script in %s" % p.h)
             return None
+        if setup_script:
+            script = setup_script + script
         try:
             script = script + tm.get_suite_script()
             d = {'c':c,'g':g,'p':p}
@@ -1452,7 +1459,7 @@ class TestManager:
     #@+node:ekr.20111104132424.9907: *4* TM.findAllUnitTestNodes
     def findAllUnitTestNodes(self,all,marked):
 
-        trace = False and not g.unitTesting
+        trace = False
         verbose = False
         c,tm = self.c,self
         p = c.rootPosition() if all else c.p
@@ -1471,6 +1478,10 @@ class TestManager:
             add = (marked and p.isMarked()) or not marked
             if g.match_word(p.h,0,'@ignore'):
                 if trace and verbose: g.trace(p.h)
+                p.moveToNodeAfterTree()
+            elif tm.isTestSetupNode(p): # @testsetup
+                if trace: g.trace('adding',p.h)
+                result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif add and tm.isTestNode(p): # @test
                 if trace: g.trace('adding',p.h)
@@ -1508,19 +1519,33 @@ class TestManager:
                         p.moveToNodeAfterTree()
                     elif (tm.isTestNode(p) or # @test 
                           tm.isSuiteNode(p) or # @suite
-                          tm.isTestClassNode(p) # @testclass
+                          tm.isTestClassNode(p) or # @testclass
+                          tm.isTestSetupNode(p) # @testsetup
                     ):
                         if trace: g.trace(p.h)
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
                     else:
                         p.moveToThreadNext()
+                        
+        # Special case 0:
+        # Look backward for the first @testsetup node.
+        if not any([tm.isTestSetupNode(z) for z in result]):
+            p2 = p.threadBack()
+            while p2:
+                if tm.isTestSetupNode(p2):
+                    if trace: g.trace('special case 0',p2.h)
+                    result.insert(0,p2.copy())
+                    break
+                else:
+                    p2.moveToThreadBack()
 
         # Special case 1:
         # Add the selected node @test or @suite node if no tests have been found so far.
         # Important: this may be used to run a test in an @ignore tree.            
         if not result and (tm.isTestNode(c.p) or tm.isSuiteNode(c.p)):
             seen.append(p.v)
+            if trace: g.trace(p.h)
             result.append(c.p.copy())
 
         # Special case 2:
@@ -1529,6 +1554,7 @@ class TestManager:
         if not result and not marked and not all:
             for p in c.p.parents():
                 if tm.isTestNode(p) or tm.isSuiteNode(p):
+                    if trace: g.trace(p.h)
                     result.append(p.copy())
                     break
 
@@ -1539,6 +1565,8 @@ class TestManager:
                 seen.append(p.v)
                 result2.append(p)
 
+        if trace:
+            g.trace([z.h for z in result2])
         return result2
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
@@ -1660,7 +1688,7 @@ class TestManager:
                 modules.append(module)
 
         return modules
-    #@+node:ekr.20051104075904.3: *4* TM.isSuiteNode, isTestNode & isTestClassNode
+    #@+node:ekr.20051104075904.3: *4* TM.is/Suite/Test/TestClass/TestSetup/Node
     def isSuiteNode (self,p):
         return g.match_word(p.h.lower(),0,"@suite")
 
@@ -1671,6 +1699,11 @@ class TestManager:
     def isTestNode (self,p):
         '''Return True if p is an @test node'''
         return g.match_word(p.h.lower(),0,"@test")
+        
+    def isTestSetupNode (self,p):
+        '''Return True if p is an @test-setup node'''
+        return g.match_word(p.h.lower(),0,"@testsetup")
+
     #@+node:ekr.20051104075904.33: *4* TM.numberOfClonesInOutline
     def numberOfClonesInOutline (self):
 

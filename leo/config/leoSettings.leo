@@ -514,8 +514,8 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
@@ -1087,12 +1087,12 @@
 <v t="ekr.20070925144534.276"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
 <v t="ekr.20110607054506.16815"><vh>@menu &amp;Help commands...</vh>
-<v t="ekr.20110607054506.16816"><vh>@item apropos-abbreviations</vh></v>
-<v t="ekr.20110607054506.16817"><vh>@item apropos-autocompletion</vh></v>
-<v t="ekr.20110607054506.16818"><vh>@item apropos-bindings</vh></v>
-<v t="ekr.20110607054506.16819"><vh>@item apropos-find-commands</vh></v>
-<v t="ekr.20110607054506.16820"><vh>@item -</vh></v>
+<v t="ekr.20130412173637.11774"><vh>@item help</vh></v>
+<v t="ekr.20110607054506.16816"><vh>@item help-for-abbreviations</vh></v>
+<v t="ekr.20110607054506.16817"><vh>@item help-for-autocompletion</vh></v>
+<v t="ekr.20110607054506.16818"><vh>@item help-for-bindings</vh></v>
 <v t="ekr.20110607054506.16821"><vh>@item help-for-command</vh></v>
+<v t="ekr.20110607054506.16819"><vh>@item help-for-find-commands</vh></v>
 <v t="ekr.20110607054506.16822"><vh>@item help-for-minibuffer</vh></v>
 <v t="ekr.20110607054506.16823"><vh>@item help-for-python</vh></v>
 <v t="ekr.20110607054506.16824"><vh>@item -</vh></v>
@@ -1292,13 +1292,13 @@
 <v t="ekr.20090628075121.8432"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20070925144534.416"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20070925144534.417"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.418"><vh>@item *he&amp;lp-for-minibuffer</vh></v>
+<v t="ekr.20130412173637.11776"><vh>@item *help</vh></v>
+<v t="ekr.20070925144534.421"><vh>@item *help-for-autocompletion</vh></v>
+<v t="ekr.20070925144534.422"><vh>@item *help-for-&amp;bindings</vh></v>
 <v t="ekr.20070925144534.419"><vh>@item *help-for-&amp;command</vh></v>
-<v t="ekr.20070925144534.420"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.421"><vh>@item *&amp;apropos-autocompletion</vh></v>
-<v t="ekr.20070925144534.422"><vh>@item *apropos-&amp;bindings</vh></v>
-<v t="ekr.20070925144534.423"><vh>@item *apropos-&amp;debugging-commands</vh></v>
-<v t="ekr.20070925144534.424"><vh>@item *apropos-&amp;find-commands</vh></v>
+<v t="ekr.20070925144534.423"><vh>@item *help-for-&amp;debugging-commands</vh></v>
+<v t="ekr.20070925144534.424"><vh>@item *help-for-&amp;find-commands</vh></v>
+<v t="ekr.20070925144534.418"><vh>@item *help-for-&amp;minibuffer</vh></v>
 <v t="ekr.20070925144534.425"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.426"><vh>@item *pri&amp;nt-bindings</vh></v>
 <v t="ekr.20070925144534.427"><vh>@item *print-c&amp;ommands</vh></v>
@@ -1435,7 +1435,7 @@
 <v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
-<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext =</vh></v>
+<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext = ▼</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
@@ -1603,92 +1603,186 @@
 </v>
 </v>
 <v t="tbrown.20130327180636.20857"><vh>Themes</vh>
-<v t="tbrown.20130327180636.20936"><vh>solarized_dark theme settings</vh>
-<v t="tbrown.20130327180636.20937"><vh>README</vh></v>
-<v t="tbrown.20130327180636.20938"><vh>@string color_theme = solarized_dark</vh></v>
-<v t="tbrown.20130327180636.20939"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="tbrown.20130327180636.20940" a="E"><vh>stylesheet &amp; source</vh>
-<v t="tbrown.20130327180636.20941"><vh>config</vh></v>
-<v t="tbrown.20130327180636.20942" a="E"><vh>Color styles</vh>
-<v t="tbrown.20130327180636.20943"><vh>base</vh></v>
-<v t="tbrown.20130327180636.20944"><vh>body editor</vh></v>
-<v t="tbrown.20130327180636.20945"><vh>tree</vh></v>
-<v t="tbrown.20130327180636.20946"><vh>log</vh></v>
-<v t="tbrown.20130327180636.20947"><vh>mini-buffer &amp; status</vh></v>
-<v t="tbrown.20130327180636.20948"><vh>line edit</vh></v>
-<v t="tbrown.20130327180636.20949"><vh>labels</vh></v>
-<v t="tbrown.20130327180636.20950"><vh>buttons</vh></v>
-<v t="tbrown.20130327180636.20951"><vh>tab bar</vh></v>
-<v t="tbrown.20130327180636.20952"><vh>menus</vh></v>
-<v t="tbrown.20130327180636.20953"><vh>splitters</vh></v>
+<v t="tbrown.20130411154439.14739"><vh>leo_dark theme 0 settings</vh>
+<v t="tbrown.20130411154439.14740"><vh>README</vh></v>
+<v t="tbrown.20130411154439.14741"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="tbrown.20130411154439.14742"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="tbrown.20130411154439.14743"><vh>stylesheet &amp; source</vh>
+<v t="tbrown.20130411154439.14744"><vh>config</vh></v>
+<v t="tbrown.20130411154439.14747"><vh>Color styles</vh>
+<v t="tbrown.20130411154439.14748"><vh>ase</vh></v>
+<v t="tbrown.20130411154439.14749"><vh>body editor</vh></v>
+<v t="tbrown.20130411154439.14750"><vh>tree</vh></v>
+<v t="tbrown.20130411154439.14751"><vh>log</vh></v>
+<v t="tbrown.20130411154439.14752"><vh>mini-buffer &amp; status</vh></v>
+<v t="tbrown.20130411154439.14753"><vh>line edit</vh></v>
+<v t="tbrown.20130411154439.14754"><vh>labels</vh></v>
+<v t="tbrown.20130411154439.14755"><vh>buttons</vh></v>
+<v t="tbrown.20130411154439.14756"><vh>tab bar</vh></v>
+<v t="tbrown.20130411154439.14757"><vh>menus</vh></v>
+<v t="tbrown.20130411154439.14758"><vh>splitters</vh></v>
 </v>
-<v t="tbrown.20130327180636.20954"><vh>Non-color styles (fonts etc.)</vh>
-<v t="tbrown.20130327180636.20955"><vh>controls</vh></v>
-<v t="tbrown.20130327180636.20956"><vh>body editor</vh></v>
-<v t="tbrown.20130327180636.20957"><vh>tab bar</vh></v>
-<v t="tbrown.20130327180636.20958"><vh>scroll bars</vh></v>
-<v t="tbrown.20130327180636.20959"><vh>tree</vh></v>
-<v t="tbrown.20130327180636.20960"><vh>log</vh></v>
-<v t="tbrown.20130327180636.20961"><vh>mini-buffer &amp; status</vh></v>
+<v t="tbrown.20130411154439.14759"><vh>Non-color styles (fonts etc.)</vh>
+<v t="tbrown.20130411154439.14760"><vh>controls, default font size</vh></v>
+<v t="tbrown.20130411154439.14761"><vh>body editor</vh></v>
+<v t="tbrown.20130411154439.14762"><vh>tab bar</vh></v>
+<v t="tbrown.20130411154439.14763"><vh>scroll bars</vh></v>
+<v t="tbrown.20130411154439.14764"><vh>tree</vh></v>
+<v t="tbrown.20130411154439.14765"><vh>log</vh></v>
+<v t="tbrown.20130411154439.14766"><vh>mini-buffer &amp; status</vh></v>
 </v>
-<v t="tbrown.20130327180636.20962"><vh>@ignore Spare parts</vh></v>
-<v t="tbrown.20130327194832.20317"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh>
+<v t="tbrown.20130411154439.14746"><vh>@ignore border</vh></v>
 </v>
-<v t="tbrown.20130327180636.20964"><vh>Solarized colorizing settings</vh>
-<v t="tbrown.20130327180636.20965"><vh>Solarized colors (Reference)</vh></v>
-<v t="tbrown.20130327180636.20966" a="E"><vh>Default colors, used if no language-specific color are in effect</vh>
-<v t="tbrown.20130327180636.20967"><vh>@color blank_color = grey</vh></v>
-<v t="tbrown.20130327180636.20968"><vh>@color tab_color = red</vh></v>
-<v t="tbrown.20130327180636.20969"><vh>@color label_color = red</vh></v>
-<v t="tbrown.20130327180636.20970"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="tbrown.20130327180636.20971"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="tbrown.20130327180636.20972"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="tbrown.20130327180636.20973"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="tbrown.20130327180636.20974"><vh>@color literal1_color = #859900</vh></v>
-<v t="tbrown.20130327180636.20975"><vh>@color literal2_color = #859900</vh></v>
-<v t="tbrown.20130327180636.20976"><vh>@color literal3_color = #859900</vh></v>
-<v t="tbrown.20130327180636.20977"><vh>@color literal4_color = #859900</vh></v>
-<v t="tbrown.20130327180636.20978"><vh>@color markup_color = #2aa198</vh></v>
-<v t="tbrown.20130327180636.20979"><vh>@color comment1_color = #d33682</vh></v>
-<v t="tbrown.20130327180636.20980"><vh>@color comment2_color = #d33682</vh></v>
-<v t="tbrown.20130327180636.20981"><vh>@color comment3_color = #d33682</vh></v>
-<v t="tbrown.20130327180636.20982"><vh>@color comment4_color = #d33682</vh></v>
-<v t="tbrown.20130327180636.20983"><vh>@color operator_color = None</vh></v>
+<v t="tbrown.20130411155428.5767"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="tbrown.20130411154439.14772"><vh>Solarized colorizing settings</vh>
+<v t="tbrown.20130411154439.14773"><vh>Solarized colors (Reference)</vh></v>
+<v t="tbrown.20130411154439.14774"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="tbrown.20130411154439.14775"><vh>@color blank_color = grey</vh></v>
+<v t="tbrown.20130411154439.14776"><vh>@color tab_color = red</vh></v>
+<v t="tbrown.20130411154439.14777"><vh>@color label_color = red</vh></v>
+<v t="tbrown.20130411154439.14778"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14779"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14780"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14781"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14782"><vh>@color literal1_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14783"><vh>@color literal2_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14784"><vh>@color literal3_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14785"><vh>@color literal4_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14786"><vh>@color markup_color = #2aa198</vh></v>
+<v t="tbrown.20130411154439.14787"><vh>@color comment1_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14788"><vh>@color comment2_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14789"><vh>@color comment3_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14790"><vh>@color comment4_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14791"><vh>@color operator_color = None</vh></v>
 </v>
 </v>
-<v t="tbrown.20130327180636.20984"><vh>@color plain null color = #6c71c4</vh></v>
-<v t="tbrown.20130327180636.20985"><vh>Body pane colors</vh>
-<v t="tbrown.20130327180636.20986"><vh>@color body_text_background_color = #002b36</vh></v>
-<v t="tbrown.20130327180636.20987"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="tbrown.20130327180636.20988"><vh>@color unselected_body_fg_color = #839496</vh></v>
-<v t="tbrown.20130327180636.20989"><vh>@color body_text_foreground_color = #839496</vh></v>
-<v t="tbrown.20130327180636.20990"><vh>@color insert_mode_bg_color = #002b36</vh></v>
-<v t="tbrown.20130327180636.20991"><vh>@color insert_mode_fg_color = #839496</vh></v>
+<v t="tbrown.20130411154439.14792"><vh>@color plain null color = #6c71c4</vh></v>
+<v t="tbrown.20130411154439.14793"><vh>Body pane colors</vh>
+<v t="tbrown.20130411154439.14794"><vh>@color body_text_background_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14795"><vh>@color unselected_body_bg_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14796"><vh>@color unselected_body_fg_color = #839496</vh></v>
+<v t="tbrown.20130411154439.14797"><vh>@color body_text_foreground_color = #839496</vh></v>
+<v t="tbrown.20130411154439.14798"><vh>@color insert_mode_bg_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14799"><vh>@color insert_mode_fg_color = #839496</vh></v>
 </v>
-<v t="tbrown.20130327180636.20992"><vh>Outline pane colors</vh>
-<v t="tbrown.20130327180636.20993"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
-<v t="tbrown.20130327180636.20994"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="tbrown.20130327180636.20995"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
-<v t="tbrown.20130327180636.20996"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
-<v t="tbrown.20130327180636.20997"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="tbrown.20130327180636.20998"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="tbrown.20130327180636.20999"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="tbrown.20130327180636.21000"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="tbrown.20130327180636.21001"><vh>@color outline_pane_background_color = #ffffff</vh></v>
+<v t="tbrown.20130411154439.14800"><vh>Outline pane colors</vh>
+<v t="tbrown.20130411154439.14801"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
+<v t="tbrown.20130411154439.14802"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="tbrown.20130411154439.14803"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
+<v t="tbrown.20130411154439.14804"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14805"><vh>@color headline_text_editing_background_color = None</vh></v>
+<v t="tbrown.20130411154439.14806"><vh>@color headline_text_editing_foreground_color = None</vh></v>
+<v t="tbrown.20130411154439.14807"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="tbrown.20130411154439.14808"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="tbrown.20130411154439.14809"><vh>@color outline_pane_background_color = #ffffff</vh></v>
 </v>
-<v t="tbrown.20130327180636.21002"><vh>Log pane colors</vh>
-<v t="tbrown.20130327180636.21003"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="tbrown.20130327180636.21004"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="tbrown.20130327180636.21005"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="tbrown.20130327180636.21006"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="tbrown.20130327180636.21007"><vh>@color log_pane_background_color = #002b36</vh></v>
-<v t="tbrown.20130327180636.21008"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="tbrown.20130327180636.21009"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+<v t="tbrown.20130411154439.14810"><vh>Log pane colors</vh>
+<v t="tbrown.20130411154439.14811"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="tbrown.20130411154439.14812"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14813"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="tbrown.20130411154439.14814"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="tbrown.20130411154439.14815"><vh>@color log_pane_background_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14816"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="tbrown.20130411154439.14817"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
 </v>
-<v t="tbrown.20130327180636.21010"><vh>@color minibuffer_background_color = #073642</vh></v>
-<v t="tbrown.20130327180636.21011"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
-<v t="tbrown.20130327180636.21012"><vh>@color url_color = #6c71c4</vh></v>
-<v t="tbrown.20130327180636.21013"><vh>@button set-style</vh></v>
+<v t="tbrown.20130411154439.14818"><vh>@color minibuffer_background_color = #073642</vh></v>
+<v t="tbrown.20130411154439.14819"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
+<v t="tbrown.20130411154439.14820"><vh>@color url_color = #6c71c4</vh></v>
+<v t="tbrown.20130411154439.14821"><vh>@button set-style</vh></v>
+</v>
+<v t="ville.20130416213952.3797"><vh>leo_dark theme 1 settings</vh>
+<v t="ville.20130416213952.3798"><vh>README</vh></v>
+<v t="ville.20130416213952.3799"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ville.20130416213952.3800"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="ville.20130416213952.3801"><vh>stylesheet &amp; source</vh>
+<v t="ville.20130416213952.3802"><vh>config</vh></v>
+<v t="ville.20130416213952.3803"><vh>Color styles</vh>
+<v t="ville.20130416213952.3804"><vh>ase</vh></v>
+<v t="ville.20130416213952.3805"><vh>body editor</vh></v>
+<v t="ville.20130416213952.3806"><vh>tree</vh></v>
+<v t="ville.20130416213952.3807"><vh>log</vh></v>
+<v t="ville.20130416213952.3808"><vh>mini-buffer &amp; status</vh></v>
+<v t="ville.20130416213952.3809"><vh>line edit</vh></v>
+<v t="ville.20130416213952.3810"><vh>labels</vh></v>
+<v t="ville.20130416213952.3811"><vh>buttons</vh></v>
+<v t="ville.20130416213952.3812"><vh>tab bar</vh></v>
+<v t="ville.20130416213952.3813"><vh>menus</vh></v>
+<v t="ville.20130416213952.3814"><vh>splitters</vh></v>
+</v>
+<v t="ville.20130416213952.3815"><vh>Non-color styles (fonts etc.)</vh>
+<v t="ville.20130416213952.3816"><vh>controls, default font size</vh></v>
+<v t="ville.20130416213952.3817"><vh>body editor</vh></v>
+<v t="ville.20130416213952.3818"><vh>tab bar</vh></v>
+<v t="ville.20130416213952.3819"><vh>scroll bars</vh></v>
+<v t="ville.20130416213952.3820"><vh>tree</vh></v>
+<v t="ville.20130416213952.3821"><vh>log</vh></v>
+<v t="ville.20130416213952.3822"><vh>mini-buffer &amp; status</vh></v>
+</v>
+<v t="ville.20130416213952.3823"><vh>@ignore Spare parts</vh>
+<v t="ville.20130416213952.3824"><vh>@ignore border</vh></v>
+</v>
+<v t="ville.20130416213952.3825"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ville.20130416213952.3826"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ville.20130416213952.3827"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ville.20130416213952.3828"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ville.20130416213952.3829"><vh>Solarized colorizing settings</vh>
+<v t="ville.20130416213952.3830"><vh>Solarized colors (Reference)</vh></v>
+<v t="ville.20130416213952.3831"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="ville.20130416213952.3832"><vh>@color blank_color = grey</vh></v>
+<v t="ville.20130416213952.3833"><vh>@color tab_color = red</vh></v>
+<v t="ville.20130416213952.3834"><vh>@color label_color = red</vh></v>
+<v t="ville.20130416213952.3835"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3836"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3837"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3838"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3839"><vh>@color literal1_color = #859900</vh></v>
+<v t="ville.20130416213952.3840"><vh>@color literal2_color = #859900</vh></v>
+<v t="ville.20130416213952.3841"><vh>@color literal3_color = #859900</vh></v>
+<v t="ville.20130416213952.3842"><vh>@color literal4_color = #859900</vh></v>
+<v t="ville.20130416213952.3843"><vh>@color markup_color = #2aa198</vh></v>
+<v t="ville.20130416213952.3844"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ville.20130416213952.3845"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ville.20130416213952.3846"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ville.20130416213952.3847"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ville.20130416213952.3848"><vh>@color operator_color = None</vh></v>
+</v>
+</v>
+<v t="ville.20130416213952.3849"><vh>@color plain null color = #6c71c4</vh></v>
+<v t="ville.20130416213952.3850"><vh>Body pane colors</vh>
+<v t="ville.20130416213952.3851"><vh>@color body_text_background_color = #002b36</vh></v>
+<v t="ville.20130416213952.3852"><vh>@color unselected_body_bg_color = #002b36</vh></v>
+<v t="ville.20130416213952.3853"><vh>@color unselected_body_fg_color = #839496</vh></v>
+<v t="ville.20130416213952.3854"><vh>@color body_text_foreground_color = #839496</vh></v>
+<v t="ville.20130416213952.3855"><vh>@color insert_mode_bg_color = #002b36</vh></v>
+<v t="ville.20130416213952.3856"><vh>@color insert_mode_fg_color = #839496</vh></v>
+</v>
+<v t="ville.20130416213952.3857"><vh>Outline pane colors</vh>
+<v t="ville.20130416213952.3858"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
+<v t="ville.20130416213952.3859"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="ville.20130416213952.3860"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
+<v t="ville.20130416213952.3861"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
+<v t="ville.20130416213952.3862"><vh>@color headline_text_editing_background_color = None</vh></v>
+<v t="ville.20130416213952.3863"><vh>@color headline_text_editing_foreground_color = None</vh></v>
+<v t="ville.20130416213952.3864"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="ville.20130416213952.3865"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="ville.20130416213952.3866"><vh>@color outline_pane_background_color = #ffffff</vh></v>
+</v>
+<v t="ville.20130416213952.3867"><vh>Log pane colors</vh>
+<v t="ville.20130416213952.3868"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ville.20130416213952.3869"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3870"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ville.20130416213952.3871"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ville.20130416213952.3872"><vh>@color log_pane_background_color = #002b36</vh></v>
+<v t="ville.20130416213952.3873"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="ville.20130416213952.3874"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+</v>
+<v t="ville.20130416213952.3875"><vh>@color minibuffer_background_color = #073642</vh></v>
+<v t="ville.20130416213952.3876"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
+<v t="ville.20130416213952.3877"><vh>@color url_color = #6c71c4</vh></v>
+<v t="ville.20130416213952.3878"><vh>@button set-style</vh></v>
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
@@ -4912,7 +5006,6 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.418"></t>
 <t tx="ekr.20070925144534.419"></t>
 <t tx="ekr.20070925144534.42"></t>
-<t tx="ekr.20070925144534.420"></t>
 <t tx="ekr.20070925144534.421"></t>
 <t tx="ekr.20070925144534.422"></t>
 <t tx="ekr.20070925144534.423"></t>
@@ -5651,6 +5744,14 @@ If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081018053140.11"></t>
 <t tx="ekr.20081018053140.12">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
+/* constants - *parsed from this comment*
+
+   needed for zoom in / out
+   
+   @font-size-body = 12px
+
+*/
+
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
 
 /*
@@ -5766,7 +5867,7 @@ QTextEdit#richTextEdit {
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
     /* font-family: Courier New; */
-    font-size: 12px;
+    font-size: @font-size-body;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
@@ -5859,6 +5960,18 @@ QPlainTextEdit#screencastcaption {
     font-size: 18pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
+}
+
+/* focused pane border highlight */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
 }
 </t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
@@ -6081,7 +6194,6 @@ do-nothing = Shift-F12
 <t tx="ekr.20110607054506.16817"></t>
 <t tx="ekr.20110607054506.16818"></t>
 <t tx="ekr.20110607054506.16819"></t>
-<t tx="ekr.20110607054506.16820"></t>
 <t tx="ekr.20110607054506.16821"></t>
 <t tx="ekr.20110607054506.16822"></t>
 <t tx="ekr.20110607054506.16823"></t>
@@ -9530,7 +9642,8 @@ When True, bindings that appear to specify the control key actually specify the 
 <t tx="ekr.20120229173025.20627">print('hi from leoSettings.leo')</t>
 <t tx="ekr.20120229173025.20628"></t>
 <t tx="ekr.20120305084218.11271"># Unbound F-Keys cause problems on Ubuntu
-help-for-command= F1
+# help-for-command= F1
+help            = F1
 # find-prev     = F2    # Set elsewhere
 # find-next     = F3    # Set elsewhere
 do-nothing      = F4
@@ -9572,6 +9685,8 @@ do-nothing = Shift-F12</t>
 <t tx="ekr.20120520053551.11241"></t>
 <t tx="ekr.20120926072255.11432"></t>
 <t tx="ekr.20120928142052.11488"></t>
+<t tx="ekr.20130412173637.11774"></t>
+<t tx="ekr.20130412173637.11776"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
@@ -9614,13 +9729,19 @@ loading files</t>
 <t tx="tbrown.20100304170159.5189">Should active_path load docstrings for python files?</t>
 <t tx="tbrown.20100401100336.16108">controls the maximum time active_path will spend on a recursive operation.</t>
 <t tx="tbrown.20100401100336.31583">controls the maximum size file active_path will open without query.</t>
-<t tx="tbrown.20100524101550.4704">text appended to @button headlines which have submenu items *in addition* to the
-standard Goto Script and Remove Button items.  Additional submenu items are
-added by @rclick nodes directly following the @button, and, if the @button has
-no '@others', as children of the @button. 
+<t tx="tbrown.20100524101550.4704">@wrap
 
-Unicode chars like ▾ and … can be used here.
-</t>
+This setting specifies **indicator text** that indicates that an @button button has right-click menu items created by @rclick nodes.
+
+Unicode chars like ▼ ▾ and … are typical choices for this text.
+
+For each @button node, Leo adds right-click menu items for:
+
+- @rclick nodes directly *following* the @button.
+
+- @rclick nodes that are *children* of the @button node, provided that the @button node has no ``@others`` directive.
+
+**Important**: Leo adds two standard right-click menu items for each @button node: ``Remove Button`` and ``Goto Script``. Leo adds the indicator text **only** to buttons that contain right-click menu items in addition to these two standard right-click menu items.</t>
 <t tx="tbrown.20110212091818.20118">Set to False, dragging nodes between different outlines
 creates copies.  Set to True, the node is moved and no
 longer exists in the source outline.</t>
@@ -9792,23 +9913,6 @@ def close_xml():
 \:    else:
 \:        return "&lt;/"
 
-def next_place():
-\:    """select the text of the next template placeholder
-\:       see @string abbrev-place-start"""
-\:    from PyQt4 import QtCore
-\:    txt = c.p.b
-\:    new_pos = txt.find(c.abbrev_place_start)
-\:    if new_pos &lt; 0:
-\:        i = j = len(txt)
-\:    else:
-\:        new_end = txt.find(c.abbrev_place_end)
-\:        i = new_pos-len(_abr)+1
-\:        j = new_end-len(_abr)+1+len(c.abbrev_place_end)
-\:    def later(c=c, i=i, j=j):
-\:        c.frame.body.setInsertPoint(i)
-\:        c.frame.body.setSelectionRange(i, j)
-\:    QtCore.QTimer.singleShot(0, later)
-
 def django_tag():
 \:    """expand {block content} to 
 \:       {% block content %}\n{% end_block content %} with proper
@@ -9899,10 +10003,8 @@ csv-table;;=.. csv-table::
 \:
 \:   &lt;|data|&gt;
 
-# see abbreviations-subst-env - `antid;;;` will expand to
-# `antidisestablishmentarianism` if `antidisestablishmentarianism`
-# already occurs in the text
-,,={|{next_place();x=''}|}
+# special case, causes core to select next place holder for editing
+,,={|{x='__NEXT_PLACEHOLDER'}|}
 
 # make balanced indented Django web template tags, see @data abbreviations-subst-env
 };;={|{django_tag();x=''}|}
@@ -9925,17 +10027,23 @@ if that's an abbreviation linked to next_place(), see
 <t tx="tbrown.20130310101647.34744"># if set to True, g.redirectStdout/err will be used to
 # redirect stdout and stderr to the log pane when vs-eval is used</t>
 <t tx="tbrown.20130327180636.20857">Enable themes by copying their nodes into your myLeoSettings.leo file,
-under the @settings node. You may need to move any existing `@color` and
-`@data qt-gui-plugin-style-sheet` nodes out of the way.  See README node
-in individual themes for more information.</t>
-<t tx="tbrown.20130327180636.20936">Copy into mySetting.leo under @settings to enable theme</t>
-<t tx="tbrown.20130327180636.20937">@language rest
+as the last node under the @settings node. You may need to move any
+existing `@color` and `@data qt-gui-plugin-style-sheet` nodes out of the
+way. See README node in individual themes for more information.</t>
+<t tx="tbrown.20130411154439.14739">"Solarized" dark theme.
+
+Copy into mySettings.leo under @settings to enable theme
+
+Place this node at the *bottom* of the list of nodes under
+@settings to ensure it overrides other style settings.</t>
+<t tx="tbrown.20130411154439.14740">@language rest
+
+See parent nodes for installation notes.
+
 A theme's folder should be in either .../leo/themes or
 $HOME/.leo/themes.
-
-NOTE: to use with a dark desktop theme, switch 'base' below
-      to '@ignore base' and `run-script` on the `stylesheet &amp; source`
-       node.  That should allow more of the native dark style to apply.
+NOTE: to use with a non-dark desktop theme, switch '@ignore base' below
+      to 'base' and `run-script` on the `stylesheet &amp; source` node.
 
 A theme is a combination of @color settings, a stylesheet, and,
 optionally, some icons. Icons go in &lt;theme_dir&gt;/Icons.
@@ -9961,9 +10069,9 @@ http://qt-project.org/doc/qt-4.8/stylesheet-reference.html#list-of-stylable-widg
 
 Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
 </t>
-<t tx="tbrown.20130327180636.20938"></t>
-<t tx="tbrown.20130327180636.20939"></t>
-<t tx="tbrown.20130327180636.20940">@language css  # (this node is python, descendants are css)
+<t tx="tbrown.20130411154439.14741"></t>
+<t tx="tbrown.20130411154439.14742"></t>
+<t tx="tbrown.20130411154439.14743">@language css  # (this node is python, descendants are css)
 
 # To generate the stylesheet @data from this source,
 # use `run-script` on this node.
@@ -9996,14 +10104,13 @@ for i in cp.subtree():
 nd.h = '@data qt-gui-plugin-style-sheet'
 
 # make the style active
-from leo.plugins.qtGui import expand_css_constants
 g.app.gui.frameFactory.masterFrame.setStyleSheet(
-    expand_css_constants(nd.b))
+    g.expand_css_constants(nd.b))
 
 # c.selectPosition(nd)
 
 c.redraw()</t>
-<t tx="tbrown.20130327180636.20941">/*
+<t tx="tbrown.20130411154439.14744">/*
 
 This *comment* is parsed to extract constants (macros) defined below.
 
@@ -10042,14 +10149,34 @@ constants:
     stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, \
     stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)
 
-@font-family = DejaVu Sans Mono
+@font-family = Droid Sans Mono, DejaVu Sans Mono
 @font-family-tree = @font-family
 @font-family-body = @font-family
 @font-family-log = @font-family
+@font-size-body = 18px
+
+@focused-border-style = none
+@focused-border-width = 3px
+@focused-border-focus-color = cyan
+@focused-border-unfocus-color = white
+
+
 
 </t>
-<t tx="tbrown.20130327180636.20942"></t>
-<t tx="tbrown.20130327180636.20943">QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+<t tx="tbrown.20130411154439.14746">/* unneeded alternative active pane highlighting */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
+}
+</t>
+<t tx="tbrown.20130411154439.14747"></t>
+<t tx="tbrown.20130411154439.14748">QWidget { color: @solarized-base1; background-color: @solarized-base03; 
   border-color: @solarized-base1; 
 }
 
@@ -10066,14 +10193,14 @@ QScrollBar::handle:hover {
 QScrollBar::add-line, QScrollBar::sub-line { 
   background: @solarized-base01; color: @solarized-base01; }
 </t>
-<t tx="tbrown.20130327180636.20944">QTextEdit#richTextEdit {
+<t tx="tbrown.20130411154439.14749">QTextEdit#richTextEdit {
     /* background-color: #ffffff; */ /* #fdf5f5; A kind of pink. */
     background-color: @solarized-base03;
     color: @bodytextforegroundcolor;
     selection-color: @solarized-base03;
     selection-background-color: @solarized-yellow;
 }</t>
-<t tx="tbrown.20130327180636.20945">QTreeView {
+<t tx="tbrown.20130411154439.14750">QTreeView {
     /* These apply to the selected item, but not to editing items.*/
     /* background-color: #ffffff; */ /* #ffffec; Leo's traditional tree color */
     background-color: @solarized-base03;
@@ -10105,7 +10232,7 @@ QTreeView QLineEdit {
 }
 
 </t>
-<t tx="tbrown.20130327180636.20946">/* The log panes */
+<t tx="tbrown.20130411154439.14751">/* The log panes */
 QTextEdit#log-widget {
     /*background-color: #ffffec;*/ /* #f2fdff; */
     background-color: @solarized-base02; /* solarized dark */
@@ -10113,7 +10240,7 @@ QTextEdit#log-widget {
     selection-color: white;
     selection-background-color: blue;
 }</t>
-<t tx="tbrown.20130327180636.20947">/* The mini-buffer */
+<t tx="tbrown.20130411154439.14752">/* The mini-buffer */
 QLineEdit#lineEdit {
     background-color: @solarized-base03;
     color: red; 
@@ -10132,50 +10259,52 @@ QLineEdit#status2 {
     background-color: @solarized-base03;
     border-color: @solarized-base02;
 }</t>
-<t tx="tbrown.20130327180636.20948">QLineEdit { border: none; padding: 3px; }</t>
-<t tx="tbrown.20130327180636.20949">QLabel { color: @solarized-base1; }</t>
-<t tx="tbrown.20130327180636.20950">QPushButton { color: @text-foreground; background: @bg-gradient; }
+<t tx="tbrown.20130411154439.14753">QLineEdit { border: none; padding: 3px; }</t>
+<t tx="tbrown.20130411154439.14754">QLabel { color: @solarized-base1; }</t>
+<t tx="tbrown.20130411154439.14755">QPushButton { color: @text-foreground; background: @bg-gradient; }
 QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }</t>
-<t tx="tbrown.20130327180636.20951">QTabBar::tab { color: @text-foreground; 
+<t tx="tbrown.20130411154439.14756">QTabBar::tab { color: @text-foreground; 
 background: @bg-gradient; margin-right: 5px; padding: 2px; 
 }
 QTabBar::tab:selected { color: @solarized-green; } 
 QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }</t>
-<t tx="tbrown.20130327180636.20952">QMenu { color: @text-foreground-bright }
+<t tx="tbrown.20130411154439.14757">QMenu { color: @text-foreground-bright }
 QMenuBar::item:hover { color: red; background: white; }
 QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
 QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }</t>
-<t tx="tbrown.20130327180636.20953">QSplitter::handle {
+<t tx="tbrown.20130411154439.14758">QSplitter::handle {
     background-color: @splitter-bg;  /* #CAE1FF;  lightSteelBlue1 */
 }
 QSplitter::handle:hover {
     background-color: @splitter-hover-bg;  /* #CAE1FF;  lightSteelBlue1 */
 }
 </t>
-<t tx="tbrown.20130327180636.20954"></t>
-<t tx="tbrown.20130327180636.20955">QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+<t tx="tbrown.20130411154439.14759"></t>
+<t tx="tbrown.20130411154439.14760">QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+
+QWidget { font-size: 16px }
 </t>
-<t tx="tbrown.20130327180636.20956">/* The body pane */
+<t tx="tbrown.20130411154439.14761">/* The body pane */
 QTextEdit#richTextEdit {
     font-family: @font-family-body;
     /* font-family: Courier New; */
-    font-size: 18px;
+    font-size: @font-size-body;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 </t>
-<t tx="tbrown.20130327180636.20957">QTabBar::tab { 
+<t tx="tbrown.20130411154439.14762">QTabBar::tab { 
    margin-right: 5px; padding: 2px; 
 }
 </t>
-<t tx="tbrown.20130327180636.20958">QScrollBar::horizontal {
+<t tx="tbrown.20130411154439.14763">QScrollBar::horizontal {
      height: 7px;
 }
 
 QScrollBar::vertical {
      width: 7px;
 }</t>
-<t tx="tbrown.20130327180636.20959">QTreeWidget {
+<t tx="tbrown.20130411154439.14764">QTreeWidget {
     /* These apply to the selected item, but not to editing items.*/
     /* font-family: SansSerif; */
     font-family: @font-family-tree;
@@ -10192,7 +10321,7 @@ QTreeWidget QLineEdit View{
     font-style: normal; /* normal, italic,oblique */ 
 }
 </t>
-<t tx="tbrown.20130327180636.20960">/* The log panes */
+<t tx="tbrown.20130411154439.14765">/* The log panes */
 QTextEdit#log-widget {
     /* font-family: Courier New; */
     font-family: @font-family-log;
@@ -10200,7 +10329,7 @@ QTextEdit#log-widget {
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }</t>
-<t tx="tbrown.20130327180636.20961">/* The mini-buffer */
+<t tx="tbrown.20130411154439.14766">/* The mini-buffer */
 QLineEdit#lineEdit {
     font-family: @font-family;
     font-size: 12px;
@@ -10217,7 +10346,7 @@ QLineEdit#status2 {
     border-width: 1px;
     border-style: solid;
 }</t>
-<t tx="tbrown.20130327180636.20962">/* START: dark styles for non-dark desktop theme */
+<t tx="tbrown.20130411154439.14767">/* START: dark styles for non-dark desktop theme */
 /*
 QWidget { color: @solarized-base1; background-color: @solarized-base03; 
   border-color: @solarized-base1;
@@ -10307,8 +10436,8 @@ XXQMenuBar {
 }
 
 *[name~='preview'] { color: green; }</t>
-<t tx="tbrown.20130327180636.20964">Use these settings to get something like the solarized colors.</t>
-<t tx="tbrown.20130327180636.20965">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+<t tx="tbrown.20130411154439.14772">Use these settings to get something like the solarized colors.</t>
+<t tx="tbrown.20130411154439.14773">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
 base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
 base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
 base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
@@ -10347,33 +10476,33 @@ Light
     base2 background highlights (selected background)
   * base3 background
 </t>
-<t tx="tbrown.20130327180636.20966"></t>
-<t tx="tbrown.20130327180636.20967"></t>
-<t tx="tbrown.20130327180636.20968"></t>
-<t tx="tbrown.20130327180636.20969"></t>
-<t tx="tbrown.20130327180636.20970">was blue
+<t tx="tbrown.20130411154439.14774"></t>
+<t tx="tbrown.20130411154439.14775"></t>
+<t tx="tbrown.20130411154439.14776"></t>
+<t tx="tbrown.20130411154439.14777"></t>
+<t tx="tbrown.20130411154439.14778">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20971">was blue
+<t tx="tbrown.20130411154439.14779">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20972">was blue
+<t tx="tbrown.20130411154439.14780">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20973">was blue
+<t tx="tbrown.20130411154439.14781">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="tbrown.20130327180636.20974">was #00aa00 (Idle comment green)
+<t tx="tbrown.20130411154439.14782">was #00aa00 (Idle comment green)
 
 Solarize green      #859900
 Solarized cyan      #2aa198
 Solarized violet    #6c71c4
 Solarized orange    #cb4b16</t>
-<t tx="tbrown.20130327180636.20975"></t>
-<t tx="tbrown.20130327180636.20976"></t>
-<t tx="tbrown.20130327180636.20977"></t>
-<t tx="tbrown.20130327180636.20978">was black</t>
-<t tx="tbrown.20130327180636.20979">was firebrick3
+<t tx="tbrown.20130411154439.14783"></t>
+<t tx="tbrown.20130411154439.14784"></t>
+<t tx="tbrown.20130411154439.14785"></t>
+<t tx="tbrown.20130411154439.14786">was black</t>
+<t tx="tbrown.20130411154439.14787">was firebrick3
 
 Solarized colors:
     
@@ -10382,88 +10511,88 @@ magenta   #d33682
 Dark comments   base01
 Light comments  base1 comments
 </t>
-<t tx="tbrown.20130327180636.20980"></t>
-<t tx="tbrown.20130327180636.20981"></t>
-<t tx="tbrown.20130327180636.20982"></t>
-<t tx="tbrown.20130327180636.20983"></t>
-<t tx="tbrown.20130327180636.20984"></t>
-<t tx="tbrown.20130327180636.20985"></t>
-<t tx="tbrown.20130327180636.20986">Background color of body text.  This setting *is* used in the QtGui.
+<t tx="tbrown.20130411154439.14788"></t>
+<t tx="tbrown.20130411154439.14789"></t>
+<t tx="tbrown.20130411154439.14790"></t>
+<t tx="tbrown.20130411154439.14791"></t>
+<t tx="tbrown.20130411154439.14792"></t>
+<t tx="tbrown.20130411154439.14793"></t>
+<t tx="tbrown.20130411154439.14794">Background color of body text.  This setting *is* used in the QtGui.
 
 #ffecea
 
 Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="tbrown.20130327180636.20987">#f9f0f4 light pink
+<t tx="tbrown.20130411154439.14795">#f9f0f4 light pink
 #fbfdfd very light blue
 
 For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
-<t tx="tbrown.20130327180636.20988"></t>
-<t tx="tbrown.20130327180636.20989">Foreground color of body text.  This setting *is* used in the QtGui.
+<t tx="tbrown.20130411154439.14796"></t>
+<t tx="tbrown.20130411154439.14797">Foreground color of body text.  This setting *is* used in the QtGui.
 
 Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="tbrown.20130327180636.20990">Overrides body_text_background_color.
+<t tx="tbrown.20130411154439.14798">Overrides body_text_background_color.
 
 #fdf5f5 A light pink.
 #f0fde1 A light green.
 #f9e6dd A light orange.</t>
-<t tx="tbrown.20130327180636.20991">Overrides body_text_foreground_color.</t>
-<t tx="tbrown.20130327180636.20992"></t>
-<t tx="tbrown.20130327180636.20993">Background color of unselected headline text.
+<t tx="tbrown.20130411154439.14799">Overrides body_text_foreground_color.</t>
+<t tx="tbrown.20130411154439.14800"></t>
+<t tx="tbrown.20130411154439.14801">Background color of unselected headline text.
 
 LavenderBlush1</t>
-<t tx="tbrown.20130327180636.20994">Foreground color of unselected headline text.</t>
-<t tx="tbrown.20130327180636.20995">Background color of selected headline text that is not being edited.
+<t tx="tbrown.20130411154439.14802">Foreground color of unselected headline text.</t>
+<t tx="tbrown.20130411154439.14803">Background color of selected headline text that is not being edited.
 
 LavenderBlush2</t>
-<t tx="tbrown.20130327180636.20996">Foreground color of selected headline text that is not being edited.
+<t tx="tbrown.20130411154439.14804">Foreground color of selected headline text that is not being edited.
 
 DodgerBlue4</t>
-<t tx="tbrown.20130327180636.20997">Background color of unselected headline text in a headline that is being edited.
+<t tx="tbrown.20130411154439.14805">Background color of unselected headline text in a headline that is being edited.
 
 Foreground color must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.20998">Foreground color of unselected headline text in a headline that is being edited.
+<t tx="tbrown.20130411154439.14806">Foreground color of unselected headline text in a headline that is being edited.
 
 Background color must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.20999">Foreground color of selected text headline text in a headline that is being edited.
+<t tx="tbrown.20130411154439.14807">Foreground color of selected text headline text in a headline that is being edited.
 
 Background must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.21000">Background color of selected text headline text in a headline that is being edited.
+<t tx="tbrown.20130411154439.14808">Background color of selected text headline text in a headline that is being edited.
 
 Foreground must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20130327180636.21001">Background color of outline pane itself.
+<t tx="tbrown.20130411154439.14809">Background color of outline pane itself.
 
 LavenderBlush1
 #ffffe1 # a little too yellow.
 #ffffec
 LightSteelBlue1 # Good for testing.</t>
-<t tx="tbrown.20130327180636.21002"></t>
-<t tx="tbrown.20130327180636.21003">Color for error messages written to the log window.</t>
-<t tx="tbrown.20130327180636.21004"></t>
-<t tx="tbrown.20130327180636.21005">Foreground color of log text.
+<t tx="tbrown.20130411154439.14810"></t>
+<t tx="tbrown.20130411154439.14811">Color for error messages written to the log window.</t>
+<t tx="tbrown.20130411154439.14812"></t>
+<t tx="tbrown.20130411154439.14813">Foreground color of log text.
 
 </t>
-<t tx="tbrown.20130327180636.21006">Background color of log text.</t>
-<t tx="tbrown.20130327180636.21007">LightYellow1
+<t tx="tbrown.20130411154439.14814">Background color of log text.</t>
+<t tx="tbrown.20130411154439.14815">LightYellow1
 
 #f2fdff</t>
-<t tx="tbrown.20130327180636.21008">#d6c7d3
+<t tx="tbrown.20130411154439.14816">#d6c7d3
 #d2cad0
 #c6d3d7</t>
-<t tx="tbrown.20130327180636.21009">#d6c7d3
+<t tx="tbrown.20130411154439.14817">#d6c7d3
 #d2cad0
 #c6d3d7
 #ffffec # Same as outline.</t>
-<t tx="tbrown.20130327180636.21010"></t>
-<t tx="tbrown.20130327180636.21011"></t>
-<t tx="tbrown.20130327180636.21012"></t>
-<t tx="tbrown.20130327180636.21013">from leo.plugins.qtGui import expand_css_constants
+<t tx="tbrown.20130411154439.14818"></t>
+<t tx="tbrown.20130411154439.14819"></t>
+<t tx="tbrown.20130411154439.14820"></t>
+<t tx="tbrown.20130411154439.14821">from leo.plugins.qtGui import expand_css_constants
 g.app.gui.frameFactory.masterFrame.setStyleSheet(
     expand_css_constants(p.b))
 print expand_css_constants(p.b)</t>
-<t tx="tbrown.20130327194832.20317">/*
+<t tx="tbrown.20130411155428.5767">/*
   AUTOMATICALLY GENERATED FROM:
-  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/leoSettings.leo#Themes--&gt;solarized_dark%20theme%20settings--&gt;stylesheet%20&amp;%20source
-  2013-03-27 19:49
+  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/zoom2/leo/config/leoSettings.leo#Themes--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
+  2013-04-11 15:58
 */
 
 /*### config ################################################################*/
@@ -10506,15 +10635,33 @@ constants:
     stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, \
     stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)
 
-@font-family = DejaVu Sans Mono
+@font-family = Droid Sans Mono, DejaVu Sans Mono
 @font-family-tree = @font-family
 @font-family-body = @font-family
 @font-family-log = @font-family
+@font-size-body = 18px
+
+@focused-border-style = none
+@focused-border-width = 3px
+@focused-border-focus-color = cyan
+@focused-border-unfocus-color = white
+
+/*### border ################################################################*/
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
+}
 
 /*### Color styles ##########################################################*/
 
 
-/*### Color styles--&gt;base ###################################################*/
+/*### Color styles--&gt;ase ####################################################*/
 QWidget { color: @solarized-base1; background-color: @solarized-base03; 
   border-color: @solarized-base1; 
 }
@@ -10638,15 +10785,17 @@ QSplitter::handle:hover {
 /*### Non-color styles (fonts etc.) #########################################*/
 
 
-/*### Non-color styles (fonts etc.)--&gt;controls ##############################*/
+/*### Non-color styles (fonts etc.)--&gt;controls, default font size ###########*/
 QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+
+QWidget { font-size: 16px }
 
 /*### Non-color styles (fonts etc.)--&gt;body editor ###########################*/
 /* The body pane */
 QTextEdit#richTextEdit {
     font-family: @font-family-body;
     /* font-family: Courier New; */
-    font-size: 18px;
+    font-size: @font-size-body;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
@@ -10726,6 +10875,1626 @@ a single @data contextmenu_commands node. </t>
 # stickynote Create a sticky note
 # read-at-file-nodes Read in file nodes
 </t>
+<t tx="ville.20130416213952.3797">Sublime Text 2-like dark theme.
+
+Copy into mySettings.leo under @settings to enable theme
+
+Place this node at the *bottom* of the list of nodes under
+@settings to ensure it overrides other style settings.
+
+</t>
+<t tx="ville.20130416213952.3798">@language rest
+
+See parent nodes for installation notes.
+
+A theme's folder should be in either .../leo/themes or
+$HOME/.leo/themes.
+NOTE: to use with a non-dark desktop theme, switch '@ignore base' below
+      to 'base' and `run-script` on the `stylesheet &amp; source` node.
+
+A theme is a combination of @color settings, a stylesheet, and,
+optionally, some icons. Icons go in &lt;theme_dir&gt;/Icons.
+
+*IMPORTANT:* to change the stylesheet, edit the Leo tree under the
+`stylesheet &amp; source` node below, not the 
+`@data qt-gui-plugin-style-sheet` node itself.
+
+Then select the `stylesheet &amp; source` node and click the `run-script`
+button. This creates a new `@data qt-gui-plugin-style-sheet` node and
+disables the old one by adding `@@data`.
+
+Finally, select the new `@data qt-gui-plugin-style-sheet` node and click
+the `set-style` button to see the style without re-loading.
+
+Within the `stylesheet &amp; source` tree you can reference Leo color
+settings (without the hyphens/underscores, so log_background_color is
+@logbackgroundcolor) and constants / macros defined within the
+`stylesheet &amp; source` tree itself, see the `config` node.
+
+Documentation of Qt stylesheets at 
+http://qt-project.org/doc/qt-4.8/stylesheet-reference.html#list-of-stylable-widgets
+
+Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+</t>
+<t tx="ville.20130416213952.3799"></t>
+<t tx="ville.20130416213952.3800"></t>
+<t tx="ville.20130416213952.3801">@language css  # (this node is python, descendants are css)
+
+# To generate the stylesheet @data from this source,
+# use `run-script` on this node.
+#
+# Don't forget to delete any previous '@data qt-gui-plugin-style-sheet' nodes.
+
+#X cp = g.findNodeAnywhere(c, 'stylesheet &amp; source')
+cp = c.p
+
+import datetime
+nd = cp.insertAsLastChild()
+unl = cp.get_UNL()+'--&gt;'
+nd.h = '@ignore'  # removed after processing
+nd.b = "/*\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n" % (
+    cp.get_UNL(with_proto=True),
+    datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+)
+
+for i in cp.subtree():
+    src = i.get_UNL().replace(unl, '')
+    if i.h.startswith('@data '):
+        i.h = '@'+i.h
+    if ('@ignore' in src) or ('@data' in src):
+        continue
+    nd.b += "/*### %s %s*/\n%s\n\n" % (
+        src, '#'*(70-len(src)),
+        i.b.strip()
+    )
+    
+nd.h = '@data qt-gui-plugin-style-sheet'
+
+# make the style active
+g.app.gui.frameFactory.masterFrame.setStyleSheet(
+    g.expand_css_constants(nd.b))
+
+# c.selectPosition(nd)
+
+c.redraw()</t>
+<t tx="ville.20130416213952.3802">/*
+
+This *comment* is parsed to extract constants (macros) defined below.
+
+constants:
+
+@solarized-base03 = #272822
+@solarized-base02 = #272822
+@solarized-base01 = #586e75
+@solarized-base00 = #657b83
+@solarized-base0 = #839496
+@solarized-base1 = #CFBFAD
+@solarized-base2 = #eee8d5
+@solarized-base3 = #fdf6e3
+
+@solarized-yellow = #b58900
+@solarized-orange = #cb4b16
+@solarized-red = #dc322f
+@solarized-magenta = #d33682
+@solarized-violet = #6c71c4
+@solarized-blue = #268bd2
+@solarized-cyan = #2aa198
+@solarized-green = #859900
+
+@text-foreground = @solarized-base0
+@text-foreground-bright = @solarized-base2
+@text-background = @solarized-base03
+@text-background-bright = @solarized-base02
+@splitter-bg = @solarized-base01
+@splitter-hover-bg = @solarized-violet
+@button-hover-bg = @solarized-base01
+@button-hover-fg = @solarized-base03
+
+@bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @text-background-bright, stop:0.4 @text-background, \
+    stop:0.6 @text-background, stop:0.9 @text-background-bright)
+@bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, \
+    stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)
+
+@font-family = Droid Sans Mono, DejaVu Sans Mono
+@font-family-tree = @font-family
+@font-family-body = @font-family
+@font-family-log = @font-family
+@font-size-body = 18px
+
+@focused-border-style = none
+@focused-border-width = 3px
+@focused-border-focus-color = cyan
+@focused-border-unfocus-color = white
+
+
+
+</t>
+<t tx="ville.20130416213952.3803"></t>
+<t tx="ville.20130416213952.3804">QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+  border-color: @solarized-base1; 
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+  background: @solarized-base03; }
+
+
+QScrollBar::handle { 
+  background: @solarized-base01; color: @solarized-base01; }
+QScrollBar::handle:hover { 
+  background: @solarized-base0; color: @solarized-base0; }
+   
+/* to make these show up, remove the ::handle style above... bug? */
+QScrollBar::add-line, QScrollBar::sub-line { 
+  background: @solarized-base01; color: @solarized-base01; }
+</t>
+<t tx="ville.20130416213952.3805">QTextEdit#richTextEdit {
+    /* background-color: #ffffff; */ /* #fdf5f5; A kind of pink. */
+    background-color: @solarized-base03;
+    color: @bodytextforegroundcolor;
+    selection-color: @solarized-base03;
+    selection-background-color: @solarized-yellow;
+}</t>
+<t tx="ville.20130416213952.3806">QTreeView {
+    /* These apply to the selected item, but not to editing items.*/
+    /* background-color: #ffffff; */ /* #ffffec; Leo's traditional tree color */
+    background-color: @solarized-base03;
+    color: @solarized-base0;
+    selection-color: @solarized-orange;
+    selection-background-color: @solarized-base03;
+    show-decoration-selected: 0;
+ }
+QTreeWidget::selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeWidget::active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+QTreeView::item:selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeView::item:active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+/* Headline edit widgets */
+QTreeView QLineEdit {
+    color: @solarized-base03;
+    background-color: @solarized-yellow;
+    selection-color: @solarized-base3;
+    selection-background-color: @solarized-blue;  
+}
+
+</t>
+<t tx="ville.20130416213952.3807">/* The log panes */
+QTextEdit#log-widget {
+    /*background-color: #ffffec;*/ /* #f2fdff; */
+    background-color: @solarized-base02; /* solarized dark */
+    color: @solarized-base0; /* solarized dark */
+    selection-color: white;
+    selection-background-color: blue;
+}</t>
+<t tx="ville.20130416213952.3808">/* The mini-buffer */
+QLineEdit#lineEdit {
+    background-color: @solarized-base03;
+    color: red; 
+    selection-color: red;
+    selection-background-color: lightgrey;
+}
+
+QLabel#minibufferLabel { color: @solarized-violet; }
+
+QLineEdit#status1 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+QLineEdit#status2 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}</t>
+<t tx="ville.20130416213952.3809">QLineEdit { border: none; padding: 3px; }</t>
+<t tx="ville.20130416213952.3810">QLabel { color: @solarized-base1; }</t>
+<t tx="ville.20130416213952.3811">QPushButton { color: @text-foreground; background: @bg-gradient; }
+QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }</t>
+<t tx="ville.20130416213952.3812">QTabBar::tab { color: @text-foreground; 
+background: @bg-gradient; margin-right: 5px; padding: 2px; 
+}
+QTabBar::tab:selected { color: @solarized-green; } 
+QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }</t>
+<t tx="ville.20130416213952.3813">QMenu { color: @text-foreground-bright }
+QMenuBar::item:hover { color: red; background: white; }
+QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
+QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }</t>
+<t tx="ville.20130416213952.3814">QSplitter::handle {
+    background-color: @splitter-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+QSplitter::handle:hover {
+    background-color: @splitter-hover-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+</t>
+<t tx="ville.20130416213952.3815"></t>
+<t tx="ville.20130416213952.3816">QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+
+QWidget { font-size: 16px }
+</t>
+<t tx="ville.20130416213952.3817">/* The body pane */
+QTextEdit#richTextEdit {
+    font-family: @font-family-body;
+    /* font-family: Courier New; */
+    font-size: @font-size-body;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+</t>
+<t tx="ville.20130416213952.3818">QTabBar::tab { 
+   margin-right: 5px; padding: 2px; 
+}
+</t>
+<t tx="ville.20130416213952.3819">QScrollBar::horizontal {
+     height: 7px;
+}
+
+QScrollBar::vertical {
+     width: 7px;
+}</t>
+<t tx="ville.20130416213952.3820">QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    /* font-family: SansSerif; */
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit View{
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */ 
+}
+</t>
+<t tx="ville.20130416213952.3821">/* The log panes */
+QTextEdit#log-widget {
+    /* font-family: Courier New; */
+    font-family: @font-family-log;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}</t>
+<t tx="ville.20130416213952.3822">/* The mini-buffer */
+QLineEdit#lineEdit {
+    font-family: @font-family;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+QLineEdit#status2 {
+    border-width: 1px;
+    border-style: solid;
+}</t>
+<t tx="ville.20130416213952.3823">/* START: dark styles for non-dark desktop theme */
+/*
+QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+  border-color: @solarized-base1;
+}
+
+QScrollBar::add-page, QScrollBar::sub-page { 
+    background: @solarized-base03; }
+    
+QScrollBar::add-line { background: red; 
+  border: 1px solid red ; color: red }
+  
+QScrollBar::handle { background: @solarized-base01; 
+  border: 1px solid @solarized-base02;  }
+*/
+/* END: dark styles for non-dark desktop theme */
+
+
+/* 
+QSpinBox::up-button { background: @text-background; }
+QSpinBox::up-arrow { 
+  background: @text-background;
+  color: @text-foreground; 
+  image: url(:/images/up_arrow.png);
+} */
+
+
+
+/* needs work
+QSpinBox::up-button { background-color: @solarized-base03; }
+QSpinBox::up-arrow { background-color: @solarized-base03; color: @solarized-base1; }
+*/
+
+QWidget[style_class~='focused_pane'] {
+    border-color: orange;
+    border-width: 3px;
+    border-style: solid;
+}
+QWidget[style_class~='unfocused_pane'] {
+    border-color: blue;
+    border-width: 3px;
+    border-style: solid;
+}
+
+
+QStackedWidget {
+    /* background-color:lightpink; */
+    border-color: red;
+    padding: 0px;
+    /* border-width: 0px; */
+    /* background-color: yellow; */
+}
+
+QSplitter {
+    border-color: white;
+    /* background-color: white; */
+    border-style: solid;
+}
+
+
+
+
+QTextEdit {
+    font-family: DejaVu Sans Mono;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+
+
+XXQToolButton {
+    /* background-color: #fdf5f5;  A kind of pink. */
+    margin: 2px;
+    padding; 4px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: darkgrey;
+    font-size: 8px;
+}
+
+/* QMenuBar works, but not QMenu... */
+XXQMenuBar {
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+*[name~='preview'] { color: green; }</t>
+<t tx="ville.20130416213952.3824">/* unneeded alternative active pane highlighting */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
+}
+</t>
+<t tx="ville.20130416213952.3825">/*
+  AUTOMATICALLY GENERATED FROM:
+  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/zoom2/leo/config/leoSettings.leo#Themes--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
+  2013-04-11 15:58
+*/
+
+/*### config ################################################################*/
+/*
+
+This *comment* is parsed to extract constants (macros) defined below.
+
+constants:
+
+@solarized-base03 = #002b36
+@solarized-base02 = #073642
+@solarized-base01 = #586e75
+@solarized-base00 = #657b83
+@solarized-base0 = #839496
+@solarized-base1 = #93a1a1
+@solarized-base2 = #eee8d5
+@solarized-base3 = #fdf6e3
+@solarized-yellow = #b58900
+@solarized-orange = #cb4b16
+@solarized-red = #dc322f
+@solarized-magenta = #d33682
+@solarized-violet = #6c71c4
+@solarized-blue = #268bd2
+@solarized-cyan = #2aa198
+@solarized-green = #859900
+
+@text-foreground = @solarized-base0
+@text-foreground-bright = @solarized-base2
+@text-background = @solarized-base03
+@text-background-bright = @solarized-base02
+@splitter-bg = @solarized-base01
+@splitter-hover-bg = @solarized-violet
+@button-hover-bg = @solarized-base01
+@button-hover-fg = @solarized-base03
+
+@bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @text-background-bright, stop:0.4 @text-background, \
+    stop:0.6 @text-background, stop:0.9 @text-background-bright)
+@bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, \
+    stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)
+
+@font-family = Droid Sans Mono, DejaVu Sans Mono
+@font-family-tree = @font-family
+@font-family-body = @font-family
+@font-family-log = @font-family
+@font-size-body = 18px
+
+@focused-border-style = none
+@focused-border-width = 3px
+@focused-border-focus-color = cyan
+@focused-border-unfocus-color = white
+
+/*### border ################################################################*/
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-focus-color; 
+}
+
+/*### Color styles ##########################################################*/
+
+
+/*### Color styles--&gt;ase ####################################################*/
+QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+  border-color: @solarized-base1; 
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+  background: @solarized-base03; }
+
+
+QScrollBar::handle { 
+  background: @solarized-base01; color: @solarized-base01; }
+QScrollBar::handle:hover { 
+  background: @solarized-base0; color: @solarized-base0; }
+   
+/* to make these show up, remove the ::handle style above... bug? */
+QScrollBar::add-line, QScrollBar::sub-line { 
+  background: @solarized-base01; color: @solarized-base01; }
+
+/*### Color styles--&gt;body editor ############################################*/
+QTextEdit#richTextEdit {
+    /* background-color: #ffffff; */ /* #fdf5f5; A kind of pink. */
+    background-color: @solarized-base03;
+    color: @bodytextforegroundcolor;
+    selection-color: @solarized-base03;
+    selection-background-color: @solarized-yellow;
+}
+
+/*### Color styles--&gt;tree ###################################################*/
+QTreeView {
+    /* These apply to the selected item, but not to editing items.*/
+    /* background-color: #ffffff; */ /* #ffffec; Leo's traditional tree color */
+    background-color: @solarized-base03;
+    color: @solarized-base0;
+    selection-color: @solarized-orange;
+    selection-background-color: @solarized-base03;
+    show-decoration-selected: 0;
+ }
+QTreeWidget::selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeWidget::active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+QTreeView::item:selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeView::item:active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+/* Headline edit widgets */
+QTreeView QLineEdit {
+    color: @solarized-base03;
+    background-color: @solarized-yellow;
+    selection-color: @solarized-base3;
+    selection-background-color: @solarized-blue;  
+}
+
+/*### Color styles--&gt;log ####################################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /*background-color: #ffffec;*/ /* #f2fdff; */
+    background-color: @solarized-base02; /* solarized dark */
+    color: @solarized-base0; /* solarized dark */
+    selection-color: white;
+    selection-background-color: blue;
+}
+
+/*### Color styles--&gt;mini-buffer &amp; status ###################################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    background-color: @solarized-base03;
+    color: red; 
+    selection-color: red;
+    selection-background-color: lightgrey;
+}
+
+QLabel#minibufferLabel { color: @solarized-violet; }
+
+QLineEdit#status1 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+QLineEdit#status2 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+/*### Color styles--&gt;line edit ##############################################*/
+QLineEdit { border: none; padding: 3px; }
+
+/*### Color styles--&gt;labels #################################################*/
+QLabel { color: @solarized-base1; }
+
+/*### Color styles--&gt;buttons ################################################*/
+QPushButton { color: @text-foreground; background: @bg-gradient; }
+QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }
+
+/*### Color styles--&gt;tab bar ################################################*/
+QTabBar::tab { color: @text-foreground; 
+background: @bg-gradient; margin-right: 5px; padding: 2px; 
+}
+QTabBar::tab:selected { color: @solarized-green; } 
+QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }
+
+/*### Color styles--&gt;menus ##################################################*/
+QMenu { color: @text-foreground-bright }
+QMenuBar::item:hover { color: red; background: white; }
+QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
+QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }
+
+/*### Color styles--&gt;splitters ##############################################*/
+QSplitter::handle {
+    background-color: @splitter-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+QSplitter::handle:hover {
+    background-color: @splitter-hover-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+
+/*### Non-color styles (fonts etc.) #########################################*/
+
+
+/*### Non-color styles (fonts etc.)--&gt;controls, default font size ###########*/
+QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+
+QWidget { font-size: 16px }
+
+/*### Non-color styles (fonts etc.)--&gt;body editor ###########################*/
+/* The body pane */
+QTextEdit#richTextEdit {
+    font-family: @font-family-body;
+    /* font-family: Courier New; */
+    font-size: @font-size-body;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tab bar ###############################*/
+QTabBar::tab { 
+   margin-right: 5px; padding: 2px; 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;scroll bars ###########################*/
+QScrollBar::horizontal {
+     height: 7px;
+}
+
+QScrollBar::vertical {
+     width: 7px;
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tree ##################################*/
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    /* font-family: SansSerif; */
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit View{
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */ 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;log ###################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /* font-family: Courier New; */
+    font-family: @font-family-log;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;mini-buffer &amp; status ##################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    font-family: @font-family;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+QLineEdit#status2 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+</t>
+<t tx="ville.20130416213952.3826">/*
+  AUTOMATICALLY GENERATED FROM:
+  file:///home/ville/.leo/myLeoSettings.leo#@settings--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
+  2013-04-16 21:40
+*/
+
+/*### config ################################################################*/
+/*
+
+This *comment* is parsed to extract constants (macros) defined below.
+
+constants:
+
+@solarized-base03 = #272822
+@solarized-base02 = #073642
+@solarized-base01 = #586e75
+@solarized-base00 = #657b83
+@solarized-base0 = #839496
+@solarized-base1 = #93a1a1
+@solarized-base2 = #eee8d5
+@solarized-base3 = #fdf6e3
+@solarized-yellow = #b58900
+@solarized-orange = #cb4b16
+@solarized-red = #dc322f
+@solarized-magenta = #d33682
+@solarized-violet = #6c71c4
+@solarized-blue = #268bd2
+@solarized-cyan = #2aa198
+@solarized-green = #859900
+
+@text-foreground = @solarized-base0
+@text-foreground-bright = @solarized-base2
+@text-background = @solarized-base03
+@text-background-bright = @solarized-base02
+@splitter-bg = @solarized-base01
+@splitter-hover-bg = @solarized-violet
+@button-hover-bg = @solarized-base01
+@button-hover-fg = @solarized-base03
+
+@bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @text-background-bright, stop:0.4 @text-background, \
+    stop:0.6 @text-background, stop:0.9 @text-background-bright)
+@bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, \
+    stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)
+
+@font-family = Droid Sans Mono, DejaVu Sans Mono
+@font-family-tree = @font-family
+@font-family-body = @font-family
+@font-family-log = @font-family
+@font-size-body = 18px
+
+@focused-border-style = none
+@focused-border-width = 3px
+@focused-border-focus-color = cyan
+@focused-border-unfocus-color = white
+
+/*### Color styles ##########################################################*/
+
+
+/*### Color styles--&gt;ase ####################################################*/
+QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+  border-color: @solarized-base1; 
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+  background: @solarized-base03; }
+
+
+QScrollBar::handle { 
+  background: @solarized-base01; color: @solarized-base01; }
+QScrollBar::handle:hover { 
+  background: @solarized-base0; color: @solarized-base0; }
+   
+/* to make these show up, remove the ::handle style above... bug? */
+QScrollBar::add-line, QScrollBar::sub-line { 
+  background: @solarized-base01; color: @solarized-base01; }
+
+/*### Color styles--&gt;body editor ############################################*/
+QTextEdit#richTextEdit {
+    /* background-color: #ffffff; */ /* #fdf5f5; A kind of pink. */
+    background-color: @solarized-base03;
+    color: @bodytextforegroundcolor;
+    selection-color: @solarized-base03;
+    selection-background-color: @solarized-yellow;
+}
+
+/*### Color styles--&gt;tree ###################################################*/
+QTreeView {
+    /* These apply to the selected item, but not to editing items.*/
+    /* background-color: #ffffff; */ /* #ffffec; Leo's traditional tree color */
+    background-color: @solarized-base03;
+    color: @solarized-base0;
+    selection-color: @solarized-orange;
+    selection-background-color: @solarized-base03;
+    show-decoration-selected: 0;
+ }
+QTreeWidget::selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeWidget::active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+QTreeView::item:selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeView::item:active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+/* Headline edit widgets */
+QTreeView QLineEdit {
+    color: @solarized-base03;
+    background-color: @solarized-yellow;
+    selection-color: @solarized-base3;
+    selection-background-color: @solarized-blue;  
+}
+
+/*### Color styles--&gt;log ####################################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /*background-color: #ffffec;*/ /* #f2fdff; */
+    background-color: @solarized-base02; /* solarized dark */
+    color: @solarized-base0; /* solarized dark */
+    selection-color: white;
+    selection-background-color: blue;
+}
+
+/*### Color styles--&gt;mini-buffer &amp; status ###################################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    background-color: @solarized-base03;
+    color: red; 
+    selection-color: red;
+    selection-background-color: lightgrey;
+}
+
+QLabel#minibufferLabel { color: @solarized-violet; }
+
+QLineEdit#status1 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+QLineEdit#status2 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+/*### Color styles--&gt;line edit ##############################################*/
+QLineEdit { border: none; padding: 3px; }
+
+/*### Color styles--&gt;labels #################################################*/
+QLabel { color: @solarized-base1; }
+
+/*### Color styles--&gt;buttons ################################################*/
+QPushButton { color: @text-foreground; background: @bg-gradient; }
+QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }
+
+/*### Color styles--&gt;tab bar ################################################*/
+QTabBar::tab { color: @text-foreground; 
+background: @bg-gradient; margin-right: 5px; padding: 2px; 
+}
+QTabBar::tab:selected { color: @solarized-green; } 
+QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }
+
+/*### Color styles--&gt;menus ##################################################*/
+QMenu { color: @text-foreground-bright }
+QMenuBar::item:hover { color: red; background: white; }
+QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
+QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }
+
+/*### Color styles--&gt;splitters ##############################################*/
+QSplitter::handle {
+    background-color: @splitter-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+QSplitter::handle:hover {
+    background-color: @splitter-hover-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+
+/*### Non-color styles (fonts etc.) #########################################*/
+
+
+/*### Non-color styles (fonts etc.)--&gt;controls, default font size ###########*/
+QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+
+QWidget { font-size: 16px }
+
+/*### Non-color styles (fonts etc.)--&gt;body editor ###########################*/
+/* The body pane */
+QTextEdit#richTextEdit {
+    font-family: @font-family-body;
+    /* font-family: Courier New; */
+    font-size: @font-size-body;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tab bar ###############################*/
+QTabBar::tab { 
+   margin-right: 5px; padding: 2px; 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;scroll bars ###########################*/
+QScrollBar::horizontal {
+     height: 7px;
+}
+
+QScrollBar::vertical {
+     width: 7px;
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tree ##################################*/
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    /* font-family: SansSerif; */
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit View{
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */ 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;log ###################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /* font-family: Courier New; */
+    font-family: @font-family-log;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;mini-buffer &amp; status ##################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    font-family: @font-family;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+QLineEdit#status2 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+</t>
+<t tx="ville.20130416213952.3827">/*
+  AUTOMATICALLY GENERATED FROM:
+  file:///home/ville/.leo/myLeoSettings.leo#@settings--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
+  2013-04-16 21:42
+*/
+
+/*### config ################################################################*/
+/*
+
+This *comment* is parsed to extract constants (macros) defined below.
+
+constants:
+
+@solarized-base03 = #272822
+@solarized-base02 = #073642
+@solarized-base01 = #586e75
+@solarized-base00 = #657b83
+@solarized-base0 = #839496
+@solarized-base1 = #CFBFAD
+@solarized-base2 = #eee8d5
+@solarized-base3 = #fdf6e3
+
+@solarized-yellow = #b58900
+@solarized-orange = #cb4b16
+@solarized-red = #dc322f
+@solarized-magenta = #d33682
+@solarized-violet = #6c71c4
+@solarized-blue = #268bd2
+@solarized-cyan = #2aa198
+@solarized-green = #859900
+
+@text-foreground = @solarized-base0
+@text-foreground-bright = @solarized-base2
+@text-background = @solarized-base03
+@text-background-bright = @solarized-base02
+@splitter-bg = @solarized-base01
+@splitter-hover-bg = @solarized-violet
+@button-hover-bg = @solarized-base01
+@button-hover-fg = @solarized-base03
+
+@bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @text-background-bright, stop:0.4 @text-background, \
+    stop:0.6 @text-background, stop:0.9 @text-background-bright)
+@bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, \
+    stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)
+
+@font-family = Droid Sans Mono, DejaVu Sans Mono
+@font-family-tree = @font-family
+@font-family-body = @font-family
+@font-family-log = @font-family
+@font-size-body = 18px
+
+@focused-border-style = none
+@focused-border-width = 3px
+@focused-border-focus-color = cyan
+@focused-border-unfocus-color = white
+
+/*### Color styles ##########################################################*/
+
+
+/*### Color styles--&gt;ase ####################################################*/
+QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+  border-color: @solarized-base1; 
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+  background: @solarized-base03; }
+
+
+QScrollBar::handle { 
+  background: @solarized-base01; color: @solarized-base01; }
+QScrollBar::handle:hover { 
+  background: @solarized-base0; color: @solarized-base0; }
+   
+/* to make these show up, remove the ::handle style above... bug? */
+QScrollBar::add-line, QScrollBar::sub-line { 
+  background: @solarized-base01; color: @solarized-base01; }
+
+/*### Color styles--&gt;body editor ############################################*/
+QTextEdit#richTextEdit {
+    /* background-color: #ffffff; */ /* #fdf5f5; A kind of pink. */
+    background-color: @solarized-base03;
+    color: @bodytextforegroundcolor;
+    selection-color: @solarized-base03;
+    selection-background-color: @solarized-yellow;
+}
+
+/*### Color styles--&gt;tree ###################################################*/
+QTreeView {
+    /* These apply to the selected item, but not to editing items.*/
+    /* background-color: #ffffff; */ /* #ffffec; Leo's traditional tree color */
+    background-color: @solarized-base03;
+    color: @solarized-base0;
+    selection-color: @solarized-orange;
+    selection-background-color: @solarized-base03;
+    show-decoration-selected: 0;
+ }
+QTreeWidget::selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeWidget::active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+QTreeView::item:selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeView::item:active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+/* Headline edit widgets */
+QTreeView QLineEdit {
+    color: @solarized-base03;
+    background-color: @solarized-yellow;
+    selection-color: @solarized-base3;
+    selection-background-color: @solarized-blue;  
+}
+
+/*### Color styles--&gt;log ####################################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /*background-color: #ffffec;*/ /* #f2fdff; */
+    background-color: @solarized-base02; /* solarized dark */
+    color: @solarized-base0; /* solarized dark */
+    selection-color: white;
+    selection-background-color: blue;
+}
+
+/*### Color styles--&gt;mini-buffer &amp; status ###################################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    background-color: @solarized-base03;
+    color: red; 
+    selection-color: red;
+    selection-background-color: lightgrey;
+}
+
+QLabel#minibufferLabel { color: @solarized-violet; }
+
+QLineEdit#status1 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+QLineEdit#status2 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+/*### Color styles--&gt;line edit ##############################################*/
+QLineEdit { border: none; padding: 3px; }
+
+/*### Color styles--&gt;labels #################################################*/
+QLabel { color: @solarized-base1; }
+
+/*### Color styles--&gt;buttons ################################################*/
+QPushButton { color: @text-foreground; background: @bg-gradient; }
+QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }
+
+/*### Color styles--&gt;tab bar ################################################*/
+QTabBar::tab { color: @text-foreground; 
+background: @bg-gradient; margin-right: 5px; padding: 2px; 
+}
+QTabBar::tab:selected { color: @solarized-green; } 
+QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }
+
+/*### Color styles--&gt;menus ##################################################*/
+QMenu { color: @text-foreground-bright }
+QMenuBar::item:hover { color: red; background: white; }
+QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
+QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }
+
+/*### Color styles--&gt;splitters ##############################################*/
+QSplitter::handle {
+    background-color: @splitter-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+QSplitter::handle:hover {
+    background-color: @splitter-hover-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+
+/*### Non-color styles (fonts etc.) #########################################*/
+
+
+/*### Non-color styles (fonts etc.)--&gt;controls, default font size ###########*/
+QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+
+QWidget { font-size: 16px }
+
+/*### Non-color styles (fonts etc.)--&gt;body editor ###########################*/
+/* The body pane */
+QTextEdit#richTextEdit {
+    font-family: @font-family-body;
+    /* font-family: Courier New; */
+    font-size: @font-size-body;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tab bar ###############################*/
+QTabBar::tab { 
+   margin-right: 5px; padding: 2px; 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;scroll bars ###########################*/
+QScrollBar::horizontal {
+     height: 7px;
+}
+
+QScrollBar::vertical {
+     width: 7px;
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tree ##################################*/
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    /* font-family: SansSerif; */
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit View{
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */ 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;log ###################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /* font-family: Courier New; */
+    font-family: @font-family-log;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;mini-buffer &amp; status ##################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    font-family: @font-family;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+QLineEdit#status2 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+</t>
+<t tx="ville.20130416213952.3828">/*
+  AUTOMATICALLY GENERATED FROM:
+  file:///home/ville/.leo/myLeoSettings.leo#@settings--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
+  2013-04-16 21:44
+*/
+
+/*### config ################################################################*/
+/*
+
+This *comment* is parsed to extract constants (macros) defined below.
+
+constants:
+
+@solarized-base03 = #272822
+@solarized-base02 = #272822
+@solarized-base01 = #586e75
+@solarized-base00 = #657b83
+@solarized-base0 = #839496
+@solarized-base1 = #CFBFAD
+@solarized-base2 = #eee8d5
+@solarized-base3 = #fdf6e3
+
+@solarized-yellow = #b58900
+@solarized-orange = #cb4b16
+@solarized-red = #dc322f
+@solarized-magenta = #d33682
+@solarized-violet = #6c71c4
+@solarized-blue = #268bd2
+@solarized-cyan = #2aa198
+@solarized-green = #859900
+
+@text-foreground = @solarized-base0
+@text-foreground-bright = @solarized-base2
+@text-background = @solarized-base03
+@text-background-bright = @solarized-base02
+@splitter-bg = @solarized-base01
+@splitter-hover-bg = @solarized-violet
+@button-hover-bg = @solarized-base01
+@button-hover-fg = @solarized-base03
+
+@bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @text-background-bright, stop:0.4 @text-background, \
+    stop:0.6 @text-background, stop:0.9 @text-background-bright)
+@bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, \
+    stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, \
+    stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)
+
+@font-family = Droid Sans Mono, DejaVu Sans Mono
+@font-family-tree = @font-family
+@font-family-body = @font-family
+@font-family-log = @font-family
+@font-size-body = 18px
+
+@focused-border-style = none
+@focused-border-width = 3px
+@focused-border-focus-color = cyan
+@focused-border-unfocus-color = white
+
+/*### Color styles ##########################################################*/
+
+
+/*### Color styles--&gt;ase ####################################################*/
+QWidget { color: @solarized-base1; background-color: @solarized-base03; 
+  border-color: @solarized-base1; 
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+  background: @solarized-base03; }
+
+
+QScrollBar::handle { 
+  background: @solarized-base01; color: @solarized-base01; }
+QScrollBar::handle:hover { 
+  background: @solarized-base0; color: @solarized-base0; }
+   
+/* to make these show up, remove the ::handle style above... bug? */
+QScrollBar::add-line, QScrollBar::sub-line { 
+  background: @solarized-base01; color: @solarized-base01; }
+
+/*### Color styles--&gt;body editor ############################################*/
+QTextEdit#richTextEdit {
+    /* background-color: #ffffff; */ /* #fdf5f5; A kind of pink. */
+    background-color: @solarized-base03;
+    color: @bodytextforegroundcolor;
+    selection-color: @solarized-base03;
+    selection-background-color: @solarized-yellow;
+}
+
+/*### Color styles--&gt;tree ###################################################*/
+QTreeView {
+    /* These apply to the selected item, but not to editing items.*/
+    /* background-color: #ffffff; */ /* #ffffec; Leo's traditional tree color */
+    background-color: @solarized-base03;
+    color: @solarized-base0;
+    selection-color: @solarized-orange;
+    selection-background-color: @solarized-base03;
+    show-decoration-selected: 0;
+ }
+QTreeWidget::selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeWidget::active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+QTreeView::item:selected {
+    background: @solarized-green; color: @solarized-base03; 
+}
+QTreeView::item:active:selected {
+    background: @solarized-yellow; color: @solarized-base03; 
+}
+
+/* Headline edit widgets */
+QTreeView QLineEdit {
+    color: @solarized-base03;
+    background-color: @solarized-yellow;
+    selection-color: @solarized-base3;
+    selection-background-color: @solarized-blue;  
+}
+
+/*### Color styles--&gt;log ####################################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /*background-color: #ffffec;*/ /* #f2fdff; */
+    background-color: @solarized-base02; /* solarized dark */
+    color: @solarized-base0; /* solarized dark */
+    selection-color: white;
+    selection-background-color: blue;
+}
+
+/*### Color styles--&gt;mini-buffer &amp; status ###################################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    background-color: @solarized-base03;
+    color: red; 
+    selection-color: red;
+    selection-background-color: lightgrey;
+}
+
+QLabel#minibufferLabel { color: @solarized-violet; }
+
+QLineEdit#status1 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+QLineEdit#status2 {
+    background-color: @solarized-base03;
+    border-color: @solarized-base02;
+}
+
+/*### Color styles--&gt;line edit ##############################################*/
+QLineEdit { border: none; padding: 3px; }
+
+/*### Color styles--&gt;labels #################################################*/
+QLabel { color: @solarized-base1; }
+
+/*### Color styles--&gt;buttons ################################################*/
+QPushButton { color: @text-foreground; background: @bg-gradient; }
+QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }
+
+/*### Color styles--&gt;tab bar ################################################*/
+QTabBar::tab { color: @text-foreground; 
+background: @bg-gradient; margin-right: 5px; padding: 2px; 
+}
+QTabBar::tab:selected { color: @solarized-green; } 
+QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }
+
+/*### Color styles--&gt;menus ##################################################*/
+QMenu { color: @text-foreground-bright }
+QMenuBar::item:hover { color: red; background: white; }
+QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
+QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }
+
+/*### Color styles--&gt;splitters ##############################################*/
+QSplitter::handle {
+    background-color: @splitter-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+QSplitter::handle:hover {
+    background-color: @splitter-hover-bg;  /* #CAE1FF;  lightSteelBlue1 */
+}
+
+/*### Non-color styles (fonts etc.) #########################################*/
+
+
+/*### Non-color styles (fonts etc.)--&gt;controls, default font size ###########*/
+QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
+
+QWidget { font-size: 16px }
+
+/*### Non-color styles (fonts etc.)--&gt;body editor ###########################*/
+/* The body pane */
+QTextEdit#richTextEdit {
+    font-family: @font-family-body;
+    /* font-family: Courier New; */
+    font-size: @font-size-body;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tab bar ###############################*/
+QTabBar::tab { 
+   margin-right: 5px; padding: 2px; 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;scroll bars ###########################*/
+QScrollBar::horizontal {
+     height: 7px;
+}
+
+QScrollBar::vertical {
+     width: 7px;
+}
+
+/*### Non-color styles (fonts etc.)--&gt;tree ##################################*/
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    /* font-family: SansSerif; */
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit View{
+    font-family: @font-family-tree;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */ 
+}
+
+/*### Non-color styles (fonts etc.)--&gt;log ###################################*/
+/* The log panes */
+QTextEdit#log-widget {
+    /* font-family: Courier New; */
+    font-family: @font-family-log;
+    font-size: 16px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/*### Non-color styles (fonts etc.)--&gt;mini-buffer &amp; status ##################*/
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    font-family: @font-family;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+QLineEdit#status2 {
+    border-width: 1px;
+    border-style: solid;
+}
+
+</t>
+<t tx="ville.20130416213952.3829">Use these settings to get something like the solarized colors.</t>
+<t tx="ville.20130416213952.3830">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+
+# These can be used as usual, in *both* light and dark
+
+yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+
+Dark
+====
+
+    base1 optional emphasized content (keywords)
+  * base0 default (body text)
+    
+    base01 comments
+    base02 background highlights (selected background)
+  * base03 background
+    
+Light
+=====
+
+    base01 optional emphasized content (keywords)
+  * base00 default (body text)
+    base1 comments
+    base2 background highlights (selected background)
+  * base3 background
+</t>
+<t tx="ville.20130416213952.3831"></t>
+<t tx="ville.20130416213952.3832"></t>
+<t tx="ville.20130416213952.3833"></t>
+<t tx="ville.20130416213952.3834"></t>
+<t tx="ville.20130416213952.3835">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ville.20130416213952.3836">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ville.20130416213952.3837">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ville.20130416213952.3838">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ville.20130416213952.3839">was #00aa00 (Idle comment green)
+
+Solarize green      #859900
+Solarized cyan      #2aa198
+Solarized violet    #6c71c4
+Solarized orange    #cb4b16</t>
+<t tx="ville.20130416213952.3840"></t>
+<t tx="ville.20130416213952.3841"></t>
+<t tx="ville.20130416213952.3842"></t>
+<t tx="ville.20130416213952.3843">was black</t>
+<t tx="ville.20130416213952.3844">was firebrick3
+
+Solarized colors:
+    
+magenta   #d33682
+
+Dark comments   base01
+Light comments  base1 comments
+</t>
+<t tx="ville.20130416213952.3845"></t>
+<t tx="ville.20130416213952.3846"></t>
+<t tx="ville.20130416213952.3847"></t>
+<t tx="ville.20130416213952.3848"></t>
+<t tx="ville.20130416213952.3849"></t>
+<t tx="ville.20130416213952.3850"></t>
+<t tx="ville.20130416213952.3851">Background color of body text.  This setting *is* used in the QtGui.
+
+#ffecea
+
+Note: this setting can be overridden by the x_mode_bg_color settings.</t>
+<t tx="ville.20130416213952.3852">#f9f0f4 light pink
+#fbfdfd very light blue
+
+For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
+<t tx="ville.20130416213952.3853"></t>
+<t tx="ville.20130416213952.3854">Foreground color of body text.  This setting *is* used in the QtGui.
+
+Note: this setting can be overridden by the x_mode_fg_color settings.</t>
+<t tx="ville.20130416213952.3855">Overrides body_text_background_color.
+
+#fdf5f5 A light pink.
+#f0fde1 A light green.
+#f9e6dd A light orange.</t>
+<t tx="ville.20130416213952.3856">Overrides body_text_foreground_color.</t>
+<t tx="ville.20130416213952.3857"></t>
+<t tx="ville.20130416213952.3858">Background color of unselected headline text.
+
+LavenderBlush1</t>
+<t tx="ville.20130416213952.3859">Foreground color of unselected headline text.</t>
+<t tx="ville.20130416213952.3860">Background color of selected headline text that is not being edited.
+
+LavenderBlush2</t>
+<t tx="ville.20130416213952.3861">Foreground color of selected headline text that is not being edited.
+
+DodgerBlue4</t>
+<t tx="ville.20130416213952.3862">Background color of unselected headline text in a headline that is being edited.
+
+Foreground color must also be specified for either setting to take effect.</t>
+<t tx="ville.20130416213952.3863">Foreground color of unselected headline text in a headline that is being edited.
+
+Background color must also be specified for either setting to take effect.</t>
+<t tx="ville.20130416213952.3864">Foreground color of selected text headline text in a headline that is being edited.
+
+Background must also be specified for either setting to take effect.</t>
+<t tx="ville.20130416213952.3865">Background color of selected text headline text in a headline that is being edited.
+
+Foreground must also be specified for either setting to take effect.</t>
+<t tx="ville.20130416213952.3866">Background color of outline pane itself.
+
+LavenderBlush1
+#ffffe1 # a little too yellow.
+#ffffec
+LightSteelBlue1 # Good for testing.</t>
+<t tx="ville.20130416213952.3867"></t>
+<t tx="ville.20130416213952.3868">Color for error messages written to the log window.</t>
+<t tx="ville.20130416213952.3869"></t>
+<t tx="ville.20130416213952.3870">Foreground color of log text.
+
+</t>
+<t tx="ville.20130416213952.3871">Background color of log text.</t>
+<t tx="ville.20130416213952.3872">LightYellow1
+
+#f2fdff</t>
+<t tx="ville.20130416213952.3873">#d6c7d3
+#d2cad0
+#c6d3d7</t>
+<t tx="ville.20130416213952.3874">#d6c7d3
+#d2cad0
+#c6d3d7
+#ffffec # Same as outline.</t>
+<t tx="ville.20130416213952.3875"></t>
+<t tx="ville.20130416213952.3876"></t>
+<t tx="ville.20130416213952.3877"></t>
+<t tx="ville.20130416213952.3878">from leo.plugins.qtGui import expand_css_constants
+g.app.gui.frameFactory.masterFrame.setStyleSheet(
+    expand_css_constants(p.b))
+print expand_css_constants(p.b)</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>

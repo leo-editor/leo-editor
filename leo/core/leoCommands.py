@@ -1105,8 +1105,8 @@ class Commands (object):
 
         c = self
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
-
-        # g.trace('\n',s)
+        if s.startswith('<') and not s.startswith('<<'):
+            pass # how to do selective replace??
 
         pc = g.app.pluginsController
         vr = pc.loadOnePlugin('viewrendered.py')
@@ -1295,7 +1295,6 @@ class Commands (object):
         g.app.lockLog()
         c = g.app.newCommander(fileName=None,gui=gui)
         frame = c.frame
-        g.doHook("new",old_c=self,c=c,new_c=c)
         g.app.unlockLog()
 
         frame.setInitialWindowGeometry()
@@ -1307,6 +1306,7 @@ class Commands (object):
         lm.createMenu(c)
         lm.finishOpen(c)
         g.app.writeWaitingLog(c)
+        g.doHook("new",old_c=self,c=c,new_c=c)
         c.setLog()
         c.redraw()
         return c # For unit tests and scripts.
@@ -4303,6 +4303,7 @@ class Commands (object):
                 p = current.insertAsNthChild(0)
         else:
             p = current.insertAfter()
+        g.doHook('create-node',c=c,p=p)
         p.setDirty(setDescendentsDirty=False)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         c.setChanged(True)
@@ -8186,9 +8187,12 @@ class Commands (object):
 
     def endEditing(self):
 
+        trace = False and not g.unitTesting
         c = self
         p = c.p
+        
         if p:
+            if trace: g.trace('(c)',p.h)
             c.frame.tree.endEditLabel()
             c.frame.tree.setSelectedLabelState(p)
 

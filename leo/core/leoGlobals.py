@@ -2265,9 +2265,12 @@ def setGlobalOpenDir (fileName):
         g.app.globalOpenDir = g.os_path_dirname(fileName)
         # g.es('current directory:',g.app.globalOpenDir)
 #@+node:ekr.20031218072017.3125: *3* g.shortFileName & shortFilename
-def shortFileName (fileName):
-
-    return g.os_path_basename(fileName)
+def shortFileName (fileName,n=None):
+    
+    if n is None or n < 1:
+        return g.os_path_basename(fileName)
+    else:
+        return '\\'.join(fileName.split('\\')[-n:])
 
 shortFilename = shortFileName
 #@+node:ekr.20050104135720: *3* Used by tangle code & leoFileCommands
@@ -5246,6 +5249,28 @@ def executeScript (name):
 
     if theFile:
         theFile.close()
+#@+node:tbrown.20130411121812.28336: *3* g.expand_css_constants
+def expand_css_constants(sheet, font_size_delta=0):
+    
+    constants = find_constants_defined(sheet)
+    
+    # adjust @font-size-body by font_size_delta
+    # easily extendable to @font-size-*
+    if font_size_delta and "@font-size-body" in constants:
+        size = constants["@font-size-body"].replace("px", "")
+        size = min(250, max(1, int(size) + font_size_delta))
+        
+        constants["@font-size-body"] = "%spx" % size
+    
+    for const in constants:
+        sheet = re.sub(
+            const+"(?![-A-Za-z0-9_])",  
+            # don't replace shorter constants occuring in larger
+            constants[const],
+            sheet
+        )
+        
+    return sheet
 #@+node:ekr.20040331083824.1: *3* g.fileLikeObject
 # Note: we could use StringIo for this.
 
@@ -5313,6 +5338,50 @@ class fileLikeObject:
 
             self.list.append(s)
     #@-others
+#@+node:tbrown.20130411121812.28335: *3* g.find_constants_defined
+def find_constants_defined(text):
+    """find_constants - Return a dict of constants defined in the supplied text,
+    constants match::
+    
+        ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
+        i.e.
+        @foo_1-5=a
+            @foo_1-5 = a more here
+
+    :Parameters:
+    - `text`: text to search
+    """
+
+    pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+    
+    ans = {}
+    
+    text = text.replace('\\\n', '')  # merge lines ending in \
+    
+    for line in text.split('\n'):
+        test = pattern.match(line)
+        if test:
+            ans.update([test.groups()])
+
+    # constants may refer to other constants, de-reference here    
+    change = True
+    level = 0
+    while change and level < 10:
+        level += 1
+        change = False
+        for k in ans:
+            # process longest first so @solarized-base0 is not replaced
+            # when it's part of @solarized-base03
+            for o in sorted(ans, key=lambda x:len(x), reverse=True):
+                if o in ans[k]:
+                    change = True
+                    ans[k] = ans[k].replace(o, ans[o])
+    
+    if level == 10:
+        print("Ten levels of recursion processing styles, abandoned.")
+        g.es("Ten levels of recursion processing styles, abandoned.")
+        
+    return ans
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod
 #@+at The following is taken from page 188 of the Python Cookbook.
 # 
@@ -5829,14 +5898,12 @@ def importModule (moduleName,pluginName=None,verbose=False):
     moduleName is the module's name, without file extension.'''
 
     # Important: g is Null during startup.
-
     trace = False and not g.unitTesting
     module = sys.modules.get(moduleName)
-    if module:  return module
-
-    g.blue('loading %s' % moduleName)
+    if module:
+        return module
+    if verbose: g.blue('loading %s' % moduleName)
     exceptions = [] 
-
     try:
         theFile = None
         try:
@@ -5865,20 +5932,22 @@ def importModule (moduleName,pluginName=None,verbose=False):
                         exceptions.append(v)
             else:
                 #unable to load module, display all exception messages
-                for e in exceptions:
-                    g.warning(e) 
+                if verbose:
+                    for e in exceptions:
+                        g.warning(e) 
         except Exception: # Importing a module can throw exceptions other than ImportError.
-            t, v, tb = sys.exc_info()
-            del tb  # don't need the traceback
-            v = v or str(t) # in case v is empty, we'll at least have the execption type
-            g.es_exception(v)
+            if verbose:
+                t, v, tb = sys.exc_info()
+                del tb  # don't need the traceback
+                v = v or str(t) # in case v is empty, we'll at least have the execption type
+                g.es_exception(v)
     finally:
         if theFile: theFile.close()
 
-    if not module:
+    if not module and verbose:
         g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
     return module
-#@+node:ekr.20041219071407: *4* g.importExtension & helpers
+#@+node:ekr.20041219071407: *4* g.importExtension
 def importExtension (moduleName,pluginName=None,verbose=False,required=False):
 
     '''Try to import a module.  If that fails,
@@ -5886,12 +5955,9 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
 
     moduleName is the module's name, without file extension.'''
 
-    module = g.importModule(moduleName,pluginName=pluginName,verbose=False)
-
-    # This is basically only used for Pmw these days - we'll prevent plugins 
-    # from killing all of Leo by returning None here instead
-    if not module:
-        g.pr("Warning: plugin '%s' failed to import '%s'" % (
+    module = g.importModule(moduleName,pluginName=pluginName,verbose=verbose)
+    if not module and verbose:
+        g.pr("Warning: '%s' failed to import '%s'" % (
             pluginName,moduleName))
     return module
 #@+node:ekr.20031218072017.2278: *4* g.importFromPath
@@ -6060,24 +6126,6 @@ def isStroke(obj):
 
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj,KeyStroke)
-#@+node:tbrown.20120829105603.29180: *3* g.do_exec
-def do_exec(what, global_context=None, local_context=None):
-    """Python 2 and 3 compatible exec"""
-
-    # not sure if just passing None would have this effect
-    if global_context is None:
-        global_context = globals()
-    if local_context is None:
-        local_context = locals()
-
-    if g.isPython3:
-        exec(what, global_context, local_context)
-    else:
-        # exec is a statement so you can't eval it directly.  eval
-        # is done in the local context, where `global_context` and
-        # `local_context` are what they should be
-        eval(compile('exec what in global_context, local_context',
-            "<string>", "exec"))
 #@+node:ekr.20031218072017.3197: ** Whitespace...
 #@+node:ekr.20031218072017.3198: *3* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.

@@ -11,29 +11,20 @@ Modelled after Emacs and Vim commands.'''
 #@+node:ekr.20050710151017: ** << imports >> (leoEditCommands)
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind
-
+import difflib   
+docutils = g.importExtension('docutils',pluginName='leoEditCommands.py')
 try:
     import enchant
 except ImportError:
     enchant = None
-
-import difflib
 import os
 import re
+if g.isPython3:
+    from functools import reduce
 import shlex
 import string
 import subprocess # Always exists in Python 2.6 and above.
 import sys
-
-# if g.isPython3:
-    # import pickle # Only pickle exists in Python 3.x.
-# else:
-    # import cPickle as pickle 
-
-if g.isPython3:
-    from functools import reduce
-
-# subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-<< imports >>
 
 #@+<< define class baseEditCommandsClass >>
@@ -389,7 +380,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                         del aList[idx]
                     idx -= 1
 
-                g.do_exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
+                exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
 
         else:
             c.abbrev_subst_start = False
@@ -484,7 +475,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
             return False
 
         if c.abbrev_subst_start:
+            
             while c.abbrev_subst_start in val:
+                
                 prefix, rest = val.split(c.abbrev_subst_start, 1)
                 content = rest.split(c.abbrev_subst_end, 1)
                 if len(content) != 2:
@@ -492,9 +485,17 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 content, rest = content
                 c.abbrev_subst_env['_abr'] = word
 
-                g.do_exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
+                exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
 
                 val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
+                
+        if val == "__NEXT_PLACEHOLDER":
+            # user explicitly called for next placeholder in an abbrev.
+            # inserted previously
+            val = ''
+            do_placeholder = True
+        else:
+            do_placeholder = False 
 
         if trace: g.trace('**inserting',repr(val))
         oldSel = j,j
@@ -504,27 +505,35 @@ class abbrevCommandsClass (baseEditCommandsClass):
         c.frame.body.forceFullRecolor() # 2011/10/21
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
 
-        if c.abbrev_subst_start:
-            new_text, start, end = self.next_place(c.frame.body.getAllText())
-            c.frame.body.setAllText(new_text)
-            # setInsertPoint() clears selection raise, so must come first
-            c.frame.body.setInsertPoint(end)
-            c.frame.body.setSelectionRange(start, end)
+        if (do_placeholder or
+            c.abbrev_place_start and c.abbrev_place_start in val):
+            new_text, start, end = self.next_place(c.frame.body.getAllText(), offset=i)
+            if start is not None:
+                c.frame.body.setAllText(new_text)
+                # setInsertPoint() clears selection raise, so must come first
+                c.frame.body.setInsertPoint(end)
+                c.frame.body.setSelectionRange(start, end)
             
         return True
     #@+node:tbrown.20130326094709.25669: *4* next_place
-    def next_place(self, text):
+    def next_place(self, text, offset=0):
         """Given text containing a placeholder like <|block01|>,
         return text2, start, end where text2 is the text without
         the <| and |>, and start, end are the positions of the
-        beginning and end of block0.
+        beginning and end of block01.
         """
 
         c = self.c
-        new_pos = text.find(c.abbrev_place_start)
-        new_end = text.find(c.abbrev_place_end)
+        new_pos = text.find(c.abbrev_place_start, offset)
+        new_end = text.find(c.abbrev_place_end, offset)
+        if (new_pos < 0 or new_end < 0) and offset:
+            new_pos = text.find(c.abbrev_place_start)
+            new_end = text.find(c.abbrev_place_end)
+            if not(new_pos < 0 or new_end < 0):
+                g.es("Found placeholder earlier in body")
+            
         if new_pos < 0 or new_end < 0:
-            return text, len(text), len(text)
+            return text, None, None
 
         start = new_pos
         place_holder_delim = text[new_pos:new_end+len(c.abbrev_place_end)]
@@ -2792,11 +2801,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20110916215321.8008: *8* massageIvars
         def massageIvars (self,body):
 
-            if self.class_name and self.ivars_dict.has_key(self.class_name):
-                ivars = self.ivars_dict.get(self.class_name)
-            else:
-                ivars = []
-
+            ivars = self.ivars_dict.get(self.class_name,[])
             i = 0
             while i < len(body):
                 if self.is_string_or_comment(body,i):
@@ -7202,16 +7207,17 @@ class helpCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'apropos-abbreviations':    self.aproposAbbreviations,
-            'apropos-autocompletion':   self.aproposAutocompletion,
-            'apropos-bindings':         self.aproposBindings,
-            'apropos-debugging-commands': self.aproposDebuggingCommands,
-            'apropos-find-commands':    self.aproposFindCommands,
-            'apropos-regular-expressions': self.aproposRegularExpressions,
-            'help-for-command':         self.helpForCommand,
-            'help-for-minibuffer':      self.helpForMinibuffer,
-            'help-for-python':          self.pythonHelp,
-            'print-settings':           self.printSettings,
+        'help':                         self.help,
+        'help-for-abbreviations':       self.aproposAbbreviations,
+        'help-for-autocompletion':      self.aproposAutocompletion,
+        'help-for-bindings':            self.aproposBindings,
+        'help-for-command':             self.helpForCommand,
+        'help-for-debugging-commands':  self.aproposDebuggingCommands,
+        'help-for-find-commands':       self.aproposFindCommands,
+        'help-for-minibuffer':          self.helpForMinibuffer,
+        'help-for-python':              self.pythonHelp,
+        'help-for-regular-expressions': self.aproposRegularExpressions,
+        'print-settings':               self.printSettings,
         }
     #@+node:ekr.20051014170754: *3* helpForMinibuffer
     def helpForMinibuffer (self,event=None):
@@ -7256,6 +7262,16 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prompts for a command name and prints the help message for that command.'''
 
         k = self.k
+        #@+<< define s >>
+        #@+node:ekr.20130412180825.10342: *4* << define s >> (help-for-command)
+        s = '''
+
+        Type the name of the command, followed by Return.
+
+        '''
+
+        #@-<< define s >>
+        self.c.putApropos(s)
         k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
 
     #@+node:ekr.20120521114035.9870: *4* getBindingsForCommand
@@ -7688,6 +7704,38 @@ class helpCommandsClass (baseEditCommandsClass):
         #@-<< define s >>
 
         self.c.putApropos(s)
+    #@+node:ekr.20130412173637.10333: *3* help
+    def help (self,event=None):
+
+        '''Prints and introduction to Leo's help system.'''
+
+        #@+<< define rst_s >>
+        #@+node:ekr.20130412173637.10330: *4* << define rst_s >> (F1)
+        rst_s = '''
+
+        **Welcome to Leo's help system.**
+
+        To learn about ``<Alt-X>`` commands, type::
+            
+            <Alt-X>help-for-minibuffer<Enter>
+            
+        To get a list of help topics, type::
+            
+            <Alt-X>help-<tab>
+            
+        For Leo commands (tab completion allowed), type::
+            
+            <Alt-X>help-for-command<Enter>
+            <a Leo command name><Enter>
+            
+        To use Python's help system, type::
+            
+            <Alt-X>help-for-python<Enter>
+            <a python symbol><Enter>
+
+        '''
+        #@-<< define rst_s >>
+        self.c.putApropos(rst_s)
     #@+node:ekr.20070501092655: *3* aproposDebuggingCommands
     def aproposDebuggingCommands (self,event=None):
 
@@ -7730,11 +7778,69 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of of Leo's find commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20060209082023.1: *4* << define s >> (aproposFindCommands)_
-        # @pagewidth 40
+        #@+node:ekr.20130411023826.16595: *4* << define s >> (apropos-find-commands)
         #@@language rest
 
         s = '''
+
+        .. |br| raw:: html
+
+           <br />
+
+        Finding text
+        ------------
+
+        **Ctrl-F** starts searching. |br|\
+        The cursor moves to the minibuffer. |br|\
+        To abandon a search, type **Ctrl-G**.
+
+        The Find Tab shows the present settings. |br|\
+        Underlined characters are keyboard hints: |br|\
+        **Alt-Ctrl-W** toggles the Whole Word checkbox, and so on.
+
+        Type the search string in the minibuffer. |br|\
+        Type the **Enter** key to start the search.
+
+        Once searching has begun:
+            **F3** searches again. |br|\
+            **F2** searches backwards.
+
+        Replacing text
+        --------------
+
+        Type **Ctrl-F** and enter the find string as before. |br|\
+        Type **Ctrl-R** instead of **Enter**.
+
+        Type the replacement string. |br|\
+        The **Enter** key starts the search.
+
+        When a match is found:
+            The **=** key makes the replacement. |br|\
+            The **-** key replaces and finds again. |br|\
+            The **F2** and **F3** keys work as before.
+
+        Incremental searching
+        ---------------------
+
+        **Alt-S** starts an incremental search. |br|\
+        **Alt-R** starts a reverse incremental search.
+
+        Any characters you type extend the search. |br|\
+        **Backspace** retracts the search. 
+
+        During an incremental search:
+            **Enter** or **Ctrl-G** stops the search. |br|\
+            **Alt-S** finds the search string again. |br|\
+            **Alt-R** does the same during a reverse search.
+
+        '''
+        #@-<< define s >>
+        #@+<< define old_s >>
+        #@+node:ekr.20060209082023.1: *4* << define old_s >> (aproposFindCommands)_
+        # @pagewidth 40
+        #@@language rest
+
+        old_s = '''
         +++++++++++++++++++
         About Find Commands
         +++++++++++++++++++
@@ -7950,7 +8056,7 @@ class helpCommandsClass (baseEditCommandsClass):
         You may use backspace to backtrack. To
         repeat an incremental search, type the
         shortcut for that command again.'''
-        #@-<< define s >>
+        #@-<< define old_s >>
 
         self.c.putApropos(s)
     #@+node:ekr.20120522024827.9897: *3* aproposRegularExpressions
@@ -8045,12 +8151,17 @@ class helpCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             s = k.arg.strip()
             if s:
-                g.redirectStderr()
-                g.redirectStdout()
-                try: help(str(s))
-                except Exception: pass
-                g.restoreStderr()
-                g.restoreStdout()
+                # Capture the output of Python's help command.
+                old = sys.stdout
+                try:
+                    sys.stdout = stdout = g.fileLikeObject()
+                    help(str(s))
+                    s2 = stdout.read()
+                finally:
+                    sys.stdout = old
+                # Send it to the vr pane as a <pre> block
+                s2 = '<pre>' + s2 + '</pre>'
+                c.putApropos(s2)
     #@+node:ekr.20070418074444: *3* printSettings
     def printSettings (self,event=None):
 
@@ -10471,8 +10582,8 @@ class searchCommandsClass (baseEditCommandsClass):
         w = self.setWidget()
         s = w.getAllText()
         i,j = w.getSelectionRange()
-        if again:   ins = g.choose(reverse,i,j+len(pattern))
-        else:       ins = g.choose(reverse,j+len(pattern),i)
+        if again: ins = i if reverse else j+len(pattern)
+        else:     ins = j+len(pattern) if reverse else i
         ifinder.init_s_ctrl(s,ins)
         # Do the search!
         pos, newpos = ifinder.findNextMatch()
@@ -10491,10 +10602,10 @@ class searchCommandsClass (baseEditCommandsClass):
             # g.es("end of wrapped search")
             k.setLabelRed('end of wrapped search')
         else:
-            # k.setLabelRed("not found: %s" % (pattern))
-            # g.es("not found","'%s'" % (pattern))
-            event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
-            k.updateLabel(event)
+            g.es("not found: %s" % (pattern))
+            if not again:
+                event = g.app.gui.create_key_event(c,'\b','BackSpace',w)
+                k.updateLabel(event)
     #@+node:ekr.20050920084036.264: *6* iSearchStateHandler
     # Called from the state manager when the state is 'isearch'
 
@@ -10507,7 +10618,7 @@ class searchCommandsClass (baseEditCommandsClass):
         stroke = event and event.stroke or None
         s = stroke.s if stroke else ''
 
-        if trace: g.trace('s',repr(s))
+        if trace: g.trace('again',stroke in self.iSearchStrokes,'s',repr(s))
 
         # No need to recognize ctrl-z.
         if s in ('Escape','\n','Return'):

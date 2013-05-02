@@ -180,23 +180,28 @@ g.assertUi('qt')
 
 import os
 
-
-try:
-    from docutils.core import publish_string
-    from docutils.utils import SystemMessage
-    got_docutils = True
-except ImportError:
+docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
+if docutils:
+    try:
+        from docutils.core import publish_string
+        from docutils.utils import SystemMessage
+        got_docutils = True
+    except ImportError:
+        got_docutils = False
+        g.es_exception()
+    except SyntaxError:
+        got_docutils = False
+        g.es_exception()
+else:
     got_docutils = False
-except SyntaxError:
-    got_docutils = False
-        # Docutils is not compatible with Python 2.7.
 
+## markdown support, non-vital
 try:
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False
-
+    
 try:
     import PyQt4.phonon as phonon
     phonon = phonon.Phonon
@@ -269,109 +274,21 @@ def onCreate(tag, keys):
 #@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
 
+    if g.unitTesting:
+        return # This just slows the unit tests.
     c = kw.get('c')
-    
     vr = viewrendered(event=kw)
-    
     title = kw.get('short_title','').strip()
     vr.setWindowTitle(title)
-    s = [
+    s = '\n'.join([
         title,
         '=' * len(title),
         '',
         kw.get('msg')
-    ]
-    s = '\n'.join(s)
-
-    vr.update_rst(s, kw)
-    vr.locked = True
-    vr.active = False
-    
+    ])
+    vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s})
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
-@g.command('vr-hide')
-def hide_rendering_pane(event):
-    
-    '''Close the rendering pane.'''
-
-    global controllers
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.deactivate()
-            vr.deleteLater()
-            
-            h = c.hash()
-            if vr == controllers.get(h):
-                del controllers[h]
-            else:
-                g.trace('Can not happen: no controller for %s' % (c))
-            
-# Compatibility
-close_rendering_pane = hide_rendering_pane
-#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock-toggle')
-@g.command('vr-lock-toggle')
-def lock_unlock_rendering_pane(event):
-    
-    '''Pause or play a movie in the rendering pane.'''
-
-    c = event.get('c')
-    if c:
-        
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
-            if vr.locked:
-                vr.unlock()
-            else:
-                vr.lock()
-#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
-@g.command('vr-pause-play')
-def pause_play_movie(event):
-    
-    '''Pause or play a movie in the rendering pane.'''
-
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
-            if vr and vr.vp:
-                vp = vr.vp
-                if vp.isPlaying():
-                    vp.pause()
-                else:
-                    vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show-toggle')
-@g.command('vr-show-toggle')
-def toggle_rendering_pane(event):
-    
-    '''Show or hide the rendering pane.'''
-
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if vr:
-            hide_rendering_pane(event)
-        else:
-            viewrendered(event)
-#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
-@g.command('vr-update')
-def update_rendering_pane (event):
-    
-    '''Hide the rendering pane, but do not delete it.'''
-
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
-        if not vr:
-            g.es('Open a viewrendered pane first')
-        else:
-            vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
@@ -402,6 +319,119 @@ def viewrendered(event):
             vr.resize(600, 600)
             vr.show()
     return vr
+#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
+@g.command('vr-contract')
+def contract_rendering_pane(event):
+    
+    '''Expand the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        if vr:
+            vr.contract()
+        else:
+            # Just open the pane.
+            viewrendered(event)
+#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
+@g.command('vr-expand')
+def expand_rendering_pane(event):
+    
+    '''Expand the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        if not vr:
+            vr = viewrendered(event)
+        if vr:
+            vr.expand()
+#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
+@g.command('vr-hide')
+def hide_rendering_pane(event):
+    
+    '''Close the rendering pane.'''
+
+    global controllers
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            vr.deactivate()
+            vr.deleteLater()
+            h = c.hash()
+            if vr == controllers.get(h):
+                del controllers[h]
+            else:
+                g.trace('Can not happen: no controller for %s' % (c))
+            
+# Compatibility
+close_rendering_pane = hide_rendering_pane
+#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
+@g.command('vr-lock')
+def lock_unlock_rendering_pane(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr and not vr.locked:
+            vr.lock()
+#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
+@g.command('vr-pause-play')
+def pause_play_movie(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        if not vr:
+            vr = viewrendered(event)
+        if vr and vr.vp:
+            vp = vr.vp
+            if vp.isPlaying():
+                vp.pause()
+            else:
+                vp.play()
+#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
+@g.command('vr-show')
+def toggle_rendering_pane(event):
+    
+    '''Show or hide the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr:
+            pass # hide_rendering_pane(event)
+        else:
+            viewrendered(event)
+#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
+@g.command('vr-unlock')
+def lock_unlock_rendering_pane(event):
+    
+    '''Pause or play a movie in the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if vr and vr.locked:
+            vr.unlock()
+#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
+@g.command('vr-update')
+def update_rendering_pane (event):
+    
+    '''Update the rendering pane'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        if not vr:
+            vr = viewrendered(event)
+        if vr:
+            vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
@@ -427,7 +457,7 @@ class ViewRenderedProvider:
             # return ViewRenderedController(self.c)
             return vr
     #@-others
-#@+node:ekr.20110317024548.14375: ** class ViewRenderedController
+#@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtGui.QWidget):
     
     '''A class to control rendering in a rendering pane.'''
@@ -452,7 +482,6 @@ class ViewRenderedController(QtGui.QWidget):
         self.kind = 'rst' # in self.dispatch_dict.keys()
         self.length = 0 # The length of previous p.b.
         self.locked = False
-        self.s = '' # The plugin's docstring to be rendered temporarily.
         self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
         self.sizes = [] # Saved splitter sizes.
         self.splitter_index = None # The index of the rendering pane in the splitter.
@@ -465,7 +494,7 @@ class ViewRenderedController(QtGui.QWidget):
         # User-options:
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.auto_create  = c.config.getBool('view-rendered-auto-create',False)
-        self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
+        # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.node_changed = True
         
@@ -494,7 +523,27 @@ class ViewRenderedController(QtGui.QWidget):
         
         self.deactivate()
 
-    #@+node:ekr.20110317080650.14381: *3* activate
+    #@+node:ekr.20130413061407.10363: *3* contract & expand
+    def contract(self):
+        self.change_size(-100)
+
+    def expand(self):
+        self.change_size(100)
+        
+    def change_size(self,delta):
+        if hasattr(self.c,'free_layout'):
+            splitter = self.parent()
+            i = splitter.indexOf(self)
+            assert i > -1
+            sizes = splitter.sizes()
+            n = len(sizes)
+            for j in range(len(sizes)):
+                if j == i:
+                    sizes[j] = max(0,sizes[i]+delta)
+                else:
+                    sizes[j] = max(0,sizes[j]-int(delta/(n-1)))
+            splitter.setSizes(sizes)
+    #@+node:ekr.20110317080650.14381: *3* activate (creates idle-time hook)
     def activate (self):
         
         pc = self
@@ -518,7 +567,6 @@ class ViewRenderedController(QtGui.QWidget):
         # Never disable the idle-time hook: other plugins may need it.
         g.unregisterHandler('select2',pc.update)
         g.unregisterHandler('idle',pc.update)
-        
         pc.active = False
     #@+node:ekr.20110321072702.14508: *3* lock/unlock
     def lock (self):
@@ -536,41 +584,23 @@ class ViewRenderedController(QtGui.QWidget):
         # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
         return '%s\n%s\n\n' % (s,ch*n)
     #@+node:ekr.20101112195628.5426: *3* update & helpers
+    # Must have this signature: called by leoPlugins.callTagHandler.
+
     def update(self,tag,keywords):
         
         trace = False and not g.unitTesting
-        pc = self ; c = pc.c ; p = c.p ; w = pc.w
-        force = keywords.get('force')
-        s, val = pc.must_update(keywords)
+        pc = self
+        c,p = pc.c,pc.c.p
         
-        if not force and not val:
-            # Save the scroll position.
-            if w.__class__ == pc.text_class:
-                # 2011/07/30: The widge may no longer exist.
-                try:
-                    sb = w.verticalScrollBar()
-                except Exception:
-                    g.es_exception()
-                    self.deactivate()
-                if sb:
-                    pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-            # g.trace('no update')
-            return
-            
-        # Suppress updates until we change nodes.
-        pc.node_changed = pc.gnx != p.v.gnx
-        pc.gnx = p.v.gnx
-        pc.length = len(p.b) # Use p.b, not s.
+        if pc.must_update(keywords):
 
-        if pc.s:
-            if trace: g.trace('docstring',len(pc.s))
-            # A plugin docstring.
-            s = pc.s
-            pc.s = None
-            keywords['force']=True
-            pc.update_rst(s,keywords)
-        else:
+            # Suppress updates until we change nodes.
+            pc.node_changed = pc.gnx != p.v.gnx
+            pc.gnx = p.v.gnx
+            pc.length = len(p.b) # not s
+        
             # Remove Leo directives.
+            s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
             # Dispatch based on the computed kind.
             kind = pc.get_kind(p)
@@ -581,6 +611,20 @@ class ViewRenderedController(QtGui.QWidget):
                 g.trace('no handler for kind: %s' % kind)
                 f = pc.update_rst
             f(s,keywords)
+        else:
+            # Save the scroll position.
+            w = pc.w
+            if w.__class__ == pc.text_class:
+                # 2011/07/30: The widge may no longer exist.
+                try:
+                    sb = w.verticalScrollBar()
+                except Exception:
+                    g.es_exception()
+                    pc.deactivate()
+                if sb:
+                    pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+            # Will be called at idle time.
+            # if trace: g.trace('no update')
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
     def embed_widget (self,w,delete_callback=None):
         
@@ -634,37 +678,29 @@ class ViewRenderedController(QtGui.QWidget):
         '''Return True if we must update the rendering pane.'''
         
         trace = False and not g.unitTesting
-        verbose = False
-        pc = self ; c = pc.c ; p = c.p
-        
-        if (c != keywords.get('c') or 
-            not pc.active or
-            (pc.locked and not keywords.get('force')) or
-            g.unitTesting):
+        pc = self
+        c,p = pc.c,pc.c.p
+        if g.unitTesting:
+            return False
+        if keywords.get('force'):
+            pc.active = True
+            if trace: g.trace('force: activating')
+            return True
+        if c != keywords.get('c') or not pc.active:
             if trace: g.trace('not active')
-            return None,False
-        
-        if pc.s:
-            s = pc.s
-            if trace: g.trace('self.s exists',len(s))
-            return s,True
-        else:
-            s = p.b
-            val = pc.gnx != p.v.gnx
-            if val:
-                if trace: g.trace('changed node')
-                return s,val
-            val = len(s) != pc.length
-            if val:
-                if trace: g.trace('text changed')
-            return s,val
-
-            # try:
-                # # Can fail if the window has been deleted.
-                # w.setWindowTitle(p.h)
-            # except exception:
-                # pc.splitter = None
-                # return
+            return False
+        if pc.locked:
+            if trace: g.trace('locked')
+            return False
+        if pc.gnx != p.v.gnx:
+            if trace: g.trace('changed node')
+            return True
+        if len(p.b) != pc.length:
+            if trace: g.trace('text changed')
+            return True
+        # This will be called at idle time.
+        # if trace: g.trace('no change')
+        return False
     #@+node:ekr.20110321151523.14463: *4* update_graphics_script
     def update_graphics_script (self,s,keywords):
         
@@ -868,34 +904,29 @@ class ViewRenderedController(QtGui.QWidget):
         pc = self ; c = pc.c ;  p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
-        
-        if trace: g.trace('isHtml',isHtml)
+        if trace: g.trace('isHtml',isHtml,p.h)
         
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_text_widget()
         assert pc.w
-        
         if s:
             pc.show()
-        else:
-            if pc.auto_hide:
-                pass  # needs review
-                # pc.hide()
-            return
-        
-        if got_docutils and not isHtml:
+        if not got_docutils:
+            isHtml = True
+            s = '<pre>\n%s</pre>' % s
+        if not isHtml:
             # Not html: convert to html.
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
                 path = os.path.dirname(path)
             if os.path.isdir(path):
                 os.chdir(path)
-
             try:
                 msg = '' # The error message from docutils.
                 if pc.title:
                     s = pc.underline(pc.title) + s
                     pc.title = None
+                # Call docutils to get the string.
                 s = publish_string(s,writer_name='html')
                 s = g.toUnicode(s) # 2011/03/15
                 show = True
@@ -906,7 +937,6 @@ class ViewRenderedController(QtGui.QWidget):
                     s = 'RST error:\n%s\n\n%s' % (msg,s)
 
         sb = w.verticalScrollBar()
-
         if sb:
             d = pc.scrollbar_pos_dict
             if pc.node_changed:
@@ -923,7 +953,6 @@ class ViewRenderedController(QtGui.QWidget):
                 w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
-            
         if sb and pos:
             # Restore the scrollbars
             sb.setSliderPosition(pos)
@@ -984,7 +1013,6 @@ class ViewRenderedController(QtGui.QWidget):
         '''Swap a text widget into the rendering pane if necessary.'''
         
         pc = self
-        
         if pc.must_change_widget(pc.text_class):
             w = pc.text_class()
             
@@ -996,12 +1024,17 @@ class ViewRenderedController(QtGui.QWidget):
                     QtGui.QTextBrowser.mouseReleaseEvent(w,event)
             
             # Monkey patch a click handler.
-            if g.isPython3:
-                def mouseReleaseEvent(event):
-                    mouseReleaseHelper(w,event)
-            else:
-                def mouseReleaseEvent(w,event):
-                    mouseReleaseHelper(w,event)
+            # 2012/04/10: Use the same pattern for mouseReleaseEvents
+            # that is used in Leo's core:
+            def mouseReleaseEvent(*args,**keys):
+                if len(args) == 1:
+                    event = args[0]
+                elif len(args) == 2:
+                    event = args[1]
+                else:
+                    g.trace('can not happen',args)
+                    return
+                mouseReleaseHelper(w,event)
             
             w.mouseReleaseEvent = mouseReleaseEvent
             pc.embed_widget(w) # Creates w.wrapper

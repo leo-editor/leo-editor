@@ -32,7 +32,7 @@ familiar with `Leo's tutorial`_.
 
 .. @+node:ekr.20050828160132: *3* @rst-no-head links
 .. Links to other chapters
-.. _front:                      front.html
+.. _front:                      index.html
 .. _`Leo's tutorial`:           intro.html
 .. _`Leo and reStructuredText`: rstplugin3.html
 .. _`History of Leo`:           history.html

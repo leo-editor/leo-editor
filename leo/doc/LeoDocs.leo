@@ -47,13 +47,13 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
-<v t="ekr.20130327143919.5868"><vh>@file front.html</vh></v>
+<v t="ekr.20130327143919.5868"><vh>@@file front.html</vh></v>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/front.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -406,6 +406,21 @@
 <v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
 </v>
 </v>
+<v t="ekr.20130404104418.5951"><vh>*Everything* an implementor must know</vh></v>
+<v t="ekr.20050903074833"><vh>Event handlers</vh>
+<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
+<v t="ekr.20071021102946"><vh>Enabling idle time event handlers</vh></v>
+</v>
+<v t="ekr.20130411023340.5976"><vh>Tutorial scripts</vh>
+<v t="ekr.20130413153344.14589"><vh>What makes Leo special: shorter</vh></v>
+<v t="ekr.20130411135403.5972"><vh>What makes Leo special</vh></v>
+<v t="ekr.20130411023340.5978"><vh>Scripting</vh></v>
+<v t="ekr.20130411023340.5979"><vh>External files</vh></v>
+<v t="ekr.20130411023340.5980"><vh>The screenshots plugin</vh></v>
+<v t="ekr.20130411023340.5981"><vh>The contextmenu plugin</vh></v>
+<v t="ekr.20130411023340.5982"><vh>The bookmarks plugin</vh></v>
+<v t="ekr.20130411023340.5983"><vh>The todo plugin</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -416,7 +431,7 @@
 <t tx="EKR.20040524104904.99"></t>
 <t tx="TL.20080804095315.1"></t>
 <t tx="ekr.20040414161647">@pagewidth 70
-@nocolor-node
+@language rest
 
 These are the sources for Leo's users guide.
 
@@ -487,17 +502,210 @@ Removes @ignore, @nocolor, @wrap directives.
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
 <t tx="ekr.20050831195331.4"></t>
-<t tx="ekr.20050831195449">@nocolor
+<t tx="ekr.20050831195449">@language rest
 
 For instruction about installing Leo see:
-http://webpages.charter.net/edreamleo/installing.html
+http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/intro.html
 
 For help, please ask questions at:
 http://groups.google.com/group/leo-editor</t>
 <t tx="ekr.20050901084134"></t>
+<t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks) with code such as::
+
+    leoPlugins.registerHandler("after-create-leo-frame",onCreate)
+    leoPlugins.registerHandler("idle", on_idle) 
+    leoPlugins.registerHandler(("start2","open2","command2"), create_open_with_menu) 
+
+As shown above, a plugin may register one or more event handlers with a single call to
+leoPlugins.registerHandler. Once a hook is registered, Leo will call the
+registered function' at the named **hook time**. For example::
+
+    leoPlugins.registerHandler("idle", on_idle)
+
+causes Leo to call on_idle at "idle" time.
+
+Event handlers must have the following signature::
+
+    def myHook (tag, keywords):
+        whatever
+
+-   tag is the name of the hook (a string).
+-   keywords is a Python dictionary containing additional information.
+    The following section describes the contents of the keywords dictionary in detail.
+
+**Important**: hooks should get the proper commander this way::
+
+    c = keywords.get('c')
+</t>
+<t tx="ekr.20050903074833.1">The following table tells about each event handler: its name, when it is called,
+and the additional arguments passed to the hook in the keywords dictionary.
+For some kind of hooks, Leo will skip its own normal processing if the hook
+returns anything *other* than None. The table indicates such hooks with 'yes' in
+the 'Stop?' column.
+
+**Important**: Ever since Leo 4.2, the v, old_v and new_v keys in
+the keyword dictionary contain *positions*, not vnodes. These keys are
+deprecated. The new_c key is also deprecated. Plugins should use the c key instead.
+
+============================= ======== =================================== =============================
+Event name (tag argument)     Stop?    When called                         Keys in keywords dict
+============================= ======== =================================== =============================
+'after-auto'                           after each @auto file loaded        c,p (note 13)
+'after-create-leo-frame'               after creating any frame            c
+'after-redraw-outline'                 end of tree.redraw                  c (note 6)
+'before-create-leo-frame'              before frame.finishCreate           c
+'bodyclick1'                   yes     before normal click in body         c,p,v,event
+'bodyclick2'                           after normal click in body          c,p,v,event
+'bodydclick1'                  yes     before double click in body         c,p,v,event
+'bodydclick2'                          after  double click in body         c,p,v,event
+'bodykey1'                     yes     before body keystrokes              c,p,v,ch,oldSel,undoType
+'bodykey2'                             after  body keystrokes              c,p,v,ch,oldSel,undoType
+'bodyrclick1'                  yes     before right click in body          c,p,v,event
+'bodyrclick2'                          after  right click in body          c,p,v,event
+'boxclick1'                    yes     before click in +- box              c,p,v,event
+'boxclick2'                            after  click in +- box              c,p,v,event
+'clear-all-marks'                      after clear-all-marks command       c,p,v
+'clear-mark'                           when mark is set                    c,p,v
+'close-frame'                          in app.closeLeoWindow               c
+'color-optional-markup'        yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
+'command1'                     yes     before each command                 c,p,v,label (note 2)
+'command2'                             after  each command                 c,p,v,label (note 2)
+'create-optional-menus'                (note 8)                            c (note 8)
+'create-popup-menu-items'              in tree.OnPopup                     c,p,v,event (new)
+'draw-outline-box'             yes     when drawing +- box                 tree,p,v,x,y
+'draw-outline-icon'            yes     when drawing icon                   tree,p,v,x,y
+'draw-outline-node'            yes     when drawing node                   tree,p,v,x,y
+'draw-outline-text-box'        yes     when drawing headline               tree,p,v,x,y
+'drag1'                        yes     before start of drag                c,p,v,event
+'drag2'                                after  start of drag                c,p,v,event
+'dragging1'                    yes     before continuing to drag           c,p,v,event
+'dragging2'                            after  continuing to drag           c,p,v,event
+'enable-popup-menu-items'              in tree.OnPopup                     c,p,v,event
+'end1'                                 start of app.quit()                 None
+'enddrag1'                     yes     before end of drag                  c,p,v,event
+'enddrag2'                             after  end of drag                  c,p,v,event
+'headclick1'                   yes     before normal click in headline     c,p,v,event
+'headclick2'                           after  normal click in headline     c,p,v,event
+'headrclick1'                  yes     before right click in headline      c,p,v,event
+'headrclick2'                          after  right click in headline      c,p,v,event
+'headkey1'                     yes     before headline keystrokes          c,p,v,ch (note 12)
+'headkey2'                             after  headline keystrokes          c,p,v,ch (note 12)
+'hoist-changed'                        whenever the hoist stack changes    c
+'hypercclick1'                 yes     before control click in hyperlink   c,p,v,event
+'hypercclick2'                         after  control click in hyperlink   c,p,v,event
+'hyperenter1'                  yes     before entering hyperlink           c,p,v,event
+'hyperenter2'                          after  entering hyperlink           c,p,v,event
+'hyperleave1'                  yes     before leaving  hyperlink           c,p,v,event
+'hyperleave2'                          after  leaving  hyperlink           c,p,v,event
+'iconclick1'                   yes     before single click in icon box     c,p,v,event
+'iconclick2'                           after  single click in icon box     c,p,v,event
+'iconrclick1'                  yes     before right click in icon box      c,p,v,event
+'iconrclick2'                          after  right click in icon box      c,p,v,event
+'icondclick1'                  yes     before double click in icon box     c,p,v,event
+'icondclick2'                          after  double click in icon box     c,p,v,event
+'idle'                                 periodically (at idle time)         c
+'init-color-markup'                    (note 7)                            colorer,p,v (note 7)
+'menu1'                        yes     before creating menus               c,p,v (note 3)
+'menu2'                        yes     during creating menus               c,p,v (note 3)
+'menu-update'                  yes     before updating menus               c,p,v
+'new'                                  start of New command                c,old_c,new_c (note 9)
+'open1'                        yes     before opening any file             c,old_c,new_c,fileName (note 4)
+'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
+'openwith1'                    yes     before Open With command            c,p,v,d (note 14)
+'openwith2'                            after  Open With command            c,p,v,(note 14)
+'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName,closeFlag
+'recentfiles2'                         after  Recent Files command         c,p,v,fileName,closeFlag
+'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
+'save1'                        yes     before any Save command             c,p,v,fileName
+'save2'                                after  any Save command             c,p,v,fileName
+'scan-directives'                      in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
+'select1'                      yes     before selecting a position         c,new_p,old_p,new_v,new_v
+'select2'                              after  selecting a position         c,new_p,old_p,new_v,old_v
+'select3'                              after  selecting a position         c,new_p,old_p,new_v,old_v
+'set-mark'                             when a mark is set                  c,p,v
+'show-popup-menu'                      in tree.OnPopup                     c,p,v,event
+'start1'                               after app.finishCreate()            None
+'start2'                               after opening first Leo window      c,p,v,fileName
+'unselect1'                    yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
+'unselect2'                            after  unselecting a vnode          c,new_p,old_p,old_v,old_v
+'\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
+'\@url2'                                after  double-click @url node       c,p,v(note 5)
+============================= ======== =================================== =============================
+
+**Notes**:
+
+1.  'activate' and 'deactivate' hooks have been removed because they do not work as expected.
+
+2.  'commands' hooks: The label entry in the keywords dict contains the
+    'canonicalized' form of the command, that is, the lowercase name of the command
+    with all non-alphabetic characters removed.
+    Commands hooks now set the label for undo and redo commands 'undo' and 'redo'
+    rather than 'cantundo' and 'cantredo'.
+
+3.  'menu1' hook: Setting g.app.realMenuNameDict in this hook is an easy way of
+    translating menu names to other languages. **Note**: the 'new' names created this
+    way affect only the actual spelling of the menu items, they do *not* affect how
+    you specify shortcuts settings, nor do they affect the 'official'
+    command names passed in g.app.commandName. For example::
+
+        app().realMenuNameDict['Open...'] = 'Ouvre'.
+
+4.  'open1' and 'open2' hooks: These are called with a keywords dict containing the following entries:
+
+    - c:          The commander of the newly opened window.
+    - old_c:      The commander of the previously open window.
+    - new_c:      (deprecated: use 'c' instead) The commander of the newly opened window.
+    - fileName:   The name of the file being opened.
+
+    You can use old_c.p and c.p to get the current position in the old and new windows.
+    Leo calls the 'open1' and 'open2' hooks only if the file is not already open. Leo
+    will also call the 'open1' and 'open2' hooks if: a) a file is opened using the
+    Recent Files menu and b) the file is not already open.
+
+5.  '\@url1' and '\@url2' hooks are only executed if the 'icondclick1' hook returns None.
+
+6.  These hooks are useful for testing.
+
+7.  These hooks allow plugins to parse and handle markup within doc parts,
+    comments and Python ''' strings. Note that these hooks are *not* called in
+    Python ''' strings. See the color_markup plugin for a complete example of how to
+    use these hooks.
+
+8.  Leo calls the 'create-optional-menus' hook when creating menus. This hook need
+    only create new menus in the correct order, without worrying about the placement
+    of the menus in the menu bar. See the plugins_menu and scripts_menu plugins for
+    examples of how to use this hook.
+
+9.  The New command calls 'new'.
+    The 'new_c' key is deprecated.  Use the 'c' key instead.
+
+10. g.scanDirectives calls 'scan-directives' hook.
+    g.scanDirectives returns a dictionary, say d.
+    d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
+
+    - d is the spelling of the @directive, without the leading @.
+    - v is the vnode containing the directive, _not_ the original vnode.
+    - s[k:] is a string containing whatever follows the @directive.
+      k has already been moved past any whitespace that follows the @directive.
+
+    See the add_directives plugins directive for a complete example of how to use
+    the 'scan-directives' hook.
+
+11. g.app.closeLeoWindow calls the 'close-frame' hook just before
+    removing the window from g.app.windowList. The hook code may remove the window
+    from app.windowList to prevent g.app.closeLeoWindow from destroying the window.
+
+12. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
+
+13. p is the new node (position) containing '@auto filename.ext'
+
+14. New in Leo 4.10: the d argument to the open-with event handlers is a python
+    dictionary whose keys are all the tags specified by the user in the body of the
+    @open-with node.
+</t>
 <t tx="ekr.20050912125144"></t>
 <t tx="ekr.20051202072010"></t>
 <t tx="ekr.20060430221745"></t>
@@ -510,6 +718,12 @@ http://groups.google.com/group/leo-editor</t>
 <t tx="ekr.20070610174018"></t>
 <t tx="ekr.20070628083442"></t>
 <t tx="ekr.20070701101808"></t>
+<t tx="ekr.20071021102946">Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
+**g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.
+Afterwards, Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
+Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
+**g.disableIdleTimeHook()** disables the "idle" hook.
+</t>
 <t tx="ekr.20080203101507"></t>
 <t tx="ekr.20080412124815.1"></t>
 <t tx="ekr.20080730212711.14"></t>
@@ -705,7 +919,7 @@ alt-4,... Several seemingly innocuous changes made this work without
 
 Links:
 ------
-Leo:      http://leoeditor.com/front.html
+Leo:      http://leoeditor.com
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -1655,7 +1869,7 @@ button in your browser attached.  The body text of the corresponding
 bookmark node created in Leo is:
 
     Leo's Home Page
-        http://leoeditor.com/front.html
+        http://leoeditor.com
 
         Tags: leo, python
 
@@ -2558,7 +2772,7 @@ The fix was to the "important special case" in TM.findAllUnitTestNodes.
 The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 </t>
 <t tx="ekr.20120328102352.5942"></t>
-<t tx="ekr.20120328102352.5946">http://leoeditor.com/front.html
+<t tx="ekr.20120328102352.5946">http://leoeditor.com
 
 - Added link to home page from the TOC.
 
@@ -2572,6 +2786,102 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 
 - Brought screen shots up to date.
 </t>
+<t tx="ekr.20130327143919.5868">&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Leo's home page has moved&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Leo's home page has moved.&lt;/h1&gt;
+&lt;p&gt;This page has moved to &lt;a href="http://leoeditor.com"&gt;http://leoeditor.com&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20130404104418.5951">@language rest
+
+- Don't read code: use g.trace and g.pdb instead.
+- Where the bodies are hidden.
+    - self.w in leoEditCommands.py
+- Complex code that *can't* be simplified.
+- The top 20 methods.  You must understand these *in general*.
+    - k.masterKeyHandler.
+    - qt.eventFilter.
+    - 
+    
+    
+** Add mandatory _kind fields to all g.Bunches.</t>
+<t tx="ekr.20130411023340.5976"></t>
+<t tx="ekr.20130411023340.5978"></t>
+<t tx="ekr.20130411023340.5979"></t>
+<t tx="ekr.20130411023340.5980"></t>
+<t tx="ekr.20130411023340.5981">@language rest
+
+Adds configurable right-click menu items to nodes.
+</t>
+<t tx="ekr.20130411023340.5982"></t>
+<t tx="ekr.20130411023340.5983"></t>
+<t tx="ekr.20130411135403.5972">@language rest
+
+Leo looks like relatively ordinary outline editor,
+but it has unique scripting and data-organizing abilities.
+
+Scripting
+---------
+
+- Any node in the outline may contain a Leo script.
+- Leo can *compose* scripts from a node and its descendants.
+- Leo scripts can *easily* access all the data in any outline.
+
+Leo scripts can do things that can't be *imagined* in other editors.
+
+Data-organizing
+---------------
+
+- Cloned nodes may appear many times in the same outline.
+- Clones create views of data that persist indefinitely.
+  Any set of nodes may appear in arbitrirly many views of the data.
+- Headlines naturally describe the data contained in nodes.
+
+
+Script nodes
+------------
+
+There are many ways to combine these capabilities.
+</t>
+<t tx="ekr.20130413153344.14589">@wrap
+@language rest
+
+.. |br| raw:: html
+
+   &lt;br /&gt;
+   
+**Leo completely integrates scripting and outlines.** |br|
+Leo outlines are true Python objects, not just text.
+
+\1. **Headlines naturally define types**, such as:
+
+**@file** trees create external files. |br|
+**@test** nodes and trees create unit tests. |br|
+**@button** nodes create **script buttons**. |br|
+**@command** nodes create user-defined commands. |br|
+**@html** trees create web pages. |br|
+**@settings** trees contain Leo settings.
+
+\2. **Any node may contain a Leo script**:
+
+A simple outline-aware markup language creates scripts |br|
+and external files from outline nodes and trees.
+
+\3. **Leo scripts have *easy* access to all outline data**:
+
+All Leo scripts execute with these **predefined symbols**: |br|
+**c** gives access to all outline data and all of Leo's code. |br|
+**p** is the presently selected node in the script. |br|
+**p.h** is the headline text; **p.b** is the body text. |br|
+**g** is a module containing utility functions &amp; classes.
+
+\4. **All parts of Leo are scriptable**, including: |br|
+
+.. In short, all outline data are completely scriptable.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

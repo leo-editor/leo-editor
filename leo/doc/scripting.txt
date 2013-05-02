@@ -62,7 +62,7 @@ scripts in several ways:
 
 .. @+node:ekr.20050812134441.1: *3* @rst-no-head Links
 .. Links used in this document.
-.. _front:          front.html
+.. _front:                  index.html
 .. _`Designing with Leo`:   design.html
 .. _`Customizing Leo`:      customizing.html
 .. _`rst3 plugin`:          rstplugin3.html

@@ -181,9 +181,13 @@ from leo.external.stringlist import SList
     # Uses leoPlugins.TryNext.
 
 import pprint
+import os
 import re
 import types, sys
 import textwrap
+import json
+from io import BytesIO
+import yaml
 #@-<< imports >>
 
 controllers = {}
@@ -299,7 +303,8 @@ def vs_eval(kwargs):
     """
     
     c = kwargs['c']
-    
+    vsc = get_vs(c)
+    cvs = vsc.d
     txt = c.frame.body.getSelectedText()
 
     # select next line ready for next select/send cycle
@@ -338,27 +343,30 @@ def vs_eval(kwargs):
     try:
         # execute all but the last 'block'
         if dbg: print('all but last')
-        exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+        # exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+        exec('\n'.join(blocks[:-1]), leo_globals, cvs) # Compatible with Python 3.x.
         all_done = False
     except SyntaxError:
         # splitting of the last block caused syntax error
         try:
             # is the whole thing a single expression?
             if dbg: print('one expression')
-            ans = eval(txt, leo_globals, c.vs)
+            ans = eval(txt, leo_globals, cvs)
         except SyntaxError:
             if dbg: print('statement block')
-            exec txt in leo_globals, c.vs
+            # exec txt in leo_globals, c.vs
+            exec(txt, leo_globals, cvs) # Compatible with Python 3.x.
         all_done = True  # either way, the last block is used now
     
     if not all_done:  # last block still needs using
         try:
             if dbg: print('final expression')
-            ans = eval(blocks[-1], leo_globals, c.vs)
+            ans = eval(blocks[-1], leo_globals, cvs)
         except SyntaxError:
             ans = None
             if dbg: print('final statement')
-            exec blocks[-1] in leo_globals, c.vs
+            # exec blocks[-1] in leo_globals, c.vs
+            exec(blocks[-1], leo_globals, cvs) # Compatible with Python 3.x.
 
     if redirects:
         if not old_stderr:
@@ -368,15 +376,15 @@ def vs_eval(kwargs):
 
     if ans is None:  # see if last block was a simple "var =" assignment
         key = blocks[-1].split('=', 1)[0].strip()
-        if key in c.vs:
-            ans = c.vs[key]
+        if key in cvs:
+            ans = cvs[key]
 
     if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
         key = blocks[0].split('=', 1)[0].strip()
-        if key in c.vs:
-            ans = c.vs[key]
+        if key in cvs:
+            ans = cvs[key]
 
-    c.vs['_last'] = ans
+    cvs['_last'] = ans
     
     if ans is not None:  
         # annoying to echo 'None' to the log during line by line execution
@@ -401,7 +409,7 @@ def vs_last(kwargs):
     if 'text' in kwargs:
         txt = kwargs['text']
     else:
-        txt = str(c.vs.get('_last'))
+        txt = str(get_vs(c).d.get('_last'))
         
     editor = c.frame.body
 
@@ -418,7 +426,7 @@ def vs_last_pretty(kwargs):
     """
     
     c = kwargs['c']
-    kwargs['text'] = pprint.pformat(c.vs.get('_last'))
+    kwargs['text'] = pprint.pformat(get_vs(c).d.get('_last'))
     vs_last(kwargs)
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController:
@@ -440,7 +448,7 @@ class ValueSpaceController:
             self.d = ns
         
         self.reset()    
-        self.trace = True
+        self.trace = False
         self.verbose = False
         
         # changed g.vs.__dict__ to self.d
@@ -539,6 +547,8 @@ class ValueSpaceController:
 
         - Evaluate all @= nodes and assign them to variables
         - Evaluate the body of the *parent* nodes for all @a nodes.
+        - Read in @vsi nodes and assign to variables
+        
         '''
         
         c = self.c
@@ -551,13 +561,33 @@ class ValueSpaceController:
                 self.d['p'] = p.copy() # g.vs.p = p.copy()
                 var = h[3:].strip()
                 self.let_body(var,self.untangle(p))
+            elif h.startswith("@vsi "):
+                fname = h[5:]
+                bname, ext = os.path.splitext(fname)
+                g.es("@vsi " + bname +" " + ext)
+                if ext.lower() == '.json':
+                    pth = c.getNodePath(p)
+                    fn = os.path.join(pth, fname)
+                    g.es("vsi read from  " + fn)
+                    if os.path.isfile(fn):
+                        cont = open(fn).read()
+                        val = json.loads(cont)
+                        self.let(bname, val)                    
+                        self.render_value(p, cont)
+                        
+                        
             elif h == '@a' or h.startswith('@a '):
                 if self.trace and self.verbose: g.trace('pass1',p.h)  
                 tail = h[2:].strip()
                 parent = p.parent()
+                
                 if tail:
                     self.let_body(tail,self.untangle(parent))                
-                self.parse_body(parent)
+                try:
+                    self.parse_body(parent)
+                except:
+                    g.es_exception()
+                    g.es("Error parsing " + parent.h)
         # g.trace(self.d)
     #@+node:ekr.20110407174428.5777: *5* let & let_body
     def let(self,var,val):
@@ -583,22 +613,33 @@ class ValueSpaceController:
         firstline = body[0:lend]
         rest = firstline[4:].strip()
         print("rest",rest)  
-        translator = eval(rest, self.d)
+        try:
+            translator = eval(rest, self.d)
+        except:
+            g.es_exception()
+            g.es("Can't instantate @cl xlator: " + rest)
         translated = translator(body[lend+1:])
         self.let(var, translated)
         
     def let_body(self,var,val):
-        # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
+        if var.endswith(".yaml"):
+            #print "set to yaml", `val`
+            sio = BytesIO(val)
+            try:
+                d = yaml.load(sio)
+            except:
+                
+                g.es_exception()
+                g.es("yaml error for: " + var)
+                return
+            parts = os.path.splitext(var)        
+            self.let(parts[0], d)
+            return        
         
-        #lend = val.find('\n')
-        #firstline = val[0:lend]
-        
-        #lines = val.strip().split('\n')
         if val.startswith('@cl '):
             self.let_cl(var, val)
             return
             
-        #self.let(var,SList(lines))
         self.let(var,val)
         
         
@@ -643,9 +684,12 @@ class ValueSpaceController:
             useSelectedText=False,
             useSentinels=False)
     #@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) & helper
-    def update_vs(self):
+    def update_vs(self):    
         
-        '''Evaluate @r <expr> nodes, puting the result in their body text.'''
+        '''
+        Evaluate @r <expr> nodes, puting the result in their body text.
+        Output @vso nodes, based on file extension    
+        '''
         
         c = self.c
         for p in c.all_unique_positions():
@@ -653,9 +697,46 @@ class ValueSpaceController:
             if h.startswith('@r '):
                 if self.trace and self.verbose: g.trace('pass2:',p.h)
                 expr = h[3:].strip()
-                result = eval(expr,self.d)
+                try:
+                    result = eval(expr,self.d)
+                except:
+                    
+                    g.es_exception()
+                    g.es("Failed to render " + h)
+                    continue
+                    
                 if self.trace: print("Eval:",expr,"result:",repr(result))
                 self.render_value(p,result)
+            
+            if h.startswith("@vso "):
+                expr = h[5:].strip()
+                bname, ext = os.path.splitext(expr)            
+                try:
+                    result = eval(bname,self.d)
+                except:
+                    
+                    g.es_exception()
+                    g.es("@vso failed: " + h)
+                    continue
+                if ext.lower() == '.json':
+                    cnt = json.dumps(result, indent = 2)
+                    pth = os.path.join(c.getNodePath(p), expr)
+                    self.render_value(p, cnt)
+                    g.es("Writing @vso: " + pth)
+                    open(pth, "w").write(cnt)
+                    
+                    
+                else:
+                    g.es_error("Unknown vso extension (should be .json, ...): " + ext)
+                                    
+                    
+                    
+                    # dump file as json
+                    
+                    
+                    
+                
+                pass
     #@+node:ekr.20110407174428.5784: *5* render_value
     def render_value(self,p,value):
         

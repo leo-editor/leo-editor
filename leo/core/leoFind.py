@@ -1352,7 +1352,7 @@ class leoFind:
             if showState:
                 c.k.showStateAndMode(w)
             c.bodyWantsFocusNow()
-            assert w.getAllText() == p.b
+            assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
             # w.seeInsertPoint()
             c.outerUpdate()
