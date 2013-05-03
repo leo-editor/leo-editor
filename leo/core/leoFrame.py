@@ -624,17 +624,15 @@ class leoBody (HighLevelInterface):
 
         '''Delete the presently selected body text editor.'''
 
-        c = self.c ; w = c.frame.body.bodyCtrl ; d = self.editorWidgets
-
+        c = self.c
+        w = c.frame.body.bodyCtrl
+        d = self.editorWidgets
         if len(list(d.keys())) == 1: return
-
         name = w.leo_name
-
         del d [name] 
         self.pb.delete(name)
         panes = self.pb.panes()
         minSize = float(1.0/float(len(panes)))
-
         for pane in panes:
             self.pb.configurepane(pane,size=minSize)
 

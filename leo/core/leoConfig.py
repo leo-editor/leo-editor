@@ -1530,7 +1530,8 @@ class GlobalConfigManager:
 
         '''Return the value of @directory setting, or None if the directory does not exist.'''
 
-        theDir = self.getString(setting)
+        # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
+        theDir = self.get(setting,'directory')
 
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
@@ -1903,7 +1904,8 @@ class LocalConfigManager:
 
         '''Return the value of @directory setting, or None if the directory does not exist.'''
 
-        theDir = self.getString(setting)
+        # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
+        theDir = self.get(setting,'directory')
 
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir

@@ -41,15 +41,6 @@ bzr ci => git commit -a
 bzr add => git add
 bzr push => git push
 bzr revert => git reset --hard
-.. @+node:ekr.20130502102046.10578: *3* Crash deleting body editor
-# Trying to delete a second body editor.
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20130501035328.10473: *3* write about backward deductions
 Backward deductions are more local.  They can be used to deduce argument types.
 
@@ -839,6 +830,68 @@ undoer...
 .. @+node:ekr.20130502071141.10576: *4* 4.11 Features
 .. @+node:ekr.20130413061407.10365: *5* ?Ignore @url lines and @rclick nodes in scripts
 .. @+node:ekr.20130502071141.10573: *4* 4.11 Installation
+.. @+node:ekr.20130503053253.10548: *3* Draft: unit testing tutorial
+@wrap
+@language rest
+
+The following is a first draft of a unit-testing tutorial.  It will form the basis of a new help-for-unit-testing command, and will also become the introduction to Leo unit-testing chapter.
+
+All comments are welcome.  Please let me know if anything is unclear.
+
+
+------------------
+
+.. |br| raw:: html
+
+   <br />
+
+Leo makes it easy to create unit tests from individual outline nodes or trees.
+
+A node whose headline starts with @tests defines a unit test.
+
+The body text of the @test node contains a **self-contained** unit test.
+
+For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do: |br|
+<alt-x>run-selected-unit-tests-locally. |br|
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do: |br|
+<alt-x>run<tab>
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+@test nodes may use section references and \@others
+as usual, but unit tests may also put test data 
+in child nodes.
+
+For more details about unit testing, see:
+http://leoeditor.com/unitTesting.html
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
+.. @+node:ekr.20130502102046.10578: *3* Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20110921094450.6956: ** To do: 4.11
 @language rest
 
