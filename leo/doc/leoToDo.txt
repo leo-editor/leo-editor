@@ -36,15 +36,27 @@ After the release:
     - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
-.. @+node:ekr.20130502113223.10589: *3* Look at failing unit tests
-# https://gist.github.com/gatesphere/432a20651399ce43f7c8
+.. @+node:ekr.20130503053253.10548: *3* * Create unit testing tutorial
 .. @+node:ekr.20130502104323.10581: *3* Get github working
 bzr ci => git commit -a
 bzr add => git add
 bzr push => git push
 bzr revert => git reset --hard
-.. @+node:ekr.20130501171351.10494: *3* Organize Leo bugs
-.. @+node:ekr.20130501035328.10476: *4* Re-open bug report about disappearing lines
+.. @+node:ekr.20130502102046.10578: *3* Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130501035328.10473: *3* write about backward deductions
+Backward deductions are more local.  They can be used to deduce argument types.
+
+Backward deductions give *domains*; forward deductions give *ranges*.
+
+Ranges are more useful, but domains may simplify computations.
 .. @+node:ekr.20130501035328.12634: *3* Use Leo for email?
 m = imaplib.IMAP4_SSL('imap.gmail.com',993) # Require SSL: Yes
 m.login('edreamleo',<<my password>>)

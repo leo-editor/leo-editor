@@ -152,6 +152,76 @@
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
+<v t="ekr.20130503060645.4073"><vh>Failing unit tests</vh></v>
+<v t="ekr.20130503061511.4137"><vh>Unit tests from leoPy.leo</vh>
+<v t="ekr.20130503061511.4138"><vh>Recent tests</vh>
+<v t="ekr.20130503061511.4139"><vh>@test assert True</vh></v>
+<v t="ekr.20130503061511.4140"><vh>@test html string</vh>
+<v t="ekr.20130503061511.4141"><vh>@file c:/leo.repo/trunk/leo/core/html string</vh></v>
+<v t="ekr.20130503061511.4145"><vh>@file c:/leo.repo/trunk/leo/core/html string</vh></v>
+<v t="ekr.20130503061511.4149"><vh>@file c:/leo.repo/trunk/leo/core/html string</vh></v>
+</v>
+<v t="ekr.20130503061511.4153"><vh>@test htmlScanner.filterTokens</vh></v>
+<v t="ekr.20130503061511.4154"><vh>@test import dataN.html</vh></v>
+<v t="ekr.20130503061511.4155"><vh>@test unicode stuff</vh></v>
+<v t="ekr.20130503061511.4156"><vh>@test external text operations</vh></v>
+<v t="ekr.20130503061511.4157"><vh>@test nullBody text operations</vh></v>
+<v t="ekr.20130503061511.4158"><vh>@test g.python_tokenize</vh></v>
+<v t="ekr.20130503061511.4159"><vh>@test p.moveToFirst/LastChild</vh>
+<v t="ekr.20130503061511.4160"><vh>child</vh></v>
+</v>
+</v>
+<v t="ekr.20130503061511.4161"><vh>Old lint tests</vh>
+<v t="ekr.20130503061511.4162"><vh> Naming tests</vh>
+<v t="ekr.20130503061511.4163"><vh>&lt;&lt; define s&gt;&gt;</vh></v>
+</v>
+<v t="ekr.20130503061511.4164"><vh>@test create lots of data structures</vh></v>
+<v t="ekr.20130503061511.4165"><vh>@test dumper (to outNodes)</vh></v>
+<v t="ekr.20130503061511.4166"><vh>@test dumper (to outString)</vh></v>
+</v>
+<v t="ekr.20130503061511.4167"><vh>Tests of @shadow from unitTest.leo</vh>
+<v t="ekr.20130503061511.4168"><vh>@@shadow ../test/unittest/at-shadow-test.py</vh>
+<v t="ekr.20130503061511.4169"><vh>spam</vh></v>
+<v t="ekr.20130503061511.4170"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20130503061511.4171"><vh>@@shadow unittest/at-shadow-line-number-test.py</vh>
+<v t="ekr.20130503061511.4172"><vh>child</vh></v>
+</v>
+<v t="ekr.20130503061511.4173"><vh>@test @shadow: shape of tree</vh></v>
+<v t="ekr.20130503061511.4174"><vh>@test goto-global-line @shadow</vh></v>
+</v>
+<v t="ekr.20130503061511.4175"><vh>Unit tests for settings</vh>
+<v t="ekr.20130503061511.4176"><vh>@ignore print dicts unit tests</vh>
+<v t="ekr.20130503061511.4177"><vh>@test printMenusList</vh></v>
+<v t="ekr.20130503061511.4178"><vh>@test printInverseBindingDict</vh></v>
+<v t="ekr.20130503061511.4179"><vh>@test printBindingsDict</vh></v>
+<v t="ekr.20130503061511.4180"><vh>@test printMasterBindingsDict</vh></v>
+</v>
+<v t="ekr.20130503061511.4181"><vh>@ignore passed</vh>
+<v t="ekr.20130503061511.4182"><vh>@test mode-related info</vh></v>
+<v t="ekr.20130503061511.4183"><vh>@test types of contents of settings dicts</vh>
+<v t="ekr.20130503061511.4184"><vh>test_dict_of_dicts</vh></v>
+<v t="ekr.20130503061511.4185"><vh>test_dict_of_lists</vh></v>
+<v t="ekr.20130503061511.4186"><vh>test_dict_of_objects</vh></v>
+<v t="ekr.20130503061511.4187"><vh>Unused</vh></v>
+</v>
+<v t="ekr.20130503061511.4188"><vh>@test merge_settings_dicts</vh>
+<v t="ekr.20130503061511.4189"><vh>dump &amp; dump_dict (@test merge_settings_dicts)</vh></v>
+<v t="ekr.20130503061511.4190"><vh>test (@test merge_settings_dicts)</vh></v>
+</v>
+<v t="ekr.20130503061511.4191"><vh>@test KeyStroke</vh></v>
+<v t="ekr.20130503061511.4192"><vh>@test g.TypedDict</vh></v>
+</v>
+</v>
+<v t="ekr.20130503061511.4193"><vh>@mark-for-unit-tests</vh>
+<v t="ekr.20130503061511.4194"><vh>@settings</vh>
+<v t="ekr.20130503061511.4195"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20130503061511.4196"><vh>@bool enable-abbreviations = True</vh></v>
+<v t="ekr.20130503061511.4197"><vh>@@@enabled-plugins</vh></v>
+<v t="ekr.20130503061511.4198"><vh>@shortcuts</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -567,7 +637,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="12"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1198,6 +1268,902 @@ finally:
 <t tx="ekr.20120229082711.3935"># node 1 text A.
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
+</t>
+<t tx="ekr.20130503060645.4073">starting pass 1...
+.F.
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test html string
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 18, in &lt;module&gt;
+c.config.set(setting,'data',html_tags)
+TypeError: set() takes exactly 5 arguments (4 given)
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test import dataN.html
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 20, in &lt;module&gt;
+c.config.set(setting,'data',html_tags)
+TypeError: set() takes exactly 5 arguments (4 given)
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test dumper (to outNodes)
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 5, in &lt;module&gt;
+import lintutils as u
+ImportError: No module named lintutils
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test dumper (to outString)
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 5, in &lt;module&gt;
+import lintutils as u
+ImportError: No module named lintutils
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test leoInspect with multiple files
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 126, in &lt;module&gt;
+test(files=aList,print_stats=False,s=None,print_times=True)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 110, in test
+s = leoInspect.LeoCoreFiles().get_source(fn)
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test speed of leoInspect.module (all core files)
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 10, in &lt;module&gt;
+for fn in leoInspect.LeoCoreFiles().files:
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test speed of AstTraverser (all Leo core files)
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 11, in &lt;module&gt;
+for fn in leoInspect.LeoCoreFiles().files:
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test compute all ivars in all classes
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 19, in &lt;module&gt;
+for fn in li.LeoCoreFiles().files:
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test find all ctors
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 20, in &lt;module&gt;
+for fn in li.LeoCoreFiles().files:
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test cache contexts
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 16, in &lt;module&gt;
+files = li.LeoCoreFiles().files
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test AstFormatter
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 13, in &lt;module&gt;
+files = li.LeoCoreFiles().files # [0:2]
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test g_files_in_dir
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 16, in &lt;module&gt;
+print('files: %s' % (len(z)))
+NameError: name 'z' is not defined
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test print-chains
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 22, in &lt;module&gt;
+for fn in li.LeoCoreFiles().files: # [:2]:
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test print-calls
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 23, in &lt;module&gt;
+for fn in li.LeoCoreFiles().files: # [:3]:
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3686, in __init__
+self.files = self.create_core_list()
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoInspect.py", line 3699, in create_core_list
+g.app.loadDir,'*.py'))
+AttributeError: 'NoneType' object has no attribute 'loadDir'
+ 
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test imported shbang line
+ 
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "C:\cygwin\home\PeckJ\repos\leo-editor\leo\core\leoTest.py", line 413, in runTest
+execfile(scriptFile,d)
+File "C:\Documents and Settings\PeckJ\.leo\scriptFile.py", line 17, in &lt;module&gt;
+assert g.os_path_exists(fn),fn
+AssertionError: C:\cygwin\home\PeckJ\repos\leo-editor\leo\test\at-auto-at-first-test.py
+ 
+----------------------------------------------------------------------
+Ran 38 tests in 9.704s
+ 
+FAILED (failures=1, errors=14)
+leoDynamicUnittest.py: 10.75sec</t>
+<t tx="ekr.20130503061511.4137">import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s1 = '''
+&lt;table id="1"&gt; &lt;table id="2"&gt;
+&lt;contents/&gt;
+&lt;/table&gt;
+&lt;/table&gt;
+'''
+
+s2 = '''
+&lt;table id="1"&gt; 
+&lt;table id="2"&gt;
+&lt;contents/&gt;
+&lt;/table&gt;
+&lt;/table&gt;
+'''
+
+t1 = 
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
+</t>
+<t tx="ekr.20130503061511.4138"></t>
+<t tx="ekr.20130503061511.4139"># It's useful to have this do-nothing test.
+
+assert True
+</t>
+<t tx="ekr.20130503061511.4140">s = '''\
+&lt;HTML&gt;
+&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class='bodystring'&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+
+html_tags = ('body','head','html','table',) # 'div',
+setting = 'import_html_tags'
+
+# Settings now work when run externally.
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+showTree = True
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=showTree)
+
+if showTree:
+    # g.cls()
+    for p in p.subtree():
+        print('\n***** %s\n' %p.h)
+        print(p.b)
+</t>
+<t tx="ekr.20130503061511.4153">import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+strip = hs.stripTokens
+dump  = hs.formatTokens
+
+s1 = '''&lt;table id="1"&gt;&lt;table id="2"&gt;
+&lt;contents/&gt;
+&lt;/table&gt;
+&lt;/table&gt;'''
+
+s2 = '&lt;table id="1"&gt;&lt;table id="2"&gt;&lt;contents/&gt;&lt;/table&gt;&lt;/table&gt;'
+    
+t1 = hs.tokenize(s1)
+t2 = hs.tokenize(s2)
+f1 = hs.filterTokens(t1)
+f2 = hs.filterTokens(t2)
+
+assert strip(f1) == strip(f2),'f1...\n%s\nf2...\n%s' % (
+    dump(f1),dump(f2))
+    
+if 0:
+    print(dump(f1))
+</t>
+<t tx="ekr.20130503061511.4154">fn = r'c:\recent\data.html'
+
+# fn = r'c:\recent\data-smaller.html'
+# fn = r'c:\recent\data666.html'
+
+# These all pass on data.html:
+    # html_tags = ('html','head','body',)
+    # html_tags = ('html','head','body','table',)
+    # html_tags = ('html','head','body','table','div',)
+    # html_tags = ('html','head','body','table','div','script',)
+    # html_tags = ('html','head','body','table','div','script','link',)
+    # html_tags = ('html','head','body','table','div','script','link','p',)
+
+html_tags = ('html','head','body','table','div','script','p','td','tr',)
+
+# Settings now work when run externally.
+setting = 'import_html_tags'
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
+
+g.cls()
+
+c.importCommands.importFilesCommand(files=[fn], treeType='@file')
+</t>
+<t tx="ekr.20130503061511.4155">@first # -*- coding: utf-8 -*-
+
+table = (
+    'test',
+    'Ä 궯 奠',
+    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
+)
+
+print('*'*20)
+print('isPython3: %s' % g.isPython3)
+
+for s in table:
+    if g.isPython3:
+        s = s.encode('ascii','replace') # create bytes.
+    g.es(repr(s))
+    g.es(s)
+    g.pr ('g.pr(s)       : %s' % s)
+    g.pr ('g.pr(repr(s)) : %s' % repr(s))
+    print('print(s)      : %s' % s)
+    print('print(repr(s)): %s' % s)
+</t>
+<t tx="ekr.20130503061511.4156">assert g.app.isExternalUnitTest
+
+body = c.frame.body
+assert repr(body.widget).startswith('stringTextWidget')
+assert body.widget == body.bodyCtrl
+
+w = body.bodyCtrl
+w.setAllText(p.b)
+assert p.b == w.getAllText()
+</t>
+<t tx="ekr.20130503061511.4157"># print('isExternalUnitTest',g.app.isExternalUnitTest)
+
+if g.app.isExternalUnitTest:
+    body = c.frame.body
+else:
+    import leo.core.leoCommands as leoCommands
+    import leo.core.leoFrame as leoFrame
+    import leo.core.leoGui as leoGui
+    
+    # Important: external unit tests should execute in this environment.
+    nullGui   = leoGui.nullGui('null gui')
+    nullFrame = leoFrame.nullFrame(title='nullFrame title',gui=nullGui)
+    c2 = leoCommands.Commands(nullFrame,fileName='&lt;empty fileName&gt;')
+    nullFrame.c = c2
+    body = leoFrame.nullBody(frame=nullFrame,parentFrame=None)
+    assert repr(body).startswith('&lt;leo.core.leoFrame.nullBody')
+
+# Now test some basic operations.
+assert repr(body.widget).startswith('stringTextWidget')
+assert body.widget == body.bodyCtrl
+w = body.bodyCtrl
+
+w.setAllText(p.b)
+assert p.b == w.getAllText()
+</t>
+<t tx="ekr.20130503061511.4158"># h = 'g.python_tokenize'
+# p = p.firstChild()
+# assert p.h == h
+tokens = g.python_tokenize(p.b,line_numbers=False)
+
+# tokens = [(kind,val) for (kind,val,line_number) in tokens]
+
+# First, the basic check
+tokens1 = [val for kind,val in tokens]
+s = ''.join(tokens1)
+assert p.b == s,repr(s)
+
+if 0:
+    for z in tokens:
+        kind,val = z
+        print('%6s %s' % (kind,repr(val)))
+        
+# Next, start filtering.
+tokens = [(kind,g.choose(kind=='string','"S"',val)) for kind,val in tokens]
+
+if 0: # Delete whitespace.
+    tokens = [(kind,val) for (kind,val) in tokens if kind != 'ws']
+    tokens = [(kind,g.choose(kind=='id',val+' ',val)) for (kind,val) in tokens]
+
+# Last: stringize.
+tokens = [val for kind,val in tokens if kind != 'comment']
+# print(''.join(tokens))
+
+if 1: # Print lines containing '='
+    s = ''.join(tokens)
+    for ch in '()[]{}&lt;&gt;.,:=+-/':
+        s = s.replace(' '+ch,ch)
+    aList = [z for z in g.splitLines(s)
+        if z.find('=') &gt; -1] # and not z.find('+=')&gt;-1 and not z.find('-=')&gt;-1]
+    print(''.join(aList))
+    
+</t>
+<t tx="ekr.20130503061511.4159">def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+child = p.firstChild()
+assert child
+setup(child)
+p2 = child.insertAfter()
+p2.h = "test"
+try:
+    assert c.positionExists(p2),p2
+    p2.moveToFirstChildOf(child)
+    assert c.positionExists(p2),p2
+    p2.moveToLastChildOf(child)
+    assert c.positionExists(p2),p2
+finally:
+    if 1:
+        setup(child)
+    c.redraw(p)
+</t>
+<t tx="ekr.20130503061511.4160"></t>
+<t tx="ekr.20130503061511.4161"></t>
+<t tx="ekr.20130503061511.4162"># http://docs.python.org/reference/executionmodel.html#naming-and-binding
+
+if 0:
+    def test():
+        a = b
+        b = 1 # UnboundLocalError
+        
+print('***')
+          
+def test():
+    global g2
+    g2 = 4
+    def test2():
+        print(g2)
+    test2()
+    g2 = 3
+    print(g2)
+    
+g2 = 'g2'
+print(g2)
+
+test()
+</t>
+<t tx="ekr.20130503061511.4163">s = '''
+
+
+
+'''
+
+s = g.adjustTripleString(s,-4)
+</t>
+<t tx="ekr.20130503061511.4164"># A simple prototype of data-centric design.
+# 0.023 sec to create 100,000 dicts.
+# 0.230 sec to create 1,000,000 dicts.
+
+import time
+
+t1 = time.clock()
+n = 1000000
+
+d = {}
+for z in range(n):
+    d[n] = {'n':n,}
+
+t2 = time.clock()
+print('Created %s dicts in %2.3f sec.' % (n,t2-t1))
+</t>
+<t tx="ekr.20130503061511.4165">import leo.core.leoGlobals as g
+import sys
+import lintutils as u
+
+fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
+out = 'c:/leo.repo/new-pylint/outNodes.txt'
+
+outStream = open(out,'w')
+u.AstDumper().dumpFileAsNodes(fn,outStream)
+</t>
+<t tx="ekr.20130503061511.4166">import leo.core.leoGlobals as g
+import sys
+import lintutils as u
+
+fn = 'c:/leo.repo/trunk/leo/core/leoApp.py'
+out = 'c:/leo.repo/new-pylint/outString.txt'
+
+outStream = open(out,'w')
+u.AstDumper(brief=True).dumpFileAsString(fn,outStream)
+</t>
+<t tx="ekr.20130503061511.4167"></t>
+<t tx="ekr.20130503061511.4168">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20130503061511.4169">def spam():
+    pass
+</t>
+<t tx="ekr.20130503061511.4170">def eggs():
+    pass
+</t>
+<t tx="ekr.20130503061511.4171">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20130503061511.4172">def child():
+    pass
+</t>
+<t tx="ekr.20130503061511.4173"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+
+    h = '@shadow ../test/unittest/at-shadow-test.py'
+    p = g.findNodeAnywhere(c,h)
+    assert p
+    
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    assert not p.isDirty(),p.h # Do not ignore this failure!
+    
+    for p2,h2 in table:
+        assert len(p2.h) == len(h2)
+</t>
+<t tx="ekr.20130503061511.4174"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+
+    h = '@shadow unittest/at-shadow-line-number-test.py'
+    root1 = g.findNodeAnywhere(c,h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    
+    fileName,lines,n,root2 = c.goToLineNumber(c).setup_file(n=6,p=root1)
+    assert fileName == h[8:],'fileName'
+    assert root2 == root1
+    
+    if 0:
+        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+            root and root.h,isRaw,n,len(lines)))
+</t>
+<t tx="ekr.20130503061511.4175"></t>
+<t tx="ekr.20130503061511.4176"></t>
+<t tx="ekr.20130503061511.4177">def printMenusList(aList,level=0):
+    
+    for z in aList:
+        a,b,c = z
+        print('*** kind',a)
+        if type(b) in (type(()),type([])):
+            for z2 in b:
+                a1,b1,c1 = z2
+                if a1.startswith('@menu') and type(b1) in (type(()),type([])):
+                    print()
+                    print('*** inner menu: %s' % (level+1))
+                    print(a1)
+                    for z3 in b1:
+                        print(z3)
+                    if c1: print(c1)
+                else:
+                    print(z2)
+            if c: print(c)
+        else:
+            print(b)
+        print()
+        break #
+        
+printMenusList(c.config.getMenusList())
+       
+</t>
+<t tx="ekr.20130503061511.4178">print('\ninverseBindingDict...\n')
+
+d = c.k.computeInverseBindingDict()
+
+for key in sorted(list(d.keys())):
+
+    if 1 == len(d.get(key)):
+        print(key,d.get(key))
+    else:
+        print()
+        print(key)
+        print(d.get(key))
+        print()
+</t>
+<t tx="ekr.20130503061511.4179">import leo.core.leoConfig as leoConfig # for ShortcutInfo
+    
+partial = True
+
+d = c.k.bindingsDict
+    # Keys are shortcuts; values are *lists* leoConfig.ShortcutInfo objects.
+    
+print('\nk.bindingsDict%s...\n' % ' (partial)' if partial else '')
+    
+for key in list(sorted(d.keys())):
+    aList = d.get(key,[])
+    for b in aList:
+        assert isinstance(b,leoConfig.ShortcutInfo)
+        if not partial or b.kind != 'leosettings.leo':
+            print(b)
+</t>
+<t tx="ekr.20130503061511.4180">partial = True
+
+panes = ('all','body','button','log','tree','text',
+    'command','insert','overwrite',)
+
+d = c.k.masterBindingsDict
+    # Keys are scope names (in panes) or mode names.
+    # Values are dicts:
+        # keys are strokes; values are leoConfig.ShortcutInfo objects.
+        
+print('\nk.masterBindingsDict%s...\n' % ' (partial)' if partial else '')
+
+for pane in sorted(list(d.keys())):
+    kind = 'pane' if pane in panes else 'mode'
+    print('%s: %s...' % (kind,pane))
+    d2 = d.get(pane)
+    for stroke in sorted(list(d2.keys())):
+        b = d2.get(stroke)
+        if not partial or b.kind != 'leosettings.leo':
+            print('%6s %25s %17s %s' % (b.pane,stroke,b.kind,b.commandName))
+            assert b.pane == pane
+            assert b.stroke == stroke
+    print()
+</t>
+<t tx="ekr.20130503061511.4181"></t>
+<t tx="ekr.20130503061511.4182">@
+
+g.app.config.modeCommandsDict
+    Keys are command names: enter-x-mode.
+    Values are inner dictionaries:
+        Keys are command names, values are lists of ShortcutInfo nodes.
+@c
+
+d = g.app.config.modeCommandsDict
+    
+for key in sorted(d.keys()):
+    print('*** mode ***',key)
+    d2 = d.get(key)
+    for key2 in sorted(d2.keys()):
+        aList = d2.get(key2)
+        print(key2)
+        for si in aList:
+            print('   ',si)
+</t>
+<t tx="ekr.20130503061511.4183">@
+ivar                    Keys                Values
+----                    ----                ------
+c.commandsDict          command names (1)   functions
+k.inverseCommandsDict   func.__name__       command names
+k.bindingsDict          shortcuts           list of ShortcutInfo objects
+k.masterBindingsDict    scope names (2)     inner masterBindingDicts (3)
+k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
+k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
+inverseBindingDict (5)  command names       lists of tuples (pane,key)
+modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
+
+Notes:
+(1) Command names are minibuffer names (strings)
+(2) Scope names are 'all','text',etc.
+(3) inner masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+(4) k.settingsNameDict has no inverse.
+(5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
+(6) A global dict: g.app.gui.modeCommandsDict
+(7) enter-x-command
+(8) Keys are command names, values are lists of ShortcutInfo objects.
+@c
+
+si_type = c.k.ShortcutInfo
+disabled_func_type = None # Should be any bound method.
+k = c.k
+
+@others
+
+test_dict_of_objects(c.commandsDict,type('s'),disabled_func_type,'commandsDict')
+test_dict_of_objects(k.inverseCommandsDict,type('s'),type('s'),'inverseCommandsDict')
+test_dict_of_lists(k.bindingsDict,si_type,'bindingsDict')
+test_dict_of_dicts(k.masterBindingsDict,si_type,'masterBindingsDict')
+test_dict_of_lists(k.masterGuiBindingsDict,None,'masterGuiBindingsDict')
+test_dict_of_objects(k.settingsNameDict,type('s'),type('s'),'settingsNameDict')
+test_dict_of_lists(k.computeInverseBindingDict(),type(tuple()),'inverseBindingDict')
+
+# Test individual dicts separately.
+d = g.app.config.modeCommandsDict
+test_dict_of_dicts(d,None,'modeCommandsDict')
+for key in sorted(d.keys()):
+    d2 = d.get(key)
+    test_dict_of_lists(d2,si_type,'inner modeCommandsDict')
+        # This requires a hack to special-case the
+        # '*entry-commands*' and '*command-prompt*' keys.
+</t>
+<t tx="ekr.20130503061511.4184">def test_dict_of_dicts(d,theType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        d2 = d.get(key)
+        assert type(d2) == type({})
+        for key in d2.keys():
+            obj = d2.get(key)
+            if theType:
+                assert type(obj) == theType,repr(obj)
+</t>
+<t tx="ekr.20130503061511.4185">def test_dict_of_lists(d,theType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        obj = d.get(key)
+        if key in ('*entry-commands*','*command-prompt*'):
+            # Special case for g.app.config.modeCommandsDict
+            assert type(obj)==type([]),repr(obj)
+        else:
+            assert type(obj) == type([])
+            # Don't check types of list elements if theType is None.
+            if theType:
+                for z in obj:
+                    assert type(z)==theType,'key: %s obj: %s' % (key,repr(obj))
+</t>
+<t tx="ekr.20130503061511.4186">def test_dict_of_objects(d,keyType,valueType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        assert type(key) == keyType,repr(key)
+        obj = d.get(key)
+        # Don't check type of obj if valueType is None.
+        if valueType:
+            assert type(obj) == valueType,'\nobj: %s\nvalueType: %s' % (repr(obj),valueType)
+</t>
+<t tx="ekr.20130503061511.4187"># import types
+# types.ListType does not exist in Python 3.x.
+# assert isinstance(aList,list().__class__)
+</t>
+<t tx="ekr.20130503061511.4188">@others
+
+# import os ; os.system('cls')
+    
+d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+d3 = g.app.config.merge_settings_dicts(d1,d2)
+
+if False:
+    patterns = (
+        'backward-find-character-extend-selection',
+    )
+    for pattern in patterns:
+        print(dump_dict(d1,pattern,tag='d1'))
+        print(dump_dict(d2,pattern,tag='d2'))
+        print(dump_dict(d3,pattern,tag='d3'))
+
+test(d1,d2,d3)
+</t>
+<t tx="ekr.20130503061511.4189">def dump(aList,pattern=None,tag=None):
+    
+    return '\n'.join([repr(z) for z in aList])
+    
+
+def dump_dict(d,pattern=None,tag=None):
+    
+    result = [] # '\ndump of %s...' % (tag)
+    
+    for key in d.keys():
+        if pattern in (key,None):
+            result.append(key)
+            aList = d.get(key)
+            for z in aList:
+                result.append('    %s' % (z))
+                
+    return '\n'.join(result)
+</t>
+<t tx="ekr.20130503061511.4190">def test(old_d,new_d,result_d):
+    
+    '''Test that result_d is the result of upating old_d with new_d.
+    
+    This test is tricky: only inverted dicts have ShortcutInfo nodes as keys.'''
+    
+    invert,uninvert = g.app.config.invert,g.app.config.uninvert
+
+    # Compute the inversions of all the dicts.
+    inv_old,inv_new,inv_res = invert(old_d),invert(new_d),invert(result_d)
+    
+    # Part 1: Ensure we test all keys.
+    keys = list(inv_old.keys())
+    keys.extend(list(inv_new.keys()))
+    keys.extend(list(inv_res.keys()))
+    keys = sorted(list(set(keys)))
+    assert None not in keys
+    for key in inv_old.keys(): assert key in keys,key
+    for key in inv_new.keys(): assert key in keys,key
+    for key in inv_res.keys(): assert key in keys,key
+    
+    # Part 2: Carefully test the inverted result.
+    def si_name_key(si): return si.commandName or ''
+
+    for key in keys:
+        # Compute the *sorted* list of 
+        res_list = sorted(inv_res.get(key,[]),key=si_name_key)
+        old_list = sorted(inv_old.get(key,[]),key=si_name_key)
+        new_list = sorted(inv_new.get(key,[]),key=si_name_key)
+        assert res_list,'no res_list.get(%s)' % (key)
+        # if new_list: print(key,dump(new_list))
+        if new_list:
+            assert new_list == res_list,'key %s\nnew:\n%s\nres:\n%s' % (
+                key,dump(new_list),dump(res_list))
+        else:
+            assert old_list == res_list,'key %s\nold:\n%s\nres:\n%s' % (
+                key,dump(old_list),dump(res_list))
+    
+    # Part 3: Test that result_d == uninvert(invert(result_d)).
+    # A.  They must have the same keys.
+    unv_res = uninvert(inv_res)
+    assert sorted(list(result_d.keys())) == sorted(list(unv_res.keys()))
+
+    # B. The values of for each key must match after being sorted.
+    def si_stroke_key(si): return si.stroke or ''
+        
+    for key in sorted(result_d.keys()):
+        res_list = sorted(result_d.get(key,[]),key=si_stroke_key)
+        unv_list = sorted( unv_res.get(key,[]),key=si_stroke_key)
+        assert res_list == unv_list,'key %s\nres:\n%s\nunv:\n%s' % (
+            key,dump(res_list),dump(unv_list))
+   
+</t>
+<t tx="ekr.20130503061511.4191">ks = c.k.KeyStroke
+
+@others
+
+a1 = ks('a')
+a2 = ks('a')
+b1 = ks('b')
+assert a1 == a2
+d = {}
+d[a1] = a1.s
+d[a2] = a2.s
+d[b1] = b1.s
+
+for key in sorted(d):
+    print(key,d.get(key))
+</t>
+<t tx="ekr.20130503061511.4192">d = g.TypedDictOfLists('ks',type('s'),type(9))
+d.add('a',1)
+d.add('a',2)
+d.add('b',3)
+
+print(d)
+for s in sorted(d.keys()):
+    print(s,d.get(s,[]))
+
+print('after replace...')
+d.replace('a',[8,9,10])
+
+for s in sorted(d.keys()):
+    print(s,d.get(s,[]))
+</t>
+<t tx="ekr.20130503061511.4193"></t>
+<t tx="ekr.20130503061511.4194"></t>
+<t tx="ekr.20130503061511.4195"></t>
+<t tx="ekr.20130503061511.4196"></t>
+<t tx="ekr.20130503061511.4197"># Leo loads plugins in the order they appear here.
+
+# Highly-recommended plugins:
+
+plugins_menu.py
+free_layout.py # needs to be early
+viewrendered.py
+mod_scripting.py
+bigdash.py
+</t>
+<t tx="ekr.20130503061511.4198">run-selected-unit-tests-externally = Alt-4 # Standard binding, unchanged.
+run-marked-unit-tests-externally = Alt-5
+run-marked-unit-tests-locally = Alt-6
 </t>
 </tnodes>
 </leo_file>
