@@ -355,23 +355,21 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 self.listAbbrevs()
 
         k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
-        # here for speed in masterCommand
+        # here for speed in masterCommand.
+        # EKR: always init these.
+        c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
+        c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
+        c.abbrev_place_start = c.config.getString('abbreviations-place-start')
+        c.abbrev_place_end = c.config.getString('abbreviations-place-end')
+        c.abbrev_subst_env = {
+            'c': c,
+            'g': g,
+            '_values': {},
+        }
         if (c.config.getString('abbreviations-subst-start') and
             c.config.getBool('scripting-at-script-nodes')):
-
-            c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
-            c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
-            c.abbrev_place_start = c.config.getString('abbreviations-place-start')
-            c.abbrev_place_end = c.config.getString('abbreviations-place-end')
-            c.abbrev_subst_env = {
-                'c': c,
-                'g': g,
-                '_values': {},
-            }
             if c.config.getData('abbreviations-subst-env'):
-
                 aList = c.config.getData('abbreviations-subst-env')
-
                 idx = len(aList) - 1
                 while idx != 0: # append continued lines
                     if aList[idx].startswith('\:'):
@@ -381,13 +379,11 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     idx -= 1
 
                 exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
-
         else:
             c.abbrev_subst_start = False
             if c.config.getString('abbreviations-subst-start'):
                 g.es("Note: @abbreviations-subst-start found, but no substitutions "
                      "without @scripting-at-script-nodes = True")
-
 
         if (k.abbrevOn and not g.app.initing and
             not g.unitTesting and not g.app.batchMode and
