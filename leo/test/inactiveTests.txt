@@ -6208,5 +6208,1492 @@ y = 10
 for x in range(0,100,10):
     event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
     c.frame.body.onClick(event)
+#@+node:ekr.20130503061820.4217: ** @ignore LeoInspect unit tests
+@language python
+#@+node:ekr.20130503061820.4218: *3* Basic tests
+#@+node:ekr.20130503061820.4219: *4* @test leoInspect with multiple files
+import leo.core.leoInspect as leoInspect
+import os
+import time
+
+<< define old_s >>
+<< define s >>
+
+@others
+
+aList = (
+    'leoAtFile.py',
+    'leoEditCommands.py',
+)
+test(files=aList,print_stats=False,s=None,print_times=True)
+#@+node:ekr.20130503061820.4220: *5* << define old_s >>
+# import leo.core.leoGlobals
+# import leo.core.leoGlobals as g
+# from leo.core.leoGlobals import pr as pr2
+# from leo.core.leoGlobals import trace
+
+s_old = '''\
+import sys
+
+aGlobal = 5
+# aGlobal2 is not explicitly defined.
+
+c = [z for z in 'abc']
+
+def myFunc():
+    n1,n2,n3,junk,junk=sys.version_info
+    a = self.b
+    for z in a:
+        print(z)
+    with A() as a:
+        print(a,b)
+        
+def test():
+    a = b # UnboundLocalError.
+    b = 1
+    c = 2 # Any def will do at present.
+    print(g)
+    print(c.frame.body)
+    print(c.frame.body.xxx.yyy)
+    print(b.yyy) # no check will be made.
+    print(xxx.yyy)
+    for c in 'abc':
+        print(c,b)
+        print(g)
+
+
+class myClass:
+    
+    def __init__(self,c):
+        self.a = True
+        self.b = None
+        c.frame.xxxx
+        
+    def spam(self,a,b,c=5,*args,**keys):
+        global aGlobal2
+        aGlobal2 = 'abc'
+        self.a = b
+        self.a = x
+        
+    def no_self(a):
+        pass
+        
+    def test_lambda(self):
+        f = lambda a,b: a
+
+    def test_comprehension(self):
+        z2 = [z for z in 'abc']
+        
+aGlobal3 = 4 # This should be defined everywhere.
+
+def test():
+    # a = ','.join(['a','b'])
+    p = 5
+    # print(p.parent().h)
+    # print(g.app.windowList[0])
+    print(p)
+    print(g)
+
+'''
+
+# import leo.core.leoCommands as leoCommands
+#@+node:ekr.20130503061820.4221: *5* << define s >>
+s = '''\
+
+import leo.core.leoGlobals as g
+
+def test(c):
+    a = 5
+    f = c.frame
+    c.frame.body.bodyCtrl = w
+
+'''
+
+s = g.adjustTripleString(s,-4)
+# print(s)
+#@+node:ekr.20130503061820.4222: *5* test
+def test(files,print_stats=True,s=None,print_times=True):
+   
+    t1 = time.time()
+    sd = leoInspect.SemanticData(controller=None)
+
+    if s: # Use test string.
+        fn = '<test file>'
+        leoInspect.InspectTraverser(fn,sd).traverse(s)
+    else:
+        for fn in files:
+            print(g.shortFileName(fn))
+            s = leoInspect.LeoCoreFiles().get_source(fn)
+            if s:
+                leoInspect.InspectTraverser(fn,sd).traverse(s)
+            else:
+                print('file not found: %s' % (fn))
+           
+    sd.total_time = time.time()-t1
+    
+    if print_times: sd.print_times()
+    if print_stats: sd.print_stats()
+#@+node:ekr.20130503061820.4223: *4* @test leoInspect.module.classes
+import leo.core.leoInspect as leoInspect
+
+dump_classes = False
+print_modules = True
+print_functions = True
+print_stats = False
+print_times = False
+
+# if dump_modules or print_stats:
+    # g.cls()
+
+m = leoInspect.module(fn='leoApp.py',sd=None,
+    print_stats=print_stats,print_times=print_times)
+    
+if 0:
+    print(m)
+    for o in m.classes():
+        if dump_classes:
+            o.dump()
+        if print_modules:
+            print(o)
+        if print_functions:
+            for f in o.functions():
+                print('  %s' % f)
+#@+node:ekr.20130503061820.4224: *4* @test leoInspect.module.defs
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+if 0:
+    print(m)
+    for z in m.classes():
+        print(z)
+        for z2 in z.defs():
+            name = z2.tree_ptr.name
+            aList = z2.call_args_of(name)
+            args = ','.join(aList)
+            print(' %s(%s)' % (name,args))
+#@+node:ekr.20130503061820.4225: *4* @test leoInspect.module.classes 2
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+    
+if 0:
+    for z in m.classes():
+        print(z)
+#@+node:ekr.20130503061820.4226: *4* @test leoInspect.module.statements
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+    #,sd=None,print_stats=False,print_times=False)
+
+if 0:
+    print(m)
+    for z in m.classes():
+        print(z)
+        for z2 in z.defs():
+            print(z2)
+#@+node:ekr.20130503061820.4227: *4* @test leoInspect (leoEditCommands.py)
+import leo.core.leoInspect as leoInspect
+
+# g.cls()
+
+m = leoInspect.module(fn='leoEditCommands.py')
+
+def show(o):
+    print('%-5s %s' % (o.line_number(),o.format()))
+
+var = '.widget'
+func = 'w.insert'
+
+if 0:
+    print('\nAssignments to %s...\n' % (var))
+    for o in m.assignments_to(var):
+        show(o)
+        
+    print('\nAssignments using %s...\n' % (var))
+    for o in m.assignments_using(var):
+        show(o)
+        
+    print('\nCalls to %s...\n' % (func))
+    for o in m.calls_to(func):
+        show(o)
+        
+    if 1:
+        classes = m.classes()
+        for d in classes[0].defs():
+            print('')
+            print(d)
+            for z in d.statements():
+                # print(z.tree())
+                # print(z.sd.dump_ast(z.tree()))
+                lines = g.splitLines(z.format())
+                for line in lines:
+                    print('  %s' % (line))
+#@+node:ekr.20130503061820.4228: *4* @test leoInspect.module (s)
+import leo.core.leoInspect as leoInspect
+
+def show(o,indent=0):
+    # print('\n%s\n' % o.sd.dump_ast(o.tree()))
+    print('%s%s' % (' '*4*indent,o.format()))
+
+<< define s >>
+print('Input...\n%s\n' % (s.rstrip()))
+
+m = leoInspect.module(s=s)
+
+# print(show(m,0))
+
+print('\nStatements...\n')
+for o in m.statements():
+    print(o.format())
+    
+if 0:
+    print('\nAssignments...\n')
+    for o in m.assignments():
+        print(o.format())
+
+print('\nAssignments to a...\n')
+for o in m.assignments_to('a'):
+    print(o.format())
+    
+print('\nAssignments using d...\n')
+for o in m.assignments_using('d'):
+    print(o.format())
+    
+print('\nCalls to f...\n')
+for o in m.calls_to('f'):
+    print(o.format())
+
+if 0:
+    for f in m.functions():
+        show(f,0)
+        for z in f.statements():
+            show(z,1)
+    
+    for cls in m.classes():
+        show(cls,0)
+        for d in cls.defs():
+            show(d,1)
+            for z in d.statements():
+                show(z,1)
+#@+node:ekr.20130503061820.4229: *5* << define s >>
+s = '''
+x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
+a=b+c
+p,d,q[5]=f(a=1,b=2,*args,**keys)
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
+#@+node:ekr.20130503061820.4230: *3* leoInspect speed tests
+#@+node:ekr.20130503061820.4231: *4* @test speed of leoInspect.module (all core files)
+import leo.core.leoInspect as leoInspect
+import time
+
+t1 = time.time()
+
+sd = leoInspect.SemanticData()
+count = 0
+for fn in leoInspect.LeoCoreFiles().files:
+    # print(fn)
+    m = leoInspect.module(fn,sd=sd)
+    count += 1
+
+t2 = time.time()
+
+print('file: %s time: %2.2f sec' % (count,t2-t1))
+
+if 0:
+    sd.print_stats()
+if 1:
+    sd.print_times()
+#@+node:ekr.20130503061820.4232: *4* @test speed of AstTraverser (all Leo core files)
+import leo.core.leoGlobals as g
+import leo.core.leoInspect as leoInspect
+import ast
+import time
+
+read_time,parse_time,traverse_time = 0.0,0.0,0.0
+t_start = time.time()
+count = 0
+for fn in leoInspect.LeoCoreFiles().files:
+    count += 1
+    t2 = time.time()
+    s = open(fn,'r').read()
+    t3 = time.time()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    t4 = time.time()
+    leoInspect.AstTraverser(fn).visit(tree)
+    t5 = time.time()
+
+    read_time += t3-t2
+    parse_time += t4-t3
+    traverse_time += t5-t4
+t_end = time.time()
+total_time = t_end-t_start
+if 1:
+    print('files:     %s' % (count))
+    print('read:      %2.3f sec.' % (read_time))
+    print('ast.parse: %2.3f sec.' % (parse_time))
+    print('traverse:  %2.3f sec.' % (traverse_time))
+    print('total:     %2.3f sec.' % (total_time))
+
+#@+node:ekr.20130503061820.4233: *3* @test compute all ivars in all classes
+import imp
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
+
+t1 = time.time()
+
+print('starting pass 1...')
+
+# Globals...
+sd = li.SemanticData(controller=None)
+g_d = {} # Keys are ivars, values are lists of classes.
+n_files = 0
+
+for fn in li.LeoCoreFiles().files:
+
+    # Most of the time is spent creating the context objects.
+    m = li.module(fn=fn,sd=sd)
+    n_files += 1
+    
+    ### To do: create global assignments list.
+    
+    if 1: # Look for all targets. Takes about 0.15 sec.
+        for class_ in m.classes():
+            for def_ in class_.defs():
+                for a in def_.assignments():
+                    tree = a.tree()
+                    kind = g_kind(tree)
+                    # if g_kind(tree.value) == 'ListComp':
+                        # print(a.format())
+                        # print(g_dump(tree.value))
+                    # print(a.format())
+                    if kind == 'Assign':
+                        for target in tree.targets:
+                            # if False and g_kind(target) not in ('Attribute','Name','Tuple','Subscript'):
+                                # print('assn target: %s' % g_format(target))
+                                # print('assn target: %s' % g_dump(target))
+                            name = g_format(target)
+                            if name.startswith('self.'):
+                                name = name[5:]
+                            i = name.find('[')
+                            if i > -1:
+                                name = name[:i]
+                            aList = g_d.get(name,[])
+                            if class_.name() not in aList:
+                                aList.append(class_.name())
+                                g_d[name] = aList
+                    else:
+                        assert kind == 'AugAssign',kind
+                        name = g_format(tree.target)
+                        aList = g_d.get(name,[])
+                        if class_.name() not in aList:
+                            aList.append(class_.name())
+                            g_d[name] = aList
+
+    # Takes about 0.1 sec. cumulative.
+    if 0: # Look for all ivars.
+        for class_ in m.classes():
+            for def_ in class_.defs():
+                if def_.name() == '__init__':
+                    for a in def_.assignments_to('self'):
+                        # Not all targets are ivars.
+                        for target in a.tree().targets:
+                            name = g_format(target)
+                            if name.startswith('self.'):
+                                name = name[5:]
+                                aList = g_d.get(name,[])
+                                if class_.name() not in aList:
+                                    aList.append(class_.name())
+                                    g_d[name] = aList
+                       
+
+t2 = time.time()
+
+print('files: %s time: %2.2f sec, total ivars: %s' % (
+    n_files,t2-t1,len(list(g_d.keys()))))
+
+if 0:
+    ambiguous,total = 0,0
+    for key in sorted(g_d.keys()):
+        aList = sorted(g_d.get(key))
+        if 1 and len(aList) > 1:
+            w = 30 # Width of left column
+            if total == 0: print('Global ivars dict...')
+            if len(key) + 3 > w: key = key[:w-3]+'...'
+            aList2 = aList[:3]
+            if len(aList2) < len(aList): aList2.append('...')
+            print('%30s %2s %s' % (key,len(aList),aList2))
+        total += 1
+        if len(aList) > 1: ambiguous += 1
+    print('total ivars: %s ambiguous: %s' % (total,ambiguous))
+
+if 0:
+    sd.print_stats()
+#@+node:ekr.20130503061820.4234: *3* @test find all ctors
+g.cls()
+
+import imp
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
+
+t1 = time.time()
+
+# Globals...
+sd = li.SemanticData(controller=None)
+d = sd.modules_dict
+
+# Pass 1: Load all modules.
+print('starting pass 1...')
+for fn in li.LeoCoreFiles().files:
+    li.module(fn=fn,sd=sd)
+
+t2 = time.time()
+print('pass 1: %2.3f sec files: %s' % (t2-t1,len(list(d.keys()))))
+    
+# Pass 2: compute all class names.
+classes = set()
+for fn in sorted(d):
+    m = d.get(fn)
+    for class_ in m.classes():
+        classes.add(class_.name())
+        
+t3 = time.time()
+print('pass 2: %2.3f sec' % (t3-t2))
+
+classes = sorted(list(classes))
+
+if 0:
+    for z in classes:
+        print(z)
+        
+# Pass 3: Find all calls to ctors.
+ctors = set()
+ctors_assns = []
+for fn in sorted(d):
+    m = d.get(fn)
+    for class_ in m.classes():
+        for def_ in class_.defs():
+            for a in def_.assignments():
+                rhs = a.tree().value
+                if m.tree_kind(rhs) == 'Call':
+                    s = li.g_find_function_call(rhs.func)
+                    if s in classes:
+                        ctors.add(s)
+                        ctors_assns.append(a.format())
+ 
+t4 = time.time()                            
+
+if 0:
+    for z in sorted(list(ctors)):
+        print(z)
+if 0:
+    for s in ctors_assns:
+        aList = s.split('=')
+        print('%30s = %s' % (aList[0],'='.join(aList[1:])[:80]))
+
+print('pass 3: %2.3f sec ctors assigns: %s' % (t4-t3,len(ctors_assns)))
+
+if 1:
+    sd.print_stats()
+if 1:
+    sd.print_times()
+#@+node:ekr.20130503061820.4235: *3* @test pickling
+# g.cls()
+
+import imp
+import pickle
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+    
+# Works, because TestPickleClass is a top-level class.
+o = li.TestPickleClass()
+
+try:
+    s = pickle.dumps(o)
+    print(len(s),o)
+except pickle.PicklingError:
+    print('can not pickle: %s' % repr(o))
+#@+node:ekr.20130503061820.4236: *3* @test cache contexts
+# g.cls()
+
+import imp
+import pickle
+import time
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_dump,g_format,g_kind = li.g_dump,li.g_format,li.g_kind
+
+# Pass 1: Load all modules.
+t1 = time.time()
+sd = li.SemanticData(controller=None)
+files = li.LeoCoreFiles().files
+
+print('starting pass 1...')
+for fn in files:
+    li.module(fn=fn,sd=sd)
+
+t2 = time.time()
+print('pass 1: %2.3f sec files: %s' % (t2-t1,len(list(sd.modules_dict.keys()))))
+
+# Pass 2: pickle all modules.
+for fn in sorted(sd.modules_dict.keys()):
+    m = sd.modules_dict.get(fn)
+    try:
+        s = pickle.dumps(m)
+        print('%6s %s' % (len(s),fn))
+    except pickle.PicklingError:
+        print('can not pickle: %s' % repr(m))
+        
+t3 = time.time()
+print('pass 2: %2.3f sec' % (t3-t2))
+#@+node:ekr.20130503061820.4237: *3* @test AstFormatter
+g.cls()
+
+import imp
+
+import leo.core.leoInspect as li
+imp.reload(li)
+g_format = li.g_format
+
+# Pass 1: Load all modules.
+sd = li.SemanticData(controller=None)
+files = li.LeoCoreFiles().files # [0:2]
+
+s = '''
+def spam():
+    """This is a docstring"""
+    a = 2
+    try:
+        pass
+    except Exception as message: ###
+        pass
+    if f(1):
+        g('a')
+    else:
+        g(2)
+    while 1 < 2:
+        pass
+    raise AttributeError ###
+    return 2
+'''
+
+if 0: # String
+    li.module(s=s,sd=sd)
+else:
+    print('starting pass 1...')
+    for fn in files:
+        li.module(fn=fn,sd=sd)
+    
+# Pass 2: format the module.
+for fn in sorted(sd.modules_dict.keys()):
+    m = sd.modules_dict.get(fn)
+    # print(m.format())
+    m.format() # Run for warnings.
+#@+node:ekr.20130503061820.4238: *3* @test g_files_in_dir
+import imp
+import leo.core.leoInspect as li
+imp.reload(li)
+
+g.cls()
+
+aList = li.g_files_in_dir(r'C:\Python26\Lib\lib2to3',
+    extList = ['.py'],
+    excludeDirs= ['tests'])
+
+for z in aList:
+    print(z)
+
+print('files: %s' % (len(z)))
+#@+node:ekr.20130503061820.4239: *3* @test print-chains
+import ast
+import imp
+import time
+import leo.core.leoInspect as li
+imp.reload(li)
+
+t1 = time.time()
+
+g.cls()
+
+last = c.rootPosition()
+while last.hasNext():
+    last = last.next()
+    
+parent = last.insertAfter()
+parent.h = 'Chains: %s' % time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime())
+parent.b = '@killcolor'
+
+count, total_chains,unusual_chains = 0,0,0
+for fn in li.LeoCoreFiles().files: # [:2]:
+    # print()
+    # print(fn)
+    s = open(fn,'r').read()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    cp = li.ChainPrinter(fn)
+    cp.visit(tree)
+    p2 = parent.insertAsLastChild()
+    p2.h = g.shortFileName(fn)
+    n1,n2 = cp.showChains(p2)
+    total_chains += n1
+    unusual_chains += n2
+    # print('chains: %s' % (n))
+    count += 1
+    
+c.redraw(parent)
+
+t2 = time.time()
+
+print('files: %s total chains: %s unusual_chains: %s time: %2.2f sec' % (
+    count,total_chains,unusual_chains,t2-t1))
+
+# if 0:
+    # sd.print_stats()
+# if 0:
+    # sd.print_times()
+#@+node:ekr.20130503061820.4240: *3* @test print-calls
+import ast
+import imp
+import time
+import leo.core.leoInspect as li
+imp.reload(li)
+
+g.cls()
+
+t1 = time.time()
+
+last = c.rootPosition()
+while last.hasNext():
+    last = last.next()
+    
+parent = last.insertAfter()
+parent.h = 'Calls: %s' % time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime())
+parent.b = '@killcolor'
+
+g_d = {}
+count=0
+for fn in li.LeoCoreFiles().files: # [:3]:
+    # print()
+    # print(fn)
+    s = open(fn,'r').read()
+    tree = ast.parse(s,filename=fn,mode='exec')
+    cp = li.CallPrinter(fn)
+    cp.visit(tree)
+    p2 = parent.insertAsLastChild()
+    p2.h = g.shortFileName(fn)
+    cp.showCalls(p2)
+    for key in cp.d.keys():
+        aList = g_d.get(key,[])
+        aList.extend(cp.d.get(key))
+        g_d[key] = sorted(list(set(aList)))
+    count += 1
+    
+p2 = parent.insertAsLastChild()
+p2.h = 'global calls'
+cp.showCalls(p2,d=g_d)
+c.selectPosition(parent)
+c.redraw()
+
+t2 = time.time()
+
+print('files: %s time: %2.2f sec' % (count,t2-t1))
+#@+node:ekr.20130503061820.4241: *3* @test print-returns
+import ast
+import imp
+import time
+import leo.core.leoInspect as li
+imp.reload(li)
+
+g.cls()
+
+t1 = time.time()
+
+last = c.rootPosition()
+while last.hasNext():
+    last = last.next()
+    
+project_name,verbose = 'leo',False # False: only print defs with more than one return.
+files = li.g_get_files_by_project_name(project_name)
+
+parent = last.insertAfter()
+parent.h = 'Returns: %s verbose=%s %s' % (
+    project_name, verbose,
+    time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime()))
+parent.b = '@killcolor'
+
+g_d = {}
+count=0
+for fn in files:
+    # print(fn)
+    s = open(fn,'r').read()
+    try:
+        tree = ast.parse(s,filename=fn,mode='exec')
+    except SyntaxError:
+        print('Syntax error in %s' % (fn))
+        continue
+    rp = li.ReturnPrinter(fn)
+    rp.visit(tree)
+    p2 = parent.insertAsLastChild()
+    p2.h = g.shortFileName(fn)
+    p2.b = rp.showReturns(verbose=verbose)
+    for key in rp.d.keys():
+        aList = g_d.get(key,[])
+        aList2 = rp.d.get(key)
+        if aList2:
+            aList.extend(aList2)
+            g_d[key] = aList
+    count += 1
+    
+if 0:
+    p2 = parent.insertAsLastChild()
+    p2.h = 'global returns'
+    rp.showReturns(p2,d=g_d)
+
+c.redraw(parent)
+
+t2 = time.time()
+
+print('files: %s time: %2.2f sec' % (
+    count,t2-t1))
+#@+node:ekr.20130503061820.4242: *3* @test global names
+# import ast
+import imp
+import time
+import leo.core.leoInspect as li
+imp.reload(li)
+
+g.cls()
+
+project_name,verbose = 'leo',False
+files = li.g_get_files_by_project_name(project_name)
+result = []
+
+def put(s):
+    result.append(s)
+    # print(s)
+    
+t1 = time.time()
+
+# Globals...
+sd = li.SemanticData(controller=None)
+m_d = sd.modules_dict
+
+# Pass 1: Load all modules.
+print('starting pass 1...')
+for fn in files: ### [:2]:
+    li.module(fn=fn,sd=sd)
+
+t2 = time.time()
+put('pass 1: %2.3f sec files: %s' % (t2-t1,len(list(m_d.keys()))))
+
+# Pass 2: Update g_d.
+g_d = {} # Keys are names, values are sets of Context names.
+contexts = 0
+for fn in sorted(m_d):
+    m = m_d.get(fn)
+    for cx in m.contexts(include_temp=True):
+        # put(' '*len(cx.parent_contexts()),cx)
+        contexts += 1
+        d = cx.st.d # Keys are names, values are symbol table entries.
+        for key in d.keys():
+            e = d.get(key)
+            name = e.name
+            aSet = g_d.get(name,set())
+            aSet.add(cx)
+            g_d[name] = aSet
+            
+names = sorted(g_d.keys())
+distribution = {} # Keys are lengths of context sets; values are number of ids with that length.
+for key in names:
+    aSet = g_d.get(key)
+    context_list = sorted(list(set([repr(z) for z in aSet])))
+    n = len(context_list)
+    distribution[n] = distribution.get(n,0) + 1
+    if verbose or n > 9:
+        if n > 3:
+            put('%20s %4s %s...' % (key,len(context_list),context_list[:3]))
+        else:
+            put('%20s %4s %s' % (key,len(context_list),context_list))
+ids = len(names)
+        
+t3 = time.time()
+put('pass 2: contexts: %s ids: %s %2.2f sec' % (contexts,ids,t3-t2))
+
+if 1:
+    put('\nDistribution of context lengths...')
+    for key in sorted(distribution.keys()):
+        put('%4s %s' % (key,distribution.get(key)))
+    
+if 1:
+    last = c.rootPosition()
+    while last.hasNext():
+        last = last.next()
+    parent = last.insertAfter()
+    parent.h = 'Global names: %s verbose=%s %s' % (
+        project_name, verbose,
+        time.strftime('%Y/%m/%d/%H:%M:%S',time.localtime()))
+    parent.b = '@killcolor\n\n%s' % '\n'.join(result)
+    c.redraw(parent)
+
+if 0:
+    sd.print_stats()
+if 0:
+    sd.print_times()
+
+#@+node:ekr.20130503061820.4189: *3* @test leoInspect.token_range (s)
+import leo.core.leoInspect as inspect
+
+# g.cls()
+
+testing = g.unitTesting
+
+def show(o,indent=0):
+    pad = ' '*4*indent
+    if not testing:
+        # print('\n%s\n' % o.sd.dump_ast(o.tree()))
+        print('%s%s' % (pad,o.format()))
+        print('token range: %s' % (repr(o.token_range())))
+
+<< define s >>
+if not testing:
+    print('Input...\n%s\n' % (s.rstrip()))
+
+m = inspect.module(s=s)
+
+if 0:
+    show(m,0)
+    
+if 1:
+    if not testing: print('\nAssignments to a...\n')
+    for o in m.assignments_to('a'):
+        # print(o.format())
+        show(o)
+if 0:
+    if not testing: print('\nAssignments using d...\n')
+    for o in m.assignments_using('d'):
+        # print(o.format())
+        show(o)
+if 0:    
+    if not testing: print('\nCalls to f...\n')
+    for o in m.calls_to('f'):
+        # print(o.format())
+        show(o)
+if 0:
+    for s in m.statements():
+        show(s)
+    
+    for f in m.functions():
+        show(f,0)
+        for z in f.statements():
+            show(z,1)
+    
+    for cls in m.classes():
+        show(cls,0)
+        for d in cls.defs():
+            show(d,1)
+            for z in d.statements():
+                show(z,1)
+#@+node:ekr.20130503061820.4190: *4* << define s >>
+s = '''
+# x.y = b(arg1,arg2=5,*args,**args).c[1:2:3].d
+a=b+c
+# f(a=1,b=2,*args,**keys)
+'''
+
+
+# def outer_function(a,b=99,c=88,*args,**keys):
+    # print('hello')
+    
+# class myClass:
+    # def method():
+        # pass
+    
+#@+node:ekr.20130503061511.4175: ** @ignore Unit tests for settings
+#@+node:ekr.20130503061511.4176: *3* print dicts unit tests
+#@+node:ekr.20130503061511.4177: *4* @test printMenusList
+def printMenusList(aList,level=0):
+    
+    for z in aList:
+        a,b,c = z
+        print('*** kind',a)
+        if type(b) in (type(()),type([])):
+            for z2 in b:
+                a1,b1,c1 = z2
+                if a1.startswith('@menu') and type(b1) in (type(()),type([])):
+                    print()
+                    print('*** inner menu: %s' % (level+1))
+                    print(a1)
+                    for z3 in b1:
+                        print(z3)
+                    if c1: print(c1)
+                else:
+                    print(z2)
+            if c: print(c)
+        else:
+            print(b)
+        print()
+        break #
+        
+printMenusList(c.config.getMenusList())
+       
+#@+node:ekr.20130503061511.4178: *4* @test printInverseBindingDict
+print('\ninverseBindingDict...\n')
+
+d = c.k.computeInverseBindingDict()
+
+for key in sorted(list(d.keys())):
+
+    if 1 == len(d.get(key)):
+        print(key,d.get(key))
+    else:
+        print()
+        print(key)
+        print(d.get(key))
+        print()
+#@+node:ekr.20130503061511.4179: *4* @test printBindingsDict
+import leo.core.leoConfig as leoConfig # for ShortcutInfo
+    
+partial = True
+
+d = c.k.bindingsDict
+    # Keys are shortcuts; values are *lists* leoConfig.ShortcutInfo objects.
+    
+print('\nk.bindingsDict%s...\n' % ' (partial)' if partial else '')
+    
+for key in list(sorted(d.keys())):
+    aList = d.get(key,[])
+    for b in aList:
+        assert isinstance(b,leoConfig.ShortcutInfo)
+        if not partial or b.kind != 'leosettings.leo':
+            print(b)
+#@+node:ekr.20130503061511.4180: *4* @test printMasterBindingsDict
+partial = True
+
+panes = ('all','body','button','log','tree','text',
+    'command','insert','overwrite',)
+
+d = c.k.masterBindingsDict
+    # Keys are scope names (in panes) or mode names.
+    # Values are dicts:
+        # keys are strokes; values are leoConfig.ShortcutInfo objects.
+        
+print('\nk.masterBindingsDict%s...\n' % ' (partial)' if partial else '')
+
+for pane in sorted(list(d.keys())):
+    kind = 'pane' if pane in panes else 'mode'
+    print('%s: %s...' % (kind,pane))
+    d2 = d.get(pane)
+    for stroke in sorted(list(d2.keys())):
+        b = d2.get(stroke)
+        if not partial or b.kind != 'leosettings.leo':
+            print('%6s %25s %17s %s' % (b.pane,stroke,b.kind,b.commandName))
+            assert b.pane == pane
+            assert b.stroke == stroke
+    print()
+#@+node:ekr.20130503061511.4181: *3* passed
+#@+node:ekr.20130503061511.4182: *4* @test mode-related info
+@
+
+g.app.config.modeCommandsDict
+    Keys are command names: enter-x-mode.
+    Values are inner dictionaries:
+        Keys are command names, values are lists of ShortcutInfo nodes.
+@c
+
+d = g.app.config.modeCommandsDict
+    
+for key in sorted(d.keys()):
+    print('*** mode ***',key)
+    d2 = d.get(key)
+    for key2 in sorted(d2.keys()):
+        aList = d2.get(key2)
+        print(key2)
+        for si in aList:
+            print('   ',si)
+#@+node:ekr.20130503061511.4183: *4* @test types of contents of settings dicts
+@
+ivar                    Keys                Values
+----                    ----                ------
+c.commandsDict          command names (1)   functions
+k.inverseCommandsDict   func.__name__       command names
+k.bindingsDict          shortcuts           list of ShortcutInfo objects
+k.masterBindingsDict    scope names (2)     inner masterBindingDicts (3)
+k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
+k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
+inverseBindingDict (5)  command names       lists of tuples (pane,key)
+modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
+
+Notes:
+(1) Command names are minibuffer names (strings)
+(2) Scope names are 'all','text',etc.
+(3) inner masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+(4) k.settingsNameDict has no inverse.
+(5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
+(6) A global dict: g.app.gui.modeCommandsDict
+(7) enter-x-command
+(8) Keys are command names, values are lists of ShortcutInfo objects.
+@c
+
+si_type = c.k.ShortcutInfo
+disabled_func_type = None # Should be any bound method.
+k = c.k
+
+@others
+
+test_dict_of_objects(c.commandsDict,type('s'),disabled_func_type,'commandsDict')
+test_dict_of_objects(k.inverseCommandsDict,type('s'),type('s'),'inverseCommandsDict')
+test_dict_of_lists(k.bindingsDict,si_type,'bindingsDict')
+test_dict_of_dicts(k.masterBindingsDict,si_type,'masterBindingsDict')
+test_dict_of_lists(k.masterGuiBindingsDict,None,'masterGuiBindingsDict')
+test_dict_of_objects(k.settingsNameDict,type('s'),type('s'),'settingsNameDict')
+test_dict_of_lists(k.computeInverseBindingDict(),type(tuple()),'inverseBindingDict')
+
+# Test individual dicts separately.
+d = g.app.config.modeCommandsDict
+test_dict_of_dicts(d,None,'modeCommandsDict')
+for key in sorted(d.keys()):
+    d2 = d.get(key)
+    test_dict_of_lists(d2,si_type,'inner modeCommandsDict')
+        # This requires a hack to special-case the
+        # '*entry-commands*' and '*command-prompt*' keys.
+#@+node:ekr.20130503061511.4184: *5* test_dict_of_dicts
+def test_dict_of_dicts(d,theType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        d2 = d.get(key)
+        assert type(d2) == type({})
+        for key in d2.keys():
+            obj = d2.get(key)
+            if theType:
+                assert type(obj) == theType,repr(obj)
+#@+node:ekr.20130503061511.4185: *5* test_dict_of_lists
+def test_dict_of_lists(d,theType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        obj = d.get(key)
+        if key in ('*entry-commands*','*command-prompt*'):
+            # Special case for g.app.config.modeCommandsDict
+            assert type(obj)==type([]),repr(obj)
+        else:
+            assert type(obj) == type([])
+            # Don't check types of list elements if theType is None.
+            if theType:
+                for z in obj:
+                    assert type(z)==theType,'key: %s obj: %s' % (key,repr(obj))
+#@+node:ekr.20130503061511.4186: *5* test_dict_of_objects
+def test_dict_of_objects(d,keyType,valueType,tag):
+
+    assert d,tag
+
+    for key in d.keys():
+        assert type(key) == keyType,repr(key)
+        obj = d.get(key)
+        # Don't check type of obj if valueType is None.
+        if valueType:
+            assert type(obj) == valueType,'\nobj: %s\nvalueType: %s' % (repr(obj),valueType)
+#@+node:ekr.20130503061511.4187: *5* Unused
+# import types
+# types.ListType does not exist in Python 3.x.
+# assert isinstance(aList,list().__class__)
+#@+node:ekr.20130503061511.4188: *4* @test merge_settings_dicts
+@others
+
+# import os ; os.system('cls')
+    
+d1 = g.app.config.immutable_leo_settings_shortcuts_dict
+d2 = g.app.config.immutable_my_leo_settings_shortcuts_dict
+d3 = g.app.config.merge_settings_dicts(d1,d2)
+
+if False:
+    patterns = (
+        'backward-find-character-extend-selection',
+    )
+    for pattern in patterns:
+        print(dump_dict(d1,pattern,tag='d1'))
+        print(dump_dict(d2,pattern,tag='d2'))
+        print(dump_dict(d3,pattern,tag='d3'))
+
+test(d1,d2,d3)
+#@+node:ekr.20130503061511.4189: *5* dump & dump_dict (@test merge_settings_dicts)
+def dump(aList,pattern=None,tag=None):
+    
+    return '\n'.join([repr(z) for z in aList])
+    
+
+def dump_dict(d,pattern=None,tag=None):
+    
+    result = [] # '\ndump of %s...' % (tag)
+    
+    for key in d.keys():
+        if pattern in (key,None):
+            result.append(key)
+            aList = d.get(key)
+            for z in aList:
+                result.append('    %s' % (z))
+                
+    return '\n'.join(result)
+#@+node:ekr.20130503061511.4190: *5* test (@test merge_settings_dicts)
+def test(old_d,new_d,result_d):
+    
+    '''Test that result_d is the result of upating old_d with new_d.
+    
+    This test is tricky: only inverted dicts have ShortcutInfo nodes as keys.'''
+    
+    invert,uninvert = g.app.config.invert,g.app.config.uninvert
+
+    # Compute the inversions of all the dicts.
+    inv_old,inv_new,inv_res = invert(old_d),invert(new_d),invert(result_d)
+    
+    # Part 1: Ensure we test all keys.
+    keys = list(inv_old.keys())
+    keys.extend(list(inv_new.keys()))
+    keys.extend(list(inv_res.keys()))
+    keys = sorted(list(set(keys)))
+    assert None not in keys
+    for key in inv_old.keys(): assert key in keys,key
+    for key in inv_new.keys(): assert key in keys,key
+    for key in inv_res.keys(): assert key in keys,key
+    
+    # Part 2: Carefully test the inverted result.
+    def si_name_key(si): return si.commandName or ''
+
+    for key in keys:
+        # Compute the *sorted* list of 
+        res_list = sorted(inv_res.get(key,[]),key=si_name_key)
+        old_list = sorted(inv_old.get(key,[]),key=si_name_key)
+        new_list = sorted(inv_new.get(key,[]),key=si_name_key)
+        assert res_list,'no res_list.get(%s)' % (key)
+        # if new_list: print(key,dump(new_list))
+        if new_list:
+            assert new_list == res_list,'key %s\nnew:\n%s\nres:\n%s' % (
+                key,dump(new_list),dump(res_list))
+        else:
+            assert old_list == res_list,'key %s\nold:\n%s\nres:\n%s' % (
+                key,dump(old_list),dump(res_list))
+    
+    # Part 3: Test that result_d == uninvert(invert(result_d)).
+    # A.  They must have the same keys.
+    unv_res = uninvert(inv_res)
+    assert sorted(list(result_d.keys())) == sorted(list(unv_res.keys()))
+
+    # B. The values of for each key must match after being sorted.
+    def si_stroke_key(si): return si.stroke or ''
+        
+    for key in sorted(result_d.keys()):
+        res_list = sorted(result_d.get(key,[]),key=si_stroke_key)
+        unv_list = sorted( unv_res.get(key,[]),key=si_stroke_key)
+        assert res_list == unv_list,'key %s\nres:\n%s\nunv:\n%s' % (
+            key,dump(res_list),dump(unv_list))
+   
+#@+node:ekr.20130503061511.4191: *4* @test KeyStroke
+ks = c.k.KeyStroke
+
+@others
+
+a1 = ks('a')
+a2 = ks('a')
+b1 = ks('b')
+assert a1 == a2
+d = {}
+d[a1] = a1.s
+d[a2] = a2.s
+d[b1] = b1.s
+
+for key in sorted(d):
+    print(key,d.get(key))
+#@+node:ekr.20130503061511.4192: *4* @test g.TypedDict
+d = g.TypedDictOfLists('ks',type('s'),type(9))
+d.add('a',1)
+d.add('a',2)
+d.add('b',3)
+
+print(d)
+for s in sorted(d.keys()):
+    print(s,d.get(s,[]))
+
+print('after replace...')
+d.replace('a',[8,9,10])
+
+for s in sorted(d.keys()):
+    print(s,d.get(s,[]))
+#@+node:ekr.20130503061511.4137: ** @ignore from leoPy.leo
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+
+s1 = '''
+<table id="1"> <table id="2">
+<contents/>
+</table>
+</table>
+'''
+
+s2 = '''
+<table id="1"> 
+<table id="2">
+<contents/>
+</table>
+</table>
+'''
+
+t1 = 
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
+#@+node:ekr.20130503061511.4140: *3* @test html string
+s = '''\
+<HTML>
+<head>
+    <title>Bodystring</title>
+</head>
+<body class='bodystring'>
+<div id='bodydisplay'></div>
+</body>
+</html>
+'''
+
+html_tags = ('body','head','html','table',) # 'div',
+setting = 'import_html_tags'
+
+# Settings now work when run externally.
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+showTree = True
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=showTree)
+
+if showTree:
+    # g.cls()
+    for p in p.subtree():
+        print('\n***** %s\n' %p.h)
+        print(p.b)
+#@+node:ekr.20130503061511.4141: *4* @file c:/leo.repo/trunk/leo/core/html string
+@language xml
+@tabwidth -4
+@others
+
+#@+node:ekr.20130503061511.4150: *5* html
+<HTML>
+@others
+</html>
+#@+node:ekr.20130503061511.4151: *6* head
+
+<head>
+    <title>Bodystring</title>
+</head>
+#@+node:ekr.20130503061511.4152: *6* body
+<body class='bodystring'>
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20130503061511.4145: *4* @file c:/leo.repo/trunk/leo/core/html string
+@language xml
+@tabwidth -4
+@others
+
+#@+node:ekr.20130503061511.4150: *5* html
+<HTML>
+@others
+</html>
+#@+node:ekr.20130503061511.4151: *6* head
+
+<head>
+    <title>Bodystring</title>
+</head>
+#@+node:ekr.20130503061511.4152: *6* body
+<body class='bodystring'>
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20130503061511.4149: *4* @file c:/leo.repo/trunk/leo/core/html string
+@language xml
+@tabwidth -4
+@others
+
+#@+node:ekr.20130503061511.4150: *5* html
+<HTML>
+@others
+</html>
+#@+node:ekr.20130503061511.4151: *6* head
+
+<head>
+    <title>Bodystring</title>
+</head>
+#@+node:ekr.20130503061511.4152: *6* body
+<body class='bodystring'>
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20130503061511.4153: *3* @test htmlScanner.filterTokens
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+strip = hs.stripTokens
+dump  = hs.formatTokens
+
+s1 = '''<table id="1"><table id="2">
+<contents/>
+</table>
+</table>'''
+
+s2 = '<table id="1"><table id="2"><contents/></table></table>'
+    
+t1 = hs.tokenize(s1)
+t2 = hs.tokenize(s2)
+f1 = hs.filterTokens(t1)
+f2 = hs.filterTokens(t2)
+
+assert strip(f1) == strip(f2),'f1...\n%s\nf2...\n%s' % (
+    dump(f1),dump(f2))
+    
+if 0:
+    print(dump(f1))
+#@+node:ekr.20130503061511.4154: *3* @test import dataN.html
+fn = r'c:\recent\data.html'
+
+# fn = r'c:\recent\data-smaller.html'
+# fn = r'c:\recent\data666.html'
+
+# These all pass on data.html:
+    # html_tags = ('html','head','body',)
+    # html_tags = ('html','head','body','table',)
+    # html_tags = ('html','head','body','table','div',)
+    # html_tags = ('html','head','body','table','div','script',)
+    # html_tags = ('html','head','body','table','div','script','link',)
+    # html_tags = ('html','head','body','table','div','script','link','p',)
+
+html_tags = ('html','head','body','table','div','script','p','td','tr',)
+
+# Settings now work when run externally.
+setting = 'import_html_tags'
+c.config.set(setting,'data',html_tags)
+tags = c.config.getData(setting)
+assert tags == html_tags,len(tags)
+
+g.cls()
+
+c.importCommands.importFilesCommand(files=[fn], treeType='@file')
+#@+node:ekr.20130503061511.4155: *3* @test unicode stuff
+@first # -*- coding: utf-8 -*-
+
+table = (
+    'test',
+    'Ä 궯 奠',
+    'Ä 궯 奠 after', # fails with cp6501: after is duplicated.
+)
+
+print('*'*20)
+print('isPython3: %s' % g.isPython3)
+
+for s in table:
+    if g.isPython3:
+        s = s.encode('ascii','replace') # create bytes.
+    g.es(repr(s))
+    g.es(s)
+    g.pr ('g.pr(s)       : %s' % s)
+    g.pr ('g.pr(repr(s)) : %s' % repr(s))
+    print('print(s)      : %s' % s)
+    print('print(repr(s)): %s' % s)
+#@+node:ekr.20130503061511.4156: *3* @test external text operations
+assert g.app.isExternalUnitTest
+
+body = c.frame.body
+assert repr(body.widget).startswith('stringTextWidget')
+assert body.widget == body.bodyCtrl
+
+w = body.bodyCtrl
+w.setAllText(p.b)
+assert p.b == w.getAllText()
+#@+node:ekr.20130503061511.4157: *3* @test nullBody text operations
+# print('isExternalUnitTest',g.app.isExternalUnitTest)
+
+if g.app.isExternalUnitTest:
+    body = c.frame.body
+else:
+    import leo.core.leoCommands as leoCommands
+    import leo.core.leoFrame as leoFrame
+    import leo.core.leoGui as leoGui
+    
+    # Important: external unit tests should execute in this environment.
+    nullGui   = leoGui.nullGui('null gui')
+    nullFrame = leoFrame.nullFrame(title='nullFrame title',gui=nullGui)
+    c2 = leoCommands.Commands(nullFrame,fileName='<empty fileName>')
+    nullFrame.c = c2
+    body = leoFrame.nullBody(frame=nullFrame,parentFrame=None)
+    assert repr(body).startswith('<leo.core.leoFrame.nullBody')
+
+# Now test some basic operations.
+assert repr(body.widget).startswith('stringTextWidget')
+assert body.widget == body.bodyCtrl
+w = body.bodyCtrl
+
+w.setAllText(p.b)
+assert p.b == w.getAllText()
+#@+node:ekr.20130503061511.4158: *3* @test g.python_tokenize
+# h = 'g.python_tokenize'
+# p = p.firstChild()
+# assert p.h == h
+tokens = g.python_tokenize(p.b,line_numbers=False)
+
+# tokens = [(kind,val) for (kind,val,line_number) in tokens]
+
+# First, the basic check
+tokens1 = [val for kind,val in tokens]
+s = ''.join(tokens1)
+assert p.b == s,repr(s)
+
+if 0:
+    for z in tokens:
+        kind,val = z
+        print('%6s %s' % (kind,repr(val)))
+        
+# Next, start filtering.
+tokens = [(kind,g.choose(kind=='string','"S"',val)) for kind,val in tokens]
+
+if 0: # Delete whitespace.
+    tokens = [(kind,val) for (kind,val) in tokens if kind != 'ws']
+    tokens = [(kind,g.choose(kind=='id',val+' ',val)) for (kind,val) in tokens]
+
+# Last: stringize.
+tokens = [val for kind,val in tokens if kind != 'comment']
+# print(''.join(tokens))
+
+if 0: # Print lines containing '='
+    s = ''.join(tokens)
+    for ch in '()[]{}<>.,:=+-/':
+        s = s.replace(' '+ch,ch)
+    aList = [z for z in g.splitLines(s)
+        if z.find('=') > -1] # and not z.find('+=')>-1 and not z.find('-=')>-1]
+    print(''.join(aList))
+    
 #@-all
 #@-leo
