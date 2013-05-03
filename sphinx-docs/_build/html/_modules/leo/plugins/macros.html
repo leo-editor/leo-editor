@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.macros &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.macros</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20040916084945: * @file macros.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20061102090532: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Creates new nodes containing parameterized section reference.</span>
+
+<span class="sd">.. No longer available: http://sourceforge.net/forum/message.php?msg_id=2444117</span>
+
+<span class="sd">This plugin adds nodes under the currently selected tree that are to act as</span>
+<span class="sd">section references. To do so, go the Outline menu and select the</span>
+<span class="sd">&#39;Parameterize Section Reference&#39; command. This plugin looks for a top level node called</span>
+<span class="sd">&#39;Parameterized Nodes&#39;. If it finds a headline that matches the section reference</span>
+<span class="sd">it adds a node/nodes to the current tree.</span>
+
+<span class="sd">To see this in action, do the following:</span>
+
+<span class="sd">0. **Important**: in the examples below, type &lt;&lt; instead of &lt; &lt; and</span>
+<span class="sd">   type &gt;&gt; instead of &gt; &gt;.  Docstrings can not contain section references!</span>
+
+<span class="sd">1. Create a node called &#39;Parameterized Nodes&#39;, with a sub-node called  &lt; &lt; Meow \&gt;\&gt;.</span>
+<span class="sd">   The body of &lt; &lt; Meow &gt; &gt; should have the text::</span>
+
+<span class="sd">        I mmmm sooo happy I could  &lt; &lt; 1$  &gt; &gt;.</span>
+<span class="sd">        But I don&#39;t know if I have all the  &lt; &lt; 2$  &gt; &gt;</span>
+<span class="sd">        money in the world.</span>
+
+<span class="sd">2. In a node called A, type::</span>
+
+<span class="sd">        &lt; &lt; meow( purrrrrr, zzooot )  &gt; &gt;</span>
+<span class="sd">        (leave the cursor at the end of the line)</span>
+
+<span class="sd">3. In a node called B, type::</span>
+
+<span class="sd">         &lt; &lt; meow ( spit or puke, blinkin  )  &gt; &gt;</span>
+<span class="sd">        (leave the cursor at the end of the line)</span>
+
+<span class="sd">4. Leave the cursor in Node A at the designated point.</span>
+
+<span class="sd">5. Go to Outline and select Parameterize Section Reference.</span>
+
+<span class="sd">The plugin searches the outline, goes to level one and finds a Node with the Headline,</span>
+<span class="sd">&quot;Parameterized Nodes&quot;. It looks for nodes under that headline with the the headline</span>
+<span class="sd">&lt;\&lt; meow &gt;\&gt;. It then creates this node structure under Node A::</span>
+
+<span class="sd">        &lt; &lt; meow ( purrrrrr, zzooot ) &gt; &gt;</span>
+<span class="sd">            &lt; &lt;2$&gt; &gt;</span>
+<span class="sd">            &lt; &lt;1$&gt; &gt;</span>
+
+<span class="sd">6. Examine the new subnodes of Node A:  </span>
+
+<span class="sd">        &lt; &lt; meow ( purrrrrr, zzooot ) &gt; &gt;</span>
+<span class="sd">            contains the body text of the &lt; &lt; meow &gt; &gt; node.</span>
+<span class="sd">        &lt; &lt; 1$ &gt; &gt; contains the word purrrrrr.</span>
+<span class="sd">        &lt; &lt; 2$ &gt; &gt; contains the word zzooot.</span>
+
+<span class="sd">7. Go to Node B, and leave the cursor at the designated point.</span>
+
+<span class="sd">Go to Outline Menu and select Parameterize Section Reference command.</span>
+
+<span class="sd">8. Examine the new subnodes of Node B.</span>
+
+<span class="sd">It&#39;s a lot easier to use than to explain!</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.8&quot;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20040916091520: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 1.2 EKR:</span>
+<span class="c"># - Converted to outline.</span>
+<span class="c"># - Use g.angleBrackets to enclose lines with &lt; &lt; and &gt; &gt;.</span>
+<span class="c"># - Use new instead of start2 hook.</span>
+<span class="c"># - onCreate creates a new class for each commander.</span>
+<span class="c"># - Removed all globals.</span>
+<span class="c"># 1.3 EKR: Changed &#39;new_c&#39; logic to &#39;c&#39; logic.</span>
+<span class="c"># 1.4 EKR: Replaced tree.begin/endUpdate by c.beginEndUpdate.</span>
+<span class="c"># 1.5 EKR: Added event param to parameterize.</span>
+<span class="c"># 1.6 EKR: imported leoNodes.</span>
+<span class="c"># 1.7 Rich Ries: improved the docstring.</span>
+<span class="c"># 1.8 EKR: Add the menu only for the tkinter gui.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20070302121133: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.macros.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="c"># Ok for unit testing: adds command to Outline menu.</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span> <span class="p">(</span><span class="s">&#39;new&#39;</span><span class="p">,</span><span class="s">&#39;menu2&#39;</span><span class="p">)</span> <span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ekr.20040916091520.1: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.macros.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">paramClass</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20040916091520.2: ** class paramClass</span></div>
+<div class="viewcode-block" id="paramClass"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.macros.paramClass">[docs]</a><span class="k">class</span> <span class="nc">paramClass</span><span class="p">:</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20040916091520.3: *3* __init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">angleBrackets</span><span class="p">(</span><span class="s">r&#39;\w*?\(([^,]*?,)*?([^,])+?\)&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;$&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addMenu</span><span class="p">()</span> <span class="c"># Now gui-independent.</span>
+    <span class="c">#@+node:ekr.20040916084945.1: *3* macros.parameterize</span>
+<div class="viewcode-block" id="paramClass.parameterize"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.macros.paramClass.parameterize">[docs]</a>    <span class="k">def</span> <span class="nf">parameterize</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">tree</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">bodyCtrl</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">currentVnode</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findParameters</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span> <span class="k">return</span>
+
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">s</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">getAllText</span><span class="p">()</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getInsertPoint</span><span class="p">()</span>
+        <span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">convertPythonIndexToRowCol</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">sr</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">sr</span><span class="p">[:</span><span class="n">col</span><span class="p">]</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+        
+        <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">sr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;no match&#39;</span><span class="p">,</span><span class="nb">repr</span><span class="p">(</span><span class="n">sr</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="n">sr</span> <span class="o">=</span> <span class="n">sr</span> <span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">():</span> <span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">()]</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">current</span><span class="o">.</span><span class="n">numberOfChildren</span><span class="p">()):</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">nthChild</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">headString</span> <span class="o">==</span> <span class="n">sr</span><span class="p">:</span>
+                <span class="k">return</span>
+
+        <span class="n">pieces</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;(&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">searchline</span> <span class="o">=</span> <span class="n">pieces</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;&gt;&gt;&quot;</span>
+        <span class="n">pieces</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pieces</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">)</span>
+        <span class="n">pieces</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pieces</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">)</span>
+        <span class="n">sections</span> <span class="o">=</span> <span class="n">pieces</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">numberOfChildren</span><span class="p">()):</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">nthChild</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">matchHeadline</span><span class="p">(</span><span class="n">searchline</span><span class="p">):</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">child</span>
+                <span class="k">break</span>
+            <span class="k">return</span>
+
+        <span class="n">bodys</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">b</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">insertAsNthChild</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#,tn)</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">setBodyString</span><span class="p">(</span><span class="n">bodys</span><span class="p">)</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">setHeadString</span><span class="p">(</span><span class="n">sr</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">sections</span><span class="p">)):</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">angleBrackets</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;$&quot;</span><span class="p">)</span>
+            <span class="n">bod</span> <span class="o">=</span> <span class="n">sections</span> <span class="p">[</span><span class="n">z</span><span class="p">]</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">insertAsNthChild</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#,t)</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">setBodyString</span><span class="p">(</span><span class="n">bod</span><span class="p">)</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">setHeadString</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20040916084945.2: *3* findParameters</span></div>
+<div class="viewcode-block" id="paramClass.findParameters"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.macros.paramClass.findParameters">[docs]</a>    <span class="k">def</span> <span class="nf">findParameters</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+
+        <span class="n">tag</span> <span class="o">=</span> <span class="s">&quot;Parameterized Nodes&quot;</span>
+
+        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">level</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">rnode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findParameters</span><span class="p">(</span> <span class="n">v</span><span class="o">.</span><span class="n">parent</span><span class="p">())</span>
+
+        <span class="n">bnode</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">while</span> <span class="n">bnode</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bnode</span><span class="o">.</span><span class="n">h</span> <span class="o">==</span> <span class="n">tag</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">bnode</span>
+            <span class="n">bnode</span> <span class="o">=</span> <span class="n">bnode</span><span class="o">.</span><span class="n">back</span><span class="p">()</span>
+
+        <span class="n">nnode</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">while</span> <span class="n">nnode</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nnode</span><span class="o">.</span><span class="n">h</span> <span class="o">==</span> <span class="n">tag</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">nnode</span>
+            <span class="n">nnode</span> <span class="o">=</span> <span class="n">nnode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="c">#@+node:ekr.20040916084945.3: *3* addMenu</span></div>
+<div class="viewcode-block" id="paramClass.addMenu"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.macros.paramClass.addMenu">[docs]</a>    <span class="k">def</span> <span class="nf">addMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s">&quot;Parameterize Section Reference&quot;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">parameterize</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createMenuItemsFromTable</span><span class="p">(</span><span class="s">&quot;Outline&quot;</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">dynamicMenu</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

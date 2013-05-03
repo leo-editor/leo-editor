@@ -1,0 +1,1730 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>extensions Package &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="index.html" />
+    <link rel="up" title="leo Package" href="leo.html" />
+    <link rel="next" title="external Package" href="leo.external.html" />
+    <link rel="prev" title="core Package" href="leo.core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="leo.external.html" title="external Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="leo.core.html" title="core Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="leo.html" accesskey="U">leo Package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="extensions-package">
+<h1>extensions Package<a class="headerlink" href="#extensions-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">extensions</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-leo.extensions"></span></div>
+<div class="section" id="module-leo.extensions.asciidoc">
+<span id="asciidoc-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">asciidoc</span></tt> Module<a class="headerlink" href="#module-leo.extensions.asciidoc" title="Permalink to this headline">¶</a></h2>
+<p>asciidoc -  converts an AsciiDoc text file to DocBook, HTML or LinuxDoc</p>
+<p>SYNOPSIS
+asciidoc -b backend [ -d doctype ] [ -a attribute ]</p>
+<blockquote>
+<div>[ -e ] [-n] [ -s ] [ -f configfile ] [ -o outfile ]
+[ &#8211;help | -h ] [ &#8211;version ] [ -v ] [ -c ]
+infile</div></blockquote>
+<dl class="docutils">
+<dt>DESCRIPTION</dt>
+<dd>The asciidoc(1) command translates the AsciiDoc text file &#8216;infile&#8217;
+to the &#8216;backend&#8217; formatted file &#8216;outfile&#8217;. If &#8216;infile&#8217; is &#8216;-&#8216; then
+the standard input is used.</dd>
+<dt>OPTIONS</dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--help</span>, <span class="option">-h</span></kbd></td>
+<td>Print this documentation.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a <var>attribute</var></span></kbd></td>
+<td>Define document attribute. &#8216;attribute&#8217; is formatted like
+&#8216;name=value&#8217;.  Alternate acceptable forms are &#8216;name&#8217; (the
+&#8216;value&#8217; defaults to an empty string) and &#8216;^name&#8217; (delete the
+&#8216;name&#8217; attribute).</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-b <var>backend</var></span></kbd></td>
+<td>Backend output file format: &#8216;docbook&#8217;, &#8216;docbook-sgml&#8217;,
+&#8216;xhtml&#8217;, &#8216;html&#8217;. &#8216;css&#8217;, &#8216;css-embedded&#8217;, &#8216;linuxdoc&#8217;.
+&#8216;docbbok&#8217; generates DocBook XML; &#8216;xhtml&#8217; generates XHTML;
+&#8216;html&#8217; generates HTML 4.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-c</span></kbd></td>
+<td>Dump configuration to stdout.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-e</span></kbd></td>
+<td>Exclude implicitly loaded configuration files except for those
+named like the input file (&#8216;infile.conf&#8217; and
+&#8216;infile-backend.conf&#8217;).</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d <var>doctype</var></span></kbd></td>
+<td>Document type: &#8216;article&#8217;, &#8216;manpage&#8217; or &#8216;book&#8217;. The &#8216;book&#8217;
+document type is only supported by the &#8216;docbook&#8217; backend and
+the &#8216;manpage&#8217; document type is not supported by the &#8216;linuxdoc&#8217;
+backend.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-f <var>configfile</var></span></kbd></td>
+<td>Use configuration file &#8216;configfile&#8217;.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-n</span></kbd></td>
+<td>Auto-number HTML article section titles.
+Synonym for &#8216;-a section-numbers&#8217;.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-o <var>outfile</var></span></kbd></td>
+<td>Write output to file &#8216;outfile&#8217;. Defaults to the base name of
+input file with &#8216;backend&#8217; extension. If the input is stdin
+then the outfile defaults to stdout. If &#8216;outfile&#8217; is &#8216;-&#8216; then
+the standard output is used.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-s</span></kbd></td>
+<td>Suppress document header and footer output.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-v</span></kbd></td>
+<td>Verbosely print processing information and configuration file
+checks to stderr.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>Print program version number.</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>BUGS
+See the AsciiDoc distribution BUGS file.</p>
+<dl class="docutils">
+<dt>AUTHOR</dt>
+<dd>Written by Stuart Rackham, &lt;<a class="reference external" href="mailto:srackham&#37;&#52;&#48;methods&#46;co&#46;nz">srackham<span>&#64;</span>methods<span>&#46;</span>co<span>&#46;</span>nz</a>&gt;</dd>
+<dt>RESOURCES</dt>
+<dd>SourceForge: <a class="reference external" href="http://sourceforge.net/projects/asciidoc/">http://sourceforge.net/projects/asciidoc/</a>
+Main website: <a class="reference external" href="http://www.methods.co.nz/asciidoc/">http://www.methods.co.nz/asciidoc/</a></dd>
+<dt>COPYING</dt>
+<dd>Copyright (C) 2002,2005 Stuart Rackham. Free use of this software
+is granted under the terms of the GNU General Public License
+(GPL).</dd>
+</dl>
+<dl class="class">
+<dt id="leo.extensions.asciidoc.AttributeEntry">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">AttributeEntry</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeEntry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static methods and attributes only.</p>
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.AttributeEntry.isnext">
+<em class="property">static </em><tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeEntry.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeEntry.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.AttributeEntry.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.AttributeEntry.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.AttributeEntry.pattern">
+<tt class="descname">pattern</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.AttributeEntry.pattern" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.AttributeEntry.translate">
+<em class="property">static </em><tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeEntry.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeEntry.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.AttributeEntry.translate_all">
+<em class="property">static </em><tt class="descname">translate_all</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeEntry.translate_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeEntry.translate_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process all contiguous attribute lines on reader.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.AttributeEntry.value">
+<tt class="descname">value</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.AttributeEntry.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.AttributeList">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">AttributeList</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static methods and attributes only.</p>
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.AttributeList.attrs">
+<tt class="descname">attrs</tt><em class="property"> = {}</em><a class="headerlink" href="#leo.extensions.asciidoc.AttributeList.attrs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.AttributeList.consume">
+<em class="property">static </em><tt class="descname">consume</tt><big>(</big><em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeList.consume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeList.consume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add attribute list to the dictionary &#8216;dict&#8217; and reset the
+list.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.AttributeList.isnext">
+<em class="property">static </em><tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeList.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeList.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.AttributeList.match">
+<tt class="descname">match</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.AttributeList.match" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.AttributeList.pattern">
+<tt class="descname">pattern</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.AttributeList.pattern" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.AttributeList.translate">
+<em class="property">static </em><tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#AttributeList.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.AttributeList.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.BlockTitle">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">BlockTitle</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#BlockTitle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.BlockTitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static methods and attributes only.</p>
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.BlockTitle.consume">
+<em class="property">static </em><tt class="descname">consume</tt><big>(</big><em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#BlockTitle.consume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.BlockTitle.consume" title="Permalink to this definition">¶</a></dt>
+<dd><p>If there is a title add it to dict then reset title.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.BlockTitle.isnext">
+<em class="property">static </em><tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#BlockTitle.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.BlockTitle.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.BlockTitle.pattern">
+<tt class="descname">pattern</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.BlockTitle.pattern" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.BlockTitle.title">
+<tt class="descname">title</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.BlockTitle.title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.BlockTitle.translate">
+<em class="property">static </em><tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#BlockTitle.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.BlockTitle.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.CalloutMap">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">CalloutMap</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#CalloutMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.CalloutMap" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="leo.extensions.asciidoc.CalloutMap.add">
+<tt class="descname">add</tt><big>(</big><em>listindex</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#CalloutMap.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.CalloutMap.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.CalloutMap.calloutid">
+<em class="property">static </em><tt class="descname">calloutid</tt><big>(</big><em>listnumber</em>, <em>calloutindex</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#CalloutMap.calloutid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.CalloutMap.calloutid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.CalloutMap.calloutids">
+<tt class="descname">calloutids</tt><big>(</big><em>listindex</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#CalloutMap.calloutids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.CalloutMap.calloutids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.CalloutMap.check">
+<tt class="descname">check</tt><big>(</big><em>maxlistindex</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#CalloutMap.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.CalloutMap.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.CalloutMap.listclose">
+<tt class="descname">listclose</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#CalloutMap.listclose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.CalloutMap.listclose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Column">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Column</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table column.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Config">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Config</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Methods to process configuration files.</p>
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Config.SPECIAL_SECTIONS">
+<tt class="descname">SPECIAL_SECTIONS</tt><em class="property"> = ('tags', 'miscellaneous', 'attributes', 'glossary', 'specialcharacters', 'specialwords', 'macros', 'replacements', 'quotes', 'titles', 'paradef.+', 'listdef.+', 'blockdef.+', 'tabledef.*')</em><a class="headerlink" href="#leo.extensions.asciidoc.Config.SPECIAL_SECTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.check">
+<tt class="descname">check</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the configuration for internal consistancy. Called after all
+configuration files have been loaded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump configuration to stdout.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.is_special_section">
+<tt class="descname">is_special_section</tt><big>(</big><em>section_name</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.is_special_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.is_special_section" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.load">
+<tt class="descname">load</tt><big>(</big><em>fname</em>, <em>dir=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads sections dictionary with sections from file fname.
+Existing sections are overlaid. Silently skips missing configuration
+files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.load_all">
+<tt class="descname">load_all</tt><big>(</big><em>dir</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.load_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.load_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the standard configuration files from directory &#8216;dir&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.load_miscellaneous">
+<tt class="descname">load_miscellaneous</tt><big>(</big><em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.load_miscellaneous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.load_miscellaneous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set miscellaneous configuration entries from dictionary &#8216;dict&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.parse_replacements">
+<tt class="descname">parse_replacements</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.parse_replacements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.parse_replacements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse replacements section into self.replacements dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.parse_specialsections">
+<tt class="descname">parse_specialsections</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.parse_specialsections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.parse_specialsections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse specialsections section to self.specialsections dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.parse_specialwords">
+<tt class="descname">parse_specialwords</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.parse_specialwords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.parse_specialwords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse special words section into self.specialwords dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.parse_tags">
+<tt class="descname">parse_tags</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.parse_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.parse_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse [tags] section entries into self.tags dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.section2tags">
+<tt class="descname">section2tags</tt><big>(</big><em>section</em>, <em>dict={}</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.section2tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.section2tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform attribute substitution on &#8216;section&#8217; using document
+attributes plus &#8216;dict&#8217; attributes. Return tuple (stag,etag) containing
+pre and post | placeholder tags.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.subs_replacements">
+<tt class="descname">subs_replacements</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.subs_replacements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.subs_replacements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Substitute patterns from self.replacements in &#8216;s&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.subs_section">
+<tt class="descname">subs_section</tt><big>(</big><em>section</em>, <em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.subs_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.subs_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section attribute substitution using attributes from
+document.attributes and &#8216;dict&#8217;.  Lines containing undefinded
+attributes are deleted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.subs_specialchars">
+<tt class="descname">subs_specialchars</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.subs_specialchars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.subs_specialchars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform special character substitution on string &#8216;s&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.subs_specialwords">
+<tt class="descname">subs_specialwords</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.subs_specialwords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.subs_specialwords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for word patterns from self.specialwords in &#8216;s&#8217; and
+substitute using corresponding macro.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Config.tag">
+<tt class="descname">tag</tt><big>(</big><em>name</em>, <em>dict=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Config.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Config.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns (starttag,endtag) tuple named name from configuration file
+[tags] section. Raise error if not found. If a dictionary &#8216;dict&#8217; is
+passed then merge with document attributes and perform attribute
+substitution on tags.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.DelimitedBlock">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">DelimitedBlock</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlock" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="leo.extensions.asciidoc.DelimitedBlock.OPTIONS">
+<tt class="descname">OPTIONS</tt><em class="property"> = ('section', 'skip', 'argsline', 'variants')</em><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlock.OPTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlock.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlock.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlock.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlock.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlock.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlock.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlock.load">
+<tt class="descname">load</tt><big>(</big><em>name</em>, <em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlock.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlock.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update block definition from section entries in &#8216;dict&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlock.translate">
+<tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlock.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlock.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.DelimitedBlocks">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">DelimitedBlocks</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of delimited blocks.</p>
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlocks.check">
+<tt class="descname">check</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlocks.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlocks.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlocks.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlocks.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlocks.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlocks.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlocks.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlocks.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.DelimitedBlocks.load">
+<tt class="descname">load</tt><big>(</big><em>sections</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#DelimitedBlocks.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.DelimitedBlocks.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update blocks defined in &#8216;sections&#8217; dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Document">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Document</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Document" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="leo.extensions.asciidoc.Document.init_attrs">
+<tt class="descname">init_attrs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Document.init_attrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Document.init_attrs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Document.parse_author">
+<tt class="descname">parse_author</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Document.parse_author"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Document.parse_author" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Document.translate">
+<tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Document.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Document.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="leo.extensions.asciidoc.EAsciiDoc">
+<em class="property">exception </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">EAsciiDoc</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#EAsciiDoc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.EAsciiDoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Header">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Header</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static methods and attributes only.</p>
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Header.translate">
+<em class="property">static </em><tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Header.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Header.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Lex">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Lex</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lexical analysis routines. Static methods and attributes only.</p>
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Lex.next">
+<em class="property">static </em><tt class="descname">next</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lex.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lex.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns class of next element on the input (None if EOF).  The
+reader is assumed to be at the first line following a previous element,
+end of file or line one.  Exits with the reader pointing to the first
+line of the next element or EOF (leading blank lines are skipped).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Lex.prev_cursor">
+<tt class="descname">prev_cursor</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.Lex.prev_cursor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Lex.prev_element">
+<tt class="descname">prev_element</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.Lex.prev_element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Lex.set_margin">
+<em class="property">static </em><tt class="descname">set_margin</tt><big>(</big><em>lines</em>, <em>margin=0</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lex.set_margin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lex.set_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility routine that sets the left margin to &#8216;margin&#8217; space in a
+block of non-blank lines.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Lex.subs">
+<em class="property">static </em><tt class="descname">subs</tt><big>(</big><em>lines</em>, <em>options</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lex.subs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lex.subs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform inline processing specified by &#8216;options&#8217; (in &#8216;options&#8217;
+order) on sequence of &#8216;lines&#8217;.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Lex.subs_1">
+<em class="property">static </em><tt class="descname">subs_1</tt><big>(</big><em>s</em>, <em>options</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lex.subs_1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lex.subs_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform substitution specified in &#8216;options&#8217; (in &#8216;options&#8217; order) on
+a single line &#8216;s&#8217; of text.  Returns the substituted string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.List">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">List</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="leo.extensions.asciidoc.List.TAGS">
+<tt class="descname">TAGS</tt><em class="property"> = ('listtag', 'itemtag', 'texttag', 'entrytag', 'termtag', 'labeltag')</em><a class="headerlink" href="#leo.extensions.asciidoc.List.TAGS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.List.TYPES">
+<tt class="descname">TYPES</tt><em class="property"> = ('simple', 'variable', 'bulleted', 'numbered', 'labeled', 'callout')</em><a class="headerlink" href="#leo.extensions.asciidoc.List.TYPES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.check_index">
+<tt class="descname">check_index</tt><big>(</big><em>listindex</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.check_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.check_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculated listindex (1,2,...) against the item index in the
+document (self.index).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.iscontinued">
+<tt class="descname">iscontinued</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.iscontinued"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.iscontinued" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.load">
+<tt class="descname">load</tt><big>(</big><em>name</em>, <em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update block definition from section entries in &#8216;dict&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.translate">
+<tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.translate_entry">
+<tt class="descname">translate_entry</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.translate_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.translate_entry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.List.translate_item">
+<tt class="descname">translate_item</tt><big>(</big><em>listindex=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#List.translate_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.List.translate_item" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Lists">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Lists</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of List objects.</p>
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Lists.check">
+<tt class="descname">check</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lists.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lists.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Lists.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lists.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lists.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Lists.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lists.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lists.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Lists.load">
+<tt class="descname">load</tt><big>(</big><em>sections</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Lists.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Lists.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update lists defined in &#8216;sections&#8217; dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Macro">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Macro</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macro" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="leo.extensions.asciidoc.Macro.equals">
+<tt class="descname">equals</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macro.equals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macro.equals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macro.load">
+<tt class="descname">load</tt><big>(</big><em>entry</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macro.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macro.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macro.section_name">
+<tt class="descname">section_name</tt><big>(</big><em>name=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macro.section_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macro.section_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return macro markup template section name based on macro name and
+prefix.  Return None section not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macro.subs">
+<tt class="descname">subs</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macro.subs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macro.subs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macro.translate">
+<tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macro.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macro.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Macros">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Macros</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macros" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="leo.extensions.asciidoc.Macros.check">
+<tt class="descname">check</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macros.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macros.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macros.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macros.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macros.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macros.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macros.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macros.isnext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return matching macro if block macro is next on reader.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macros.load">
+<tt class="descname">load</tt><big>(</big><em>entries</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macros.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macros.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macros.match">
+<tt class="descname">match</tt><big>(</big><em>prefix</em>, <em>name</em>, <em>text</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macros.match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macros.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return re match object matching &#8216;text&#8217; with macro type &#8216;prefix&#8217;,
+macro name &#8216;name&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Macros.subs">
+<tt class="descname">subs</tt><big>(</big><em>text</em>, <em>prefix=''</em>, <em>callouts=False</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Macros.subs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Macros.subs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.OrderedDict">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">OrderedDict</tt><big>(</big><em>d=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">UserDict.UserDict</span></tt></p>
+<p>Python Cookbook: Ordered Dictionary, Submitter: David Benjamin</p>
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.clear">
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.items">
+<tt class="descname">items</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.keys">
+<tt class="descname">keys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.popitem">
+<tt class="descname">popitem</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.popitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.popitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.setdefault">
+<tt class="descname">setdefault</tt><big>(</big><em>key</em>, <em>failobj=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.setdefault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.update">
+<tt class="descname">update</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.OrderedDict.values">
+<tt class="descname">values</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#OrderedDict.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.OrderedDict.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Paragraph">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Paragraph</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraph" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="leo.extensions.asciidoc.Paragraph.OPTIONS">
+<tt class="descname">OPTIONS</tt><em class="property"> = ('listelement',)</em><a class="headerlink" href="#leo.extensions.asciidoc.Paragraph.OPTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraph.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraph.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraph.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraph.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraph.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraph.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraph.load">
+<tt class="descname">load</tt><big>(</big><em>name</em>, <em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraph.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraph.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update paragraph definition from section entries in &#8216;dict&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraph.translate">
+<tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraph.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraph.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraph.write_body">
+<tt class="descname">write_body</tt><big>(</big><em>body</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraph.write_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraph.write_body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Paragraphs">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Paragraphs</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraphs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraphs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of paragraph definitions.</p>
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraphs.check">
+<tt class="descname">check</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraphs.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraphs.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraphs.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraphs.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraphs.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraphs.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraphs.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraphs.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Paragraphs.load">
+<tt class="descname">load</tt><big>(</big><em>sections</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Paragraphs.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Paragraphs.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update paragraphs defined in &#8216;sections&#8217; dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Reader">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Reader</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#leo.extensions.asciidoc.Reader1" title="leo.extensions.asciidoc.Reader1"><tt class="xref py py-class docutils literal"><span class="pre">leo.extensions.asciidoc.Reader1</span></tt></a></p>
+<p>Wraps (well, sought of) Reader1 class and implements conditional text
+inclusion.</p>
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.eof">
+<tt class="descname">eof</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.eof"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.eof" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.parse_arguments">
+<tt class="descname">parse_arguments</tt><big>(</big><em>dict</em>, <em>default_arg=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.parse_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.parse_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>If an arguments line is in the reader parse it to dict.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read">
+<tt class="descname">read</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read_ahead">
+<tt class="descname">read_ahead</tt><big>(</big><em>count=1</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read_ahead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read_ahead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as read_lines() but does not advance the file pointer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read_all">
+<tt class="descname">read_all</tt><big>(</big><em>fname</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read all lines from file fname and return as list. Use like class
+method: Reader().read_all(fname)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read_continuation">
+<tt class="descname">read_continuation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read_continuation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read_continuation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like read() but treats trailing backslash as line continuation
+character.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read_lines">
+<tt class="descname">read_lines</tt><big>(</big><em>count=1</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return tuple containing count lines.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read_next">
+<tt class="descname">read_next</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read_next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read_super">
+<tt class="descname">read_super</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read_super"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read_super" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.read_until">
+<tt class="descname">read_until</tt><big>(</big><em>pattern</em>, <em>same_file=False</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.read_until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.read_until" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like read() but reads lines up to (but not including) the first line
+that matches the pattern regular expression. If same_file is True
+then the terminating pattern must occur in the file the was being read
+when the routine was called.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader.skip_blank_lines">
+<tt class="descname">skip_blank_lines</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader.skip_blank_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader.skip_blank_lines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Reader1">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Reader1</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line oriented AsciiDoc input file reader. Processes non lexical
+entities: transparently handles included files. Tabs are expanded and lines
+are right trimmed.</p>
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Reader1.READ_BUFFER_MIN">
+<tt class="descname">READ_BUFFER_MIN</tt><em class="property"> = 10</em><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.READ_BUFFER_MIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader1.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader1.closefile">
+<tt class="descname">closefile</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1.closefile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.closefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used by class methods to close nested include files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader1.eof">
+<tt class="descname">eof</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1.eof"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.eof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if all lines have been read.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader1.open">
+<tt class="descname">open</tt><big>(</big><em>fname</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader1.read">
+<tt class="descname">read</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read next line. Return None if EOF. Expand tabs. Strip trailing
+white space.  Maintain self.next read ahead buffer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader1.read_next">
+<tt class="descname">read_next</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1.read_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.read_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like read() but does not advance file pointer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Reader1.unread">
+<tt class="descname">unread</tt><big>(</big><em>cursor</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Reader1.unread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Reader1.unread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push the line (filename,linenumber,linetext) tuple back into the read
+buffer. Note that it&#8217;s up to the caller to restore the previous
+cursor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Section">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Section</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static methods and attributes only.</p>
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Section.endtags">
+<tt class="descname">endtags</tt><em class="property"> = []</em><a class="headerlink" href="#leo.extensions.asciidoc.Section.endtags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Section.savetag">
+<em class="property">static </em><tt class="descname">savetag</tt><big>(</big><em>level</em>, <em>etag</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Section.savetag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Section.savetag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save section end.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Section.setlevel">
+<em class="property">static </em><tt class="descname">setlevel</tt><big>(</big><em>level</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Section.setlevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Section.setlevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set document level and write open section close tags up to level.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Section.translate">
+<em class="property">static </em><tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Section.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Section.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Section.translate_body">
+<em class="property">static </em><tt class="descname">translate_body</tt><big>(</big><em>terminator=&lt;class leo.extensions.asciidoc.Title at 0x7a64a4ac&gt;</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Section.translate_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Section.translate_body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Table">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Table</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="leo.extensions.asciidoc.Table.ALIGNMENTS">
+<tt class="descname">ALIGNMENTS</tt><em class="property"> = {'`': 'left', &quot;'&quot;: 'right', '.': 'center'}</em><a class="headerlink" href="#leo.extensions.asciidoc.Table.ALIGNMENTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Table.COL_STOP">
+<tt class="descname">COL_STOP</tt><em class="property"> = &quot;(`|'|\\.)&quot;</em><a class="headerlink" href="#leo.extensions.asciidoc.Table.COL_STOP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Table.FORMATS">
+<tt class="descname">FORMATS</tt><em class="property"> = ('fixed', 'csv', 'dsv')</em><a class="headerlink" href="#leo.extensions.asciidoc.Table.FORMATS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.build_colspecs">
+<tt class="descname">build_colspecs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.build_colspecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.build_colspecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate colwidths and colspecs. This can only be done after the
+table arguments have been parsed since we use the table format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.check">
+<tt class="descname">check</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check table definition and set self.check_msg if invalid else set
+self.check_msg to blank string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.load">
+<tt class="descname">load</tt><big>(</big><em>name</em>, <em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update table definition from section entries in &#8216;dict&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.parse_attrs">
+<tt class="descname">parse_attrs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.parse_attrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.parse_attrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse table arguments string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.parse_csv">
+<tt class="descname">parse_csv</tt><big>(</big><em>rows</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.parse_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.parse_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the list of source table rows. Each row item in the returned
+list contains a list of cell data elements.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.parse_dsv">
+<tt class="descname">parse_dsv</tt><big>(</big><em>rows</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.parse_dsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.parse_dsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the list of source table rows. Each row item in the returned
+list contains a list of cell data elements.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.parse_fixed">
+<tt class="descname">parse_fixed</tt><big>(</big><em>rows</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.parse_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.parse_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the list of source table rows. Each row item in the returned
+list contains a list of cell data elements.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.parse_rows">
+<tt class="descname">parse_rows</tt><big>(</big><em>rows</em>, <em>rtag</em>, <em>dtag</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.parse_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.parse_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse rows list using the row and data tags. Returns a substituted
+list of output lines.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.parse_ruler">
+<tt class="descname">parse_ruler</tt><big>(</big><em>ruler</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.parse_ruler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.parse_ruler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse ruler calculating underline and ruler column widths.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.split_rows">
+<tt class="descname">split_rows</tt><big>(</big><em>rows</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.split_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.split_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a two item tuple containing a list of lines up to but not
+including the next underline (continued lines are joined ) and the
+tuple of all lines after the underline.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.subs_row">
+<tt class="descname">subs_row</tt><big>(</big><em>data</em>, <em>dtag</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.subs_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.subs_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Substitute the list of source row data elements using the data tag.
+Returns a substituted list of output table data items.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Table.translate">
+<tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Table.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Table.translate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Tables">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Tables</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of tables.</p>
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Tables.check">
+<tt class="descname">check</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Tables.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Tables.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Tables.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Tables.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Tables.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Tables.isnext">
+<tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Tables.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Tables.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Tables.load">
+<tt class="descname">load</tt><big>(</big><em>sections</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Tables.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Tables.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update tables defined in &#8216;sections&#8217; dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Title">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Title</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes Header and Section titles. Static methods and attributes
+only.</p>
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.dict">
+<tt class="descname">dict</tt><em class="property"> = {}</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Title.dump">
+<em class="property">static </em><tt class="descname">dump</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title.dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.dump_dict">
+<tt class="descname">dump_dict</tt><em class="property"> = {}</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.dump_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Title.getnumber">
+<em class="property">static </em><tt class="descname">getnumber</tt><big>(</big><em>level</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title.getnumber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title.getnumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return next section number at section &#8216;level&#8217; formatted like
+1.2.3.4.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Title.isnext">
+<em class="property">static </em><tt class="descname">isnext</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title.isnext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title.isnext" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.level">
+<tt class="descname">level</tt><em class="property"> = 0</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.linecount">
+<tt class="descname">linecount</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.linecount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Title.load">
+<em class="property">static </em><tt class="descname">load</tt><big>(</big><em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and validate [titles] section entries from dict.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Title.parse">
+<em class="property">static </em><tt class="descname">parse</tt><big>(</big><em>lines</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse title at start of lines tuple.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.pattern">
+<tt class="descname">pattern</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.pattern" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.section_numbers">
+<tt class="descname">section_numbers</tt><em class="property"> = [0, 0, 0, 0, 0]</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.section_numbers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.sectname">
+<tt class="descname">sectname</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.sectname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Title.setsectname">
+<em class="property">static </em><tt class="descname">setsectname</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title.setsectname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title.setsectname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set Title section name. First search for section title in
+[specialsections], if not found use default &#8216;sect&lt;level&gt;&#8217; name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.subs">
+<tt class="descname">subs</tt><em class="property"> = ('specialcharacters', 'quotes', 'replacements', 'attributes', 'macros')</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.subs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="leo.extensions.asciidoc.Title.translate">
+<em class="property">static </em><tt class="descname">translate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Title.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Title.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the Title.dict and Title.level from the reader. The
+real work has already been done by parse().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Title.underlines">
+<tt class="descname">underlines</tt><em class="property"> = ('==', '--', '~~', '^^', '++')</em><a class="headerlink" href="#leo.extensions.asciidoc.Title.underlines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.asciidoc.Writer">
+<em class="property">class </em><tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">Writer</tt><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes lines to output file.</p>
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Writer.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Writer.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Writer.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Writer.f">
+<tt class="descname">f</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.Writer.f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Writer.fname">
+<tt class="descname">fname</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.asciidoc.Writer.fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Writer.lines_out">
+<tt class="descname">lines_out</tt><em class="property"> = 0</em><a class="headerlink" href="#leo.extensions.asciidoc.Writer.lines_out" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.asciidoc.Writer.newline">
+<tt class="descname">newline</tt><em class="property"> = '\r\n'</em><a class="headerlink" href="#leo.extensions.asciidoc.Writer.newline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Writer.open">
+<tt class="descname">open</tt><big>(</big><em>fname</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Writer.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Writer.open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Writer.write">
+<tt class="descname">write</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Writer.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Writer.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates arguments, writes tuple and list arguments one line per
+element, else writes argument as single line. If no arguments writes
+blank line. self.newline is appended to each line.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.asciidoc.Writer.write_tag">
+<tt class="descname">write_tag</tt><big>(</big><em>tagname</em>, <em>content</em>, <em>subs=('specialcharacters'</em>, <em>'quotes'</em>, <em>'specialwords'</em>, <em>'replacements'</em>, <em>'attributes'</em>, <em>'macros')</em>, <em>dict=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#Writer.write_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.Writer.write_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write content enveloped by configuration file tag tagname.
+Substitutions specified in the &#8216;subs&#8217; list are perform on the
+&#8216;content&#8217;.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.asciidoc">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">asciidoc</tt><big>(</big><em>backend</em>, <em>doctype</em>, <em>confiles</em>, <em>infile</em>, <em>outfile</em>, <em>options</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#asciidoc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.asciidoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert AsciiDoc document to DocBook document of type doctype
+The AsciiDoc document is read from file object src the translated
+DocBook file written to file object dst.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.assign">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">assign</tt><big>(</big><em>dst</em>, <em>src</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#assign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.assign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign all attributes from &#8216;src&#8217; object to &#8216;dst&#8217; object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.console">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">console</tt><big>(</big><em>msg</em>, <em>prefix=''</em>, <em>linenos=True</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#console"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.console" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print message to stderr. &#8216;offset&#8217; is added to reported line number for
+warnings emitted when reading ahead.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.deprecated">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">deprecated</tt><big>(</big><em>old</em>, <em>new</em>, <em>linenos=True</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#deprecated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.deprecated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.dump_section">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">dump_section</tt><big>(</big><em>name</em>, <em>dict</em>, <em>f=&lt;open file '&lt;stdout&gt;'</em>, <em>mode 'w' at 0x7ff83078&gt;</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#dump_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.dump_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write parameters in &#8216;dict&#8217; as in configuration file section format with
+section &#8216;name&#8217;.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.error">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">error</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Report fatal error but don&#8217;t exit application, continue in the hope of
+reporting all fatal errors finishing with a non-zero exit code.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.execute_attr">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">execute_attr</tt><big>(</big><em>action</em>, <em>expr</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#execute_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.execute_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the result of a executable {action:expr} attribute.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.filter_lines">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">filter_lines</tt><big>(</big><em>filter</em>, <em>lines</em>, <em>dict={}</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#filter_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.filter_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run &#8216;lines&#8217; through the &#8216;filter&#8217; shell command and return the result. The
+&#8216;dict&#8217; dictionary contains additional filter attributes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.is_name">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">is_name</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#is_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.is_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if s is valid attribute, macro or tag name
+(starts with alpha containing alphanumeric and dashes only).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.is_regexp">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">is_regexp</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#is_regexp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.is_regexp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if s is a valid regular expression else return False.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.join_lines">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">join_lines</tt><big>(</big><em>lines</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#join_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.join_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list in which lines terminated with the backslash line
+continuation character are joined.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.join_regexp">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">join_regexp</tt><big>(</big><em>relist</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#join_regexp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.join_regexp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join list of regular expressions re1,re2,... to single regular
+expression (re1)|(re2)|...</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.main">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.parse_attrs">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">parse_attrs</tt><big>(</big><em>attrs</em>, <em>dict</em>, <em>default_arg=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#parse_attrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.parse_attrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a dictionary with name/value attributes from the attrs string.
+The attrs string is a comma separated list of values and keyword name=value
+pairs. Values must preceed keywords and are named &#8216;1&#8217;,&#8216;2&#8217;... The entire
+attributes list is named &#8216;0&#8217;. If keywords are specified string values must
+be quoted. Examples:</p>
+<p>attrs: &#8216;&#8217;
+dict: {}</p>
+<p>attrs: &#8216;hello,world&#8217;
+dict: {&#8216;2&#8217;: &#8216;world&#8217;, &#8216;0&#8217;: &#8216;hello,world&#8217;, &#8216;1&#8217;: &#8216;hello&#8217;}</p>
+<p>attrs: &#8216;hello,,world&#8217;
+default_arg: &#8216;attrs&#8217;
+dict: {&#8216;3&#8217;: &#8216;world&#8217;, &#8216;attrs&#8217;: &#8216;hello&#8217;, &#8216;0&#8217;: &#8216;hello,,world&#8217;, &#8216;1&#8217;: &#8216;hello&#8217;}</p>
+<p>attrs: &#8216;&#8220;hello&#8221;,planet=&#8221;earth&#8221;&#8217;
+dict: {&#8216;planet&#8217;: &#8216;earth&#8217;, &#8216;0&#8217;: &#8216;&#8220;hello&#8221;,planet=&#8221;earth&#8221;&#8217;, &#8216;1&#8217;: &#8216;hello&#8217;}</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.parse_entries">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">parse_entries</tt><big>(</big><em>entries</em>, <em>dict</em>, <em>unquote=False</em>, <em>unique_values=False</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#parse_entries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.parse_entries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse name=value entries from  from lines of text in &#8216;entries&#8217; into
+dictionary &#8216;dict&#8217;. Blank lines are skipped.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.parse_entry">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">parse_entry</tt><big>(</big><em>entry</em>, <em>dict=None</em>, <em>unquote=False</em>, <em>unique_values=False</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#parse_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.parse_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse name=value entry to dictionary &#8216;dict&#8217;. Return tuple (name,value)
+or None if illegal entry. If value is omitted (name=) then it is set to &#8216;&#8217;.
+If only the name is present the value is set to None).
+Leading and trailing white space is striped from &#8216;name&#8217; and &#8216;value&#8217;.
+&#8216;name&#8217; can contain any printable characters. If &#8216;name includes the equals
+&#8216;=&#8217; character it must be escaped with a backslash.
+If &#8216;unquote&#8217; is True leading and trailing double-quotes are stripped from
+&#8216;name&#8217; and &#8216;value&#8217;.
+If unique_values&#8217; is True then dictionary entries with the same value are
+removed before the parsed entry is added.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.parse_list">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">parse_list</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#parse_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.parse_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse comma separated string of Python literals. Return a tuple of of
+parsed values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.parse_options">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">parse_options</tt><big>(</big><em>options</em>, <em>allowed</em>, <em>errmsg</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#parse_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.parse_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse comma separated string of unquoted option names and return as a
+tuple of valid options. &#8216;allowed&#8217; is a list of allowed option values.
+&#8216;errmsg&#8217; isan error message prefix if an illegal option error is thrown.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.print_stderr">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">print_stderr</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#print_stderr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.print_stderr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.readlines">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">readlines</tt><big>(</big><em>fname</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#readlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.readlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read lines from file named &#8216;fname&#8217; and strip trailing white space.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.realpath">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">realpath</tt><big>(</big><em>fname</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#realpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.realpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the absolute pathname of the file fname. Follow symbolic links.
+os.realpath() not available in Python prior to 2.2 and not portable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.strip_quotes">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">strip_quotes</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#strip_quotes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.strip_quotes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim white space and, if necessary, quote characters from s.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.subs_attrs">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">subs_attrs</tt><big>(</big><em>lines</em>, <em>dict={}</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#subs_attrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.subs_attrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Substitute &#8216;lines&#8217; of text with attributes from the global
+document.attributes dictionary and from the &#8216;dict&#8217; dictionary (&#8216;dict&#8217;
+entries take precedence). Return a tuple of the substituted lines.  &#8216;lines&#8217;
+containing undefined attributes are deleted. If &#8216;lines&#8217; is a string then
+return a string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.subs_quotes">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">subs_quotes</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#subs_quotes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.subs_quotes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quoted text is marked up and the resulting text is
+returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.subs_tag">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">subs_tag</tt><big>(</big><em>tag</em>, <em>dict={}</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#subs_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.subs_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform attribute substitution and split tag string returning start, end
+tag tuple (c.f. Config.tag()).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.syseval">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">syseval</tt><big>(</big><em>cmd</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#syseval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.syseval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.undefine_entries">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">undefine_entries</tt><big>(</big><em>entries</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#undefine_entries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.undefine_entries" title="Permalink to this definition">¶</a></dt>
+<dd><p>All dictionary entries with None values are deleted.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.update_attrs">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">update_attrs</tt><big>(</big><em>attrs</em>, <em>dict</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#update_attrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.update_attrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update &#8216;attrs&#8217; dictionary with parsed attributes in dictionary &#8216;dict&#8217;.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.usage">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">usage</tt><big>(</big><em>msg=''</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.validate">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">validate</tt><big>(</big><em>value</em>, <em>rule</em>, <em>errmsg</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate value against rule expression. Throw EAsciiDoc exception with
+errmsg if validation fails.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.verbose">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">verbose</tt><big>(</big><em>msg</em>, <em>linenos=True</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#verbose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>-v option messages.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.asciidoc.warning">
+<tt class="descclassname">leo.extensions.asciidoc.</tt><tt class="descname">warning</tt><big>(</big><em>msg</em>, <em>linenos=True</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/asciidoc.html#warning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.asciidoc.warning" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-leo.extensions.colors">
+<span id="colors-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">colors</span></tt> Module<a class="headerlink" href="#module-leo.extensions.colors" title="Permalink to this headline">¶</a></h2>
+<p>Colors module provides a colors names database and functions to access it.</p>
+<p>The database is a python dictionary with reduced colornames as keys and
+color data in the form &#8216;#RRGGBB&#8217; as values.</p>
+<p>The reudced color names are common color names with spaces and capitalization removed.</p>
+<p>Functions to access the data base are:</p>
+<blockquote>
+<div><p>This function will convert <cite>name</cite> and return it in &#8216;#RRGGBB&#8217; format
+if possible otherwise it will do the sme for <cite>default</cite>.</p>
+<p>If default can not be converted, None will be returned.</p>
+<p><cite>name</cite> and <cite>default</cite> are reduced by removing spaces and capitalization
+before looking them up in the database.</p>
+<p>This function will first call getColor to convert <cite>name</cite> (or <cite>default</cite>)
+to &#8216;#RRGGBB&#8217; format, then it will convert this and return it as a python
+tuple in the form  (0-255, 0-255, 0-255).</p>
+<p>Returns None if anything goes wrong.</p>
+</div></blockquote>
+<dl class="function">
+<dt id="leo.extensions.colors.getColor">
+<tt class="descclassname">leo.extensions.colors.</tt><tt class="descname">getColor</tt><big>(</big><em>name</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/colors.html#getColor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.colors.getColor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.colors.getColorRGB">
+<tt class="descclassname">leo.extensions.colors.</tt><tt class="descname">getColorRGB</tt><big>(</big><em>name</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/colors.html#getColorRGB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.colors.getColorRGB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-leo.extensions.patch_11_01">
+<span id="patch-11-01-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">patch_11_01</span></tt> Module<a class="headerlink" href="#module-leo.extensions.patch_11_01" title="Permalink to this headline">¶</a></h2>
+<p>Patch utility to apply unified diffs</p>
+<p>Brute-force line-by-line non-recursive parsing</p>
+<p>Copyright (c) 2008-2011 anatoly techtonik
+Available under the terms of MIT license</p>
+<p>Project home: <a class="reference external" href="http://code.google.com/p/python-patch/">http://code.google.com/p/python-patch/</a></p>
+<p>$Id: patch.py 117 2011-01-09 16:38:03Z techtonik $
+$HeadURL: <a class="reference external" href="https://python-patch.googlecode.com/svn/trunk/patch.py">https://python-patch.googlecode.com/svn/trunk/patch.py</a> $</p>
+<dl class="class">
+<dt id="leo.extensions.patch_11_01.Hunk">
+<em class="property">class </em><tt class="descclassname">leo.extensions.patch_11_01.</tt><tt class="descname">Hunk</tt><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Hunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Hunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Parsed hunk data container (hunk starts with &#64;&#64; -R +R &#64;&#64;)</p>
+<dl class="method">
+<dt id="leo.extensions.patch_11_01.Hunk.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Hunk.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Hunk.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.patch_11_01.Hunk.startsrc">
+<tt class="descname">startsrc</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.patch_11_01.Hunk.startsrc" title="Permalink to this definition">¶</a></dt>
+<dd><p>line count starts with 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.extensions.patch_11_01.Patch">
+<em class="property">class </em><tt class="descclassname">leo.extensions.patch_11_01.</tt><tt class="descname">Patch</tt><big>(</big><em>stream=None</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Patch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="leo.extensions.patch_11_01.Patch.apply">
+<tt class="descname">apply</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Patch.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply parsed patch
+return True on success</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.patch_11_01.Patch.can_patch">
+<tt class="descname">can_patch</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Patch.can_patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.can_patch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if specified filename can be patched. Returns None if file can
+not be found among source filenames. False if patch can not be applied
+clearly. True otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True, False or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.patch_11_01.Patch.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Patch.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.patch_11_01.Patch.header">
+<tt class="descname">header</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.header" title="Permalink to this definition">¶</a></dt>
+<dd><p>headers for each file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.patch_11_01.Patch.hunkends">
+<tt class="descname">hunkends</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.hunkends" title="Permalink to this definition">¶</a></dt>
+<dd><p>file endings statistics for every hunk</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.patch_11_01.Patch.hunks">
+<tt class="descname">hunks</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.hunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of lists of hunks</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.patch_11_01.Patch.parse">
+<tt class="descname">parse</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Patch.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>parse unified diff</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.patch_11_01.Patch.patch_stream">
+<tt class="descname">patch_stream</tt><big>(</big><em>instream</em>, <em>hunks</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Patch.patch_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.patch_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator that yields stream patched with hunks iterable</p>
+<p>Converts lineends in hunk lines to the best suitable format
+autodetected from input</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.patch_11_01.Patch.source">
+<tt class="descname">source</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.source" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of source filenames</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.extensions.patch_11_01.Patch.type">
+<tt class="descname">type</tt><em class="property"> = None</em><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>patch type - one of constants</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.extensions.patch_11_01.Patch.write_hunks">
+<tt class="descname">write_hunks</tt><big>(</big><em>srcname</em>, <em>tgtname</em>, <em>hunks</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#Patch.write_hunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.Patch.write_hunks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.patch_11_01.fromfile">
+<tt class="descclassname">leo.extensions.patch_11_01.</tt><tt class="descname">fromfile</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#fromfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.fromfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse patch file and return Patch() object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.patch_11_01.fromstring">
+<tt class="descclassname">leo.extensions.patch_11_01.</tt><tt class="descname">fromstring</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#fromstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.fromstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse text string and return Patch() object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.extensions.patch_11_01.fromurl">
+<tt class="descclassname">leo.extensions.patch_11_01.</tt><tt class="descname">fromurl</tt><big>(</big><em>url</em><big>)</big><a class="reference internal" href="_modules/leo/extensions/patch_11_01.html#fromurl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.extensions.patch_11_01.fromurl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read patch from URL</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-leo.extensions.sh">
+<span id="sh-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">sh</span></tt> Module<a class="headerlink" href="#module-leo.extensions.sh" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-leo.extensions.testExtension">
+<span id="testextension-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">testExtension</span></tt> Module<a class="headerlink" href="#module-leo.extensions.testExtension" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">extensions Package</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">extensions</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-leo.extensions.asciidoc"><tt class="docutils literal"><span class="pre">asciidoc</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-leo.extensions.colors"><tt class="docutils literal"><span class="pre">colors</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-leo.extensions.patch_11_01"><tt class="docutils literal"><span class="pre">patch_11_01</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-leo.extensions.sh"><tt class="docutils literal"><span class="pre">sh</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-leo.extensions.testExtension"><tt class="docutils literal"><span class="pre">testExtension</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="leo.core.html"
+                        title="previous chapter">core Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="leo.external.html"
+                        title="next chapter">external Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/leo.extensions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="leo.external.html" title="external Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="leo.core.html" title="core Package"
+             >previous</a> |</li>
+        <li><a href="index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="leo.html" >leo Package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

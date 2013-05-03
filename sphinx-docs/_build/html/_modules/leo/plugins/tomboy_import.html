@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.tomboy_import &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.tomboy_import</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ville.20090503124249.1: * @file tomboy_import.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ville.20090503124249.2: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Allows imports of notes created in Tomboy / gnote.</span>
+
+<span class="sd">Usage:</span>
+
+<span class="sd">* Create a node with the headline &#39;tomboy&#39;</span>
+<span class="sd">* Select the node, and do alt+x act-on-node    </span>
+<span class="sd">* The notes will appear as children of &#39;tomboy&#39; node</span>
+<span class="sd">* The next time you do act-on-node, existing notes will be updated (they don&#39;t need to </span>
+<span class="sd">  be under &#39;tomboy&#39; node anymore) and new notes added.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ville.20090503124249.3: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1 Ville M. Vainio:</span>
+<span class="c"># </span>
+<span class="c">#     * Functional version, has unidirectional (import) support with</span>
+<span class="c">#       updates. Strips html.</span>
+<span class="c"># </span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ville.20090503124249.4: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">isPython3</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="kn">as</span> <span class="nn">ET</span>
+
+<span class="kn">from</span> <span class="nn">leo.core</span> <span class="kn">import</span> <span class="n">leoPlugins</span>
+    <span class="c"># Uses leoPlugins.TryNext</span>
+
+<span class="k">if</span> <span class="n">isPython3</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">html.parser</span> <span class="kn">as</span> <span class="nn">HTMLParser</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">HTMLParser</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ville.20090503124249.5: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ville.20090503124249.6: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span> <span class="k">return</span>
+
+    <span class="c"># c not needed</span>
+
+    <span class="n">tomboy_install</span><span class="p">()</span>
+<span class="c">#@+node:ville.20090503124249.7: ** the code</span></div>
+<div class="viewcode-block" id="MLStripper"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.MLStripper">[docs]</a><span class="k">class</span> <span class="nc">MLStripper</span><span class="p">(</span><span class="n">HTMLParser</span><span class="o">.</span><span class="n">HTMLParser</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fed</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="MLStripper.handle_data"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.MLStripper.handle_data">[docs]</a>    <span class="k">def</span> <span class="nf">handle_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+<div class="viewcode-block" id="MLStripper.get_fed_data"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.MLStripper.get_fed_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_fed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fed</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="strip_tags"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.strip_tags">[docs]</a><span class="k">def</span> <span class="nf">strip_tags</span><span class="p">(</span><span class="n">cont</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MLStripper</span><span class="p">()</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">cont</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get_fed_data</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="parsenote"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.parsenote">[docs]</a><span class="k">def</span> <span class="nf">parsenote</span><span class="p">(</span><span class="n">cont</span><span class="p">):</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">cont</span><span class="p">)</span>
+    <span class="c">#ET.dump(tree)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s">&#39;{http://beatniksoftware.com/tomboy}title&#39;</span><span class="p">)</span>
+    <span class="n">body</span>  <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getiterator</span><span class="p">(</span><span class="s">&#39;{http://beatniksoftware.com/tomboy}note-content&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c">#b = &quot;&quot;.join(el.text for el in body.getiterator())</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">strip_tags</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="c">#print &quot;body&quot;,b</span>
+    <span class="k">return</span> <span class="n">title</span><span class="p">,</span> <span class="n">b</span>
+</div>
+<div class="viewcode-block" id="pos_for_gnx"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.pos_for_gnx">[docs]</a><span class="k">def</span> <span class="nf">pos_for_gnx</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">gnx</span><span class="p">):</span>
+    <span class="c">#print &quot;match&quot;,gnx</span>
+    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c">#print pos.gnx, pos.h</span>
+        <span class="k">if</span> <span class="n">pos</span><span class="o">.</span><span class="n">gnx</span> <span class="o">==</span> <span class="n">gnx</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pos</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="capturenotes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.capturenotes">[docs]</a><span class="k">def</span> <span class="nf">capturenotes</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">glob</span><span class="o">,</span> <span class="nn">os</span>
+    <span class="n">notes</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/.tomboy/*.note&#39;</span><span class="p">))</span>
+
+    <span class="c"># map tomboy file name =&gt; gnx</span>
+    <span class="n">old_nodes</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;tomboy_notes&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="k">for</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">notes</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">no</span><span class="p">)</span>
+        <span class="n">title</span><span class="p">,</span> <span class="n">body</span> <span class="o">=</span> <span class="n">parsenote</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">no</span><span class="p">))</span>
+
+        <span class="n">po</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">old_nodes</span><span class="p">:</span>
+
+            <span class="n">po</span> <span class="o">=</span> <span class="n">pos_for_gnx</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">old_nodes</span><span class="p">[</span><span class="n">fname</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">po</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;tomboy: Updating note &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">title</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">po</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;tomboy: Creating note &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">title</span><span class="p">)</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">insertAsLastChild</span><span class="p">()</span>
+
+        <span class="n">po</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="n">po</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">body</span>        
+        <span class="n">old_nodes</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">gnx</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="s">&#39;tomboy_notes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_nodes</span>
+</div>
+<div class="viewcode-block" id="tomboy_act_on_node"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.tomboy_act_on_node">[docs]</a><span class="k">def</span> <span class="nf">tomboy_act_on_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+    <span class="c">#print &#39;act&#39;, `p.h`</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span> <span class="o">==</span> <span class="s">&#39;tomboy&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">leoPlugins</span><span class="o">.</span><span class="n">TryNext</span>
+
+    <span class="n">capturenotes</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">redraw_now</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="tomboy_install"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.tomboy_import.tomboy_install">[docs]</a><span class="k">def</span> <span class="nf">tomboy_install</span><span class="p">():</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">act_on_node</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tomboy_act_on_node</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+
+<span class="c">#print &quot;capturing&quot;</span>
+<span class="c">#capturenotes(p)</span>
+<span class="c">#tomboy_install()</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

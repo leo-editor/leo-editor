@@ -1,0 +1,482 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.core.leoBridge &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.core.leoBridge</h1><div class="highlight"><pre>
+<span class="c">#! /usr/bin/env python</span>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20070227091955.1: * @file leoBridge.py</span>
+<span class="c">#@@first</span>
+
+<span class="sd">&#39;&#39;&#39;A module to allow full access to Leo commanders from outside Leo.&#39;&#39;&#39;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c">#@+&lt;&lt; about the leoBridge module &gt;&gt;</span>
+<span class="c">#@+node:ekr.20070227091955.2: ** &lt;&lt; about the leoBridge module &gt;&gt;</span>
+<span class="c">#@@nocolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># A **host** program is a Python program separate from Leo. Host programs may be</span>
+<span class="c"># created by Leo, but at the time they are run host programs are not part of Leo in</span>
+<span class="c"># any way. The leoBridge module gives host programs access to all aspects of Leo,</span>
+<span class="c"># including all of Leo&#39;s source code, the contents of any .leo file, all</span>
+<span class="c"># configuration settings in .leo files, etc.</span>
+<span class="c"># </span>
+<span class="c"># Host programs will use the leoBridge module like this::</span>
+<span class="c">#     import leo.core.leoBridge as leoBridge</span>
+<span class="c">#     bridge = leoBridge.controller(gui=&#39;nullGui&#39;,verbose=False)</span>
+<span class="c">#     if bridge.isOpen():</span>
+<span class="c">#         g = bridge.globals()</span>
+<span class="c">#         c = bridge.openLeoFile(path)</span>
+<span class="c"># Notes:</span>
+<span class="c"># </span>
+<span class="c"># - The leoBridge module imports no modules at the top level.</span>
+<span class="c"># </span>
+<span class="c"># - leoBridge.controller creates a singleton *bridge controller* that grants</span>
+<span class="c"># access to Leo&#39;s objects, including fully initialized g and c objects. In</span>
+<span class="c"># particular, the g.app and g.app.gui vars are fully initialized.</span>
+<span class="c"># </span>
+<span class="c"># - By default, leoBridge.controller creates a null gui so that no Leo windows</span>
+<span class="c"># appear on the screen.</span>
+<span class="c"># </span>
+<span class="c"># - As shown above, the host program should gain access to Leo&#39;s leoGlobals module</span>
+<span class="c"># using bridge.globals(). The host program should not import leo.core.leoGlobals as leoGlobals directly.</span>
+<span class="c"># </span>
+<span class="c"># - bridge.openLeoFile(path) returns a completely standard Leo commander. Host</span>
+<span class="c"># programs can use these commanders as described in Leo&#39;s scripting chapter.</span>
+<span class="c">#@-&lt;&lt; about the leoBridge module &gt;&gt;</span>
+
+<span class="n">gBridgeController</span> <span class="o">=</span> <span class="bp">None</span> <span class="c"># The singleton bridge controller.</span>
+
+<span class="c"># This module must import *no* modules at the outer level!</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20070227092442: ** controller</span>
+<div class="viewcode-block" id="controller"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.controller">[docs]</a><span class="k">def</span> <span class="nf">controller</span><span class="p">(</span><span class="n">gui</span><span class="o">=</span><span class="s">&#39;nullGui&#39;</span><span class="p">,</span><span class="n">loadPlugins</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">readSettings</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;Create an singleton instance of a bridge controller.&#39;&#39;&#39;</span>
+
+    <span class="k">global</span> <span class="n">gBridgeController</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">gBridgeController</span><span class="p">:</span>
+        <span class="n">gBridgeController</span> <span class="o">=</span> <span class="n">bridgeController</span><span class="p">(</span><span class="n">gui</span><span class="p">,</span><span class="n">loadPlugins</span><span class="p">,</span><span class="n">readSettings</span><span class="p">,</span><span class="n">silent</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gBridgeController</span>
+<span class="c">#@+node:ekr.20070227092442.2: ** class bridgeController</span></div>
+<div class="viewcode-block" id="bridgeController"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController">[docs]</a><span class="k">class</span> <span class="nc">bridgeController</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;Creates a way for host programs to access Leo.&#39;&#39;&#39;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20070227092442.3: *3* ctor (bridgeController)</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">guiName</span><span class="p">,</span><span class="n">loadPlugins</span><span class="p">,</span><span class="n">readSettings</span><span class="p">,</span><span class="n">silent</span><span class="p">,</span><span class="n">verbose</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gui</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">guiName</span> <span class="o">=</span> <span class="n">guiName</span> <span class="ow">or</span> <span class="s">&#39;nullGui&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadPlugins</span> <span class="o">=</span> <span class="n">loadPlugins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readSettings</span> <span class="o">=</span> <span class="n">readSettings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">silent</span> <span class="o">=</span> <span class="n">silent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainLoop</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># True only if a non-null-gui mainloop is active.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initLeo</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20070227092442.4: *3* globals</span>
+<div class="viewcode-block" id="bridgeController.globals"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.globals">[docs]</a>    <span class="k">def</span> <span class="nf">globals</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Return a fully initialized leoGlobals module.&#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">isOpen</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+    <span class="c">#@+node:ekr.20070227093530: *3* initLeo &amp; helpers (bridgeController)</span></div>
+<div class="viewcode-block" id="bridgeController.initLeo"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.initLeo">[docs]</a>    <span class="k">def</span> <span class="nf">initLeo</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Init the Leo app to which this class gives access.</span>
+<span class="sd">        This code is based on leo.run().&#39;&#39;&#39;</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isValidPython</span><span class="p">():</span> <span class="k">return</span>
+        <span class="c">#@+&lt;&lt; initLeo imports &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20070227093629.1: *4* &lt;&lt; initLeo imports &gt;&gt;</span>
+        <span class="c"># Import leoGlobals, but do NOT set g.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">leoGlobals</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error importing leoGlobals.py&quot;</span><span class="p">)</span>
+
+        <span class="c"># Create the application object.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">leo.core.leoApp</span> <span class="kn">as</span> <span class="nn">leoApp</span>
+            <span class="n">leoGlobals</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">leoApp</span><span class="o">.</span><span class="n">LeoApp</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error importing leoApp.py&quot;</span><span class="p">)</span>
+
+        <span class="c"># NOW we can set g.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span> <span class="o">=</span> <span class="n">leoGlobals</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">silentMode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span> <span class="c"># 2011/11/02.</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">sys</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;g.app.silentMode&#39;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">silentMode</span><span class="p">)</span>
+        <span class="c"># 2010/09/09: create the g.app.pluginsController here.</span>
+        <span class="kn">import</span> <span class="nn">leo.core.leoPlugins</span> <span class="kn">as</span> <span class="nn">leoPlugins</span>
+        <span class="n">leoPlugins</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="c"># Necessary. Sets g.app.pluginsController.</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">leo.core.leoNodes</span> <span class="kn">as</span> <span class="nn">leoNodes</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error importing leoNodes.py&quot;</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">traceback</span> <span class="p">;</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">leo.core.leoConfig</span> <span class="kn">as</span> <span class="nn">leoConfig</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error importing leoConfig.py&quot;</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">traceback</span> <span class="p">;</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+        <span class="c"># Set leoGlobals.g here, rather than in leoGlobals.</span>
+        <span class="n">leoGlobals</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">leoGlobals</span>
+        <span class="c">#@-&lt;&lt; initLeo imports &gt;&gt;</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">recentFilesManager</span> <span class="o">=</span> <span class="n">leoApp</span><span class="o">.</span><span class="n">RecentFilesManager</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadManager</span> <span class="o">=</span> <span class="n">lm</span> <span class="o">=</span> <span class="n">leoApp</span><span class="o">.</span><span class="n">LoadManager</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadManager</span><span class="o">.</span><span class="n">computeStandardDirectories</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLeoID</span><span class="p">():</span> <span class="k">return</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">inBridge</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># Added 2007/10/21: support for g.getScript.</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nodeIndices</span> <span class="o">=</span> <span class="n">leoNodes</span><span class="o">.</span><span class="n">nodeIndices</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">leoConfig</span><span class="o">.</span><span class="n">GlobalConfigManager</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">readSettings</span><span class="p">:</span>
+            <span class="n">lm</span><span class="o">.</span><span class="n">readGlobalSettingsFiles</span><span class="p">()</span>
+                <span class="c"># reads only standard settings files, using a null gui.</span>
+                <span class="c"># uses lm.files[0] to compute the local directory</span>
+                <span class="c"># that might contain myLeoSettings.leo.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Bug fix: 2012/11/26: create default global settings dicts.</span>
+            <span class="n">settings_d</span><span class="p">,</span><span class="n">shortcuts_d</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">createDefaultSettingsDicts</span><span class="p">()</span>
+            <span class="n">lm</span><span class="o">.</span><span class="n">globalSettingsDict</span> <span class="o">=</span> <span class="n">settings_d</span>
+            <span class="n">lm</span><span class="o">.</span><span class="n">globalShortcutsDict</span> <span class="o">=</span> <span class="n">shortcuts_d</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">createGui</span><span class="p">()</span> <span class="c"># Create the gui *before* loading plugins.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reportDirectories</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSysPath</span><span class="p">()</span>
+
+        <span class="c"># 2011/11/07: Kill all event handling if plugins not loaded.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loadPlugins</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">dummyDoHook</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">doHook</span> <span class="o">=</span> <span class="n">dummyDoHook</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">doHook</span><span class="p">(</span><span class="s">&quot;start1&quot;</span><span class="p">)</span> <span class="c"># Load plugins.</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">computeSignon</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">initing</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">doHook</span><span class="p">(</span><span class="s">&quot;start2&quot;</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">v</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">fileName</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20070302061713: *4* adjustSysPath</span></div>
+<div class="viewcode-block" id="bridgeController.adjustSysPath"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.adjustSysPath">[docs]</a>    <span class="k">def</span> <span class="nf">adjustSysPath</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Adjust sys.path to enable imports as usual with Leo.&#39;&#39;&#39;</span>
+
+        <span class="kn">import</span> <span class="nn">sys</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="c">#g.trace(&#39;loadDir&#39;,g.app.loadDir)</span>
+
+        <span class="n">leoDirs</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span><span class="s">&#39;doc&#39;</span><span class="p">,</span><span class="s">&#39;extensions&#39;</span><span class="p">,</span><span class="s">&#39;modes&#39;</span><span class="p">,</span><span class="s">&#39;plugins&#39;</span><span class="p">,</span><span class="s">&#39;core&#39;</span><span class="p">,</span><span class="s">&#39;test&#39;</span><span class="p">)</span> <span class="c"># 2008/7/30</span>
+
+        <span class="k">for</span> <span class="n">theDir</span> <span class="ow">in</span> <span class="n">leoDirs</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="n">theDir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20070227095743: *4* createGui (bridgeController)</span></div>
+<div class="viewcode-block" id="bridgeController.createGui"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.createGui">[docs]</a>    <span class="k">def</span> <span class="nf">createGui</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guiName</span> <span class="o">==</span> <span class="s">&#39;nullGui&#39;</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nullGui</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nullLog</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">isNull</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># Allow prints from nullLog.</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">logInited</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># Bug fix: 2012/10/17.</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">guiName</span> <span class="o">==</span> <span class="s">&#39;qt&#39;</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">leo.plugins.qtGui</span> <span class="kn">as</span> <span class="nn">qtGui</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span> <span class="o">=</span> <span class="n">qtGui</span><span class="o">.</span><span class="n">leoQtGui</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;qtGui created&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span><span class="s">&#39;leoBridge.py: unsupported gui: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">guiName</span>
+
+    <span class="c">#@+node:ekr.20070227093629.4: *4* isValidPython</span></div>
+<div class="viewcode-block" id="bridgeController.isValidPython"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.isValidPython">[docs]</a>    <span class="k">def</span> <span class="nf">isValidPython</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="kn">import</span> <span class="nn">sys</span>
+
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;cli&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s">    Leo requires Python 2.2.1 or higher.</span>
+<span class="s">    You may download Python from http://python.org/download/</span>
+<span class="s">    &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># This will fail if True/False are not defined.</span>
+            <span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+            <span class="c"># print(&#39;leoBridge:isValidPython:g&#39;,g)</span>
+            <span class="c"># Set leoGlobals.g here, rather than in leoGlobals.py.</span>
+            <span class="n">leoGlobals</span> <span class="o">=</span> <span class="n">g</span> <span class="c"># Don&#39;t set g.g, it would pollute the autocompleter.</span>
+            <span class="n">leoGlobals</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;isValidPython: can not import leo.core.leoGlobals as leoGlobals&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g&quot;</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">traceback</span> <span class="p">;</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)])</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">CheckVersion</span><span class="p">(</span><span class="n">version</span><span class="p">,</span><span class="s">&#39;2.2.1&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runAskOkDialog</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="s">&quot;Python version error&quot;</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s">&quot;Exit&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ok</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;isValidPython: unexpected exception: g.CheckVersion&quot;</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">traceback</span> <span class="p">;</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mi">0</span>
+    <span class="c">#@+node:ekr.20070227094232: *4* getLeoID</span></div>
+<div class="viewcode-block" id="bridgeController.getLeoID"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.getLeoID">[docs]</a>    <span class="k">def</span> <span class="nf">getLeoID</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="kn">import</span> <span class="nn">os</span>
+        <span class="kn">import</span> <span class="nn">sys</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="p">;</span> <span class="n">tag</span> <span class="o">=</span> <span class="s">&quot;.leoID.txt&quot;</span>
+        <span class="n">homeDir</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">homeLeoDir</span>
+        <span class="n">globalConfigDir</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">globalConfigDir</span>
+        <span class="n">loadDir</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span>
+
+        <span class="n">verbose</span> <span class="o">=</span> <span class="bp">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span>
+        <span class="c">#@+&lt;&lt; try to get leoID from sys.leoID &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20070227094232.1: *5* &lt;&lt; try to get leoID from sys.leoID&gt;&gt;</span>
+        <span class="c"># This would be set by in Python&#39;s sitecustomize.py file.</span>
+
+        <span class="c"># Use hasattr &amp; getattr to suppress pylint warning.</span>
+        <span class="c"># We also have to use a &quot;non-constant&quot; attribute to suppress another warning!</span>
+
+        <span class="n">nonConstantAttr</span> <span class="o">=</span> <span class="s">&quot;leoID&quot;</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span><span class="n">nonConstantAttr</span><span class="p">):</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span><span class="n">nonConstantAttr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">silentMode</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">red</span><span class="p">(</span><span class="s">&quot;leoID=&quot;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span><span class="p">,</span><span class="n">spaces</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; try to get leoID from sys.leoID &gt;&gt;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span><span class="p">:</span>
+            <span class="c">#@+&lt;&lt; try to get leoID from &quot;leoID.txt&quot; &gt;&gt;</span>
+            <span class="c">#@+node:ekr.20070227094232.2: *5* &lt;&lt; try to get leoID from &quot;leoID.txt&quot; &gt;&gt;</span>
+            <span class="k">for</span> <span class="n">theDir</span> <span class="ow">in</span> <span class="p">(</span><span class="n">homeDir</span><span class="p">,</span><span class="n">globalConfigDir</span><span class="p">,</span><span class="n">loadDir</span><span class="p">):</span>
+                <span class="c"># N.B. We would use the _working_ directory if theDir is None!</span>
+                <span class="k">if</span> <span class="n">theDir</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">fn</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">theDir</span><span class="p">,</span><span class="n">tag</span><span class="p">)</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">s</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">silentMode</span><span class="p">:</span>
+                                <span class="n">g</span><span class="o">.</span><span class="n">red</span><span class="p">(</span><span class="s">&#39;leoID=&#39;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span><span class="p">,</span><span class="s">&#39; (in &#39;</span><span class="p">,</span><span class="n">theDir</span><span class="p">,</span><span class="s">&#39;)&#39;</span><span class="p">,</span><span class="n">spaces</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                            <span class="k">break</span>
+                        <span class="k">elif</span> <span class="n">verbose</span><span class="p">:</span>
+                            <span class="n">g</span><span class="o">.</span><span class="n">red</span><span class="p">(</span><span class="s">&#39;empty &#39;</span><span class="p">,</span><span class="n">tag</span><span class="p">,</span><span class="s">&#39; (in &#39;</span><span class="p">,</span><span class="n">theDir</span><span class="p">,</span><span class="s">&#39;)&#39;</span><span class="p">,</span><span class="n">spaces</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span> <span class="o">=</span> <span class="bp">None</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;unexpected exception in app.setLeoID&#39;</span><span class="p">)</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+            <span class="c">#@-&lt;&lt; try to get leoID from &quot;leoID.txt&quot; &gt;&gt;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span><span class="p">:</span>
+            <span class="c">#@+&lt;&lt; try to get leoID from os.getenv(&#39;USER&#39;) &gt;&gt;</span>
+            <span class="c">#@+node:ekr.20070227094232.3: *5* &lt;&lt; try to get leoID from os.getenv(&#39;USER&#39;) &gt;&gt;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">theId</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&#39;USER&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">theId</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">red</span><span class="p">(</span><span class="s">&quot;using os.getenv(&#39;USER&#39;):&quot;</span><span class="p">,</span><span class="nb">repr</span><span class="p">(</span><span class="n">theId</span><span class="p">))</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span> <span class="o">=</span> <span class="n">theId</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c">#@-&lt;&lt; try to get leoID from os.getenv(&#39;USER&#39;) &gt;&gt;</span>
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">leoID</span>
+    <span class="c">#@+node:ekr.20070227093629.9: *4* reportDirectories</span></div>
+<div class="viewcode-block" id="bridgeController.reportDirectories"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.reportDirectories">[docs]</a>    <span class="k">def</span> <span class="nf">reportDirectories</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="k">for</span> <span class="n">kind</span><span class="p">,</span><span class="n">theDir</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s">&quot;global config&quot;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">globalConfigDir</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&quot;home&quot;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">homeDir</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">blue</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="s">&#39;directory&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;:&#39;</span><span class="p">,</span><span class="n">theDir</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20070227093918: *3* isOpen</span></div>
+<div class="viewcode-block" id="bridgeController.isOpen"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.isOpen">[docs]</a>    <span class="k">def</span> <span class="nf">isOpen</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">g</span> <span class="ow">and</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span> <span class="ow">and</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20070227092442.5: *3* openLeoFile &amp; helpers (bridgeController)</span></div>
+<div class="viewcode-block" id="bridgeController.openLeoFile"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.openLeoFile">[docs]</a>    <span class="k">def</span> <span class="nf">openLeoFile</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fileName</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Open a .leo file, or create a new Leo frame if no fileName is given.&#39;&#39;&#39;</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="n">useLog</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isOpen</span><span class="p">():</span>
+            <span class="n">fileName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completeFileName</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createFrame</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">useLog</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">log</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">isNull</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="n">c</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+    <span class="c">#@+node:ekr.20070227093629.5: *4* completeFileName (leoBridge)</span></div>
+<div class="viewcode-block" id="bridgeController.completeFileName"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.completeFileName">[docs]</a>    <span class="k">def</span> <span class="nf">completeFileName</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fileName</span><span class="p">):</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">fileName</span> <span class="ow">and</span> <span class="n">fileName</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span> <span class="k">return</span> <span class="s">&#39;&#39;</span>
+
+        <span class="kn">import</span> <span class="nn">os</span>
+
+        <span class="n">fileName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="n">head</span><span class="p">,</span><span class="n">ext</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_splitext</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span><span class="p">:</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">fileName</span> <span class="o">+</span> <span class="s">&quot;.leo&quot;</span>
+
+        <span class="k">return</span> <span class="n">fileName</span>
+    <span class="c">#@+node:ekr.20070227093629.6: *4* createFrame (leoBridge)</span></div>
+<div class="viewcode-block" id="bridgeController.createFrame"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridge.bridgeController.createFrame">[docs]</a>    <span class="k">def</span> <span class="nf">createFrame</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fileName</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create a commander and frame for the given file.</span>
+<span class="sd">        Create a new frame if the fileName is empty or non-exisent.&#39;&#39;&#39;</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="k">if</span> <span class="n">fileName</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_exists</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">trace</span><span class="p">:</span>
+                    <span class="kn">import</span> <span class="nn">time</span> <span class="p">;</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="c"># This takes a long time due to imports in c.__init__</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">openWithFileName</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">trace</span><span class="p">:</span>
+                    <span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;g.openWithFileName: </span><span class="si">%0.2f</span><span class="s">sec&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">c</span><span class="p">:</span> <span class="k">return</span> <span class="n">c</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;file not found: </span><span class="si">%s</span><span class="s">. creating new window&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fileName</span><span class="p">))</span>
+        <span class="c"># Create a new frame. Unlike leo.run, this is not a startup window.</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">newCommander</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">setInitialWindowGeometry</span><span class="p">()</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">resizePanesToRatio</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">ratio</span><span class="p">,</span><span class="n">frame</span><span class="o">.</span><span class="n">secondary_ratio</span><span class="p">)</span>
+        <span class="c"># Call the &#39;new&#39; hook for compatibility with plugins.</span>
+        <span class="c"># 2011/11/07: Do this only if plugins have been loaded.</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">doHook</span><span class="p">(</span><span class="s">&quot;new&quot;</span><span class="p">,</span><span class="n">old_c</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">new_c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

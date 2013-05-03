@@ -1,0 +1,1127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.leoOPML &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.leoOPML</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20101110092851.5742: * @file leoOPML.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060904103412.1: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">r&#39;&#39;&#39;A plugin to read and write Leo outlines in .opml</span>
+<span class="sd">(http://en.wikipedia.org/wiki/OPML) format.</span>
+
+<span class="sd">**Warning**: the OPML plugin is not fully functional at present. Use with</span>
+<span class="sd">caution.</span>
+
+<span class="sd">The OPML plugin creates two new commands that read and write Leo outlines in</span>
+<span class="sd">OPML format. The read-opml-file command creates a Leo outline from an .opml</span>
+<span class="sd">file. The write-opml-file command writes the present Leo outline to an .opml</span>
+<span class="sd">file.</span>
+
+<span class="sd">Various settings control what gets written to .opml files, and in what format.</span>
+<span class="sd">As usual, you specify settings for the OPML plugin using leoSettings.leo. The</span>
+<span class="sd">settings for the OPML are found in the node: @settings--&gt;Plugins--&gt;opml plugin.</span>
+
+<span class="sd">Here are the settings that control the format of .opml files. The default values</span>
+<span class="sd">are shown.</span>
+
+<span class="sd">- @string opml_namespace = leo:com:leo-opml-version-1</span>
+
+<span class="sd">The namespace urn for the xmlns attribute of &lt;opml&gt; elements. This value</span>
+<span class="sd">typically is not used, but it should refer to Leo in some way.</span>
+
+<span class="sd">- @bool opml_use_outline_elements = True</span>
+
+<span class="sd">- If True, Leo writes body text to &lt;leo:body&gt; elements nested in &lt;outline&gt;</span>
+<span class="sd">  elements. Otherwise, Leo writes body text to leo:body attributes of &lt;outline&gt;</span>
+<span class="sd">  elements.</span>
+
+<span class="sd">- @string opml_version = 2.0</span>
+
+<span class="sd">The opml version string written to the &lt;OPML&gt; element. Use 2.0 unless there is a</span>
+<span class="sd">specific reason to use 1.0.</span>
+
+<span class="sd">- @bool opml_write_body_text = True</span>
+
+<span class="sd">Leo writes body text to the OPML file only if this is True.</span>
+
+<span class="sd">- @bool opml_write_leo_details = True</span>
+
+<span class="sd">If True, Leo writes the native attributes of Leo&#39;s &lt;v&gt; elements as attributes of</span>
+<span class="sd">the opml &lt;outline&gt; elements.</span>
+
+<span class="sd">The native attributes of &lt;v&gt; elements are a, t, vtag (new), tnodeList,</span>
+<span class="sd">marks, expanded and descendentTnodeUnknownAttributes.</span>
+
+<span class="sd">- @bool opml_write_leo_globals_attributes = True</span>
+
+<span class="sd">If True, Leo writes body_outline_ratio` and global_window_position attributes to</span>
+<span class="sd">the &lt;head&gt; element of the .opml file.</span>
+
+<span class="sd">- @bool opml_write_ua_attributes</span>
+
+<span class="sd">If True, write unknownAttributes **NOTE**: ua_attributes are not currently read</span>
+<span class="sd">from opml.</span>
+
+<span class="sd">- @bool opml_expand_ua_dictionary</span>
+
+<span class="sd">If True, expand an unknownAttriubte &#39;x&#39; of type dict to &#39;ua_x_key0&#39;, &#39;ua_x_key1&#39;</span>
+<span class="sd">etc. **WARNING**: using this feature may prevent reading these ua_attributes from</span>
+<span class="sd">opml, if that feature is implemented in the future.</span>
+
+<span class="sd">- @bool opml_skip_ua_dictionary_blanks</span>
+
+<span class="sd">If True, when expanding as above, skip blank dict entries.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+<span class="c">#@@pagewidth 80</span>
+
+<span class="c">#@+&lt;&lt; to do &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060920112018: ** &lt;&lt; to do &gt;&gt;</span>
+<span class="c">#@@nocolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># * Support reading external files.</span>
+<span class="c"># </span>
+<span class="c"># - Enhance open/save commands when this plugin is active.</span>
+<span class="c"># </span>
+<span class="c"># - read/write uA&#39;s.</span>
+<span class="c">#@-&lt;&lt; to do &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.93&#39;</span>
+
+<span class="c"># For traces.</span>
+<span class="n">printElements</span> <span class="o">=</span> <span class="p">[]</span> <span class="c"># [&#39;all&#39;,&#39;outline&#39;,&#39;head&#39;,&#39;body&#39;,]</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060904103412.3: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoPlugins</span> <span class="kn">as</span> <span class="nn">leoPlugins</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoNodes</span> <span class="kn">as</span> <span class="nn">leoNodes</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoFileCommands</span> <span class="kn">as</span> <span class="nn">leoFileCommands</span>
+
+<span class="kn">import</span> <span class="nn">xml.sax</span>
+<span class="kn">import</span> <span class="nn">xml.sax.saxutils</span>
+
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">io</span> <span class="c"># Python 3.x</span>
+    <span class="n">StringIO</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span>
+    <span class="n">BytesIO</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">cStringIO</span> <span class="c"># Python 2.x</span>
+    <span class="n">StringIO</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20060904132527.9: ** Module level</span>
+<span class="c">#@+node:ekr.20060904103412.4: *3* init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="c"># Override the base class</span>
+    <span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;start1&#39;</span><span class="p">,</span><span class="n">onStart2</span><span class="p">)</span>
+
+    <span class="c"># Register the commands.</span>
+    <span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s">&#39;open2&#39;</span><span class="p">,</span><span class="s">&#39;new&#39;</span><span class="p">),</span><span class="n">onCreate</span><span class="p">)</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ekr.20060904103412.5: *3* onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">opmlController</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20060919172012: *3* onStart2</span></div>
+<div class="viewcode-block" id="onStart2"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.onStart2">[docs]</a><span class="k">def</span> <span class="nf">onStart2</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keys</span><span class="p">):</span>
+
+    <span class="c"># Override the fileCommands class by opmlFileCommandsClass.</span>
+    <span class="n">leoFileCommands</span><span class="o">.</span><span class="n">fileCommands</span> <span class="o">=</span> <span class="n">opmlFileCommandsClass</span>
+<span class="c">#@+node:ekr.20060919172012.1: ** class opmlFileCommandsClass (fileCommands)</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass">[docs]</a><span class="k">class</span> <span class="nc">opmlFileCommandsClass</span> <span class="p">(</span><span class="n">leoFileCommands</span><span class="o">.</span><span class="n">fileCommands</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;An subclass of Leo&#39;s core fileCommands class that</span>
+<span class="sd">    should do *nothing* other than override putToOPML.&#39;&#39;&#39;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20060919172012.2: *3* putToOPML &amp; helpers</span>
+    <span class="c"># All elements and attributes prefixed by &#39;leo:&#39; are leo-specific.</span>
+    <span class="c"># All other elements and attributes are specified by the OPML 1 spec.</span>
+
+<div class="viewcode-block" id="opmlFileCommandsClass.putToOPML"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.putToOPML">[docs]</a>    <span class="k">def</span> <span class="nf">putToOPML</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="k">for</span> <span class="n">ivar</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s">&#39;opml_use_outline_elements&#39;</span><span class="p">,</span>
+            <span class="s">&#39;opml_write_derived_files&#39;</span><span class="p">,</span>
+            <span class="s">&#39;opml_write_leo_details&#39;</span><span class="p">,</span>
+            <span class="s">&#39;opml_write_leo_globals_attributes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;opml_write_body_text&#39;</span><span class="p">,</span>
+            <span class="s">&#39;opml_write_ua_attributes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;opml_expand_ua_dictionary&#39;</span><span class="p">,</span>
+            <span class="s">&#39;opml_skip_ua_dictionary_blanks&#39;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ivar</span><span class="p">,</span><span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="n">ivar</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">putXMLLine</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">putOPMLProlog</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">putOPMLHeader</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">putOPMLNodes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">putOPMLPostlog</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060919172012.3: *4* putOPMLProlog</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.putOPMLProlog"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.putOPMLProlog">[docs]</a>    <span class="k">def</span> <span class="nf">putOPMLProlog</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">s</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s">&#39;opml_namespace&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&#39;leo:com:leo-opml&#39;</span>
+        <span class="n">ver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s">&#39;opml_version&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&#39;2.0&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;&lt;opml version=&quot;</span><span class="si">%s</span><span class="s">&quot; xmlns:leo=&quot;</span><span class="si">%s</span><span class="s">&quot;&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ver</span><span class="p">,</span><span class="n">s</span><span class="p">))</span>
+    <span class="c">#@+node:ekr.20060919172012.4: *4* putOPMLHeader</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.putOPMLHeader"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.putOPMLHeader">[docs]</a>    <span class="k">def</span> <span class="nf">putOPMLHeader</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Put the OPML header, including attributes for globals, prefs and  find settings.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">indent</span> <span class="o">=</span> <span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="mi">4</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_write_leo_globals_attributes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;head leo:body_outline_ratio=&quot;</span><span class="si">%s</span><span class="s">&quot;&gt;&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">ratio</span><span class="p">))</span>
+
+            <span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">,</span><span class="n">left</span><span class="p">,</span><span class="n">top</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">get_window_info</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="si">%s</span><span class="s">&lt;leo:global_window_position&#39;</span> <span class="o">%</span> <span class="n">indent</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39; top=&quot;</span><span class="si">%s</span><span class="s">&quot; left=&quot;</span><span class="si">%s</span><span class="s">&quot; height=&quot;</span><span class="si">%s</span><span class="s">&quot; width=&quot;</span><span class="si">%s</span><span class="s">&quot;/&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">top</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">height</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">width</span><span class="p">)))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;/head&gt;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;head/&gt;&#39;</span><span class="p">)</span>
+
+    <span class="c">#@+node:ekr.20060919172012.5: *4* putOPMLNodes</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.putOPMLNodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.putOPMLNodes">[docs]</a>    <span class="k">def</span> <span class="nf">putOPMLNodes</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">root</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">rootPosition</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;body&gt;&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">self_and_siblings_iter</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">putOPMLNode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;/body&gt;&#39;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060919172012.6: *4* putOPMLNode</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.putOPMLNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.putOPMLNode">[docs]</a>    <span class="k">def</span> <span class="nf">putOPMLNode</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">level</span><span class="p">())</span> <span class="c"># Always use 4-space indents.</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">bodyString</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span> <span class="p">;</span> <span class="n">head</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">headString</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+        <span class="n">attrFormat</span> <span class="o">=</span> <span class="s">&#39; </span><span class="si">%s</span><span class="s">=&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="si">%s</span><span class="s">&lt;outline&#39;</span> <span class="o">%</span> <span class="n">indent</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_write_leo_details</span><span class="p">:</span> <span class="c"># Put leo-specific attributes.</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s">&#39;leo:v&#39;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nodeIndices</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">fileIndex</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&#39;leo:a&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">aAttributes</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span>
+                <span class="c"># (&#39;leo:tnodeList&#39;,self.tnodeListAttributes(p)),</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">attrFormat</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">))</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uAAttributes</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+                <span class="c"># for name,val in data.iteritems():</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">attrFormat</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">attrFormat</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;text&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">attributeEscape</span><span class="p">(</span><span class="n">head</span><span class="p">)))</span>    
+
+        <span class="n">closed</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">body</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_write_body_text</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_use_outline_elements</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">)</span> <span class="p">;</span> <span class="n">closed</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;&lt;leo:body&gt;</span><span class="si">%s</span><span class="s">&lt;/leo:body&gt;&#39;</span> <span class="o">%</span> <span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">saxutils</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">attrFormat</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;leo:body&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">attributeEscape</span><span class="p">(</span><span class="n">body</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">hasChildren</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">closed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">)</span> <span class="p">;</span> <span class="n">closed</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">for</span> <span class="n">p2</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">children_iter</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">putOPMLNode</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="si">%s</span><span class="s">&lt;/outline&gt;&#39;</span> <span class="o">%</span> <span class="n">indent</span><span class="p">)</span>
+            <span class="c"># self.put(&#39;&lt;/outline&gt;\n&#39;)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;/&gt;&#39;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060919172012.7: *5* attributeEscape</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.attributeEscape"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.attributeEscape">[docs]</a>    <span class="k">def</span> <span class="nf">attributeEscape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="c"># Unlike xml.sax.saxutils.escape, replace &quot; by &amp;quot; and replace newlines by character reference.</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&amp;&#39;</span><span class="p">,</span><span class="s">&#39;&amp;amp;&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&lt;&#39;</span><span class="p">,</span><span class="s">&#39;&amp;lt;&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">,</span><span class="s">&#39;&amp;gt;&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&quot;&#39;</span><span class="p">,</span><span class="s">&#39;&amp;quot;&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;&amp;#10;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="c">#@+node:ekr.20060919172012.8: *5* aAttributes</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.aAttributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.aAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">aAttributes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">isExpanded</span><span class="p">():</span>          <span class="n">attr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">isMarked</span><span class="p">():</span>            <span class="n">attr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;M&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isCurrentPosition</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>  <span class="n">attr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;V&#39;</span><span class="p">)</span>
+
+        <span class="c">#if p.v.isOrphan():              attr.append(&#39;O&#39;)</span>
+        <span class="c">#if p.equal(self.topPosition):   attr.append(&#39;T&#39;)</span>
+
+        <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060919172012.9: *5* tnodeListAttributes (Not used)</span>
+    <span class="c"># Based on fileCommands.putTnodeList.</span>
+</div>
+<div class="viewcode-block" id="opmlFileCommandsClass.tnodeListAttributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.tnodeListAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">tnodeListAttributes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Put the tnodeList attribute of p.v&#39;&#39;&#39;</span>
+
+        <span class="c"># Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">,</span><span class="s">&#39;tnodeList&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">tnodeList</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="c"># g.trace(&#39;tnodeList&#39;,p.v.tnodeList)</span>
+
+        <span class="c"># Assign fileIndices.</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">tnodeList</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span> <span class="c"># Will fail for None or any pre 4.1 file index.</span>
+                <span class="n">theId</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">fileIndex</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&quot;assigning gnx for &quot;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">gnx</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nodeIndices</span><span class="o">.</span><span class="n">getNewIndex</span><span class="p">()</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">setFileIndex</span><span class="p">(</span><span class="n">gnx</span><span class="p">)</span> <span class="c"># Don&#39;t convert to string until the actual write.</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nodeIndices</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fileIndex</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">tnodeList</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">s</span>
+    <span class="c">#@+node:tbrown.20061004094757: *5* uAAttributes</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.uAAttributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.uAAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">uAAttributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;write unknownAttributes with various levels of expansion&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_write_ua_attributes</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="s">&#39;unknownAttributes&#39;</span><span class="p">):</span>
+            <span class="c"># for uak, uav in p.v.unknownAttributes.iteritems():</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">u</span>
+            <span class="k">for</span> <span class="n">uak</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">uav</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uak</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_expand_ua_dictionary</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">uav</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">({}):</span>
+                    <span class="c"># for uakc, uavc in uav.iteritems():</span>
+                    <span class="k">for</span> <span class="n">uakc</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">uav</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                        <span class="n">uavc</span> <span class="o">=</span> <span class="n">uav</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uakc</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">uavc</span><span class="p">)</span><span class="o">!=</span><span class="s">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_skip_ua_dictionary_blanks</span><span class="p">:</span>
+                            <span class="n">data</span><span class="p">[</span><span class="s">&#39;leo:ua_&#39;</span><span class="o">+</span><span class="n">uak</span><span class="o">+</span><span class="s">&#39;_&#39;</span><span class="o">+</span><span class="n">uakc</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributeEscape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uavc</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s">&#39;leo:ua_&#39;</span><span class="o">+</span><span class="n">uak</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributeEscape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uav</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="c">#@+node:ekr.20060919172012.11: *4* putOPMLPostlog</span></div>
+<div class="viewcode-block" id="opmlFileCommandsClass.putOPMLPostlog"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlFileCommandsClass.putOPMLPostlog">[docs]</a>    <span class="k">def</span> <span class="nf">putOPMLPostlog</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;/opml&gt;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20060904103412.6: ** class opmlController</span></div></div>
+<div class="viewcode-block" id="opmlController"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController">[docs]</a><span class="k">class</span> <span class="nc">opmlController</span><span class="p">:</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20060904103412.7: *3* __init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">opmlCommands</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="s">&#39;read-opml-file&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">readOpmlCommand</span><span class="p">,</span><span class="n">pane</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="s">&#39;write-opml-file&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">writeOpmlCommand</span><span class="p">,</span><span class="n">pane</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opml_read_derived_files</span>  <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;opml_read_derived_files&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opml_write_derived_files</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;opml_write_derived_files&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">currentVnode</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topVnode</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">generated_gnxs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c"># Keys are gnx&#39;s (strings).  Values are vnodes.</span>
+    <span class="c">#@+node:ekr.20111003161039.17380: *3* Not used</span>
+    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c">#@+others</span>
+        <span class="c">#@+node:ekr.20060904103412.8: *4* createCommands (not used)</span>
+        <span class="k">def</span> <span class="nf">createCommands</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">opmlCommands</span> <span class="o">=</span> <span class="bp">self</span>
+
+            <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">func</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="s">&#39;read-opml-file&#39;</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">readFile</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s">&#39;write-opml-file&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">writeFile</span><span class="p">),</span>
+                <span class="p">):</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">shortcut</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span><span class="n">pane</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c">#@+node:ekr.20060914171659: *4* createVnodeTree</span>
+        <span class="k">def</span> <span class="nf">createVnodeTree</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">,</span><span class="n">parent_v</span><span class="p">):</span>
+
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createVnode</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">parent_v</span><span class="p">)</span>
+
+            <span class="c"># To do: create the children only if v is not a clone.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createChildren</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">v</span>
+        <span class="c">#@+node:ekr.20060914174806: *4* linkParentAndChildren</span>
+        <span class="k">def</span> <span class="nf">linkParentAndChildren</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_v</span><span class="p">,</span> <span class="n">children</span><span class="p">):</span>
+
+            <span class="c"># if children: g.trace(parent_v,len(children))</span>
+
+            <span class="n">firstChild_v</span> <span class="o">=</span> <span class="n">children</span> <span class="ow">and</span> <span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">None</span>
+
+            <span class="n">parent_v</span><span class="o">.</span><span class="n">_firstChild</span> <span class="o">=</span> <span class="n">firstChild_v</span>
+
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent_v</span>
+
+            <span class="c"># v = parent_v</span>
+            <span class="c"># if v not in v.vnodeList:</span>
+                <span class="c"># v.vnodeList.append(v)</span>
+        <span class="c">#@+node:ekr.20060914165257: *4* linkSiblings</span>
+        <span class="k">def</span> <span class="nf">linkSiblings</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sibs</span><span class="p">):</span>
+
+            <span class="sd">&#39;&#39;&#39;Set the v._back and v._next links for all vnodes v in sibs.&#39;&#39;&#39;</span>
+
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sibs</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">sibs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">_back</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sibs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">_next</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span>  <span class="n">n</span> <span class="ow">and</span> <span class="n">sibs</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span>
+        <span class="c">#@+node:ekr.20060904134958.116: *4* OLD_parse_opml_file</span>
+        <span class="k">def</span> <span class="nf">OLD_parse_opml_file</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inputFileName</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">inputFileName</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">inputFileName</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.opml&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">None</span>
+
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_normpath</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="n">inputFileName</span><span class="p">))</span>
+
+            <span class="k">try</span><span class="p">:</span> <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;can not open </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">node</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="n">parser</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">make_parser</span><span class="p">()</span>
+                    <span class="c"># Do not include external general entities.</span>
+                    <span class="c"># The actual feature name is &quot;http://xml.org/sax/features/external-general-entities&quot;</span>
+                    <span class="n">parser</span><span class="o">.</span><span class="n">setFeature</span><span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">feature_external_ges</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">handler</span> <span class="o">=</span> <span class="n">SaxContentHandler</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">inputFileName</span><span class="p">)</span>
+                    <span class="n">parser</span><span class="o">.</span><span class="n">setContentHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+                    <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                    <span class="n">node</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">getNode</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">SAXParseException</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Error parsing </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputFileName</span><span class="p">))</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="bp">None</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Unexpected exception parsing </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputFileName</span><span class="p">))</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">node</span>
+        <span class="c">#@-others</span>
+        
+    <span class="c">#@+node:ekr.20060914163456: *3* createVnodes &amp; helpers</span>
+<div class="viewcode-block" id="opmlController.createVnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.createVnodes">[docs]</a>    <span class="k">def</span> <span class="nf">createVnodes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">dummyRoot</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;**Important**: this method and its helpers are low-level code</span>
+<span class="sd">        corresponding to link/unlink methods in leoNodes.py.</span>
+<span class="sd">        Modify this with extreme care.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">generated_gnxs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">parent_v</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">hiddenRootNode</span>
+        <span class="n">parent_v</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createChildren</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">dummyRoot</span><span class="p">,</span><span class="n">parent_v</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">c</span><span class="o">.</span><span class="n">hiddenRootNode</span><span class="o">.</span><span class="n">children</span> <span class="o">==</span> <span class="n">children</span>
+        <span class="k">return</span> <span class="n">children</span>
+    <span class="c">#@+node:ekr.20060914171659.2: *4* createChildren</span>
+    <span class="c"># node is a nodeClass object, parent_v is a vnode.</span>
+</div>
+<div class="viewcode-block" id="opmlController.createChildren"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.createChildren">[docs]</a>    <span class="k">def</span> <span class="nf">createChildren</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">node</span><span class="p">,</span><span class="n">parent_v</span><span class="p">):</span>
+
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">gnx</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">gnx</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">gnx</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_gnxs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">gnx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createVnode</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">child</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">createChildren</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">child</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+                
+            <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">parent_v</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">children</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parent_v</span><span class="p">)</span>
+           
+        <span class="k">return</span> <span class="n">children</span>
+    <span class="c">#@+node:ekr.20060914171659.1: *4* createVnode &amp; helpers</span></div>
+<div class="viewcode-block" id="opmlController.createVnode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.createVnode">[docs]</a>    <span class="k">def</span> <span class="nf">createVnode</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">node</span><span class="p">,</span><span class="n">v</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">leoNodes</span><span class="o">.</span><span class="n">vnode</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">bodyString</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">headString</span>
+            
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">gnx</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">fileIndex</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nodeIndices</span><span class="o">.</span><span class="n">scanGnx</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">gnx</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generated_gnxs</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">gnx</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">handleVnodeAttributes</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">v</span>
+    <span class="c">#@+node:ekr.20060917213611: *5* handleVnodeAttributes</span></div>
+<div class="viewcode-block" id="opmlController.handleVnodeAttributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.handleVnodeAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">handleVnodeAttributes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;leo:a&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">:</span>
+            <span class="c"># &#39;C&#39; (clone) and &#39;D&#39; bits are not used.</span>
+            <span class="k">if</span> <span class="s">&#39;M&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">setMarked</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s">&#39;E&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s">&#39;O&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">setOrphan</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s">&#39;T&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">topVnode</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">if</span> <span class="s">&#39;V&#39;</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentVnode</span> <span class="o">=</span> <span class="n">v</span>
+            
+        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># Leo no longer uses the tnodeList.</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;leo:tnodeList&#39;</span><span class="p">)</span>
+            <span class="n">tnodeList</span> <span class="o">=</span> <span class="n">s</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tnodeList</span><span class="p">:</span>
+                <span class="c"># This tnode list will be resolved later.</span>
+                <span class="c"># g.trace(&#39;found tnodeList&#39;,v.headString(),len(tnodeList))</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">tempTnodeList</span> <span class="o">=</span> <span class="n">tnodeList</span>
+    <span class="c">#@+node:ekr.20060913220707: *3* dumpTree</span></div>
+<div class="viewcode-block" id="opmlController.dumpTree"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.dumpTree">[docs]</a>    <span class="k">def</span> <span class="nf">dumpTree</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">root</span><span class="p">,</span><span class="n">dummy</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dummy</span><span class="p">:</span>
+            <span class="n">root</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dumpTree</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="n">dummy</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20111003220434.15488: *3* parse_opml_file &amp; helper</span></div>
+<div class="viewcode-block" id="opmlController.parse_opml_file"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.parse_opml_file">[docs]</a>    <span class="k">def</span> <span class="nf">parse_opml_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fn</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fn</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.opml&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;bad file name: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_normpath</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="n">fn</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c"># type(s) is bytes for Python 3.x.</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanSaxInputString</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;can not open </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+                <span class="n">theFile</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">theFile</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">make_parser</span><span class="p">()</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">setFeature</span><span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">feature_external_ges</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c"># Do not include external general entities.</span>
+            <span class="c"># The actual feature name is &quot;http://xml.org/sax/features/external-general-entities&quot;</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">setFeature</span><span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">feature_external_pes</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="n">SaxContentHandler</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">fn</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">setContentHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">theFile</span><span class="p">)</span> <span class="c"># expat does not support parseString</span>
+            <span class="n">sax_node</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">getNode</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">SAXParseException</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;error parsing&#39;</span><span class="p">,</span><span class="n">fn</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+            <span class="n">sax_node</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;unexpected exception parsing&#39;</span><span class="p">,</span><span class="n">fn</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+            <span class="n">sax_node</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">return</span> <span class="n">sax_node</span>
+    <span class="c">#@+node:ekr.20111003220434.15490: *4* cleanSaxInputString</span></div>
+<div class="viewcode-block" id="opmlController.cleanSaxInputString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.cleanSaxInputString">[docs]</a>    <span class="k">def</span> <span class="nf">cleanSaxInputString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Clean control characters from s.</span>
+<span class="sd">        s may be a bytes or a (unicode) string.&#39;&#39;&#39;</span>
+
+        <span class="c"># Note: form-feed (&#39;\f&#39;) is 12 decimal.</span>
+        <span class="n">badchars</span> <span class="o">=</span> <span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">)]</span>
+        <span class="n">badchars</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">badchars</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">badchars</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+        <span class="n">flatten</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">badchars</span><span class="p">)</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">flatten</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+            <span class="n">flatten</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">flatten</span><span class="p">,</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">pad</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">pad</span><span class="p">,</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">transtable</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="n">flatten</span><span class="p">,</span><span class="n">pad</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">transtable</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="n">flatten</span><span class="p">,</span><span class="n">pad</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">transtable</span><span class="p">)</span>
+
+    <span class="c"># for i in range(32): print i,repr(chr(i))</span>
+    <span class="c">#@+node:ekr.20060904103721: *3* readFile</span></div>
+<div class="viewcode-block" id="opmlController.readFile"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.readFile">[docs]</a>    <span class="k">def</span> <span class="nf">readFile</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fileName</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fileName</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;no fileName&#39;</span><span class="p">)</span>
+        
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+            <span class="c"># Create the new commander *now*</span>
+            <span class="c"># so that created vnodes will have the proper context.</span>
+
+        <span class="c"># Pass one: create the intermediate nodes.</span>
+        <span class="n">dummyRoot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_opml_file</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dumpTree</span><span class="p">(</span><span class="n">dummyRoot</span><span class="p">)</span>
+
+        <span class="c"># Pass two: create the outline from the sax nodes.</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createVnodes</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">dummyRoot</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">leoNodes</span><span class="o">.</span><span class="n">position</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">childIndex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">stack</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+
+        <span class="c"># Check the outline.</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">dumpOutline</span><span class="p">()</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">checkOutline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> errors!&#39;</span> <span class="o">%</span> <span class="n">errors</span><span class="p">)</span>
+            
+        <span class="c"># if self.opml_read_derived_files:</span>
+            <span class="c"># at = c.atFileCommands</span>
+            <span class="c"># c.fileCommands.tnodesDict = self.createTnodesDict()</span>
+            <span class="c"># self.resolveTnodeLists(c)</span>
+            <span class="c"># if self.opml_read_derived_files:</span>
+                <span class="c"># c.atFileCommands.readAll(c.rootPosition())</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">c</span> <span class="c"># for testing.</span>
+    <span class="c">#@+node:ekr.20060921153603: *4* createTnodesDict</span></div>
+<div class="viewcode-block" id="opmlController.createTnodesDict"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.createTnodesDict">[docs]</a>    <span class="k">def</span> <span class="nf">createTnodesDict</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39; c.tnodesDict by from self.generated_gnxs</span>
+<span class="sd">        by converting vnode entries to tnodes.&#39;&#39;&#39;</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_gnxs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_gnxs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="c"># g.trace(&#39;v&#39;,id(v),&#39;fileIndex&#39;,v.fileIndex,v.headString()[:20])</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="n">d</span>
+    <span class="c">#@+node:ekr.20060917214140: *4* setCurrentPosition</span></div>
+<div class="viewcode-block" id="opmlController.setCurrentPosition"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.setCurrentPosition">[docs]</a>    <span class="k">def</span> <span class="nf">setCurrentPosition</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentVnode</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span> <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">allNodes_iter</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">break</span>
+    <span class="c">#@+node:ekr.20060918132045: *4* resolveTnodeLists</span></div>
+<div class="viewcode-block" id="opmlController.resolveTnodeLists"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.resolveTnodeLists">[docs]</a>    <span class="k">def</span> <span class="nf">resolveTnodeLists</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">allNodes_iter</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">,</span><span class="s">&#39;tempTnodeList&#39;</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">gnx</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">tempTnodeList</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_gnxs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">gnx</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">v</span><span class="p">:</span>
+                        <span class="c"># g.trace(&#39;found&#39;,v,gnx,v)</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;No tnode for </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">gnx</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">tnodeList</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">,</span><span class="s">&#39;tempTnodeList&#39;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060919201810: *3* readOpmlCommand</span></div>
+<div class="viewcode-block" id="opmlController.readOpmlCommand"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.readOpmlCommand">[docs]</a>    <span class="k">def</span> <span class="nf">readOpmlCommand</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Open a Leo window containing the contents of an .opml file.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="n">fileName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runOpenFileDialog</span><span class="p">(</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Read OPML&quot;</span><span class="p">,</span>
+            <span class="n">filetypes</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&quot;OPML files&quot;</span><span class="p">,</span><span class="s">&quot;*.opml&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;All files&quot;</span><span class="p">,</span><span class="s">&quot;*&quot;</span><span class="p">)],</span>
+            <span class="n">defaultextension</span> <span class="o">=</span> <span class="s">&quot;.opml&quot;</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">bringToFront</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">fileName</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">c2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readFile</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060904103721.1: *3* writeFile</span></div>
+<div class="viewcode-block" id="opmlController.writeFile"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.writeFile">[docs]</a>    <span class="k">def</span> <span class="nf">writeFile</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fileName</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fileName</span><span class="p">:</span> <span class="k">return</span>
+
+        <span class="n">ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">fileCommands</span><span class="o">.</span><span class="n">write_Leo_file</span><span class="p">(</span>
+            <span class="n">fileName</span><span class="p">,</span>
+            <span class="n">outlineOnlyFlag</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">opml_write_derived_files</span><span class="p">,</span>
+            <span class="n">toString</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">toOPML</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s">&#39;wrote </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fileName</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s">&#39;did not write </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fileName</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060919201330: *3* writeOpmlCommand</span></div>
+<div class="viewcode-block" id="opmlController.writeOpmlCommand"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.opmlController.writeOpmlCommand">[docs]</a>    <span class="k">def</span> <span class="nf">writeOpmlCommand</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Save a Leo outline to an OPMLfile.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">disableSave</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Save commands disabled&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;purple&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c"># Make sure we never pass None to the ctor.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">mFileName</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+        <span class="n">initialfile</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">ensure_extension</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">mFileName</span><span class="p">,</span> <span class="s">&quot;.opml&quot;</span><span class="p">)</span>
+
+        <span class="c"># set local fileName, _not_ c.mFileName</span>
+        <span class="n">fileName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runSaveFileDialog</span><span class="p">(</span>
+            <span class="n">initialfile</span> <span class="o">=</span> <span class="n">initialfile</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s">&quot;Write OPML&quot;</span><span class="p">,</span>
+            <span class="n">filetypes</span><span class="o">=</span><span class="p">[(</span><span class="s">&quot;OPML files&quot;</span><span class="p">,</span> <span class="s">&quot;*.opml&quot;</span><span class="p">)],</span>
+            <span class="n">defaultextension</span><span class="o">=</span><span class="s">&quot;.opml&quot;</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">bringToFront</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">fileName</span><span class="p">:</span>
+            <span class="n">fileName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">ensure_extension</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="s">&quot;.opml&quot;</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">opmlCommands</span><span class="o">.</span><span class="n">writeFile</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20060904141220: ** class nodeClass</span></div></div>
+<div class="viewcode-block" id="nodeClass"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.nodeClass">[docs]</a><span class="k">class</span> <span class="nc">nodeClass</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;A class representing one outline element.</span>
+
+<span class="sd">    Use getters to access the attributes, properties and rules of this mode.&#39;&#39;&#39;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20060904141220.1: *3*  node.__init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bodyString</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headString</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gnx</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="c">#@+node:ekr.20060904141220.2: *3*  node.__str__ &amp; __repr__</span>
+    <span class="k">def</span> <span class="nf">__str__</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="s">&#39;&lt;node: </span><span class="si">%s</span><span class="s">&gt;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">headString</span>
+
+    <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span>
+    <span class="c">#@+node:ekr.20060913220507: *3* dump</span>
+<div class="viewcode-block" id="nodeClass.dump"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.nodeClass.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">node: </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gnx</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">headString</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;children:[&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;  node: </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">gnx</span><span class="p">,</span><span class="n">child</span><span class="o">.</span><span class="n">headString</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;]&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;children:[]&#39;</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;attrs: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20060904134958.164: ** class SaxContentHandler (XMLGenerator)</span></div></div>
+<div class="viewcode-block" id="SaxContentHandler"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler">[docs]</a><span class="k">class</span> <span class="nc">SaxContentHandler</span> <span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">saxutils</span><span class="o">.</span><span class="n">XMLGenerator</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;A sax content handler class that reads OPML files.&#39;&#39;&#39;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20060904134958.165: *3*  __init__ &amp; helpers</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">inputFileName</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputFileName</span> <span class="o">=</span> <span class="n">inputFileName</span>
+
+        <span class="c"># Init the base class.</span>
+        <span class="n">xml</span><span class="o">.</span><span class="n">sax</span><span class="o">.</span><span class="n">saxutils</span><span class="o">.</span><span class="n">XMLGenerator</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c">#@+&lt;&lt; define dispatch dict &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20060917185525: *4* &lt;&lt; define dispatch dict &gt;&gt;</span>
+        <span class="c"># There is no need for an &#39;end&#39; method if all info is carried in attributes.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dispatchDict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;body&#39;</span><span class="p">:</span>                     <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+            <span class="s">&#39;head&#39;</span><span class="p">:</span>                     <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startHead</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+            <span class="s">&#39;opml&#39;</span><span class="p">:</span>                     <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+            <span class="s">&#39;outline&#39;</span><span class="p">:</span>                  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startOutline</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">endOutline</span><span class="p">),</span>
+            <span class="s">&#39;leo:body&#39;</span><span class="p">:</span>                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startBodyText</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">endBodyText</span><span class="p">),</span>
+            <span class="s">&#39;leo:global_window_position&#39;</span><span class="p">:</span>  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startWinPos</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="c">#@-&lt;&lt; define dispatch dict &gt;&gt;</span>
+
+        <span class="c"># Semantics.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elementStack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodeStack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c"># body-outline ratio.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rootNode</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="c">#@+node:ekr.20060904134958.166: *3* helpers</span>
+    <span class="c">#@+node:ekr.20060904134958.167: *4* attrsToList</span>
+<div class="viewcode-block" id="SaxContentHandler.attrsToList"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.attrsToList">[docs]</a>    <span class="k">def</span> <span class="nf">attrsToList</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Convert the attributes to a list of g.Bunches.</span>
+
+<span class="sd">        attrs: an Attributes item passed to startElement.&#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">Bunch</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">attrs</span><span class="o">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">getNames</span><span class="p">()]</span>
+    <span class="c">#@+node:ekr.20060904134958.170: *4* error</span></div>
+<div class="viewcode-block" id="SaxContentHandler.error"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n\n</span><span class="s">XML error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">message</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c">#@+node:ekr.20060917185525.1: *4* inElement</span></div>
+<div class="viewcode-block" id="SaxContentHandler.inElement"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.inElement">[docs]</a>    <span class="k">def</span> <span class="nf">inElement</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementStack</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementStack</span>
+    <span class="c">#@+node:ekr.20060904134958.171: *4* printStartElement &amp; helpers</span></div>
+<div class="viewcode-block" id="SaxContentHandler.printStartElement"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.printStartElement">[docs]</a>    <span class="k">def</span> <span class="nf">printStartElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="n">indent</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">attrs</span><span class="o">.</span><span class="n">getLength</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">&lt;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">indent</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">attrsToString</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">&lt;</span><span class="si">%s</span><span class="s">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">indent</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;outline&#39;</span><span class="p">,</span><span class="s">&#39;head&#39;</span><span class="p">,</span><span class="s">&#39;body&#39;</span><span class="p">,]:</span>
+            <span class="k">print</span>
+    <span class="c">#@+node:ekr.20060904134958.168: *5* attrsToString</span></div>
+<div class="viewcode-block" id="SaxContentHandler.attrsToString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.attrsToString">[docs]</a>    <span class="k">def</span> <span class="nf">attrsToString</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Convert the attributes to a string.</span>
+
+<span class="sd">        attrs: an Attributes item passed to startElement.</span>
+
+<span class="sd">        sep: the separator charater between attributes.&#39;&#39;&#39;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&#39;</span><span class="si">%s</span><span class="s">=&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">bunch</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">bunch</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bunch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrsToList</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060904134958.169: *5* clean</span></div>
+<div class="viewcode-block" id="SaxContentHandler.clean"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">toEncodedString</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="s">&quot;ascii&quot;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060904134958.174: *3*  Do nothing...</span>
+    <span class="c">#@+node:ekr.20060904134958.175: *4* other methods</span></div>
+<div class="viewcode-block" id="SaxContentHandler.ignorableWhitespace"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.ignorableWhitespace">[docs]</a>    <span class="k">def</span> <span class="nf">ignorableWhitespace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="SaxContentHandler.processingInstruction"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.processingInstruction">[docs]</a>    <span class="k">def</span> <span class="nf">processingInstruction</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">target</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="SaxContentHandler.skippedEntity"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.skippedEntity">[docs]</a>    <span class="k">def</span> <span class="nf">skippedEntity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SaxContentHandler.startElementNS"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.startElementNS">[docs]</a>    <span class="k">def</span> <span class="nf">startElementNS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">qname</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SaxContentHandler.endElementNS"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.endElementNS">[docs]</a>    <span class="k">def</span> <span class="nf">endElementNS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">qname</span><span class="p">):</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060904134958.176: *4* endDocument</span></div>
+<div class="viewcode-block" id="SaxContentHandler.endDocument"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.endDocument">[docs]</a>    <span class="k">def</span> <span class="nf">endDocument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">pass</span>
+
+
+    <span class="c">#@+node:ekr.20060904134958.177: *4* startDocument</span></div>
+<div class="viewcode-block" id="SaxContentHandler.startDocument"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.startDocument">[docs]</a>    <span class="k">def</span> <span class="nf">startDocument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">pass</span>
+    <span class="c">#@+node:ekr.20060904134958.178: *3* characters</span></div>
+<div class="viewcode-block" id="SaxContentHandler.characters"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">content</span><span class="p">):</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementStack</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementStack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&#39;&lt;no element name&gt;&#39;</span>
+
+        <span class="c"># Opml elements should not have content: everything is carried in attributes.</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;leo:body&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;No node for leo:body content&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;content:&#39;</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="nb">repr</span><span class="p">(</span><span class="n">content</span><span class="p">))</span>
+    <span class="c">#@+node:ekr.20060904134958.179: *3* endElement &amp; helpers</span></div>
+<div class="viewcode-block" id="SaxContentHandler.endElement"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">printElements</span> <span class="ow">or</span> <span class="s">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">printElements</span><span class="p">:</span>
+            <span class="n">indent</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">&lt;/</span><span class="si">%s</span><span class="s">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">indent</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatchDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;unknown element&#39;</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">junk</span><span class="p">,</span><span class="n">func</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+                <span class="n">func</span><span class="p">()</span>
+
+        <span class="n">name2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementStack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">name</span> <span class="o">==</span> <span class="n">name2</span>
+    <span class="c">#@+node:ekr.20060919193501: *4* endBodyText</span></div>
+<div class="viewcode-block" id="SaxContentHandler.endBodyText"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.endBodyText">[docs]</a>    <span class="k">def</span> <span class="nf">endBodyText</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;End a &lt;leo:body&gt; element.&#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">bodyString</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c">#@+node:ekr.20060917185948: *4* endOutline</span></div>
+<div class="viewcode-block" id="SaxContentHandler.endOutline"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.endOutline">[docs]</a>    <span class="k">def</span> <span class="nf">endOutline</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeStack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060904134958.180: *3* startElement &amp; helpers</span></div>
+<div class="viewcode-block" id="SaxContentHandler.startElement"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">printElements</span> <span class="ow">or</span> <span class="s">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">printElements</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStartElement</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">attrs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elementStack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatchDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;unknown element&#39;</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">func</span><span class="p">,</span><span class="n">junk</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+                <span class="n">func</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060919193501.1: *4* startBodyText</span></div>
+<div class="viewcode-block" id="SaxContentHandler.startBodyText"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.startBodyText">[docs]</a>    <span class="k">def</span> <span class="nf">startBodyText</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Start a &lt;leo:body&gt; element.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c">#@+node:ekr.20060922072852: *4* startHead</span></div>
+<div class="viewcode-block" id="SaxContentHandler.startHead"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.startHead">[docs]</a>    <span class="k">def</span> <span class="nf">startHead</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inElement</span><span class="p">(</span><span class="s">&#39;opml&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;&lt;head&gt; outside &lt;opml&gt;&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">doHeadAttributes</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060922072852.1: *5* doHeadAttributes</span></div>
+<div class="viewcode-block" id="SaxContentHandler.doHeadAttributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.doHeadAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">doHeadAttributes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="n">ratio</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+        <span class="k">for</span> <span class="n">bunch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrsToList</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">bunch</span><span class="o">.</span><span class="n">name</span> <span class="p">;</span> <span class="n">val</span> <span class="o">=</span> <span class="n">bunch</span><span class="o">.</span><span class="n">val</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;leo:body_outline_ratio&#39;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">ratio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                    <span class="c"># g.trace(ratio)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="n">ratio</span>
+    <span class="c">#@+node:ekr.20060917190349: *4* startOutline</span></div>
+<div class="viewcode-block" id="SaxContentHandler.startOutline"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.startOutline">[docs]</a>    <span class="k">def</span> <span class="nf">startOutline</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inElement</span><span class="p">(</span><span class="s">&#39;head&#39;</span><span class="p">):</span>     <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;&lt;outline&gt; inside &lt;head&gt;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inElement</span><span class="p">(</span><span class="s">&#39;body&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;&lt;outline&gt; outside &lt;body&gt;&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootNode</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rootNode</span> <span class="o">=</span> <span class="n">parent</span> <span class="o">=</span> <span class="n">nodeClass</span><span class="p">()</span> <span class="c"># The dummy parent node.</span>
+            <span class="n">parent</span><span class="o">.</span><span class="n">headString</span> <span class="o">=</span> <span class="s">&#39;dummyNode&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">nodeClass</span><span class="p">()</span>
+        <span class="n">parent</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doOutlineAttributes</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodeStack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060904141220.34: *5* doOutlineAttributes</span></div>
+<div class="viewcode-block" id="SaxContentHandler.doOutlineAttributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.doOutlineAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">doOutlineAttributes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span>
+
+        <span class="k">for</span> <span class="n">bunch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrsToList</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">bunch</span><span class="o">.</span><span class="n">name</span> <span class="p">;</span> <span class="n">val</span> <span class="o">=</span> <span class="n">bunch</span><span class="o">.</span><span class="n">val</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="c"># Text is the &#39;official&#39; opml attribute for headlines.</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">headString</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;leo:body&#39;</span><span class="p">:</span>
+                <span class="c">#g.trace(repr(val))</span>
+                <span class="c">#g.es_dump (val[:30])</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">bodyString</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;leo:v&#39;</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">gnx</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="c">#@+node:ekr.20060922071010: *4* startWinPos</span></div>
+<div class="viewcode-block" id="SaxContentHandler.startWinPos"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.startWinPos">[docs]</a>    <span class="k">def</span> <span class="nf">startWinPos</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inElement</span><span class="p">(</span><span class="s">&#39;head&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;&lt;leo:global_window_position&gt; outside &lt;body&gt;&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">doGlobalWindowAttributes</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060922071010.1: *5* doGlobalWindowAttributes</span></div>
+<div class="viewcode-block" id="SaxContentHandler.doGlobalWindowAttributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.doGlobalWindowAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">doGlobalWindowAttributes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attrs</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="mi">50</span> <span class="p">;</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">50</span> <span class="p">;</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">500</span> <span class="p">;</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">700</span> <span class="c"># Reasonable defaults.</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bunch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrsToList</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">bunch</span><span class="o">.</span><span class="n">name</span> <span class="p">;</span> <span class="n">val</span> <span class="o">=</span> <span class="n">bunch</span><span class="o">.</span><span class="n">val</span>
+                <span class="k">if</span>   <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;top&#39;</span><span class="p">:</span>    <span class="n">top</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;left&#39;</span><span class="p">:</span>   <span class="n">left</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;height&#39;</span><span class="p">:</span> <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;width&#39;</span><span class="p">:</span>  <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c"># g.trace(top,left,height,width)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">setTopGeometry</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">,</span><span class="n">left</span><span class="p">,</span><span class="n">top</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">deiconify</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">lift</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060904134958.183: *3* getNode</span></div>
+<div class="viewcode-block" id="SaxContentHandler.getNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leoOPML.SaxContentHandler.getNode">[docs]</a>    <span class="k">def</span> <span class="nf">getNode</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootNode</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

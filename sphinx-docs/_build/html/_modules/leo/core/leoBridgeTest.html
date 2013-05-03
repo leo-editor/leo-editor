@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.core.leoBridgeTest &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.core.leoBridgeTest</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20080730161153.2: * @file leoBridgeTest.py</span>
+<span class="sd">&#39;&#39;&#39;A program to run unit tests with the leoBridge module.&#39;&#39;&#39;</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20120220125945.10418: ** &lt;&lt; imports &gt;&gt; (leoBridgeTest.py)</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoBridge</span> <span class="kn">as</span> <span class="nn">leoBridge</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoTest</span> <span class="kn">as</span> <span class="nn">leoTest</span>
+
+<span class="kn">import</span> <span class="nn">optparse</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c"># Do not define g here.  Use the g returned by the bridge.</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20080730161153.3: ** main &amp; helpers</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridgeTest.main">[docs]</a><span class="k">def</span> <span class="nf">main</span> <span class="p">(</span><span class="n">gui</span><span class="o">=</span><span class="s">&#39;nullGui&#39;</span><span class="p">):</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">tag</span> <span class="o">=</span> <span class="s">&#39;leoTestBridge&#39;</span>
+
+    <span class="c"># Setting verbose=True prints messages that would be sent to the log pane.</span>
+    <span class="n">bridge</span> <span class="o">=</span> <span class="n">leoBridge</span><span class="o">.</span><span class="n">controller</span><span class="p">(</span><span class="n">gui</span><span class="o">=</span><span class="n">gui</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">bridge</span><span class="o">.</span><span class="n">isOpen</span><span class="p">():</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">bridge</span><span class="o">.</span><span class="n">globals</span><span class="p">()</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span><span class="p">(</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;test&#39;</span><span class="p">,</span><span class="s">&#39;unitTest.leo&#39;</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">bridge</span><span class="o">.</span><span class="n">openLeoFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()))</span>
+        <span class="n">runUnitTests</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">pr</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="s">&#39;done&#39;</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20080730161153.4: *3* runUnitTests</span></div>
+<div class="viewcode-block" id="runUnitTests"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridgeTest.runUnitTests">[docs]</a><span class="k">def</span> <span class="nf">runUnitTests</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">g</span><span class="p">):</span>
+
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s">&#39;All unit tests&#39;</span> <span class="c"># The tests to run.</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">leoTest</span><span class="o">.</span><span class="n">testUtils</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">findNodeAnywhere</span><span class="p">(</span><span class="n">nodeName</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;running unit tests in </span><span class="si">%s</span><span class="s">...&#39;</span> <span class="o">%</span> <span class="n">nodeName</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">debugCommands</span><span class="o">.</span><span class="n">runUnitTests</span><span class="p">()</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;unit tests complete&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;node not found:&#39;</span> <span class="o">%</span> <span class="n">nodeName</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;unexpected exception&#39;</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+        <span class="k">raise</span>
+<span class="c">#@+node:ekr.20090121164439.6177: *3* scanOptions</span></div>
+<div class="viewcode-block" id="scanOptions"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoBridgeTest.scanOptions">[docs]</a><span class="k">def</span> <span class="nf">scanOptions</span><span class="p">():</span>
+
+    <span class="sd">&#39;&#39;&#39;Handle all options and remove them from sys.argv.&#39;&#39;&#39;</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">optparse</span><span class="o">.</span><span class="n">OptionParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;--gui&#39;</span><span class="p">,</span><span class="n">dest</span><span class="o">=</span><span class="s">&quot;gui&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;--silent&#39;</span><span class="p">,</span><span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span><span class="n">dest</span><span class="o">=</span><span class="s">&quot;silent&quot;</span><span class="p">)</span>
+
+    <span class="c"># Parse the options, and remove them from sys.argv.</span>
+    <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="p">;</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="c"># -- gui</span>
+    <span class="n">gui</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">gui</span>
+    <span class="k">if</span> <span class="n">gui</span><span class="p">:</span> <span class="n">gui</span> <span class="o">=</span> <span class="n">gui</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">gui</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;qttabs&#39;</span><span class="p">,</span><span class="s">&#39;qt&#39;</span><span class="p">):</span>
+        <span class="n">gui</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="c"># --silent</span>
+    <span class="n">silent</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">silent</span>
+
+    <span class="k">return</span> <span class="n">gui</span><span class="p">,</span><span class="n">silent</span>
+<span class="c">#@-others</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">print</span> <span class="p">(</span><span class="s">&#39;leoBridgeTest.py: argv: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
+    <span class="n">gui</span> <span class="o">=</span> <span class="n">scanOptions</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">gui</span><span class="o">=</span><span class="n">gui</span><span class="p">)</span>
+<span class="c">#@-leo</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

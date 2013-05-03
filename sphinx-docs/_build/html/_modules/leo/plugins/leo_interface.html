@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.leo_interface &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.leo_interface</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20101110091234.5700: * @file leo_interface.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20101112180523.5422: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot; Allows the user to browse XML documents in Leo.</span>
+
+<span class="sd">This file implements an interface to XML generation,</span>
+<span class="sd">so that the resulting file can be processed by leo.</span>
+
+<span class="sd">class file represents the whole leo file.</span>
+<span class="sd">class leo_node has a headline and body text.</span>
+
+<span class="sd">See the end of this file for a minimal example on</span>
+<span class="sd">how to use these classes.</span>
+
+<span class="sd">If you encounter the first of a set of clones, create a leo_node. If you</span>
+<span class="sd">encounter the same set of clones later, create a leo_clone node and refer back</span>
+<span class="sd">to the first element.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="n">debug</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20101110092416.5699: ** escape</span>
+<div class="viewcode-block" id="escape"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.escape">[docs]</a><span class="k">def</span> <span class="nf">escape</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s">&quot;&amp;amp;&quot;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s">&quot;&amp;lt;&quot;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s">&quot;&amp;gt;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+<span class="c">#@+node:ekr.20101112045055.60165: ** init</span></div>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ekr.20101110092416.5700: ** class node_with_parent</span></div>
+<div class="viewcode-block" id="node_with_parent"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node_with_parent">[docs]</a><span class="k">class</span> <span class="nc">node_with_parent</span><span class="p">:</span>
+
+   <span class="c">#@+others</span>
+   <span class="c">#@+node:ekr.20101110092416.5702: *3* set_parent</span>
+<div class="viewcode-block" id="node_with_parent.set_parent"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node_with_parent.set_parent">[docs]</a>   <span class="k">def</span> <span class="nf">set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mparent</span> <span class="o">=</span> <span class="n">node</span>
+   <span class="c">#@+node:ekr.20101110092416.5704: *3* parent</span></div>
+<div class="viewcode-block" id="node_with_parent.parent"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node_with_parent.parent">[docs]</a>   <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mparent</span>
+   <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20101110092416.5705: ** class node</span></div></div>
+<span class="n">error_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="node"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node">[docs]</a><span class="k">class</span> <span class="nc">node</span><span class="p">:</span>
+   <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">   Abstrace class for generating xml.</span>
+
+<span class="sd">   &quot;&quot;&quot;</span>
+   <span class="c">#@+others</span>
+   <span class="c">#@+node:ekr.20101110092416.5707: *3* __init__</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+   <span class="c">#@+node:ekr.20101110092416.5709: *3* add_child</span>
+<div class="viewcode-block" id="node.add_child"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node.add_child">[docs]</a>   <span class="k">def</span> <span class="nf">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+       <span class="n">child</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5711: *3* gen</span></div>
+<div class="viewcode-block" id="node.gen"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node.gen">[docs]</a>   <span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="k">pass</span>
+   <span class="c">#@+node:ekr.20101110092416.5713: *3* gen_children</span></div>
+<div class="viewcode-block" id="node.gen_children"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node.gen_children">[docs]</a>   <span class="k">def</span> <span class="nf">gen_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+           <span class="n">child</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5715: *3* mark</span></div>
+<div class="viewcode-block" id="node.mark"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node.mark">[docs]</a>   <span class="k">def</span> <span class="nf">mark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+       <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="n">marker</span><span class="p">)</span>
+       <span class="k">if</span> <span class="n">newline</span><span class="p">:</span>
+           <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+       <span class="n">func</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+       <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;&lt;/</span><span class="si">%s</span><span class="s">&gt;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">marker</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5717: *3* mark_with_attributes</span></div>
+<div class="viewcode-block" id="node.mark_with_attributes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node.mark_with_attributes">[docs]</a>   <span class="k">def</span> <span class="nf">mark_with_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">attribute_list</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+       <span class="n">write</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">write</span>
+       <span class="n">write</span><span class="p">(</span><span class="s">&quot;&lt;&quot;</span><span class="p">)</span>
+       <span class="n">write</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+       <span class="n">write</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+       <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attribute_list</span><span class="p">:</span>
+           <span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">=&quot;</span><span class="si">%s</span><span class="s">&quot; &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+       <span class="n">write</span><span class="p">(</span><span class="s">&quot;&gt;&quot;</span><span class="p">)</span>
+       <span class="k">if</span> <span class="n">newline</span><span class="p">:</span>
+           <span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+       <span class="n">func</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+       <span class="n">write</span><span class="p">(</span><span class="s">&quot;&lt;/</span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="n">marker</span><span class="p">)</span>
+       <span class="k">if</span> <span class="n">newline</span><span class="p">:</span>
+           <span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5719: *3* mark_with_attributes_short</span></div>
+<div class="viewcode-block" id="node.mark_with_attributes_short"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node.mark_with_attributes_short">[docs]</a>   <span class="k">def</span> <span class="nf">mark_with_attributes_short</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">attribute_list</span><span class="p">):</span>
+       <span class="n">write</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">write</span>
+       <span class="n">write</span><span class="p">(</span><span class="s">&quot;&lt;&quot;</span><span class="p">)</span>
+       <span class="n">write</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+       <span class="n">write</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+       <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attribute_list</span><span class="p">:</span>
+           <span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">=&quot;</span><span class="si">%s</span><span class="s">&quot; &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+       <span class="n">write</span><span class="p">(</span><span class="s">&quot;/&gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5721: *3* nthChild</span></div>
+<div class="viewcode-block" id="node.nthChild"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.node.nthChild">[docs]</a>   <span class="k">def</span> <span class="nf">nthChild</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+   <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20101110092416.5722: ** class leo_file</span></div></div>
+<div class="viewcode-block" id="leo_file"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file">[docs]</a><span class="k">class</span> <span class="nc">leo_file</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+   <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Leo specific class representing a file.</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+
+   <span class="c">#@+others</span>
+   <span class="c">#@+node:ekr.20101110092416.5724: *3* headString</span>
+<div class="viewcode-block" id="leo_file.headString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.headString">[docs]</a>   <span class="k">def</span> <span class="nf">headString</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="s">&quot;[[This is the file root]]&quot;</span>
+   <span class="c">#@+node:ekr.20101110092416.5726: *3* parent</span></div>
+<div class="viewcode-block" id="leo_file.parent"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.parent">[docs]</a>   <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">None</span>
+   <span class="c">#@+node:ekr.20101110092416.5728: *3* empty</span></div>
+<div class="viewcode-block" id="leo_file.empty"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.empty">[docs]</a>   <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="k">pass</span>
+   <span class="c">#@+node:ekr.20101110092416.5730: *3* find_panel_settings</span></div>
+<div class="viewcode-block" id="leo_file.find_panel_settings"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.find_panel_settings">[docs]</a>   <span class="k">def</span> <span class="nf">find_panel_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;find_string&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;change_string&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5732: *3* gen</span></div>
+<div class="viewcode-block" id="leo_file.gen"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.gen">[docs]</a>   <span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="k">global</span> <span class="n">error_count</span>
+       <span class="n">error_count</span> <span class="o">=</span> <span class="mi">0</span>
+       <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;leo_file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen1</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5734: *3* gen1</span></div>
+<div class="viewcode-block" id="leo_file.gen1"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.gen1">[docs]</a>   <span class="k">def</span> <span class="nf">gen1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+       <span class="c"># This is a shortcut.</span>
+       <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;&quot;&quot;&lt;globals body_outline_ratio=&quot;0.5&quot;&gt;</span>
+<span class="s">   &lt;global_window_position top=&quot;0&quot; left=&quot;2&quot; height=&quot;400&quot; width=&quot;700&quot;/&gt;</span>
+<span class="s">   &lt;global_log_window_position top=&quot;0&quot; left=&quot;0&quot; height=&quot;0&quot; width=&quot;0&quot;/&gt;</span>
+<span class="s">   &lt;/globals&gt;</span>
+<span class="s">       &quot;&quot;&quot;</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;preferences&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">preferences</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;find_panel_settings&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_panel_settings</span><span class="p">)</span>
+       <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+          <span class="k">global</span> <span class="n">vnode_count</span>
+          <span class="n">vnode_count</span> <span class="o">=</span> <span class="mi">0</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;vnodes&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_vnodes</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;tnodes&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_tnodes</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5736: *3* gen_tnodes</span></div>
+<div class="viewcode-block" id="leo_file.gen_tnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.gen_tnodes">[docs]</a>   <span class="k">def</span> <span class="nf">gen_tnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+           <span class="n">child</span><span class="o">.</span><span class="n">gen_tnodes</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5738: *3* gen_vnodes</span></div>
+<div class="viewcode-block" id="leo_file.gen_vnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.gen_vnodes">[docs]</a>   <span class="k">def</span> <span class="nf">gen_vnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+         <span class="k">global</span> <span class="n">allvnodes</span><span class="p">,</span> <span class="n">vnode_stack</span>
+         <span class="n">allvnodes</span> <span class="o">=</span> <span class="p">{</span><span class="nb">file</span><span class="p">:</span><span class="bp">None</span><span class="p">}</span>
+         <span class="n">vnode_stack</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+         <span class="n">child</span><span class="o">.</span><span class="n">gen_vnodes</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5740: *3* header</span></div>
+<div class="viewcode-block" id="leo_file.header"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.header">[docs]</a>   <span class="k">def</span> <span class="nf">header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark_with_attributes_short</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;leo_header&quot;</span><span class="p">,</span>
+                                 <span class="p">((</span><span class="s">&quot;file_format&quot;</span><span class="p">,</span> <span class="s">&quot;1&quot;</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s">&quot;tnodes&quot;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr_tnodes</span><span class="p">())),</span>
+                                  <span class="p">(</span><span class="s">&quot;max_tnode_index&quot;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_tnode_index</span><span class="p">())),</span>
+                                  <span class="p">(</span><span class="s">&quot;clone_windows&quot;</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">)))</span>
+   <span class="c">#@+node:ekr.20101110092416.5742: *3* max_tnode_index</span></div>
+<div class="viewcode-block" id="leo_file.max_tnode_index"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.max_tnode_index">[docs]</a>   <span class="k">def</span> <span class="nf">max_tnode_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="k">return</span> <span class="n">leo_node</span><span class="o">.</span><span class="n">count</span>
+   <span class="c">#@+node:ekr.20101110092416.5744: *3* nr_tnodes</span></div>
+<div class="viewcode-block" id="leo_file.nr_tnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.nr_tnodes">[docs]</a>   <span class="k">def</span> <span class="nf">nr_tnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="k">return</span> <span class="n">leo_node</span><span class="o">.</span><span class="n">count</span>
+   <span class="c">#@+node:ekr.20101110092416.5746: *3* preferences</span></div>
+<div class="viewcode-block" id="leo_file.preferences"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.preferences">[docs]</a>   <span class="k">def</span> <span class="nf">preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="k">pass</span>
+   <span class="c">#@+node:ekr.20101110092416.5748: *3* sss</span></div>
+<div class="viewcode-block" id="leo_file.sss"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_file.sss">[docs]</a>   <span class="k">def</span> <span class="nf">sss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;sss&quot;</span><span class="p">)</span>
+   <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20101110092416.5749: ** class leo_node</span></div></div>
+<div class="viewcode-block" id="leo_node"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node">[docs]</a><span class="k">class</span> <span class="nc">leo_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node_with_parent</span><span class="p">):</span>
+   <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Leo specific class representing a node.</span>
+
+<span class="sd">   These nodes correspond to tnodes in LEO. </span>
+<span class="sd">   They have a headline and a body.</span>
+
+<span class="sd">   They also represent the (only) vnode in an outline without clones.</span>
+
+<span class="sd">   &quot;&quot;&quot;</span>
+
+   <span class="n">__super_leo_node</span> <span class="o">=</span> <span class="n">node</span>
+   <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+   <span class="c">#@+others</span>
+   <span class="c">#@+node:ekr.20101110092416.5751: *3* __init__</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headline</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">__super_leo_node</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+       <span class="n">leo_node</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">nr</span> <span class="o">=</span> <span class="n">leo_node</span><span class="o">.</span><span class="n">count</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">headline</span> <span class="o">=</span>  <span class="n">headline</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">body</span>
+   <span class="c">#@+node:ekr.20101110092416.5753: *3* bodyString</span>
+<div class="viewcode-block" id="leo_node.bodyString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.bodyString">[docs]</a>   <span class="k">def</span> <span class="nf">bodyString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span>
+   <span class="c">#@+node:ekr.20101110092416.5755: *3* gen_tnodes</span></div>
+<div class="viewcode-block" id="leo_node.gen_tnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.gen_tnodes">[docs]</a>   <span class="k">def</span> <span class="nf">gen_tnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">mark_with_attributes</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="p">(</span>
+           <span class="p">(</span><span class="s">&quot;tx&quot;</span><span class="p">,</span> <span class="s">&quot;T&quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="p">)),</span>
+           <span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_tnodes1</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+       <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+           <span class="n">child</span><span class="o">.</span><span class="n">gen_tnodes</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5757: *3* gen_tnodes1</span></div>
+<div class="viewcode-block" id="leo_node.gen_tnodes1"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.gen_tnodes1">[docs]</a>   <span class="k">def</span> <span class="nf">gen_tnodes1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">write_body_escaped</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5759: *3* gen_vnodes</span></div>
+<div class="viewcode-block" id="leo_node.gen_vnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.gen_vnodes">[docs]</a>   <span class="k">def</span> <span class="nf">gen_vnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+      <span class="n">attributes</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="s">&quot;T&quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="p">))]</span>
+      <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         For debugging, make sure that we are not getting</span>
+<span class="sd">         cyclic references.</span>
+<span class="sd">         Also number all nodes for easier error hunting.</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+         <span class="n">vnode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+         <span class="k">if</span> <span class="n">allvnodes</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Fix this; This is an endless recursive call in leo_interface.leo_node.gen_vnodes&quot;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">vnode_stack</span><span class="p">[:]</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+               <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">headline</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">pdb</span><span class="p">;</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+            <span class="k">return</span>
+         <span class="k">global</span> <span class="n">vnode_count</span>
+         <span class="n">attributes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&#39;model_node_number&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">vnode_count</span><span class="p">)))</span>
+         <span class="n">vnode_count</span> <span class="o">+=</span> <span class="mi">1</span>
+         <span class="n">allvnodes</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span><span class="o">=</span><span class="bp">None</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mark_with_attributes</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;v&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_vnodes1</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+         <span class="k">del</span> <span class="n">allvnodes</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+         <span class="n">vnode_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+   <span class="c">#@+node:ekr.20101110092416.5761: *3* gen_vnodes1</span></div>
+<div class="viewcode-block" id="leo_node.gen_vnodes1"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.gen_vnodes1">[docs]</a>   <span class="k">def</span> <span class="nf">gen_vnodes1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;vh&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_headline_escaped</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+         <span class="n">child</span><span class="o">.</span><span class="n">gen_vnodes</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+   <span class="c">#@+node:ekr.20101110092416.5763: *3* headString</span></div>
+<div class="viewcode-block" id="leo_node.headString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.headString">[docs]</a>   <span class="k">def</span> <span class="nf">headString</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">headline</span>
+   <span class="c">#@+node:ekr.20101110092416.5765: *3* set_body</span></div>
+<div class="viewcode-block" id="leo_node.set_body"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.set_body">[docs]</a>   <span class="k">def</span> <span class="nf">set_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">body</span>
+   <span class="c">#@+node:ekr.20101110092416.5767: *3* set_headline</span></div>
+<div class="viewcode-block" id="leo_node.set_headline"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.set_headline">[docs]</a>   <span class="k">def</span> <span class="nf">set_headline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headline</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">headline</span> <span class="o">=</span> <span class="n">headline</span>
+   <span class="c">#@+node:ekr.20101110092416.5769: *3* write_body_escaped</span></div>
+<div class="viewcode-block" id="leo_node.write_body_escaped"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.write_body_escaped">[docs]</a>   <span class="k">def</span> <span class="nf">write_body_escaped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;UTF-8&quot;</span><span class="p">)))</span>
+
+   <span class="c">#@+node:ekr.20101110092416.5771: *3* write_headline</span></div>
+<div class="viewcode-block" id="leo_node.write_headline"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.write_headline">[docs]</a>   <span class="k">def</span> <span class="nf">write_headline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headline</span><span class="p">)</span> 
+   <span class="c">#@+node:ekr.20101110092416.5773: *3* write_headline_escaped</span></div>
+<div class="viewcode-block" id="leo_node.write_headline_escaped"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_node.write_headline_escaped">[docs]</a>   <span class="k">def</span> <span class="nf">write_headline_escaped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+      <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headline</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;UTF-8&quot;</span><span class="p">)))</span>
+   <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20101110092416.5774: ** class leo_clone</span></div></div>
+<div class="viewcode-block" id="leo_clone"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_clone">[docs]</a><span class="k">class</span> <span class="nc">leo_clone</span><span class="p">(</span><span class="n">node_with_parent</span><span class="p">):</span>
+   <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Class representing a clone.</span>
+
+<span class="sd">   The (only) data of a clone is the reference to a leo_node.</span>
+
+<span class="sd">   When you encounter the first clone of a set of clones, generate</span>
+<span class="sd">   a leo_node. The second clone should then reference this leo_node,</span>
+<span class="sd">   and contain no other data.</span>
+
+<span class="sd">   Since clones are indistinguishable, there is really not much to do in</span>
+<span class="sd">   this class.</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+
+   <span class="c">#@+others</span>
+   <span class="c">#@+node:ekr.20101110092416.5776: *3* __init__</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orig</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">orig</span> <span class="o">=</span> <span class="n">orig</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mparent</span> <span class="o">=</span> <span class="bp">None</span>
+   <span class="c">#@+node:ekr.20101110092416.5778: *3* gen_vnodes</span>
+<div class="viewcode-block" id="leo_clone.gen_vnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_clone.gen_vnodes">[docs]</a>   <span class="k">def</span> <span class="nf">gen_vnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">orig</span><span class="o">.</span><span class="n">gen_vnodes</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+      <span class="c"># There is nothing new to do here;</span>
+      <span class="c"># just repeat what we did when we encountered</span>
+      <span class="c"># the first clone.</span>
+   <span class="c">#@+node:ekr.20101110092416.5780: *3* gen_tnodes</span></div>
+<div class="viewcode-block" id="leo_clone.gen_tnodes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leo_clone.gen_tnodes">[docs]</a>   <span class="k">def</span> <span class="nf">gen_tnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+      <span class="k">pass</span>
+      <span class="c"># the tnodes are generated by the Leo_node</span>
+
+   <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20101110092416.5782: ** leotree</span></div></div>
+<div class="viewcode-block" id="leotree"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_interface.leotree">[docs]</a><span class="k">def</span> <span class="nf">leotree</span><span class="p">():</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">leo_file</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">f</span>
+<span class="c">#@-others</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">leotree</span><span class="p">()</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">leo_node</span><span class="p">(</span><span class="s">&quot;Some headline&quot;</span><span class="p">,</span> <span class="s">&quot;some Body&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+<span class="c">#@-leo</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

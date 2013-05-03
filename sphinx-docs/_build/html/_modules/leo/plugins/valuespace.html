@@ -1,0 +1,850 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.valuespace &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.valuespace</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ville.20110403115003.10348: * @file valuespace.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ville.20110403115003.10349: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39;Supports Leo scripting using per-Leo-outline namespaces.</span>
+
+<span class="sd">Commands</span>
+<span class="sd">========</span>
+
+<span class="sd">.. note::</span>
+<span class="sd">    </span>
+<span class="sd">    The last three commands, starting with `vs-eval`_, are a light weight</span>
+<span class="sd">    option for python calculations within Leo bodies.</span>
+
+<span class="sd">This plugin supports the following seven commands:</span>
+<span class="sd">    </span>
+<span class="sd">vs-create-tree</span>
+<span class="sd">--------------</span>
+
+<span class="sd">Creates a tree whose root node is named &#39;valuespace&#39; containing one child node</span>
+<span class="sd">for every entry in the namespace. The headline of each child is *@@r &lt;key&gt;*,</span>
+<span class="sd">where *&lt;key&gt;* is one of the keys of the namespace. The body text of the child</span>
+<span class="sd">node is the value for *&lt;key&gt;*.</span>
+
+<span class="sd">vs-dump</span>
+<span class="sd">-------</span>
+
+<span class="sd">Prints key/value pairs of the namespace.</span>
+
+<span class="sd">vs-reset</span>
+<span class="sd">--------</span>
+
+<span class="sd">Clears the namespace.</span>
+
+<span class="sd">vs-update</span>
+<span class="sd">---------</span>
+
+<span class="sd">Scans the entire Leo outline twice, processing *@=*, *@a* and *@r* nodes.</span>
+
+<span class="sd">Pass 1</span>
+<span class="sd">++++++</span>
+
+<span class="sd">Pass 1 evaluates all *@=* and *@a* nodes in the outline as follows:</span>
+<span class="sd">    </span>
+<span class="sd">*@=* (assignment) nodes should have headlines of the the form::</span>
+<span class="sd">    </span>
+<span class="sd">    @= &lt;var&gt;</span>
+<span class="sd">    </span>
+<span class="sd">Pass 1 evaluates the body text and assigns the result to *&lt;var&gt;*.</span>
+
+<span class="sd">*@a* (anchor) nodes should have headlines of one of two forms::</span>
+<span class="sd">    </span>
+<span class="sd">    @a</span>
+<span class="sd">    @a &lt;var&gt;</span>
+<span class="sd">    </span>
+<span class="sd">The first form evaluates the script in the **parent** node of the *@a* node.</span>
+<span class="sd">Such **bare** @a nodes serve as markers that the parent contains code to be</span>
+<span class="sd">executed.</span>
+<span class="sd">    </span>
+<span class="sd">The second form evaluates the body of the **parent** of the *@a* node and</span>
+<span class="sd">assigns the result to *&lt;var&gt;*.</span>
+
+<span class="sd">**Important**: Both forms of *@a* nodes support the following **@x convention**</span>
+<span class="sd">when evaluating the parent&#39;s body text. Before evaluating the body text, pass1</span>
+<span class="sd">scans the body text looking for *@x* lines. Such lines have two forms:</span>
+<span class="sd">    </span>
+<span class="sd">1. *@x &lt;python statement&gt;*</span>
+
+<span class="sd">Pass 1 executes *&lt;python statement&gt;*.</span>
+
+<span class="sd">2. The second form spans multiple lines of the body text::</span>
+<span class="sd">    </span>
+<span class="sd">    @x {</span>
+<span class="sd">    python statements</span>
+<span class="sd">    @x }</span>
+<span class="sd">            </span>
+<span class="sd">Pass 1 executes all the python statements between the *@x {* and the *@x }*</span>
+
+<span class="sd">3. Assign block of text to variable::</span>
+
+<span class="sd">    @x =&lt;var&gt; {    </span>
+<span class="sd">    Some</span>
+<span class="sd">    Text    </span>
+<span class="sd">    @x }</span>
+<span class="sd">    </span>
+<span class="sd">Pass 1 assigns the block of text to &lt;var&gt;. The type of value is SList,</span>
+<span class="sd">a special sublass of standard &#39;list&#39; that makes operating with string </span>
+<span class="sd">lists convenient. Notably, you can do &lt;var&gt;.n to get the content as plain</span>
+<span class="sd">string.</span>
+
+<span class="sd">A special case of this is the &quot;list append&quot; notation::</span>
+<span class="sd">    </span>
+<span class="sd">    @x =&lt;var&gt;+ {</span>
+<span class="sd">    Some</span>
+<span class="sd">    Text</span>
+<span class="sd">    @x }</span>
+<span class="sd">    </span>
+<span class="sd">This assumes that &lt;var&gt; is a list, and appends the content as SList to this</span>
+<span class="sd">list. You will typically do &#39;@x var = []&#39; earlier in the document to make this</span>
+<span class="sd">construct work.</span>
+
+<span class="sd">&lt;var&gt; in all contructs above can be arbitrary expression that can be on left hand</span>
+<span class="sd">side of assignment. E.g. you can use foo.bar, foo[&#39;bar&#39;], foo().bar etc.</span>
+
+<span class="sd">Pass 2</span>
+<span class="sd">++++++</span>
+
+<span class="sd">Pass 2 &quot;renders&quot; all *@r* nodes in the outline into body text. *@r* nodes should</span>
+<span class="sd">have the form::</span>
+<span class="sd">    </span>
+<span class="sd">    @r &lt;expression&gt;</span>
+<span class="sd">    </span>
+<span class="sd">Pass 2 evaluates *&lt;expression&gt;* and places the result in the body pane.</span>
+
+<span class="sd">**TODO**: discuss SList expressions.</span>
+
+<span class="sd">vs-eval</span>
+<span class="sd">-------</span>
+
+<span class="sd">Execute the selected text, if any.  Select next line of text.</span>
+<span class="sd">    </span>
+<span class="sd">Tries hard to capture the result of from the last expression in the</span>
+<span class="sd">selected text::</span>
+<span class="sd">    </span>
+<span class="sd">    import datetime</span>
+<span class="sd">    today = datetime.date.today()</span>
+<span class="sd">    </span>
+<span class="sd">will captue the value of ``today`` even though the last line is a</span>
+<span class="sd">statement, not an expression.</span>
+<span class="sd">    </span>
+<span class="sd">Stores results in ``c.vs[&#39;_last&#39;]`` for insertion</span>
+<span class="sd">into body by ``vs-last`` or ``vs-last-pretty``.</span>
+
+<span class="sd">Removes common indentation (``textwrap.dedent()``) before executing,</span>
+<span class="sd">allowing execution of indented code.</span>
+
+<span class="sd">``g``, ``c``, and ``p`` are available to executing code, assignments</span>
+<span class="sd">are made in the ``c.vs`` namespace and persist for the life of ``c``.</span>
+<span class="sd">    </span>
+<span class="sd">vs-last</span>
+<span class="sd">-------</span>
+
+<span class="sd">Insert the last result from ``vs-eval``.  Inserted as a string,</span>
+<span class="sd">so ``&quot;1\n2\n3\n4&quot;`` will cover four lines and insert no quotes,</span>
+<span class="sd">for ``repr()`` style insertion use ``vs-last-pretty``.</span>
+<span class="sd">    </span>
+<span class="sd">vs-last-pretty</span>
+<span class="sd">--------------</span>
+
+<span class="sd">Insert the last result from ``vs-eval``.  Formatted by</span>
+<span class="sd">``pprint.pformat()``,  so ``&quot;1\n2\n3\n4&quot;`` will appear as</span>
+<span class="sd">&#39;``&quot;1\n2\n3\n4&quot;``&#39;, see all ``vs-last``.</span>
+
+<span class="sd">Evaluating expressions</span>
+<span class="sd">======================</span>
+
+<span class="sd">All expression are evaluated in a context that predefines Leo&#39;s *c*, *g* and *p*</span>
+<span class="sd">vars. In addition, *g.vs* is a dictionary whose keys are *c.hash()* and whose</span>
+<span class="sd">values are the namespaces for each commander. This allows communication between</span>
+<span class="sd">different namespaces, while keeping namespaces generally separate.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c"># SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ville.20110403115003.10350: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># v 0.1 VMV: Initial version.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ville.20110403115003.10351: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoPlugins</span> <span class="kn">as</span> <span class="nn">leoPlugins</span>
+<span class="kn">from</span> <span class="nn">leo.external.stringlist</span> <span class="kn">import</span> <span class="n">SList</span>
+    <span class="c"># Uses leoPlugins.TryNext.</span>
+
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">types</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="n">controllers</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c"># Keys are c.hash(), values are ValueSpaceControllers.</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20110408065137.14221: ** Module level</span>
+<span class="c">#@+node:ville.20110403115003.10353: *3* colorize_headlines_visitor</span>
+<div class="viewcode-block" id="colorize_headlines_visitor"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.colorize_headlines_visitor">[docs]</a><span class="k">def</span> <span class="nf">colorize_headlines_visitor</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Changes @thin, @auto, @shadow to bold &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;!= &quot;</span><span class="p">):</span>    
+        <span class="n">f</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">font</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">setBold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">leoPlugins</span><span class="o">.</span><span class="n">TryNext</span>
+<span class="c">#@+node:ville.20110403115003.10352: *3* init</span></div>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+    
+    <span class="c"># vs_reset(None)</span>
+    
+    <span class="k">global</span> <span class="n">controllers</span>
+    <span class="c">#g.vs = {} # A dictionary of dictionaries, one for each commander.</span>
+
+    <span class="c"># create global valuaspace controller for ipython</span>
+        
+    <span class="n">g</span><span class="o">.</span><span class="n">visit_tree_item</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">colorize_headlines_visitor</span><span class="p">)</span>
+    
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+
+<span class="c">#init()</span>
+<span class="c">#@+node:ekr.20110408065137.14222: *3* onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">key</span><span class="p">):</span>
+    
+    <span class="k">global</span> <span class="n">controllers</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span>
+        <span class="n">vc</span> <span class="o">=</span> <span class="n">controllers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">vc</span><span class="p">:</span>
+            <span class="n">controllers</span> <span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">vc</span> <span class="o">=</span> <span class="n">ValueSpaceController</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="c">#@+node:ville.20110403115003.10355: ** Commands</span>
+<span class="c">#@+node:ville.20130127115643.3695: *3* get_vs</span></div>
+<div class="viewcode-block" id="get_vs"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.get_vs">[docs]</a><span class="k">def</span> <span class="nf">get_vs</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="c"># deal with singleton &quot;ipython&quot; controller</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">ipk</span><span class="p">:</span>        
+        <span class="n">vsc</span> <span class="o">=</span> <span class="n">controllers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ipython&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">vsc</span><span class="p">:</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ipython&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vsc</span> <span class="o">=</span> <span class="n">ValueSpaceController</span><span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+                <span class="n">ns</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">ipk</span><span class="o">.</span><span class="n">namespace</span><span class="p">)</span>
+
+        <span class="n">vsc</span><span class="o">.</span><span class="n">set_c</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> 
+        
+        <span class="k">return</span> <span class="n">vsc</span>
+                    
+    <span class="k">return</span> <span class="n">controllers</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">()]</span>
+    
+<span class="c">#@+node:ville.20110407210441.5691: *3* vs-create-tree</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;vs-create-tree&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="vs_create_tree"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.vs_create_tree">[docs]</a><span class="k">def</span> <span class="nf">vs_create_tree</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;Create tree from all variables.&quot;&quot;&quot;</span>
+
+    <span class="n">get_vs</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">create_tree</span><span class="p">()</span>
+
+<span class="c">#@+node:ekr.20110408065137.14227: *3* vs-dump</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;vs-dump&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="vs_dump"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.vs_dump">[docs]</a><span class="k">def</span> <span class="nf">vs_dump</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;Dump the valuespace for this commander.&quot;&quot;&quot;</span>
+    <span class="n">get_vs</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>    
+<span class="c">#@+node:ekr.20110408065137.14220: *3* vs-reset</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;vs-reset&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="vs_reset"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.vs_reset">[docs]</a><span class="k">def</span> <span class="nf">vs_reset</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+
+    <span class="c"># g.vs = types.ModuleType(&#39;vs&#39;)</span>
+    <span class="c"># sys.modules[&#39;vs&#39;] = g.vs</span>
+
+    <span class="n">get_vs</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>    
+<span class="c">#@+node:ville.20110403115003.10356: *3* vs-update</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;vs-update&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="vs_update"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.vs_update">[docs]</a><span class="k">def</span> <span class="nf">vs_update</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+
+    <span class="n">get_vs</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>    
+<span class="c">#@+node:tbrown.20130227164110.21222: *3* vs-eval</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&quot;vs-eval&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="vs_eval"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.vs_eval">[docs]</a><span class="k">def</span> <span class="nf">vs_eval</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Execute the selected text, if any.  Select next line of text.</span>
+<span class="sd">    </span>
+<span class="sd">    Tries hard to capture the result of from the last expression in the</span>
+<span class="sd">    selected text::</span>
+<span class="sd">        </span>
+<span class="sd">        import datetime</span>
+<span class="sd">        today = datetime.date.today()</span>
+<span class="sd">        </span>
+<span class="sd">    will captue the value of ``today`` even though the last line is a</span>
+<span class="sd">    statement, not an expression.</span>
+<span class="sd">        </span>
+<span class="sd">    Stores results in ``c.vs[&#39;_last&#39;]`` for insertion</span>
+<span class="sd">    into body by ``vs-last`` or ``vs-last-pretty``.</span>
+<span class="sd">    </span>
+<span class="sd">    Removes common indentation (``textwrap.dedent()``) before executing,</span>
+<span class="sd">    allowing execution of indented code.</span>
+<span class="sd">    </span>
+<span class="sd">    ``g``, ``c``, and ``p`` are available to executing code, assignments</span>
+<span class="sd">    are made in the ``c.vs`` namespace and persist for the life of ``c``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">c</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">]</span>
+    <span class="n">vsc</span> <span class="o">=</span> <span class="n">get_vs</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">cvs</span> <span class="o">=</span> <span class="n">vsc</span><span class="o">.</span><span class="n">d</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">getSelectedText</span><span class="p">()</span>
+
+    <span class="c"># select next line ready for next select/send cycle</span>
+    <span class="c"># copied from .../plugins/leoscreen.py</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">getAllText</span><span class="p">()</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">getInsertPoint</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">setSelectionRange</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c"># no more \n in text</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">setSelectionRange</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">pass</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">txt</span><span class="p">:</span>
+        <span class="k">return</span>
+    
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+        
+    <span class="n">blocks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">(?=[^</span><span class="se">\\</span><span class="s">s])&#39;</span><span class="p">,</span> <span class="n">txt</span><span class="p">)</span>
+
+    <span class="n">leo_globals</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;c&#39;</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="s">&#39;p&#39;</span><span class="p">:</span><span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">:</span><span class="n">g</span><span class="p">}</span>
+    
+    <span class="n">ans</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    <span class="n">dbg</span> <span class="o">=</span> <span class="bp">False</span>
+    
+    <span class="n">redirects</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;valuespace_vs_eval_redirect&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">redirects</span><span class="p">:</span>
+        <span class="n">old_stderr</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">stdErrIsRedirected</span><span class="p">()</span>
+        <span class="n">old_stdout</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">stdOutIsRedirected</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old_stderr</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">redirectStderr</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old_stdout</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">redirectStdout</span><span class="p">()</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># execute all but the last &#39;block&#39;</span>
+        <span class="k">if</span> <span class="n">dbg</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;all but last&#39;</span><span class="p">)</span>
+        <span class="c"># exec &#39;\n&#39;.join(blocks[:-1]) in leo_globals, c.vs</span>
+        <span class="k">exec</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blocks</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">leo_globals</span><span class="p">,</span> <span class="n">cvs</span><span class="p">)</span> <span class="c"># Compatible with Python 3.x.</span>
+        <span class="n">all_done</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+        <span class="c"># splitting of the last block caused syntax error</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># is the whole thing a single expression?</span>
+            <span class="k">if</span> <span class="n">dbg</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;one expression&#39;</span><span class="p">)</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">leo_globals</span><span class="p">,</span> <span class="n">cvs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dbg</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;statement block&#39;</span><span class="p">)</span>
+            <span class="c"># exec txt in leo_globals, c.vs</span>
+            <span class="k">exec</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">leo_globals</span><span class="p">,</span> <span class="n">cvs</span><span class="p">)</span> <span class="c"># Compatible with Python 3.x.</span>
+        <span class="n">all_done</span> <span class="o">=</span> <span class="bp">True</span>  <span class="c"># either way, the last block is used now</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">all_done</span><span class="p">:</span>  <span class="c"># last block still needs using</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dbg</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;final expression&#39;</span><span class="p">)</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">leo_globals</span><span class="p">,</span> <span class="n">cvs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="n">dbg</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;final statement&#39;</span><span class="p">)</span>
+            <span class="c"># exec blocks[-1] in leo_globals, c.vs</span>
+            <span class="k">exec</span><span class="p">(</span><span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">leo_globals</span><span class="p">,</span> <span class="n">cvs</span><span class="p">)</span> <span class="c"># Compatible with Python 3.x.</span>
+
+    <span class="k">if</span> <span class="n">redirects</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old_stderr</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">restoreStderr</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">old_stdout</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">restoreStdout</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">ans</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># see if last block was a simple &quot;var =&quot; assignment</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cvs</span><span class="p">:</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="n">cvs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">ans</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># see if whole text was a simple /multi-line/ &quot;var =&quot; assignment</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cvs</span><span class="p">:</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="n">cvs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="n">cvs</span><span class="p">[</span><span class="s">&#39;_last&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ans</span>
+    
+    <span class="k">if</span> <span class="n">ans</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>  
+        <span class="c"># annoying to echo &#39;None&#39; to the log during line by line execution</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="s">&#39;&lt;snip&gt;&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:])</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span><span class="p">[:</span><span class="mi">500</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39; &lt;truncated&gt;&#39;</span>
+    
+        <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+<span class="c">#@+node:tbrown.20130227164110.21223: *3* vs-last</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&quot;vs-last&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="vs_last"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.vs_last">[docs]</a><span class="k">def</span> <span class="nf">vs_last</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Insert the last result from ``vs-eval``.  Inserted as a string,</span>
+<span class="sd">    so ``&quot;1\n2\n3\n4&quot;`` will cover four lines and insert no quotes,</span>
+<span class="sd">    for ``repr()`` style insertion use ``vs-last-pretty``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="s">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_vs</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_last&#39;</span><span class="p">))</span>
+        
+    <span class="n">editor</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span>
+
+    <span class="n">insert_point</span> <span class="o">=</span> <span class="n">editor</span><span class="o">.</span><span class="n">getInsertPoint</span><span class="p">()</span>
+    <span class="n">editor</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">insert_point</span><span class="p">,</span> <span class="n">txt</span><span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">editor</span><span class="o">.</span><span class="n">setInsertPoint</span><span class="p">(</span><span class="n">insert_point</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">setChanged</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="c">#@+node:tbrown.20130227164110.21224: *3* vs-last-pretty</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&quot;vs-last-pretty&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="vs_last_pretty"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.vs_last_pretty">[docs]</a><span class="k">def</span> <span class="nf">vs_last_pretty</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Insert the last result from ``vs-eval``.  Formatted by</span>
+<span class="sd">    ``pprint.pformat()``,  so ``&quot;1\n2\n3\n4&quot;`` will appear as</span>
+<span class="sd">    &#39;``&quot;1\n2\n3\n4&quot;``&#39;, see all ``vs-last``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">c</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">]</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">get_vs</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_last&#39;</span><span class="p">))</span>
+    <span class="n">vs_last</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110408065137.14219: ** class ValueSpaceController</span></div>
+<div class="viewcode-block" id="ValueSpaceController"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController">[docs]</a><span class="k">class</span> <span class="nc">ValueSpaceController</span><span class="p">:</span>
+    
+    <span class="sd">&#39;&#39;&#39;A class supporting per-commander evaluation spaces</span>
+<span class="sd">    containing @a, @r and @= nodes.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20110408065137.14223: *3*  ctor</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ns</span> <span class="o">=</span> <span class="bp">None</span> <span class="p">):</span>
+        
+        <span class="c"># g.trace(&#39;(ValueSpaceController)&#39;,c)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="k">if</span> <span class="n">ns</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">ns</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="bp">False</span>
+        
+        <span class="c"># changed g.vs.__dict__ to self.d</span>
+        <span class="c"># Not strictly necessary, but allows cross-commander communication.</span>
+        <span class="c">#g.vs [c.hash()] = self.d</span>
+    <span class="c">#@+node:ekr.20110408065137.14224: *3* create_tree</span>
+<div class="viewcode-block" id="ValueSpaceController.create_tree"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.create_tree">[docs]</a>    <span class="k">def</span> <span class="nf">create_tree</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;The vs-create-tree command.&#39;&#39;&#39;</span>
+        
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span> <span class="p">;</span> <span class="n">tag</span> <span class="o">=</span> <span class="s">&#39;valuespace&#39;</span>
+
+        <span class="c"># Create a &#39;valuespace&#39; node if p&#39;s headline is not &#39;valuespace&#39;.</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span> <span class="o">==</span> <span class="n">tag</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">insertAsLastChild</span><span class="p">()</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">tag</span>
+
+        <span class="c"># Create a child of r for all items of self.d</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">):</span>
+                <span class="n">child</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">insertAsLastChild</span><span class="p">()</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="s">&#39;@@r &#39;</span> <span class="o">+</span> <span class="n">k</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">render_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="c"># Create child.b from child.h</span>
+                
+        <span class="n">c</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>        
+    <span class="c">#@+node:ekr.20110408065137.14228: *3* dump</span></div>
+<div class="viewcode-block" id="ValueSpaceController.dump"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        
+        <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&#39;__builtins__&#39;</span><span class="p">,</span>
+            <span class="c"># &#39;c&#39;,&#39;g&#39;,&#39;p&#39;,</span>
+        <span class="p">)</span>
+        
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Valuespace for </span><span class="si">%s</span><span class="s">...&#39;</span> <span class="o">%</span> <span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">())</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">z</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">]</span>
+        <span class="n">keys</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">max_s</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">max_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_s</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">pad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">max_s</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">))</span><span class="o">*</span><span class="s">&#39; &#39;</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s%s</span><span class="s"> = </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pad</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">val</span><span class="p">))</span>
+            
+        <span class="n">c</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20110408065137.14225: *3* reset</span></div>
+<div class="viewcode-block" id="ValueSpaceController.reset"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;The vs-reset command.&#39;&#39;&#39;</span>
+
+        <span class="c"># do not allow resetting the dict if using ipython</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">ipk</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_ns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        
+    <span class="c">#@+node:ville.20110409221110.5755: *3* init_ns</span></div>
+<div class="viewcode-block" id="ValueSpaceController.init_ns"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.init_ns">[docs]</a>    <span class="k">def</span> <span class="nf">init_ns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ns</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add &#39;builtin&#39; methods to namespace &quot;&quot;&quot;</span>
+        
+        <span class="k">def</span> <span class="nf">slist</span><span class="p">(</span><span class="n">body</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Return body as SList (string list) &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">SList</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">))</span>
+
+        <span class="n">ns</span><span class="p">[</span><span class="s">&#39;slist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slist</span>
+        
+        <span class="c"># xxx todo perhaps add more?</span>
+            
+    <span class="c">#@+node:ville.20130127122722.3696: *3* set_c</span></div>
+<div class="viewcode-block" id="ValueSpaceController.set_c"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.set_c">[docs]</a>    <span class="k">def</span> <span class="nf">set_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; reconfigure vsc for new c</span>
+<span class="sd">        </span>
+<span class="sd">        Needed by ipython integration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+    <span class="c">#@+node:ekr.20110408065137.14226: *3* update &amp; helpers</span></div>
+<div class="viewcode-block" id="ValueSpaceController.update"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;The vs-update command.&#39;&#39;&#39;</span>
+
+
+        <span class="c"># names are reversed, xxx TODO fix later    </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_phase</span><span class="p">()</span> <span class="c"># Pass 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_vs</span><span class="p">()</span>    <span class="c"># Pass 2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20110407174428.5781: *4* render_phase (pass 1) &amp; helpers</span></div>
+<div class="viewcode-block" id="ValueSpaceController.render_phase"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.render_phase">[docs]</a>    <span class="k">def</span> <span class="nf">render_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Update p&#39;s tree (or the entire tree) as follows:</span>
+
+<span class="sd">        - Evaluate all @= nodes and assign them to variables</span>
+<span class="sd">        - Evaluate the body of the *parent* nodes for all @a nodes.</span>
+<span class="sd">        - Read in @vsi nodes and assign to variables</span>
+<span class="sd">        </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="c"># g.vs.c = c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;g&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span> <span class="c"># g.vs.g = g</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_unique_positions</span><span class="p">():</span>       
+            <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@= &#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;pass1&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c"># g.vs.p = p.copy()</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">let_body</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">untangle</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;@vsi &quot;</span><span class="p">):</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span>
+                <span class="n">bname</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;@vsi &quot;</span> <span class="o">+</span> <span class="n">bname</span> <span class="o">+</span><span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;.json&#39;</span><span class="p">:</span>
+                    <span class="n">pth</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getNodePath</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                    <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pth</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;vsi read from  &quot;</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+                        <span class="n">cont</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cont</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="p">(</span><span class="n">bname</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>                    
+                        <span class="bp">self</span><span class="o">.</span><span class="n">render_value</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+                        
+                        
+            <span class="k">elif</span> <span class="n">h</span> <span class="o">==</span> <span class="s">&#39;@a&#39;</span> <span class="ow">or</span> <span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@a &#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;pass1&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>  
+                <span class="n">tail</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">parent</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+                
+                <span class="k">if</span> <span class="n">tail</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">let_body</span><span class="p">(</span><span class="n">tail</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">untangle</span><span class="p">(</span><span class="n">parent</span><span class="p">))</span>                
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parse_body</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Error parsing &quot;</span> <span class="o">+</span> <span class="n">parent</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+        <span class="c"># g.trace(self.d)</span>
+    <span class="c">#@+node:ekr.20110407174428.5777: *5* let &amp; let_body</span></div>
+<div class="viewcode-block" id="ValueSpaceController.let"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.let">[docs]</a>    <span class="k">def</span> <span class="nf">let</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;Enter var into self.d with the given value.</span>
+<span class="sd">        Both var and val must be strings.&#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Let [</span><span class="si">%s</span><span class="s">] = [</span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">val</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="p">[</span><span class="s">&#39;__vstemp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;+&#39;</span><span class="p">):</span>
+            <span class="n">rvar</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;+&#39;</span><span class="p">)</span>
+            <span class="c"># .. obj = eval(rvar,self.d)        </span>
+            <span class="k">exec</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">.append(__vstemp)&quot;</span> <span class="o">%</span> <span class="n">rvar</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">exec</span><span class="p">(</span><span class="n">var</span> <span class="o">+</span> <span class="s">&quot; = __vstemp&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="p">[</span><span class="s">&#39;__vstemp&#39;</span><span class="p">]</span>
+        </div>
+<div class="viewcode-block" id="ValueSpaceController.let_cl"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.let_cl">[docs]</a>    <span class="k">def</span> <span class="nf">let_cl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; handle @cl node &quot;&quot;&quot;</span>
+        <span class="c"># g.trace()</span>
+        <span class="n">lend</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">firstline</span> <span class="o">=</span> <span class="n">body</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">lend</span><span class="p">]</span>
+        <span class="n">rest</span> <span class="o">=</span> <span class="n">firstline</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;rest&quot;</span><span class="p">,</span><span class="n">rest</span><span class="p">)</span>  
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">translator</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Can&#39;t instantate @cl xlator: &quot;</span> <span class="o">+</span> <span class="n">rest</span><span class="p">)</span>
+        <span class="n">translated</span> <span class="o">=</span> <span class="n">translator</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="n">lend</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">translated</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="ValueSpaceController.let_body"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.let_body">[docs]</a>    <span class="k">def</span> <span class="nf">let_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.yaml&quot;</span><span class="p">):</span>
+            <span class="c">#print &quot;set to yaml&quot;, `val`</span>
+            <span class="n">sio</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">sio</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                
+                <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;yaml error for: &quot;</span> <span class="o">+</span> <span class="n">var</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>        
+            <span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">)</span>
+            <span class="k">return</span>        
+        
+        <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@cl &#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">let_cl</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">return</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+        
+        
+    <span class="c">#@+node:ekr.20110407174428.5780: *5* parse_body &amp; helpers</span></div>
+<div class="viewcode-block" id="ValueSpaceController.parse_body"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.parse_body">[docs]</a>    <span class="k">def</span> <span class="nf">parse_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+        
+        <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">untangle</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c"># body is the script in p&#39;s body.</span>
+        <span class="c"># print(&quot;Body&quot;)</span>
+        <span class="c"># print(body)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;pass1&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">,</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="n">body</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="p">[</span><span class="s">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">backop</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">segs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="s">&#39;^(@x (.*))$&#39;</span><span class="p">,</span><span class="n">body</span><span class="p">,</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">mo</span> <span class="ow">in</span> <span class="n">segs</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">mo</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c"># print(&quot;Oper&quot;,op)</span>
+            <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">):</span>
+                <span class="c"># print(&quot;Assign&quot;, op)</span>
+                <span class="n">backop</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;{&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">),</span> <span class="n">mo</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s">&#39;{&#39;</span><span class="p">:</span>
+                <span class="n">backop</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;runblock&#39;</span><span class="p">,</span> <span class="n">mo</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s">&#39;}&#39;</span><span class="p">:</span>
+                <span class="n">bo</span> <span class="o">=</span> <span class="n">backop</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c"># print(&quot;backop&quot;,bo)</span>
+                <span class="k">if</span> <span class="n">bo</span> <span class="o">==</span> <span class="s">&#39;=&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">let_body</span><span class="p">(</span><span class="n">backop</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">body</span><span class="p">[</span><span class="n">backop</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">:</span> <span class="n">mo</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>
+                <span class="k">elif</span> <span class="n">bo</span> <span class="o">==</span> <span class="s">&#39;runblock&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">runblock</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="n">backop</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">:</span> <span class="n">mo</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">runblock</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20110407174428.5779: *6* runblock</span></div>
+<div class="viewcode-block" id="ValueSpaceController.runblock"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.runblock">[docs]</a>    <span class="k">def</span> <span class="nf">runblock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">block</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;pass1&#39;</span><span class="p">,</span><span class="n">block</span><span class="p">)</span>
+
+        <span class="k">exec</span><span class="p">(</span><span class="n">block</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20110407174428.5778: *6* untangle (getScript)</span></div>
+<div class="viewcode-block" id="ValueSpaceController.untangle"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.untangle">[docs]</a>    <span class="k">def</span> <span class="nf">untangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+        
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">getScript</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span>
+            <span class="n">useSelectedText</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">useSentinels</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) &amp; helper</span></div>
+<div class="viewcode-block" id="ValueSpaceController.update_vs"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.update_vs">[docs]</a>    <span class="k">def</span> <span class="nf">update_vs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>    
+        
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate @r &lt;expr&gt; nodes, puting the result in their body text.</span>
+<span class="sd">        Output @vso nodes, based on file extension    </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_unique_positions</span><span class="p">():</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@r &#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;pass2:&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+                <span class="n">expr</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    
+                    <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Failed to render &quot;</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                    
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&quot;Eval:&quot;</span><span class="p">,</span><span class="n">expr</span><span class="p">,</span><span class="s">&quot;result:&quot;</span><span class="p">,</span><span class="nb">repr</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">render_value</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">result</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;@vso &quot;</span><span class="p">):</span>
+                <span class="n">expr</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">bname</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>            
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">bname</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    
+                    <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;@vso failed: &quot;</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;.json&#39;</span><span class="p">:</span>
+                    <span class="n">cnt</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">indent</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">pth</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">getNodePath</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">expr</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">render_value</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">cnt</span><span class="p">)</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Writing @vso: &quot;</span> <span class="o">+</span> <span class="n">pth</span><span class="p">)</span>
+                    <span class="nb">open</span><span class="p">(</span><span class="n">pth</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+                    
+                    
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es_error</span><span class="p">(</span><span class="s">&quot;Unknown vso extension (should be .json, ...): &quot;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">)</span>
+                                    
+                    
+                    
+                    <span class="c"># dump file as json</span>
+                    
+                    
+                    
+                
+                <span class="k">pass</span>
+    <span class="c">#@+node:ekr.20110407174428.5784: *5* render_value</span></div>
+<div class="viewcode-block" id="ValueSpaceController.render_value"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.render_value">[docs]</a>    <span class="k">def</span> <span class="nf">render_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;Put the rendered value in p&#39;s body pane.&#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">SList</span><span class="p">):</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">isString</span><span class="p">(</span><span class="n">value</span><span class="p">):</span> <span class="c"># Works with Python 3.x.</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20110407174428.5783: *3* test</span></div>
+<div class="viewcode-block" id="ValueSpaceController.test"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.valuespace.ValueSpaceController.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+    <span class="c"># test()</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

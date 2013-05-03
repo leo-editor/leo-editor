@@ -1,0 +1,764 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.xsltWithNodes &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.xsltWithNodes</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:mork.20041010095009: * @file xsltWithNodes.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050226120104: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot; Adds the Outline:XSLT menu containing XSLT-related commands.</span>
+
+<span class="sd">This menu contains the following items:</span>
+
+<span class="sd">- Set StyleSheet Node:</span>
+<span class="sd">    - Selects the current node as the xsl stylesheet the plugin will use.</span>
+
+<span class="sd">- Process Node with Stylesheet Node:</span>
+<span class="sd">    - Processes the current node as an xml document,</span>
+<span class="sd">      resolving section references and Leo directives.</span>
+<span class="sd">    - Creates a sibling containing the results.</span>
+
+<span class="sd">Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:mork.20041025113509: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
+
+<span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">io</span>
+    <span class="n">StringIO</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">cStringIO</span>
+    <span class="n">StringIO</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Ft</span>
+    <span class="kn">from</span> <span class="nn">Ft.Xml</span> <span class="kn">import</span> <span class="n">InputSource</span> 
+    <span class="kn">from</span> <span class="nn">Ft.Xml.Xslt.Processor</span> <span class="kn">import</span> <span class="n">Processor</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">Ft</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">cantImport</span><span class="p">(</span><span class="s">&quot;Ft&quot;</span><span class="p">,</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">weakref</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+&lt;&lt;parser problems&gt;&gt;</span>
+<span class="c">#@+node:mork.20041024091024: ** &lt;&lt;parser problems&gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+
+<span class="c">#@+at </span>
+<span class="c"># 1. Having space before the start of the document caused it not to work.  I fixed this by striping the whitespace from the start</span>
+<span class="c"># and end of the data at xslt time.</span>
+<span class="c"># </span>
+<span class="c"># 2. having a @ right before a tag causes it to not process.</span>
+<span class="c">#     It appears to be safe to follow this pattern:</span>
+<span class="c">#     @ &lt;/end&gt;</span>
+<span class="c">#     but not:</span>
+<span class="c">#     @&lt;/end&gt;</span>
+<span class="c"># </span>
+<span class="c">#     I dont know at this point if its just illegal xml, or its a problem in the parser. ??</span>
+<span class="c">#@-&lt;&lt;parser problems&gt;&gt;</span>
+<span class="c">#@+&lt;&lt;future directions&gt;&gt;</span>
+<span class="c">#@+node:mork.20041025101943: ** &lt;&lt;future directions&gt;&gt;</span>
+<span class="c">#@+at</span>
+<span class="c"># 1. Add more XSLT boilerplate insertions.( done in .3 )</span>
+<span class="c"># 2. Maybe add a well-formedness check. (done in .3, test with minidom )</span>
+<span class="c">#@-&lt;&lt;future directions&gt;&gt;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.6&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:mork.20041025113211: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1: Original code.</span>
+<span class="c"># </span>
+<span class="c"># 0.2 EKR: Converted to outline.</span>
+<span class="c"># </span>
+<span class="c"># 0.3: Added more XSLT boilerplate. Added Test with Minidom Discovered parser problem(?).</span>
+<span class="c"># </span>
+<span class="c"># 0.4 EKR:</span>
+<span class="c">#     - Added init function.</span>
+<span class="c"># 0.5 EKR:</span>
+<span class="c">#     - Remove &#39;start2&#39; hook &amp; haveseen dict.</span>
+<span class="c">#     - Use keywords.get(&#39;c&#39;) instead of g.top().</span>
+<span class="c"># 0.6 EKR:</span>
+<span class="c">#     - Removed g.top from example code.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20050226120104.1: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="n">Ft</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s">&#39;menu2&#39;</span><span class="p">,</span><span class="s">&quot;new&quot;</span><span class="p">),</span><span class="n">addMenu</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:mork.20041025115037: ** xslt elements</span>
+<span class="c">#This dict contains elements that go into a stylesheet</span></div>
+<span class="n">xslt</span> <span class="o">=</span> <span class="p">{</span>
+
+<span class="s">&#39;apply-imports&#39;</span><span class="p">:</span> <span class="s">&#39;&lt;xsl:apply-imports/&gt;&#39;</span><span class="p">,</span>
+<span class="s">&#39;apply-templates&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:apply-templates select =&#39;&#39; mode=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;attribute&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:attribute name=&#39;&#39;&gt; &lt;/xsl:attribute&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;attribute-set&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:attribute-set name=&#39;&#39;&gt; &lt;/xsl:attribute-set&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;call-template&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:call-template name=&#39;&#39;&gt; &lt;/xsl:call-template&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;choose&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:choose&gt; &lt;/xsl:choose&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;comment&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:comment&gt; &lt;/xsl:comment&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;copy&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:copy&gt; &lt;/xsl:copy&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;copy-of&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:copy-of select=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;decimal-format&#39;</span> <span class="p">:</span> <span class="s">&quot;&lt;xsl:decimal-format   /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:element name=&#39;&#39; &gt; &lt;/xsl:element&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;fallback&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:fallback&gt; &lt;/xsl:fallback&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;for-each&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:for-each select=&#39;&#39; &gt;  &lt;/xsl:for-each&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;if&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:if test=&#39;&#39;&gt; &lt;/xsl:if&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;import&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:import href=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;include&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:include href=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;key&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:key name=&#39;&#39; match=&#39;&#39; use=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;message&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:message&gt; &lt;/xsl:message&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;namespace-alias&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:namespace-alias stylesheet-prefix=&#39;&#39; result-prefix=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:number /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;otherwise&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:otherwise&gt; &lt;/xsl:otherwise&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;output&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:output /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;param&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:param name=&#39;&#39; &gt;  &lt;/xsl:param&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;preserve-space&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:preserve-space elements=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;processing-instruction&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:processing-instruction name=&#39;&#39; &gt; &lt;/xsl:processing-instruction&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;sort&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:sort /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;strip-space&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:strip-space elements=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;stylesheet&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:stylesheet xmlns:xsl=&#39;&#39; version=&#39;&#39; &gt; &lt;/xsl:stylesheet&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;template&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:template &gt; &lt;/xsl:template&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:text &gt; &lt;/xsl:text&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;transform&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:transform &gt;  &lt;/xsl:transform&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;value-of&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:value-of select=&#39;&#39; /&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;variable&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:variable name=&#39;&#39;&gt; &lt;/xsl:variable&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;when&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:when text=&#39;&#39; &gt; &lt;/xsl:when&gt;&quot;</span><span class="p">,</span>
+<span class="s">&#39;with-param&#39;</span><span class="p">:</span> <span class="s">&quot;&lt;xsl:with-param name=&#39;&#39;&gt; &lt;/xsl:with-param&gt;&quot;</span><span class="p">,</span>
+
+<span class="p">}</span>
+<span class="c">#@+node:mork.20041010095202: ** setStyleNode</span>
+<span class="n">stylenodes</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakKeyDictionary</span><span class="p">()</span>
+
+<div class="viewcode-block" id="setStyleNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.setStyleNode">[docs]</a><span class="k">def</span> <span class="nf">setStyleNode</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;this command sets what the current style node is&#39;&#39;&#39;</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">stylenodes</span><span class="p">[</span> <span class="n">c</span> <span class="p">]</span> <span class="o">=</span> <span class="n">position</span>
+
+
+<span class="c">#@+node:mork.20041010095202.1: ** processDocumentNode</span></div>
+<div class="viewcode-block" id="processDocumentNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.processDocumentNode">[docs]</a><span class="k">def</span> <span class="nf">processDocumentNode</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;this executes the stylesheet node against the current node&#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">styleNodeSelected</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span> <span class="k">return</span>
+        <span class="n">proc</span> <span class="o">=</span> <span class="n">Processor</span><span class="p">()</span>
+        <span class="n">stylenode</span> <span class="o">=</span> <span class="n">stylenodes</span><span class="p">[</span> <span class="n">c</span> <span class="p">]</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span> <span class="n">stylenode</span> <span class="p">)</span>
+        <span class="n">sIO</span> <span class="o">=</span> <span class="n">getString</span><span class="p">(</span> <span class="n">c</span> <span class="p">)</span>
+        <span class="n">mdom1</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span> <span class="n">sIO</span> <span class="p">)</span>
+        <span class="n">sIO</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span> <span class="n">mdom1</span><span class="o">.</span><span class="n">toxml</span><span class="p">()</span> <span class="p">)</span>
+        <span class="n">hstring</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span> <span class="n">stylenode</span><span class="o">.</span><span class="n">h</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="n">hstring</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span> <span class="n">hstring</span> <span class="o">=</span> <span class="s">&quot;no headline&quot;</span>
+        <span class="n">stylesource</span> <span class="o">=</span> <span class="n">InputSource</span><span class="o">.</span><span class="n">DefaultFactory</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span> <span class="n">sIO</span><span class="p">,</span> <span class="n">uri</span> <span class="o">=</span> <span class="n">hstring</span><span class="p">)</span>
+        <span class="n">proc</span><span class="o">.</span><span class="n">appendStylesheet</span><span class="p">(</span> <span class="n">stylesource</span> <span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span> <span class="n">pos</span> <span class="p">)</span>
+        <span class="n">xmlnode</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">v</span>
+        <span class="n">xIO</span> <span class="o">=</span> <span class="n">getString</span><span class="p">(</span> <span class="n">c</span> <span class="p">)</span>
+        <span class="n">mdom2</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span> <span class="n">xIO</span> <span class="p">)</span>
+        <span class="n">xIO</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span> <span class="n">mdom2</span><span class="o">.</span><span class="n">toxml</span><span class="p">())</span>
+        <span class="n">xhead</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span> <span class="n">xmlnode</span><span class="o">.</span><span class="n">headString</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="n">xhead</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span> <span class="n">xhead</span> <span class="o">=</span> <span class="s">&quot;no headline&quot;</span>
+        <span class="n">xmlsource</span> <span class="o">=</span> <span class="n">InputSource</span><span class="o">.</span><span class="n">DefaultFactory</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span> <span class="n">xIO</span><span class="p">,</span> <span class="n">uri</span> <span class="o">=</span> <span class="n">xhead</span> <span class="p">)</span> 
+        <span class="n">result</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">run</span><span class="p">(</span> <span class="n">xmlsource</span> <span class="p">)</span>
+        <span class="n">nhline</span> <span class="o">=</span> <span class="s">&quot;xsl:transform of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span> <span class="n">xmlnode</span><span class="o">.</span><span class="n">headString</span> <span class="p">)</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">insertAfter</span><span class="p">()</span> <span class="c"># tnode )</span>
+        <span class="n">p2</span><span class="o">.</span><span class="n">setBodyString</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">p2</span><span class="o">.</span><span class="n">setHeadString</span><span class="p">(</span><span class="n">nhline</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">x</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span> <span class="s">&#39;exception &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span> <span class="n">x</span> <span class="p">))</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+<span class="c">#@+node:mork.20041025121608: ** addXSLTNode</span></div>
+<div class="viewcode-block" id="addXSLTNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.addXSLTNode">[docs]</a><span class="k">def</span> <span class="nf">addXSLTNode</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;creates a node and inserts some xslt boilerplate&#39;&#39;&#39;</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+
+    <span class="c">#body = &#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot;?&gt;&#39;&#39;&#39;</span>
+    <span class="c"># body = &#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+    <span class="c">#&lt;xsl:transform xmlns:xsl=&quot;http:///www.w3.org/1999/XSL/Transform&quot; version=&quot;1.0&quot;&gt;&#39;&#39;&#39;</span>
+
+    <span class="n">body</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="s">&lt;xsl:transform xmlns:xsl=&quot;http:///www.w3.org/1999/XSL/Transform&quot; version=&quot;1.0&quot;&gt;    </span>
+<span class="s">&lt;/xsl:transform&gt;&#39;&#39;&#39;</span>
+
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">insertAfter</span><span class="p">()</span> <span class="c"># tnode)</span>
+    <span class="n">p2</span><span class="o">.</span><span class="n">setBodyString</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+    <span class="n">p2</span><span class="o">.</span><span class="n">setHeadString</span><span class="p">(</span><span class="s">&quot;xslt stylesheet&quot;</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+<span class="c">#@+node:mork.20041010110121: ** addXSLTElement</span></div>
+<div class="viewcode-block" id="addXSLTElement"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.addXSLTElement">[docs]</a><span class="k">def</span> <span class="nf">addXSLTElement</span><span class="p">(</span> <span class="n">c</span> <span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;adds some xslt to the text node&#39;&#39;&#39;</span>
+    <span class="n">bodyCtrl</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">bodyCtrl</span>
+    <span class="n">bodyCtrl</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span> <span class="s">&#39;insert&#39;</span><span class="p">,</span> <span class="n">element</span> <span class="p">)</span>
+    <span class="c">### bodyCtrl.event_generate( &#39;&lt;Key&gt;&#39; )</span>
+    <span class="c">### bodyCtrl.update_idletasks()</span>
+
+<span class="c">#@+node:mork.20041025113021: ** getString</span></div>
+<div class="viewcode-block" id="getString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.getString">[docs]</a><span class="k">def</span> <span class="nf">getString</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This def turns a node into a string based off of Leo&#39;s file-nosent write logic&#39;&#39;&#39;</span>
+    <span class="n">at</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">atFileCommands</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">cS</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="n">at</span><span class="p">,</span> <span class="s">&#39;new_df&#39;</span> <span class="p">):</span>
+    <span class="c">#if new_at_file: # 4.3 code base.</span>
+        <span class="n">at</span><span class="o">.</span><span class="n">toStringFlag</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="c"># at.outputFile = cS </span>
+        <span class="n">at</span><span class="o">.</span><span class="n">writeOpenFile</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">nosentinels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">toString</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c">#How the heck does this fill cS with data, if at.outputFile is never set?</span>
+        <span class="c"># at.outputFile = None </span>
+        <span class="c"># at.toStringFlag = False </span>
+
+    <span class="k">else</span><span class="p">:</span> <span class="c"># 4.2 code base</span>
+        <span class="n">at</span><span class="o">.</span><span class="n">new_df</span><span class="o">.</span><span class="n">toStringFlag</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">at</span><span class="o">.</span><span class="n">new_df</span><span class="o">.</span><span class="n">outputFile</span> <span class="o">=</span> <span class="n">cS</span>
+        <span class="n">at</span><span class="o">.</span><span class="n">new_df</span><span class="o">.</span><span class="n">writeOpenFile</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">nosentinels</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">toString</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">at</span><span class="o">.</span><span class="n">new_df</span><span class="o">.</span><span class="n">outputFile</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">at</span><span class="o">.</span><span class="n">new_df</span><span class="o">.</span><span class="n">toStringFlag</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="n">cS</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cleanString</span><span class="p">(</span> <span class="n">cS</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span> <span class="p">)</span>
+<span class="c">#@+node:mork.20041025120706: ** doMinidomTest</span></div>
+<div class="viewcode-block" id="doMinidomTest"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.doMinidomTest">[docs]</a><span class="k">def</span> <span class="nf">doMinidomTest</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This def performs a simple test on a node.  Can the data be successfully parsed by minidom or not.  Results are output to the log&#39;&#39;&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">getString</span><span class="p">(</span> <span class="n">c</span> <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mdom</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span> <span class="n">s</span> <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">x</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Minidom could not parse node because of:</span><span class="se">\n</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">blue</span><span class="p">(</span><span class="s">&quot;Minidom could parse the node&quot;</span><span class="p">)</span>
+<span class="c">#@+node:mork.20041025090303: ** cleanString</span></div>
+<div class="viewcode-block" id="cleanString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.cleanString">[docs]</a><span class="k">def</span> <span class="nf">cleanString</span><span class="p">(</span> <span class="n">data</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This method cleans a string up for the processor.  It currently just removes</span>
+<span class="sd">       leading and trailing whitespace&#39;&#39;&#39;</span>
+
+    <span class="n">val</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">val</span>
+
+<span class="c">#@+node:mork.20041010125444: ** jumpToStyleNode</span></div>
+<div class="viewcode-block" id="jumpToStyleNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.jumpToStyleNode">[docs]</a><span class="k">def</span> <span class="nf">jumpToStyleNode</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Simple method that jumps us to the current XSLT node&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">styleNodeSelected</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span> <span class="k">return</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">stylenodes</span><span class="p">[</span> <span class="n">c</span> <span class="p">]</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span> <span class="n">pos</span> <span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+
+<span class="c">#@+node:mork.20041010125444.1: ** styleNodeSelected</span></div>
+<div class="viewcode-block" id="styleNodeSelected"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.styleNodeSelected">[docs]</a><span class="k">def</span> <span class="nf">styleNodeSelected</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Determines if a XSLT Style node has not been selected&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stylenodes</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span> <span class="s">&quot;No Style Node selected&quot;</span> <span class="p">)</span> 
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+
+<span class="c">#@+node:mork.20041010100633: ** addMenu</span></div>
+<div class="viewcode-block" id="addMenu"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.xsltWithNodes.addMenu">[docs]</a><span class="k">def</span> <span class="nf">addMenu</span><span class="p">(</span> <span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span> <span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span> <span class="k">return</span>
+
+    <span class="n">mc</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span>
+
+    <span class="c"># men = men.getMenu( &#39;Outline&#39; )</span>
+    <span class="c"># xmen = Tk.Menu(men,tearoff = False)</span>
+    <span class="n">xmen</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">createNewMenu</span> <span class="p">(</span><span class="s">&#39;XSLT&#39;</span><span class="p">,</span><span class="s">&quot;Outline&quot;</span><span class="p">)</span>
+
+    <span class="n">c</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">xmen</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Set Stylesheet Node&quot;</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span> <span class="p">:</span> <span class="n">setStyleNode</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">xmen</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Jump To Style Node&quot;</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">:</span> <span class="n">jumpToStyleNode</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">xmen</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Process Node with Stylesheet Node&quot;</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span> <span class="p">:</span> <span class="n">processDocumentNode</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="n">xmen</span><span class="o">.</span><span class="n">add_separator</span><span class="p">(</span><span class="n">xmen</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">xmen</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Create Stylesheet Node&quot;</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span> <span class="p">:</span> <span class="n">addXSLTNode</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+
+    <span class="c"># elmen= Tk.Menu( xmen, tearoff = False )</span>
+    <span class="c"># xmen.add_cascade( label = &quot;Insert XSL Element&quot;, menu = elmen )</span>
+    <span class="n">m2</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">createNewMenu</span> <span class="p">(</span><span class="s">&#39;Insert XSL Element&#39;</span><span class="p">,</span><span class="s">&#39;XSLT&#39;</span><span class="p">)</span>
+
+    <span class="n">xsltkeys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">xslt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">xsltkeys</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">xsltkeys</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">z</span><span class="p">,</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">element</span><span class="o">=</span><span class="n">xslt</span><span class="p">[</span> <span class="n">z</span> <span class="p">]:</span> <span class="n">addXSLTElement</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">element</span><span class="p">))</span>
+
+    <span class="c"># men.add_cascade(menu = xmen, label = &quot;XSLT-Node Commands&quot;)</span>
+    <span class="n">m3</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">createNewMenu</span><span class="p">(</span><span class="s">&#39;XSLT-Node Commands&#39;</span><span class="p">,</span><span class="s">&#39;XSLT&#39;</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&#39;Test Node with Minidom&#39;</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">:</span> <span class="n">doMinidomTest</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="c">#@+node:mork.20041025100716: ** examples/tests</span>
+<span class="c">#@+at</span>
+<span class="c"># table.leo contains the xml.  xslt is in the other node.</span>
+<span class="c"># </span>
+<span class="c"># To test this plugin, set the xslt node to be the xslt node.</span>
+<span class="c"># </span>
+<span class="c"># Process it against the table.leo node.</span>
+<span class="c"># </span>
+<span class="c"># </span>
+<span class="c">#@@c</span>
+</div>
+<span class="sd">r&#39;&#39;&#39;</span>
+<span class="sd">#@+others</span>
+<span class="sd">#@+node:mork.20041025100851: *3* table.leo</span>
+
+<span class="sd">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="sd">&lt;leo_file&gt;</span>
+<span class="sd">&lt;leo_header file_format=&quot;2&quot; tnodes=&quot;0&quot; max_tnode_index=&quot;3&quot; clone_windows=&quot;0&quot;/&gt;</span>
+<span class="sd">&lt;globals body_outline_ratio=&quot;0.5&quot;&gt;</span>
+<span class="sd">	&lt;global_window_position top=&quot;43&quot; left=&quot;161&quot; height=&quot;600&quot; width=&quot;800&quot;/&gt;</span>
+<span class="sd">	&lt;global_log_window_position top=&quot;0&quot; left=&quot;0&quot; height=&quot;0&quot; width=&quot;0&quot;/&gt;</span>
+<span class="sd">&lt;/globals&gt;</span>
+<span class="sd">&lt;preferences&gt;</span>
+<span class="sd">&lt;/preferences&gt;</span>
+<span class="sd">&lt;find_panel_settings&gt;</span>
+<span class="sd">	&lt;find_string&gt;&lt;/find_string&gt;</span>
+<span class="sd">	&lt;change_string&gt;&lt;/change_string&gt;</span>
+<span class="sd">&lt;/find_panel_settings&gt;</span>
+<span class="sd">&lt;vnodes&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015144717&quot; a=&quot;E&quot;&gt;&lt;vh&gt;table&lt;/vh&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015144717.1&quot; a=&quot;E&quot; tnodeList=&quot;mork.20041015144717.1,mork.20041015163641,mork.20041015163641.1,mork.20041015154946,mork.20041015152916,mork.20041016141748,mork.20041017102304,mork.20041017102304.1,mork.20041016151554,mork.20041016152412,mork.20041017110545,mork.20041017105444,mork.20041015144717.2,mork.20041017111049,mork.20041017111248,mork.20041016180930,mork.20041016181326,mork.20041015144717.3,mork.20041015144717.4&quot;&gt;&lt;vh&gt;@file-nosent table.py&lt;/vh&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015163641&quot; a=&quot;E&quot;&gt;&lt;vh&gt;class CSVVisualizer&lt;/vh&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015163641.1&quot;&gt;&lt;vh&gt;init&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015154946&quot;&gt;&lt;vh&gt;addData&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015152916&quot;&gt;&lt;vh&gt;readData&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041016141748&quot;&gt;&lt;vh&gt;writeData&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041017102304&quot;&gt;&lt;vh&gt;addColumn&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041017102304.1&quot;&gt;&lt;vh&gt;deleteColumn&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041016151554&quot;&gt;&lt;vh&gt;addRow&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041016152412&quot;&gt;&lt;vh&gt;deleteRow&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041017110545&quot;&gt;&lt;vh&gt;createDefaultRecord&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041017105444&quot;&gt;&lt;vh&gt;newTable&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015144717.2&quot; a=&quot;TV&quot;&gt;&lt;vh&gt;viewTable&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041017111049&quot;&gt;&lt;vh&gt;fireButton&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041017111248&quot;&gt;&lt;vh&gt;createDialog&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041016180930&quot;&gt;&lt;vh&gt;createTable&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041016181326&quot;&gt;&lt;vh&gt;createBBox&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015144717.3&quot;&gt;&lt;vh&gt;addMenu&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;v t=&quot;mork.20041015144717.4&quot;&gt;&lt;vh&gt;if 1:&lt;/vh&gt;&lt;/v&gt;</span>
+<span class="sd">&lt;/v&gt;</span>
+<span class="sd">&lt;/v&gt;</span>
+<span class="sd">&lt;/vnodes&gt;</span>
+<span class="sd">&lt;tnodes&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015144717&quot;&gt;@path /boboo/leo-4.2-final/plugins&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015144717.1&quot;&gt;</span>
+<span class="sd">if g.isPython3:</span>
+<span class="sd">    import io</span>
+<span class="sd">    StringIO = io.StringIO</span>
+<span class="sd">else:</span>
+<span class="sd">    import cStringIO</span>
+<span class="sd">    StringIO = cStringIO.StringIO</span>
+
+<span class="sd">import Tkinter as Tk</span>
+<span class="sd">import tktable as tktab</span>
+<span class="sd">import leo.core.leoGlobals as g</span>
+
+<span class="sd">import csv</span>
+<span class="sd">import weakref</span>
+<span class="sd">import Pmw</span>
+
+
+<span class="sd">#@+others</span>
+<span class="sd">#@-others</span>
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015144717.2&quot;&gt;def viewTable( c, new = False ):</span>
+
+<span class="sd">    pos = c.p</span>
+<span class="sd">    dialog = createDialog( pos )</span>
+<span class="sd">    csvv = CSVVisualizer( c )</span>
+<span class="sd">    sframe = Pmw.ScrolledFrame( dialog.interior() )</span>
+<span class="sd">    sframe.pack()</span>
+<span class="sd">    tab = createTable( sframe.interior(), csvv.arr )</span>
+<span class="sd">    createBBox( dialog.interior(), csvv, tab )</span>
+<span class="sd">    if not new:</span>
+<span class="sd">        n = csvv.addData()</span>
+<span class="sd">    else:</span>
+<span class="sd">        n = ( 4, 1 )</span>
+<span class="sd">        csvv.createDefaultRecord( n[ 1 ], n[ 0 ] )</span>
+<span class="sd">    tab.configure( cols = n[ 0 ], rows = n[ 1 ] )</span>
+<span class="sd">    dialog.configure( command = lambda name, d = dialog, csvv = csvv:</span>
+<span class="sd">                         fireButton( name, d, csvv ) )</span>
+<span class="sd">    dialog.activate()</span>
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015144717.3&quot;&gt;haveseen = weakref.WeakKeyDictionary()</span>
+<span class="sd">def addMenu( tag, keywords ):</span>
+<span class="sd">    c = keywords.get(&#39;c&#39;) or keywords.get(&#39;new_c&#39;)</span>
+<span class="sd">    if haveseen.has_key( c ):</span>
+<span class="sd">        return</span>
+<span class="sd">    haveseen[ c ] = None</span>
+<span class="sd">    men = c.frame.menu</span>
+<span class="sd">    men = men.getMenu( &#39;Outline&#39; )</span>
+<span class="sd">    tmen = Tk.Menu( men, tearoff = 0 )</span>
+<span class="sd">    men.add_cascade( menu = tmen, label = &quot;Table Commands&quot; )</span>
+<span class="sd">    c.add_command(tmen, label = &quot;Edit Node With Table&quot;, command = lambda c = c: viewTable( c ) )</span>
+<span class="sd">    c.add_command(tmen, label = &quot;Create New Table&quot;, command = lambda c = c: newTable( c ) )</span>
+
+
+
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015144717.4&quot;&gt;if 1:</span>
+
+<span class="sd">    registerHandler( (&#39;start2&#39; , &#39;open2&#39;, &quot;new&quot;) , addMenu )</span>
+<span class="sd">    __version__ = &quot;.125&quot;</span>
+<span class="sd">    g.plugin_signon( __name__ )  </span>
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015152916&quot;&gt;def readData( self ):</span>
+
+<span class="sd">    c = self.c</span>
+<span class="sd">    pos = c.p</span>
+<span class="sd">    data = pos.b</span>
+<span class="sd">    cS = StringIO()</span>
+<span class="sd">    cS.write( data )</span>
+<span class="sd">    cS.seek( 0 )</span>
+<span class="sd">    sniff = csv.Sniffer()</span>
+<span class="sd">    self.type = sniff.sniff( data ) </span>
+<span class="sd">    reader = csv.reader( cS, self.type ) </span>
+<span class="sd">    return reader</span>
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015154946&quot;&gt;def addData( self ):</span>
+
+<span class="sd">    arr = self.arr</span>
+<span class="sd">    reader = self.readData() </span>
+<span class="sd">    hc = False</span>
+<span class="sd">    for n, d in enumerate( reader ):</span>
+<span class="sd">        for n1, d2 in enumerate( d ):</span>
+<span class="sd">            arr.set( &quot;%s,%s&quot; %( n, n1 ), str(d2) )</span>
+
+<span class="sd">    self.columns = n1 + 1</span>
+<span class="sd">    self.rows = n + 1</span>
+<span class="sd">    return self.columns, self.rows</span>
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015163641&quot;&gt;class CSVVisualizer:</span>
+
+<span class="sd">    arrays = []</span>
+
+<span class="sd">    #@+others</span>
+<span class="sd">    #@-others</span>
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041015163641.1&quot;&gt;def __init__( self, c ):</span>
+
+<span class="sd">    self.c = c</span>
+<span class="sd">    self.arr = tktab.ArrayVar()</span>
+<span class="sd">    CSVVisualizer.arrays.append( self.arr )</span>
+<span class="sd">    self.rows = 0</span>
+<span class="sd">    self.columns = 0</span>
+<span class="sd">    self.type = &#39;excel&#39;</span>
+
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041016141748&quot;&gt;def writeData( self, save ):</span>
+
+<span class="sd">    pos = self.c.p</span>
+<span class="sd">    n2 = self.rows</span>
+<span class="sd">    n = self.columns</span>
+<span class="sd">    data = []</span>
+<span class="sd">    for z in range( n2 ):</span>
+<span class="sd">        ndata = []</span>
+<span class="sd">        for z2 in range( n ):</span>
+<span class="sd">            ndata.append( self.arr.get( &quot;%s,%s&quot; % ( z, z2 ) ) )        </span>
+<span class="sd">        data.append( ndata )</span>
+<span class="sd">    cS = StringIO()</span>
+<span class="sd">    csv_write = csv.writer( cS, self.type )</span>
+<span class="sd">    for z in data:</span>
+<span class="sd">        csv_write.writerow( z )</span>
+<span class="sd">    cS.seek( 0 )</span>
+
+<span class="sd">    if not save:</span>
+<span class="sd">        p2 = pos.insertAfter() #  tnd )</span>
+<span class="sd">        p2.setBodyString(cS.getvalue())</span>
+<span class="sd">        p2.setHeadString(&quot;Save of Edited &quot; + str( pos.h))</span>
+<span class="sd">    else:</span>
+<span class="sd">        # pos.setTnodeText( cS.getvalue() )</span>
+<span class="sd">        pos.setBodyString(cS.getvalue())</span>
+<span class="sd">    self.c.redraw()</span>
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041016151554&quot;&gt;def addRow( self , tab ):</span>
+
+<span class="sd">    self.rows = self.rows + 1</span>
+<span class="sd">    tab.configure( rows = self.rows )</span>
+<span class="sd">    rc =  &#39;%s,0&#39; % (self.rows -1 )</span>
+<span class="sd">    for z in range( self.columns ):</span>
+<span class="sd">        self.arr.set( &#39;%s,%s&#39; %( self.rows - 1, z ), &quot;&quot; ) </span>
+<span class="sd">    tab.activate( rc )</span>
+<span class="sd">    tab.focus_set()</span>
+
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041016152412&quot;&gt;def deleteRow( self, tab ):</span>
+
+<span class="sd">    i = tab.index( &#39;active&#39; )</span>
+<span class="sd">    if i:</span>
+<span class="sd">        tab.delete_rows( i[ 0 ], 1 )</span>
+<span class="sd">        self.rows = self.rows - 1</span>
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041016180930&quot;&gt;def createTable( parent , arr ):</span>
+
+<span class="sd">    tab = tktab.Table( parent , rows = 0, cols = 0, variable = arr, sparsearray=1,</span>
+<span class="sd">    background = &#39;white&#39;, foreground = &#39;blue&#39;, selecttype = &#39;row&#39; )</span>
+<span class="sd">    tab.tag_configure( &#39;active&#39;, background = &#39;#FFE7C6&#39;, foreground = &#39;blue&#39; )</span>
+<span class="sd">    tab.tag_configure( &#39;sel&#39;, background = &#39;#FFE7C6&#39;, foreground = &#39;blue&#39;, bd =2 )</span>
+<span class="sd">    tab.pack()</span>
+<span class="sd">    return tab </span>
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041016181326&quot;&gt;def createBBox( parent, csvv, tab ):</span>
+
+<span class="sd">    bbox = Pmw.ButtonBox( parent )</span>
+<span class="sd">    bconfig = ( ( &quot;Add Row&quot;, lambda tab = tab : csvv.addRow( tab ) ),</span>
+<span class="sd">                ( &quot;Delete Row&quot;, lambda tab = tab: csvv.deleteRow( tab ) ),</span>
+<span class="sd">                ( &quot;Add Column&quot;, lambda tab = tab: csvv.addColumn( tab ) ),</span>
+<span class="sd">                ( &quot;Delete Column&quot;, lambda tab = tab: csvv.deleteColumn( tab ) ) )</span>
+<span class="sd">    for z in bconfig:</span>
+<span class="sd">        bbox.add( z[ 0 ], command = z[ 1 ], background = &#39;white&#39;, foreground = &#39;blue&#39; )</span>
+<span class="sd">    bbox.pack()     </span>
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041017102304&quot;&gt;def addColumn( self, tab ):</span>
+
+<span class="sd">    self.columns = self.columns + 1</span>
+<span class="sd">    tab.configure( cols = self.columns )</span>
+<span class="sd">    for z in range( self.rows ):</span>
+<span class="sd">        self.arr.set( &#39;%s,%s&#39; %( z , self.columns -1 ), &quot;&quot; ) </span>
+
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041017102304.1&quot;&gt;def deleteColumn( self, tab ):</span>
+
+<span class="sd">    i = tab.index( &#39;active&#39; )</span>
+<span class="sd">    if i:</span>
+<span class="sd">        tab.delete_cols( i[ 1 ], 1 )</span>
+<span class="sd">        self.columns = self.columns - 1</span>
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041017105444&quot;&gt;def newTable( c ):</span>
+
+<span class="sd">    pos = c.p</span>
+<span class="sd">    npos = pos.insertAfter() # tnd )</span>
+<span class="sd">    npos.setHeadString(&#39;New Table&#39;)</span>
+<span class="sd">    c.redraw()</span>
+<span class="sd">    c.selectPosition( npos )</span>
+<span class="sd">    viewTable( c , True )</span>
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041017110545&quot;&gt;def createDefaultRecord( self, rows, columns ):</span>
+
+<span class="sd">    self.rows = rows</span>
+<span class="sd">    self.columns = columns</span>
+<span class="sd">    for z in range( rows ):</span>
+<span class="sd">        for z1 in range( columns ):</span>
+<span class="sd">            self.arr.set( &#39;%s,%s&#39; %( z, z1 ), &quot;&quot; )</span>
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041017111049&quot;&gt;def fireButton( name, dialog, csvv ):</span>
+
+<span class="sd">    if name == &quot;Close&quot;:</span>
+<span class="sd">        dialog.deactivate()</span>
+<span class="sd">        dialog.destroy()</span>
+<span class="sd">    elif name == &quot;Write To New&quot;:</span>
+<span class="sd">        csvv.writeData( False )</span>
+<span class="sd">    elif name == &quot;Save To Current&quot;:</span>
+<span class="sd">        csvv.writeData( True )</span>
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;t tx=&quot;mork.20041017111248&quot;&gt;def createDialog( pos ):</span>
+
+<span class="sd">    dialog = Pmw.Dialog( title = &quot;Table Editor for &quot; + str( pos.h),</span>
+<span class="sd">                         buttons = [ &#39;Save To Current&#39;, &#39;Write To New&#39;, &#39;Close&#39; ] )</span>
+<span class="sd">    dbbox = dialog.component( &#39;buttonbox&#39; )</span>
+<span class="sd">    for z in range( dbbox.numbuttons() ):</span>
+<span class="sd">        dbbox.button( z ).configure( background = &#39;white&#39;, foreground = &#39;blue&#39; )</span>
+<span class="sd">    return dialog</span>
+
+
+<span class="sd">&lt;/t&gt;</span>
+<span class="sd">&lt;/tnodes&gt;</span>
+<span class="sd">&lt;/leo_file&gt;</span>
+<span class="sd">#@+node:mork.20041025100851.1: *3* xslt to turn leo file into html</span>
+<span class="sd">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="sd">&lt;xsl:transform xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; version=&quot;1.0&quot;&gt;</span>
+<span class="sd">&lt;xsl:output method = &#39;xml&#39; /&gt;</span>
+<span class="sd">&lt;xsl:preserve-space elements=&#39;leo_file/tnodes/t&#39;/&gt;</span>
+
+
+<span class="sd">&lt;xsl:template match=&#39;v&#39;&gt;</span>
+
+<span class="sd">    &lt;ul type=&#39;square&#39;&gt;</span>
+
+<span class="sd">        &lt;xsl:variable name =&#39;t&#39; select =&#39;@t&#39; /&gt;</span>
+<span class="sd">            &lt;h1&gt;&lt;xsl:value-of select=&#39;vh&#39;/&gt;&lt;/h1&gt;</span>
+<span class="sd">                &lt;xsl:for-each select=&#39;ancestor::leo_file/tnodes/t&#39;&gt;</span>
+<span class="sd">                    &lt;xsl:if test=&quot;./attribute::tx=$t&quot;&gt;</span>
+<span class="sd">                    &lt;li&gt;</span>
+<span class="sd">                        &lt;pre&gt;</span>
+<span class="sd">                            &lt;xsl:value-of select=&#39;.&#39; /&gt;</span>
+<span class="sd">                        &lt;/pre&gt;</span>
+<span class="sd">                    &lt;/li&gt;</span>
+<span class="sd">                    &lt;/xsl:if&gt;</span>
+<span class="sd">                &lt;/xsl:for-each&gt;</span>
+
+<span class="sd">    &lt;xsl:if test =&#39;./v&#39; &gt;</span>
+<span class="sd">        &lt;xsl:apply-templates select = &#39;v&#39;/&gt;</span>
+<span class="sd">     &lt;/xsl:if&gt; </span>
+<span class="sd">     &lt;/ul&gt;</span>
+<span class="sd">      &lt;/xsl:template&gt;</span>
+
+
+<span class="sd">&lt;xsl:template match =&#39;leo_file&#39;&gt;</span>
+<span class="sd">    &lt;html&gt;&lt;head&gt;</span>
+<span class="sd">        &lt;style&gt;</span>
+<span class="sd">            ul{ position:relative;right=25;</span>
+<span class="sd">                border:thin ridge blue}</span>
+<span class="sd">            li{ position:relative;right=25} </span>
+<span class="sd">            pre{ background:#FFE7C6 }       </span>
+<span class="sd">        &lt;/style&gt;</span>
+<span class="sd">        &lt;/head&gt;</span>
+<span class="sd">            &lt;body&gt;</span>
+<span class="sd">                &lt;xsl:apply-templates select=&#39;vnodes&#39;/&gt;</span>
+<span class="sd">            &lt;/body&gt;</span>
+<span class="sd">    &lt;/html&gt;</span>
+<span class="sd">&lt;/xsl:template&gt;</span>
+
+<span class="sd">&lt;xsl:template match = &#39;vnodes&#39;&gt;</span>
+<span class="sd">    &lt;xsl:for-each select = &#39;v&#39;&gt;</span>
+<span class="sd">        &lt;frame&gt;</span>
+<span class="sd">            &lt;xsl:apply-templates select =&#39;.&#39;/&gt;</span>
+<span class="sd">        &lt;/frame&gt;</span>
+<span class="sd">    &lt;/xsl:for-each&gt;</span>
+<span class="sd">&lt;/xsl:template&gt;</span>
+
+
+<span class="sd">&lt;/xsl:transform&gt;</span>
+<span class="sd">#@-others</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

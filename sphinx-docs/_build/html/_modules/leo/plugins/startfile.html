@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.startfile &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.startfile</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20040828103325: * @file startfile.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050912182050: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot; Launches (starts) a file given by a headline when double-clicking the icon.</span>
+
+<span class="sd">This plugin ignores headlines starting with an &#39;@&#39;. Uses the @folder path if the</span>
+<span class="sd">headline is under an @folder headline. Otherwise the path is relative to the Leo</span>
+<span class="sd">file.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c"># This does not work on Linux, because os.startfile does not exist.</span>
+
+<span class="c"># By Josef Dalcolmo: contributed under the same license as Leo.py itself.</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.4&quot;</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c">#@+&lt;&lt; change log &gt;&gt;</span>
+<span class="c">#@+node:ekr.20040828103325.1: ** &lt;&lt; change log &gt;&gt;</span>
+<span class="c">#@+at Change log</span>
+<span class="c"># </span>
+<span class="c"># - JD: 2003-03-11 separated out from rst plugin</span>
+<span class="c"># - JD: 2004-04-18 change the defaultdir to the folder of the file which is being started.</span>
+<span class="c"># - EKR: 2004-08-28:</span>
+<span class="c">#     - Test for presence of os.startfile.</span>
+<span class="c">#     - Other minor changes.</span>
+<span class="c"># - EKR: 2005-01-11:</span>
+<span class="c">#     - Don&#39;t rely on os.startfile to throw an exception if the file does not exist.</span>
+<span class="c">#@-&lt;&lt; change log &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; notes &gt;&gt;</span>
+<span class="c">#@+node:ekr.20040828103325.2: ** &lt;&lt; notes &gt;&gt;</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># Models @folder behavior after an idea and sample code by:</span>
+<span class="c"># korakot ( Korakot Chaovavanich ) @folder for files annotation 2002-11-27 02:39</span>
+<span class="c"># </span>
+<span class="c"># open file (double-click = startfile) behavior added</span>
+<span class="c"># nodes with @url, @folder, @rst are treated special</span>
+<span class="c"># </span>
+<span class="c"># This does not check for proper filename syntax.</span>
+<span class="c"># path is the current dir, or the place @folder points to</span>
+<span class="c"># this should probably be changed to @path or so.</span>
+<span class="c">#@-&lt;&lt; notes &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20100128073941.5379: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.startfile.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">os</span><span class="p">,</span><span class="s">&quot;startfile&quot;</span><span class="p">)</span>
+        <span class="c"># Ok for unit testing, but may be icondclick1 conflicts.</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="c"># Register the handlers...</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;icondclick1&quot;</span><span class="p">,</span><span class="n">onIconDoubleClick</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:ekr.20040828103325.3: ** onIconDoubleClick</span></div>
+<div class="viewcode-block" id="onIconDoubleClick"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.startfile.onIconDoubleClick">[docs]</a><span class="k">def</span> <span class="nf">onIconDoubleClick</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;p&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;v&quot;</span><span class="p">)</span> <span class="c"># Use p for 4.2 code base, v for 4.1 code base.</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">)</span>
+    <span class="c"># g.trace(c)</span>
+
+    <span class="k">if</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">v</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="ow">and</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="s">&#39;@&#39;</span><span class="p">:</span>
+            <span class="c">#@+&lt;&lt; find path and start file &gt;&gt;</span>
+            <span class="c">#@+node:ekr.20040828103325.4: *3* &lt;&lt; find path and start file &gt;&gt;</span>
+            <span class="c"># Set the base directory by searching for @folder directives in ancestors.</span>
+            <span class="n">thisdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">curdir</span><span class="p">)</span> <span class="c"># remember the current dir</span>
+            <span class="n">basedir</span> <span class="o">=</span> <span class="n">thisdir</span><span class="p">[:]</span> <span class="c"># use current dir as default.</span>
+            <span class="n">parv</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="c"># start with parent</span>
+            <span class="k">while</span> <span class="n">parv</span><span class="p">:</span> <span class="c"># stop when no more parent found</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">parv</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">match_word</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;@folder&#39;</span><span class="p">):</span>
+                    <span class="n">basedir</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span> <span class="c"># take rest of headline as pathname</span>
+                    <span class="k">break</span> <span class="c"># we found the closest @folder</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">parv</span> <span class="o">=</span> <span class="n">parv</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="c"># try the parent of the parent</span>
+
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span><span class="n">h</span><span class="p">)</span> <span class="c"># join path and filename</span>
+            <span class="n">startdir</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">startdir</span><span class="p">)</span>
+                <span class="n">dirfound</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">startdir</span><span class="o">+</span><span class="s">&#39; - folder not found&#39;</span><span class="p">)</span>
+                <span class="n">dirfound</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="n">dirfound</span><span class="p">:</span>
+                <span class="n">fullpath</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">startdir</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
+                <span class="n">fullpath</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_abspath</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c"># Warning: os.startfile usually does not throw exceptions.</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">startfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="c"># Try to open the file; it may not work for all file types.</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">filename</span><span class="o">+</span><span class="s">&#39; - file not found in &#39;</span><span class="o">+</span><span class="n">startdir</span><span class="p">)</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> not found in </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">startdir</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">thisdir</span><span class="p">)</span> <span class="c"># restore the original current dir.</span>
+            <span class="c">#@-&lt;&lt; find path and start file &gt;&gt;</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

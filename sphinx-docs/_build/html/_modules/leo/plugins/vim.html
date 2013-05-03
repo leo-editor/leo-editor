@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.vim &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.vim</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:EKR.20040517075715.10: * @file vim.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050226184411: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Enables two-way communication with VIM.</span>
+
+<span class="sd">This plugin provides the ``vim-open-node`` command, which opens the</span>
+<span class="sd">selected node in vim. This *supersedes* the old way of opening nodes by</span>
+<span class="sd">double-clicking the icon box.</span>
+
+<span class="sd">Commands</span>
+<span class="sd">--------</span>
+
+<span class="sd">The **vim-open-node** command opens the selected node in vim. Leo will</span>
+<span class="sd">update the node in the outline when you save the file in vim.</span>
+
+<span class="sd">Installation</span>
+<span class="sd">------------</span>
+
+<span class="sd">Enable this plugin as usual and set the ``vim_cmd`` and ``vim_exe``</span>
+<span class="sd">settings as shown below. Alternatively, you can ensure that gvim.exe is on</span>
+<span class="sd">your PATH. gvim is recommended, not the basic console vim.</span>
+
+<span class="sd">Settings</span>
+<span class="sd">--------</span>
+
+<span class="sd">**@string vim_cmd** (Important!): The command to execute to start gvim.</span>
+<span class="sd">Something like::</span>
+<span class="sd">    </span>
+<span class="sd">    &lt;path-to-gvim&gt;/gvim --servername LEO</span>
+
+<span class="sd">**@string vim_exe** (Important!): The path to the gvim executable.</span>
+
+<span class="sd">**vim_plugin_positions_cursor**: Leo will put Vim cursor at same location as</span>
+<span class="sd">Leo cursor in file.</span>
+
+<span class="sd">**vim_plugin_uses_tab_feature**: Leo will put node in a Vim tab card.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;2.0&quot;</span> <span class="c"># EKR</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050226184411.1: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># Contributed by Andrea Galimberti.</span>
+<span class="c"># Edited by Felix Breuer.</span>
+<span class="c"># </span>
+<span class="c"># 1.5 EKR:</span>
+<span class="c">#     - Added new sections.</span>
+<span class="c">#     - Move most comments into docstring.</span>
+<span class="c">#     - Added useDoubleClick variable.</span>
+<span class="c">#     - Added init function.</span>
+<span class="c">#     - Init _vim_cmd depending on sys.platform.</span>
+<span class="c"># 1.6 EKR:</span>
+<span class="c">#     - Use keywords to get c, not g.top().</span>
+<span class="c">#     - Don&#39;t use during unit testing: prefer xemacs instead.</span>
+<span class="c">#     - Added _vim_exe</span>
+<span class="c">#     - Use &quot;os.spawnv&quot; instead of os.system.</span>
+<span class="c">#     - Simplified the search of g.app.openWithFiles.</span>
+<span class="c">#     - Fixed bug in open_in_vim: hanged v.bodyString to v.bodyString()</span>
+<span class="c"># 1.7 EKR: Excellent new code by Jim Sizelove solves weird message on first open of vim.</span>
+<span class="c"># 1.8 EKR: Set subprocess = None if import fails.</span>
+<span class="c"># 1.9 EKR:</span>
+<span class="c">#     - Document how install subproces, and use g.importExtension to import subprocess.</span>
+<span class="c">#     - Import subprocess with g.importExtension.</span>
+<span class="c"># 1.10 EKR:</span>
+<span class="c">#     - Support &#39;vim_cmd&#39; and &#39;vim_exe&#39; settings.</span>
+<span class="c">#     - These override the default _vim_cmd and _vim_exe settings.</span>
+<span class="c"># 1.11 EKR: Emergency default for window is now the default location: c:\Program Files\vim\vim63</span>
+<span class="c"># 1.12 EKR:</span>
+<span class="c">#     - Added emergency default for &#39;darwin&#39;.</span>
+<span class="c">#     - Corrected the call to openWith.  It must now use data=data due to a new event param.</span>
+<span class="c"># 1.13 EKR: The docstring now states that the open_with plugin must be enabled for this to work.</span>
+<span class="c"># 1.14 EKR: Emphasized that the open_with plugin must be enabled.</span>
+<span class="c"># 1.15 EKR: Don&#39;t open @url nodes in vim if @bool vim_plugin_opens_url_nodes setting is False.</span>
+<span class="c"># 1.16 TL: open_in_vim modifications</span>
+<span class="c">#     - support file open in gVim at same line number as Leo cursor location</span>
+<span class="c">#     - support file open in a gVim tab (see also mod_tempfname.py)</span>
+<span class="c"># 1.17 EKR: Give a location message to help with settings.</span>
+<span class="c"># 1.18 VMV:</span>
+<span class="c">#     - Use gvim on Linux too, emergency default on Windows doesn&#39;t have explicit path</span>
+<span class="c">#     - Works when subprocess.Popen(shell=True)</span>
+<span class="c"># 2.0 EKR: Use *only* the vim-open-node command.  Do not pollute click handlers.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; documentation from Jim Sizelove &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050909102921: ** &lt;&lt; documentation from Jim Sizelove &gt;&gt;</span>
+<span class="c">#@@nocolor</span>
+
+<span class="c">#@+at I was trying to get Leo to work more effectively with Vim, my editor of choice.</span>
+<span class="c"># To do so, I made several changes to Leo which (I believe) make it work better.</span>
+<span class="c"># </span>
+<span class="c"># After much exploring and trying various things, I made a change to the os.spawnv</span>
+<span class="c"># section of the openWith function in leoCommands.py. This added line seems to</span>
+<span class="c"># prevent the &quot;weird error message on first open of Vim.&quot; (vim.py, line 32) when</span>
+<span class="c"># opening Vim with os.spawnv.</span>
+<span class="c"># </span>
+<span class="c"># os.spawnv needs the command it is calling as the first argument in the args list</span>
+<span class="c"># in addition, so the command actually shows twice in the total args to os.spawnv,</span>
+<span class="c"># e.g.::</span>
+<span class="c">#     os.spawnv(os.P_NOWAIT, &quot;C:/Program Files/Vim/vim63/gvim.exe&quot;,</span>
+<span class="c">#         [&quot;gvim.exe&quot;, &quot;--servername&quot;, &quot;LEO&quot;, &quot;--remote&quot;, &quot;foo.txt&quot;])</span>
+<span class="c"># If the call is made without the command-name as the first item in the list of</span>
+<span class="c"># args, like so::</span>
+<span class="c">#     os.spawnv(os.P_NOWAIT, &quot;C:/Program Files/Vim/vim63/gvim.exe&quot;,</span>
+<span class="c">#         [&quot;--servername&quot;, &quot;LEO&quot;, &quot;--remote&quot;, &quot;foo.txt&quot;])</span>
+<span class="c"># </span>
+<span class="c"># an error message pops up::</span>
+<span class="c">#     E247: no registered server named &quot;GVIM&quot;: Send failed.  Trying to execute locally</span>
+<span class="c"># This message means that gVim is not looking for a server named &quot;LEO&quot;, which</span>
+<span class="c"># presumably the user has already opened with the command &quot;gvim --servername LEO&quot;.</span>
+<span class="c"># Instead it is looking for a server named &quot;GVIM&quot;, and not finding it, opens the</span>
+<span class="c"># files &quot;foo.txt&quot; and &quot;LEO&quot; (notice that it didn&#39;t catch the &quot;--servername&quot;</span>
+<span class="c"># argument and thinks that &quot;LEO&quot; is the name of a new file to create) in two</span>
+<span class="c"># buffers in a local copy of gVim. Now, if the command is::</span>
+<span class="c"># </span>
+<span class="c">#     os.spawnv(</span>
+<span class="c">#         os.P_NOWAIT, &quot;C:/Program Files/Vim/vim63/gvim.exe&quot;,</span>
+<span class="c">#         [&quot;gvim.exe&quot;, &quot;--servername&quot;, &quot;LEO&quot;, &quot;--remote&quot;, &quot;foo.txt&quot;])</span>
+<span class="c"># </span>
+<span class="c"># everything works great, as long as the user doesn&#39;t close the gVim window. If</span>
+<span class="c"># the user has closed the gVim window, then tries to open a node in Vim, they will</span>
+<span class="c"># see this error message::</span>
+<span class="c"># </span>
+<span class="c">#     E247: no registered server named &quot;LEO&quot;: Send failed.</span>
+<span class="c"># </span>
+<span class="c"># Trying to execute locally If you use the &quot;--remote-silent&quot; argument, gVim will</span>
+<span class="c"># start the LEO server without the error message.</span>
+<span class="c"># </span>
+<span class="c"># One other comment:  you can see which servers gVim has running by typing::</span>
+<span class="c"># </span>
+<span class="c">#     vim --serverlist</span>
+<span class="c"># </span>
+<span class="c"># at the command prompt.</span>
+<span class="c"># </span>
+<span class="c"># The rest of my changes have to do with using the subprocess module instead of</span>
+<span class="c"># the os.system, and various os.spawn* calls. I find subprocess easier to</span>
+<span class="c"># understand, and it is fairly simple to use for the most common kinds of process</span>
+<span class="c"># calls, but is capable of all the variations you may need. It is designed to</span>
+<span class="c"># replace all the os.system, os.spawn*, and popen* calls. It is available in</span>
+<span class="c"># Python 2.4.</span>
+<span class="c"># </span>
+<span class="c"># So I added some lines to use subprocess in the OpenWith plugin and the Vim plugin.</span>
+<span class="c"># </span>
+<span class="c"># I also have added a table in the &quot;create_open_with_menu&quot; function that makes use of the various editors I have used at times.  Most of those editors are called with subprocess.Popen.</span>
+<span class="c">#@-&lt;&lt; documentation from Jim Sizelove &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050226184411.2: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c"># This command is used to communicate with the vim server. If you use gvim</span>
+<span class="c"># you can leave the command as is, you do not need to change it to &quot;gvim ...&quot;</span>
+
+<span class="c"># New in version 1.10 of these plugin: these are emergency defaults only.</span>
+<span class="c"># They are typically overridden by the corresponding &#39;vim_cmd&#39; and &#39;vim_exe&#39; settings in</span>
+<span class="c"># leoSettings.leo or individual .leo files.</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="c"># Works on XP if you have gvim on PATH</span>
+    <span class="n">_vim_cmd</span> <span class="o">=</span> <span class="s">r&quot;gvim --servername LEO&quot;</span>
+    <span class="n">_vim_exe</span> <span class="o">=</span> <span class="s">r&quot;gvim&quot;</span>
+<span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;darwin&#39;</span><span class="p">:</span>
+    <span class="n">_vim_cmd</span> <span class="o">=</span> <span class="s">&quot;/Applications/gvim.app/Contents/MacOS/gvim --servername LEO&quot;</span>
+    <span class="n">_vim_exe</span> <span class="o">=</span> <span class="s">&quot;gvim&quot;</span>
+<span class="k">else</span><span class="p">:</span> 
+    <span class="n">_vim_cmd</span> <span class="o">=</span> <span class="s">&quot;gvim --servername LEO&quot;</span>
+    <span class="n">_vim_exe</span> <span class="o">=</span> <span class="s">&quot;gvim&quot;</span>
+
+<span class="n">locationMessageGiven</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20050226184624: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.vim.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span> <span class="c"># Don&#39;t conflict with xemacs plugin.</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="c"># print (&#39;vim.py enabled&#39;)</span>
+        <span class="c"># Register the handlers...</span>
+
+        <span class="c"># event = &#39;open2&#39;</span>
+        <span class="c"># g.registerHandler(event,on_open_window)</span>
+
+        <span class="c"># Enable the os.system call if you want to</span>
+        <span class="c"># start a (g)vim server when Leo starts.</span>
+        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">_vim_cmd</span><span class="p">)</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:ekr.20120315101404.9745: ** g.command(&#39;vim-open-node&#39;)</span></div>
+<span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;vim-open-node&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="open_in_vim_command"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.vim.open_in_vim_command">[docs]</a><span class="k">def</span> <span class="nf">open_in_vim_command</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot; Open current node in (g)vim</span>
+
+<span class="sd">        Provied by vim.py plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">open_in_vim_helper</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20120315101404.9746: *3* open_in_vim_helper</span></div>
+<span class="n">contextmenu_message_given</span> <span class="o">=</span> <span class="bp">False</span>
+
+<div class="viewcode-block" id="open_in_vim_helper"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.vim.open_in_vim_helper">[docs]</a><span class="k">def</span> <span class="nf">open_in_vim_helper</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    
+    <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span>
+
+    <span class="c"># Load contextmenu plugin if required.</span>
+    <span class="n">contextMenu</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">loadOnePlugin</span><span class="p">(</span><span class="s">&#39;contextmenu.py&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">contextMenu</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">contextmenu_message_given</span><span class="p">:</span>
+            <span class="n">contextmenu_message_given</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;can not load contextmenu.py&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;file-ref&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c"># Must be at 2nd position</span>
+        <span class="k">return</span>
+
+    <span class="c">#URL nodes</span>
+    <span class="n">openURLNodes</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;vim_plugin_opens_url_nodes&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">openURLNodes</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@url&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="c"># Avoid conflicts with @url nodes.</span>
+
+    <span class="n">vim_cmd</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s">&#39;vim_cmd&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_vim_cmd</span>
+    <span class="n">vim_exe</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s">&#39;vim_exe&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_vim_exe</span>
+
+    <span class="k">global</span> <span class="n">locationMessageGiven</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">locationMessageGiven</span><span class="p">:</span>
+        <span class="n">locationMessageGiven</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;vim_cmd: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">vim_cmd</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;vim_exe: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">vim_exe</span><span class="p">)</span>
+
+    <span class="c">#Cursor positioning</span>
+    <span class="n">Lnum</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;vim_plugin_positions_cursor&#39;</span><span class="p">):</span>    
+        <span class="c">#Line number - start at same line as Leo cursor</span>
+        <span class="c">#  get node&#39;s body text</span>
+        <span class="n">bodyCtrl</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">bodyCtrl</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">bodyCtrl</span><span class="o">.</span><span class="n">getAllText</span><span class="p">()</span>    
+        <span class="c">#  Get cursors row &amp; column number</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">bodyCtrl</span><span class="o">.</span><span class="n">getInsertPoint</span><span class="p">()</span>
+        <span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">convertPythonIndexToRowCol</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">index</span><span class="p">)</span>
+        <span class="c">#  Build gVim command line parameter for setting cursor row</span>
+        <span class="n">Lnum</span> <span class="o">=</span> <span class="s">&quot;+&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c">#Vim&#39;s tab card stack</span>
+    <span class="n">useTabs</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;vim_plugin_uses_tab_feature&#39;</span><span class="p">):</span>    
+        <span class="n">useTabs</span> <span class="o">=</span> <span class="s">&quot;-tab&quot;</span>
+
+    <span class="c"># Search g.app.openWithFiles for a file corresponding to v.</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">openWithFiles</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;v&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span> <span class="p">;</span> <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+    <span class="c"># if the body has changed we need to open a new </span>
+    <span class="c"># temp file containing the new body in vim</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">or</span> 
+        <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="s">&#39;OpenWithOldBody&#39;</span><span class="p">)</span> <span class="ow">or</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">OpenWithOldBody</span>
+    <span class="p">):</span>
+        <span class="c"># Open a new temp file.</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+            <span class="c"># Remove the old file and the entry in g.app.openWithFiles.</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">openWithFiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">openWithFiles</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">path</span><span class="p">]</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">vim_cmd</span><span class="o">+</span><span class="s">&quot;--remote-send &#39;&lt;C-</span><span class="se">\\</span><span class="s">&gt;&lt;C-N&gt;:bd &quot;</span><span class="o">+</span><span class="n">path</span><span class="o">+</span><span class="s">&quot;&lt;CR&gt;&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">v</span><span class="o">.</span><span class="n">OpenWithOldBody</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="c"># Remember the previous contents.</span>
+    
+        <span class="c"># New code by Jim Sizemore. TL: added support for gVim tabs.</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">vim_exe</span><span class="p">,</span><span class="s">&quot;--servername&quot;</span><span class="p">,</span><span class="s">&quot;LEO&quot;</span><span class="p">,</span><span class="s">&quot;--remote&quot;</span><span class="o">+</span><span class="n">useTabs</span><span class="o">+</span><span class="s">&quot;-silent&quot;</span><span class="p">,</span><span class="n">Lnum</span><span class="p">]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;subprocess.Popen&#39;</span><span class="p">,</span><span class="s">&#39;args&#39;</span><span class="p">:</span><span class="n">args</span><span class="p">,</span><span class="s">&#39;ext&#39;</span><span class="p">:</span><span class="bp">None</span><span class="p">}</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">openWith</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Reopen the old temp file.</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">vim_cmd</span><span class="o">+</span><span class="s">&quot;--remote-send &#39;&lt;C-</span><span class="se">\\</span><span class="s">&gt;&lt;C-N&gt;:e &quot;</span><span class="o">+</span><span class="n">path</span><span class="o">+</span><span class="s">&quot;&lt;CR&gt;&#39;&quot;</span><span class="p">)</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

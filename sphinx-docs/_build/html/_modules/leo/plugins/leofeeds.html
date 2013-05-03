@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.leofeeds &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.leofeeds</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ville.20110206142055.10640: * @file leofeeds.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ville.20110206142055.10641: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Read feeds from rss / atom / whatever sources</span>
+
+<span class="sd">Usage: Create node with a headline like:</span>
+<span class="sd">    </span>
+<span class="sd">    @feed http://www.planetqt.org/atom.xml</span>
+<span class="sd">    </span>
+<span class="sd">(or somesuch).</span>
+
+<span class="sd">Do alt-x act-on-node on that node to populate the subtree from the feed data. Requires &quot;feedparser&quot; python module</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ville.20110206142055.10642: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1 Ville M. Vainio:</span>
+<span class="c"># </span>
+<span class="c">#     * Functional version</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ville.20110206142055.10643: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">from</span> <span class="nn">leo.core</span> <span class="kn">import</span> <span class="n">leoPlugins</span>
+    <span class="c"># Uses leoPlugins.TryNext</span>
+    
+<span class="kn">import</span> <span class="nn">feedparser</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">isPython3</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">isPython3</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">html.parser</span> <span class="kn">as</span> <span class="nn">HTMLParser</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">HTMLParser</span>
+
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ville.20110206142055.10644: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ville.20110206142055.10645: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span> <span class="k">return</span>
+
+    <span class="c"># c not needed</span>
+
+    <span class="n">feeds_install</span><span class="p">()</span>
+<span class="c">#@+node:ville.20110206142055.10648: ** fetch</span>
+</div>
+<div class="viewcode-block" id="MLStripper"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.MLStripper">[docs]</a><span class="k">class</span> <span class="nc">MLStripper</span><span class="p">(</span><span class="n">HTMLParser</span><span class="o">.</span><span class="n">HTMLParser</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fed</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="MLStripper.handle_data"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.MLStripper.handle_data">[docs]</a>    <span class="k">def</span> <span class="nf">handle_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+<div class="viewcode-block" id="MLStripper.get_fed_data"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.MLStripper.get_fed_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_fed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fed</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="strip_tags"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.strip_tags">[docs]</a><span class="k">def</span> <span class="nf">strip_tags</span><span class="p">(</span><span class="n">cont</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MLStripper</span><span class="p">()</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">cont</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get_fed_data</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="chi"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.chi">[docs]</a><span class="k">def</span> <span class="nf">chi</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">insertAsLastChild</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="emit"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.emit">[docs]</a><span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">chi</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">insertAsLastChild</span><span class="p">()</span>
+    <span class="n">chi</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">h</span>
+    <span class="n">chi</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+</div>
+<div class="viewcode-block" id="emitfeed"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.emitfeed">[docs]</a><span class="k">def</span> <span class="nf">emitfeed</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    
+    <span class="n">d</span> <span class="o">=</span> <span class="n">feedparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">insertAsLastChild</span><span class="p">()</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">title</span>
+    <span class="k">for</span> <span class="n">ent</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span>
+        <span class="c">#print &quot;Entry&quot;</span>
+        <span class="c">#pprint.pprint(ent)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">chi</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="n">ent</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="n">ent</span><span class="p">[</span><span class="s">&#39;summary&#39;</span><span class="p">]</span>
+                        
+        <span class="n">e</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">strip_tags</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+        
+        <span class="c">#e.b = str(ent)</span>
+        <span class="n">e</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">ent</span><span class="o">.</span><span class="n">title</span>
+        <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">ent</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="n">lnk</span> <span class="o">=</span> <span class="n">chi</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">lnk</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="s">&#39;@url &#39;</span> <span class="o">+</span> <span class="n">li</span><span class="o">.</span><span class="n">rel</span>
+            <span class="n">lnk</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">href</span>
+        <span class="k">if</span> <span class="s">&#39;enclosures&#39;</span> <span class="ow">in</span> <span class="n">ent</span><span class="p">:</span>            
+            <span class="k">for</span> <span class="n">enc</span> <span class="ow">in</span> <span class="n">ent</span><span class="o">.</span><span class="n">enclosures</span><span class="p">:</span>
+                <span class="n">ec</span> <span class="o">=</span> <span class="n">chi</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">ec</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="s">&#39;@url Enclosure: &#39;</span> <span class="o">+</span>  <span class="n">enc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span><span class="s">&#39;notype&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">enc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;length&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">ec</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">enc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;href&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                
+        <span class="n">full</span> <span class="o">=</span> <span class="n">chi</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">full</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="s">&quot;orig&quot;</span>
+        <span class="n">full</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">cnt</span>
+        
+</div>
+<div class="viewcode-block" id="feeds_act_on_node"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.feeds_act_on_node">[docs]</a><span class="k">def</span> <span class="nf">feeds_act_on_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+ 
+    <span class="n">sp</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;@feed&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">leoPlugins</span><span class="o">.</span><span class="n">TryNext</span>
+        
+    <span class="n">emitfeed</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span>           
+    <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="feeds_install"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leofeeds.feeds_install">[docs]</a><span class="k">def</span> <span class="nf">feeds_install</span><span class="p">():</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">act_on_node</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">feeds_act_on_node</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+        
+    
+    
+<span class="c">#emitfeed(&quot;http://feedparser.org/docs/examples/atom10.xml&quot;, p)</span>
+<span class="c">#c.redraw()</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

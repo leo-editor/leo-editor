@@ -1,0 +1,1826 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>external Package &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="index.html" />
+    <link rel="up" title="leo Package" href="leo.html" />
+    <link rel="next" title="concurrent Package" href="leo.external.concurrent.html" />
+    <link rel="prev" title="extensions Package" href="leo.extensions.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="leo.external.concurrent.html" title="concurrent Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="leo.extensions.html" title="extensions Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="leo.html" accesskey="U">leo Package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="external-package">
+<h1>external Package<a class="headerlink" href="#external-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">external</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-leo.external"></span></div>
+<div class="section" id="module-leo.external.codewise">
+<span id="codewise-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">codewise</span></tt> Module<a class="headerlink" href="#module-leo.external.codewise" title="Permalink to this headline">¶</a></h2>
+<p>CodeWise - global code intelligence database</p>
+<div class="section" id="why-this-module">
+<h3>Why this module<a class="headerlink" href="#why-this-module" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Exuberant ctags is an excellent code scanner</li>
+<li>Unfortunately, TAGS file lookup sucks for &#8220;find methods of this class&#8221;</li>
+<li>TAGS files can be all around the hard drive. CodeWise database is
+just one file (by default ~/.codewise.db)</li>
+<li>I wanted to implement modern code completion for Leo editor</li>
+<li>codewise.py is usable as a python module, or a command line tool.</li>
+</ul>
+</div>
+<div class="section" id="creating-ctags-data">
+<h3>Creating ctags data<a class="headerlink" href="#creating-ctags-data" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Make sure you have exuberant ctags (not just regular ctags)
+installed. It&#8217;s an Ubuntu package, so its easy to install if
+you&#8217;re using Ubuntu.</p>
+</li>
+<li><dl class="first docutils">
+<dt>[Optional] Create a custom ~/.ctags file containing default</dt>
+<dd><p class="first">configuration settings for ctags. See:
+<a class="reference external" href="http://ctags.sourceforge.net/ctags.html#FILES">http://ctags.sourceforge.net/ctags.html#FILES</a> for more
+details.</p>
+<p>The <tt class="docutils literal"><span class="pre">codewise</span> <span class="pre">setup</span></tt> command (see below), will leave this
+file alone if it exists; otherwise, <tt class="docutils literal"><span class="pre">codewise</span> <span class="pre">setup</span></tt> will
+create a ~/.ctags file containing:</p>
+<div class="last highlight-python"><pre>--exclude=*.html
+--exclude=*.css</pre>
+</div>
+</dd>
+</dl>
+</li>
+<li><p class="first">Create the ctags data in ~/.codewise.db using this module. Execute the
+following from a console window:</p>
+<div class="highlight-python"><pre>codewise setup
+    # Optional: creates ~/.ctags if it does not exist.
+    # See http://ctags.sourceforge.net/ctags.html#FILES
+codewise init
+    # Optional: deletes ~/.codewise.db if it exists.
+codewise parse &lt;path to directory&gt;
+    # Adds ctags data to ~/.codewise.db for &lt;directory&gt;</pre>
+</div>
+</li>
+</ol>
+<p><strong>Note</strong>: On Windows, use a batch file, say codewise.bat, to execute the
+above code. codewise.bat contains:</p>
+<div class="highlight-python"><pre>python &lt;path to leo&gt;\leo\external\codewise.py %*</pre>
+</div>
+</div>
+<div class="section" id="using-the-autocompleter">
+<h3>Using the autocompleter<a class="headerlink" href="#using-the-autocompleter" title="Permalink to this headline">¶</a></h3>
+<p>After restarting Leo, type, for example, in the body pane:</p>
+<div class="highlight-python"><pre>c.op&lt;ctrl-space&gt;</pre>
+</div>
+<p>that is, use use the autocomplete-force command,
+to find all the c. methods starting with &#8216;op&#8217; etc.</p>
+</div>
+<div class="section" id="theory-of-operation">
+<h3>Theory of operation<a class="headerlink" href="#theory-of-operation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>~/.codewise.db is an sqlite database with following tables:</li>
+</ul>
+<p>CLASS maps class id&#8217;s to names.</p>
+<p>FILE maps file id&#8217;s to file names</p>
+<p>DATASOURCE contains places where data has been parsed from, to enable reparse</p>
+<dl class="docutils">
+<dt>FUNCTION, the most important one, contains functions/methods, along with CLASS</dt>
+<dd>and FILE it was found in. Additionally, it has SEARCHPATTERN field that can be
+used to give calltips, or used as a regexp to find the method from file
+quickly.</dd>
+</dl>
+<p>You can browse the data by installing sqlitebrovser and doing &#8216;sqlitebrowser
+~/codewise.db&#8217;</p>
+<p>If you know the class name you want to find the methods for,
+CodeWise.get_members with a list of classes to match.</p>
+<p>If you want to match a function without a class, call CodeWise.get_functions.
+This can be much slower if you have a huge database.</p>
+<dl class="class">
+<dt id="leo.external.codewise.CodeWise">
+<em class="property">class </em><tt class="descclassname">leo.external.codewise.</tt><tt class="descname">CodeWise</tt><big>(</big><em>dbpath=None</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="leo.external.codewise.CodeWise.add_source">
+<tt class="descname">add_source</tt><big>(</big><em>type</em>, <em>src</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.add_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.add_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.class_id">
+<tt class="descname">class_id</tt><big>(</big><em>classname</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.class_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.class_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>return class id. May create new class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.create_caches">
+<tt class="descname">create_caches</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.create_caches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.create_caches" title="Permalink to this definition">¶</a></dt>
+<dd><p>read existing db and create caches</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.createdb">
+<tt class="descname">createdb</tt><big>(</big><em>dbpath</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.createdb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.createdb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.cursor">
+<tt class="descname">cursor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.cursor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.feed_ctags">
+<tt class="descname">feed_ctags</tt><big>(</big><em>tagsfile_obj</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.feed_ctags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.feed_ctags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.feed_function">
+<tt class="descname">feed_function</tt><big>(</big><em>func_name</em>, <em>class_name</em>, <em>file_name</em>, <em>aux</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.feed_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.feed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert one function</p>
+<p>&#8216;aux&#8217; can be a search pattern (as with ctags), signature, or description</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.feed_scintilla">
+<tt class="descname">feed_scintilla</tt><big>(</big><em>apifile_obj</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.feed_scintilla"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.feed_scintilla" title="Permalink to this definition">¶</a></dt>
+<dd><p>handle scintilla api files</p>
+<p>Syntax is like:</p>
+<p>qt.QApplication.style?4() -&gt; QStyle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.file_id">
+<tt class="descname">file_id</tt><big>(</big><em>fname</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.file_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.file_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.get_functions">
+<tt class="descname">get_functions</tt><big>(</big><em>prefix=None</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.get_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.get_functions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.get_members">
+<tt class="descname">get_members</tt><big>(</big><em>classnames</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.get_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.get_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.parse">
+<tt class="descname">parse</tt><big>(</big><em>paths</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.parseall">
+<tt class="descname">parseall</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.parseall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.parseall" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.reset_caches">
+<tt class="descname">reset_caches</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.reset_caches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.reset_caches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.sources">
+<tt class="descname">sources</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.sources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.sources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.CodeWise.zap_symbols">
+<tt class="descname">zap_symbols</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#CodeWise.zap_symbols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.CodeWise.zap_symbols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.external.codewise.ContextSniffer">
+<em class="property">class </em><tt class="descclassname">leo.external.codewise.</tt><tt class="descname">ContextSniffer</tt><a class="reference internal" href="_modules/leo/external/codewise.html#ContextSniffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.ContextSniffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to analyze surrounding context and guess class</p>
+<p>For simple dynamic code completion engines</p>
+<dl class="method">
+<dt id="leo.external.codewise.ContextSniffer.declare">
+<tt class="descname">declare</tt><big>(</big><em>var</em>, <em>klass</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#ContextSniffer.declare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.ContextSniffer.declare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.ContextSniffer.push_declarations">
+<tt class="descname">push_declarations</tt><big>(</big><em>body</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#ContextSniffer.push_declarations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.ContextSniffer.push_declarations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.codewise.ContextSniffer.set_small_context">
+<tt class="descname">set_small_context</tt><big>(</big><em>body</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#ContextSniffer.set_small_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.ContextSniffer.set_small_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set immediate function</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.callers">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">callers</tt><big>(</big><em>n=4</em>, <em>count=0</em>, <em>excludeCaller=True</em>, <em>files=False</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#callers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.callers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list containing the callers of the function that called g.callerList.</p>
+<p>If the excludeCaller keyword is True (the default), g.callers is not on the list.</p>
+<p>If the files keyword argument is True, filenames are included in the list.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.choose">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">choose</tt><big>(</big><em>cond</em>, <em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#choose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.choose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_functions">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_functions</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_functions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_init">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_init</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_members">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_members</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_parse">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_parse</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_parseall">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_parseall</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_parseall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_parseall" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_scintilla">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_scintilla</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_scintilla"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_scintilla" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_setup">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_setup</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.cmd_tags">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">cmd_tags</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#cmd_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.cmd_tags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.doKeywordArgs">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">doKeywordArgs</tt><big>(</big><em>keys</em>, <em>d=None</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#doKeywordArgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.doKeywordArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a result dict that is a copy of the keys dict
+with missing items replaced by defaults in d dict.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.get_module">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">get_module</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#get_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.get_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.isBytes">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">isBytes</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#isBytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.isBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if s is Python3k bytes type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.isCallable">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">isCallable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#isCallable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.isCallable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.isChar">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">isChar</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#isChar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.isChar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if s is a Python2K character type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.isString">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">isString</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#isString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.isString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if s is any string, but not bytes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.isUnicode">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">isUnicode</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#isUnicode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.isUnicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if s is a unicode string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.isValidEncoding">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">isValidEncoding</tt><big>(</big><em>encoding</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#isValidEncoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.isValidEncoding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.main">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.pdb">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">pdb</tt><big>(</big><em>message=''</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#pdb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fall into pdb.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.pr">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">pr</tt><big>(</big><em>*args</em>, <em>**keys</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#pr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print all non-keyword args, and put them to the log pane.
+The first, third, fifth, etc. arg translated by g.translateString.
+Supports color, comma, newline, spaces and tabName keyword arguments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.printlines">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">printlines</tt><big>(</big><em>lines</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#printlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.printlines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.reportBadChars">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">reportBadChars</tt><big>(</big><em>s</em>, <em>encoding</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#reportBadChars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.reportBadChars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.run_ctags">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">run_ctags</tt><big>(</big><em>paths</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#run_ctags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.run_ctags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.test">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">test</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.toEncodedString">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">toEncodedString</tt><big>(</big><em>s</em>, <em>encoding='utf-8'</em>, <em>reportErrors=False</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#toEncodedString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.toEncodedString" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.toUnicode">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">toUnicode</tt><big>(</big><em>s</em>, <em>encoding='utf-8'</em>, <em>reportErrors=False</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#toUnicode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.toUnicode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.trace">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">trace</tt><big>(</big><em>*args</em>, <em>**keys</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.trace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.translateArgs">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">translateArgs</tt><big>(</big><em>args</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#translateArgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.translateArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the concatenation of all args, with odd args translated.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.u">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">u</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#u"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.u" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.codewise.ue">
+<tt class="descclassname">leo.external.codewise.</tt><tt class="descname">ue</tt><big>(</big><em>s</em>, <em>encoding</em><big>)</big><a class="reference internal" href="_modules/leo/external/codewise.html#ue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.codewise.ue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-leo.external.edb">
+<span id="edb-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">edb</span></tt> Module<a class="headerlink" href="#module-leo.external.edb" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="edb-the-python-debugger-pdb-modified-for-blender-by-ekr">
+<h3>edb: The Python Debugger Pdb, modified for blender by EKR<a class="headerlink" href="#edb-the-python-debugger-pdb-modified-for-blender-by-ekr" title="Permalink to this headline">¶</a></h3>
+<p>To use the debugger in its simplest form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pdb</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s">&#39;&lt;a statement&gt;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The debugger&#8217;s prompt is &#8216;(Pdb) &#8216;.  This will stop in the first
+function call in &lt;a statement&gt;.</p>
+<p>Alternatively, if a statement terminated with an unhandled exception,
+you can use pdb&#8217;s post-mortem facility to inspect the contents of the
+traceback:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="o">&lt;</span><span class="n">a</span> <span class="n">statement</span><span class="o">&gt;</span>
+<span class="go">&lt;exception traceback&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pdb</span><span class="o">.</span><span class="n">pm</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The commands recognized by the debugger are listed in the next
+section.  Most can be abbreviated as indicated; e.g., h(elp) means
+that &#8216;help&#8217; can be typed as &#8216;h&#8217; or &#8216;help&#8217; (but not as &#8216;he&#8217; or &#8216;hel&#8217;,
+nor as &#8216;H&#8217; or &#8216;Help&#8217; or &#8216;HELP&#8217;).  Optional arguments are enclosed in
+square brackets.  Alternatives in the command syntax are separated
+by a vertical bar (|).</p>
+<p>A blank line repeats the previous command literally, except for
+&#8216;list&#8217;, where it lists the next 11 lines.</p>
+<p>Commands that the debugger doesn&#8217;t recognize are assumed to be Python
+statements and are executed in the context of the program being
+debugged.  Python statements can also be prefixed with an exclamation
+point (&#8216;!&#8217;).  This is a powerful way to inspect the program being
+debugged; it is even possible to change variables or call functions.
+When an exception occurs in such a statement, the exception name is
+printed but the debugger&#8217;s state is not changed.</p>
+<p>The debugger supports aliases, which can save typing.  And aliases can
+have parameters (see the alias help entry) which allows one a certain
+level of adaptability to the context under examination.</p>
+<p>Multiple commands may be entered on a single line, separated by the
+pair &#8216;;;&#8217;.  No intelligence is applied to separating the commands; the
+input is split at the first &#8216;;;&#8217;, even if it is in the middle of a
+quoted string.</p>
+<p>If a file &#8221;.pdbrc&#8221; exists in your home directory or in the current
+directory, it is read in and executed as if it had been typed at the
+debugger prompt.  This is particularly useful for aliases.  If both
+files exist, the one in the home directory is read first and aliases
+defined there can be overriden by the local file.</p>
+<p>Aside from aliases, the debugger is not directly programmable; but it
+is implemented as a class from which you can derive your own debugger
+class, which you can make as fancy as you like.</p>
+</div>
+<div class="section" id="debugger-commands">
+<h3>Debugger commands<a class="headerlink" href="#debugger-commands" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>h(elp)</dt>
+<dd>Without argument, print the list of available commands.
+With a command name as argument, print help about that command.
+&#8220;help pdb&#8221; shows the full pdb documentation.
+&#8220;help exec&#8221; gives help on the ! command.</dd>
+<dt>w(here)</dt>
+<dd>Print a stack trace, with the most recent frame at the bottom.
+An arrow indicates the &#8220;current frame&#8221;, which determines the
+context of most commands.  &#8216;bt&#8217; is an alias for this command.</dd>
+<dt>d(own) [count]</dt>
+<dd>Move the current frame count (default one) levels down in the
+stack trace (to a newer frame).</dd>
+<dt>u(p) [count]</dt>
+<dd>Move the current frame count (default one) levels up in the
+stack trace (to an older frame).</dd>
+<dt>b(reak) [ ([filename:]lineno | function) [, condition] ]</dt>
+<dd><p class="first">Without argument, list all breaks.</p>
+<p>With a line number argument, set a break at this line in the
+current file.  With a function name, set a break at the first
+executable line of that function.  If a second argument is
+present, it is a string specifying an expression which must
+evaluate to true before the breakpoint is honored.</p>
+<p class="last">The line number may be prefixed with a filename and a colon,
+to specify a breakpoint in another file (probably one that
+hasn&#8217;t been loaded yet).  The file is searched for on
+sys.path; the .py suffix may be omitted.</p>
+</dd>
+<dt>tbreak [ ([filename:]lineno | function) [, condition] ]</dt>
+<dd>Same arguments as break, but sets a temporary breakpoint: it
+is automatically deleted when first hit.</dd>
+</dl>
+<p>cl(ear) filename:lineno
+cl(ear) [bpnumber [bpnumber...]]</p>
+<blockquote>
+<div>With a space separated list of breakpoint numbers, clear
+those breakpoints.  Without argument, clear all breaks (but
+first ask confirmation).  With a filename:lineno argument,
+clear all breaks at that line in that file.</div></blockquote>
+<dl class="docutils">
+<dt>disable bpnumber [bpnumber ...]</dt>
+<dd>Disables the breakpoints given as a space separated list of
+breakpoint numbers.  Disabling a breakpoint means it cannot
+cause the program to stop execution, but unlike clearing a
+breakpoint, it remains in the list of breakpoints and can be
+(re-)enabled.</dd>
+<dt>enable bpnumber [bpnumber ...]</dt>
+<dd>Enables the breakpoints given as a space separated list of
+breakpoint numbers.</dd>
+<dt>ignore bpnumber [count]</dt>
+<dd>Set the ignore count for the given breakpoint number.  If
+count is omitted, the ignore count is set to 0.  A breakpoint
+becomes active when the ignore count is zero.  When non-zero,
+the count is decremented each time the breakpoint is reached
+and the breakpoint is not disabled and any associated
+condition evaluates to true.</dd>
+<dt>condition bpnumber [condition]</dt>
+<dd>Set a new condition for the breakpoint, an expression which
+must evaluate to true before the breakpoint is honored.  If
+condition is absent, any existing condition is removed; i.e.,
+the breakpoint is made unconditional.</dd>
+<dt>commands [bpnumber]</dt>
+<dd><p class="first">(com) ...
+(com) end
+(Pdb)</p>
+<p>Specify a list of commands for breakpoint number bpnumber.
+The commands themselves are entered on the following lines.
+Type a line containing just &#8216;end&#8217; to terminate the commands.
+The commands are executed when the breakpoint is hit.</p>
+<p>To remove all commands from a breakpoint, type commands and
+follow it immediately with end; that is, give no commands.</p>
+<p>With no bpnumber argument, commands refers to the last
+breakpoint set.</p>
+<p>You can use breakpoint commands to start your program up
+again.  Simply use the continue command, or step, or any other
+command that resumes execution.</p>
+<p>Specifying any command resuming execution (currently continue,
+step, next, return, jump, quit and their abbreviations)
+terminates the command list (as if that command was
+immediately followed by end).  This is because any time you
+resume execution (even with a simple next or step), you may
+encounter another breakpoint &#8211; which could have its own
+command list, leading to ambiguities about which list to
+execute.</p>
+<p class="last">If you use the &#8216;silent&#8217; command in the command list, the usual
+message about stopping at a breakpoint is not printed.  This
+may be desirable for breakpoints that are to print a specific
+message and then continue.  If none of the other commands
+print anything, you will see no sign that the breakpoint was
+reached.</p>
+</dd>
+<dt>s(tep)</dt>
+<dd>Execute the current line, stop at the first possible occasion
+(either in a function that is called or in the current
+function).</dd>
+<dt>n(ext)</dt>
+<dd>Continue execution until the next line in the current function
+is reached or it returns.</dd>
+<dt>unt(il) [lineno]</dt>
+<dd>Without argument, continue execution until the line with a
+number greater than the current one is reached.  With a line
+number, continue execution until a line with a number greater
+or equal to that is reached.  In both cases, also stop when
+the current frame returns.</dd>
+<dt>j(ump) lineno</dt>
+<dd><p class="first">Set the next line that will be executed.  Only available in
+the bottom-most frame.  This lets you jump back and execute
+code again, or jump forward to skip code that you don&#8217;t want
+to run.</p>
+<p class="last">It should be noted that not all jumps are allowed &#8211; for
+instance it is not possible to jump into the middle of a
+for loop or out of a finally clause.</p>
+</dd>
+<dt>r(eturn)</dt>
+<dd>Continue execution until the current function returns.</dd>
+<dt>retval</dt>
+<dd>Print the return value for the last return of a function.</dd>
+<dt>run [args...]</dt>
+<dd>Restart the debugged python program. If a string is supplied
+it is splitted with &#8220;shlex&#8221;, and the result is used as the new
+sys.argv.  History, breakpoints, actions and debugger options
+are preserved.  &#8220;restart&#8221; is an alias for &#8220;run&#8221;.</dd>
+<dt>c(ont(inue))</dt>
+<dd>Continue execution, only stop when a breakpoint is encountered.</dd>
+</dl>
+<p>l(ist) [first [,last] | .]</p>
+<blockquote>
+<div><p>List source code for the current file.  Without arguments,
+list 11 lines around the current line or continue the previous
+listing.  With . as argument, list 11 lines around the current
+line.  With one argument, list 11 lines starting at that line.
+With two arguments, list the given range; if the second
+argument is less than the first, it is a count.</p>
+<p>The current line in the current frame is indicated by &#8220;-&gt;&#8221;.
+If an exception is being debugged, the line where the
+exception was originally raised or propagated is indicated by
+&#8220;&gt;&gt;&#8221;, if it differs from the current line.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>longlist | ll</dt>
+<dd>List the whole source code for the current function or frame.</dd>
+<dt>a(rgs)</dt>
+<dd>Print the argument list of the current function.</dd>
+<dt>p(rint) expression</dt>
+<dd>Print the value of the expression.</dd>
+<dt>pp expression</dt>
+<dd>Pretty-print the value of the expression.</dd>
+<dt>whatis arg</dt>
+<dd>Print the type of the argument.</dd>
+<dt>source expression</dt>
+<dd>Try to get source code for the given object and display it.</dd>
+</dl>
+<p>display [expression]</p>
+<blockquote>
+<div><p>Display the value of the expression if it changed, each time execution
+stops in the current frame.</p>
+<p>Without expression, list all display expressions for the current frame.</p>
+</div></blockquote>
+<p>undisplay [expression]</p>
+<blockquote>
+<div><p>Do not display the expression any more in the current frame.</p>
+<p>Without expression, clear all display expressions for the current frame.</p>
+</div></blockquote>
+<p>interact</p>
+<blockquote>
+<div>Start an interative interpreter whose global namespace
+contains all the (global and local) names found in the current scope.</div></blockquote>
+<dl class="docutils">
+<dt>alias [name [command [parameter parameter ...] ]]</dt>
+<dd><p class="first">Create an alias called &#8216;name&#8217; that executes &#8216;command&#8217;.  The
+command must <em>not</em> be enclosed in quotes.  Replaceable
+parameters can be indicated by %1, %2, and so on, while %* is
+replaced by all the parameters.  If no command is given, the
+current alias for name is shown. If no name is given, all
+aliases are listed.</p>
+<p>Aliases may be nested and can contain anything that can be
+legally typed at the pdb prompt.  Note!  You <em>can</em> override
+internal pdb commands with aliases!  Those internal commands
+are then hidden until the alias is removed.  Aliasing is
+recursively applied to the first word of the command line; all
+other words in the line are left alone.</p>
+<p>As an example, here are two useful aliases (especially when
+placed in the .pdbrc file):</p>
+<p class="last"># Print instance variables (usage &#8220;pi classInst&#8221;)
+alias pi for k in %1.__dict__.keys(): print &#8220;%1.&#8221;,k,&#8221;=&#8221;,%1.__dict__[k]
+# Print instance variables in self
+alias ps pi self</p>
+</dd>
+<dt>unalias name</dt>
+<dd>Delete the specified alias.</dd>
+<dt>debug code</dt>
+<dd>Enter a recursive debugger that steps through the code
+argument (which is an arbitrary expression or statement to be
+executed in the current environment).</dd>
+</dl>
+<p>q(uit)
+exit</p>
+<blockquote>
+<div>Quit from the debugger. The program being executed is aborted.</div></blockquote>
+<dl class="docutils">
+<dt>(!) statement</dt>
+<dd>Execute the (one-line) statement in the context of the current
+stack frame.  The exclamation point can be omitted unless the
+first word of the statement resembles a debugger command.  To
+assign to a global variable you must always prefix the command
+with a &#8216;global&#8217; command, e.g.:
+(Pdb) global list_options; list_options = [&#8216;-l&#8217;]
+(Pdb)</dd>
+</dl>
+<dl class="function">
+<dt id="leo.external.edb.run">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">run</tt><big>(</big><em>statement</em>, <em>globals=None</em>, <em>locals=None</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.edb.pm">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">pm</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#pm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.pm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="leo.external.edb.Pdb">
+<em class="property">class </em><tt class="descclassname">leo.external.edb.</tt><tt class="descname">Pdb</tt><big>(</big><em>completekey='tab'</em>, <em>stdin=None</em>, <em>stdout=None</em>, <em>skip=None</em>, <em>nosigint=False</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">bdb.Bdb</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">cmd.Cmd</span></tt></p>
+<dl class="method">
+<dt id="leo.external.edb.Pdb.bp_commands">
+<tt class="descname">bp_commands</tt><big>(</big><em>frame</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.bp_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.bp_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call every command that was set for the current active breakpoint
+(if there is one).</p>
+<p>Returns True if the normal interaction function must be called,
+False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.break_here">
+<tt class="descname">break_here</tt><big>(</big><em>frame</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.break_here"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.break_here" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.checkline">
+<tt class="descname">checkline</tt><big>(</big><em>filename</em>, <em>lineno</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.checkline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.checkline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether specified line seems to be executable.</p>
+<p>Return <cite>lineno</cite> if it is, 0 if not (e.g. a docstring, comment, blank
+line or EOF). Warning: testing is not comprehensive.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.default">
+<tt class="descname">default</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.defaultFile">
+<tt class="descname">defaultFile</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.defaultFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.defaultFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a reasonable default.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.displayhook">
+<tt class="descname">displayhook</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.displayhook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.displayhook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom displayhook for the exec in default(), which prevents
+assignment of the _ variable in the builtins.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_EOF">
+<tt class="descname">do_EOF</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_EOF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_EOF" title="Permalink to this definition">¶</a></dt>
+<dd><p>EOF
+Handles the receipt of EOF as a command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_a">
+<tt class="descname">do_a</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_a" title="Permalink to this definition">¶</a></dt>
+<dd><p>a(rgs)
+Print the argument list of the current function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_alias">
+<tt class="descname">do_alias</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_alias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_alias" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias [name [command [parameter parameter ...] ]]
+Create an alias called &#8216;name&#8217; that executes &#8216;command&#8217;.  The
+command must <em>not</em> be enclosed in quotes.  Replaceable
+parameters can be indicated by %1, %2, and so on, while %* is
+replaced by all the parameters.  If no command is given, the
+current alias for name is shown. If no name is given, all
+aliases are listed.</p>
+<p>Aliases may be nested and can contain anything that can be
+legally typed at the pdb prompt.  Note!  You <em>can</em> override
+internal pdb commands with aliases!  Those internal commands
+are then hidden until the alias is removed.  Aliasing is
+recursively applied to the first word of the command line; all
+other words in the line are left alone.</p>
+<p>As an example, here are two useful aliases (especially when
+placed in the .pdbrc file):</p>
+<p># Print instance variables (usage &#8220;pi classInst&#8221;)
+alias pi for k in %1.__dict__.keys(): print &#8220;%1.&#8221;,k,&#8221;=&#8221;,%1.__dict__[k]
+# Print instance variables in self
+alias ps pi self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_args">
+<tt class="descname">do_args</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>a(rgs)
+Print the argument list of the current function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_b">
+<tt class="descname">do_b</tt><big>(</big><em>arg</em>, <em>temporary=0</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>b(reak) [ ([filename:]lineno | function) [, condition] ]
+Without argument, list all breaks.</p>
+<p>With a line number argument, set a break at this line in the
+current file.  With a function name, set a break at the first
+executable line of that function.  If a second argument is
+present, it is a string specifying an expression which must
+evaluate to true before the breakpoint is honored.</p>
+<p>The line number may be prefixed with a filename and a colon,
+to specify a breakpoint in another file (probably one that
+hasn&#8217;t been loaded yet).  The file is searched for on
+sys.path; the .py suffix may be omitted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_break">
+<tt class="descname">do_break</tt><big>(</big><em>arg</em>, <em>temporary=0</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_break"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_break" title="Permalink to this definition">¶</a></dt>
+<dd><p>b(reak) [ ([filename:]lineno | function) [, condition] ]
+Without argument, list all breaks.</p>
+<p>With a line number argument, set a break at this line in the
+current file.  With a function name, set a break at the first
+executable line of that function.  If a second argument is
+present, it is a string specifying an expression which must
+evaluate to true before the breakpoint is honored.</p>
+<p>The line number may be prefixed with a filename and a colon,
+to specify a breakpoint in another file (probably one that
+hasn&#8217;t been loaded yet).  The file is searched for on
+sys.path; the .py suffix may be omitted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_bt">
+<tt class="descname">do_bt</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_bt" title="Permalink to this definition">¶</a></dt>
+<dd><p>w(here)
+Print a stack trace, with the most recent frame at the bottom.
+An arrow indicates the &#8220;current frame&#8221;, which determines the
+context of most commands.  &#8216;bt&#8217; is an alias for this command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_c">
+<tt class="descname">do_c</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_c" title="Permalink to this definition">¶</a></dt>
+<dd><p>c(ont(inue))
+Continue execution, only stop when a breakpoint is encountered.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_cl">
+<tt class="descname">do_cl</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_cl" title="Permalink to this definition">¶</a></dt>
+<dd><p>cl(ear) filename:lineno
+cl(ear) [bpnumber [bpnumber...]]</p>
+<blockquote>
+<div>With a space separated list of breakpoint numbers, clear
+those breakpoints.  Without argument, clear all breaks (but
+first ask confirmation).  With a filename:lineno argument,
+clear all breaks at that line in that file.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_clear">
+<tt class="descname">do_clear</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>cl(ear) filename:lineno
+cl(ear) [bpnumber [bpnumber...]]</p>
+<blockquote>
+<div>With a space separated list of breakpoint numbers, clear
+those breakpoints.  Without argument, clear all breaks (but
+first ask confirmation).  With a filename:lineno argument,
+clear all breaks at that line in that file.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_commands">
+<tt class="descname">do_commands</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>commands [bpnumber]
+(com) ...
+(com) end
+(Pdb)</p>
+<p>Specify a list of commands for breakpoint number bpnumber.
+The commands themselves are entered on the following lines.
+Type a line containing just &#8216;end&#8217; to terminate the commands.
+The commands are executed when the breakpoint is hit.</p>
+<p>To remove all commands from a breakpoint, type commands and
+follow it immediately with end; that is, give no commands.</p>
+<p>With no bpnumber argument, commands refers to the last
+breakpoint set.</p>
+<p>You can use breakpoint commands to start your program up
+again.  Simply use the continue command, or step, or any other
+command that resumes execution.</p>
+<p>Specifying any command resuming execution (currently continue,
+step, next, return, jump, quit and their abbreviations)
+terminates the command list (as if that command was
+immediately followed by end).  This is because any time you
+resume execution (even with a simple next or step), you may
+encounter another breakpoint &#8211; which could have its own
+command list, leading to ambiguities about which list to
+execute.</p>
+<p>If you use the &#8216;silent&#8217; command in the command list, the usual
+message about stopping at a breakpoint is not printed.  This
+may be desirable for breakpoints that are to print a specific
+message and then continue.  If none of the other commands
+print anything, you will see no sign that the breakpoint was
+reached.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_condition">
+<tt class="descname">do_condition</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_condition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>condition bpnumber [condition]
+Set a new condition for the breakpoint, an expression which
+must evaluate to true before the breakpoint is honored.  If
+condition is absent, any existing condition is removed; i.e.,
+the breakpoint is made unconditional.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_cont">
+<tt class="descname">do_cont</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_cont" title="Permalink to this definition">¶</a></dt>
+<dd><p>c(ont(inue))
+Continue execution, only stop when a breakpoint is encountered.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_continue">
+<tt class="descname">do_continue</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_continue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_continue" title="Permalink to this definition">¶</a></dt>
+<dd><p>c(ont(inue))
+Continue execution, only stop when a breakpoint is encountered.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_d">
+<tt class="descname">do_d</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_d" title="Permalink to this definition">¶</a></dt>
+<dd><p>d(own) [count]
+Move the current frame count (default one) levels down in the
+stack trace (to a newer frame).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_debug">
+<tt class="descname">do_debug</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>debug code
+Enter a recursive debugger that steps through the code
+argument (which is an arbitrary expression or statement to be
+executed in the current environment).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_disable">
+<tt class="descname">do_disable</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_disable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>disable bpnumber [bpnumber ...]
+Disables the breakpoints given as a space separated list of
+breakpoint numbers.  Disabling a breakpoint means it cannot
+cause the program to stop execution, but unlike clearing a
+breakpoint, it remains in the list of breakpoints and can be
+(re-)enabled.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_display">
+<tt class="descname">do_display</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_display" title="Permalink to this definition">¶</a></dt>
+<dd><p>display [expression]</p>
+<p>Display the value of the expression if it changed, each time execution
+stops in the current frame.</p>
+<p>Without expression, list all display expressions for the current frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_down">
+<tt class="descname">do_down</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>d(own) [count]
+Move the current frame count (default one) levels down in the
+stack trace (to a newer frame).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_enable">
+<tt class="descname">do_enable</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>enable bpnumber [bpnumber ...]
+Enables the breakpoints given as a space separated list of
+breakpoint numbers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_exit">
+<tt class="descname">do_exit</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>q(uit)
+exit</p>
+<blockquote>
+<div>Quit from the debugger. The program being executed is aborted.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_h">
+<tt class="descname">do_h</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_h" title="Permalink to this definition">¶</a></dt>
+<dd><p>h(elp)
+Without argument, print the list of available commands.
+With a command name as argument, print help about that command.
+&#8220;help pdb&#8221; shows the full pdb documentation.
+&#8220;help exec&#8221; gives help on the ! command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_help">
+<tt class="descname">do_help</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_help" title="Permalink to this definition">¶</a></dt>
+<dd><p>h(elp)
+Without argument, print the list of available commands.
+With a command name as argument, print help about that command.
+&#8220;help pdb&#8221; shows the full pdb documentation.
+&#8220;help exec&#8221; gives help on the ! command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_ignore">
+<tt class="descname">do_ignore</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_ignore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_ignore" title="Permalink to this definition">¶</a></dt>
+<dd><p>ignore bpnumber [count]
+Set the ignore count for the given breakpoint number.  If
+count is omitted, the ignore count is set to 0.  A breakpoint
+becomes active when the ignore count is zero.  When non-zero,
+the count is decremented each time the breakpoint is reached
+and the breakpoint is not disabled and any associated
+condition evaluates to true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_interact">
+<tt class="descname">do_interact</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_interact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_interact" title="Permalink to this definition">¶</a></dt>
+<dd><p>interact</p>
+<p>Start an interative interpreter whose global namespace
+contains all the (global and local) names found in the current scope.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_j">
+<tt class="descname">do_j</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_j" title="Permalink to this definition">¶</a></dt>
+<dd><p>j(ump) lineno
+Set the next line that will be executed.  Only available in
+the bottom-most frame.  This lets you jump back and execute
+code again, or jump forward to skip code that you don&#8217;t want
+to run.</p>
+<p>It should be noted that not all jumps are allowed &#8211; for
+instance it is not possible to jump into the middle of a
+for loop or out of a finally clause.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_jump">
+<tt class="descname">do_jump</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_jump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_jump" title="Permalink to this definition">¶</a></dt>
+<dd><p>j(ump) lineno
+Set the next line that will be executed.  Only available in
+the bottom-most frame.  This lets you jump back and execute
+code again, or jump forward to skip code that you don&#8217;t want
+to run.</p>
+<p>It should be noted that not all jumps are allowed &#8211; for
+instance it is not possible to jump into the middle of a
+for loop or out of a finally clause.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_l">
+<tt class="descname">do_l</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_l" title="Permalink to this definition">¶</a></dt>
+<dd><p>l(ist) [first [,last] | .]</p>
+<p>List source code for the current file.  Without arguments,
+list 11 lines around the current line or continue the previous
+listing.  With . as argument, list 11 lines around the current
+line.  With one argument, list 11 lines starting at that line.
+With two arguments, list the given range; if the second
+argument is less than the first, it is a count.</p>
+<p>The current line in the current frame is indicated by &#8220;-&gt;&#8221;.
+If an exception is being debugged, the line where the
+exception was originally raised or propagated is indicated by
+&#8220;&gt;&gt;&#8221;, if it differs from the current line.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_list">
+<tt class="descname">do_list</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>l(ist) [first [,last] | .]</p>
+<p>List source code for the current file.  Without arguments,
+list 11 lines around the current line or continue the previous
+listing.  With . as argument, list 11 lines around the current
+line.  With one argument, list 11 lines starting at that line.
+With two arguments, list the given range; if the second
+argument is less than the first, it is a count.</p>
+<p>The current line in the current frame is indicated by &#8220;-&gt;&#8221;.
+If an exception is being debugged, the line where the
+exception was originally raised or propagated is indicated by
+&#8220;&gt;&gt;&#8221;, if it differs from the current line.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_ll">
+<tt class="descname">do_ll</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>longlist | ll
+List the whole source code for the current function or frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_longlist">
+<tt class="descname">do_longlist</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_longlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_longlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>longlist | ll
+List the whole source code for the current function or frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_n">
+<tt class="descname">do_n</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>n(ext)
+Continue execution until the next line in the current function
+is reached or it returns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_next">
+<tt class="descname">do_next</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>n(ext)
+Continue execution until the next line in the current function
+is reached or it returns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_p">
+<tt class="descname">do_p</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>p(rint) expression
+Print the value of the expression.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_pp">
+<tt class="descname">do_pp</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_pp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_pp" title="Permalink to this definition">¶</a></dt>
+<dd><p>pp expression
+Pretty-print the value of the expression.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_print">
+<tt class="descname">do_print</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>p(rint) expression
+Print the value of the expression.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_q">
+<tt class="descname">do_q</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_q" title="Permalink to this definition">¶</a></dt>
+<dd><p>q(uit)
+exit</p>
+<blockquote>
+<div>Quit from the debugger. The program being executed is aborted.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_quit">
+<tt class="descname">do_quit</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>q(uit)
+exit</p>
+<blockquote>
+<div>Quit from the debugger. The program being executed is aborted.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_r">
+<tt class="descname">do_r</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>r(eturn)
+Continue execution until the current function returns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_restart">
+<tt class="descname">do_restart</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>run [args...]
+Restart the debugged python program. If a string is supplied
+it is splitted with &#8220;shlex&#8221;, and the result is used as the new
+sys.argv.  History, breakpoints, actions and debugger options
+are preserved.  &#8220;restart&#8221; is an alias for &#8220;run&#8221;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_return">
+<tt class="descname">do_return</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>r(eturn)
+Continue execution until the current function returns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_retval">
+<tt class="descname">do_retval</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_retval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_retval" title="Permalink to this definition">¶</a></dt>
+<dd><p>retval
+Print the return value for the last return of a function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_run">
+<tt class="descname">do_run</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run [args...]
+Restart the debugged python program. If a string is supplied
+it is splitted with &#8220;shlex&#8221;, and the result is used as the new
+sys.argv.  History, breakpoints, actions and debugger options
+are preserved.  &#8220;restart&#8221; is an alias for &#8220;run&#8221;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_rv">
+<tt class="descname">do_rv</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_rv" title="Permalink to this definition">¶</a></dt>
+<dd><p>retval
+Print the return value for the last return of a function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_s">
+<tt class="descname">do_s</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>s(tep)
+Execute the current line, stop at the first possible occasion
+(either in a function that is called or in the current
+function).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_source">
+<tt class="descname">do_source</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>source expression
+Try to get source code for the given object and display it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_step">
+<tt class="descname">do_step</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>s(tep)
+Execute the current line, stop at the first possible occasion
+(either in a function that is called or in the current
+function).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_tbreak">
+<tt class="descname">do_tbreak</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_tbreak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_tbreak" title="Permalink to this definition">¶</a></dt>
+<dd><p>tbreak [ ([filename:]lineno | function) [, condition] ]
+Same arguments as break, but sets a temporary breakpoint: it
+is automatically deleted when first hit.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_u">
+<tt class="descname">do_u</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_u" title="Permalink to this definition">¶</a></dt>
+<dd><p>u(p) [count]
+Move the current frame count (default one) levels up in the
+stack trace (to an older frame).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_unalias">
+<tt class="descname">do_unalias</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_unalias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_unalias" title="Permalink to this definition">¶</a></dt>
+<dd><p>unalias name
+Delete the specified alias.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_undisplay">
+<tt class="descname">do_undisplay</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_undisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_undisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>undisplay [expression]</p>
+<p>Do not display the expression any more in the current frame.</p>
+<p>Without expression, clear all display expressions for the current frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_unt">
+<tt class="descname">do_unt</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_unt" title="Permalink to this definition">¶</a></dt>
+<dd><p>unt(il) [lineno]
+Without argument, continue execution until the line with a
+number greater than the current one is reached.  With a line
+number, continue execution until a line with a number greater
+or equal to that is reached.  In both cases, also stop when
+the current frame returns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_until">
+<tt class="descname">do_until</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_until" title="Permalink to this definition">¶</a></dt>
+<dd><p>unt(il) [lineno]
+Without argument, continue execution until the line with a
+number greater than the current one is reached.  With a line
+number, continue execution until a line with a number greater
+or equal to that is reached.  In both cases, also stop when
+the current frame returns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_up">
+<tt class="descname">do_up</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>u(p) [count]
+Move the current frame count (default one) levels up in the
+stack trace (to an older frame).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_w">
+<tt class="descname">do_w</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#leo.external.edb.Pdb.do_w" title="Permalink to this definition">¶</a></dt>
+<dd><p>w(here)
+Print a stack trace, with the most recent frame at the bottom.
+An arrow indicates the &#8220;current frame&#8221;, which determines the
+context of most commands.  &#8216;bt&#8217; is an alias for this command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_whatis">
+<tt class="descname">do_whatis</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_whatis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_whatis" title="Permalink to this definition">¶</a></dt>
+<dd><p>whatis arg
+Print the type of the argument.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.do_where">
+<tt class="descname">do_where</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.do_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.do_where" title="Permalink to this definition">¶</a></dt>
+<dd><p>w(here)
+Print a stack trace, with the most recent frame at the bottom.
+An arrow indicates the &#8220;current frame&#8221;, which determines the
+context of most commands.  &#8216;bt&#8217; is an alias for this command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.error">
+<tt class="descname">error</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.execRcLines">
+<tt class="descname">execRcLines</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.execRcLines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.execRcLines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.forget">
+<tt class="descname">forget</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.forget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.forget" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.format_stack_entry">
+<tt class="descname">format_stack_entry</tt><big>(</big><em>frame_lineno</em>, <em>lprefix=': '</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.format_stack_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.format_stack_entry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.handle_command_def">
+<tt class="descname">handle_command_def</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.handle_command_def"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.handle_command_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles one command line during command list definition.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.help_exec">
+<tt class="descname">help_exec</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.help_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.help_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>(!) statement
+Execute the (one-line) statement in the context of the current
+stack frame.  The exclamation point can be omitted unless the
+first word of the statement resembles a debugger command.  To
+assign to a global variable you must always prefix the command
+with a &#8216;global&#8217; command, e.g.:
+(Pdb) global list_options; list_options = [&#8216;-l&#8217;]
+(Pdb)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.help_pdb">
+<tt class="descname">help_pdb</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.help_pdb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.help_pdb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.interaction">
+<tt class="descname">interaction</tt><big>(</big><em>frame</em>, <em>traceback</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.interaction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.lineinfo">
+<tt class="descname">lineinfo</tt><big>(</big><em>identifier</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.lineinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.lineinfo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.lookupmodule">
+<tt class="descname">lookupmodule</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.lookupmodule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.lookupmodule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for break/clear parsing &#8211; may be overridden.</p>
+<p>lookupmodule() translates (possibly incomplete) file or module name
+into an absolute file name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.message">
+<tt class="descname">message</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.onecmd">
+<tt class="descname">onecmd</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.onecmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.onecmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpret the argument as though it had been typed in response
+to the prompt.</p>
+<p>Checks whether this line is typed at the normal prompt or in
+a breakpoint command list definition.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.precmd">
+<tt class="descname">precmd</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.precmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.precmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle alias expansion and &#8216;;;&#8217; separator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.preloop">
+<tt class="descname">preloop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.preloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.preloop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.print_stack_entry">
+<tt class="descname">print_stack_entry</tt><big>(</big><em>frame_lineno</em>, <em>prompt_prefix='n-&gt; '</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.print_stack_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.print_stack_entry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.print_stack_trace">
+<tt class="descname">print_stack_trace</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.print_stack_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.print_stack_trace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.setup">
+<tt class="descname">setup</tt><big>(</big><em>f</em>, <em>tb</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.sigint_handler">
+<tt class="descname">sigint_handler</tt><big>(</big><em>signum</em>, <em>frame</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.sigint_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.sigint_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.user_call">
+<tt class="descname">user_call</tt><big>(</big><em>frame</em>, <em>argument_list</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.user_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.user_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called when there is the remote possibility
+that we ever need to stop in this function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.user_exception">
+<tt class="descname">user_exception</tt><big>(</big><em>frame</em>, <em>exc_info</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.user_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.user_exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called if an exception occurs,
+but only if we are to stop at or just below this level.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.user_line">
+<tt class="descname">user_line</tt><big>(</big><em>frame</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.user_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.user_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called when we stop or break at this line.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.edb.Pdb.user_return">
+<tt class="descname">user_return</tt><big>(</big><em>frame</em>, <em>return_value</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#Pdb.user_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.Pdb.user_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called when a return trap is set here.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.edb.runeval">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">runeval</tt><big>(</big><em>expression</em>, <em>globals=None</em>, <em>locals=None</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#runeval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.runeval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.edb.runctx">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">runctx</tt><big>(</big><em>statement</em>, <em>globals</em>, <em>locals</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#runctx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.runctx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.edb.runcall">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">runcall</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#runcall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.runcall" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.edb.set_trace">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">set_trace</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#set_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.set_trace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.edb.post_mortem">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">post_mortem</tt><big>(</big><em>t=None</em><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#post_mortem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.post_mortem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="leo.external.edb.help">
+<tt class="descclassname">leo.external.edb.</tt><tt class="descname">help</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/edb.html#help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.edb.help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="ipy-leo-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">ipy_leo</span></tt> Module<a class="headerlink" href="#ipy-leo-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="leosaglobals-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">leoSAGlobals</span></tt> Module<a class="headerlink" href="#leosaglobals-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="leoftsindex-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">leoftsindex</span></tt> Module<a class="headerlink" href="#leoftsindex-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-leo.external.leosax">
+<span id="leosax-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">leosax</span></tt> Module<a class="headerlink" href="#module-leo.external.leosax" title="Permalink to this headline">¶</a></h2>
+<p>Read .leo files into a simple python data structure with
+h, b, u (unknown attribs), gnx and children information.
+Clones and derived files are ignored.  Useful for scanning
+multiple .leo files quickly.</p>
+<dl class="class">
+<dt id="leo.external.leosax.LeoReader">
+<em class="property">class </em><tt class="descclassname">leo.external.leosax.</tt><tt class="descname">LeoReader</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/leo/external/leosax.html#LeoReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.LeoReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
+<p>Read .leo files into a simple python data structure with
+h, b, u (unknown attribs), gnx and children information.
+Clones and derived files are ignored.  Useful for scanning
+multiple .leo files quickly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Ivariables :</th><td class="field-body"><dl class="first last docutils">
+<dt>root</dt>
+<dd><p class="first last">root node</p>
+</dd>
+<dt>cur</dt>
+<dd><p class="first last">used internally during SAX read</p>
+</dd>
+<dt>idx</dt>
+<dd><p class="first last">mapping from gnx to node</p>
+</dd>
+<dt><cite>in_</cite></dt>
+<dd><p class="first last">name of XML element we&#8217;re current in, used for SAX read</p>
+</dd>
+<dt>in_attr</dt>
+<dd><p class="first last">attributes of element tag we&#8217;re currentl in, used for SAX read</p>
+</dd>
+<dt>path</dt>
+<dd><p class="first last">list of nodes leading to current node</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="leo.external.leosax.LeoReader.characters">
+<tt class="descname">characters</tt><big>(</big><em>content</em><big>)</big><a class="reference internal" href="_modules/leo/external/leosax.html#LeoReader.characters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.LeoReader.characters" title="Permalink to this definition">¶</a></dt>
+<dd><p>collect body text and headlines</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.leosax.LeoReader.endElement">
+<tt class="descname">endElement</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/leo/external/leosax.html#LeoReader.endElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.LeoReader.endElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>decode unknownAttributes when t element is done</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.leosax.LeoReader.startElement">
+<tt class="descname">startElement</tt><big>(</big><em>name</em>, <em>attrs</em><big>)</big><a class="reference internal" href="_modules/leo/external/leosax.html#LeoReader.startElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.LeoReader.startElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>collect information from v and t elements</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.leosax.get_leo_data">
+<tt class="descclassname">leo.external.leosax.</tt><tt class="descname">get_leo_data</tt><big>(</big><em>source</em><big>)</big><a class="reference internal" href="_modules/leo/external/leosax.html#get_leo_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.get_leo_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the root node for the specificed .leo file (path or file)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="leo.external.leosax.node">
+<em class="property">class </em><tt class="descclassname">leo.external.leosax.</tt><tt class="descname">node</tt><a class="reference internal" href="_modules/leo/external/leosax.html#node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of a Leo node.  Root node has itself as parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Ivariables :</th><td class="field-body"><dl class="first last docutils">
+<dt>children</dt>
+<dd><p class="first last">python list of children</p>
+</dd>
+<dt>u</dt>
+<dd><p class="first last">unknownAttributes dict (decoded)</p>
+</dd>
+<dt>h</dt>
+<dd><p class="first last">headline</p>
+</dd>
+<dt>b</dt>
+<dd><p class="first last">body text</p>
+</dd>
+<dt>gnx</dt>
+<dd><p class="first last">node id</p>
+</dd>
+<dt>parent</dt>
+<dd><p class="first last">node&#8217;s parent</p>
+</dd>
+<dt>path</dt>
+<dd><p class="first last">list of nodes that lead to this one from root, including this one</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="leo.external.leosax.node.UNL">
+<tt class="descname">UNL</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/leosax.html#node.UNL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.node.UNL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the UNL string leading to this node</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.leosax.node.flat">
+<tt class="descname">flat</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/leosax.html#node.flat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.leosax.node.flat" title="Permalink to this definition">¶</a></dt>
+<dd><p>iterate this node and all its descendants in a flat list, 
+useful for finding things and building an UNL based view</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="lproto-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">lproto</span></tt> Module<a class="headerlink" href="#lproto-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-leo.external.stringlist">
+<span id="stringlist-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">stringlist</span></tt> Module<a class="headerlink" href="#module-leo.external.stringlist" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="leo.external.stringlist.SList">
+<em class="property">class </em><tt class="descclassname">leo.external.stringlist.</tt><tt class="descname">SList</tt><a class="reference internal" href="_modules/leo/external/stringlist.html#SList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.SList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></p>
+<p>List derivative with a special access attributes.</p>
+<p>These are normal string lists, but with the special attributes:</p>
+<blockquote>
+<div>.l: value as list (the list itself).
+.n: value as a string, joined on newlines.
+.s: value as a string, joined on spaces.</div></blockquote>
+<dl class="method">
+<dt id="leo.external.stringlist.SList.fields">
+<tt class="descname">fields</tt><big>(</big><em>*fields</em><big>)</big><a class="reference internal" href="_modules/leo/external/stringlist.html#SList.fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.SList.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect whitespace-separated fields from string list</p>
+<p>Allows quick awk-like usage of string lists.</p>
+<dl class="docutils">
+<dt>Example data (in var a, created by &#8216;a = !ls -l&#8217;)::</dt>
+<dd><table class="first docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-r<var>wxrwxrwx</var></span></kbd></td>
+<td>1 ville None      18 Dec 14  2006 ChangeLog</td></tr>
+</tbody>
+</table>
+<p class="last">drwxrwxrwx+ 6 ville None       0 Oct 24 18:05 IPython</p>
+</dd>
+</dl>
+<p>a.fields(0) is [&#8216;-rwxrwxrwx&#8217;, &#8216;drwxrwxrwx+&#8217;]
+a.fields(1,0) is [&#8216;1 -rwxrwxrwx&#8217;, &#8216;6 drwxrwxrwx+&#8217;]
+(note the joining by space).
+a.fields(-1) is [&#8216;ChangeLog&#8217;, &#8216;IPython&#8217;]</p>
+<p>IndexErrors are ignored.</p>
+<p>Without args, fields() just split()&#8217;s the strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="leo.external.stringlist.SList.get_list">
+<tt class="descname">get_list</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/stringlist.html#SList.get_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.SList.get_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.stringlist.SList.get_nlstr">
+<tt class="descname">get_nlstr</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/stringlist.html#SList.get_nlstr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.SList.get_nlstr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.stringlist.SList.get_spstr">
+<tt class="descname">get_spstr</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/leo/external/stringlist.html#SList.get_spstr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.SList.get_spstr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.stringlist.SList.grep">
+<tt class="descname">grep</tt><big>(</big><em>pattern</em>, <em>prune=False</em>, <em>field=None</em><big>)</big><a class="reference internal" href="_modules/leo/external/stringlist.html#SList.grep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.SList.grep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all strings matching &#8216;pattern&#8217; (a regex or callable)</p>
+<p>This is case-insensitive. If prune is true, return all items
+NOT matching the pattern.</p>
+<p>If field is specified, the match must occur in the specified
+whitespace-separated field.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">a</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="s">&#39;Cha.*log&#39;</span><span class="p">,</span> <span class="n">prune</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="s">&#39;chm&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="leo.external.stringlist.SList.l">
+<tt class="descname">l</tt><a class="headerlink" href="#leo.external.stringlist.SList.l" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.external.stringlist.SList.n">
+<tt class="descname">n</tt><a class="headerlink" href="#leo.external.stringlist.SList.n" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="leo.external.stringlist.SList.s">
+<tt class="descname">s</tt><a class="headerlink" href="#leo.external.stringlist.SList.s" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="leo.external.stringlist.SList.sort">
+<tt class="descname">sort</tt><big>(</big><em>field=None</em>, <em>nums=False</em><big>)</big><a class="reference internal" href="_modules/leo/external/stringlist.html#SList.sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.SList.sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>sort by specified fields (see fields())</p>
+<dl class="docutils">
+<dt>Example::</dt>
+<dd>a.sort(1, nums = True)</dd>
+</dl>
+<p>Sorts a by second field, in numerical order (so that 21 &gt; 3)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="leo.external.stringlist.shcmd">
+<tt class="descclassname">leo.external.stringlist.</tt><tt class="descname">shcmd</tt><big>(</big><em>cmd</em><big>)</big><a class="reference internal" href="_modules/leo/external/stringlist.html#shcmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leo.external.stringlist.shcmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute shell command, capture output to string list</p>
+</dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="leo.external.concurrent.html">concurrent Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="leo.external.concurrent.html#id1"><tt class="docutils literal"><span class="pre">concurrent</span></tt> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leo.external.concurrent.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="leo.external.concurrent.futures.html">futures Package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="leo.external.concurrent.futures.html#id1"><tt class="docutils literal"><span class="pre">futures</span></tt> Package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="leo.external.concurrent.futures.html#base-module"><tt class="docutils literal"><span class="pre">_base</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="leo.external.concurrent.futures.html#compat-module"><tt class="docutils literal"><span class="pre">_compat</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="leo.external.concurrent.futures.html#process-module"><tt class="docutils literal"><span class="pre">process</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="leo.external.concurrent.futures.html#thread-module"><tt class="docutils literal"><span class="pre">thread</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">external Package</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">external</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-leo.external.codewise"><tt class="docutils literal"><span class="pre">codewise</span></tt> Module</a><ul>
+<li><a class="reference internal" href="#why-this-module">Why this module</a></li>
+<li><a class="reference internal" href="#creating-ctags-data">Creating ctags data</a></li>
+<li><a class="reference internal" href="#using-the-autocompleter">Using the autocompleter</a></li>
+<li><a class="reference internal" href="#theory-of-operation">Theory of operation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-leo.external.edb"><tt class="docutils literal"><span class="pre">edb</span></tt> Module</a><ul>
+<li><a class="reference internal" href="#edb-the-python-debugger-pdb-modified-for-blender-by-ekr">edb: The Python Debugger Pdb, modified for blender by EKR</a></li>
+<li><a class="reference internal" href="#debugger-commands">Debugger commands</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ipy-leo-module"><tt class="docutils literal"><span class="pre">ipy_leo</span></tt> Module</a></li>
+<li><a class="reference internal" href="#leosaglobals-module"><tt class="docutils literal"><span class="pre">leoSAGlobals</span></tt> Module</a></li>
+<li><a class="reference internal" href="#leoftsindex-module"><tt class="docutils literal"><span class="pre">leoftsindex</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-leo.external.leosax"><tt class="docutils literal"><span class="pre">leosax</span></tt> Module</a></li>
+<li><a class="reference internal" href="#lproto-module"><tt class="docutils literal"><span class="pre">lproto</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-leo.external.stringlist"><tt class="docutils literal"><span class="pre">stringlist</span></tt> Module</a></li>
+<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="leo.extensions.html"
+                        title="previous chapter">extensions Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="leo.external.concurrent.html"
+                        title="next chapter">concurrent Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/leo.external.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="leo.external.concurrent.html" title="concurrent Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="leo.extensions.html" title="extensions Package"
+             >previous</a> |</li>
+        <li><a href="index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="leo.html" >leo Package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.chapter_hoist &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.chapter_hoist</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20060328125925: * @file chapter_hoist.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060328125925.1: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot; Creates hoist buttons.</span>
+
+<span class="sd">This plugin puts two buttons in the icon area: a button called &#39;Save Hoist&#39; and</span>
+<span class="sd">a button called &#39;Dehoist&#39;. The &#39;Save Hoist&#39; button hoists the presently selected</span>
+<span class="sd">node and creates a button which can later rehoist the same node. The &#39;Dehoist&#39;</span>
+<span class="sd">button performs one level of dehoisting</span>
+
+<span class="sd">Requires at least version 0.19 of mod_scripting.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">from</span> <span class="nn">leo.plugins.mod_scripting</span> <span class="kn">import</span> <span class="n">scriptingController</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;0.5&quot;</span>
+
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060328125925.3: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1 btheado: initial creation.</span>
+<span class="c"># 0.2 EKR: changed to @thin.</span>
+<span class="c"># 0.3 EKR: init now succeeds for unit tests.</span>
+<span class="c"># 0.4 EKR: use new calling sequences for sc.createIconButton.</span>
+<span class="c">#          Among other things, this creates the save-hoist commnand.</span>
+<span class="c"># 0.5 EKR: Made gui-independent.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20060328125925.4: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.chapter_hoist.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="c"># Note: call onCreate _after_ reading the .leo file.</span>
+    <span class="c"># That is, the &#39;after-create-leo-frame&#39; hook is too early!</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s">&#39;new&#39;</span><span class="p">,</span><span class="s">&#39;open2&#39;</span><span class="p">),</span><span class="n">onCreate</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ekr.20060328125925.5: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.chapter_hoist.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Handle the onCreate event in the chapterHoist plugin.&quot;&quot;&quot;</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">scriptingController</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="n">chapterHoist</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20060328125925.6: ** class chapterHoist</span></div>
+<div class="viewcode-block" id="chapterHoist"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.chapter_hoist.chapterHoist">[docs]</a><span class="k">class</span> <span class="nc">chapterHoist</span><span class="p">:</span>
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20060328125925.7: *3*  ctor</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createSaveHoistButton</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createDehoistButton</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060328125925.8: *3* createSaveHoistButton</span>
+<div class="viewcode-block" id="chapterHoist.createSaveHoistButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.chapter_hoist.chapterHoist.createSaveHoistButton">[docs]</a>    <span class="k">def</span> <span class="nf">createSaveHoistButton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">saveHoistCallback</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createChapterHoistButton</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">hoist</span><span class="p">()</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s">&#39;save-hoist&#39;</span><span class="p">,</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">saveHoistCallback</span><span class="p">,</span>
+            <span class="n">statusLine</span><span class="o">=</span><span class="s">&#39;Create hoist button current node&#39;</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="s">&#39;LightSteelBlue1&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">b</span>
+    <span class="c">#@+node:ekr.20060328125925.9: *3* createDehoistButton</span></div>
+<div class="viewcode-block" id="chapterHoist.createDehoistButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.chapter_hoist.chapterHoist.createDehoistButton">[docs]</a>    <span class="k">def</span> <span class="nf">createDehoistButton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">dehoistCallback</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">):</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">dehoist</span><span class="p">()</span>
+            <span class="k">return</span> <span class="s">&#39;break&#39;</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s">&#39;dehoist&#39;</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="n">dehoistCallback</span><span class="p">,</span>
+            <span class="n">statusLine</span><span class="o">=</span><span class="s">&#39;Dehoist&#39;</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="s">&#39;LightSteelBlue1&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">b</span>
+    <span class="c">#@+node:ekr.20060328125925.10: *3* createChapterHoistButton</span></div>
+<div class="viewcode-block" id="chapterHoist.createChapterHoistButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.chapter_hoist.chapterHoist.createChapterHoistButton">[docs]</a>    <span class="k">def</span> <span class="nf">createChapterHoistButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sc</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Generates a hoist button for the headline at the given position&#39;&#39;&#39;</span>    
+        <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+        <span class="n">buttonText</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">getButtonText</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">statusLine</span> <span class="o">=</span> <span class="s">&quot;Hoist </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">h</span>
+
+        <span class="k">def</span> <span class="nf">hoistButtonCallback</span> <span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()):</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">canDehoist</span><span class="p">()):</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">dehoist</span><span class="p">()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">hoist</span><span class="p">()</span>
+            <span class="k">return</span> <span class="s">&#39;break&#39;</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">buttonText</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="n">hoistButtonCallback</span><span class="p">,</span>
+            <span class="n">statusLine</span><span class="o">=</span><span class="n">statusLine</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="s">&#39;LightSteelBlue1&#39;</span><span class="p">)</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

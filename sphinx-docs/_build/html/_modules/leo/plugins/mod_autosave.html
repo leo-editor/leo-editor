@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.mod_autosave &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.mod_autosave</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:edream.110203113231.724: * @file mod_autosave.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060108123253: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot; Autosaves the Leo outline every so often.</span>
+
+<span class="sd">The time between saves is given by the setting, with default as shown::</span>
+
+<span class="sd">    @int mod_autosave_interval = 300</span>
+
+<span class="sd">This plugin is active only if::</span>
+
+<span class="sd">    @bool mod_autosave_active = True</span>
+
+<span class="sd"> &quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060108123141: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060108123141.1: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@nocolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1, 0.2 By Paul Paterson.</span>
+<span class="c"># 0.3 EKR:</span>
+<span class="c"># - Removed calls to g.top.</span>
+<span class="c"># - Added init function.</span>
+<span class="c"># 0.4 EKR: call g.enableIdleTimeHook() in init.</span>
+<span class="c"># 1.0 EKR: A complete rewrite:</span>
+<span class="c">#     - Don&#39;t use .ini file.  Use Leo settings, as described in the docstring.</span>
+<span class="c">#     - Separate the code into onCreate (handles settings) and onIdle.</span>
+<span class="c">#     - Use the global gDict to maintain per-commander values.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.0&quot;</span> <span class="c"># EKR: a complete rewrite using only Leo settings.</span>
+
+<span class="c"># The global settings dict.</span>
+<span class="n">gDict</span> <span class="o">=</span> <span class="p">{}</span> <span class="c"># Keys are commanders, values are settings dicts.</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20060108123141.2: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_autosave.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span> <span class="c"># Don&#39;t want autosave after unit testing.</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="c"># Register the handlers...</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span> <span class="n">__name__</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:edream.110203113231.726: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_autosave.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Handle the per-Leo-file settings.&quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">gDict</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">killed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span> <span class="k">return</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span><span class="p">:</span> <span class="k">return</span>  <span class="c"># 2011/02/28</span>
+    
+    <span class="c"># 2011/02/28: do nothing here if we already have registered the idle-time hook.</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">gDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">d</span><span class="p">:</span> <span class="k">return</span>
+
+    <span class="n">active</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;mod_autosave_active&#39;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s">&#39;mod_autosave_interval&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">active</span><span class="p">:</span>
+        <span class="c"># Create an entry in the global settings dict.</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;last&#39;</span><span class="p">:</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+            <span class="s">&#39;interval&#39;</span><span class="p">:</span><span class="n">interval</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">gDict</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">()]</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;auto save enabled every </span><span class="si">%s</span><span class="s"> sec.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">interval</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;orange&quot;</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;idle&#39;</span><span class="p">,</span><span class="n">onIdle</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">enableIdleTimeHook</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+         <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;@bool mod_autosave_active=False&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;orange&#39;</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20100904062957.10654: ** onIdle</span></div>
+<div class="viewcode-block" id="onIdle"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_autosave.onIdle">[docs]</a><span class="k">def</span> <span class="nf">onIdle</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Save the current document if it has a name&quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">gDict</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">killed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span> <span class="k">return</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span><span class="p">:</span> <span class="k">return</span> <span class="c"># 2011/02/28</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">gDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">:</span> <span class="k">return</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;last&#39;</span><span class="p">)</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;interval&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">last</span> <span class="o">&gt;=</span> <span class="n">interval</span><span class="p">:</span>
+        <span class="c"># 2010/11/16: disable autosave unless focus is in the body or Tree.</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get_focus</span><span class="p">()</span>
+        <span class="n">guiName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">guiName</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;qt&#39;</span><span class="p">,</span><span class="s">&#39;qttabs&#39;</span><span class="p">):</span>
+            <span class="n">bodyWidget</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span>
+            <span class="n">treeWidget</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">treeWidget</span> <span class="c"># QtGui.</span>
+        <span class="c">### elif guiName == &#39;tkinter&#39;:</span>
+            <span class="c"># treeWidget = c.frame.tree.canvas</span>
+            <span class="c"># bodyWidget = c.frame.body.bodyCtrl</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="c"># Only Qt and Tk gui&#39;s are supported.</span>
+        <span class="n">isBody</span> <span class="o">=</span> <span class="n">w</span> <span class="o">==</span> <span class="n">bodyWidget</span>
+        <span class="n">isTree</span> <span class="o">=</span> <span class="n">w</span> <span class="o">==</span> <span class="n">treeWidget</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
+            <span class="s">&#39;isBody: </span><span class="si">%s</span><span class="s">, isTree: </span><span class="si">%s</span><span class="s">, w: </span><span class="si">%s</span><span class="s">, bodyWidget: </span><span class="si">%s</span><span class="s">, treeWidget: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">isBody</span><span class="p">,</span><span class="n">isTree</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">bodyWidget</span><span class="p">,</span> <span class="n">treeWidget</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">mFileName</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">changed</span> <span class="ow">and</span> <span class="p">(</span><span class="n">isBody</span> <span class="ow">or</span> <span class="n">isTree</span><span class="p">):</span>
+            <span class="c"># g.trace(w)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;Autosave: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">()</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;orange&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;message: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="p">))</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">fileCommands</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">mFileName</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">set_focus</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c"># 2010/11/16: save &amp; restore focus.</span>
+        <span class="k">elif</span> <span class="n">trace</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;not changed.&#39;</span><span class="p">)</span>
+        <span class="c"># Update the global dict.</span>
+        <span class="n">d</span><span class="p">[</span><span class="s">&#39;last&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">gDict</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">()]</span> <span class="o">=</span> <span class="n">d</span>
+    <span class="k">elif</span> <span class="n">trace</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;not time&#39;</span><span class="p">,</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">())</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

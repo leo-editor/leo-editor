@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.external.leosax &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.external.leosax</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20120519121124.9919: * @file ../external/leosax.py</span>
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20120519121124.9920: ** leosax declarations</span>
+<span class="sd">&quot;&quot;&quot;Read .leo files into a simple python data structure with</span>
+<span class="sd">h, b, u (unknown attribs), gnx and children information.</span>
+<span class="sd">Clones and derived files are ignored.  Useful for scanning</span>
+<span class="sd">multiple .leo files quickly.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">xml.sax.handler</span> <span class="kn">import</span> <span class="n">ContentHandler</span>
+<span class="kn">from</span> <span class="nn">xml.sax</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">pickle</span> <span class="kn">import</span> <span class="n">loads</span>
+<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span>
+
+<span class="c">#@+node:ekr.20120519121124.9921: ** class node</span>
+<div class="viewcode-block" id="node"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.node">[docs]</a><span class="k">class</span> <span class="nc">node</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Representation of a Leo node.  Root node has itself as parent.</span>
+
+<span class="sd">    :IVariables:</span>
+<span class="sd">        children</span>
+<span class="sd">          python list of children</span>
+<span class="sd">        u</span>
+<span class="sd">          unknownAttributes dict (decoded)</span>
+<span class="sd">        h</span>
+<span class="sd">          headline</span>
+<span class="sd">        b</span>
+<span class="sd">          body text</span>
+<span class="sd">        gnx</span>
+<span class="sd">          node id</span>
+<span class="sd">        parent</span>
+<span class="sd">          node&#39;s parent</span>
+<span class="sd">        path</span>
+<span class="sd">          list of nodes that lead to this one from root, including this one</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20120519121124.9922: *3* __init__</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set ivars&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unknownAttributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span>  <span class="c"># for compatibility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gnx</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c">#@+node:ekr.20120519121124.9923: *3* __str__</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return long text representation of node and</span>
+<span class="sd">        descendents with indentation&quot;&quot;&quot;</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&quot;</span><span class="si">%s%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;  &#39;</span><span class="o">*</span><span class="p">(</span><span class="n">level</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gnx</span><span class="p">))[:</span><span class="mi">78</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">@</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="s">&#39;  &#39;</span><span class="o">*</span><span class="p">(</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">k</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">s</span><span class="p">)))[:</span><span class="mi">78</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+            <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&#39;  &#39;</span><span class="o">*</span><span class="p">(</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;|&#39;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)[:</span><span class="mi">78</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">__str__</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
+
+    <span class="c">#@+node:ekr.20120519121124.9924: *3* UNL</span>
+<div class="viewcode-block" id="node.UNL"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.node.UNL">[docs]</a>    <span class="k">def</span> <span class="nf">UNL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the UNL string leading to this node&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&#39;--&gt;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">h</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">])</span>
+
+    <span class="c">#@+node:ekr.20120519121124.9925: *3* flat</span></div>
+<div class="viewcode-block" id="node.flat"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.node.flat">[docs]</a>    <span class="k">def</span> <span class="nf">flat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;iterate this node and all its descendants in a flat list, </span>
+<span class="sd">        useful for finding things and building an UNL based view&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">yield</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">flat</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">j</span>
+
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20120519121124.9926: ** class LeoReader</span></div></div>
+<div class="viewcode-block" id="LeoReader"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.LeoReader">[docs]</a><span class="k">class</span> <span class="nc">LeoReader</span><span class="p">(</span><span class="n">ContentHandler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read .leo files into a simple python data structure with</span>
+<span class="sd">    h, b, u (unknown attribs), gnx and children information.</span>
+<span class="sd">    Clones and derived files are ignored.  Useful for scanning</span>
+<span class="sd">    multiple .leo files quickly.</span>
+
+<span class="sd">    :IVariables:</span>
+<span class="sd">        root</span>
+<span class="sd">          root node</span>
+<span class="sd">        cur</span>
+<span class="sd">          used internally during SAX read</span>
+<span class="sd">        idx</span>
+<span class="sd">          mapping from gnx to node</span>
+<span class="sd">        `in_`</span>
+<span class="sd">          name of XML element we&#39;re current in, used for SAX read</span>
+<span class="sd">        in_attr</span>
+<span class="sd">          attributes of element tag we&#39;re currentl in, used for SAX read</span>
+<span class="sd">        path</span>
+<span class="sd">          list of nodes leading to current node</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20120519121124.9927: *3* __init__</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set ivars&quot;&quot;&quot;</span>
+        <span class="n">ContentHandler</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">node</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="s">&#39;ROOT&#39;</span>  
+        <span class="c"># changes type from [] to str, done by endElement() for other vnodes</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_attrs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c">#@+node:ekr.20120519121124.9928: *3* startElement</span>
+<div class="viewcode-block" id="LeoReader.startElement"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.LeoReader.startElement">[docs]</a>    <span class="k">def</span> <span class="nf">startElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;collect information from v and t elements&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_attrs</span> <span class="o">=</span> <span class="n">attrs</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;v&#39;</span><span class="p">:</span>
+            <span class="n">nd</span> <span class="o">=</span> <span class="n">node</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nd</span><span class="p">)</span>
+            <span class="n">nd</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="n">nd</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">[</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">nd</span>
+            <span class="n">nd</span><span class="o">.</span><span class="n">gnx</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nd</span><span class="p">)</span>
+            <span class="n">nd</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">[:]</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;t&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;tx&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">[</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;tx&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="c">#@+node:ekr.20120519121124.9929: *3* endElement</span></div>
+<div class="viewcode-block" id="LeoReader.endElement"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.LeoReader.endElement">[docs]</a>    <span class="k">def</span> <span class="nf">endElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;decode unknownAttributes when t element is done&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># could maintain a stack, but we only need to know for</span>
+        <span class="c"># character collection, so it doesn&#39;t matter</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;v&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">parent</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;t&#39;</span><span class="p">:</span>
+            <span class="n">nd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">in_attrs</span><span class="p">[</span><span class="s">&#39;tx&#39;</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">nd</span><span class="o">.</span><span class="n">u</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;str_&#39;</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                <span class="n">nd</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+
+    <span class="c">#@+node:ekr.20120519121124.9930: *3* characters</span></div>
+<div class="viewcode-block" id="LeoReader.characters"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.LeoReader.characters">[docs]</a>    <span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;collect body text and headlines&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_</span> <span class="o">==</span> <span class="s">&#39;vh&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_</span> <span class="o">==</span> <span class="s">&#39;t&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">in_attrs</span><span class="p">[</span><span class="s">&#39;tx&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20120519121124.9931: ** get_leo_data</span></div></div>
+<div class="viewcode-block" id="get_leo_data"><a class="viewcode-back" href="../../../leo.external.html#leo.external.leosax.get_leo_data">[docs]</a><span class="k">def</span> <span class="nf">get_leo_data</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the root node for the specificed .leo file (path or file)&quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">LeoReader</span><span class="p">()</span>
+    <span class="n">parse</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">root</span>
+
+<span class="c">#@-others</span></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">,</span> <span class="s">&#39;.leo&#39;</span><span class="p">,</span> <span class="s">&#39;workbook.leo&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">leo_data</span> <span class="o">=</span> <span class="n">get_leo_data</span><span class="p">(</span><span class="n">wb</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">leo_data</span><span class="p">)</span>
+<span class="c">#@-leo</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
