@@ -52,6 +52,7 @@ api        IN        CNAME        leo-editor.readthedocs.org.
 That will make http://api.leoeditor.com serve up all the content from
 http://leo-editor.readthedocs.org. Completely optional, but it looks a bit
 more professional if you can have something coming off of your own domain.
+.. @+node:ekr.20130503134311.13447: *3* Fix all pylint complaints
 .. @+node:ekr.20130501035328.10473: *3* write about backward deductions
 Backward deductions are more local.  They can be used to deduce argument types.
 

@@ -404,31 +404,30 @@ class ParserBaseClass:
             self.set(p,kind,name,val)
     #@+node:tbrown.20080514112857.124: *4* doMenuat
     def doMenuat (self,p,kind,name,val):
+        
+        trace = False and not g.unitTesting
 
         if g.app.config.menusList:
-            g.es_print("Patching menu tree: " + name)
+            if trace: g.es_print("Patching menu tree: " + name)
 
             # get the patch fragment
             patch = []
             if p.hasChildren():
                 # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
                 self.doItems(p.copy(),patch)
-                self.dumpMenuTree(patch)
+                if trace: self.dumpMenuTree(patch)
 
             # setup        
             parts = name.split()
             if len(parts) != 3:
                 parts.append('subtree')
             targetPath,mode,source = parts
-            if not targetPath.startswith('/'): targetPath = '/'+targetPath
-
+            if not targetPath.startswith('/'):
+                targetPath = '/'+targetPath
             ans = self.patchMenuTree(g.app.config.menusList, targetPath)
-
             if ans:
-                g.es_print("Patching ("+mode+' '+source+") at "+targetPath)
-
+                if trace: g.es_print("Patching ("+mode+' '+source+") at "+targetPath)
                 list_, idx = ans
-
                 if mode not in ('copy', 'cut'):
                     if source != 'clipboard':
                         use = patch # [0][1]
@@ -437,7 +436,7 @@ class ParserBaseClass:
                             use = self.clipBoard
                         else:
                             use = [self.clipBoard]
-                    g.es_print(str(use))
+                    if trace: g.es_print(str(use))
                 if mode == 'replace':
                     list_[idx] = use.pop(0)
                     while use:
@@ -454,12 +453,11 @@ class ParserBaseClass:
                     del list_[idx]
                 elif mode == 'copy':
                     self.clipBoard = list_[idx]
-                    g.es_print(str(self.clipBoard))
+                    if trace: g.es_print(str(self.clipBoard))
                 else:  # append
                     list_.extend(use)
             else:
                 g.es_print("ERROR: didn't find menu path " + targetPath)
-
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
     #@+node:tbrown.20080514180046.9: *5* getName (ParserBaseClass)
