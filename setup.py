@@ -91,7 +91,6 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
 #@-others
 
-
 # Note than only *.ui matches now - add asterisks as needed/valid
 datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '*.txt', '.html',  '.iix',  '.w']
 #print data_files
@@ -100,11 +99,11 @@ datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.
 # https://testpypi.python.org/pypi?name=leo-editor&version=4.10-final&:action=submit_form
 setup(
     name = 'leo-editor',
-    version = "4.10-final",
+    version = "Leo-4.11-devel-build-5759",
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
-    #maintainer = '',
-    #maintainer_email = '',
+    maintainer = 'Matt Wilkie',
+    maintainer_email = 'maphew@gmail.com',
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "Leonine Editor with Outlines",
@@ -118,10 +117,10 @@ Requires PyQt and SIP preinstalled.
     """,
     #keywords = [],
     platforms = ['linux','windows'],
-    download_url = 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip/download',
+    download_url = 'http://sourceforge.net/projects/leo/files/Leo/',
     #bugtrack_url = 'https://bugs.launchpad.net/leo-editor',    #only py3?
 
-    # only include dependencies which can be installed by pip
+    # only include dependencies which can be installed by pip (so not PyQt or SIP)
     requires = ['docutils'],
 
     #provides = [],
