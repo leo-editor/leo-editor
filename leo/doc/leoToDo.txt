@@ -41,6 +41,17 @@ bzr ci => git commit -a
 bzr add => git add
 bzr push => git push
 bzr revert => git reset --hard
+.. @+node:ekr.20130503095554.11930: *3* Change DNS record
+@nocolor-node
+
+As for the optional subdomain thing, here's what a record for that would
+look like in BIND, if your brother is doing DNS himself:
+
+api        IN        CNAME        leo-editor.readthedocs.org.
+
+That will make http://api.leoeditor.com serve up all the content from
+http://leo-editor.readthedocs.org. Completely optional, but it looks a bit
+more professional if you can have something coming off of your own domain.
 .. @+node:ekr.20130501035328.10473: *3* write about backward deductions
 Backward deductions are more local.  They can be used to deduce argument types.
 
