@@ -1,0 +1,937 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.mod_scripting &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.mod_scripting</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20060328125248: * @file mod_scripting.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060328125248.1: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot; Creates script buttons and @button, @command, @plugin and @script</span>
+<span class="sd">nodes.</span>
+
+<span class="sd">This plugin puts buttons in the icon area. Depending on settings the plugin will</span>
+<span class="sd">create the &#39;Run Script&#39;, the &#39;Script Button&#39; and the &#39;Debug Script&#39; buttons.</span>
+
+<span class="sd">The &#39;Run Script&#39; button is simply another way of doing the Execute Script</span>
+<span class="sd">command: it executes the selected text of the presently selected node, or the</span>
+<span class="sd">entire text if no text is selected.</span>
+
+<span class="sd">The &#39;Script Button&#39; button creates *another* button in the icon area every time</span>
+<span class="sd">you push it. The name of the button is the headline of the presently selected</span>
+<span class="sd">node. Hitting this *newly created* button executes the button&#39;s script.</span>
+
+<span class="sd">For example, to run a script on any part of an outline do the following:</span>
+
+<span class="sd">1.  Select the node containing the script.</span>
+<span class="sd">2.  Press the scriptButton button.  This will create a new button.</span>
+<span class="sd">3.  Select the node on which you want to run the script.</span>
+<span class="sd">4.  Push the *new* button.</span>
+
+<span class="sd">That&#39;s all.</span>
+
+<span class="sd">For every @button node, this plugin creates two new minibuffer commands: x and</span>
+<span class="sd">delete-x-button, where x is the &#39;cleaned&#39; name of the button. The &#39;x&#39; command is</span>
+<span class="sd">equivalent to pushing the script button.</span>
+
+<span class="sd">You can specify **global buttons** in leoSettings.leo or myLeoSettings.leo by</span>
+<span class="sd">putting \@button nodes as children of an @buttons node in an \@settings trees.</span>
+<span class="sd">Such buttons are included in all open .leo (in a slightly different color).</span>
+<span class="sd">Actually, you can specify global buttons in any .leo file, but \@buttons nodes</span>
+<span class="sd">affect all later opened .leo files so usually you would define global buttons in</span>
+<span class="sd">leoSettings.leo or myLeoSettings.leo.</span>
+
+<span class="sd">The cleaned name of an @button node is the headline text of the button with:</span>
+
+<span class="sd">- Leading @button or @command removed,</span>
+<span class="sd">- @key and all following text removed,</span>
+<span class="sd">- @args and all following text removed,</span>
+<span class="sd">- all non-alphanumeric characters converted to a single &#39;-&#39; characters.</span>
+
+<span class="sd">Thus, cleaning headline text converts it to a valid minibuffer command name.</span>
+
+<span class="sd">You can delete a script button by right-clicking on it, or by</span>
+<span class="sd">executing the delete-x-button command.</span>
+
+<span class="sd">The &#39;Debug Script&#39; button runs a script using an external debugger.</span>
+
+<span class="sd">This plugin optionally scans for @button nodes, @command, @plugin nodes and</span>
+<span class="sd">@script nodes whenever a .leo file is opened.</span>
+
+<span class="sd">- @button nodes create script buttons.</span>
+<span class="sd">- @command nodes create minibuffer commands.</span>
+<span class="sd">- @plugin nodes cause plugins to be loaded.</span>
+<span class="sd">- @script nodes cause a script to be executed when opening a .leo file.</span>
+
+<span class="sd">Such nodes may be security risks. This plugin scans for such nodes only if the</span>
+<span class="sd">corresponding atButtonNodes, atPluginNodes, and atScriptNodes constants are set</span>
+<span class="sd">to True in this plugin.</span>
+
+<span class="sd">You can specify the following options in leoSettings.leo.  See the node:</span>
+<span class="sd">@settings--&gt;Plugins--&gt;scripting plugin.  Recommended defaults are shown::</span>
+
+<span class="sd">    @bool scripting-at-button-nodes = True</span>
+<span class="sd">    True: adds a button for every @button node.</span>
+
+<span class="sd">    @bool scripting-at-commands-nodes = True</span>
+<span class="sd">    True: define a minibuffer command for every @command node.</span>
+
+<span class="sd">    @bool scripting-at-plugin-nodes = False</span>
+<span class="sd">    True: dynamically loads plugins in @plugins nodes when a window is created.</span>
+
+<span class="sd">    @bool scripting-at-script-nodes = False</span>
+<span class="sd">    True: dynamically executes script in @script nodes when a window is created.</span>
+<span class="sd">    This is dangerous!</span>
+
+<span class="sd">    @bool scripting-create-debug-button = False</span>
+<span class="sd">    True: create Debug Script button.</span>
+
+<span class="sd">    @bool scripting-create-run-script-button = False</span>
+<span class="sd">    True: create Run Script button.</span>
+<span class="sd">    Note: The plugin creates the press-run-script-button regardless of this setting.</span>
+
+<span class="sd">    @bool scripting-create-script-button-button = True</span>
+<span class="sd">    True: create Script Button button in icon area.</span>
+<span class="sd">    Note: The plugin creates the press-script-button-button regardless of this setting.</span>
+
+<span class="sd">    @int scripting-max-button-size = 18</span>
+<span class="sd">    The maximum length of button names: longer names are truncated.</span>
+
+<span class="sd">You can bind key shortcuts to @button and @command nodes as follows:</span>
+
+<span class="sd">@button name @key=shortcut</span>
+
+<span class="sd">    Binds the shortcut to the script in the script button. The button&#39;s name is</span>
+<span class="sd">    &#39;name&#39;, but you can see the full headline in the status line when you move the</span>
+<span class="sd">    mouse over the button.</span>
+
+<span class="sd">@command name @key=shortcut</span>
+
+<span class="sd">    Creates a new minibuffer command and binds shortcut to it. As with @buffer</span>
+<span class="sd">    nodes, the name of the command is the cleaned name of the headline.</span>
+
+<span class="sd">This plugin is based on ideas from e&#39;s dynabutton plugin, quite possibly the</span>
+<span class="sd">most brilliant idea in Leo&#39;s history.</span>
+
+<span class="sd">You can run the script with sys.argv initialized to string values using @args.</span>
+<span class="sd">For example:</span>
+
+<span class="sd">@button test-args @args = a,b,c</span>
+
+<span class="sd">will set sys.argv to [u&#39;a&#39;,u&#39;b&#39;,u&#39;c&#39;]</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060328125248.2: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGui</span> <span class="kn">as</span> <span class="nn">leoGui</span>
+
+<span class="c"># May be set in init</span>
+<span class="n">Pmw</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c"># import os</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;2.5&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20060328125248.3: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@nocolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 2.1 EKR: Support common @button nodes in @settings trees.</span>
+<span class="c"># 2.2 EKR: Bug fix: use g.match_word rather than s.startswith to discover names.</span>
+<span class="c"># This prevents an &#39;s&#39; button from being created from @buttons nodes.</span>
+<span class="c"># 2.3 bobjack:</span>
+<span class="c">#     - added &#39;event&#39; parameter to deleteButtonCallback to support rClick menus</span>
+<span class="c">#     - exposed the scripting contoller class as</span>
+<span class="c">#          g.app.gui.ScriptingControllerClass</span>
+<span class="c"># 2.4 bobjack:</span>
+<span class="c">#     - exposed the scripting controller instance as</span>
+<span class="c">#         c.theScriptingController</span>
+<span class="c"># 2.5 EKR: call c.outerUpdate in callbacks.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c"># Fix bug: create new command if button command conflicts with existing command.</span>
+<span class="c"># This would fix an unbounded recursion.</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20060328125248.4: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">createQtGui</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+
+    <span class="c"># This plugin is now gui-independent.            </span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span> <span class="ow">and</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;qt&#39;</span><span class="p">,</span><span class="s">&#39;qttabs&#39;</span><span class="p">,</span><span class="s">&#39;nullGui&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="s">&#39;ScriptingControllerClass&#39;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span> <span class="ow">is</span> <span class="n">leoGui</span><span class="o">.</span><span class="n">nullScriptingControllerClass</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">scriptingController</span><span class="p">)</span>
+
+        <span class="c"># Note: call onCreate _after_ reading the .leo file.</span>
+        <span class="c"># That is, the &#39;after-create-leo-frame&#39; hook is too early!</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s">&#39;new&#39;</span><span class="p">,</span><span class="s">&#39;open2&#39;</span><span class="p">),</span><span class="n">onCreate</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:ekr.20060328125248.5: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Handle the onCreate event in the mod_scripting plugin.&quot;&quot;&quot;</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="c"># g.trace(&#39;mod_scripting&#39;,c)</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">ScriptingControllerClass</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">theScriptingController</span> <span class="o">=</span> <span class="n">sc</span>
+        <span class="n">sc</span><span class="o">.</span><span class="n">createAllButtons</span><span class="p">()</span>
+<span class="c">#@+node:ekr.20060328125248.6: ** class scriptingController</span></div>
+<div class="viewcode-block" id="scriptingController"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController">[docs]</a><span class="k">class</span> <span class="nc">scriptingController</span><span class="p">:</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20060328125248.7: *3*  ctor</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">iconBar</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gui</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">gui</span>
+        <span class="n">getBool</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scanned</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s">&#39;debugger_kind&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&#39;idle&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonsDict</span> <span class="o">=</span> <span class="p">{}</span> <span class="c"># Keys are buttons, values are button names (strings).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debuggerKind</span> <span class="o">=</span> <span class="n">kind</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">atButtonNodes</span> <span class="o">=</span> <span class="n">getBool</span><span class="p">(</span><span class="s">&#39;scripting-at-button-nodes&#39;</span><span class="p">)</span>
+            <span class="c"># True: adds a button for every @button node.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atCommandsNodes</span> <span class="o">=</span> <span class="n">getBool</span><span class="p">(</span><span class="s">&#39;scripting-at-commands-nodes&#39;</span><span class="p">)</span>
+            <span class="c"># True: define a minibuffer command for every @command node.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atPluginNodes</span> <span class="o">=</span> <span class="n">getBool</span><span class="p">(</span><span class="s">&#39;scripting-at-plugin-nodes&#39;</span><span class="p">)</span>
+            <span class="c"># True: dynamically loads plugins in @plugins nodes when a window is created.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atScriptNodes</span> <span class="o">=</span> <span class="n">getBool</span><span class="p">(</span><span class="s">&#39;scripting-at-script-nodes&#39;</span><span class="p">)</span>
+            <span class="c"># True: dynamically executes script in @script nodes when a window is created.  DANGEROUS!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createDebugButton</span> <span class="o">=</span> <span class="n">getBool</span><span class="p">(</span><span class="s">&#39;scripting-create-debug-button&#39;</span><span class="p">)</span>
+            <span class="c"># True: create Debug Script button.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createRunScriptButton</span> <span class="o">=</span> <span class="n">getBool</span><span class="p">(</span><span class="s">&#39;scripting-create-run-script-button&#39;</span><span class="p">)</span>
+            <span class="c"># True: create Run Script button.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createScriptButtonButton</span> <span class="o">=</span> <span class="n">getBool</span><span class="p">(</span><span class="s">&#39;scripting-create-script-button-button&#39;</span><span class="p">)</span>
+            <span class="c"># True: create Script Button button.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxButtonSize</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="s">&#39;scripting-max-button-size&#39;</span><span class="p">)</span>
+            <span class="c"># Maximum length of button names.</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">iconBar</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iconBar</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">getIconBarObject</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iconBar</span> <span class="o">=</span> <span class="n">iconBar</span>
+    <span class="c">#@+node:ekr.20060328125248.8: *3* createAllButtons &amp; helpers</span>
+<div class="viewcode-block" id="scriptingController.createAllButtons"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createAllButtons">[docs]</a>    <span class="k">def</span> <span class="nf">createAllButtons</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Scans the outline looking for @button, @command, @plugin and @script nodes.&#39;&#39;&#39;</span>
+        
+        <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">match_word</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scanned</span><span class="p">:</span> <span class="k">return</span> <span class="c"># Not really needed, but can&#39;t hurt.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scanned</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="c"># First, create standard buttons.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">createRunScriptButton</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createRunScriptIconButton</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">createScriptButtonButton</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createScriptButtonIconButton</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">createDebugButton</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createDebugIconButton</span><span class="p">()</span>
+        <span class="c"># Next, create common buttons and commands.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createCommonButtons</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createCommonCommands</span><span class="p">()</span>
+        
+        <span class="c"># Last, scan for user-defined nodes.</span>
+        
+            
+        <span class="c"># 2011/10/20: honor @ignore here.</span>
+        <span class="c"># for p in c.all_positions():</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">rootPosition</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">isAtIgnoreNode</span><span class="p">():</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">moveToNodeAfterTree</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">atButtonNodes</span> <span class="ow">and</span> <span class="n">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="s">&#39;@button&#39;</span><span class="p">):</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">handleAtButtonNode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">atCommandsNodes</span> <span class="ow">and</span> <span class="n">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="s">&#39;@command&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">handleAtCommandNode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">atPluginNodes</span> <span class="ow">and</span> <span class="n">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="s">&#39;@plugin&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">handleAtPluginNode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">atScriptNodes</span> <span class="ow">and</span> <span class="n">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="s">&#39;@script&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">handleAtScriptNode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">moveToThreadNext</span><span class="p">()</span>
+
+    <span class="c">#@+node:ekr.20080312071248.1: *4* createCommonButtons &amp; helper</span></div>
+<div class="viewcode-block" id="scriptingController.createCommonButtons"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createCommonButtons">[docs]</a>    <span class="k">def</span> <span class="nf">createCommonButtons</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">batchMode</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">())</span>
+
+        <span class="n">buttons</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getButtons</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">buttons</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">buttons</span><span class="p">:</span>
+                <span class="n">p</span><span class="p">,</span><span class="n">script</span> <span class="o">=</span> <span class="n">z</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+                <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;global @button&#39;</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handleAtButtonSetting</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">script</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20070926084600: *5* handleAtButtonSetting &amp; helper</span></div>
+<div class="viewcode-block" id="scriptingController.handleAtButtonSetting"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.handleAtButtonSetting">[docs]</a>    <span class="k">def</span> <span class="nf">handleAtButtonSetting</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">script</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create a button in the icon area for a common @button node in an @setting tree.</span>
+
+<span class="sd">        An optional @key=shortcut defines a shortcut that is bound to the button&#39;s script.</span>
+<span class="sd">        The @key=shortcut does not appear in the button&#39;s name, but</span>
+<span class="sd">        it *does* appear in the status line shown when the mouse moves over the button.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">shortcut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShortcut</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">statusLine</span> <span class="o">=</span> <span class="s">&#39;Global script button&#39;</span>
+        <span class="k">if</span> <span class="n">shortcut</span><span class="p">:</span>
+            <span class="n">statusLine</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> = </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">statusLine</span><span class="p">,</span><span class="n">shortcut</span><span class="p">)</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createAtButtonFromSettingHelper</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="n">statusLine</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20070926085149: *6* createAtButtonFromSettingHelper &amp; callback</span></div>
+<div class="viewcode-block" id="scriptingController.createAtButtonFromSettingHelper"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createAtButtonFromSettingHelper">[docs]</a>    <span class="k">def</span> <span class="nf">createAtButtonFromSettingHelper</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="n">statusLine</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="s">&#39;LightSteelBlue2&#39;</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create a button from an @button node.</span>
+
+<span class="sd">        - Calls createIconButton to do all standard button creation tasks.</span>
+<span class="sd">        - Binds button presses to a callback that executes the script.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="c"># We must define the callback *after* defining b,</span>
+        <span class="c"># so set both command and shortcut to None here.</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">statusLine</span><span class="o">=</span><span class="n">statusLine</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">b</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="c"># Now that b is defined we can define the callback.</span>
+        <span class="c"># Yes, the callback *does* use b (to delete b if requested by the script).</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArgs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">buttonText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanButtonText</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">atSettingButtonCallback</span> <span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">script</span><span class="o">=</span><span class="n">script</span><span class="p">,</span><span class="n">buttonText</span><span class="o">=</span><span class="n">buttonText</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">executeScriptFromSettingButton</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="n">buttonText</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">outerUpdate</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">iconBar</span><span class="o">.</span><span class="n">setCommandForButton</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">atSettingButtonCallback</span><span class="p">)</span>
+
+        <span class="c"># At last we can define the command.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registerTwoCommands</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">atSettingButtonCallback</span><span class="p">,</span>
+            <span class="n">pane</span><span class="o">=</span><span class="s">&#39;button&#39;</span><span class="p">,</span><span class="n">tag</span><span class="o">=</span><span class="s">&#39;@button&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">b</span>
+    <span class="c">#@+node:ekr.20070926085149.1: *7* executeScriptFromSettingButton (mod_scripting)</span></div>
+<div class="viewcode-block" id="scriptingController.executeScriptFromSettingButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.executeScriptFromSettingButton">[docs]</a>    <span class="k">def</span> <span class="nf">executeScriptFromSettingButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="n">buttonText</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Called from callbacks to execute the script in node p.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">disableCommandsMessage</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">blue</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">disableCommandsMessage</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptDict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">script</span><span class="o">=</span><span class="n">script</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="c"># Remove the button if the script asks to be removed.</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;removeMe&#39;</span><span class="p">):</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Removing &#39;</span><span class="si">%s</span><span class="s">&#39; button at its request&quot;</span> <span class="o">%</span> <span class="n">buttonText</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deleteButton</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># Do *not* set focus here: the script may have changed the focus.</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20080312071248.2: *4* createCommonCommands (mod_scripting)</span></div>
+<div class="viewcode-block" id="scriptingController.createCommonCommands"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createCommonCommands">[docs]</a>    <span class="k">def</span> <span class="nf">createCommonCommands</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">k</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">k</span>
+
+        <span class="c"># trace = True and not g.app.unitTesting # and not g.app.batchMode</span>
+        <span class="n">aList</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getCommands</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">aList</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">aList</span><span class="p">:</span>
+                <span class="n">p</span><span class="p">,</span><span class="n">script</span> <span class="o">=</span> <span class="n">z</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArgs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        
+                <span class="k">def</span> <span class="nf">commonCommandCallback</span> <span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">script</span><span class="o">=</span><span class="n">script</span><span class="p">):</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">script</span><span class="o">=</span><span class="n">script</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                    
+                <span class="bp">self</span><span class="o">.</span><span class="n">registerTwoCommands</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">commonCommandCallback</span><span class="p">,</span>
+                    <span class="n">pane</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span><span class="n">tag</span><span class="o">=</span><span class="s">&#39;global @command&#39;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060328125248.20: *4* createRunScriptIconButton &#39;run-script&#39; &amp; callback</span></div>
+<div class="viewcode-block" id="scriptingController.createRunScriptIconButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createRunScriptIconButton">[docs]</a>    <span class="k">def</span> <span class="nf">createRunScriptIconButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create the &#39;run-script&#39; button and the run-script command.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s">&#39;run-script&#39;</span><span class="p">,</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runScriptCommand</span><span class="p">,</span>
+            <span class="n">statusLine</span><span class="o">=</span><span class="s">&#39;Run script in selected node&#39;</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="s">&#39;MistyRose1&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="c">#@+node:ekr.20060328125248.21: *5* runScriptCommand (mod_scripting)</span></div>
+<div class="viewcode-block" id="scriptingController.runScriptCommand"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.runScriptCommand">[docs]</a>    <span class="k">def</span> <span class="nf">runScriptCommand</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Called when user presses the &#39;run-script&#39; button or executes the run-script command.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArgs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">useSelectedText</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># Do not assume the script will want to remain in this commander.</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060522105937: *4* createDebugIconButton &#39;debug-script&#39; &amp; callback</span></div>
+<div class="viewcode-block" id="scriptingController.createDebugIconButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createDebugIconButton">[docs]</a>    <span class="k">def</span> <span class="nf">createDebugIconButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create the &#39;debug-script&#39; button and the debug-script command.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s">&#39;debug-script&#39;</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runDebugScriptCommand</span><span class="p">,</span>
+            <span class="n">statusLine</span><span class="o">=</span><span class="s">&#39;Debug script in selected node&#39;</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="s">&#39;MistyRose1&#39;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060522105937.1: *5* runDebugScriptCommand</span></div>
+<div class="viewcode-block" id="scriptingController.runDebugScriptCommand"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.runDebugScriptCommand">[docs]</a>    <span class="k">def</span> <span class="nf">runDebugScriptCommand</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Called when user presses the &#39;debug-script&#39; button or executes the debug-script command.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+
+        <span class="n">script</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">getScript</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">useSelectedText</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">useSentinels</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">script</span><span class="p">:</span>
+            <span class="c">#@+&lt;&lt; set debugging if debugger is active &gt;&gt;</span>
+            <span class="c">#@+node:ekr.20060523084441: *6* &lt;&lt; set debugging if debugger is active &gt;&gt;</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">debuggerKind</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debuggerKind</span> <span class="o">==</span> <span class="s">&#39;winpdb&#39;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="kn">import</span> <span class="nn">rpdb2</span>
+                    <span class="n">debugging</span> <span class="o">=</span> <span class="n">rpdb2</span><span class="o">.</span><span class="n">g_debugger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+                <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                    <span class="n">debugging</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">debuggerKind</span> <span class="o">==</span> <span class="s">&#39;idle&#39;</span><span class="p">:</span>
+                <span class="c"># import idlelib.Debugger.py as Debugger</span>
+                <span class="c"># debugging = Debugger.interacting</span>
+                <span class="n">debugging</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">debugging</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="c">#@-&lt;&lt; set debugging if debugger is active &gt;&gt;</span>
+            <span class="k">if</span> <span class="n">debugging</span><span class="p">:</span>
+                <span class="c">#@+&lt;&lt; create leoScriptModule &gt;&gt;</span>
+                <span class="c">#@+node:ekr.20060524073716: *6* &lt;&lt; create leoScriptModule &gt;&gt;</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="s">&#39;leoScriptModule.py&#39;</span><span class="p">)</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">f</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;# A module holding the script to be debugged.</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debuggerKind</span> <span class="o">==</span> <span class="s">&#39;idle&#39;</span><span class="p">:</span>
+                        <span class="c"># This works, but uses the lame pdb debugger.</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;import pdb</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;pdb.set_trace() # Hard breakpoint.</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">debuggerKind</span> <span class="o">==</span> <span class="s">&#39;winpdb&#39;</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;import rpdb2</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;if rpdb2.g_debugger is not None: # don</span><span class="se">\&#39;</span><span class="s">t hang if the debugger isn</span><span class="se">\&#39;</span><span class="s">t running.</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;  rpdb2.start_embedded_debugger(pwd=&quot;&quot;,fAllowUnencrypted=True) # Hard breakpoint.</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="c"># f.write(&#39;# Remove all previous variables.\n&#39;)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;# Predefine c, g and p.</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;import leo.core.leoGlobals as g</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;c = g.app.scriptDict.get(&quot;c&quot;)</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;p = c.p</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;# Actual script starts here.</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">script</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="c">#@-&lt;&lt; create leoScriptModule &gt;&gt;</span>
+                <span class="c"># pylint: disable=E0611</span>
+                <span class="c"># E0611:runDebugScriptCommand: No name &#39;leoScriptModule&#39; in module &#39;leo.core&#39;</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptDict</span> <span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
+                <span class="k">if</span> <span class="s">&#39;leoScriptModule&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span> <span class="p">[</span><span class="s">&#39;leoScriptModule&#39;</span><span class="p">]</span> <span class="c"># Essential.</span>
+                <span class="kn">import</span> <span class="nn">leo.core.leoScriptModule</span> <span class="kn">as</span> <span class="nn">leoScriptModule</span>      
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;No debugger active&#39;</span><span class="p">)</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060328125248.22: *4* createScriptButtonIconButton &#39;script-button&#39; &amp; callback</span></div>
+<div class="viewcode-block" id="scriptingController.createScriptButtonIconButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createScriptButtonIconButton">[docs]</a>    <span class="k">def</span> <span class="nf">createScriptButtonIconButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create the &#39;script-button&#39; button and the script-button command.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s">&#39;script-button&#39;</span><span class="p">,</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addScriptButtonCommand</span><span class="p">,</span>
+            <span class="n">statusLine</span><span class="o">=</span><span class="s">&#39;Make script button from selected node&#39;</span><span class="p">,</span>
+            <span class="n">bg</span><span class="o">=</span><span class="s">&quot;#ffffcc&quot;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060328125248.23: *5* addScriptButtonCommand</span></div>
+<div class="viewcode-block" id="scriptingController.addScriptButtonCommand"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.addScriptButtonCommand">[docs]</a>    <span class="k">def</span> <span class="nf">addScriptButtonCommand</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Called when the user presses the &#39;script-button&#39; button or executes the script-button command.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="p">;</span> <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+        <span class="n">buttonText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getButtonText</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">shortcut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShortcut</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">statusLine</span> <span class="o">=</span> <span class="s">&quot;Run Script: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">buttonText</span>
+        <span class="k">if</span> <span class="n">shortcut</span><span class="p">:</span>
+            <span class="n">statusLine</span> <span class="o">=</span> <span class="n">statusLine</span> <span class="o">+</span> <span class="s">&quot; @key=&quot;</span> <span class="o">+</span> <span class="n">shortcut</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createAtButtonHelper</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">statusLine</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="s">&#39;MistyRose1&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060328125248.12: *4* handleAtButtonNode @button</span></div>
+<div class="viewcode-block" id="scriptingController.handleAtButtonNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.handleAtButtonNode">[docs]</a>    <span class="k">def</span> <span class="nf">handleAtButtonNode</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create a button in the icon area for an @button node.</span>
+
+<span class="sd">        An optional @key=shortcut defines a shortcut that is bound to the button&#39;s script.</span>
+<span class="sd">        The @key=shortcut does not appear in the button&#39;s name, but</span>
+<span class="sd">        it *does* appear in the statutus line shown when the mouse moves over the button.&#39;&#39;&#39;</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">batchMode</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+        <span class="n">shortcut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShortcut</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">docstring</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">getDocString</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">statusLine</span> <span class="o">=</span> <span class="n">docstring</span> <span class="k">if</span> <span class="n">docstring</span> <span class="k">else</span> <span class="s">&#39;Local script button&#39;</span>
+        <span class="k">if</span> <span class="n">shortcut</span><span class="p">:</span>
+            <span class="n">statusLine</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> = </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">statusLine</span><span class="p">,</span><span class="n">shortcut</span><span class="p">)</span>
+            
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">atLocalButtonsList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="c"># g.trace(c.config,p.h)</span>
+
+        <span class="c"># This helper is also called by the script-button callback.</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;local @command&#39;</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createAtButtonHelper</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">statusLine</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060328125248.10: *4* handleAtCommandNode @command (mod_scripting)</span></div>
+<div class="viewcode-block" id="scriptingController.handleAtCommandNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.handleAtCommandNode">[docs]</a>    <span class="k">def</span> <span class="nf">handleAtCommandNode</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Handle @command name [@key[=]shortcut].&#39;&#39;&#39;</span>
+
+        <span class="c"># trace = True and not g.app.unitTesting # and not g.app.batchMode</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">k</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">keyHandler</span> <span class="p">;</span> <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">h</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span> <span class="k">return</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArgs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">atCommandCallback</span> <span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()):</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">registerTwoCommands</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">atCommandCallback</span><span class="p">,</span>
+            <span class="n">pane</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span><span class="n">tag</span><span class="o">=</span><span class="s">&#39;local @command&#39;</span><span class="p">)</span>
+            
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">atLocalCommandsList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="c"># g.trace(c.config,p.h)</span>
+    <span class="c">#@+node:ekr.20060328125248.13: *4* handleAtPluginNode @plugin</span></div>
+<div class="viewcode-block" id="scriptingController.handleAtPluginNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.handleAtPluginNode">[docs]</a>    <span class="k">def</span> <span class="nf">handleAtPluginNode</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Handle @plugin nodes.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="s">&quot;@plugin&quot;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">tag</span><span class="p">))</span>
+
+        <span class="c"># Get the name of the module.</span>
+        <span class="n">theFile</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">theFile</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s">&quot;.py&quot;</span><span class="p">:</span>
+            <span class="n">theFile</span> <span class="o">=</span> <span class="n">theFile</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">theFile</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">theFile</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">atPluginNodes</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;disabled @plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">theFile</span><span class="p">))</span>
+        <span class="c"># elif theFile in g.app.loadedPlugins:</span>
+        <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">pluginIsLoaded</span><span class="p">(</span><span class="n">theFile</span><span class="p">):</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;plugin already loaded: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">theFile</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">theModule</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">loadOnePlugin</span><span class="p">(</span><span class="n">theFile</span><span class="p">)</span>
+
+    <span class="c">#@+node:ekr.20060328125248.14: *4* handleAtScriptNode @script (mod_scripting)</span></div>
+<div class="viewcode-block" id="scriptingController.handleAtScriptNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.handleAtScriptNode">[docs]</a>    <span class="k">def</span> <span class="nf">handleAtScriptNode</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Handle @script nodes.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="s">&quot;@script&quot;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">tag</span><span class="p">))</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArgs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">atScriptNodes</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">blue</span><span class="p">(</span><span class="s">&quot;executing script </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">useSelectedText</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;disabled @script: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># Do not assume the script will want to remain in this commander.</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20061014075212: *3* Utils</span>
+    <span class="c">#@+node:ekr.20060929135558: *4* cleanButtonText</span></div>
+<div class="viewcode-block" id="scriptingController.cleanButtonText"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.cleanButtonText">[docs]</a>    <span class="k">def</span> <span class="nf">cleanButtonText</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">minimal</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Clean the text following @button or @command so that it is a valid name of a minibuffer command.&#39;&#39;&#39;</span>
+
+        <span class="c"># 2011/10/16: Delete {tag}</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;{&#39;</span><span class="p">),</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;}&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">minimal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;@key&#39;</span><span class="p">,</span><span class="s">&#39;@args&#39;</span><span class="p">,):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;@&#39;</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="mi">1</span><span class="p">:</span> <span class="c"># Not great, but spaces, etc. interfere with tab completion.</span>
+            <span class="c"># 2011/10/16 *do* allow &#39;@&#39; sign.</span>
+            <span class="n">chars</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span> <span class="o">+</span> <span class="s">&#39;@&#39;</span><span class="p">)</span>
+            <span class="n">aList</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">ch</span> <span class="ow">in</span> <span class="n">chars</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">aList</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;--&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">while</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060328125248.24: *4* createAtButtonHelper &amp; callback</span></div>
+<div class="viewcode-block" id="scriptingController.createAtButtonHelper"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createAtButtonHelper">[docs]</a>    <span class="k">def</span> <span class="nf">createAtButtonHelper</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">statusLine</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="s">&#39;LightSteelBlue1&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create a button from an @button node.</span>
+
+<span class="sd">        - Calls createIconButton to do all standard button creation tasks.</span>
+<span class="sd">        - Binds button presses to a callback that executes the script in node p.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="c"># trace = True and not g.unitTesting</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">k</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">k</span>
+        
+        <span class="n">buttonText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanButtonText</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">minimal</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="c"># We must define the callback *after* defining b,</span>
+        <span class="c"># so set both command and shortcut to None here.</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createIconButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="n">command</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">statusLine</span><span class="o">=</span><span class="n">statusLine</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">b</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="c"># Now that b is defined we can define the callback.</span>
+        <span class="c"># Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).</span>
+        <span class="c"># 20100518 - TNB replace callback function with callable class instance</span>
+        <span class="c">#   so qt gui can add &#39;Goto Script&#39; command to context menu for button</span>
+        <span class="k">class</span> <span class="nc">atButtonCallback</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">controller</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">buttonText</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">controller</span> <span class="o">=</span> <span class="n">controller</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">buttonText</span> <span class="o">=</span> <span class="n">buttonText</span>
+
+            <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">executeScriptFromButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonText</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">exists</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">outerUpdate</span><span class="p">()</span>
+                
+            <span class="c"># 2011/10/17: Add support for docstrings.</span>
+            <span class="k">def</span> <span class="nf">docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">getDocString</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">atButtonCallback</span><span class="p">(</span><span class="n">controller</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">buttonText</span><span class="o">=</span><span class="n">buttonText</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">iconBar</span><span class="o">.</span><span class="n">setCommandForButton</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">cb</span><span class="p">)</span>
+
+        <span class="c"># At last we can define the command and use the shortcut.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registerTwoCommands</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">cb</span><span class="p">,</span><span class="n">pane</span><span class="o">=</span><span class="s">&#39;button&#39;</span><span class="p">,</span><span class="n">tag</span><span class="o">=</span><span class="s">&#39;local @button&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">b</span>
+    <span class="c">#@+node:ekr.20060328125248.28: *5* executeScriptFromButton (mod_scripting)</span></div>
+<div class="viewcode-block" id="scriptingController.executeScriptFromButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.executeScriptFromButton">[docs]</a>    <span class="k">def</span> <span class="nf">executeScriptFromButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">buttonText</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Called from callbacks to execute the script in node p.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">disableCommandsMessage</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">blue</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">disableCommandsMessage</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptDict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getArgs</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="c"># Remove the button if the script asks to be removed.</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;removeMe&#39;</span><span class="p">):</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Removing &#39;</span><span class="si">%s</span><span class="s">&#39; button at its request&quot;</span> <span class="o">%</span> <span class="n">buttonText</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deleteButton</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># Do *not* set focus here: the script may have changed the focus.</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20060328125248.17: *4* createIconButton</span></div>
+<div class="viewcode-block" id="scriptingController.createIconButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createIconButton">[docs]</a>    <span class="k">def</span> <span class="nf">createIconButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">command</span><span class="p">,</span><span class="n">statusLine</span><span class="p">,</span><span class="n">bg</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create an icon button.  All icon buttons get created using this utility.</span>
+
+<span class="sd">        - Creates the actual button and its balloon.</span>
+<span class="sd">        - Adds the button to buttonsDict.</span>
+<span class="sd">        - Registers command with the shortcut.</span>
+<span class="sd">        - Creates x amd delete-x-button commands, where x is the cleaned button name.</span>
+<span class="sd">        - Binds a right-click in the button to a callback that deletes the button.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">k</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">k</span>
+
+        <span class="c"># Create the button and add it to the buttons dict.</span>
+        <span class="n">commandName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanButtonText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="c"># Truncate only the text of the button, not the command name.</span>
+        <span class="n">truncatedText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncateButtonText</span><span class="p">(</span><span class="n">commandName</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">truncatedText</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> ignored: no cleaned text&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="c"># Command may be None.</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iconBar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">truncatedText</span><span class="p">,</span><span class="n">command</span><span class="o">=</span><span class="n">command</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">b</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonsDict</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">truncatedText</span>
+
+        <span class="k">if</span> <span class="n">statusLine</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createBalloon</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">statusLine</span><span class="p">)</span>
+
+        <span class="c"># Register the command name if it exists.</span>
+        <span class="k">if</span> <span class="n">command</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registerTwoCommands</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">command</span><span class="p">,</span>
+                <span class="n">pane</span><span class="o">=</span><span class="s">&#39;button&#39;</span><span class="p">,</span><span class="n">tag</span><span class="o">=</span><span class="s">&#39;icon button&#39;</span><span class="p">)</span>
+
+        <span class="c"># Define the callback used to delete the button.</span>
+        <span class="k">def</span> <span class="nf">deleteButtonCallback</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deleteButton</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="c"># Register the delete-x-button command.</span>
+        <span class="n">deleteCommandName</span><span class="o">=</span> <span class="s">&#39;delete-</span><span class="si">%s</span><span class="s">-button&#39;</span> <span class="o">%</span> <span class="n">commandName</span>
+        <span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="n">deleteCommandName</span><span class="p">,</span><span class="n">shortcut</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">deleteButtonCallback</span><span class="p">,</span><span class="n">pane</span><span class="o">=</span><span class="s">&#39;button&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="c"># Reporting this command is way too annoying.</span>
+
+        <span class="k">return</span> <span class="n">b</span>
+    <span class="c">#@+node:ekr.20060522104419.1: *4* createBalloon (gui-dependent)</span></div>
+<div class="viewcode-block" id="scriptingController.createBalloon"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.createBalloon">[docs]</a>    <span class="k">def</span> <span class="nf">createBalloon</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">label</span><span class="p">):</span>
+
+        <span class="s">&#39;Create a balloon for a widget.&#39;</span>
+
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;qt&#39;</span><span class="p">):</span>
+            <span class="c"># w is a leoIconBarButton.</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">button</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20060328125248.26: *4* deleteButton</span></div>
+<div class="viewcode-block" id="scriptingController.deleteButton"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.deleteButton">[docs]</a>    <span class="k">def</span> <span class="nf">deleteButton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">button</span><span class="p">,</span><span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Delete the given button.</span>
+<span class="sd">        This is called from callbacks, it is not a callback.&quot;&quot;&quot;</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="n">button</span>
+
+        <span class="k">if</span> <span class="n">button</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">buttonsDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">buttonsDict</span><span class="p">[</span><span class="n">w</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iconBar</span><span class="o">.</span><span class="n">deleteButton</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">bodyWantsFocus</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20080813064908.4: *4* getArgs</span></div>
+<div class="viewcode-block" id="scriptingController.getArgs"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.getArgs">[docs]</a>    <span class="k">def</span> <span class="nf">getArgs</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">h</span><span class="p">):</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">;</span> <span class="n">tag</span> <span class="o">=</span> <span class="s">&#39;@args&#39;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">skip_ws</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+            <span class="c"># 2011/10/16: Make &#39;=&#39; sign optional.</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">):</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+
+        <span class="c"># g.trace(&#39;args&#39;,repr(args))</span>
+        <span class="k">return</span> <span class="n">args</span>
+    <span class="c">#@+node:ekr.20060328125248.15: *4* getButtonText</span></div>
+<div class="viewcode-block" id="scriptingController.getButtonText"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.getButtonText">[docs]</a>    <span class="k">def</span> <span class="nf">getButtonText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">h</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Returns the button text found in the given headline string&#39;&#39;&#39;</span>
+
+        <span class="n">tag</span> <span class="o">=</span> <span class="s">&quot;@button&quot;</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">match_word</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">tag</span><span class="p">):</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;@key&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">buttonText</span> <span class="o">=</span> <span class="n">h</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">buttonText</span> <span class="o">=</span> <span class="n">h</span>
+
+        <span class="n">fullButtonText</span> <span class="o">=</span> <span class="n">buttonText</span>
+        <span class="k">return</span> <span class="n">buttonText</span>
+    <span class="c">#@+node:ekr.20060328125248.16: *4* getShortcut</span></div>
+<div class="viewcode-block" id="scriptingController.getShortcut"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.getShortcut">[docs]</a>    <span class="k">def</span> <span class="nf">getShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">h</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Returns the keyboard shortcut from the given headline string&#39;&#39;&#39;</span>
+
+        <span class="n">shortcut</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;@key&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">skip_ws</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="s">&#39;@key&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">):</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">shortcut</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">shortcut</span>
+    <span class="c">#@+node:ekr.20120301114648.9932: *4* registerTwoCommands</span></div>
+<div class="viewcode-block" id="scriptingController.registerTwoCommands"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.registerTwoCommands">[docs]</a>    <span class="k">def</span> <span class="nf">registerTwoCommands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">func</span><span class="p">,</span><span class="n">pane</span><span class="p">,</span><span class="n">tag</span><span class="p">):</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span>
+
+        <span class="n">shortcut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShortcut</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanButtonText</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
+            <span class="n">pane</span><span class="o">=</span><span class="n">pane</span><span class="p">,</span><span class="n">shortcut</span><span class="o">=</span><span class="n">shortcut</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">trace</span><span class="p">)</span>
+            
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;@button-&#39;</span><span class="p">,</span><span class="s">&#39;@command-&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="c"># Create a *second* func, to avoid collision in c.commandsDict.</span>
+                <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="s">&#39;@button&#39;</span><span class="p">:</span>
+                    <span class="k">def</span> <span class="nf">atButtonCallBack</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">):</span>
+                        <span class="n">func</span><span class="p">()</span>
+                    <span class="n">cb</span> <span class="o">=</span> <span class="n">atButtonCallBack</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">def</span> <span class="nf">atCommandCallBack</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">):</span>
+                        <span class="n">func</span><span class="p">()</span>
+                    <span class="n">cb</span> <span class="o">=</span> <span class="n">atCommandCallBack</span>
+                <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;second&#39;</span><span class="p">,</span><span class="n">command</span><span class="p">)</span>
+                <span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="n">func</span><span class="o">=</span><span class="n">cb</span><span class="p">,</span>
+                    <span class="n">pane</span><span class="o">=</span><span class="n">pane</span><span class="p">,</span><span class="n">shortcut</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">trace</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20061015125212: *4* truncateButtonText</span></div>
+<div class="viewcode-block" id="scriptingController.truncateButtonText"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_scripting.scriptingController.truncateButtonText">[docs]</a>    <span class="k">def</span> <span class="nf">truncateButtonText</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+        
+        <span class="c"># 2011/10/16: Remove @button here only.</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">g</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s">&#39;@&#39;</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">match_word</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s">&#39;button&#39;</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">6</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxButtonSize</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">maxButtonSize</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

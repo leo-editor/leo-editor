@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.FileActions &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.FileActions</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20040915105758.13: * @file FileActions.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050912180106: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">r&quot;&quot;&quot; Defines actions taken when double-clicking on @&lt;file&gt; nodes and supports</span>
+<span class="sd">@file-ref nodes.</span>
+
+<span class="sd">Double-clicking any kind of @&lt;file&gt; node writes out the file if changes have</span>
+<span class="sd">been made since the last save, and then runs a script on it, which is retrieved</span>
+<span class="sd">from the outline.</span>
+
+<span class="sd">Scripts are located in a node whose headline is FileActions. This node can be</span>
+<span class="sd">anywhere in the outline. If there is more than one such node, the first one in</span>
+<span class="sd">outline order is used.</span>
+
+<span class="sd">The children of that node are expected to contain a file pattern in the headline</span>
+<span class="sd">and the script to be executed in the body. The file name is matched against the</span>
+<span class="sd">patterns (which are Unix-style shell patterns), and the first matching node is</span>
+<span class="sd">selected. If the filename is a path, only the last item is matched.</span>
+
+<span class="sd">Execution of the scripts is similar to the &quot;Execute Script&quot;</span>
+<span class="sd">command in Leo. The main difference is that the namespace</span>
+<span class="sd">in which the scripts are run contains these elements:</span>
+
+<span class="sd">- &#39;c&#39; and &#39;g&#39; and &#39;p&#39;: as in the regular execute script command.</span>
+
+<span class="sd">- &#39;filename&#39;: the filename from the @file directive.</span>
+
+<span class="sd">- &#39;shellScriptInWindow&#39;, a utility function that runs a shell script in an</span>
+<span class="sd">   external windows, thus permitting programs to be called that require user</span>
+<span class="sd">   interaction</span>
+
+<span class="sd">File actions are implemented for all kinds @&lt;file&gt; nodes. There is also a new</span>
+<span class="sd">node type @file-ref for referring to files purely for the purpose of file</span>
+<span class="sd">actions, Leo does not do anything with or to such files.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c"># Written by Konrad Hinsen &lt;konrad.hinsen@laposte.net&gt;</span>
+<span class="c"># Distributed under the same licence as Leo.</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;0.4&quot;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20040915110738: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@nocolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.2 EKR:</span>
+<span class="c"># - Convert to a typical outline.</span>
+<span class="c"># 0.3 EKR:</span>
+<span class="c"># - Removed all calls to g.top()</span>
+<span class="c"># - Simplified definition of shellScriptInWindow.</span>
+<span class="c"># - Added c arg to shellScriptInWindow.</span>
+<span class="c">#   This may change existing scripts.</span>
+<span class="c"># - Added c arg to g.findNodeAnywhere.</span>
+<span class="c"># - Execute scripts with &#39;c&#39; and &#39;g&#39; predefined.</span>
+<span class="c"># 0.4 TL: Double-click does nothing for non @file/@thin etc. nodes.</span>
+<span class="c"># 0.5 TL: Replaced logic for obtaining filename to fix problems with spaces</span>
+<span class="c">#         Fixed problem with @file-ref feature created by 0.4 release</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20090317093747.1: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; define the directives that are handled by this plugin &gt;&gt;</span>
+<span class="c">#@+node:ekr.20040915110738.2: ** &lt;&lt; define the directives that are handled by this plugin &gt;&gt;</span>
+<span class="c">#@+at The @file-ref directive is not used elsewhere by Leo. It is meant to</span>
+<span class="c"># be used for actions on files that are not read or written by Leo at all, they</span>
+<span class="c"># are just referenced to be possible targets of file actions.</span>
+<span class="c">#@@c</span>
+
+<span class="n">file_directives</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="s">&quot;@file&quot;</span><span class="p">,</span>
+   <span class="s">&quot;@thin&quot;</span><span class="p">,</span>   <span class="s">&quot;@file-thin&quot;</span><span class="p">,</span>   <span class="s">&quot;@thinfile&quot;</span><span class="p">,</span>
+   <span class="s">&quot;@asis&quot;</span><span class="p">,</span>   <span class="s">&quot;@file-asis&quot;</span><span class="p">,</span>   <span class="s">&quot;@silentfile&quot;</span><span class="p">,</span>
+   <span class="s">&quot;@nosent&quot;</span><span class="p">,</span> <span class="s">&quot;@file-nosent&quot;</span><span class="p">,</span> <span class="s">&quot;@nosentinelsfile&quot;</span><span class="p">,</span>
+   <span class="s">&quot;@file-ref&quot;</span><span class="p">,</span> <span class="s">&quot;@shadow&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="c">#@-&lt;&lt; define the directives that are handled by this plugin &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20060108162524: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.FileActions.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span> <span class="c"># Dangerous for unit testing.</span>
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;icondclick1&quot;</span><span class="p">,</span> <span class="n">onIconDoubleClick</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:ekr.20040915105758.14: ** onIconDoubleClick</span></div>
+<div class="viewcode-block" id="onIconDoubleClick"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.FileActions.onIconDoubleClick">[docs]</a><span class="k">def</span> <span class="nf">onIconDoubleClick</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;p&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">directive</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">directive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;@&#39;</span> <span class="ow">or</span> <span class="n">directive</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_directives</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="c">#Get filename by removing directive from node&#39;s headstring</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">directive</span> <span class="o">+</span> <span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="mi">1</span><span class="p">:</span>  <span class="c"># EKR: This seems dubious to me, but I&#39;ll let it go :-)</span>
+
+        <span class="c"># This writes all modified files, not just the one that has been clicked on.</span>
+        <span class="c"># This generates a slightly confusing warning if there are no dirty nodes.</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">fileCommands</span><span class="o">.</span><span class="n">writeDirtyAtFileNodes</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">doFileAction</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">True</span> <span class="c">#Action was taken - Stop other double-click handlers from running</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span> <span class="c">#No action taken - Let other double-click handlers run</span>
+
+
+<span class="c">#@+node:ekr.20040915105758.15: ** doFileAction</span></div>
+<div class="viewcode-block" id="doFileAction"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.FileActions.doFileAction">[docs]</a><span class="k">def</span> <span class="nf">doFileAction</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">findNodeAnywhere</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="s">&quot;FileActions&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">p</span><span class="p">:</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p2</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatchcase</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+                <span class="n">applyFileAction</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+                <span class="n">done</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;no file action matches &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">False</span> <span class="c">#TL - Inform onIconDoubleClick that no action was taken</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span> <span class="c">#TL - Inform onIconDoubleClick that action was taken</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;no FileActions node&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span> <span class="c">#TL - Inform onIconDoubleClick that no action was taken</span>
+<span class="c">#@+node:ekr.20040915105758.16: ** applyFileAction</span></div>
+<div class="viewcode-block" id="applyFileAction"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.FileActions.applyFileAction">[docs]</a><span class="k">def</span> <span class="nf">applyFileAction</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+
+    <span class="n">script</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">getScript</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">script</span><span class="p">:</span>
+        <span class="n">working_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">file_directory</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">openDirectory</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">file_directory</span><span class="p">)</span>
+        <span class="n">script</span> <span class="o">+=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="c">#@+&lt;&lt; redirect output &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20040915105758.17: *3* &lt;&lt; redirect output &gt;&gt;</span>
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">redirect_execute_script_output_to_log_pane</span><span class="p">:</span>
+
+            <span class="n">g</span><span class="o">.</span><span class="n">redirectStdout</span><span class="p">()</span> <span class="c"># Redirect stdout</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">redirectStderr</span><span class="p">()</span> <span class="c"># Redirect stderr</span>
+        <span class="c">#@-&lt;&lt; redirect output &gt;&gt;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">namespace</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&#39;c&#39;</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">:</span><span class="n">g</span><span class="p">,</span>
+                <span class="s">&#39;filename&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+                <span class="s">&#39;shellScriptInWindow&#39;</span><span class="p">:</span> <span class="n">shellScriptInWindow</span> <span class="p">}</span>
+            <span class="c"># exec script in namespace</span>
+            <span class="k">exec</span><span class="p">(</span><span class="n">script</span><span class="p">,</span><span class="n">namespace</span><span class="p">)</span>
+            <span class="c">#@+&lt;&lt; unredirect output &gt;&gt;</span>
+            <span class="c">#@+node:ekr.20040915105758.18: *3* &lt;&lt; unredirect output &gt;&gt;</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">redirect_execute_script_output_to_log_pane</span><span class="p">:</span>
+
+                <span class="n">g</span><span class="o">.</span><span class="n">restoreStderr</span><span class="p">()</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">restoreStdout</span><span class="p">()</span>
+            <span class="c">#@-&lt;&lt; unredirect output &gt;&gt;</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c">#@+&lt;&lt; unredirect output &gt;&gt;</span>
+            <span class="c">#@+node:ekr.20040915105758.18: *3* &lt;&lt; unredirect output &gt;&gt;</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">redirect_execute_script_output_to_log_pane</span><span class="p">:</span>
+
+                <span class="n">g</span><span class="o">.</span><span class="n">restoreStderr</span><span class="p">()</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">restoreStdout</span><span class="p">()</span>
+            <span class="c">#@-&lt;&lt; unredirect output &gt;&gt;</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;exception in FileAction plugin&quot;</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">(</span><span class="n">full</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">working_directory</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20040915105758.20: ** shellScriptInWindow</span></div>
+<div class="viewcode-block" id="shellScriptInWindow"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.FileActions.shellScriptInWindow">[docs]</a><span class="k">def</span> <span class="nf">shellScriptInWindow</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">script</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;darwin&#39;</span><span class="p">:</span>
+        <span class="c">#@+&lt;&lt; write script to temporary MacOS file &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20040915105758.22: *3* &lt;&lt; write script to temporary MacOS file &gt;&gt;</span>
+        <span class="n">handle</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">openDirectory</span>
+        <span class="n">script</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;cd </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">directory</span><span class="p">)</span> <span class="o">+</span> <span class="n">script</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="s">&quot;rm -f </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">script</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="mh">0x700</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; write script to temporary MacOS file &gt;&gt;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&quot;open -a /Applications/Utilities/Terminal.app &quot;</span> <span class="o">+</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;shellScriptInWindow not ready for Windows&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c">#@+&lt;&lt; write script to temporary Unix file &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20040915105758.25: *3* &lt;&lt; write script to temporary Unix file &gt;&gt;</span>
+        <span class="n">handle</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">openDirectory</span>
+        <span class="n">script</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;cd </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">directory</span><span class="p">)</span> <span class="o">+</span> <span class="n">script</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="s">&quot;rm -f </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">script</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="mh">0x700</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; write script to temporary Unix file &gt;&gt;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&quot;xterm -e sh  &quot;</span> <span class="o">+</span> <span class="n">path</span><span class="p">)</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

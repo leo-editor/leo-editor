@@ -1,0 +1,528 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.plugins_menu &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.plugins_menu</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:EKR.20040517080555.2: * @file plugins_menu.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050101090207.9: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Creates a Plugins menu and adds all actives plugins to it.</span>
+
+<span class="sd">Selecting these menu items will bring up a short **About Plugin** dialog</span>
+<span class="sd">with the details of the plugin. In some circumstances a submenu will be created</span>
+<span class="sd">instead and an &#39;About&#39; menu entry will be created in this.</span>
+
+<span class="sd">**INI files and the Properties Dialog**</span>
+
+<span class="sd">If a file exists in the plugins directory with the same file name as the plugin</span>
+<span class="sd">but with a .ini extension instead of .py, then a **Properties** item will be</span>
+<span class="sd">created in a submenu. Selecting this item will pop up a Properties Dialog which</span>
+<span class="sd">will allow the contents of this file to be edited.</span>
+
+<span class="sd">The .ini file should be formated for use by the python ConfigParser class.</span>
+
+<span class="sd">**Special Methods**</span>
+
+<span class="sd">Certain methods defined at the top level are considered special.</span>
+
+<span class="sd">cmd_XZY</span>
+<span class="sd">    If a method is defined at the module level with a name of the form</span>
+<span class="sd">    **cmd_XZY** then a menu item **XZY** will be created which will invoke</span>
+<span class="sd">    **cmd_XZY** when it is selected. These menus will appear in a sub menu.</span>
+
+<span class="sd">applyConfiguration</span>
+
+<span class="sd">topLevelMenu</span>
+<span class="sd">    This method, if it exists, will be called when the user clicks on the plugin</span>
+<span class="sd">    name in the plugins menu (or the **About** item in its submenu), but only if</span>
+<span class="sd">    the plugin was loaded properly and registered with g.plugin_signon.</span>
+
+<span class="sd">**Special Variable Names**</span>
+
+<span class="sd">Some names defined at the top level have special significance.</span>
+
+<span class="sd">__plugin_name__</span>
+<span class="sd">    This will be used to define the name of the plugin and will be used</span>
+<span class="sd">    as a label for its menu entry.</span>
+
+<span class="sd">__plugin_priority__</span>
+<span class="sd">    Plugins can also attempt to select the order they will appear in the menu by</span>
+<span class="sd">    defining a __plugin_prioriy__. The menu will be created with the highest</span>
+<span class="sd">    priority items first. This behavior is not guaranteed since other plugins</span>
+<span class="sd">    can define any priority. This priority does not affect the order of calling</span>
+<span class="sd">    handlers.</span>
+<span class="sd">    To change the order select a number outside the range 0-200 since this range</span>
+<span class="sd">    is used internally for sorting alphabetically. Properties and INI files.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c"># Written by Paul A. Paterson.  Revised by Edward K. Ream.</span>
+<span class="c"># To do: add Revert button to each dialog.</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050101090207.10: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="c"># **Important**: this plugin is gui-independent.</span>
+
+<span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">configparser</span> <span class="kn">as</span> <span class="nn">ConfigParser</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">ConfigParser</span>
+
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;2.3&quot;</span>
+
+<span class="n">__plugin_name__</span> <span class="o">=</span> <span class="s">&quot;Plugins Menu&quot;</span>
+<span class="n">__plugin_priority__</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
+<span class="n">__plugin_group__</span> <span class="o">=</span> <span class="s">&quot;Core&quot;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20060107091318: ** Functions</span>
+<span class="c">#@+node:EKR.20040517080555.24: *3* addPluginMenuItem</span>
+<div class="viewcode-block" id="addPluginMenuItem"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.addPluginMenuItem">[docs]</a><span class="k">def</span> <span class="nf">addPluginMenuItem</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    @param p:  Plugin object for one currently loaded plugin</span>
+<span class="sd">    @param c:  Leo-editor &quot;commander&quot; for the current .leo file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">plugin_name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c"># TNB 20100304 strip module path</span>
+
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">hastoplevel</span><span class="p">:</span>
+        <span class="c"># Check at runtime to see if the plugin has actually been loaded.</span>
+        <span class="c"># This prevents us from calling hasTopLevel() on unloaded plugins.</span>
+        <span class="k">def</span> <span class="nf">callback</span> <span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">):</span>
+            <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_split</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">pc</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">pluginsController</span>
+            <span class="k">if</span> <span class="n">pc</span> <span class="ow">and</span> <span class="n">pc</span><span class="o">.</span><span class="n">isLoaded</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">hastoplevel</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">about</span><span class="p">()</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="p">((</span><span class="n">plugin_name</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">callback</span><span class="p">),)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createMenuEntries</span><span class="p">(</span><span class="n">PluginDatabase</span><span class="o">.</span><span class="n">getMenu</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">table</span><span class="p">,</span><span class="n">dynamicMenu</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">hasconfig</span> <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">othercmds</span><span class="p">:</span>
+        <span class="c">#@+&lt;&lt; Get menu location &gt;&gt;</span>
+        <span class="c">#@+node:pap.20050305153147: *4* &lt;&lt; Get menu location &gt;&gt;</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">group</span><span class="p">:</span>
+            <span class="n">menu_location</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">group</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">menu_location</span> <span class="o">=</span> <span class="s">&quot;&amp;Plugins&quot;</span>
+        <span class="c">#@-&lt;&lt; Get menu location &gt;&gt;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createNewMenu</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">,</span><span class="n">menu_location</span><span class="p">)</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&quot;About...&quot;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">about</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">hasconfig</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;Properties...&quot;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">properties</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">othercmds</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;-&quot;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">))</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">othercmds</span>
+            <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+                <span class="c"># New in 4.4: this callback gets called with an event arg.</span>
+                <span class="k">def</span> <span class="nf">cmd_callback</span> <span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">fn</span><span class="o">=</span><span class="n">fn</span><span class="p">):</span>
+                    <span class="n">fn</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cmd</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">cmd_callback</span><span class="p">),)</span>
+            <span class="n">items</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createMenuEntries</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">dynamicMenu</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="p">((</span><span class="n">plugin_name</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">about</span><span class="p">),)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createMenuEntries</span><span class="p">(</span><span class="n">PluginDatabase</span><span class="o">.</span><span class="n">getMenu</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">table</span><span class="p">,</span><span class="n">dynamicMenu</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c">#@+node:EKR.20040517080555.23: *3* createPluginsMenu</span></div>
+<div class="viewcode-block" id="createPluginsMenu"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.createPluginsMenu">[docs]</a><span class="k">def</span> <span class="nf">createPluginsMenu</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span> <span class="k">return</span>
+
+    <span class="n">pc</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">pluginsController</span>
+    <span class="n">lmd</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">loadedModules</span>
+    <span class="k">if</span> <span class="n">lmd</span><span class="p">:</span>
+        <span class="n">impModSpecList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">lmd</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="n">aList</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">aList</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">impModSpecList</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">plgObList</span> <span class="o">=</span> <span class="p">[</span><span class="n">PlugIn</span><span class="p">(</span><span class="n">lmd</span><span class="p">[</span><span class="n">impModSpec</span><span class="p">],</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">impModSpec</span> <span class="ow">in</span> <span class="n">impModSpecList</span><span class="p">]</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">pluginsMenu</span> <span class="o">=</span> <span class="n">pluginMenu</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createNewMenu</span><span class="p">(</span><span class="s">&quot;&amp;Plugins&quot;</span><span class="p">)</span>
+        <span class="n">PluginDatabase</span><span class="o">.</span><span class="n">setMenu</span><span class="p">(</span><span class="s">&quot;Default&quot;</span><span class="p">,</span> <span class="n">pluginMenu</span><span class="p">)</span>
+        <span class="c"># Add group menus</span>
+        <span class="k">for</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">PluginDatabase</span><span class="o">.</span><span class="n">getGroups</span><span class="p">():</span>
+            <span class="n">PluginDatabase</span><span class="o">.</span><span class="n">setMenu</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createNewMenu</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="s">&quot;&amp;Plugins&quot;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">plgObj</span> <span class="ow">in</span> <span class="n">plgObList</span><span class="p">:</span>
+            <span class="n">addPluginMenuItem</span><span class="p">(</span><span class="n">plgObj</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20070302175530: *3* init</span></div>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">createDefaultGui</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;qt&#39;</span><span class="p">,</span><span class="s">&#39;qttabs&#39;</span><span class="p">,):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;create-optional-menus&quot;</span><span class="p">,</span><span class="n">createPluginsMenu</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:pap.20050305152751: ** class PluginDatabase</span></div>
+<span class="k">class</span> <span class="nc">_PluginDatabase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stores information on Plugins&quot;&quot;&quot;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:pap.20050305152751.1: *3* __init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins_by_group</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups_by_plugin</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menus</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c">#@+node:pap.20050305152751.2: *3* addPlugin</span>
+    <span class="k">def</span> <span class="nf">addPlugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a plugin&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">group</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plugins_by_group</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">groups_by_plugin</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+    <span class="c">#@+node:pap.20050305152751.3: *3* getGroups</span>
+    <span class="k">def</span> <span class="nf">getGroups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of groups&quot;&quot;&quot;</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plugins_by_group</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">groups</span>
+    <span class="c">#@+node:pap.20050305153716: *3* setMenu</span>
+    <span class="k">def</span> <span class="nf">setMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">menu</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store the menu for this group&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menus</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">menu</span>
+    <span class="c">#@+node:pap.20050305153716.1: *3* getMenu</span>
+    <span class="k">def</span> <span class="nf">getMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the menu for a particular item&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">menus</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">group</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">menus</span><span class="p">[</span><span class="s">&quot;Default&quot;</span><span class="p">]</span>
+    <span class="c">#@-others</span>
+
+<span class="n">PluginDatabase</span> <span class="o">=</span> <span class="n">_PluginDatabase</span><span class="p">()</span>
+<span class="c">#@+node:EKR.20040517080555.3: ** class Plugin</span>
+<div class="viewcode-block" id="PlugIn"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.PlugIn">[docs]</a><span class="k">class</span> <span class="nc">PlugIn</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;A class to hold information about one plugin&quot;&quot;&quot;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:EKR.20040517080555.4: *3* __init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plgMod</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @param plgMod: Module object for the plugin represented by this instance.</span>
+<span class="sd">        @param c:  Leo-editor &quot;commander&quot; for the current .leo file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">=</span> <span class="n">plgMod</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__plugin_name__</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNiceName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__name__</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="p">,</span> <span class="s">&quot;__plugin_group__&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">PluginDatabase</span><span class="o">.</span><span class="n">addPlugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__plugin_priority__</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="mi">200</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c">#</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__doc__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;__version__&quot;</span><span class="p">,</span><span class="s">&quot;&lt;unknown&gt;&quot;</span><span class="p">)</span> <span class="c"># EKR: 3/17/05</span>
+        <span class="c"># if self.version: g.pr(self.version,g.shortFileName(filename))</span>
+
+        <span class="c">#@+&lt;&lt; Check if this can be configured &gt;&gt;</span>
+        <span class="c">#@+node:EKR.20040517080555.5: *4* &lt;&lt; Check if this can be configured &gt;&gt;</span>
+        <span class="c"># Look for a configuration file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configfilename</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.ini&quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">plgMod</span><span class="o">.</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hasconfig</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configfilename</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; Check if this can be configured &gt;&gt;</span>
+        <span class="c">#@+&lt;&lt; Check if this has an apply &gt;&gt;</span>
+        <span class="c">#@+node:EKR.20040517080555.6: *4* &lt;&lt; Check if this has an apply &gt;&gt;</span>
+        <span class="c">#@+at Look for an apply function (&quot;applyConfiguration&quot;) in the module.</span>
+        <span class="c"># </span>
+        <span class="c"># This is used to apply changes in configuration from the properties window</span>
+        <span class="c">#@@c</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hasapply</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">plgMod</span><span class="p">,</span> <span class="s">&quot;applyConfiguration&quot;</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; Check if this has an apply &gt;&gt;</span>
+        <span class="c">#@+&lt;&lt; Look for additional commands &gt;&gt;</span>
+        <span class="c">#@+node:EKR.20040517080555.7: *4* &lt;&lt; Look for additional commands &gt;&gt;</span>
+        <span class="c">#@+at Additional commands can be added to the plugin menu by having functions in the module called &quot;cmd_whatever&quot;. These are added to the main menu and will be called when clicked</span>
+        <span class="c">#@@c</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">othercmds</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;cmd_&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">othercmds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">niceMenuName</span><span class="p">(</span><span class="n">item</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+                <span class="c"># start of command name from module (plugin) name</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__name__</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">base</span> <span class="ow">and</span> <span class="n">base</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;-&#39;</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+                        <span class="n">base</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+                    <span class="n">base</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.py&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+
+                <span class="n">base</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c"># TNB 20100304 strip module path</span>
+
+                <span class="c"># rest of name from item</span>
+                <span class="n">ltrs</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">4</span><span class="p">:]:</span>
+                    <span class="k">if</span> <span class="n">ltrs</span> <span class="ow">and</span> <span class="n">ltrs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;-&#39;</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+                        <span class="n">ltrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+                    <span class="n">ltrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">base</span><span class="o">+</span><span class="s">&#39;-&#39;</span><span class="o">+</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ltrs</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+
+                <span class="c"># make and create command</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+                <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="n">cmd</span><span class="o">=</span><span class="n">cmd</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">cmd</span><span class="p">(</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">keyHandler</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; Look for additional commands &gt;&gt;</span>
+        <span class="c">#@+&lt;&lt; Look for toplevel menu item &gt;&gt;</span>
+        <span class="c">#@+node:pap.20041009131822: *4* &lt;&lt; Look for toplevel menu item &gt;&gt;</span>
+        <span class="c">#@+at Check to see if there is a toplevel menu item - this will be used instead of the default About</span>
+        <span class="c">#@@c</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hastoplevel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&quot;topLevelMenu&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hastoplevel</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="c">#@-&lt;&lt; Look for toplevel menu item &gt;&gt;</span>
+    <span class="c">#@+node:EKR.20040517080555.8: *3* about</span>
+<div class="viewcode-block" id="PlugIn.about"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.PlugIn.about">[docs]</a>    <span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Put information about this plugin in a scrolledMessage dialog.&quot;&quot;&quot;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+        <span class="c"># 2011/10/20: runScrolledMessageDialog looks for a scrolledmessage hook.</span>
+        <span class="c"># Don&#39;t do it here.</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runScrolledMessageDialog</span><span class="p">(</span>
+            <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+            <span class="n">flags</span><span class="o">=</span><span class="s">&#39;rst&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s">&quot;Version: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&#39;leo_system&#39;</span><span class="p">,</span>
+            <span class="n">short_title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s">&quot;About Plugin ( &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot; )&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="c">#@+node:pap.20050317183526: *3* getNiceName</span></div>
+<div class="viewcode-block" id="PlugIn.getNiceName"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.PlugIn.getNiceName">[docs]</a>    <span class="k">def</span> <span class="nf">getNiceName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a nice version of the plugin name</span>
+
+<span class="sd">        Historically some plugins had &quot;at_&quot; and &quot;mod_&quot; prefixes to their</span>
+<span class="sd">        name which makes the name look a little ugly in the lists. There is</span>
+<span class="sd">        no real reason why the majority of users need to know the underlying</span>
+<span class="sd">        name so here we create a nice readable version.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lname</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;at_&quot;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+        <span class="k">elif</span> <span class="n">lname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;mod_&quot;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+    <span class="c">#@+node:EKR.20040517080555.9: *3* properties</span></div>
+<div class="viewcode-block" id="PlugIn.properties"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.PlugIn.properties">[docs]</a>    <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Display a modal properties dialog for this plugin&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasapply</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updateConfiguration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">applyConfiguration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">writeConfiguration</span><span class="p">()</span>
+
+            <span class="n">buttons</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Apply&#39;</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">buttons</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configfilename</span><span class="p">)</span>
+
+        <span class="c"># Load config data into dictionary of dictianaries.</span>
+        <span class="c"># Do no allow for nesting of sections.</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
+                <span class="c">#g.pr(&#39;config&#39;, section, option )</span>
+                <span class="n">options</span><span class="p">[</span><span class="n">option</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">u</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span><span class="n">option</span><span class="p">))</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="c"># Save the original config data. This will not be changed.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourceConfig</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="c"># Open a modal dialog and wait for it to return.</span>
+        <span class="c"># Provide the dialog with a callback for the &#39;Appply&#39; function.</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Properties of &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="n">result</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runPropertiesDialog</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">buttons</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="s">&#39;Cancel&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updateConfiguration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeConfiguration</span><span class="p">()</span>
+
+    <span class="c">#@+node:bob.20071209102050: *3* updateConfiguration</span></div>
+<div class="viewcode-block" id="PlugIn.updateConfiguration"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.PlugIn.updateConfiguration">[docs]</a>    <span class="k">def</span> <span class="nf">updateConfiguration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the config object from the dialog &#39;data&#39; structure&quot;&quot;&quot;</span>
+
+        <span class="c"># Should we clear the config object first?</span>
+
+
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c"># This is configParser.set, not g.app.config.set, so it is ok.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">option</span><span class="p">])</span>
+    <span class="c">#@+node:bob.20071208033759: *3* writeConfiguration</span></div>
+<div class="viewcode-block" id="PlugIn.writeConfiguration"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.PlugIn.writeConfiguration">[docs]</a>    <span class="k">def</span> <span class="nf">writeConfiguration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write the configuration to a file.&quot;&quot;&quot;</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configfilename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c">#@+node:pap.20051011215345: *3* niceMenuName</span></div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="PlugIn.niceMenuName"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.plugins_menu.PlugIn.niceMenuName">[docs]</a>    <span class="k">def</span> <span class="nf">niceMenuName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a nice version of the command name for the menu</span>
+
+<span class="sd">        The command will be of the form::</span>
+
+<span class="sd">            cmd_ThisIsIt</span>
+
+<span class="sd">        We want to convert this to &quot;This Is It&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">char</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="n">text</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s">&quot; &quot;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="n">char</span>
+        <span class="k">return</span> <span class="n">text</span>
+    <span class="c">#@-others</span>
+
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

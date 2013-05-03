@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.at_folder &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.at_folder</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:edream.110203113231.873: * @file at_folder.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:edream.110203113231.874: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39;Synchronizes @folder nodes with folders.</span>
+
+<span class="sd">If a node is named &#39;\@folder *&lt;path_to_folder&gt;*&#39;, the content (filenames) of the</span>
+<span class="sd">folder and the children of that node will be sync. Whenever a new file is put</span>
+<span class="sd">there, a new node will appear on top of the children list (with mark). So that</span>
+<span class="sd">I can put my description (annotation) as the content of that node. In this</span>
+<span class="sd">way, I can find any files much easier from leo.</span>
+
+<span class="sd">Moreover, I add another feature to allow you to group files(in leo) into</span>
+<span class="sd">children of another group. This will help when there are many files in that</span>
+<span class="sd">folder. You can logically group it in leo (or even clone it to many groups),</span>
+<span class="sd">while keep every files in a flat/single directory on your computer.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.4&quot;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:edream.110203113231.875: ** sync_node_to_folder</span>
+<div class="viewcode-block" id="sync_node_to_folder"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.at_folder.sync_node_to_folder">[docs]</a><span class="k">def</span> <span class="nf">sync_node_to_folder</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">parent</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+
+    <span class="n">oldlist</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">newlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c">#get children info</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">parent</span>
+    <span class="n">after_v</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">nodeAfterTree</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">after_v</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">hasChildren</span><span class="p">():</span>
+            <span class="n">oldlist</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">b</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">threadNext</span><span class="p">()</span>
+    <span class="c">#compare folder content to children</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">oldlist</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">oldlist</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">newlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="c">#insert newlist</span>
+    <span class="n">newlist</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">newlist</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">newlist</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">insertAsNthChild</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setHeadString</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">setMarked</span><span class="p">()</span>
+    <span class="c">#warn for orphan oldlist</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">oldlist</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;missing: &#39;</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">oldlist</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="c">#@-others</span>
+</div>
+<div class="viewcode-block" id="onSelect"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.at_folder.onSelect">[docs]</a><span class="k">def</span> <span class="nf">onSelect</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;new_c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span> <span class="k">return</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;new_v&quot;</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">h</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">match_word</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;@folder&quot;</span><span class="p">):</span>
+        <span class="n">sync_node_to_folder</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">h</span><span class="p">[</span><span class="mi">8</span><span class="p">:])</span>
+</div>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.at_folder.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;select1&quot;</span><span class="p">,</span> <span class="n">onSelect</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.geotag &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.geotag</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:tbrown.20091214233510.5347: * @file geotag.py</span>
+<span class="sd">&#39;&#39;&#39; Tags nodes with latitude and longitude. &#39;&#39;&#39;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:tbrown.20091214233510.5349: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">from</span> <span class="nn">leo.plugins.pygeotag</span> <span class="kn">import</span> <span class="n">pygeotag</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;0.1&quot;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:tbrown.20091214233510.5351: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s">&#39;pygeotag&#39;</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">pygeotag</span> <span class="o">=</span> <span class="n">pygeotag</span><span class="o">.</span><span class="n">PyGeoTag</span><span class="p">(</span><span class="n">synchronous</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">pygeotag</span><span class="o">.</span><span class="n">start_server</span><span class="p">()</span>
+
+            <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;end1&#39;</span><span class="p">,</span><span class="n">onQuit</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;Geotag plugin init failed, perhaps port in use&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:tbrown.20091214233510.5352: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">key</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+
+    <span class="n">geotag_Controller</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="c">#@+node:tbrown.20101103145611.5658: ** onQuit</span></div>
+<div class="viewcode-block" id="onQuit"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.onQuit">[docs]</a><span class="k">def</span> <span class="nf">onQuit</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">key</span><span class="p">):</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">pygeotag</span><span class="o">.</span><span class="n">stop_server</span><span class="p">()</span>
+<span class="c">#@+node:tbrown.20091214233510.5353: ** class geotag_Controller</span></div>
+<div class="viewcode-block" id="geotag_Controller"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.geotag_Controller">[docs]</a><span class="k">class</span> <span class="nc">geotag_Controller</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;A per-commander class that manages geotagging.&#39;&#39;&#39;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:tbrown.20091214233510.5354: *3* __init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">geotag</span> <span class="o">=</span> <span class="bp">self</span>
+    <span class="c">#@+node:tbrown.20091215204347.11403: *3* getAttr</span>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="geotag_Controller.getAttr"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.geotag_Controller.getAttr">[docs]</a>    <span class="k">def</span> <span class="nf">getAttr</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">nd</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@LatLng &#39;</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nd</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">insertAsLastChild</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">nd</span>
+    <span class="c">#@+node:tbrown.20091214233510.5356: *3* callback</span></div>
+<div class="viewcode-block" id="geotag_Controller.callback"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.geotag_Controller.callback">[docs]</a>    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+
+        <span class="n">nd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">nd</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="s">&#39;@LatLng </span><span class="si">%(lat)f</span><span class="s"> </span><span class="si">%(lng)f</span><span class="s"> </span><span class="si">%(zoom)d</span><span class="s"> </span><span class="si">%(maptype)s</span><span class="s">  </span><span class="si">%(description)s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">data</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setChanged</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s">&#39;attribEditor&#39;</span><span class="p">):</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">attribEditor</span><span class="o">.</span><span class="n">updateEditorInt</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:tbrown.20091214233510.5357: ** cmd_open_server_page</span></div></div>
+<div class="viewcode-block" id="cmd_OpenServerPage"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.cmd_OpenServerPage">[docs]</a><span class="k">def</span> <span class="nf">cmd_OpenServerPage</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">pygeotag</span><span class="o">.</span><span class="n">open_server_page</span><span class="p">()</span>
+    <span class="c"># g.pygeotag.callback = c.geotag.callback</span>
+
+<span class="c">#@+node:tbrown.20091214233510.5358: ** cmd_tag_node</span></div>
+<div class="viewcode-block" id="cmd_TagNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.cmd_TagNode">[docs]</a><span class="k">def</span> <span class="nf">cmd_TagNode</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">pygeotag</span><span class="o">.</span><span class="n">get_position</span><span class="p">({</span><span class="s">&#39;description&#39;</span><span class="p">:</span><span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">})</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">geotag</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="c">#@+node:tbrown.20091215204347.11402: ** cmd_show_node</span></div>
+<div class="viewcode-block" id="cmd_ShowNode"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.geotag.cmd_ShowNode">[docs]</a><span class="k">def</span> <span class="nf">cmd_ShowNode</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="n">nd</span> <span class="o">=</span> <span class="n">geotag_Controller</span><span class="o">.</span><span class="n">getAttr</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="s">&#39;dummy&#39;</span><span class="p">,</span> <span class="s">&#39;lat&#39;</span><span class="p">,</span> <span class="s">&#39;lng&#39;</span><span class="p">,</span> <span class="s">&#39;zoom&#39;</span><span class="p">,</span> <span class="s">&#39;maptype&#39;</span><span class="p">,</span> <span class="s">&#39;description&#39;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">what</span><span class="p">,</span> <span class="n">txt</span><span class="p">))</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&#39;lat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;lat&#39;</span><span class="p">])</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&#39;lng&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;lng&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;zoom&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;zoom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;zoom&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;description&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">h</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span><span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">}</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">pygeotag</span><span class="o">.</span><span class="n">show_position</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

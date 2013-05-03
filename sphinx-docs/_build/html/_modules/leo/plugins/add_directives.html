@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.add_directives &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.add_directives</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:edream.110203113231.741: * @file add_directives.py</span>
+<span class="sd">&quot;&quot;&quot;Allows users to define new @direcives.&quot;&quot;&quot;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.2&quot;</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="n">directives</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;markup&quot;</span><span class="p">,)</span> <span class="c"># A tuple with one string.</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20070725103420: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.add_directives.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># not  g.app.unitTesting:</span>
+
+    <span class="c"># Register the handlers...</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;start1&quot;</span><span class="p">,</span><span class="n">addPluginDirectives</span><span class="p">)</span>
+    <span class="c"># g.registerHandler(&quot;scan-directives&quot;,scanPluginDirectives)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:edream.110203113231.742: ** addPluginDirectives</span></div>
+<div class="viewcode-block" id="addPluginDirectives"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.add_directives.addPluginDirectives">[docs]</a><span class="k">def</span> <span class="nf">addPluginDirectives</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Add all new directives to g.globalDirectiveList&quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">directives</span>
+
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">directives</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@&#39;</span><span class="p">):</span> <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">globalDirectiveList</span><span class="p">:</span>
+            <span class="c"># g.trace(s)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">globalDirectiveList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="c">#@+node:edream.110203113231.743: ** scanPluginDirectives (no longer used)</span></div>
+<div class="viewcode-block" id="scanPluginDirectives"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.add_directives.scanPluginDirectives">[docs]</a><span class="k">def</span> <span class="nf">scanPluginDirectives</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Add a tuple (d,v,s,k) to list for every directive d found&quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">directives</span>
+
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="s">&quot;p&quot;</span><span class="p">,</span><span class="s">&quot;s&quot;</span><span class="p">,</span><span class="s">&quot;theDict&quot;</span><span class="p">,</span><span class="s">&quot;pluginsList&quot;</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">theDict</span><span class="p">,</span><span class="n">pluginsList</span> <span class="o">=</span> <span class="p">[</span><span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">directives</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">theDict</span><span class="p">:</span>
+            <span class="c"># Point k at whatever follows the directive.</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">theDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;s&#39;</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">kind</span> <span class="o">=</span> <span class="n">d</span>
+            <span class="n">pluginsList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">kind</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">,</span><span class="n">s</span><span class="p">),)</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

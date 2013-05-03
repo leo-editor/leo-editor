@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.multifile &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.multifile</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:mork.20041018204908.1: * @file multifile.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050226114732: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">r&#39;&#39;&#39; Allows Leo to write a file to multiple locations.</span>
+
+<span class="sd">This plugin acts as a post-write mechanism, a file must be written to the</span>
+<span class="sd">file system for it to work. At this point it is not a replacement for @path or an</span>
+<span class="sd">absolute path, it works in tandem with them.</span>
+
+<span class="sd">To use, place @multipath at the start of a line in the root node or an ancestor</span>
+<span class="sd">of the node. The format is (On Unix-like systems)::</span>
+
+<span class="sd">    @multipath /machine/unit/:/machine/robot/:/machine/</span>
+
+<span class="sd">New in version 0.6 of this plugin: the separator used above is &#39;;&#39; not &#39;:&#39;,</span>
+<span class="sd">for example::</span>
+
+<span class="sd">    @multipath c:\prog\test;c:\prog\unittest</span>
+
+<span class="sd">It will places copy of the written file in each of these directories.</span>
+
+<span class="sd">There is an additional directive that simplifies common paths, it is called</span>
+<span class="sd">@multiprefix. By typing @multiprefix with a path following it, before a</span>
+<span class="sd">@multipath directive you set the beginning of the paths in the @multipath</span>
+<span class="sd">directive. For example:: </span>
+
+<span class="sd">#@verbatim</span>
+<span class="sd">    #@multiprefix /leo #@multipath /plugins </span>
+
+<span class="sd">or::</span>
+
+<span class="sd">#@verbatim</span>
+<span class="sd">    #@multiprefix /leo/</span>
+<span class="sd">#@verbatim</span>
+<span class="sd">    #@multipath plugins: fungus : drain</span>
+
+<span class="sd">copies a file to /leo/plugins /leo/fungus /leo/drain.</span>
+
+<span class="sd">Note: I put # in front of the directives here because I don&#39;t want someone</span>
+<span class="sd">browsing this file to accidentally save multiple copies of this file to their</span>
+<span class="sd">system :)</span>
+
+<span class="sd">The @multiprefix stays in effect for the entire tree until reset with another</span>
+<span class="sd">@multiprefix directive. @multipath is cumulative, in that for each @multipath in</span>
+<span class="sd">an ancestor a copy of the file is created. These directives must at the</span>
+<span class="sd">beginning of the line and by themselves.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050226114732.1: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span> 
+<span class="kn">import</span> <span class="nn">leo.core.leoAtFile</span> <span class="kn">as</span> <span class="nn">leoAtFile</span>
+
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">weakref</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;.9&quot;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050226115130: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># 0.3 EKR:</span>
+<span class="c"># - Added init method.</span>
+<span class="c"># - Minor code reorg.  The actual code is unchanged.</span>
+<span class="c"># 0.4 EKR: Changed &#39;new_c&#39; logic to &#39;c&#39; logic.</span>
+<span class="c"># 0.5 EKR: Use &#39;new&#39; and &#39;open2&#39; hooks to call addMenu.</span>
+<span class="c"># 0.6 EKR: Made it work with Leo 4.4.2.</span>
+<span class="c"># - Made all uses of leoAtFile explicit.</span>
+<span class="c"># - Simplified code by using g.funcToMethod in init code.</span>
+<span class="c"># - Renamed decoratedOpenFileForWriting to match openFileForWriting.</span>
+<span class="c"># - Rewrote stop and scanForMultiPath methods.</span>
+<span class="c"># 0.7 EKR: Use absolute filename for original file to avoid problems with current directory.</span>
+<span class="c"># 0.8 EKR:</span>
+<span class="c"># * The path separator in @multipath directives is &#39;;&#39;, not &#39;:&#39; as previously.</span>
+<span class="c"># - Fixed several bugs in scanForMultiPath.</span>
+<span class="c"># 0.9 EKR: add entries to g.globalDirectiveList so that this plugin will work with the new colorizer.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="n">multiprefix</span> <span class="o">=</span> <span class="s">&#39;@multiprefix&#39;</span>   
+<span class="n">multipath</span> <span class="o">=</span> <span class="s">&#39;@multipath&#39;</span>
+<span class="n">haveseen</span> <span class="o">=</span> <span class="p">{}</span>   
+<span class="n">files</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">originalOpenFileForWriting</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20050226115130.1: ** init &amp; helpers</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.multifile.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># Now gui-independent.</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="c"># Append to the module list, not to the g.copy.</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">globalDirectiveList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;multipath&#39;</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">globalDirectiveList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;multiprefix&#39;</span><span class="p">)</span>
+
+        <span class="c"># Override all instances of leoAtFile.atFile.</span>
+        <span class="n">at</span> <span class="o">=</span> <span class="n">leoAtFile</span><span class="o">.</span><span class="n">atFile</span>
+        <span class="k">global</span> <span class="n">originalOpenFileForWriting</span> <span class="p">;</span> <span class="n">originalOpenFileForWriting</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">openFileForWriting</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">funcToMethod</span><span class="p">(</span><span class="n">decoratedOpenFileForWriting</span><span class="p">,</span><span class="n">at</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;openFileForWriting&#39;</span><span class="p">)</span>
+
+        <span class="c"># g.registerHandler(&#39;save1&#39;,start)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;save2&#39;</span><span class="p">,</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s">&#39;new&#39;</span><span class="p">,</span><span class="s">&#39;menu2&#39;</span><span class="p">),</span><span class="n">addMenu</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:mork.20041019091317: *3* addMenu</span></div>
+<span class="n">haveseen</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakKeyDictionary</span><span class="p">()</span>
+
+<div class="viewcode-block" id="addMenu"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.multifile.addMenu">[docs]</a><span class="k">def</span> <span class="nf">addMenu</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">or</span> <span class="n">haveseen</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">haveseen</span> <span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">getMenu</span><span class="p">(</span><span class="s">&#39;Edit&#39;</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">m</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Insert Directory String&quot;</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">:</span> <span class="n">insertDirectoryString</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="c">#@+node:mork.20041019091524: *3* insertDirectoryString</span></div>
+<div class="viewcode-block" id="insertDirectoryString"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.multifile.insertDirectoryString">[docs]</a><span class="k">def</span> <span class="nf">insertDirectoryString</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runOpenDirectoryDialog</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s">&#39;Select a directory&#39;</span><span class="p">,</span>
+        <span class="n">startdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">curdir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">bodyCtrl</span>
+        <span class="n">ins</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getInsertPoint</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ins</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+        <span class="c">#w.event_generate(&#39;&lt;Key&gt;&#39;)</span>
+        <span class="c">#w.update_idletasks()</span>
+<span class="c">#@+node:mork.20041018204908.3: ** decoratedOpenFileForWriting</span></div>
+<div class="viewcode-block" id="decoratedOpenFileForWriting"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.multifile.decoratedOpenFileForWriting">[docs]</a><span class="k">def</span> <span class="nf">decoratedOpenFileForWriting</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">root</span><span class="p">,</span><span class="n">fileName</span><span class="p">,</span><span class="n">toString</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+    <span class="c"># Call the original method.</span>
+    <span class="k">global</span> <span class="n">originalOpenFileForWriting</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">originalOpenFileForWriting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">root</span><span class="p">,</span><span class="n">fileName</span><span class="p">,</span><span class="n">toString</span><span class="p">)</span>
+
+    <span class="c"># Save a pointer to the root for later.</span>
+    <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">isDirty</span><span class="p">():</span> <span class="n">files</span> <span class="p">[</span><span class="n">fileName</span><span class="p">]</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c"># Return whatever the original method returned.</span>
+    <span class="k">return</span> <span class="n">val</span> 
+<span class="c">#@+node:mork.20041018204908.6: ** stop</span></div>
+<div class="viewcode-block" id="stop"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.multifile.stop">[docs]</a><span class="k">def</span> <span class="nf">stop</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;can not happen&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">multi</span> <span class="o">=</span> <span class="n">scanForMultiPath</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="c"># g.trace(g.dictToString(multi))</span>
+
+    <span class="k">for</span> <span class="n">fileName</span> <span class="ow">in</span> <span class="n">multi</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">multi</span> <span class="p">[</span><span class="n">fileName</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span><span class="n">path</span><span class="p">)</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">blue</span><span class="p">(</span><span class="s">&quot;multifile:</span><span class="se">\n</span><span class="s">Wrote </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fileName</span><span class="p">,</span><span class="n">path</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;multifile:</span><span class="se">\n</span><span class="si">%s</span><span class="s"> is not a directory, not writing </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">fileName</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;multifile:</span><span class="se">\n</span><span class="s">Cant write </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fileName</span><span class="p">,</span><span class="n">path</span><span class="p">))</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es_exception_type</span><span class="p">()</span>
+    <span class="n">files</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="c">#@+node:mork.20041018204908.5: ** scanForMultiPath</span></div>
+<div class="viewcode-block" id="scanForMultiPath"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.multifile.scanForMultiPath">[docs]</a><span class="k">def</span> <span class="nf">scanForMultiPath</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;Return a dictionary whose keys are fileNames and whose values are</span>
+<span class="sd">    lists of paths to which the fileName is to be written.</span>
+<span class="sd">    New in version 0.6 of this plugin: use &#39;;&#39; to separate paths in @multipath statements.&#39;&#39;&#39;</span>
+
+    <span class="k">global</span> <span class="n">multiprefix</span><span class="p">,</span> <span class="n">multipath</span>
+    <span class="n">at</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">atFileCommands</span> <span class="p">;</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">&#39;;&#39;</span> <span class="p">;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">fileName</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="c"># Keys are fileNames, values are root positions.</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">fileName</span><span class="p">]</span>
+        <span class="n">at</span><span class="o">.</span><span class="n">scanDefaultDirectory</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="c"># Using root here may be dubious.</span>
+        <span class="n">fileName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">default_directory</span><span class="p">,</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="c"># g.trace(fileName,at.default_directory)</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">self_and_parents</span><span class="p">()]</span>
+        <span class="n">positions</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="c"># Calculate the prefix fisrt.</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">multiprefix</span><span class="p">):</span>
+                    <span class="n">prefix</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">multiprefix</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c"># Handle the paths after the prefix is in place.</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">multipath</span><span class="p">):</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">multipath</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">paths</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+                    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
+                        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">default_directory</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">default_directory</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+                    <span class="n">aList</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fileName</span><span class="p">,[])</span>
+                    <span class="n">aList</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span>
+                    <span class="c"># g.trace(fileName,aList)</span>
+                    <span class="n">d</span><span class="p">[</span><span class="n">fileName</span><span class="p">]</span> <span class="o">=</span> <span class="n">aList</span>
+    <span class="k">return</span> <span class="n">d</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

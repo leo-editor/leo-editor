@@ -1,0 +1,399 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.ipython &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.ipython</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20080201143145: * @file ipython.py</span>
+<span class="c">#@@first</span>
+
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20080201151802: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Creates a two-way communication (bridge) between Leo</span>
+<span class="sd">scripts and IPython running in the console from which Leo was launched.</span>
+
+<span class="sd">Using this bridge, scripts running in Leo can affect IPython, and vice versa.</span>
+<span class="sd">In particular, scripts running in IPython can alter Leo outlines!</span>
+
+<span class="sd">For full details, see Leo Users Guide:</span>
+<span class="sd">http://webpages.charter.net/edreamleo/IPythonBridge.html</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.9&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20080201143145.2: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># v 0.1: Ideas by Ville M. Vainio, code by EKR.</span>
+<span class="c"># </span>
+<span class="c"># v 0.2 EKR: Use g.getScript to synthesize scripts.</span>
+<span class="c"># </span>
+<span class="c"># v 0.3 EKR:</span>
+<span class="c"># - Moved all code from scripts to this plugin.</span>
+<span class="c"># - Added leoInterface and leoInterfaceResults classes.</span>
+<span class="c"># - Added createNode function for use by the interface classes.</span>
+<span class="c"># - Created minibuffer commands.</span>
+<span class="c"># - c.ipythonController is now an official ivar.</span>
+<span class="c"># - Docstring now references Chapter 21 of Leo&#39;s Users Guide.</span>
+<span class="c"># </span>
+<span class="c"># v 0.4 EKR:</span>
+<span class="c"># - Disable the command lockout logic for the start-ipython command.</span>
+<span class="c"># - (In leoSettings.leo): add shortcuts for ipython commands.</span>
+<span class="c"># </span>
+<span class="c"># v 0.5 VMV &amp; EKR:  Added leoInterfaceResults.__getattr__.</span>
+<span class="c"># </span>
+<span class="c"># v 0.6 EKR:</span>
+<span class="c"># - Inject leox into the user_ns in start-ipython.</span>
+<span class="c">#   As a result, there is no need for init_ipython and it has been removed.</span>
+<span class="c"># </span>
+<span class="c"># v 0.7 EKR:</span>
+<span class="c"># - changed execute-ipython-script to push-to-ipython.</span>
+<span class="c"># - Disabled trace of script in push-to-ipython.</span>
+<span class="c"># </span>
+<span class="c"># v 0.8 VMV and EKR:</span>
+<span class="c"># - This version is based on mods made by VMV.</span>
+<span class="c"># - EKR: set sys.argv = [] in startIPython before calling any IPython api.</span>
+<span class="c">#   This prevents IPython from trying to load the .leo file.</span>
+<span class="c"># </span>
+<span class="c"># v 0.9 EKR: tell where the commands are coming from.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; to do &gt;&gt;</span>
+<span class="c">#@+node:ekr.20080203092534: ** &lt;&lt; to do &gt;&gt;</span>
+<span class="c">#@@nocolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># - Read the docs re saving and restoring the IPython namespace.</span>
+<span class="c"># </span>
+<span class="c"># - Is it possible to start IPShellEmbed automatically?</span>
+<span class="c"># </span>
+<span class="c">#     Calling IPShellEmbed.ipshell() blocks, so it can&#39;t be done</span>
+<span class="c">#     outside the event loop.  It might be possible to do this in</span>
+<span class="c">#     an idle-time handler.</span>
+<span class="c"># </span>
+<span class="c">#     If it is possible several more settings would be possible.</span>
+<span class="c">#@-&lt;&lt; to do &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20080201143145.3: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">IPython.ipapi</span>
+    <span class="n">import_ok</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;ipython plugin: can not import IPython.ipapi&#39;</span><span class="p">)</span>
+    <span class="n">import_ok</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;ipython plugin: syntax error importing IPython.ipapi&#39;</span><span class="p">)</span>
+    <span class="n">import_ok</span> <span class="o">=</span> <span class="bp">False</span>
+    
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c"># Globals</span>
+
+<span class="c"># IPython IPApi instance. Global, because only one can exist through the whole leo session</span>
+<span class="n">gIP</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20080201144219: ** Module-level functions</span>
+<span class="c">#@+node:ekr.20080201143145.4: *3* init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">import_ok</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="c"># This plugin depends on the properties of the gui&#39;s event loop.</span>
+    <span class="c"># It may work for other gui&#39;s, but this is not guaranteed.</span>
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span> <span class="ow">and</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;qt&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">useIpython</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">pr</span><span class="p">(</span><span class="s">&#39;ipython.py plugin disabled (&quot;leo --ipython&quot; enables it)&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="c"># Call onCreate after the commander and the key handler exist.</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ekr.20080201143145.5: *3* onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c"># Inject the controller into the commander.</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">ipythonController</span> <span class="o">=</span> <span class="n">ipythonController</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">leo.external</span> <span class="kn">import</span> <span class="n">ipy_leo</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">ipy_leo</span><span class="o">.</span><span class="n">_request_immediate_connect</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">st</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">ipythonController</span><span class="o">.</span><span class="n">startIPython</span><span class="p">()</span>
+
+<span class="c">#@+node:ekr.20080201143145.6: ** class ipythonController</span></div>
+<div class="viewcode-block" id="ipythonController"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController">[docs]</a><span class="k">class</span> <span class="nc">ipythonController</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;A per-commander controller that manages the</span>
+<span class="sd">    singleton IPython ipshell instance.&#39;&#39;&#39;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20080204110426: *3* Birth</span>
+    <span class="c">#@+node:ekr.20080201143145.7: *4* ctor</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createCommands</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20080204080848: *4* createCommands</span>
+<div class="viewcode-block" id="ipythonController.createCommands"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController.createCommands">[docs]</a>    <span class="k">def</span> <span class="nf">createCommands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create all of the ipython plugin&#39;s minibuffer commands.&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">k</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">k</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s">&#39;start-ipython&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">startIPython</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;push-to-ipython&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pushToIPythonCommand</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">shortcut</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;ipython plugin...&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;purple&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">commandName</span><span class="p">,</span><span class="n">func</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span> <span class="p">(</span><span class="n">commandName</span><span class="p">,</span><span class="n">shortcut</span><span class="p">,</span><span class="n">func</span><span class="p">,</span><span class="n">pane</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20080201151802.1: *3* Commands</span>
+    <span class="c">#@+node:ekr.20080201143319.10: *4* startIPython (rewrite)</span></div>
+<div class="viewcode-block" id="ipythonController.startIPython"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController.startIPython">[docs]</a>    <span class="k">def</span> <span class="nf">startIPython</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;The start-ipython command&#39;&#39;&#39;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="k">global</span> <span class="n">gIP</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">leo.external</span> <span class="kn">import</span> <span class="n">ipy_leo</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Error importing ipy_leo&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">gIP</span><span class="p">:</span>
+            <span class="c"># Just inject a new commander for current document.</span>
+            <span class="c"># if we are already running.</span>
+            <span class="n">leox</span> <span class="o">=</span> <span class="n">leoInterface</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">g</span><span class="p">)</span> <span class="c"># inject leox into the namespace.</span>
+            <span class="n">ipy_leo</span><span class="o">.</span><span class="n">update_commander</span><span class="p">(</span><span class="n">leox</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="n">IPython</span><span class="o">.</span><span class="n">ipapi</span>
+            <span class="n">leox</span> <span class="o">=</span> <span class="n">leoInterface</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">g</span><span class="p">)</span>
+                <span class="c"># Inject leox into the IPython namespace.</span>
+
+            <span class="n">existing_ip</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">existing_ip</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s">&#39;ipython_argv&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;leo.py&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># force str instead of unicode</span>
+                    <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span> 
+                <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;qt&#39;</span><span class="p">:</span>
+                    <span class="c"># qt ui takes care of the coloring (using scintilla)</span>
+                    <span class="k">if</span> <span class="s">&#39;-colors&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">argv</span><span class="p">:</span>
+                        <span class="n">argv</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s">&#39;-colors&#39;</span><span class="p">,</span><span class="s">&#39;NoColor&#39;</span><span class="p">])</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="n">argv</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s">&#39;Creating IPython shell.&#39;</span><span class="p">)</span>
+                <span class="n">ses</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">make_session</span><span class="p">()</span>
+                <span class="n">gIP</span> <span class="o">=</span> <span class="n">ses</span><span class="o">.</span><span class="n">IP</span><span class="o">.</span><span class="n">getapi</span><span class="p">()</span>
+
+                <span class="c">#if g.app.gui.guiName() == &#39;qt&#39; and not g.app.useIpython:</span>
+                <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c"># disable this code for now - --ipython is the one recommended way of using qt + ipython</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;IPython launch failed. Start Leo with argument &quot;--ipython&quot; on command line!&#39;</span><span class="p">)</span>
+                    <span class="k">return</span>
+                    <span class="c">#try:</span>
+                    <span class="c">#    import ipy_qt.qtipywidget</span>
+                    <span class="c">#except:</span>
+                    <span class="c">#    g.es(&#39;IPython launch failed. Start Leo with argument &quot;--ipython&quot; on command line!&#39;)</span>
+                    <span class="c">#    raise</span>
+
+
+                    <span class="kn">import</span> <span class="nn">textwrap</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">qtwidget</span> <span class="o">=</span> <span class="n">ipy_qt</span><span class="o">.</span><span class="n">qtipywidget</span><span class="o">.</span><span class="n">IPythonWidget</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">qtwidget</span><span class="o">.</span><span class="n">set_ipython_session</span><span class="p">(</span><span class="n">gIP</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">qtwidget</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">qtwidget</span><span class="o">.</span><span class="n">viewport</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s">                    Qt IPython widget (for Leo). Commands entered on box below.</span>
+<span class="s">                    If you want the classic IPython text console, start leo with &#39;launchLeo.py --gui=qt --ipython&#39;</span>
+<span class="s">                    &quot;&quot;&quot;</span><span class="p">))</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># To reuse an old IPython session, you need to launch Leo from IPython by doing:</span>
+                <span class="c">#</span>
+                <span class="c"># import IPython.Shell</span>
+                <span class="c"># IPython.Shell.hijack_tk()</span>
+                <span class="c"># %run leo.py  (in leo/leo/src)              </span>
+                <span class="c">#</span>
+                <span class="c"># Obviously you still need to run launch-ipython (Alt-Shift-I) to make </span>
+                <span class="c"># the document visible for ILeo</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s">&#39;Reusing existing IPython shell&#39;</span><span class="p">)</span>
+                <span class="n">gIP</span> <span class="o">=</span> <span class="n">existing_ip</span>                
+
+            <span class="n">ipy_leo_m</span> <span class="o">=</span> <span class="n">gIP</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;leo.external.ipy_leo&#39;</span><span class="p">)</span>
+            <span class="n">ipy_leo_m</span><span class="o">.</span><span class="n">update_commander</span><span class="p">(</span><span class="n">leox</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">inCommand</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># Disable the command lockout logic, just as for scripts.</span>
+            <span class="c"># start mainloop only if it&#39;s not running already</span>
+            <span class="k">if</span> <span class="n">existing_ip</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&#39;qt&#39;</span><span class="p">:</span>
+                <span class="c"># Does not return until IPython closes!</span>
+                <span class="n">ses</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;exception creating IPython shell&#39;</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20080204111314: *4* pushToIPythonCommand</span></div>
+<div class="viewcode-block" id="ipythonController.pushToIPythonCommand"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController.pushToIPythonCommand">[docs]</a>    <span class="k">def</span> <span class="nf">pushToIPythonCommand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;The push-to-ipython command.</span>
+
+<span class="sd">        IPython must be started, but need not be inited.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pushToIPython</span><span class="p">(</span><span class="n">script</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20080201151802.2: *3* Utils...</span>
+    <span class="c">#@+node:ekr.20080204075924: *4* error &amp; message</span></div>
+<div class="viewcode-block" id="ipythonController.error"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ipythonController.message"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController.message">[docs]</a>    <span class="k">def</span> <span class="nf">message</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">blue</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20080201150746.2: *4* pushToIPython</span></div>
+<div class="viewcode-block" id="ipythonController.pushToIPython"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController.pushToIPython">[docs]</a>    <span class="k">def</span> <span class="nf">pushToIPython</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">script</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Push the node to IPython&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">gIP</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">startIPython</span><span class="p">()</span> <span class="c"># Does not return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">script</span><span class="p">:</span>
+                <span class="n">gIP</span><span class="o">.</span><span class="n">runlines</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+            <span class="n">push</span> <span class="o">=</span> <span class="n">gIP</span><span class="o">.</span><span class="n">user_ns</span><span class="p">[</span><span class="s">&#39;_leo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">push</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">inCommand</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># Disable the command lockout logic</span>
+            <span class="n">push</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">return</span>
+    <span class="c">#@+node:ekr.20080204083034: *4* started</span></div>
+<div class="viewcode-block" id="ipythonController.started"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.ipythonController.started">[docs]</a>    <span class="k">def</span> <span class="nf">started</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gIP</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20080204103804.3: ** class leoInterface</span></div></div>
+<div class="viewcode-block" id="leoInterface"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.ipython.leoInterface">[docs]</a><span class="k">class</span> <span class="nc">leoInterface</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;A class to allow full access to Leo from Ipython.</span>
+
+<span class="sd">    An instance of this class called leox is typically injected</span>
+<span class="sd">    into IPython&#39;s user_ns namespace by the init-ipython-command.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">tag</span><span class="o">=</span><span class="s">&#39;@ipython-results&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">c</span><span class="p">,</span><span class="n">g</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.mod_speedups &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.mod_speedups</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20101110094759.5843: * @file mod_speedups.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ville.20090804155017.7591: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Experimental speedups</span>
+
+<span class="sd">Various optimizations. Use at your own risk. </span>
+
+<span class="sd">If stuff breaks, disable this plugin before reporting bugs.</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.0&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ville.20090804155017.7592: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1 VMV first version</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ville.20090804155017.7593: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoPlugins</span> <span class="kn">as</span> <span class="nn">leoPlugins</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+
+<span class="c"># Whatever other imports your plugins uses.</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ville.20090804155017.7594: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_speedups.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># This might depend on imports, etc.</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:ville.20090804155017.7596: ** g.toUnicodeFileEncoding</span></div>
+<div class="viewcode-block" id="speedup_toUnicodeFileEncoding"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_speedups.speedup_toUnicodeFileEncoding">[docs]</a><span class="k">def</span> <span class="nf">speedup_toUnicodeFileEncoding</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">arg</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="c">#if g:</span>
+        <span class="c">#print s,g.callers(10)</span>
+    <span class="k">return</span> <span class="n">s</span>    
+</div>
+<span class="kn">import</span> <span class="nn">leo</span>    
+
+<span class="n">g</span><span class="o">.</span><span class="n">toUnicodeFileEncoding</span> <span class="o">=</span> <span class="n">speedup_toUnicodeFileEncoding</span>
+
+
+
+<span class="c">#@+node:ville.20090804155017.12332: ** os.path shortcuts</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_split</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_splitext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span>
+<span class="c">#g.os_path_expanduser = os.path.expanduser</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span>
+<span class="c">#g.os_path_join = os.path.join</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_normpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span>
+<span class="c">#g.os_path_finalize = os.path.abspath</span>
+
+
+
+<span class="c">#@+node:ville.20090804155017.12333: ** os_path_finalize caching</span>
+
+<span class="n">os_path_finalize_orig</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize</span>
+<span class="n">os_path_finalize_join_orig</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span>
+
+<span class="n">_finalized_cache</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_finalized_join_cache</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_expanduser_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="os_path_finalize_cached"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_speedups.os_path_finalize_cached">[docs]</a><span class="k">def</span> <span class="nf">os_path_finalize_cached</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">_finalized_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">os_path_finalize_orig</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">keys</span><span class="p">)</span>
+    <span class="n">_finalized_cache</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">res</span>
+</div>
+<div class="viewcode-block" id="os_path_finalize_join_cached"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_speedups.os_path_finalize_join_cached">[docs]</a><span class="k">def</span> <span class="nf">os_path_finalize_join_cached</span> <span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">_finalized_join_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+        <span class="c">#print &quot;cache hit&quot;, args</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">os_path_finalize_join_orig</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keys</span><span class="p">)</span>
+    <span class="n">_finalized_join_cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">res</span>
+</div>
+<div class="viewcode-block" id="os_path_expanduser_cached"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_speedups.os_path_expanduser_cached">[docs]</a><span class="k">def</span> <span class="nf">os_path_expanduser_cached</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">_expanduser_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+        <span class="c">#print &quot;cache hit&quot;, path</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">_expanduser_cache</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">res</span>
+</div>
+<div class="viewcode-block" id="os_path_join_speedup"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_speedups.os_path_join_speedup">[docs]</a><span class="k">def</span> <span class="nf">os_path_join_speedup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>    
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span>
+</div>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize</span> <span class="o">=</span> <span class="n">os_path_finalize_cached</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span> <span class="o">=</span> <span class="n">os_path_finalize_join_cached</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_expanduser</span> <span class="o">=</span> <span class="n">os_path_expanduser_cached</span>
+<span class="c">#g.os_path_join = os_path_join_speedup</span>
+
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

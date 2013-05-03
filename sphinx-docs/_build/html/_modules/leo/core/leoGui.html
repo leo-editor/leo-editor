@@ -1,0 +1,663 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.core.leoGui &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.core.leoGui</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20031218072017.3719: * @file leoGui.py</span>
+<span class="c">#@@first</span>
+
+<span class="sd">&quot;&quot;&quot;A module containing the base leoGui class.</span>
+
+<span class="sd">This class and its subclasses hides the details of which gui is actually being used.</span>
+<span class="sd">Leo&#39;s core calls this class to allocate all gui objects.</span>
+
+<span class="sd">Plugins may define their own gui classes by setting g.app.gui.&quot;&quot;&quot;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+<span class="c">#@@pagewidth 70</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20120219194520.10466: ** &lt;&lt; imports &gt;&gt; (qtGui.py)</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoFind</span> <span class="kn">as</span> <span class="nn">leoFind</span> <span class="c"># for nullFindTab.</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoFrame</span> <span class="kn">as</span> <span class="nn">leoFrame</span> <span class="c"># for nullGui and stringTextWidget.</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20070228160107: ** class leoKeyEvent (leoGui.py)</span>
+<div class="viewcode-block" id="leoKeyEvent"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoKeyEvent">[docs]</a><span class="k">class</span> <span class="nc">leoKeyEvent</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;A gui-independent wrapper for gui events.&#39;&#39;&#39;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20110605121601.18846: *3* ctor (leoKeyEvent)</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">char</span><span class="p">,</span><span class="n">shortcut</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">x_root</span><span class="p">,</span><span class="n">y_root</span><span class="p">):</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span>
+
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isStroke</span><span class="p">(</span><span class="n">shortcut</span><span class="p">):</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;***** (leoKeyEvent) oops: already a stroke&#39;</span><span class="p">,</span><span class="n">shortcut</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">callers</span><span class="p">())</span>
+            <span class="n">stroke</span> <span class="o">=</span> <span class="n">shortcut</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stroke</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">KeyStroke</span><span class="p">(</span><span class="n">shortcut</span><span class="p">)</span> <span class="k">if</span> <span class="n">shortcut</span> <span class="k">else</span> <span class="bp">None</span>
+
+        <span class="k">assert</span> <span class="n">g</span><span class="o">.</span><span class="n">isStrokeOrNone</span><span class="p">(</span><span class="n">stroke</span><span class="p">),</span><span class="s">&#39;(leoKeyEvent) </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="nb">repr</span><span class="p">(</span><span class="n">stroke</span><span class="p">),</span><span class="n">g</span><span class="o">.</span><span class="n">callers</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;(leoKeyEvent) stroke&#39;</span><span class="p">,</span><span class="n">stroke</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char</span> <span class="o">=</span> <span class="n">char</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stroke</span> <span class="o">=</span> <span class="n">stroke</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span> <span class="o">=</span> <span class="n">w</span>
+
+        <span class="c"># Optional ivars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="c"># Support for fastGotoNode plugin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_root</span> <span class="o">=</span> <span class="n">x_root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_root</span> <span class="o">=</span> <span class="n">y_root</span>
+    <span class="c">#@-others</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="s">&#39;leoKeyEvent: stroke: </span><span class="si">%s</span><span class="s">, char: </span><span class="si">%s</span><span class="s">, w: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stroke</span><span class="p">),</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char</span><span class="p">),</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
+
+<div class="viewcode-block" id="leoKeyEvent.type"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoKeyEvent.type">[docs]</a>    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;leoKeyEvent&#39;</span>
+<span class="c">#@+node:ekr.20031218072017.3720: ** class leoGui</span></div></div>
+<div class="viewcode-block" id="leoGui"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui">[docs]</a><span class="k">class</span> <span class="nc">leoGui</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;The base class of all gui classes.</span>
+
+<span class="sd">    Subclasses are expected to override all do-nothing methods of this class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20031218072017.3721: *3* app.gui Birth &amp; death</span>
+    <span class="c">#@+node:ekr.20031218072017.3722: *4*  leoGui.__init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">guiName</span><span class="p">):</span>
+
+        <span class="c"># g.trace(&quot;leoGui&quot;,guiName,g.callers())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="bp">None</span> <span class="c"># Used only by qtGui.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bodyTextWidget</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isNullGui</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastFrame</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leoIcon</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mGuiName</span> <span class="o">=</span> <span class="n">guiName</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainLoop</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plainTextWidget</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splashScreen</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">utils</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># To keep pylint happy.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ScriptingControllerClass</span> <span class="o">=</span> <span class="n">nullScriptingControllerClass</span>
+    <span class="c">#@+node:ekr.20061109212618.1: *3* Must be defined only in base class</span>
+    <span class="c">#@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)</span>
+<div class="viewcode-block" id="leoGui.create_key_event"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.create_key_event">[docs]</a>    <span class="k">def</span> <span class="nf">create_key_event</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">char</span><span class="p">,</span><span class="n">stroke</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">x_root</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">y_root</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="c"># Do not call strokeFromSetting here!</span>
+        <span class="c"># For example, this would wrongly convert Ctrl-C to Ctrl-c,</span>
+        <span class="c"># in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.</span>
+
+        <span class="k">return</span> <span class="n">leoKeyEvent</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">char</span><span class="p">,</span><span class="n">stroke</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">x_root</span><span class="p">,</span><span class="n">y_root</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20031218072017.3740: *4* guiName</span></div>
+<div class="viewcode-block" id="leoGui.guiName"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.guiName">[docs]</a>    <span class="k">def</span> <span class="nf">guiName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mGuiName</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;invalid gui name&quot;</span>
+    <span class="c">#@+node:ekr.20031218072017.2231: *4* setScript</span></div>
+<div class="viewcode-block" id="leoGui.setScript"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.setScript">[docs]</a>    <span class="k">def</span> <span class="nf">setScript</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">script</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">scriptFileName</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span> <span class="o">=</span> <span class="n">script</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scriptFileName</span> <span class="o">=</span> <span class="n">scriptFileName</span>
+    <span class="c">#@+node:ekr.20110605121601.18845: *4* event_generate (leoGui)</span></div>
+<div class="viewcode-block" id="leoGui.event_generate"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.event_generate">[docs]</a>    <span class="k">def</span> <span class="nf">event_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">char</span><span class="p">,</span><span class="n">shortcut</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+
+        <span class="n">event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_key_event</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">char</span><span class="p">,</span><span class="n">shortcut</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">masterKeyHandler</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">outerUpdate</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20061109212618: *3* Must be defined in subclasses</span>
+    <span class="c">#@+node:ekr.20031218072017.3723: *4* app.gui create &amp; destroy</span>
+    <span class="c">#@+node:ekr.20031218072017.3724: *5* createRootWindow</span></div>
+<div class="viewcode-block" id="leoGui.createRootWindow"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.createRootWindow">[docs]</a>    <span class="k">def</span> <span class="nf">createRootWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Create the hidden root window for the gui.</span>
+
+<span class="sd">        Nothing needs to be done if the root window need not exist.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3725: *5* destroySelf</span></div>
+<div class="viewcode-block" id="leoGui.destroySelf"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.destroySelf">[docs]</a>    <span class="k">def</span> <span class="nf">destroySelf</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3727: *5* killGui</span></div>
+<div class="viewcode-block" id="leoGui.killGui"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.killGui">[docs]</a>    <span class="k">def</span> <span class="nf">killGui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">exitFlag</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Destroy the gui.</span>
+
+<span class="sd">        The entire Leo application should terminate if exitFlag is True.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3728: *5* recreateRootWindow</span></div>
+<div class="viewcode-block" id="leoGui.recreateRootWindow"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.recreateRootWindow">[docs]</a>    <span class="k">def</span> <span class="nf">recreateRootWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Create the hidden root window of the gui</span>
+<span class="sd">        after a previous gui has terminated with killGui(False).&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3729: *5* runMainLoop</span></div>
+<div class="viewcode-block" id="leoGui.runMainLoop"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runMainLoop">[docs]</a>    <span class="k">def</span> <span class="nf">runMainLoop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Run the gui&#39;s main loop.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3730: *4* app.gui dialogs</span></div>
+<div class="viewcode-block" id="leoGui.runAboutLeoDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runAboutLeoDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAboutLeoDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">version</span><span class="p">,</span><span class="n">theCopyright</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">email</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and run Leo&#39;s About Leo dialog.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runAskLeoIDDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runAskLeoIDDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskLeoIDDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and run a dialog to get g.app.LeoID.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runAskOkDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runAskOkDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskOkDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s">&quot;Ok&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and run an askOK dialog .&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runAskOkCancelNumberDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runAskOkCancelNumberDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskOkCancelNumberDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="p">,</span><span class="n">cancelButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">okButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and run askOkCancelNumber dialog .&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runAskOkCancelStringDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runAskOkCancelStringDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskOkCancelStringDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="p">,</span><span class="n">cancelButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                   <span class="n">okButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and run askOkCancelString dialog .&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runAskYesNoDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runAskYesNoDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskYesNoDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and run an askYesNo dialog.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runAskYesNoCancelDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runAskYesNoCancelDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskYesNoCancelDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">yesMessage</span><span class="o">=</span><span class="s">&quot;Yes&quot;</span><span class="p">,</span><span class="n">noMessage</span><span class="o">=</span><span class="s">&quot;No&quot;</span><span class="p">,</span><span class="n">defaultButton</span><span class="o">=</span><span class="s">&quot;Yes&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and run an askYesNoCancel dialog .&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runPropertiesDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runPropertiesDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runPropertiesDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s">&#39;Properties&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">buttons</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dispay a modal TkPropertiesDialog&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3731: *4* app.gui file dialogs</span></div>
+<div class="viewcode-block" id="leoGui.runOpenFileDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runOpenFileDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runOpenFileDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">,</span><span class="n">multiple</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">startpath</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Create and run an open file dialog .&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.runSaveFileDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.runSaveFileDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runSaveFileDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">initialfile</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Create and run a save file dialog .&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3732: *4* app.gui panels</span></div>
+<div class="viewcode-block" id="leoGui.createColorPanel"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.createColorPanel">[docs]</a>    <span class="k">def</span> <span class="nf">createColorPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a color panel&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.createComparePanel"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.createComparePanel">[docs]</a>    <span class="k">def</span> <span class="nf">createComparePanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create Compare panel.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.createFindPanel"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.createFindPanel">[docs]</a>    <span class="k">def</span> <span class="nf">createFindPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a hidden Find panel.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.createFindTab"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.createFindTab">[docs]</a>    <span class="k">def</span> <span class="nf">createFindTab</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">parentFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a find tab in the indicated frame.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.createFontPanel"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.createFontPanel">[docs]</a>    <span class="k">def</span> <span class="nf">createFontPanel</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a hidden Font panel.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.createLeoFrame"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.createLeoFrame">[docs]</a>    <span class="k">def</span> <span class="nf">createLeoFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new Leo frame.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3733: *4* app.gui utils</span>
+    <span class="c">#@+at Subclasses are expected to subclass all of the following methods.</span>
+    <span class="c"># </span>
+    <span class="c"># These are all do-nothing methods: callers are expected to check for</span>
+    <span class="c"># None returns.</span>
+    <span class="c"># </span>
+    <span class="c"># The type of commander passed to methods depends on the type of frame</span>
+    <span class="c"># or dialog being created. The commander may be a Commands instance or</span>
+    <span class="c"># one of its subcommanders.</span>
+    <span class="c">#@+node:ekr.20031218072017.3734: *5* Clipboard (leoGui)</span></div>
+<div class="viewcode-block" id="leoGui.replaceClipboardWith"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.replaceClipboardWith">[docs]</a>    <span class="k">def</span> <span class="nf">replaceClipboardWith</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.getTextFromClipboard"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.getTextFromClipboard">[docs]</a>    <span class="k">def</span> <span class="nf">getTextFromClipboard</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20061031132712.1: *5* color</span>
+    <span class="c"># g.es calls gui.color to do the translation,</span>
+    <span class="c"># so most code in Leo&#39;s core can simply use Tk color names.</span>
+</div>
+<div class="viewcode-block" id="leoGui.color"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.color">[docs]</a>    <span class="k">def</span> <span class="nf">color</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">color</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return the gui-specific color corresponding to the Tk color name.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">color</span> <span class="c"># Do not call oops: this method is essential for the config classes.</span>
+    <span class="c">#@+node:ekr.20031218072017.3735: *5* Dialog utils</span></div>
+<div class="viewcode-block" id="leoGui.attachLeoIcon"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.attachLeoIcon">[docs]</a>    <span class="k">def</span> <span class="nf">attachLeoIcon</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Attach the Leo icon to a window.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.center_dialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.center_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">center_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dialog</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Center a dialog.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.create_labeled_frame"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.create_labeled_frame">[docs]</a>    <span class="k">def</span> <span class="nf">create_labeled_frame</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">,</span><span class="n">caption</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">relief</span><span class="o">=</span><span class="s">&quot;groove&quot;</span><span class="p">,</span><span class="n">bd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pady</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a labeled frame.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.get_window_info"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.get_window_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_info</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the window information.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20070212145124: *5* getFullVersion</span></div>
+<div class="viewcode-block" id="leoGui.getFullVersion"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.getFullVersion">[docs]</a>    <span class="k">def</span> <span class="nf">getFullVersion</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="s">&#39;leoGui: dummy version&#39;</span>
+    <span class="c">#@+node:ekr.20031218072017.3737: *5* Focus</span></div>
+<div class="viewcode-block" id="leoGui.get_focus"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.get_focus">[docs]</a>    <span class="k">def</span> <span class="nf">get_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the widget that has focus, or the body widget if None.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="leoGui.set_focus"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.set_focus">[docs]</a>    <span class="k">def</span> <span class="nf">set_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">commander</span><span class="p">,</span><span class="n">widget</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the focus of the widget in the given commander if it needs to be changed.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3736: *5* Font (leoGui)</span></div>
+<div class="viewcode-block" id="leoGui.getFontFromParams"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.getFontFromParams">[docs]</a>    <span class="k">def</span> <span class="nf">getFontFromParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">family</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">slant</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">defaultSize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+
+        <span class="c"># g.trace(&#39;g.app.gui&#39;,g.callers()) # &#39;family&#39;,family,&#39;size&#39;,size,&#39;defaultSize&#39;,defaultSize,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20031218072017.3739: *5* Idle time</span></div>
+<div class="viewcode-block" id="leoGui.setIdleTimeHook"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.setIdleTimeHook">[docs]</a>    <span class="k">def</span> <span class="nf">setIdleTimeHook</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">idleTimeHookHandler</span><span class="p">):</span>
+
+        <span class="c"># g.pr(&#39;leoGui:setIdleTimeHook&#39;)</span>
+        <span class="k">pass</span> <span class="c"># Not an error.</span>
+</div>
+<div class="viewcode-block" id="leoGui.setIdleTimeHookAfterDelay"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.setIdleTimeHookAfterDelay">[docs]</a>    <span class="k">def</span> <span class="nf">setIdleTimeHookAfterDelay</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">idleTimeHookHandler</span><span class="p">):</span>
+
+        <span class="c"># g.pr(&#39;leoGui:setIdleTimeHookAfterDelay&#39;)</span>
+        <span class="k">pass</span> <span class="c"># Not an error.</span>
+    <span class="c">#@+node:ekr.20070212070820: *5* makeScriptButton</span></div>
+<div class="viewcode-block" id="leoGui.makeScriptButton"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.makeScriptButton">[docs]</a>    <span class="k">def</span> <span class="nf">makeScriptButton</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">p</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">script</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">buttonText</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">balloonText</span><span class="o">=</span><span class="s">&#39;Script Button&#39;</span><span class="p">,</span>
+        <span class="n">shortcut</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">bg</span><span class="o">=</span><span class="s">&#39;LightSteelBlue1&#39;</span><span class="p">,</span>
+        <span class="n">define_g</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">define_name</span><span class="o">=</span><span class="s">&#39;__main__&#39;</span><span class="p">,</span>
+        <span class="n">silent</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20070228154059: *3* May be defined in subclasses</span>
+    <span class="c">#@+node:ekr.20110613103140.16423: *4* dismiss_spash_screen (leoGui)</span></div>
+<div class="viewcode-block" id="leoGui.dismiss_splash_screen"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.dismiss_splash_screen">[docs]</a>    <span class="k">def</span> <span class="nf">dismiss_splash_screen</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">pass</span> <span class="c"># May be overridden in subclasses.</span>
+    <span class="c">#@+node:ekr.20070219084912: *4* finishCreate (leoGui)</span></div>
+<div class="viewcode-block" id="leoGui.finishCreate"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.finishCreate">[docs]</a>    <span class="k">def</span> <span class="nf">finishCreate</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># This may be overridden in subclasses.</span>
+        <span class="k">pass</span>
+    <span class="c">#@+node:ekr.20101028131948.5861: *4* killPopupMenu &amp; postPopupMenu</span>
+    <span class="c"># These definitions keeps pylint happy.</span>
+</div>
+<div class="viewcode-block" id="leoGui.killPopupMenu"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.killPopupMenu">[docs]</a>    <span class="k">def</span> <span class="nf">killPopupMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="leoGui.postPopupMenu"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.postPopupMenu">[docs]</a>    <span class="k">def</span> <span class="nf">postPopupMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="c">#@+node:ekr.20031218072017.3741: *4* oops</span></div>
+<div class="viewcode-block" id="leoGui.oops"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.oops">[docs]</a>    <span class="k">def</span> <span class="nf">oops</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c"># It is not usually an error to call methods of this class.</span>
+        <span class="c"># However, this message is useful when writing gui plugins.</span>
+        <span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">pr</span><span class="p">(</span><span class="s">&quot;leoGui oops&quot;</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">callers</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="s">&quot;should be overridden in subclass&quot;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20051206103652: *4* widget_name (leoGui)</span></div>
+<div class="viewcode-block" id="leoGui.widget_name"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.widget_name">[docs]</a>    <span class="k">def</span> <span class="nf">widget_name</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+
+        <span class="c"># First try the widget&#39;s getName method.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;w&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&lt;no widget&gt;&#39;</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="s">&#39;getName&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="s">&#39;_name&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="c">#@+node:tbrown.20110618095626.22068: *4* ensure_commander_visible</span></div>
+<div class="viewcode-block" id="leoGui.ensure_commander_visible"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.leoGui.ensure_commander_visible">[docs]</a>    <span class="k">def</span> <span class="nf">ensure_commander_visible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;E.g. if commanders are in tabs, make sure c&#39;s tab is visible&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20031218072017.2223: ** class nullGui (leoGui)</span></div></div>
+<div class="viewcode-block" id="nullGui"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui">[docs]</a><span class="k">class</span> <span class="nc">nullGui</span><span class="p">(</span><span class="n">leoGui</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Null gui class.&quot;&quot;&quot;</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20031218072017.2224: *3* Birth &amp; death (nullGui)</span>
+    <span class="c">#@+node:ekr.20031218072017.2225: *4*  nullGui.__init__</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">guiName</span><span class="o">=</span><span class="s">&#39;nullGui&#39;</span><span class="p">):</span>
+
+        <span class="n">leoGui</span><span class="o">.</span><span class="n">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">guiName</span><span class="p">)</span> <span class="c"># init the base class.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clipboardContents</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focusWidget</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frameFactory</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">nullObject</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iconimages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastFrame</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isNullGui</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bodyTextWidget</span>  <span class="o">=</span> <span class="n">leoFrame</span><span class="o">.</span><span class="n">stringTextWidget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plainTextWidget</span> <span class="o">=</span> <span class="n">leoFrame</span><span class="o">.</span><span class="n">stringTextWidget</span>
+    <span class="c">#@+node:ekr.20031218072017.2229: *4* nullGui.runMainLoop</span>
+<div class="viewcode-block" id="nullGui.runMainLoop"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runMainLoop">[docs]</a>    <span class="k">def</span> <span class="nf">runMainLoop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Run the gui&#39;s main loop.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastFrame</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">log</span>
+            <span class="c"># g.es(&quot;start of batch script...\n&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lastFrame</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span><span class="n">script</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">)</span>
+            <span class="c"># g.es(&quot;\nend of batch script&quot;)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;**** nullGui.runMainLoop: terminating Leo.&#39;</span><span class="p">)</span>
+
+        <span class="c"># Getting here will terminate Leo.</span>
+    <span class="c">#@+node:ekr.20070228155807: *3* isTextWidget (nullGui)</span></div>
+<div class="viewcode-block" id="nullGui.isTextWidget"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.isTextWidget">[docs]</a>    <span class="k">def</span> <span class="nf">isTextWidget</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Return True if w is a Text widget suitable for text-oriented commands.&#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="n">w</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">leoFrame</span><span class="o">.</span><span class="n">baseTextWidget</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20031218072017.2230: *3* oops (nullGui)</span></div>
+<div class="viewcode-block" id="nullGui.oops"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.oops">[docs]</a>    <span class="k">def</span> <span class="nf">oops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Default do-nothing method for nullGui class.</span>
+
+<span class="sd">        It is NOT an error to use this method.&quot;&quot;&quot;</span>
+
+        <span class="c"># It is not usually an error to call methods of this class.</span>
+        <span class="c"># However, this message is useful when writing gui plugins.</span>
+        <span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&quot;nullGui&quot;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">callers</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+    <span class="c">#@+node:ekr.20070301171901: *3* do nothings (nullGui)</span></div>
+<div class="viewcode-block" id="nullGui.add_border"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.add_border">[docs]</a>    <span class="k">def</span> <span class="nf">add_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="nullGui.alert"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.alert">[docs]</a>    <span class="k">def</span> <span class="nf">alert</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="nullGui.attachLeoIcon"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.attachLeoIcon">[docs]</a>    <span class="k">def</span> <span class="nf">attachLeoIcon</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="nullGui.createRootWindow"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.createRootWindow">[docs]</a>    <span class="k">def</span> <span class="nf">createRootWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="nullGui.destroySelf"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.destroySelf">[docs]</a>    <span class="k">def</span> <span class="nf">destroySelf</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="nullGui.finishCreate"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.finishCreate">[docs]</a>    <span class="k">def</span> <span class="nf">finishCreate</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="nullGui.getIconImage"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.getIconImage">[docs]</a>    <span class="k">def</span> <span class="nf">getIconImage</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">None</span></div>
+<div class="viewcode-block" id="nullGui.getTreeImage"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.getTreeImage">[docs]</a>    <span class="k">def</span> <span class="nf">getTreeImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">None</span></div>
+<div class="viewcode-block" id="nullGui.getTextFromClipboard"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.getTextFromClipboard">[docs]</a>    <span class="k">def</span> <span class="nf">getTextFromClipboard</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clipboardContents</span></div>
+<div class="viewcode-block" id="nullGui.get_focus"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.get_focus">[docs]</a>    <span class="k">def</span> <span class="nf">get_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">frame</span><span class="p">:</span> <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">focusWidget</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="s">&#39;body&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">bodyCtrl</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">None</span> </div>
+<div class="viewcode-block" id="nullGui.getFontFromParams"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.getFontFromParams">[docs]</a>    <span class="k">def</span> <span class="nf">getFontFromParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">family</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">slant</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">defaultSize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">defaultFont</span></div>
+<div class="viewcode-block" id="nullGui.get_window_info"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.get_window_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_info</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">window</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span></div>
+<div class="viewcode-block" id="nullGui.remove_border"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.remove_border">[docs]</a>    <span class="k">def</span> <span class="nf">remove_border</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="nullGui.replaceClipboardWith"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.replaceClipboardWith">[docs]</a>    <span class="k">def</span> <span class="nf">replaceClipboardWith</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clipboardContents</span> <span class="o">=</span> <span class="n">s</span></div>
+<div class="viewcode-block" id="nullGui.set_focus"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.set_focus">[docs]</a>    <span class="k">def</span> <span class="nf">set_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">commander</span><span class="p">,</span><span class="n">widget</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focusWidget</span> <span class="o">=</span> <span class="n">widget</span>
+    <span class="c">#@+node:ekr.20070301172456: *3* app.gui panels (nullGui)</span></div>
+<div class="viewcode-block" id="nullGui.createComparePanel"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.createComparePanel">[docs]</a>    <span class="k">def</span> <span class="nf">createComparePanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create Compare panel.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="nullGui.createFindPanel"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.createFindPanel">[docs]</a>    <span class="k">def</span> <span class="nf">createFindPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a hidden Find panel.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oops</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="nullGui.createFindTab"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.createFindTab">[docs]</a>    <span class="k">def</span> <span class="nf">createFindTab</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">parentFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a find tab in the indicated frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">leoFind</span><span class="o">.</span><span class="n">nullFindTab</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">parentFrame</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.createLeoFrame"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.createLeoFrame">[docs]</a>    <span class="k">def</span> <span class="nf">createLeoFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a null Leo Frame.&quot;&quot;&quot;</span>
+        <span class="n">gui</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastFrame</span> <span class="o">=</span> <span class="n">leoFrame</span><span class="o">.</span><span class="n">nullFrame</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">gui</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastFrame</span>
+    <span class="c">#@+node:ekr.20031218072017.3744: *3* dialogs (nullGui)</span></div>
+<div class="viewcode-block" id="nullGui.runAboutLeoDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runAboutLeoDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAboutLeoDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">version</span><span class="p">,</span><span class="n">theCopyright</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">email</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;aboutLeoDialog&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runAskLeoIDDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runAskLeoIDDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskLeoIDDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;leoIDDialog&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runAskOkDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runAskOkDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskOkDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s">&quot;Ok&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;okDialog&quot;</span><span class="p">,</span><span class="s">&quot;Ok&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runAskOkCancelNumberDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runAskOkCancelNumberDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskOkCancelNumberDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="p">,</span><span class="n">cancelButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">okButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;numberDialog&quot;</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runAskOkCancelStringDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runAskOkCancelStringDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskOkCancelStringDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="p">,</span><span class="n">cancelButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                   <span class="n">okButtonText</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;stringDialog&quot;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runCompareDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runCompareDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runCompareDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;compareDialog&quot;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runOpenFileDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runOpenFileDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runOpenFileDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">,</span><span class="n">multiple</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">startpath</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;openFileDialog&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runSaveFileDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runSaveFileDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runSaveFileDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">initialfile</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;saveFileDialog&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runAskYesNoDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runAskYesNoDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskYesNoDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;yesNoDialog&quot;</span><span class="p">,</span><span class="s">&quot;no&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="nullGui.runAskYesNoCancelDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.runAskYesNoCancelDialog">[docs]</a>    <span class="k">def</span> <span class="nf">runAskYesNoCancelDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">yesMessage</span><span class="o">=</span><span class="s">&quot;Yes&quot;</span><span class="p">,</span><span class="n">noMessage</span><span class="o">=</span><span class="s">&quot;No&quot;</span><span class="p">,</span><span class="n">defaultButton</span><span class="o">=</span><span class="s">&quot;Yes&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulateDialog</span><span class="p">(</span><span class="s">&quot;yesNoCancelDialog&quot;</span><span class="p">,</span><span class="s">&quot;cancel&quot;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20100521090440.5893: *3* onActivate/DeactivateEvent (nullGui)</span></div>
+<div class="viewcode-block" id="nullGui.onActivateEvent"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.onActivateEvent">[docs]</a>    <span class="k">def</span> <span class="nf">onActivateEvent</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="nullGui.onDeactivateEvent"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.onDeactivateEvent">[docs]</a>    <span class="k">def</span> <span class="nf">onDeactivateEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="c">#@+node:ekr.20031218072017.3747: *3* simulateDialog</span></div>
+<div class="viewcode-block" id="nullGui.simulateDialog"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullGui.simulateDialog">[docs]</a>    <span class="k">def</span> <span class="nf">simulateDialog</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">defaultVal</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">defaultVal</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">pr</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">val</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20080707150137.5: ** class nullScriptingControllerClass</span></div></div>
+<div class="viewcode-block" id="nullScriptingControllerClass"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullScriptingControllerClass">[docs]</a><span class="k">class</span> <span class="nc">nullScriptingControllerClass</span><span class="p">:</span>
+
+    <span class="sd">&#39;&#39;&#39;A default, do-nothing class to be overridden by mod_scripting or other plugins.</span>
+
+<span class="sd">    This keeps pylint happy.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">iconBar</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iconBar</span> <span class="o">=</span> <span class="n">iconBar</span>
+
+<div class="viewcode-block" id="nullScriptingControllerClass.createAllButtons"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.nullScriptingControllerClass.createAllButtons">[docs]</a>    <span class="k">def</span> <span class="nf">createAllButtons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">pass</span>
+
+<span class="c">#@+node:ekr.20031218072017.3742: ** class unitTestGui (nullGui)</span></div></div>
+<div class="viewcode-block" id="unitTestGui"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.unitTestGui">[docs]</a><span class="k">class</span> <span class="nc">unitTestGui</span><span class="p">(</span><span class="n">nullGui</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;A gui class for use by unit tests.&#39;&#39;&#39;</span>
+
+    <span class="c"># Presently used only by the import/export unit tests.</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20031218072017.3743: *3*  ctor (unitTestGui)</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theDict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">trace</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oldGui</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span>
+
+        <span class="c"># Init the base class</span>
+        <span class="n">nullGui</span><span class="o">.</span><span class="n">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s">&quot;unitTestGui&quot;</span><span class="p">)</span>
+
+        <span class="c"># Use the same kind of widgets as the old gui.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bodyTextWidget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oldGui</span><span class="o">.</span><span class="n">bodyTextWidget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plainTextWidget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oldGui</span><span class="o">.</span><span class="n">plainTextWidget</span>
+
+        <span class="k">if</span> <span class="n">theDict</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">theDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theDict</span> <span class="o">=</span> <span class="n">theDict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">trace</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span> <span class="o">=</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="unitTestGui.destroySelf"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.unitTestGui.destroySelf">[docs]</a>    <span class="k">def</span> <span class="nf">destroySelf</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oldGui</span>
+    <span class="c">#@+node:ekr.20071128094234.1: *3* createSpellTab</span></div>
+<div class="viewcode-block" id="unitTestGui.createSpellTab"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.unitTestGui.createSpellTab">[docs]</a>    <span class="k">def</span> <span class="nf">createSpellTab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">spellHandler</span><span class="p">,</span><span class="n">tabName</span><span class="p">):</span>
+
+        <span class="k">pass</span> <span class="c"># This method keeps pylint happy.</span>
+    <span class="c">#@+node:ekr.20111001155050.15484: *3* runAtIdle</span></div>
+<div class="viewcode-block" id="unitTestGui.runAtIdle"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.unitTestGui.runAtIdle">[docs]</a>    <span class="k">def</span> <span class="nf">runAtIdle</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">aFunc</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Run aFunc immediately for a unit test.</span>
+
+<span class="sd">        This is a kludge, but it is probably the best that can be done.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">aFunc</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20081119083601.1: *3* toUnicode</span></div>
+<div class="viewcode-block" id="unitTestGui.toUnicode"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoGui.unitTestGui.toUnicode">[docs]</a>    <span class="k">def</span> <span class="nf">toUnicode</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

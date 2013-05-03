@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.mime &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.mime</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:dan.20090217132953.1: * @file mime.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:dan.20090203174248.27: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Opens files with their default platform program.</span>
+
+<span class="sd">Double-clicking @mime nodes will attempt to open the named file as if opened</span>
+<span class="sd">from a file manager. \@path parent nodes are used to find the full filename</span>
+<span class="sd">path.  For example::</span>
+
+<span class="sd">    @mime foodir/document.pdf</span>
+
+<span class="sd">The string setting &#39;mime_open_cmd&#39; allows specifying a program to handle opening</span>
+<span class="sd">files::</span>
+
+<span class="sd">    @settings</span>
+<span class="sd">        @string mime_open_cmd = see</span>
+<span class="sd">        .. or ..</span>
+<span class="sd">        @string mime_open_cmd = see %s</span>
+
+<span class="sd">Where &#39;%s&#39; is replaced with the full pathname.</span>
+
+<span class="sd">**Note**: This plugin terminates handling of the &#39;icondclick1&#39; event by returning</span>
+<span class="sd">True. If another plugin using this event (e.g. vim.py) is also enabled, the</span>
+<span class="sd">order in @enabled-plugins matters. For example: if vim.py is enabled before</span>
+<span class="sd">mime.py, double-clicking on an @mime node will both open the body text in [g]vim</span>
+<span class="sd">AND call the mime_open_cmd.</span>
+
+<span class="sd">Use @url for opening either URLs or Uniform Node Locators in &quot;\*.leo&quot; files and</span>
+<span class="sd">use @mime nodes for opening files on the local file system. It also replaces the</span>
+<span class="sd">startfile.py plugin, where here the headline must start with @mime to activate</span>
+<span class="sd">this plugin.</span>
+
+<span class="sd">For other sys.platform&#39;s, add an elif case to the section &quot;guess file</span>
+<span class="sd">association handler&quot; and either define a default _mime_open_cmd string, where</span>
+<span class="sd">&quot;%s&quot; will be replaced with the filename, or define a function taking the</span>
+<span class="sd">filename string as its only argument and set as open_func.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.2&#39;</span>
+
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:dan.20090203174248.28: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># Contributed by Dan White &lt;etihwnad _at_ gmail _dot_ com&gt;.</span>
+<span class="c"># </span>
+<span class="c"># 0.1 - Initial plugin</span>
+<span class="c"># 0.2 - DJW:  -changed open file architecture</span>
+<span class="c">#             -added support for win32 platform</span>
+<span class="c"># 0.3 - DJW:  -remove explicit &quot;__name__&quot; assignment</span>
+<span class="c">#             -quiet signon</span>
+<span class="c">#             -rearrange sections for easier reading</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:dan.20090203174248.29: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">mailcap</span>
+<span class="kn">import</span> <span class="nn">mimetypes</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:dan.20090210183435.1: ** exec_full_cmd</span>
+<div class="viewcode-block" id="exec_full_cmd"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mime.exec_full_cmd">[docs]</a><span class="k">def</span> <span class="nf">exec_full_cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Accept a command string including filename and return a function</span>
+<span class="sd">    which executes the command.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span>
+<span class="c">#@+node:dan.20090210180636.27: ** exec_string_cmd</span></div>
+<div class="viewcode-block" id="exec_string_cmd"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mime.exec_string_cmd">[docs]</a><span class="k">def</span> <span class="nf">exec_string_cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Accept a command string and return a function which opens executes the command,</span>
+<span class="sd">    replacing %s with the full file path.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cmd</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span> <span class="o">+</span> <span class="s">&#39; </span><span class="si">%s</span><span class="s">&#39;</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">cmd</span> <span class="o">%</span> <span class="n">fpath</span>
+        <span class="k">return</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span>
+<span class="c">#@+node:dan.20090203174248.30: ** init</span></div>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mime.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="c">#print(&#39;mime.py enabled&#39;)</span>
+
+        <span class="c"># Open on double click</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;icondclick1&#39;</span><span class="p">,</span> <span class="n">open_mimetype</span><span class="p">)</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@+node:dan.20090203174248.31: ** open_mimetype</span></div>
+<div class="viewcode-block" id="open_mimetype"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mime.open_mimetype">[docs]</a><span class="k">def</span> <span class="nf">open_mimetype</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Simulate double-clicking on the filename in a file manager.  Order of</span>
+<span class="sd">    preference is:</span>
+
+<span class="sd">        1) @string mime_open_cmd setting</span>
+<span class="sd">        2) _mime_open_cmd, defined per sys.platform detection</span>
+<span class="sd">        3) open_func(fpath), defined per sys.platform detection</span>
+<span class="sd">        4) mailcap file for mimetype handling</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">global</span> <span class="n">open_func</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;p&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;@mime&#39;</span><span class="p">):</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>
+
+        <span class="c"># honor @path</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">scanAllDirectives</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">)</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+
+        <span class="c"># stop here if the file doesn&#39;t exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_exists</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;@mime: file does not exist, </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fpath</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="c"># user-specified command string, or sys.platform-determined string</span>
+        <span class="n">mime_cmd</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s">&#39;mime_open_cmd&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_mime_open_cmd</span>
+        <span class="k">if</span> <span class="n">mime_cmd</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mime_cmd</span><span class="p">:</span>
+                <span class="n">mime_cmd</span> <span class="o">+=</span> <span class="s">&#39; </span><span class="si">%s</span><span class="s">&#39;</span>
+            <span class="n">open_func</span> <span class="o">=</span> <span class="n">exec_string_cmd</span><span class="p">(</span><span class="n">mime_cmd</span><span class="p">)</span>
+
+        <span class="c">#no special handler function specified (unknown platform),</span>
+        <span class="c">#try mailcap/mimetype entries explicitly</span>
+        <span class="k">if</span> <span class="n">open_func</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">ftype</span><span class="p">,</span> <span class="n">encoding</span><span class="p">)</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ftype</span><span class="p">:</span>
+                <span class="n">caps</span> <span class="o">=</span> <span class="n">mailcap</span><span class="o">.</span><span class="n">getcaps</span><span class="p">()</span>
+                <span class="p">(</span><span class="n">fullcmd</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span> <span class="o">=</span> <span class="n">mailcap</span><span class="o">.</span><span class="n">findmatch</span><span class="p">(</span><span class="n">caps</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span>
+                                                     <span class="n">filename</span><span class="o">=</span><span class="n">fpath</span><span class="p">,</span>
+                                                     <span class="n">key</span><span class="o">=</span><span class="s">&#39;view&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">fullcmd</span><span class="p">:</span>
+                    <span class="c"># create a function which merely executes the fullcmd in</span>
+                    <span class="c"># a shell for e.g. PATH access</span>
+                    <span class="n">open_func</span> <span class="o">=</span> <span class="n">exec_full_cmd</span><span class="p">(</span><span class="n">fullcmd</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;@mime: no mailcap entry for </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ftype</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;mailcap command:&#39;</span><span class="p">,</span> <span class="n">fullcmd</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;@mime: unknown file type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fname</span><span class="p">)</span>
+
+
+        <span class="c"># use the custom open_func to open external file viewer</span>
+        <span class="k">if</span> <span class="n">open_func</span><span class="p">:</span>
+            <span class="n">open_func</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;@mime: no known way to open </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fname</span><span class="p">)</span>
+
+        <span class="c"># block execution of e.g. vim plugin</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="c"># not an @mime node</span>
+    <span class="k">return</span> <span class="n">val</span>
+
+<span class="c">#@-others</span>
+
+<span class="c">#@+&lt;&lt; guess file association handler &gt;&gt;</span>
+<span class="c">#@+node:dan.20090203174248.35: ** &lt;&lt; guess file association handler &gt;&gt;</span>
+<span class="c">#@+at Search for the best method of opening files.  If running a desktop manager,</span>
+<span class="c"># do the action corresponding to a double-click in the file manager.</span>
+<span class="c"># </span>
+<span class="c"># Helper functions return a function f(fpath) which takes the full file path,</span>
+<span class="c"># launches the viewer and returns immediately.</span>
+<span class="c">#@@c</span>
+
+
+<span class="c"># open_func is called with the full file path</span></div>
+<span class="n">open_func</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c"># no initial system string command</span>
+<span class="n">_mime_open_cmd</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<span class="c"># default methods of opening files</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;linux2&#39;</span><span class="p">:</span>
+    <span class="c">#detect KDE or Gnome to use their file associations</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;KDE_FULL_SESSION&#39;</span><span class="p">):</span>
+        <span class="c">#_mime_open_cmd = &#39;kfmclient exec&#39;</span>
+        <span class="n">open_func</span> <span class="o">=</span> <span class="n">exec_string_cmd</span><span class="p">(</span><span class="s">&#39;kfmclient exec&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;GNOME_DESKTOP_SESSION_ID&#39;</span><span class="p">):</span>
+        <span class="n">_mime_open_cmd</span> <span class="o">=</span> <span class="s">&#39;gnome-open&#39;</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="c">#use this directly as 1-arg fn, default action is &#39;open&#39;</span>
+    <span class="n">open_func</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">startfile</span>
+
+<span class="c">#@-&lt;&lt; guess file association handler &gt;&gt;</span>
+<span class="c">#@-leo</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

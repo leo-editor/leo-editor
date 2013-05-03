@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.leo_to_rtf &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.leo_to_rtf</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:danr7.20060902083957: * @file leo_to_rtf.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:danr7.20060902085340: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be</span>
+<span class="sd">loaded into Microsoft Word and formatted as a proper outline.</span>
+
+<span class="sd">If this plug-in loads properly, you should have an &quot;Outline to Microsoft RTF&quot;</span>
+<span class="sd">option added to your File &gt; Export... menu in Leo.</span>
+
+<span class="sd">Settings such as outputting just the headlines (vs. headlines &amp; body text) and whether</span>
+<span class="sd">to include or ignore the contents of @file nodes are stored in the rtf_export.ini file</span>
+<span class="sd">in your Leo\plugins folder.</span>
+
+<span class="sd">The default export path is also stored in the INI file. By default, it&#39;s set to c:\ so</span>
+<span class="sd">you may need to modify it depending on your system.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c"># leoToRTF 1.0 plugin by Dan Rahmel</span>
+
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:danr7.20060902085055: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 1.00 - Cleaned up code and commented difficult passages</span>
+<span class="c"># 0.92 - Added INI file settings</span>
+<span class="c"># 0.91 - Added RTF output code</span>
+<span class="c"># 0.90 - Created initial plug-in framework</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:danr7.20060902083957.1: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">configparser</span> <span class="kn">as</span> <span class="nn">ConfigParser</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">ConfigParser</span>
+
+
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.0&quot;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20100128073941.5373: ** newHeadline</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_to_rtf.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+
+    <span class="c"># Ok for unit testing: creates menu.</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;create-optional-menus&quot;</span><span class="p">,</span><span class="n">createExportMenu</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:danr7.20060902083957.2: ** createExportMenu (leo_to_rtf)</span></div>
+<div class="viewcode-block" id="createExportMenu"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_to_rtf.createExportMenu">[docs]</a><span class="k">def</span> <span class="nf">createExportMenu</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">)</span>
+
+    <span class="c"># Insert leoToRTF in #3 position of the File &gt; Export menu.</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&#39;Export...&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&#39;Outline to Microsoft RTF&#39;</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">:</span> <span class="n">export_rtf</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="c">#@+node:danr7.20060902083957.3: ** export_rtf</span></div>
+<div class="viewcode-block" id="export_rtf"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.leo_to_rtf.export_rtf">[docs]</a><span class="k">def</span> <span class="nf">export_rtf</span><span class="p">(</span> <span class="n">c</span> <span class="p">):</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Exporting...&quot;</span><span class="p">)</span>
+
+    <span class="c"># Get user preferences from INI file </span>
+    <span class="n">fileName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="s">&quot;../&quot;</span><span class="p">,</span><span class="s">&quot;plugins&quot;</span><span class="p">,</span><span class="s">&quot;leo_to_rtf.ini&quot;</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+    <span class="n">flagIgnoreFiles</span> <span class="o">=</span>  <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;Main&quot;</span><span class="p">,</span> <span class="s">&quot;flagIgnoreFiles&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;Yes&quot;</span>
+    <span class="n">flagJustHeadlines</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;Main&quot;</span><span class="p">,</span> <span class="s">&quot;flagJustHeadlines&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;Yes&quot;</span>
+    <span class="n">filePath</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;Main&quot;</span><span class="p">,</span> <span class="s">&quot;exportPath&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c"># &quot;c:\\&quot;</span>
+
+    <span class="n">myFileName</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()</span>    <span class="c"># Get current outline filename</span>
+    <span class="n">myFileName</span> <span class="o">=</span> <span class="n">myFileName</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>            <span class="c"># Remove .leo suffix</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot; Leo -&gt; RTF started...&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;turquoise4&quot;</span><span class="p">)</span>
+
+    <span class="c"># Open file for output</span>
+    <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">filePath</span> <span class="o">+</span> <span class="n">myFileName</span> <span class="o">+</span> <span class="s">&quot;.rtf&quot;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="c"># Write RTF header information</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">rtf1</span><span class="se">\\</span><span class="s">ansi</span><span class="se">\\</span><span class="s">ansicpg1252</span><span class="se">\\</span><span class="s">deff0</span><span class="se">\\</span><span class="s">deflang1033{</span><span class="se">\\</span><span class="s">fonttbl{</span><span class="se">\\</span><span class="s">f0</span><span class="se">\\</span><span class="s">fswiss</span><span class="se">\\</span><span class="s">fcharset0 Arial;}}</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="c"># Write RTF list table that provides numbered list formatting</span>
+    <span class="c">#@+&lt;&lt; listtable &gt;&gt;</span>
+    <span class="c">#@+node:danr7.20060902085826: *3* &lt;&lt; listtable &gt;&gt;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">*</span><span class="se">\\</span><span class="s">listtable{</span><span class="se">\\</span><span class="s">list</span><span class="se">\\</span><span class="s">listtemplateid1723346216</span><span class="se">\\</span><span class="s">listhybrid</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc0</span><span class="se">\\</span><span class="s">levelnfcn0</span><span class="se">\\</span><span class="s">leveljc0</span><span class="se">\\</span><span class="s">leveljcn0</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698703</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">00.;}</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;}</span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-360</span><span class="se">\\</span><span class="s">li720</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx720 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc4</span><span class="se">\\</span><span class="s">levelnfcn4</span><span class="se">\\</span><span class="s">leveljc0</span><span class="se">\\</span><span class="s">leveljcn0</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698713</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">01.;} {</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;}&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-360</span><span class="se">\\</span><span class="s">li1440</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx1440 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc2</span><span class="se">\\</span><span class="s">levelnfcn2</span><span class="se">\\</span><span class="s">leveljc2</span><span class="se">\\</span><span class="s">leveljcn2</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698715</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">02.;} {</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;}&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1</span><span class="se">\\</span><span class="s">fi-180</span><span class="se">\\</span><span class="s">li2160</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx2160 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc0</span><span class="se">\\</span><span class="s">levelnfcn0</span><span class="se">\\</span><span class="s">leveljc0</span><span class="se">\\</span><span class="s">leveljcn0</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698703</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">03.;}&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;}</span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1</span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-360</span><span class="se">\\</span><span class="s">li2880</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx2880 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc4</span><span class="se">\\</span><span class="s">levelnfcn4</span><span class="se">\\</span><span class="s">leveljc0</span><span class="se">\\</span><span class="s">leveljcn0&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698713</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">04.;}&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;} </span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-360</span><span class="se">\\</span><span class="s">li3600</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx3600 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc2</span><span class="se">\\</span><span class="s">levelnfcn2</span><span class="se">\\</span><span class="s">leveljc2&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">leveljcn2</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698715</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">05.;} {</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;} </span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-180</span><span class="se">\\</span><span class="s">li4320</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx4320 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc0</span><span class="se">\\</span><span class="s">levelnfcn0&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">leveljc0</span><span class="se">\\</span><span class="s">leveljcn0</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698703</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">06.;}&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;}</span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-360</span><span class="se">\\</span><span class="s">li5040</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx5040 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc4</span><span class="se">\\</span><span class="s">levelnfcn4</span><span class="se">\\</span><span class="s">leveljc0</span><span class="se">\\</span><span class="s">leveljcn0</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698713</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">07.;}&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;}</span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-360</span><span class="se">\\</span><span class="s">li5760</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx5760 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listlevel</span><span class="se">\\</span><span class="s">levelnfc2</span><span class="se">\\</span><span class="s">levelnfcn2</span><span class="se">\\</span><span class="s">leveljc2</span><span class="se">\\</span><span class="s">leveljcn2</span><span class="se">\\</span><span class="s">levelfollow0</span><span class="se">\\</span><span class="s">levelstartat1</span><span class="se">\\</span><span class="s">levelspace360</span><span class="se">\\</span><span class="s">levelindent0&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">leveltext</span><span class="se">\\</span><span class="s">leveltemplateid67698715</span><span class="se">\\\&#39;</span><span class="s">02</span><span class="se">\\\&#39;</span><span class="s">08.;}{</span><span class="se">\\</span><span class="s">levelnumbers</span><span class="se">\\\&#39;</span><span class="s">01;}&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">chbrdr</span><span class="se">\\</span><span class="s">brdrnone</span><span class="se">\\</span><span class="s">brdrcf1 </span><span class="se">\\</span><span class="s">chshdng0</span><span class="se">\\</span><span class="s">chcfpat1</span><span class="se">\\</span><span class="s">chcbpat1 </span><span class="se">\\</span><span class="s">fi-180</span><span class="se">\\</span><span class="s">li6480</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">tx6480 }&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">listname ;}</span><span class="se">\\</span><span class="s">listid127936308}}</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{</span><span class="se">\\</span><span class="s">*</span><span class="se">\\</span><span class="s">listoverridetable{</span><span class="se">\\</span><span class="s">listoverride</span><span class="se">\\</span><span class="s">listid127936308</span><span class="se">\\</span><span class="s">listoverridecount0</span><span class="se">\\</span><span class="s">ls1}}</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="c">#@-&lt;&lt; listtable &gt;&gt;</span>
+
+    <span class="c"># Write text formatting foundation</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">viewkind4</span><span class="se">\\</span><span class="s">uc1</span><span class="se">\\</span><span class="s">pard</span><span class="se">\\</span><span class="s">f0</span><span class="se">\\</span><span class="s">fs20</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="c"># Create generic level header</span>
+    <span class="n">levelHeader</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">pard </span><span class="se">\\</span><span class="s">ql </span><span class="se">\\</span><span class="s">fi-360</span><span class="se">\\</span><span class="s">ri0</span><span class="se">\\</span><span class="s">widctlpar</span><span class="se">\\</span><span class="s">jclisttab</span><span class="se">\\</span><span class="s">faauto</span><span class="se">\\</span><span class="s">ls1</span><span class="se">\\</span><span class="s">adjustright</span><span class="se">\\</span><span class="s">rin0</span><span class="se">\\</span><span class="s">itap0&quot;</span>
+    <span class="n">myLevel</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+        <span class="n">curLevel</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">level</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>    <span class="c"># Store current level so method doesn&#39;t have to be called again</span>
+        <span class="k">if</span> <span class="n">curLevel</span> <span class="o">!=</span> <span class="n">myLevel</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">myLevel</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;}&quot;</span><span class="p">)</span>                 <span class="c"># If this is not the 1st level written, close the last before begin</span>
+            <span class="n">levelIndent</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="mi">720</span><span class="o">*</span><span class="n">curLevel</span><span class="p">)</span> <span class="c"># Generate the pixel indent for the current level</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">levelHeader</span><span class="p">)</span>            <span class="c"># Output the generic RTF level info</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">li&quot;</span> <span class="o">+</span> <span class="n">levelIndent</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">tx&quot;</span> <span class="o">+</span> <span class="n">levelIndent</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">ilvl&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">curLevel</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">lin&quot;</span> <span class="o">+</span> <span class="n">levelIndent</span><span class="p">)</span>        
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{&quot;</span><span class="p">)</span>
+
+        <span class="n">myLevel</span> <span class="o">=</span> <span class="n">curLevel</span>
+        <span class="n">myHeadline</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span>
+
+        <span class="c"># Check if node is an @file and ignore if configured to</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">myHeadline</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;@file&quot;</span> <span class="ow">and</span> <span class="n">flagIgnoreFiles</span><span class="p">):</span>
+            <span class="c"># Write headline with correct # of tabs for indentation</span>
+            <span class="n">myOutput</span> <span class="o">=</span> <span class="n">myHeadline</span> <span class="o">+</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">par &quot;</span>
+            <span class="n">myOutput</span> <span class="o">=</span> <span class="n">myOutput</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span> <span class="s">&quot;utf-8&quot;</span> <span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">myOutput</span><span class="p">)</span>
+            <span class="c"># If including outline body text, convert it to RTF usable format</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">flagJustHeadlines</span><span class="p">:</span>
+                <span class="n">myBody</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span> <span class="s">&quot;utf-8&quot;</span> <span class="p">)</span> 
+                <span class="n">myBody</span> <span class="o">=</span> <span class="n">myBody</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span> 
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">myBody</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">par &quot;</span><span class="p">)</span>
+
+    <span class="c"># Write final level close</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;}&quot;</span><span class="p">)</span>  
+
+    <span class="c"># Write RTF close</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;}&quot;</span><span class="p">)</span>  
+
+    <span class="c"># Close file</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot; Leo -&gt; RTF completed.&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;turquoise4&quot;</span><span class="p">)</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

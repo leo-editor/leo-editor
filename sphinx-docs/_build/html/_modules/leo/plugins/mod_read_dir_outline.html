@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.mod_read_dir_outline &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.mod_read_dir_outline</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20050301083306: * @file mod_read_dir_outline.py</span>
+<span class="c">#@@first</span>
+
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050301084207: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Allows Leo to read a complete directory tree into a Leo outline. Converts</span>
+<span class="sd">directories into headlines and puts the list of file names into bodies.</span>
+
+<span class="sd">Ce plug-in permet de traduire l&#39;arborescence d&#39;un répertoire en une arborescence</span>
+<span class="sd">Leo : Chaque dossier est converti en noeud dans Leo ; son nom est placé dans</span>
+<span class="sd">l&#39;entête du noeud et chaque nom de fichier qu&#39;il contient est listé dans son</span>
+<span class="sd">contenu.</span>
+
+<span class="sd">Feedback on this plugin can be sent to::</span>
+
+<span class="sd">    Frédéric Momméja</span>
+<span class="sd">    &lt;frederic [point] mommeja [at] laposte [point] net&gt;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;2.0&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050301083306.3: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 1.3 Original version by Frédéric Momméja</span>
+<span class="c"># </span>
+<span class="c"># 1.4 EKR:  Changes for 4.3 code base and new plugins style.</span>
+<span class="c"># </span>
+<span class="c">#     - Created typical init and onCreate functions.</span>
+<span class="c">#     - Created language global.</span>
+<span class="c">#     - Changed true/false to True/False.</span>
+<span class="c">#     - Used g.os_path functions to support Unicode properly.</span>
+<span class="c">#     - Added &#39;@first # -*- coding: utf-8 -*-&#39; to suppress deprecation warning.</span>
+<span class="c"># 1.5 EKR:</span>
+<span class="c">#     - use g.importExtension to import tkFileDialog.</span>
+<span class="c">#     - Redraw the screen only once (in readDir instead of importDir).</span>
+<span class="c"># 1.6 EKR:</span>
+<span class="c">#     - Changed &#39;new_c&#39; logic to &#39;c&#39; logic.</span>
+<span class="c">#     - Added init function.</span>
+<span class="c"># 2.0 EKR: now gui independent.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="n">language</span> <span class="o">=</span> <span class="s">&#39;english&#39;</span> <span class="c"># Anything except &#39;french&#39; uses english.</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20050301083306.4: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_read_dir_outline.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="c"># This plugin is now gui independent.</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s">&quot;new2&quot;</span><span class="p">,</span><span class="s">&quot;menu2&quot;</span><span class="p">),</span> <span class="n">onCreate</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+<span class="c">#@+node:ekr.20050301083306.5: ** onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_read_dir_outline.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="n">cc</span> <span class="o">=</span> <span class="n">controller</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="n">menu</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">getMenu</span><span class="p">(</span><span class="s">&#39;Outline&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s">&#39;french&#39;</span><span class="p">:</span>
+        <span class="n">mess1</span> <span class="o">=</span> <span class="s">&quot;Lit un Répertoire...&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mess1</span> <span class="o">=</span> <span class="s">&quot;Read a Directory...&quot;</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">mess1</span><span class="p">,</span> <span class="s">&quot;Shift+Ctrl+Alt+D&quot;</span><span class="p">,</span><span class="n">cc</span><span class="o">.</span><span class="n">readDir</span><span class="p">))</span>
+
+    <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">createMenuEntries</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">dynamicMenu</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20050301083306.6: ** class controller</span></div>
+<div class="viewcode-block" id="controller"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_read_dir_outline.controller">[docs]</a><span class="k">class</span> <span class="nc">controller</span><span class="p">:</span>
+
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20050301083306.7: *3* ctor</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+    <span class="c">#@+node:ekr.20050301083306.8: *3* readDir</span>
+<div class="viewcode-block" id="controller.readDir"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_read_dir_outline.controller.readDir">[docs]</a>    <span class="k">def</span> <span class="nf">readDir</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="c"># fr - Modifier pour adapter à votre environnement</span>
+        <span class="c"># en - Change it to select the starting browsing directory</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">startdir</span> <span class="o">=</span> <span class="s">&quot;/home/&quot;</span>
+
+        <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s">&#39;french&#39;</span><span class="p">:</span>
+            <span class="n">titledialog</span> <span class="o">=</span> <span class="s">&quot;Choisir le répertoire...&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">titledialog</span> <span class="o">=</span> <span class="s">&quot;Please, select a directory...&quot;</span>
+
+        <span class="n">dirName</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runOpenDirectoryDialog</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">titledialog</span><span class="p">,</span>
+            <span class="n">startdir</span><span class="o">=</span><span class="n">startdir</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dirName</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">dirName</span><span class="p">)</span>
+            <span class="n">compteurglobal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importDir</span><span class="p">(</span><span class="n">dirName</span><span class="p">,</span><span class="n">compteurglobal</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">redraw_now</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s">&#39;french&#39;</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">compteurglobal</span><span class="p">)</span><span class="o">+</span><span class="s">&quot; fichiers traités.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">compteurglobal</span><span class="p">)</span><span class="o">+</span><span class="s">&quot; files outlined.&quot;</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20050301083306.10: *3* importDir</span></div>
+<div class="viewcode-block" id="controller.importDir"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.mod_read_dir_outline.controller.importDir">[docs]</a>    <span class="k">def</span> <span class="nf">importDir</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="nb">dir</span><span class="p">,</span><span class="n">compteurglobal</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot; La routine récursive de lecture des fichiers &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_exists</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s">&#39;french&#39;</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Ce répertoire n&#39;existe pas: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">+</span> <span class="nb">dir</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;No such Directory: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">+</span> <span class="nb">dir</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">compteurglobal</span>
+
+        <span class="n">head</span><span class="p">,</span><span class="n">tail</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_split</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="p">;</span> <span class="n">current</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c">#ici, on liste le contenu du répertoire</span>
+            <span class="n">body</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+            <span class="c">#@+&lt;&lt; listdir &gt;&gt;</span>
+            <span class="c">#@+node:ekr.20050301083306.11: *4* &lt;&lt; listdir &gt;&gt;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fichiers</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+                <span class="n">dossiers</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fichiers</span><span class="p">:</span>
+                    <span class="c"># mettre ici le code de création des noeuds</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+                    <span class="c"># est-ce un fichier ?</span>
+                    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                        <span class="n">body</span> <span class="o">+=</span> <span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c"># c&#39;est alors un répertoire</span>
+                        <span class="n">dossiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="n">compteurglobal</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s">&#39;french&#39;</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;erreur dans listage fichiers...&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;os.listdir error...&quot;</span><span class="p">)</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+            <span class="c">#@-&lt;&lt; listdir &gt;&gt;</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">importCommands</span><span class="o">.</span><span class="n">createHeadline</span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="n">body</span><span class="p">,</span><span class="n">tail</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dossiers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dossiers</span><span class="p">:</span>
+                    <span class="n">compteurglobal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importDir</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">compteurglobal</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">setChanged</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="c">#sélectionne le noeud parent</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s">&#39;french&#39;</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;erreur d&#39;insertion de noeud...&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;error while creating node...&quot;</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">compteurglobal</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

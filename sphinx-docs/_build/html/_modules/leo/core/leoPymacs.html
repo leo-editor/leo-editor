@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.core.leoPymacs &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.core.leoPymacs</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20061024060248.1: * @file leoPymacs.py</span>
+<span class="c">#@@first</span>
+
+<span class="c">#@+&lt;&lt; docstring&gt;&gt;</span>
+<span class="c">#@+node:ekr.20061024060248.2: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39;A module to allow the Pymacs bridge to access Leo data.</span>
+
+<span class="sd">All code in this module must be called *from* Emacs:</span>
+<span class="sd">calling Pymacs.lisp in other situations will hang Leo.</span>
+
+<span class="sd">Notes:</span>
+
+<span class="sd">- The init method adds the parent directory of leoPymacs.py to</span>
+<span class="sd">  Python&#39;s sys.path. This is essential to make imports work from</span>
+<span class="sd">  inside Emacs.</span>
+
+<span class="sd">- As of Leo 4.5, the following code, when executed from an Emacs buffer,</span>
+<span class="sd">  will open trunk/leo/test.leo::</span>
+
+<span class="sd">      (pymacs-load &quot;c:\\leo.repo\\trunk\\leo\\core\\leoPymacs&quot; &quot;leo-&quot;)</span>
+<span class="sd">      (setq c (leo-open &quot;c:\\leo.repo\\trunk\\leo\\test\\test.leo&quot;))</span>
+
+<span class="sd">  Note that full path names are required in each case.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring&gt;&gt;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c"># As in leo.py we must be very careful about imports.</span>
+<span class="n">g</span> <span class="o">=</span> <span class="bp">None</span> <span class="c"># set by init: do *not* import it here!</span>
+<span class="n">inited</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">pymacsFile</span> <span class="o">=</span> <span class="n">__file__</span>
+<span class="c"># print(&#39;leoPymacs:pymacsFile&#39;,pymacsFile)</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20061024131236: ** dump (pymacs)</span>
+<div class="viewcode-block" id="dump"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.dump">[docs]</a><span class="k">def</span> <span class="nf">dump</span> <span class="p">(</span><span class="n">anObject</span><span class="p">):</span>
+
+    <span class="k">global</span> <span class="n">g</span>
+
+    <span class="n">init</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">toEncodedString</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">anObject</span><span class="p">),</span><span class="n">encoding</span><span class="o">=</span><span class="s">&#39;ascii&#39;</span><span class="p">))</span>
+<span class="c">#@+node:ekr.20061024130957: ** getters (pymacs)</span></div>
+<div class="viewcode-block" id="get_app"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.get_app">[docs]</a><span class="k">def</span> <span class="nf">get_app</span> <span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Scripts can use g.app.scriptDict for communication with pymacs.&#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">g</span>
+    <span class="n">init</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span>
+</div>
+<div class="viewcode-block" id="get_g"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.get_g">[docs]</a><span class="k">def</span> <span class="nf">get_g</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">g</span>
+    <span class="n">init</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">g</span>
+</div>
+<div class="viewcode-block" id="script_result"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.script_result">[docs]</a><span class="k">def</span> <span class="nf">script_result</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">g</span>
+    <span class="n">init</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptResult</span>
+<span class="c">#@+node:ekr.20061024060248.3: ** hello (pymacs)</span></div>
+<div class="viewcode-block" id="hello"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.hello">[docs]</a><span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+
+    <span class="n">init</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s">&#39;Hello from Leo.  g.app: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span>
+<span class="c">#@+node:ekr.20061024075542: ** init  (pymacs)</span></div>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="k">global</span> <span class="n">inited</span>
+
+    <span class="k">if</span> <span class="n">inited</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inited</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># Only try once, no matter what happens.</span>
+
+    <span class="c"># Add the parent path of this file to sys.path</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+
+    <span class="n">theDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">pymacsFile</span><span class="p">),</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">theDir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s">&#39;leoPymacs:adding&#39;</span><span class="p">,</span><span class="n">theDir</span><span class="p">,</span><span class="s">&#39;to sys.path&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">theDir</span><span class="p">)</span>
+
+    <span class="c"># Create the dummy app</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">leo.core.runLeo</span> <span class="kn">as</span> <span class="nn">leo</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;leoPymacs.init: can not import runLeo&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;leoPymacs.init: sys.path:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span> <span class="k">print</span> <span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="n">leo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">pymacs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">leoGlobals</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;leoPymacs.init: can not import leoGlobals&#39;</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">g</span> <span class="p">;</span> <span class="n">g</span> <span class="o">=</span> <span class="n">leoGlobals</span>
+    <span class="c"># print(&#39;leoPymacs:init:g&#39;,g)</span>
+
+    <span class="k">if</span> <span class="mi">1</span><span class="p">:</span> <span class="c"># These traces show up in the pymacs buffer.</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;app&#39;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;gui&#39;</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20061024075542.1: ** open (pymacs)</span></div>
+<div class="viewcode-block" id="open"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.open">[docs]</a><span class="k">def</span> <span class="nf">open</span> <span class="p">(</span><span class="n">fileName</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    <span class="k">global</span> <span class="n">g</span>
+
+    <span class="n">init</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fileName</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;leoPymacs.open:&#39;</span><span class="p">,</span><span class="s">&#39;no file name&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="c"># openWithFileName checks to see if the file is already open.</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">openWithFileName</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;leoPymacs.open:&#39;</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;leoPymacs.open:&#39;</span><span class="p">,</span><span class="s">&#39;can not open&#39;</span><span class="p">,</span><span class="n">fileName</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">c</span>
+<span class="c">#@+node:ekr.20061024084200: ** run-script (pymacs)</span></div>
+<div class="viewcode-block" id="run_script"><a class="viewcode-back" href="../../../leo.core.html#leo.core.leoPymacs.run_script">[docs]</a><span class="k">def</span> <span class="nf">run_script</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    <span class="c"># It is possible to use script=None, in which case p must be defined.</span>
+
+    <span class="k">global</span> <span class="n">g</span>
+
+    <span class="n">init</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">newCommander</span><span class="p">(</span><span class="n">fileName</span><span class="o">=</span><span class="s">&#39;dummy script file&#39;</span><span class="p">)</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptResult</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">c</span><span class="o">.</span><span class="n">executeScript</span><span class="p">(</span>
+        <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
+        <span class="n">script</span><span class="o">=</span><span class="n">script</span><span class="p">,</span>
+        <span class="n">useSelectedText</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">define_g</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">define_name</span><span class="o">=</span><span class="s">&#39;__main__&#39;</span><span class="p">,</span>
+        <span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>  <span class="c"># Don&#39;t write to the log.</span>
+    <span class="p">)</span>
+
+    <span class="c"># g.trace(&#39;script returns: &#39;,repr(g.app.scriptResult))</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptResult</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

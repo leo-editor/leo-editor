@@ -1,0 +1,1053 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.external.codewise &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.external.codewise</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20110310091639.14254: * @file ../external/codewise.py</span>
+<span class="c">#@@first</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20110310091639.14291: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&quot;&quot;&quot; CodeWise - global code intelligence database</span>
+
+<span class="sd">Why this module</span>
+<span class="sd">===============</span>
+
+<span class="sd">- Exuberant ctags is an excellent code scanner</span>
+<span class="sd">- Unfortunately, TAGS file lookup sucks for &quot;find methods of this class&quot;</span>
+<span class="sd">- TAGS files can be all around the hard drive. CodeWise database is</span>
+<span class="sd">  just one file (by default ~/.codewise.db)</span>
+<span class="sd">- I wanted to implement modern code completion for Leo editor</span>
+<span class="sd">- codewise.py is usable as a python module, or a command line tool.</span>
+
+<span class="sd">Creating ctags data</span>
+<span class="sd">===================</span>
+
+<span class="sd">1. Make sure you have exuberant ctags (not just regular ctags)</span>
+<span class="sd">   installed. It&#39;s an Ubuntu package, so its easy to install if</span>
+<span class="sd">   you&#39;re using Ubuntu.</span>
+
+
+<span class="sd">2. [Optional] Create a custom ~/.ctags file containing default</span>
+<span class="sd">    configuration settings for ctags. See:</span>
+<span class="sd">    http://ctags.sourceforge.net/ctags.html#FILES for more</span>
+<span class="sd">    details.</span>
+
+<span class="sd">    The ``codewise setup`` command (see below), will leave this</span>
+<span class="sd">    file alone if it exists; otherwise, ``codewise setup`` will</span>
+<span class="sd">    create a ~/.ctags file containing::</span>
+
+<span class="sd">        --exclude=*.html</span>
+<span class="sd">        --exclude=*.css</span>
+
+<span class="sd">3. Create the ctags data in ~/.codewise.db using this module. Execute the</span>
+<span class="sd">   following from a console window::</span>
+
+<span class="sd">        codewise setup</span>
+<span class="sd">            # Optional: creates ~/.ctags if it does not exist.</span>
+<span class="sd">            # See http://ctags.sourceforge.net/ctags.html#FILES</span>
+<span class="sd">        codewise init</span>
+<span class="sd">            # Optional: deletes ~/.codewise.db if it exists.</span>
+<span class="sd">        codewise parse &lt;path to directory&gt;</span>
+<span class="sd">            # Adds ctags data to ~/.codewise.db for &lt;directory&gt;</span>
+
+<span class="sd">**Note**: On Windows, use a batch file, say codewise.bat, to execute the</span>
+<span class="sd">above code. codewise.bat contains::</span>
+
+<span class="sd">    python &lt;path to leo&gt;\leo\external\codewise.py %*</span>
+
+<span class="sd">Using the autocompleter</span>
+<span class="sd">=======================</span>
+
+<span class="sd">After restarting Leo, type, for example, in the body pane::</span>
+
+<span class="sd">    c.op&lt;ctrl-space&gt;</span>
+
+<span class="sd">that is, use use the autocomplete-force command,</span>
+<span class="sd">to find all the c. methods starting with &#39;op&#39; etc. </span>
+
+<span class="sd">Theory of operation</span>
+<span class="sd">===================</span>
+
+<span class="sd">- ~/.codewise.db is an sqlite database with following tables:</span>
+
+<span class="sd">CLASS maps class id&#39;s to names.</span>
+
+<span class="sd">FILE maps file id&#39;s to file names</span>
+
+<span class="sd">DATASOURCE contains places where data has been parsed from, to enable reparse</span>
+
+<span class="sd">FUNCTION, the most important one, contains functions/methods, along with CLASS</span>
+<span class="sd"> and FILE it was found in. Additionally, it has SEARCHPATTERN field that can be</span>
+<span class="sd"> used to give calltips, or used as a regexp to find the method from file</span>
+<span class="sd"> quickly.</span>
+
+<span class="sd">You can browse the data by installing sqlitebrovser and doing &#39;sqlitebrowser</span>
+<span class="sd">~/codewise.db&#39;</span>
+
+<span class="sd">If you know the class name you want to find the methods for,</span>
+<span class="sd">CodeWise.get_members with a list of classes to match.</span>
+
+<span class="sd">If you want to match a function without a class, call CodeWise.get_functions.</span>
+<span class="sd">This can be much slower if you have a huge database.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20110310091639.14293: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">types</span>
+
+
+<span class="c"># A hack to get this module without actually importing it.</span>
+<div class="viewcode-block" id="get_module"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.get_module">[docs]</a><span class="k">def</span> <span class="nf">get_module</span><span class="p">():</span>
+    <span class="k">pass</span>
+</div>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">get_module</span><span class="o">.</span><span class="n">__module__</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">g</span><span class="p">,</span><span class="s">&#39;no g&#39;</span>
+<span class="c"># print(g)</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="n">isPython3</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c">#@+&lt;&lt; define usage &gt;&gt;</span>
+<span class="c">#@+node:ekr.20110310091639.14292: ** &lt;&lt; define usage &gt;&gt;</span>
+<span class="n">usage</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">codewise setup</span>
+<span class="s"> (Optional - run this first to create template ~/.ctags)</span>
+
+<span class="s">codewise init</span>
+<span class="s"> Create/recreate the global database</span>
+
+<span class="s">codewise parse /my/project /other/project</span>
+<span class="s"> Parse specified directories (with recursion) and add results to db</span>
+
+<span class="s">codewise m</span>
+<span class="s"> List all classes</span>
+
+<span class="s">codewise m MyClass</span>
+<span class="s"> Show all methods in MyClass</span>
+
+<span class="s">codewise f PREFIX</span>
+<span class="s"> Show all symbols (also nonmember functiosn) starting with PREFIX.</span>
+<span class="s"> PREFIX can be omitted to get a list of all symbols</span>
+
+<span class="s">codewise parseall</span>
+<span class="s"> Clear database, reparse all paths previously added by &#39;codewise parse&#39;</span>
+
+<span class="s">codewise sciapi pyqt.api</span>
+<span class="s"> Parse an api file (as supported by scintilla, eric4...)</span>
+
+<span class="s">Commands you don&#39;t probably need:</span>
+
+<span class="s">codewise tags TAGS</span>
+<span class="s"> Dump already-created tagfile TAGS to database</span>
+
+<span class="s">&quot;&quot;&quot;</span> 
+<span class="c">#@-&lt;&lt; define usage &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; define DB_SCHEMA &gt;&gt;</span>
+<span class="c">#@+node:ekr.20110310091639.14255: ** &lt;&lt; define DB_SCHEMA &gt;&gt;</span>
+<span class="n">DB_SCHEMA</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">BEGIN TRANSACTION;</span>
+<span class="s">CREATE TABLE class (id INTEGER PRIMARY KEY, file INTEGER,  name TEXT, searchpattern TEXT);</span>
+<span class="s">CREATE TABLE file (id INTEGER PRIMARY KEY, path TEXT);</span>
+<span class="s">CREATE TABLE function (id INTEGER PRIMARY KEY, class INTEGER, file INTEGER, name TEXT, searchpattern TEXT);</span>
+<span class="s">CREATE TABLE datasource (type TEXT, src TEXT);</span>
+
+<span class="s">CREATE INDEX idx_class_name ON class(name ASC);</span>
+<span class="s">CREATE INDEX idx_function_class ON function(class ASC);</span>
+
+<span class="s">COMMIT;</span>
+<span class="s">&quot;&quot;&quot;</span>
+<span class="c">#@-&lt;&lt; define DB_SCHEMA &gt;&gt;</span>
+
+<span class="n">DEFAULT_DB</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&quot;~/.codewise.db&quot;</span><span class="p">))</span>
+
+<span class="c"># print(&#39;default db: %s&#39; % DEFAULT_DB)</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ekr.20110310091639.14295: ** top level...</span>
+<span class="c">#@+node:ekr.20110310091639.14294: *3* codewise cmd wrappers</span>
+<span class="c">#@+node:ekr.20110310091639.14289: *4* cmd_functions</span>
+<div class="viewcode-block" id="cmd_functions"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_functions">[docs]</a><span class="k">def</span> <span class="nf">cmd_functions</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">CodeWise</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">funcs</span> <span class="o">=</span> <span class="n">cw</span><span class="o">.</span><span class="n">get_functions</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">funcs</span> <span class="o">=</span> <span class="n">cw</span><span class="o">.</span><span class="n">get_functions</span><span class="p">()</span>
+
+    <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">el</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">lines</span> <span class="c"># EKR</span>
+<span class="c">#@+node:ekr.20110310091639.14285: *4* cmd_init</span></div>
+<div class="viewcode-block" id="cmd_init"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_init">[docs]</a><span class="k">def</span> <span class="nf">cmd_init</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Initializing CodeWise db at: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">DEFAULT_DB</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">DEFAULT_DB</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">DEFAULT_DB</span><span class="p">)</span>
+
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">CodeWise</span><span class="p">()</span>
+
+<span class="c">#@+node:ekr.20110310091639.14288: *4* cmd_members</span></div>
+<div class="viewcode-block" id="cmd_members"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_members">[docs]</a><span class="k">def</span> <span class="nf">cmd_members</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">CodeWise</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">mems</span> <span class="o">=</span> <span class="n">cw</span><span class="o">.</span><span class="n">get_members</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">el</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">pat</span> <span class="k">for</span> <span class="n">el</span><span class="p">,</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">mems</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">cw</span><span class="o">.</span><span class="n">classcache</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="n">lines</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">lines</span> <span class="c"># EKR</span>
+<span class="c">#@+node:ekr.20110310091639.14283: *4* cmd_parse</span></div>
+<div class="viewcode-block" id="cmd_parse"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_parse">[docs]</a><span class="k">def</span> <span class="nf">cmd_parse</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+    <span class="k">assert</span> <span class="n">args</span>
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">CodeWise</span><span class="p">()</span>
+    <span class="n">cw</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+<span class="c">#@+node:ekr.20110310091639.14282: *4* cmd_parseall</span></div>
+<div class="viewcode-block" id="cmd_parseall"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_parseall">[docs]</a><span class="k">def</span> <span class="nf">cmd_parseall</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">CodeWise</span><span class="p">()</span>
+    <span class="n">cw</span><span class="o">.</span><span class="n">parseall</span><span class="p">()</span>
+
+<span class="c">#@+node:ekr.20110310091639.14281: *4* cmd_scintilla</span></div>
+<div class="viewcode-block" id="cmd_scintilla"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_scintilla">[docs]</a><span class="k">def</span> <span class="nf">cmd_scintilla</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">CodeWise</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">fil</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>
+        <span class="n">cw</span><span class="o">.</span><span class="n">feed_scintilla</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c">#@+node:ekr.20110310091639.14286: *4* cmd_setup</span></div>
+<div class="viewcode-block" id="cmd_setup"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_setup">[docs]</a><span class="k">def</span> <span class="nf">cmd_setup</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+    <span class="n">ctagsfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&quot;~/.ctags&quot;</span><span class="p">))</span>
+
+    <span class="c"># assert not os.path.isfile(ctagsfile)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ctagsfile</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Using template file: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">ctagsfile</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Creating template: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">ctagsfile</span><span class="p">)</span>
+        <span class="nb">open</span><span class="p">(</span><span class="n">ctagsfile</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;--exclude=*.html</span><span class="se">\n</span><span class="s">--exclude=*.css</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="c"># No need for this: the docs say to run &quot;init&quot; after &quot;setup&quot;</span>
+    <span class="c"># cmd_init(args)</span>
+
+<span class="c">#@+node:ekr.20110310091639.14284: *4* cmd_tags</span></div>
+<div class="viewcode-block" id="cmd_tags"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.cmd_tags">[docs]</a><span class="k">def</span> <span class="nf">cmd_tags</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">CodeWise</span><span class="p">()</span>
+    <span class="n">cw</span><span class="o">.</span><span class="n">feed_ctags</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="c">#@+node:ekr.20110310093050.14234: *3* functions from leoGlobals</span>
+<span class="c">#@+node:ekr.20110310093050.14291: *4* Most common functions... (codewise.py)</span>
+<span class="c">#@+node:ekr.20110310093050.14296: *5* callers &amp; _callerName (codewise)</span></div>
+<div class="viewcode-block" id="callers"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.callers">[docs]</a><span class="k">def</span> <span class="nf">callers</span> <span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">excludeCaller</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">files</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;Return a list containing the callers of the function that called g.callerList.</span>
+
+<span class="sd">    If the excludeCaller keyword is True (the default), g.callers is not on the list.</span>
+
+<span class="sd">    If the files keyword argument is True, filenames are included in the list.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c"># sys._getframe throws ValueError in both cpython and jython if there are less than i entries.</span>
+    <span class="c"># The jython stack often has less than 8 entries,</span>
+    <span class="c"># so we must be careful to call g._callerName with smaller values of i first.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">excludeCaller</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">_callerName</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span> <span class="k">break</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">result</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[:</span><span class="n">count</span><span class="p">]</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">files</span><span class="p">,</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110310093050.14297: *6* _callerName</span></div>
+<span class="k">def</span> <span class="nf">_callerName</span> <span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">files</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+    <span class="k">try</span><span class="p">:</span> <span class="c"># get the function name from the call stack.</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="c"># The stack frame, n levels up.</span>
+        <span class="n">code1</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">f_code</span> <span class="c"># The code object</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">code1</span><span class="o">.</span><span class="n">co_name</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;__init__&#39;</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;__init__(</span><span class="si">%s</span><span class="s">,line </span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">(</span><span class="n">code1</span><span class="o">.</span><span class="n">co_filename</span><span class="p">),</span><span class="n">code1</span><span class="o">.</span><span class="n">co_firstlineno</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">shortFilename</span><span class="p">(</span><span class="n">code1</span><span class="o">.</span><span class="n">co_filename</span><span class="p">),</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span> <span class="c"># The code name</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span> <span class="c"># The stack is not deep enough.</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span> <span class="c"># &quot;&lt;no caller name&gt;&quot;</span>
+<span class="c">#@+node:ekr.20110310093050.14252: *5* choose (codewise)</span>
+<div class="viewcode-block" id="choose"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.choose">[docs]</a><span class="k">def</span> <span class="nf">choose</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="c"># warning: evaluates all arguments</span>
+
+    <span class="k">if</span> <span class="n">cond</span><span class="p">:</span> <span class="k">return</span> <span class="n">a</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="n">b</span>
+<span class="c">#@+node:ekr.20110310093050.14253: *5* doKeywordArgs (codewise)</span></div>
+<div class="viewcode-block" id="doKeywordArgs"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.doKeywordArgs">[docs]</a><span class="k">def</span> <span class="nf">doKeywordArgs</span> <span class="p">(</span><span class="n">keys</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;Return a result dict that is a copy of the keys dict</span>
+<span class="sd">    with missing items replaced by defaults in d dict.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">default_val</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">isBool</span> <span class="o">=</span> <span class="n">default_val</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isBool</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="s">&#39;True&#39;</span><span class="p">,</span><span class="s">&#39;true&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="n">isBool</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span><span class="s">&#39;False&#39;</span><span class="p">,</span><span class="s">&#39;false&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">elif</span> <span class="n">val</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">return</span> <span class="n">result</span> 
+<span class="c">#@+node:ekr.20110310093050.14293: *5* pdb (codewise)</span></div>
+<div class="viewcode-block" id="pdb"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.pdb">[docs]</a><span class="k">def</span> <span class="nf">pdb</span> <span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Fall into pdb.&quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">pdb</span> <span class="c"># Required: we have just defined pdb as a function!</span>
+
+    <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+<span class="c">#@+node:ekr.20110310093050.14263: *5* pr (codewise)</span>
+<span class="c"># see: http://www.diveintopython.org/xml_processing/unicode.html</span>
+</div>
+<span class="n">pr_warning_given</span> <span class="o">=</span> <span class="bp">False</span>
+
+<div class="viewcode-block" id="pr"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.pr">[docs]</a><span class="k">def</span> <span class="nf">pr</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span> <span class="c"># (codewise!)</span>
+
+    <span class="sd">&#39;&#39;&#39;Print all non-keyword args, and put them to the log pane.</span>
+<span class="sd">    The first, third, fifth, etc. arg translated by g.translateString.</span>
+<span class="sd">    Supports color, comma, newline, spaces and tabName keyword arguments.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c"># Compute the effective args.</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;commas&#39;</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span><span class="s">&#39;newline&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span><span class="s">&#39;spaces&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">}</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">doKeywordArgs</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">newline</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;newline&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span><span class="s">&#39;encoding&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">encoding</span><span class="p">:</span>
+        <span class="c"># sys.stdout is a TextIOWrapper with a particular encoding.</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">encoding</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span>
+
+    <span class="c"># Important:  Python&#39;s print statement *can* handle unicode.</span>
+    <span class="c"># However, the following must appear in Python\Lib\sitecustomize.py:</span>
+    <span class="c">#    sys.setdefaultencoding(&#39;utf-8&#39;)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">translateArgs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">d</span><span class="p">)</span> <span class="c"># Translates everything to unicode.</span>
+    <span class="k">if</span> <span class="n">newline</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">encoding</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span><span class="s">&#39;utf-16&#39;</span><span class="p">):</span>
+            <span class="n">s2</span> <span class="o">=</span> <span class="n">s</span> <span class="c"># There can be no problem.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># 2010/10/21: Carefully convert s to the encoding.</span>
+            <span class="n">s3</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">toEncodedString</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span><span class="n">reportErrors</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">s2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">s3</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span><span class="n">reportErrors</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">toEncodedString</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">,</span><span class="n">reportErrors</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="mi">1</span><span class="p">:</span> <span class="c"># Good for production: queues &#39;reading settings&#39; until after signon.</span>
+        <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">logInited</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span> <span class="c"># Bug fix: 2012/11/13.</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">printWaiting</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Good for debugging: prints messages immediately.</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110310093050.14268: *5* trace (codewise)</span>
+<span class="c"># Convert all args to strings.</span>
+</div>
+<div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.trace">[docs]</a><span class="k">def</span> <span class="nf">trace</span> <span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+
+    <span class="c"># Compute the effective args.</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;align&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s">&#39;newline&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">}</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">doKeywordArgs</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">newline</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;newline&#39;</span><span class="p">)</span>
+    <span class="n">align</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;align&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">align</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">align</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c"># Compute the caller name.</span>
+    <span class="k">try</span><span class="p">:</span> <span class="c"># get the function name from the call stack.</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c"># The stack frame, one level up.</span>
+        <span class="n">code1</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">f_code</span> <span class="c"># The code object</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">code1</span><span class="o">.</span><span class="n">co_name</span> <span class="c"># The code name</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;?&quot;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;&lt;unknown&gt;&quot;</span>
+
+    <span class="c"># Pad the caller name.</span>
+    <span class="k">if</span> <span class="n">align</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">align</span><span class="p">):</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">align</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">align</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="n">pad</span>
+        <span class="k">else</span><span class="p">:</span>         <span class="n">name</span> <span class="o">=</span> <span class="n">pad</span> <span class="o">+</span> <span class="n">name</span>
+
+    <span class="c"># Munge *args into s.</span>
+    <span class="c"># print (&#39;g.trace:args...&#39;)</span>
+    <span class="c"># for z in args: print (g.isString(z),repr(z))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isString</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">isBytes</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">arg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c"># &#39;print s,&#39; is not valid syntax in Python 3.x.</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">pr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110310093050.14264: *5* translateArgs (codewise)</span></div>
+<div class="viewcode-block" id="translateArgs"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.translateArgs">[docs]</a><span class="k">def</span> <span class="nf">translateArgs</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;Return the concatenation of all args, with odd args translated.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="s">&#39;consoleEncoding&#39;</span><span class="p">):</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getdefaultencoding</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">consoleEncoding</span> <span class="o">=</span> <span class="n">isValidEncoding</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">and</span> <span class="n">e</span> <span class="ow">or</span> <span class="s">&#39;utf-8&#39;</span>
+        <span class="c"># print &#39;translateArgs&#39;,g.consoleEncoding</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">;</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">spaces</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;spaces&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c"># print(&#39;g.translateArgs: arg&#39;,arg,type(arg),g.isString(arg),&#39;will trans&#39;,(n%2)==1)</span>
+
+        <span class="c"># First, convert to unicode.</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">):</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">consoleEncoding</span><span class="p">)</span>
+
+        <span class="c"># Just do this for the stand-alone version.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">isString</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">spaces</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110310093050.14280: *4* Unicode utils (codewise)...</span>
+<span class="c">#@+node:ekr.20110310093050.14282: *5* isBytes, isCallable, isChar, isString &amp; isUnicode (codewise)</span>
+<span class="c"># The syntax of these functions must be valid on Python2K and Python3K.</span>
+</div>
+<div class="viewcode-block" id="isBytes"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.isBytes">[docs]</a><span class="k">def</span> <span class="nf">isBytes</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Return True if s is Python3k bytes type.&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+        <span class="c"># Generates a pylint warning, but that can&#39;t be helped.</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="isCallable"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.isCallable">[docs]</a><span class="k">def</span> <span class="nf">isCallable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;__call__&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">callable</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="isChar"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.isChar">[docs]</a><span class="k">def</span> <span class="nf">isChar</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Return True if s is a Python2K character type.&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">types</span><span class="o">.</span><span class="n">StringType</span>
+</div>
+<div class="viewcode-block" id="isString"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.isString">[docs]</a><span class="k">def</span> <span class="nf">isString</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Return True if s is any string, but not bytes.&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="n">types</span><span class="o">.</span><span class="n">StringTypes</span>
+</div>
+<div class="viewcode-block" id="isUnicode"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.isUnicode">[docs]</a><span class="k">def</span> <span class="nf">isUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Return True if s is a unicode string.&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">types</span><span class="o">.</span><span class="n">UnicodeType</span>
+<span class="c">#@+node:ekr.20110310093050.14283: *5* isValidEncoding (codewise)</span></div>
+<div class="viewcode-block" id="isValidEncoding"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.isValidEncoding">[docs]</a><span class="k">def</span> <span class="nf">isValidEncoding</span> <span class="p">(</span><span class="n">encoding</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">encoding</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;cli&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="kn">import</span> <span class="nn">codecs</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">codecs</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span> <span class="c"># Windows.</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> <span class="c"># Linux.</span>
+        <span class="k">return</span> <span class="bp">False</span>
+<span class="c">#@+node:ekr.20110310093050.14285: *5* reportBadChars (codewise)</span></div>
+<div class="viewcode-block" id="reportBadChars"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.reportBadChars">[docs]</a><span class="k">def</span> <span class="nf">reportBadChars</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isPython3</span><span class="p">:</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span> <span class="n">ch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span><span class="s">&quot;strict&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
+                    <span class="n">errors</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s"> errors converting </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">errors</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">),</span>
+                    <span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">))</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">isChar</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="c"># try: unicode(ch,encoding,&quot;strict&quot;)</span>
+                <span class="c"># 2012/04/20: use str instead of str.</span>
+                <span class="k">try</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="n">errors</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s"> errors converting </span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s"> encoding) to unicode&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">errors</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">encoding</span><span class="p">),</span>
+                    <span class="c"># unicode(s,encoding,&#39;replace&#39;),</span>
+                    <span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span><span class="p">:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span> <span class="n">ch</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span><span class="s">&quot;strict&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
+                    <span class="n">errors</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%d</span><span class="s"> errors converting </span><span class="si">%s</span><span class="s"> to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">errors</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">),</span>
+                    <span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">isChar</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span><span class="n">encoding</span><span class="p">,</span><span class="s">&quot;strict&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="n">errors</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%d</span><span class="s"> errors converting </span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s"> encoding) to unicode&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">errors</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">),</span>
+                    <span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">)))</span>
+<span class="c">#@+node:ekr.20110310093050.14286: *5* toEncodedString (codewise)</span></div>
+<div class="viewcode-block" id="toEncodedString"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.toEncodedString">[docs]</a><span class="k">def</span> <span class="nf">toEncodedString</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span><span class="n">reportErrors</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span>
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span><span class="s">&quot;strict&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">UnicodeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">reportErrors</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">reportBadChars</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span><span class="s">&quot;replace&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+<span class="c">#@+node:ekr.20110310093050.14287: *5* toUnicode (codewise)</span></div>
+<div class="viewcode-block" id="toUnicode"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.toUnicode">[docs]</a><span class="k">def</span> <span class="nf">toUnicode</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span><span class="n">reportErrors</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+    <span class="c"># The encoding is usually &#39;utf-8&#39;</span>
+    <span class="c"># but is may be different while importing or reading files.</span>
+    <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;utf-8&#39;</span>
+
+    <span class="k">if</span> <span class="n">isPython3</span><span class="p">:</span>
+        <span class="n">f</span><span class="p">,</span><span class="n">mustConvert</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">isBytes</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">unicode</span>
+        <span class="k">def</span> <span class="nf">mustConvert</span> <span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="n">types</span><span class="o">.</span><span class="n">UnicodeType</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">u</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mustConvert</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">,</span><span class="s">&#39;strict&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeError</span><span class="p">,</span><span class="ne">Exception</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">reportErrors</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">reportBadChars</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">s</span>
+<span class="c">#@+node:ekr.20110310093050.14288: *5* u &amp; ue (codewise)</span></div>
+<span class="k">if</span> <span class="n">isPython3</span><span class="p">:</span> <span class="c"># g.not defined yet.</span>
+    <span class="k">def</span> <span class="nf">u</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">s</span>
+    <span class="k">def</span> <span class="nf">ue</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+<div class="viewcode-block" id="u"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.u">[docs]</a>    <span class="k">def</span> <span class="nf">u</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ue"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.ue">[docs]</a>    <span class="k">def</span> <span class="nf">ue</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110310091639.14290: *3* main</span></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="c">#g.trace()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c"># print &quot;cmd&quot;,cmd</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s">&#39;tags&#39;</span><span class="p">:</span>
+        <span class="n">cmd_tags</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s">&#39;m&#39;</span><span class="p">:</span>
+        <span class="n">printlines</span><span class="p">(</span><span class="n">cmd_members</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s">&#39;f&#39;</span><span class="p">:</span>
+        <span class="n">printlines</span><span class="p">(</span><span class="n">cmd_functions</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span><span class="s">&#39;parse&#39;</span><span class="p">:</span>
+        <span class="n">cmd_parse</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span><span class="s">&#39;parseall&#39;</span><span class="p">:</span>
+        <span class="n">cmd_parseall</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span><span class="s">&#39;sciapi&#39;</span><span class="p">:</span>
+        <span class="n">cmd_scintilla</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s">&#39;init&#39;</span><span class="p">:</span>
+        <span class="n">cmd_init</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s">&#39;setup&#39;</span><span class="p">:</span>
+        <span class="n">cmd_setup</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110310091639.14287: *3* printlines</span></div>
+<div class="viewcode-block" id="printlines"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.printlines">[docs]</a><span class="k">def</span> <span class="nf">printlines</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="c"># EKR: UnicodeEncodeError:            </span>
+            <span class="k">pass</span>
+
+<span class="c">#@+node:ekr.20110310091639.14280: *3* run_ctags</span></div>
+<div class="viewcode-block" id="run_ctags"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.run_ctags">[docs]</a><span class="k">def</span> <span class="nf">run_ctags</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="s">&#39;ctags -R --sort=no -f - &#39;</span> <span class="o">+</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span>
+    <span class="c"># print(cm)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="c">#@+node:ekr.20110310091639.14296: *3* test</span></div>
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.test">[docs]</a><span class="k">def</span> <span class="nf">test</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">pass</span>
+<span class="c">#@+node:ekr.20110310091639.14256: ** class CodeWise</span></div>
+<div class="viewcode-block" id="CodeWise"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise">[docs]</a><span class="k">class</span> <span class="nc">CodeWise</span><span class="p">:</span>
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20110310091639.14257: *3* __init__(CodeWise)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbpath</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">dbpath</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># use &quot;current&quot; db from env var</span>
+            <span class="n">dbpath</span> <span class="o">=</span> <span class="n">DEFAULT_DB</span>
+
+        <span class="c"># print(dbpath)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_caches</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dbpath</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createdb</span><span class="p">(</span><span class="n">dbpath</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span> <span class="o">=</span> <span class="n">c</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbpath</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_caches</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20110310091639.14258: *3* createdb</span>
+<div class="viewcode-block" id="CodeWise.createdb"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.createdb">[docs]</a>    <span class="k">def</span> <span class="nf">createdb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbpath</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span> <span class="o">=</span> <span class="n">c</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbpath</span><span class="p">)</span>
+        <span class="c"># print(self.dbconn)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">DB_SCHEMA</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14259: *3* create_caches</span></div>
+<div class="viewcode-block" id="CodeWise.create_caches"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.create_caches">[docs]</a>    <span class="k">def</span> <span class="nf">create_caches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; read existing db and create caches &quot;&quot;&quot;</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;select id, name from class&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idd</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classcache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">idd</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;select id, path from file&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idd</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filecache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">idd</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c">#print self.classcache</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14260: *3* reset_caches</span></div>
+<div class="viewcode-block" id="CodeWise.reset_caches"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.reset_caches">[docs]</a>    <span class="k">def</span> <span class="nf">reset_caches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classcache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filecache</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileids_scanned</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+    <span class="c">#@+node:ekr.20110310091639.14261: *3* cursor</span></div>
+<div class="viewcode-block" id="CodeWise.cursor"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.cursor">[docs]</a>    <span class="k">def</span> <span class="nf">cursor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14262: *3* class_id</span></div>
+<div class="viewcode-block" id="CodeWise.class_id"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.class_id">[docs]</a>    <span class="k">def</span> <span class="nf">class_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">classname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; return class id. May create new class &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">classname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">idd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classcache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">classname</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;insert into class(name) values (?)&#39;</span> <span class="p">,</span> <span class="p">[</span><span class="n">classname</span><span class="p">])</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">idd</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">lastrowid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classcache</span><span class="p">[</span><span class="n">classname</span><span class="p">]</span> <span class="o">=</span> <span class="n">idd</span>
+        <span class="k">return</span> <span class="n">idd</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14263: *3* get_members</span></div>
+<div class="viewcode-block" id="CodeWise.get_members"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.get_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">classnames</span><span class="p">):</span>
+
+        <span class="n">clset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">classnames</span><span class="p">)</span>
+        <span class="n">class_by_id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">v</span><span class="p">,</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">classcache</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">file_by_id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">v</span><span class="p">,</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filecache</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">idd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">classcache</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">clset</span><span class="p">:</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+                <span class="c">#print idd</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;select name, class, file, searchpattern from function where class = (?)&#39;</span><span class="p">,(</span><span class="n">idd</span><span class="p">,))</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">klassid</span><span class="p">,</span> <span class="n">fileid</span><span class="p">,</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">pat</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14264: *3* get_functions</span></div>
+<div class="viewcode-block" id="CodeWise.get_functions"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.get_functions">[docs]</a>    <span class="k">def</span> <span class="nf">get_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">prefix</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;select name, class, file, searchpattern from function&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;select name, class, file, searchpattern from function where name like (?)&#39;</span><span class="p">,(</span>
+                <span class="n">prefix</span> <span class="o">+</span> <span class="s">&#39;%&#39;</span><span class="p">,))</span>
+
+        <span class="k">return</span> <span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">pat</span><span class="p">,</span> <span class="n">klassid</span><span class="p">,</span> <span class="n">fileid</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">klassid</span><span class="p">,</span> <span class="n">fileid</span><span class="p">,</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+    <span class="c">#@+node:ekr.20110310091639.14265: *3* file_id</span></div>
+<div class="viewcode-block" id="CodeWise.file_id"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.file_id">[docs]</a>    <span class="k">def</span> <span class="nf">file_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">idd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filecache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;insert into file(path) values (?)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="p">)</span>
+            <span class="n">idd</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">lastrowid</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">filecache</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">idd</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fileids_scanned</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">idd</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">idd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fileids_scanned</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">idd</span>
+
+            <span class="c"># we are rescanning a file with old entries - nuke old entries</span>
+            <span class="c">#print &quot;rescan&quot;, fname</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;delete from function where file = (?)&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">idd</span><span class="p">,</span> <span class="p">))</span>
+            <span class="c">#self.dbconn.commit()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fileids_scanned</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">idd</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">idd</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14266: *3* feed_function</span></div>
+<div class="viewcode-block" id="CodeWise.feed_function"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.feed_function">[docs]</a>    <span class="k">def</span> <span class="nf">feed_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">aux</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; insert one function</span>
+
+<span class="sd">        &#39;aux&#39; can be a search pattern (as with ctags), signature, or description</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">clid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_id</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
+        <span class="n">fid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)&#39;</span><span class="p">,</span>
+                  <span class="p">[</span><span class="n">clid</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">aux</span><span class="p">,</span> <span class="n">fid</span><span class="p">])</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14267: *3* feed_scintilla</span></div>
+<div class="viewcode-block" id="CodeWise.feed_scintilla"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.feed_scintilla">[docs]</a>    <span class="k">def</span> <span class="nf">feed_scintilla</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apifile_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; handle scintilla api files</span>
+
+<span class="sd">        Syntax is like:</span>
+
+<span class="sd">        qt.QApplication.style?4() -&gt; QStyle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">apifile_obj</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isPython3</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;utf8&#39;</span><span class="p">,</span> <span class="s">&#39;replace&#39;</span><span class="p">)</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;?&#39;</span><span class="p">)</span>
+            <span class="n">fullsym</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">klass</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="n">fullsym</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">desc</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">desc</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+            <span class="c"># now our class is like qt.QApplication. We do the dirty trick and</span>
+            <span class="c"># remove all but actual class name</span>
+
+            <span class="n">shortclass</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+
+            <span class="c">#print func, klass, desc</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed_function</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">shortclass</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">desc</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+    <span class="c">#@+node:ekr.20110310091639.14268: *3* feed_ctags</span></div>
+<div class="viewcode-block" id="CodeWise.feed_ctags"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.feed_ctags">[docs]</a>    <span class="k">def</span> <span class="nf">feed_ctags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tagsfile_obj</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">tagsfile_obj</span><span class="p">:</span>
+            <span class="c">#print l</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isPython3</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s">&#39;utf8&#39;</span><span class="p">,</span> <span class="s">&#39;replace&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;!&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">fil</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">pat</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">typ</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">klass</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ext</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">ext</span> <span class="ow">and</span> <span class="n">ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;class:&#39;</span><span class="p">):</span>
+                    <span class="n">klass</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">idd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_id</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+                    <span class="c">#print &quot;klass&quot;,klass, idd</span>
+
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">ext</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="c"># class id 0 = function</span>
+                <span class="n">idd</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="c">#print fields</span>
+
+            <span class="n">fid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>
+
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)&#39;</span><span class="p">,</span>
+                      <span class="p">[</span><span class="n">idd</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">pat</span><span class="p">,</span> <span class="n">fid</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="c">#c.commit()</span>
+        <span class="c">#print fields</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14269: *3* add_source</span></div>
+<div class="viewcode-block" id="CodeWise.add_source"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.add_source">[docs]</a>    <span class="k">def</span> <span class="nf">add_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">src</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;insert into datasource(type, src) values (?,?)&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">type</span><span class="p">,</span><span class="n">src</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14270: *3* sources</span></div>
+<div class="viewcode-block" id="CodeWise.sources"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.sources">[docs]</a>    <span class="k">def</span> <span class="nf">sources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;select type, src from datasource&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14271: *3* zap_symbols</span></div>
+<div class="viewcode-block" id="CodeWise.zap_symbols"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.zap_symbols">[docs]</a>    <span class="k">def</span> <span class="nf">zap_symbols</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">,</span> <span class="s">&#39;file&#39;</span><span class="p">,</span> <span class="s">&#39;function&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;delete from &#39;</span> <span class="o">+</span> <span class="n">t</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14272: *3* # high level commands</span>
+    <span class="c"># high level commands        </span>
+    <span class="c">#@+node:ekr.20110310091639.14273: *3* parseall</span></div>
+<div class="viewcode-block" id="CodeWise.parseall"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.parseall">[docs]</a>    <span class="k">def</span> <span class="nf">parseall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_caches</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zap_symbols</span><span class="p">()</span>
+        <span class="n">tagdirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">td</span> <span class="k">for</span> <span class="n">typ</span><span class="p">,</span> <span class="n">td</span> <span class="ow">in</span> <span class="n">sources</span> <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s">&#39;tagdir&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">tagdirs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbconn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14274: *3* parse</span></div>
+<div class="viewcode-block" id="CodeWise.parse"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.CodeWise.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">run_ctags</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_ctags</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s">&#39;tagdir&#39;</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>            
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_source</span><span class="p">(</span><span class="s">&#39;tagdir&#39;</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20110310091639.14275: ** class ContextSniffer</span></div></div>
+<div class="viewcode-block" id="ContextSniffer"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.ContextSniffer">[docs]</a><span class="k">class</span> <span class="nc">ContextSniffer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Class to analyze surrounding context and guess class</span>
+
+<span class="sd">    For simple dynamic code completion engines</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20110310091639.14276: *3* __init__ (ContextSniffer)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># var name =&gt; list of classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vars</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c">#@+node:ekr.20110310091639.14277: *3* declare</span>
+<div class="viewcode-block" id="ContextSniffer.declare"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.ContextSniffer.declare">[docs]</a>    <span class="k">def</span> <span class="nf">declare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        <span class="c"># print(&quot;declare&quot;,var,klass)</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">vars</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="nb">vars</span>
+        <span class="nb">vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+
+
+    <span class="c">#@+node:ekr.20110310091639.14278: *3* push_declarations</span></div>
+<div class="viewcode-block" id="ContextSniffer.push_declarations"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.ContextSniffer.push_declarations">[docs]</a>    <span class="k">def</span> <span class="nf">push_declarations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">body</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">)</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">declare</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+    <span class="c">#@+node:ekr.20110310091639.14279: *3* set_small_context</span></div>
+<div class="viewcode-block" id="ContextSniffer.set_small_context"><a class="viewcode-back" href="../../../leo.external.html#leo.external.codewise.ContextSniffer.set_small_context">[docs]</a>    <span class="k">def</span> <span class="nf">set_small_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set immediate function &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">push_declarations</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+
+
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+<span class="c">#@-leo</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

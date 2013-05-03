@@ -1,0 +1,533 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.codewisecompleter &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.codewisecompleter</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ville.20091204224145.5355: * @file codewisecompleter.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ville.20091204224145.5356: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; This plugin uses the ctags database created by codewise.py</span>
+<span class="sd">    (in the codewise branch) to provide an autocompletion list.</span>
+
+<span class="sd">Instructions:</span>
+
+<span class="sd">    sudo apt-get install exuberant-ctags</span>
+<span class="sd">    bzr branch lp:codewise</span>
+<span class="sd">    cd codewise</span>
+<span class="sd">    python setup.py install</span>
+
+<span class="sd">    run &quot;codewise&quot; to get help</span>
+
+<span class="sd">    Press alt-0 to start completion in leo</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c"># See http://ctags.sourceforge.net/ctags.html#TAG%20FILE%20FORMAT for the file format:</span>
+<span class="c"># tag_name&lt;TAB&gt;file_name&lt;TAB&gt;ex_cmd;&quot;&lt;TAB&gt;extension_fields</span>
+<span class="c"># Example</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.2&#39;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ville.20091204224145.5357: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@nocolor-node</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1 EKR: place helpers as children of callers.</span>
+<span class="c"># 0.2 EKR: Don&#39;t crash if the ctags file doesn&#39;t exist.</span>
+<span class="c"># 0.3 EKR 2011/03/09: refactored using per-commander controllers.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ville.20091204224145.5358: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+
+<span class="kn">import</span> <span class="nn">leo.external.codewise</span> <span class="kn">as</span> <span class="nn">codewise</span>
+    <span class="c"># The code that interfaces with ctags.</span>
+    <span class="c"># It contains commands that can be run stand-alone,</span>
+    <span class="c"># or imported as is done here.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="n">QCompleter</span>
+    <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtCore</span>
+    <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c"># no qt available - some functionality should still exist</span>
+    <span class="k">pass</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c"># Global variables</span>
+<span class="n">controllers</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c"># Keys are commanders, values are CodewiseControllers.</span>
+<span class="n">tagLines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># The saved contents of the tags file.</span>
+    <span class="c"># This is used only if keep_tag_lines is True</span>
+
+<span class="n">keep_tag_lines</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="c"># True:  Read the tags file only once, keeping</span>
+    <span class="c">#        the contents of the tags file in memory.</span>
+    <span class="c">#        This might stress the garbage collector.</span>
+    <span class="c"># False: Read the tags file each time it is needed,</span>
+    <span class="c">#        in a separate process, and return the</span>
+    <span class="c">#        results of running grep on the file.</span>
+    <span class="c">#        This saves lots of memory, but reads the</span>
+    <span class="c">#        tags file many times.</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:ville.20091205173337.10141: ** class ContextSniffer</span>
+<div class="viewcode-block" id="ContextSniffer"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.ContextSniffer">[docs]</a><span class="k">class</span> <span class="nc">ContextSniffer</span><span class="p">:</span>
+    
+    <span class="sd">&quot;&quot;&quot; Class to analyze surrounding context and guess class</span>
+
+<span class="sd">    For simple dynamic code completion engines.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vars</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c"># Keys are var names; values are list of classes</span>
+        
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20110309051057.14285: *3* get_classes</span>
+<div class="viewcode-block" id="ContextSniffer.get_classes"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.ContextSniffer.get_classes">[docs]</a>    <span class="k">def</span> <span class="nf">get_classes</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">varname</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;Return a list of classes for string s.&#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">push_declarations</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="n">aList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">varname</span><span class="p">,[])</span>
+        
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">aList</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">aList</span>
+    <span class="c">#@+node:ekr.20110309051057.14282: *3* set_small_context</span>
+    <span class="c"># def set_small_context(self, body):</span>
+        
+        <span class="c"># &quot;&quot;&quot; Set immediate function &quot;&quot;&quot;</span>
+
+        <span class="c"># self.push_declarations(body)</span>
+    <span class="c">#@+node:ekr.20110309051057.14283: *3* push_declarations &amp; helper</span></div>
+<div class="viewcode-block" id="ContextSniffer.push_declarations"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.ContextSniffer.push_declarations">[docs]</a>    <span class="k">def</span> <span class="nf">push_declarations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">)</span>
+                <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">parts</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">declare</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span><span class="n">b</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="c">#@+node:ekr.20110309051057.14284: *4* declare</span></div>
+<div class="viewcode-block" id="ContextSniffer.declare"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.ContextSniffer.declare">[docs]</a>    <span class="k">def</span> <span class="nf">declare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
+        
+        <span class="c"># g.trace(var,klass) # Very large trace.</span>
+
+        <span class="nb">vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">vars</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="nb">vars</span>
+
+        <span class="nb">vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+    <span class="c">#@-others</span>
+<span class="c">#@+node:ekr.20110309051057.14267: ** Module level...</span>
+<span class="c">#@+node:ville.20091204224145.5359: *3* init &amp; helper</span></div></div>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.init">[docs]</a><span class="k">def</span> <span class="nf">init</span> <span class="p">():</span>
+
+    <span class="k">global</span> <span class="n">tagLines</span>
+
+    <span class="n">ok</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;qt&quot;</span>
+
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">keep_tag_lines</span><span class="p">:</span>
+            <span class="n">tagLines</span> <span class="o">=</span> <span class="n">read_tags_file</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tagLines</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;ctagscompleter: can not read ~/.leo/tags&#39;</span><span class="p">)</span>
+                <span class="n">ok</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ok</span>
+
+
+<span class="c"># def init ():</span>
+
+    <span class="c"># global tagLines</span>
+
+    <span class="c"># ok = g.app.gui.guiName() == &quot;qt&quot;</span>
+
+    <span class="c"># if ok:</span>
+        <span class="c"># g.registerHandler(&#39;after-create-leo-frame&#39;,onCreate)</span>
+        <span class="c"># g.plugin_signon(__name__)</span>
+
+    <span class="c"># return ok</span>
+<span class="c">#@+node:ville.20091204224145.5362: *3* install_codewise_completer</span>
+<span class="c"># def install_codewise_completer(c):</span>
+
+    <span class="c"># c.k.registerCommand(</span>
+            <span class="c"># &#39;codewise-complete&#39;,&#39;Alt-0&#39;,codewise_complete)</span>
+
+    <span class="c"># c.k.registerCommand(</span>
+            <span class="c"># &#39;codewise-suggest&#39;,None, codewise_suggest)</span>
+
+<span class="c">#@+node:ville.20091204224145.5361: *3* onCreate</span></div>
+<div class="viewcode-block" id="onCreate"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.onCreate">[docs]</a><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39;Register the ctags-complete command for the newly-created commander.&#39;&#39;&#39;</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="s">&#39;ctags-complete&#39;</span><span class="p">,</span><span class="s">&#39;Alt-0&#39;</span><span class="p">,</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">registerCommand</span><span class="p">(</span><span class="s">&#39;codewise-suggest&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span> <span class="n">suggest</span><span class="p">)</span>
+
+<span class="c"># def onCreate (tag, keys):</span>
+
+    <span class="c"># c = keys.get(&#39;c&#39;)</span>
+    <span class="c"># if not c: return</span>
+
+    <span class="c"># install_codewise_completer(c)</span>
+<span class="c">#@+node:ekr.20110309051057.14287: *3* read_tags_file</span></div>
+<div class="viewcode-block" id="read_tags_file"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.read_tags_file">[docs]</a><span class="k">def</span> <span class="nf">read_tags_file</span><span class="p">():</span>
+
+    <span class="sd">&#39;&#39;&#39;Return the lines of ~/.leo/tags.</span>
+<span class="sd">    Return [] on error.&#39;&#39;&#39;</span>
+
+    <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span> <span class="p">;</span> <span class="n">verbose</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">tagsFileName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/.leo/tags&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tagsFileName</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span> <span class="c"># EKR: 11/18/2009</span>
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tagsFileName</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tagsFileName</span><span class="p">)</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">splitLines</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;ctagscomplter.py: ~/.leo/tags has </span><span class="si">%s</span><span class="s"> lines&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">30</span><span class="p">]:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">lines</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+<span class="c">#@+node:ekr.20110309051057.14269: *3* start (top-level)</span></div>
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39;Call cc.start() where cc is the controller for event&#39;s commander.&#39;&#39;&#39;</span>
+    
+    <span class="k">global</span> <span class="n">conrollers</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span>
+        <span class="n">cc</span> <span class="o">=</span> <span class="n">controllers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cc</span><span class="p">:</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc</span> <span class="o">=</span> <span class="n">CodewiseController</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">cc</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="c">#@+node:vivainio.20091217144258.5737: *3* suggest (top-level)</span></div>
+<div class="viewcode-block" id="suggest"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.suggest">[docs]</a><span class="k">def</span> <span class="nf">suggest</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39;Call cc.suggest() where cc is the controller for event&#39;s commander.&#39;&#39;&#39;</span>
+    
+    <span class="k">global</span> <span class="n">conrollers</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span> <span class="k">return</span>
+    
+    <span class="n">h</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span>
+    <span class="n">cc</span> <span class="o">=</span> <span class="n">controllers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cc</span><span class="p">:</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc</span> <span class="o">=</span> <span class="n">CodewiseController</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="n">cc</span><span class="o">.</span><span class="n">suggest</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="c">#@+node:ekr.20110309051057.14270: ** class CodewiseController</span></div>
+<div class="viewcode-block" id="CodewiseController"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController">[docs]</a><span class="k">class</span> <span class="nc">CodewiseController</span><span class="p">:</span>
+    
+    <span class="c">#@+others</span>
+    <span class="c">#@+node:ekr.20110309051057.14275: *3*  ctor</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">richTextEdit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completer</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popup</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popup_filter</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">bodyCtrl</span> <span class="c"># A leoQTextEditWidget</span>
+        
+        <span class="c"># Init.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ev_filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">ev_filter</span>
+        
+        <span class="c"># g.trace(&#39;CodewiseController&#39;,c.shortFileName(),self.body)</span>
+    <span class="c">#@+node:ville.20091204224145.5363: *3* complete</span>
+<div class="viewcode-block" id="CodewiseController.complete"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.complete">[docs]</a>    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        <span class="n">cpl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completer</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="c"># A leoQTextEditWidget</span>
+
+        <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_current_line</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_target_python</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">klasses</span> <span class="o">=</span> <span class="n">guess_class</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">klasses</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">klasses</span><span class="p">:</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup_methods</span><span class="p">(</span><span class="n">klasses</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_word</span><span class="p">()</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QStringListModel</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span>
+        <span class="n">cpl</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">cpl</span><span class="o">.</span><span class="n">setCompletionPrefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>  
+        <span class="n">cpl</span><span class="o">.</span><span class="n">complete</span><span class="p">()</span>
+    <span class="c">#@+node:ekr.20110309051057.14280: *3* get_attr_target_python</span></div>
+<div class="viewcode-block" id="CodewiseController.get_attr_target_python"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.get_attr_target_python">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr_target_python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot; a.b.foob &quot;&quot;&quot;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">r&quot;(\S+(\.\w+)*)\.(\w*)$&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">m</span>
+    <span class="c">#@+node:ekr.20110309051057.14279: *3* get_current_line</span></div>
+<div class="viewcode-block" id="CodewiseController.get_current_line"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.get_current_line">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+        
+        <span class="n">s</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getAllText</span><span class="p">()</span>
+        <span class="n">ins</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getInsertPoint</span><span class="p">()</span>
+        <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">getLine</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">ins</span><span class="p">)</span>
+        <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">ins</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">ins</span><span class="p">:</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">head</span><span class="p">,</span> <span class="n">tail</span>
+    <span class="c">#@+node:ekr.20110309051057.14288: *3* get_word</span></div>
+<div class="viewcode-block" id="CodewiseController.get_word"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.get_word">[docs]</a>    <span class="k">def</span> <span class="nf">get_word</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span> 
+        <span class="n">tc</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">textCursor</span><span class="p">()</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">WordUnderCursor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tc</span><span class="o">.</span><span class="n">selectedText</span><span class="p">()</span>
+    <span class="c">#@+node:ville.20091205173337.10142: *3* guess_class</span></div>
+<div class="viewcode-block" id="CodewiseController.guess_class"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.guess_class">[docs]</a>    <span class="k">def</span> <span class="nf">guess_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">varname</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;Return the applicable classes for c,p&#39;&#39;&#39;</span>
+
+        <span class="c"># if varname == &#39;g&#39;:</span>
+            <span class="c"># return [&#39;leoGlobals&#39;]</span>
+        <span class="k">if</span> <span class="n">varname</span> <span class="o">==</span> <span class="s">&#39;p&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s">&#39;position&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">varname</span> <span class="o">==</span> <span class="s">&#39;c&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s">&#39;Commands&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">varname</span> <span class="o">==</span> <span class="s">&#39;self&#39;</span><span class="p">:</span>
+            <span class="c"># Return the nearest enclosing class.</span>
+            <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">():</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">par</span><span class="o">.</span><span class="n">h</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;class\s+(\w+)&#39;</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="c"># Do a &#39;real&#39; analysis</span>
+        <span class="n">aList</span> <span class="o">=</span> <span class="n">ContextSniffer</span><span class="p">()</span><span class="o">.</span><span class="n">get_classes</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">varname</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span><span class="n">aList</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">aList</span>
+    <span class="c">#@+node:ville.20091204224145.5364: *3* lookup</span></div>
+<div class="viewcode-block" id="CodewiseController.lookup"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.lookup">[docs]</a>    <span class="k">def</span> <span class="nf">lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prefix</span><span class="p">):</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">aList</span> <span class="o">=</span> <span class="n">codewise</span><span class="o">.</span><span class="n">cmd_functions</span><span class="p">([</span><span class="n">prefix</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">aList</span><span class="p">))</span>
+        <span class="n">hits</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">aList</span> <span class="k">if</span> <span class="n">z</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sig</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span> <span class="o">+</span> <span class="n">sig</span><span class="p">)</span>
+
+        <span class="n">aList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">desc</span><span class="p">))</span>
+        <span class="n">aList</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">aList</span>
+    <span class="c">#@+node:ville.20091205173337.10140: *3* lookup_methods</span></div>
+<div class="viewcode-block" id="CodewiseController.lookup_methods"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.lookup_methods">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">klasses</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+        
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="n">aList</span> <span class="o">=</span> <span class="n">codewise</span><span class="o">.</span><span class="n">cmd_members</span><span class="p">([</span><span class="n">klasses</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">hits</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">aList</span> <span class="k">if</span> <span class="n">z</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+        <span class="c">#ctags patterns need radical cleanup</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">sig</span> <span class="o">=</span> <span class="n">fn</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sig</span> <span class="o">=</span> <span class="n">fn</span>
+            <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span> <span class="o">+</span> <span class="n">sig</span><span class="p">)</span>
+
+        <span class="n">aList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">desc</span><span class="p">))</span>
+        <span class="n">aList</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">aList</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">aList</span>
+    <span class="c">#@+node:ekr.20110309051057.14273: *3* start</span></div>
+<div class="viewcode-block" id="CodewiseController.start"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+        
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+        
+        <span class="c"># Create the callback to insert the selected completion.</span>
+        <span class="k">def</span> <span class="nf">completion_callback</span><span class="p">(</span><span class="n">completion</span><span class="p">,</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
+        
+        <span class="c"># Create the completer.</span>
+        <span class="n">cpl</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">completer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completer</span> <span class="o">=</span> <span class="n">QCompleter</span><span class="p">()</span>
+        <span class="n">cpl</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">cpl</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">cpl</span><span class="p">,</span><span class="n">QtCore</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;activated(QString)&quot;</span><span class="p">),</span><span class="n">completion_callback</span><span class="p">)</span>
+
+        <span class="c"># Set the flag for the event filter: all keystrokes will go to cc.onKey.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ev_filter</span><span class="o">.</span><span class="n">ctagscompleter_active</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ev_filter</span><span class="o">.</span><span class="n">ctagscompleter_onKey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">onKey</span>
+        
+        <span class="c"># Show the completions.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">complete</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+    <span class="c">#@+node:ekr.20110309051057.14272: *3* suggest</span></div>
+<div class="viewcode-block" id="CodewiseController.suggest"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.codewisecompleter.CodewiseController.suggest">[docs]</a>    <span class="k">def</span> <span class="nf">suggest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">pattern</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">c</span><span class="p">,</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="p">;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pattern</span><span class="p">:</span>
+            <span class="n">pattern</span><span class="p">,</span><span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_current_line</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+         
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_target_python</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">klasses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_class</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;no attr for </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">pattern</span>
+            <span class="n">klasses</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">klasses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;klasses: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">klasses</span><span class="p">))</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup_methods</span><span class="p">(</span><span class="n">klasses</span><span class="p">,</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hits</span> <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># s = self.get_word()</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s">&#39;prefix: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">))</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cpl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completer</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QStringListModel</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span>
+            <span class="n">cpl</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="n">cpl</span><span class="o">.</span><span class="n">setCompletionPrefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>  
+            <span class="n">cpl</span><span class="o">.</span><span class="n">complete</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> Completions for </span><span class="si">%s</span><span class="s">:&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hits</span><span class="p">),</span><span class="n">prefix</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">[:</span><span class="mi">20</span><span class="p">]:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="c">#@-others</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

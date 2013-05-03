@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.maximizeNewWindows &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.maximizeNewWindows</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20040915073259.1: * @file maximizeNewWindows.py</span>
+<span class="sd">&quot;&quot;&quot;Maximizes all new windows.&quot;&quot;&quot;</span>
+
+<span class="c">#@@language python</span>
+<span class="c">#@@tabwidth -4</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.4&quot;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:Dmitry.20101128013501.1257: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># Original written by Jaakko Kourula.</span>
+<span class="c"># </span>
+<span class="c"># 1.0 EKR:</span>
+<span class="c">#     - Enabled only for windows platform.</span>
+<span class="c">#     - Minor style changes.</span>
+<span class="c"># 1.1 EKR: Make sure c exists in maximize_window.</span>
+<span class="c"># 1.2 EKR:</span>
+<span class="c">#     - The proper guard is:</span>
+<span class="c">#         if c and c.exists and c.frame and not c.frame.isNullFrame:</span>
+<span class="c">#     - Added init function.</span>
+<span class="c"># 1.3 EKR: Now works on Linux.</span>
+<span class="c"># 1.4 Ivanov Dmitriy, Ville M. Vainio:</span>
+<span class="c">#     Added the support for Qt UI, removed Tk check in init function</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:Dmitry.20101128013501.1258: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoPlugins</span> <span class="kn">as</span> <span class="nn">leoPlugins</span>
+
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+
+<span class="c">#@+others</span>
+<span class="c">#@+node:Dmitry.20101128013501.1259: ** init</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.maximizeNewWindows.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+
+    <span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;after-create-leo-frame&quot;</span><span class="p">,</span> <span class="n">maximize_window</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+<span class="c">#@+node:Dmitry.20101128013501.1260: ** maximize_window</span></div>
+<div class="viewcode-block" id="maximize_window"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.maximizeNewWindows.maximize_window">[docs]</a><span class="k">def</span> <span class="nf">maximize_window</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">exists</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">isNullFrame</span><span class="p">:</span>
+        <span class="n">gui</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">gui</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;qt&#39;</span><span class="p">,</span><span class="s">&#39;qttabs&#39;</span><span class="p">):</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">showMaximized</span><span class="p">()</span>
+        <span class="c"># elif gui == &#39;tkinter&#39;:</span>
+            <span class="c"># c.frame.resizeToScreen()</span>
+<span class="c">#@-others</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

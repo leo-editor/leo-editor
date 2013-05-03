@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>leo.plugins.lineNumbers &mdash; Leo API 4.11dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '4.11dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Leo API 4.11dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for leo.plugins.lineNumbers</h1><div class="highlight"><pre>
+<span class="c">#@+leo-ver=5-thin</span>
+<span class="c">#@+node:ekr.20040419105219: * @file lineNumbers.py</span>
+<span class="c">#@+&lt;&lt; docstring &gt;&gt;</span>
+<span class="c">#@+node:ekr.20101112180523.5423: ** &lt;&lt; docstring &gt;&gt;</span>
+<span class="sd">&#39;&#39;&#39; Adds #line directives in perl and perlpod programs.</span>
+
+<span class="sd">Over-rides two methods in leoAtFile.py to write #line directives after node</span>
+<span class="sd">sentinels. This allows compilers to give locations of errors in relation to the</span>
+<span class="sd">node name rather than the filename. Currently supports only perl and perlpod.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#@-&lt;&lt; docstring &gt;&gt;</span>
+
+<span class="c"># Use and distribute under the same terms as Leo.</span>
+<span class="c"># Original code by Mark Ng &lt;markn@cs.mu.oz.au&gt;</span>
+
+<span class="c">#@+&lt;&lt; imports &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050105150253: ** &lt;&lt; imports &gt;&gt;</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="kn">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">leo.core.leoAtFile</span> <span class="kn">as</span> <span class="nn">leoAtFile</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="c">#@-&lt;&lt; imports &gt;&gt;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;0.3&quot;</span>
+<span class="c">#@+&lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@+node:ekr.20050105150253.1: ** &lt;&lt; version history &gt;&gt;</span>
+<span class="c">#@@killcolor</span>
+<span class="c">#@+at</span>
+<span class="c"># </span>
+<span class="c"># 0.1 Mark Ng</span>
+<span class="c">#     - Original code</span>
+<span class="c"># 0.2 EKR:</span>
+<span class="c">#     - Convert to new coding conventions.</span>
+<span class="c"># 0.3 EKR:</span>
+<span class="c">#     - Changed leoAtFile.newDerivedFile to leoAtFile.atFile when overriding methods.</span>
+<span class="c">#       This is required because of changes in 4.3 to Leo&#39;s core code.</span>
+<span class="c"># 0.4 EKR:</span>
+<span class="c">#     - Used named sections to emphasize the dangerous nature of this code.</span>
+<span class="c">#@-&lt;&lt; version history &gt;&gt;</span>
+
+<span class="n">linere</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;^#line 1 </span><span class="se">\&quot;</span><span class="s">.*</span><span class="se">\&quot;</span><span class="s">$&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../leo.plugins.html#leo.plugins.lineNumbers.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">unitTesting</span> <span class="c"># Not safe for unit testing.  Changes core class.</span>
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="c">#@+&lt;&lt; override write methods &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20040419105219.1: ** &lt;&lt; override write methods &gt;&gt;</span>
+        <span class="n">oldOpenNodeSentinel</span> <span class="o">=</span> <span class="n">leoAtFile</span><span class="o">.</span><span class="n">atFile</span><span class="o">.</span><span class="n">putOpenNodeSentinel</span>
+
+        <span class="k">def</span> <span class="nf">putLineNumberDirective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">inAtAll</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">inAtOthers</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">middle</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+            <span class="n">oldOpenNodeSentinel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">inAtAll</span><span class="p">,</span><span class="n">inAtOthers</span><span class="p">,</span><span class="n">middle</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;perl&quot;</span><span class="p">,</span><span class="s">&quot;perlpod&quot;</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="s">&#39;line 1 &quot;node:</span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodeSentinelText</span><span class="p">(</span><span class="n">v</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">putSentinel</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">funcToMethod</span><span class="p">(</span><span class="n">putLineNumberDirective</span><span class="p">,</span>	
+            <span class="n">leoAtFile</span><span class="o">.</span><span class="n">atFile</span><span class="p">,</span><span class="s">&quot;putOpenNodeSentinel&quot;</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; override write methods &gt;&gt;</span>
+        <span class="c">#@+&lt;&lt; override read methods &gt;&gt;</span>
+        <span class="c">#@+node:ekr.20040419105219.2: ** &lt;&lt; override read methods &gt;&gt;</span>
+        <span class="n">readNormalLine</span> <span class="o">=</span> <span class="n">leoAtFile</span><span class="o">.</span><span class="n">atFile</span><span class="o">.</span><span class="n">readNormalLine</span>
+
+        <span class="k">def</span> <span class="nf">skipLineNumberDirective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">linere</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> 
+                <span class="k">return</span>  <span class="c"># Skipt the line.</span>
+            <span class="k">else</span><span class="p">:</span>		
+                <span class="n">readNormalLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">funcToMethod</span><span class="p">(</span><span class="n">skipLineNumberDirective</span><span class="p">,</span>
+            <span class="n">leoAtFile</span><span class="o">.</span><span class="n">atFile</span><span class="p">,</span><span class="s">&quot;readNormalLine&quot;</span><span class="p">)</span>
+        <span class="c">#@-&lt;&lt; override read methods &gt;&gt;</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ok</span>
+<span class="c">#@-leo</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Leo API 4.11dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ed K. Ream.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
