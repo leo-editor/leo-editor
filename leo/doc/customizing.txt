@@ -288,7 +288,7 @@ leoSettings.leo with one in myLeoSettings.leo.
 tree. Its children are \@menu and \@item nodes as for the
 @menu setting.
 
-The @menuat setting has 2-3 parameters in its head text.
+The @menuat setting has 2-3 parameters in its head text]::
 
     @menuat *<path>* *<action>* *[clipboard]*
 

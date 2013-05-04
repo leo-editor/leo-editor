@@ -257,7 +257,7 @@ helps. Here is my installation write-up:
       export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
 
 - Open a new Terminal tab / window so that the above settings take effect,
-  and install Leo. I downloaded the Leo-4.9-final-a.zip, unzipped it, and
+  and install Leo. I downloaded the Leo-4.10-final-a.zip, unzipped it, and
   ran "python launchLeo.py" inside the Leo directory.
 
 We should consider adding a Homebrew formula for Leo. This will simplify
