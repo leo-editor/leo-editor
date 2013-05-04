@@ -86,6 +86,7 @@
 <v t="ekr.20041119035931"><vh>\@if expression</vh></v>
 <v t="ekr.20041119110141"><vh>\@ifplatform platform-name</vh></v>
 <v t="ekr.20041119035704.2"><vh>\@ignore comment</vh></v>
+<v t="ekr.20130503155210.16364"><vh>\@menuat</vh></v>
 <v t="ekr.20070411172718"><vh>\@openwith name = shortcut</vh></v>
 <v t="ekr.20041119105509"><vh>\@set name = value</vh></v>
 <v t="ekr.20041120155431.1"><vh>\@shortcuts</vh></v>
@@ -514,8 +515,8 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
@@ -9687,6 +9688,51 @@ do-nothing = Shift-F12</t>
 <t tx="ekr.20120928142052.11488"></t>
 <t tx="ekr.20130412173637.11774"></t>
 <t tx="ekr.20130412173637.11776"></t>
+<t tx="ekr.20130503155210.16364">\@menuat modifies the menu tree created by \@menus. This allows settings in
+myLeoSettings.leo to change menues without copying the entire menu tree from
+leoSettings.leo. This ensures you don’t miss out when new things are added in
+the @menus in leoSettings.leo, as you would if you replaced the @menus in
+leoSettings.leo with one in myLeoSettings.leo.
+
+\@menuat should occur in a \@settings tree, but not as a descendant of a \@menus
+tree. Its children are \@menu and \@item nodes as for the
+@menu setting.
+
+The @menuat setting has 2-3 parameters in its head text.
+
+    @menuat *&lt;path&gt;* *&lt;action&gt;* *[clipboard]*
+
+The path argument specifies a **target** in the menu tree as defined by
+\@menus and modified by earlier @menuat settings. The path takes the form::
+
+    /entry1/entry2/entry3
+    
+Each entry is the **cleaned** name of a menu or item. Cleaned names are a
+name with all text except a-z and 0-9 removed and upper case letters converted
+to lower case. For example, specify::
+
+    Outline-&gt;Move-&gt;Move Down
+    
+as::
+    
+     /outline/move/movedown
+
+The action argument specifies what the menu item does. There are 5 available
+actions:
+
+- before: Insert items and sub menus immediately before the target.
+- after:  Insert items and sub menus immediately after the target.
+- append: Append items and sub menus at the end of the target menu or item.
+- cut:    Remove the target from the menu tree and save it to an internal clipboard.
+- copy:   Copy the target to an internal clipboard. Descendants of the @menuat setting are ignored.
+
+The cut and copy arguments ignore descendants of the @menuat setting .
+
+The optional clipboard argument modifies the action of the before, after, and
+append actions. By default these actions insert the menus and items supplied as
+descendants of the @menuat setting. If you specify “clipboard” (without the
+quotes) as the source, the contents of the clipboard from a previous cut or copy
+action will be used instead.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
