@@ -11,6 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="peckj.20130503092808.1690" a="E"><vh>Sphinx Config</vh>
+<v t="peckj.20130504222152.1713"><vh>@file requirements.txt</vh></v>
 <v t="peckj.20130503092808.1675" a="E"><vh>@file conf.py</vh></v>
 <v t="peckj.20130503092808.1691"><vh>@file Makefile</vh></v>
 <v t="peckj.20130503092808.1692"><vh>@file make.bat</vh></v>

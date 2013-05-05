@@ -1,0 +1,14 @@
+#@+leo-ver=5-thin
+#@+node:peckj.20130504222152.1713: * @file requirements.txt
+PyQt
+pylint
+pyenchant
+pyyaml
+docutils
+markdown
+IPython
+whoosh
+pexpect
+feedparser
+lxml
+#@-leo
