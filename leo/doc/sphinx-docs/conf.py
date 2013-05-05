@@ -312,6 +312,30 @@ epub_author = u'Ed K. Ream'
 epub_publisher = u'Ed K. Ream'
 epub_copyright = u'2013, Ed K. Ream'
 
+#@+node:peckj.20130504222152.1714: ** mock module - for modules incompatible with RTD
+import sys
+
+class Mock(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return Mock()
+
+    @classmethod
+    def __getattr__(cls, name):
+        if name in ('__file__', '__path__'):
+            return '/dev/null'
+        elif name[0] == name[0].upper():
+            mockType = type(name, (), {})
+            mockType.__module__ = __name__
+            return mockType
+        else:
+            return Mock()
+
+MOCK_MODULES = ['PyQt4']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
 #@-others
 
 #@-leo
