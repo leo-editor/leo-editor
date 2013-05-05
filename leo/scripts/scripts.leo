@@ -1346,7 +1346,9 @@ The script imports each written file and reports any syntax errors.
 
 This is a straightforward script; it should be easy to modify it to suit
 individual needs.
-</t>
+
+The &lt;\&lt; file_template &gt;&gt; and &lt;\&lt; test_template &gt;&gt; sections in the TestWriter
+class determines exactly what this script writes.</t>
 <t tx="ekr.20121220111212.13259">class TestWriter:
     
     &lt;&lt; define file_template &gt;&gt;

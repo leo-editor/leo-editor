@@ -36,812 +36,34 @@ After the release:
     - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
-.. @+node:ekr.20130502104323.10581: *3* Get github working
-bzr ci => git commit -a
-bzr add => git add
-bzr push => git push
-bzr revert => git reset --hard
-.. @+node:ekr.20130503095554.11930: *3* Change DNS record
+.. @+node:ekr.20130502071141.10570: *3* * organize bugs
+.. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
+.. @+node:ekr.20130503155210.24818: *3* * Organize email
 @nocolor-node
 
-As for the optional subdomain thing, here's what a record for that would
-look like in BIND, if your brother is doing DNS himself:
-
-api        IN        CNAME        leo-editor.readthedocs.org.
-
-That will make http://api.leoeditor.com serve up all the content from
-http://leo-editor.readthedocs.org. Completely optional, but it looks a bit
-more professional if you can have something coming off of your own domain.
+Extract scripts from Leo/Scripts folder.
+.. @+node:ekr.20130503155210.24819: *3* Fix flattr button on Leo's home page
 .. @+node:ekr.20130503134311.13447: *3* Fix all pylint complaints
+@nocolor-node
+
+************* Module leo.core.leoFrame
+E1101:1066,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'xyzzy22' member
+E1101:1069,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'def_stack' member
+
+************* Module leo.core.leoGlobals
+W0108:5375,0:find_constants_defined.<lambda>: Lambda may not be necessary
+
+************* Module leo.plugins.qtGui
+W0101:2781,0:leoQtBody.setEditorColors: Unreachable code
+W0403:7485,0:leoQtGui.runWithIpythonKernel:
+    Relative import 'internal_ipkernel', should be 'leo.plugins.internal_ipkernel'
 .. @+node:ekr.20130501035328.10473: *3* write about backward deductions
 Backward deductions are more local.  They can be used to deduce argument types.
 
 Backward deductions give *domains*; forward deductions give *ranges*.
 
 Ranges are more useful, but domains may simplify computations.
-.. @+node:ekr.20130501035328.12634: *3* Use Leo for email?
-m = imaplib.IMAP4_SSL('imap.gmail.com',993) # Require SSL: Yes
-m.login('edreamleo',<<my password>>)
-print('connected to edreamleo@gmail.com')
-try:
-    box = 'INBOX'
-    m.select(box,True) # readonly.
-    ok, aList = m.search(None,'ALL')
-    if ok == 'OK':
-        aList = [g.toUnicode(z) for z in aList]
-        nums = aList[0].split()
-        for num in nums:
-            ok,data = m.fetch(num, '(RFC822)')
-            if ok == 'OK':
-                print('reading %s %s' % (box.lower(),num))
-                child = p.insertAsLastChild()
-                child.h = '%s %s' % (box.lower(),num)
-                result = [g.toUnicode(repr(z)) for z in data]
-                s = '\n'.join(result)
-                s = s.replace('\\r\\n','\n')
-                child.b = s
-                break # testing
-        c.redraw()
-    else:
-        print('search %s failed' % (box.lower()))
-finally:
-    m.close()
-    m.logout()
-print('done')
-.. @+node:ekr.20130411131638.10311: *3* Ask the qt people about leaving foreground text unchanged
 .. @+node:ekr.20130501171351.10495: *3* Complete write-up of Leo sprint
-.. @+node:ekr.20130501171351.10493: *3* Complete move to leo-editor.com
-* Fix links in search window.
-.. @+node:ekr.20130502071141.10569: *3* Leo 4.11
-@language rest
-.. @+node:ekr.20130502071141.10570: *4* 4.11 Bugs
-.. @+node:ekr.20130502071141.10571: *5* Fix disappearing lines bug
-.. @+node:ekr.20130502071141.10572: *4* 4.11 Docs
-.. @+node:ekr.20111019104425.15865: *5* Make sure docstrings include present documentation
-Every command should have a **complete** docstring.
-.. @+node:ekr.20120527143117.11089: *6* Print commands & docstrings
-'''print a summary, sorted by class, of commands & their docstrings.'''
-
-d = c.commandsDict
-    # Keys are command names; values are functions
-
-g.cls()
-
-# Group commands by class.
-groups = {}
-for command in sorted(d.keys()):
-    f = d.get(command)
-    key = f.__self__.__class__.__name__ if hasattr(f,'__self__') else f.__name__
-    aList = groups.get(key,[])
-    aList.append((command,f),)
-    groups[key] = aList
-
-# Print groups.
-for group in sorted(groups.keys()):
-    print('%s...' % (group))
-    aList = groups.get(group)
-    for command,f in sorted(aList):
-        fname = f.__name__ or ''
-        doc = f.__doc__ or ''
-        print('%40s:%4s %s' % (command,len(doc),fname))
-
-
-print('%s commands' % (len(list(d.keys()))))
-.. @+node:ekr.20120527150031.10130: *6* output
-@killcolor
-
-AutoCompleterClass...
-                           auto-complete:  56 autoComplete
-                     auto-complete-force:  69 autoCompleteForce
-                   disable-autocompleter:  26 disableAutocompleter
-                        disable-calltips:  17 disableCalltips
-                    enable-autocompleter:  25 enableAutocompleter
-                         enable-calltips:  16 enableCalltips
-                           show-calltips:  32 showCalltips
-                     show-calltips-force:  76 showCalltipsForce
-                    toggle-autocompleter:  44 toggleAutocompleter
-                         toggle-calltips:  36 toggleCalltips
-Commands...
-                               about-leo:  29 about
-                            add-comments: 590 addComments
-                                beautify:  46 beautifyPythonCode
-                            beautify-all:  40 beautifyAllPythonCode
-                              beautify-c:  41 beautifyCCode
-                           beautify-tree:  49 beautifyPythonTree
-                           check-outline:  80 checkOutline
-                      clean-recent-files:  65 cleanRecentFiles
-                      clear-recent-files:  55 clearRecentFiles
-                      clone-marked-nodes:  49 cloneMarked
-                              clone-node:  39 clone
-                            close-window:  66 close
-                            contract-all:  34 contractAllHeadlines
-                contract-all-other-nodes:  91 contractAllOtherNodes
-                           contract-node:  37 contractNode
-                     contract-or-go-left:  58 contractNodeOrGoToParent
-                         contract-parent:  51 contractParent
-                      convert-all-blanks:  51 convertAllBlanks
-                        convert-all-tabs:  51 convertAllTabs
-                          convert-blanks:  48 convertBlanks
-                            convert-tabs:  48 convertTabs
-                               copy-node:  43 copyOutline
-                                cut-node:  57 cutOutline
-                                de-hoist:  36 dehoist
-                         delete-comments: 364 deleteComments
-                     delete-marked-nodes:  24 deleteMarked
-                             delete-node:  29 deleteOutline
-                                  demote:  58 demote
-                            dump-outline:  31 dumpOutline
-                           edit-headline:  48 editHeadline
-                          execute-script: 130 executeScript
-                              expand-all:  84 expandAllHeadlines
-                     expand-all-subheads:  51 expandAllSubheads
-                   expand-ancestors-only:  34 expandOnlyAncestorsOfNode
-                     expand-and-go-right:  70 expandNodeAndGoToFirstChild
-                       expand-next-level:  96 expandNextLevel
-                             expand-node:  35 expandNode
-                      expand-or-go-right:  59 expandNodeOrGoToFirstChild
-                       expand-prev-level:  96 expandPrevLevel
-                       expand-to-level-1:  29 expandLevel1
-                       expand-to-level-2:  29 expandLevel2
-                       expand-to-level-3:  29 expandLevel3
-                       expand-to-level-4:  29 expandLevel4
-                       expand-to-level-5:  29 expandLevel5
-                       expand-to-level-6:  29 expandLevel6
-                       expand-to-level-7:  29 expandLevel7
-                       expand-to-level-8:  29 expandLevel8
-                       expand-to-level-9:  29 expandLevel9
-                        export-headlines:  41 exportHeadlines
-                                 extract: 668 extract
-                           extract-names: 184 extractSectionNames
-                         find-next-clone:  28 findNextClone
-                         flatten-outline:  99 flattenOutline
-                                 go-back:  35 goPrevVisitedNode
-                              go-forward:  29 goNextVisitedNode
-                         goto-first-node:  44 goToFirstNode
-                      goto-first-sibling:  46 goToFirstSibling
-                 goto-first-visible-node:  63 goToFirstVisibleNode
-                          goto-last-node:  40 goToLastNode
-                       goto-last-sibling:  45 goToLastSibling
-                  goto-last-visible-node:  58 goToLastVisibleNode
-                       goto-next-changed:  42 goToNextDirtyHeadline
-                         goto-next-clone:  58 goToNextClone
-                  goto-next-history-node:  40 goToNextHistory
-                        goto-next-marked:  28 goToNextMarkedHeadline
-                          goto-next-node:  61 selectThreadNext
-                       goto-next-sibling:  45 goToNextSibling
-                       goto-next-visible:  62 selectVisNext
-                             goto-parent:  39 goToParent
-                  goto-prev-history-node:  44 goToPrevHistory
-                          goto-prev-node:  61 selectThreadBack
-                       goto-prev-sibling:  49 goToPrevSibling
-                       goto-prev-visible:  62 selectVisBack
-                         hide-invisibles:  39 hideInvisibles
-                                   hoist:  39 hoist
-                             import-file:  25 importAnyFile
-                           indent-region: 279 indentBody
-                        insert-body-time:  39 insertBodyTime
-                            insert-child:  48 insertChild
-                             insert-node:  48 insertHeadline
-                                    mark:  37 markHeadline
-                      mark-changed-items:  38 markChangedHeadlines
-                           mark-subheads:  50 markSubheads
-                          match-brackets:  42 findMatchingBracket
-                       move-marked-nodes:  53 moveMarked
-                       move-outline-down:  28 moveOutlineDown
-                       move-outline-left:  40 moveOutlineLeft
-                      move-outline-right:  41 moveOutlineRight
-                         move-outline-up:  38 moveOutlineUp
-                                     new:  24 new
-                        open-find-dialog:  30 showFindPanel
-                        open-leoDocs-leo:  37 leoDocumentation
-                     open-leoPlugins-leo:  40 openLeoPlugins
-                    open-leoSettings-leo:  41 openLeoSettings
-                  open-myLeoSettings-leo:  43 openMyLeoSettings
-                        open-online-home:  38 leoHome
-                            open-outline:  57 open
-                      open-python-window:  50 openPythonWindow
-                     open-quickstart-leo:  40 leoQuickStart
-                        open-scripts-leo:  17 openLeoScripts
-                        open-users-guide:  40 leoUsersGuide
-                               open-with: 457 openWith
-                         outline-to-cweb:  99 outlineToCWEB
-                        outline-to-noweb: 100 outlineToNoweb
-                              paste-node: 116 pasteOutline
-                  paste-retaining-clones: 109 pasteOutlineRetainingClones
-            pretty-print-all-python-code:  71 prettyPrintAllPythonCode
-                pretty-print-python-code:  46 prettyPrintPythonCode
-                                 promote:  70 promote
-                      read-at-auto-nodes:  55 readAtAutoNodes
-                      read-at-file-nodes:  55 readAtFileNodes
-                    read-at-shadow-nodes:  57 readAtShadowNodes
-                     read-file-into-node:  31 readFileIntoNode
-                       read-outline-only:  71 readOutlineOnly
-                      reformat-paragraph: 454 reformatParagraph
-                        remove-sentinels:  49 removeSentinels
-                                  revert:  60 revert
-                                save-all:  32 saveAll
-                               save-file:  29 save
-                            save-file-as:  49 saveAs
-                   save-file-as-unzipped:  99 saveAsUnzipped
-                     save-file-as-zipped:  95 saveAsZipped
-                            save-file-to:  89 saveTo
-                              set-colors:  22 colorPanel
-                                set-font:  21 fontPanel
-                                settings:  31 preferences
-                         show-invisibles:  39 showInvisibles
-                           sort-children:  28 sortChildren
-                       sort-recent-files:  27 sortRecentFiles
-                           sort-siblings:  28 sortSiblings
-                                  tangle:  47 tangle
-                              tangle-all:  45 tangleAll
-                           tangle-marked:  52 tangleMarked
-                   toggle-angle-brackets:  75 toggleAngleBrackets
-                       toggle-invisibles:  52 toggleShowInvisibles
-                      toggle-sparse-move:  42 toggleSparseMove
-                         unindent-region:  72 dedentBody
-                              unmark-all:  39 unmarkAll
-                                untangle:  49 untangle
-                            untangle-all:  47 untangleAll
-                         untangle-marked:  54 untangleMarked
-                                   weave:  86 weave
-                    write-file-from-node: 133 writeFileFromNode
-LeoApp...
-                                exit-leo:  51 onQuit
-abbrevCommandsClass...
-                       abbrev-add-global: 172 addAbbreviation
-               abbrev-inverse-add-global: 150 addInverseAbbreviation
-                         abbrev-kill-all:  25 killAllAbbrevs
-                             abbrev-list:  23 listAbbrevs
-                             abbrev-read:  31 readAbbreviations
-                            abbrev-write:  30 writeAbbreviations
-                      dabbrev-completion: 119 dynamicCompletion
-                         dabbrev-expands: 200 dynamicExpansion
-                      toggle-abbrev-mode:  25 toggleAbbrevMode
-atFile...
-                      check-derived-file:  63 checkDerivedFile
-                     write-at-auto-nodes:  46 writeAtAutoNodes
-               write-dirty-at-auto-nodes:  52 writeDirtyAtAutoNodes
-bufferCommandsClass...
-                        buffer-append-to:  80 appendToBuffer
-                             buffer-kill:  47 killBuffer
-                       buffer-prepend-to:  82 prependToBuffer
-                        buffer-switch-to:  46 switchToBuffer
-                            buffers-list: 155 listBuffers
-             buffers-list-alphabetically: 151 listBuffersAlphabetically
-chapterController...
-                   chapter-clone-node-to:  79 cloneNodeToChapter
-                 chapter-convert-node-to: 247 convertNodeToChapter
-                    chapter-copy-node-to:  78 copyNodeToChapter
-                          chapter-create:  73 createChapter
-                chapter-create-from-node: 119 createChapterFromNode
-                    chapter-move-node-to:  78 moveNodeToChapter
-                          chapter-remove:  49 removeChapter
-                          chapter-rename:  61 renameChapter
-                          chapter-select:  74 selectChapter
-controlCommandsClass...
-                             act-on-node: 543 actOnNode
-                         advertised-undo:  26 advertizedUndo
-                           iconify-frame:  32 iconifyFrame
-                   print-plugin-handlers:  35 printPluginHandlers
-                      print-plugins-info: 159 printPluginsInfo
-                   save-buffers-kill-leo:  52 shutdown
-                         set-silent-mode: 170 setSilentMode
-                           shell-command:  24 shellCommand
-                 shell-command-on-region:  69 shellCommandOnRegion
-                                 suspend:  32 suspend
-debugCommandsClass...
-                                   debug: 144 debug
-                      gc-collect-garbage:  31 collectGarbage
-                     gc-dump-all-objects:  47 dumpAllObjects
-                     gc-dump-new-objects: 109 dumpNewObjects
-                 gc-dump-objects-verbose:  60 verboseDumpObjects
-                        gc-print-summary:  44 printGcSummary
-                        gc-trace-disable:  45 disableGcTrace
-                         gc-trace-enable:  46 enableGcTrace
-                                     pdb:  14 pdb
-                             print-focus:  60 printFocus
-           run-all-unit-tests-externally: 135 runAllUnitTestsExternally
-              run-all-unit-tests-locally: 146 runAllUnitTestsLocally
-        run-marked-unit-tests-externally: 125 runMarkedUnitTestsExternally
-           run-marked-unit-tests-locally: 120 runMarkedUnitTestsLocally
-      run-selected-unit-tests-externally: 146 runSelectedUnitTestsExternally
-         run-selected-unit-tests-locally: 146 runSelectedUnitTestsLocally
-editCommandsClass...
-                      activate-cmds-menu:  26 activateCmdsMenu
-                      activate-edit-menu:  25 activateEditMenu
-                      activate-file-menu:  25 activateFileMenu
-                      activate-help-menu:  25 activateHelpMenu
-                   activate-outline-menu:  28 activateOutlineMenu
-                   activate-plugins-menu:  28 activatePluginsMenu
-                    activate-window-menu:  27 activateWindowMenu
-                      add-space-to-lines:  57 addSpaceToLines
-                        add-tab-to-lines:  55 addTabToLines
-                               back-char:  78 backCharacter
-              back-char-extend-selection:  61 backCharacterExtendSelection
-                               back-page:  81 backPage
-              back-page-extend-selection:  56 backPageExtendSelection
-                          back-paragraph:  42 backwardParagraph
-         back-paragraph-extend-selection:  68 backwardParagraphExtendSelection
-                           back-sentence:  41 backSentence
-          back-sentence-extend-selection:  67 backSentenceExtendSelection
-                            back-to-home: 135 backToHome
-                     back-to-indentation:  64 backToIndentation
-                               back-word:  37 backwardWord
-              back-word-extend-selection:  63 backwardWordExtendSelection
-                         back-word-smart:  80 backwardWordSmart
-        back-word-smart-extend-selection: 114 backwardWordSmartExtendSelection
-                    backward-delete-char:  47 backwardDeleteCharacter
-                    backward-delete-word:  39 backwardDeleteWord
-              backward-delete-word-smart:  88 backwardDeleteWordSmart
-                 backward-find-character:  33 backwardFindCharacter
-backward-find-character-extend-selection:  57 backwardFindCharacterExtendSelection
-                 backward-kill-paragraph:  28 backwardKillParagraph
-                     beginning-of-buffer:  46 beginningOfBuffer
-    beginning-of-buffer-extend-selection:  77 beginningOfBufferExtendSelection
-                       beginning-of-line:  84 beginningOfLine
-      beginning-of-line-extend-selection:  67 beginningOfLineExtendSelection
-                             c-to-python:3170 cToPy
-                         capitalize-word:  34 capitalizeWord
-                             center-line:  39 centerLine
-                           center-region:  48 centerRegion
-                         clean-all-lines:  37 cleanAllLines
-                             clean-lines:  73 cleanLines
-                        clear-all-caches:  31 clearAllCaches
-                           clear-all-uas:  36 clearAllUas
-                             clear-cache:  31 clearCache
-                       clear-extend-mode:  75 clearExtendMode
-                          clear-node-uas:  37 clearNodeUas
-                     clear-selected-text:  25 clearSelectedText
-                         click-click-box:  74 clickClickBox
-                          click-headline:  64 clickHeadline
-                          click-icon-box:  64 clickIconBox
-                            count-region:  62 countRegion
-                         ctrl-click-icon:  69 ctrlClickIconBox
-                         cycle-all-focus: 102 cycleAllFocus
-                             cycle-focus:  67 cycleFocus
-                             delete-char:  48 deleteNextChar
-                       delete-first-icon:  55 deleteFirstIcon
-                      delete-indentation:  41 deleteIndentation
-                        delete-last-icon:  55 deleteLastIcon
-                       delete-node-icons:  40 deleteNodeIcons
-                           delete-spaces:  45 deleteSpaces
-                             delete-word:  30 deleteWord
-                       delete-word-smart:  79 deleteWordSmart
-                              do-nothing:  51 doNothing
-                   double-click-headline:  67 doubleClickHeadline
-                   double-click-icon-box:  71 doubleClickIconBox
-                         downcase-region:  58 downCaseRegion
-                           downcase-word:  63 downCaseWord
-                           end-of-buffer:  44 endOfBuffer
-          end-of-buffer-extend-selection:  75 endOfBufferExtendSelection
-                             end-of-line:  82 endOfLine
-            end-of-line-extend-selection:  65 endOfLineExtendSelection
-                                  escape:  24 watchEscape
-                         eval-expression:  55 evalExpression
-                     exchange-point-mark:  85 exchangePointMark
-                          extend-to-line:  30 extendToLine
-                     extend-to-paragraph:  44 extendToParagraph
-                      extend-to-sentence:  30 extendToSentence
-                          extend-to-word:  64 extendToWord
-                          fill-paragraph:  27 fillParagraph
-                             fill-region:  41 fillRegion
-                fill-region-as-paragraph:  23 fillRegionAsParagraph
-                          find-character:  23 findCharacter
-         find-character-extend-selection:  48 findCharacterExtendSelection
-                               find-word:  61 findWord
-                       find-word-in-line:  73 findWordInLine
-                             flush-lines: 187 flushLines
-                           focus-to-body:  42 focusToBody
-                            focus-to-log:  41 focusToLog
-                     focus-to-minibuffer:  43 focusToMinibuffer
-                           focus-to-tree:  45 focusToTree
-                            forward-char:  81 forwardCharacter
-           forward-char-extend-selection:  64 forwardCharacterExtendSelection
-                        forward-end-word:  33 forwardEndWord
-       forward-end-word-extend-selection:  59 forwardEndWordExtendSelection
-                            forward-page:  84 forwardPage
-           forward-page-extend-selection:  59 forwardPageExtendSelection
-                       forward-paragraph:  38 forwardParagraph
-      forward-paragraph-extend-selection:  64 forwardParagraphExtendSelection
-                        forward-sentence:  37 forwardSentence
-       forward-sentence-extend-selection:  63 forwardSentenceExtendSelection
-                            forward-word:  33 forwardWord
-           forward-word-extend-selection:  70 forwardWordExtendSelection
-                      forward-word-smart:  76 forwardWordSmart
-     forward-word-smart-extend-selection: 110 forwardWordSmartExtendSelection
-                               goto-char:  51 gotoCharacter
-                        goto-global-line: 134 gotoGlobalLine
-                               goto-line:  46 gotoLine
-                                how-many: 116 howMany
-                         indent-relative: 651 indentRelative
-                          indent-rigidly:  65 tabIndentRegion
-                indent-to-comment-column:  87 indentToCommentColumn
-                         insert-hard-tab:  20 insertHardTab
-                             insert-icon:  60 insertIcon
-                          insert-newline:  31 insertNewLine
-                      insert-parentheses:  24 insertParentheses
-                         insert-soft-tab:  36 insertSoftTab
-                              keep-lines: 195 keepLines
-                          kill-paragraph:  27 killParagraph
-                             line-number:  64 lineNumber
-                         move-lines-down: 135 moveLinesDown
-                           move-lines-up: 103 moveLinesUp
-                         move-past-close:  45 movePastClose
-        move-past-close-extend-selection:  71 movePastCloseExtendSelection
-                      newline-and-indent:  39 insertNewLineAndTab
-                               next-line:  64 nextLine
-              next-line-extend-selection:  47 nextLineExtendSelection
-                           previous-line:  62 prevLine
-          previous-line-extend-selection:  45 prevLineExtendSelection
-                           print-all-uas:  30 printAllUas
-                          print-node-uas:  36 printUas
-                      remove-blank-lines: 244 removeBlankLines
-                 remove-space-from-lines:  62 removeSpaceFromLines
-                   remove-tab-from-lines:  60 removeTabFromLines
-               replace-current-character:  60 replaceCurrentCharacter
-                          reverse-region:  48 reverseRegion
-                      reverse-sort-lines:  41 reverseSortLines
-        reverse-sort-lines-ignoring-case:  56 reverseSortLinesIgnoringCase
-                   scroll-down-half-page:  50 scrollDownHalfPage
-                        scroll-down-line:  50 scrollDownLine
-                        scroll-down-page:  49 scrollDownPage
-                scroll-outline-down-line:  38 scrollOutlineDownLine
-                scroll-outline-down-page:  38 scrollOutlineDownPage
-                     scroll-outline-left:  24 scrollOutlineLeft
-                    scroll-outline-right:  24 scrollOutlineRight
-                  scroll-outline-up-line:  36 scrollOutlineUpLine
-                  scroll-outline-up-page:  36 scrollOutlineUpPage
-                     scroll-up-half-page:  50 scrollUpHalfPage
-                          scroll-up-line:  47 scrollUpLine
-                          scroll-up-page:  47 scrollUpPage
-                              select-all:  16 selectAllText
-              select-to-matching-bracket:  53 selectToMatchingBracket
-                      set-comment-column:  64 setCommentColumn
-                         set-extend-mode:  70 setExtendMode
-                         set-fill-column:  71 setFillColumn
-                         set-fill-prefix:  39 setFillPrefix
-                                  set-ua:  75 setUa
-                             show-colors:  57 showColors
-                              show-fonts:  49 showFonts
-                     simulate-begin-drag:  60 simulateBeginDrag
-                       simulate-end-drag:  58 simulateEndDrag
-                            sort-columns:  87 sortColumns
-                             sort-fields: 540 sortFields
-                              sort-lines:  24 sortLines
-                sort-lines-ignoring-case:  39 sortLinesIgnoringCase
-                              split-line:  36 splitLine
-                                  tabify:  46 tabify
-                      toggle-case-region:  55 toggleCaseRegion
-                      toggle-extend-mode:  88 toggleExtendMode
-                         transpose-chars:  34 swapCharacters
-                         transpose-lines:  65 transposeLines
-                         transpose-words:  70 transposeWords
-                                untabify:  46 untabify
-                           upcase-region:  58 upCaseRegion
-                             upcase-word:  63 upCaseWord
-                            view-lossage:  46 viewLossage
-                               what-line:  56 whatLine
-editFileCommandsClass...
-                          directory-make:  49 makeDirectory
-                        directory-remove:  49 removeDirectory
-                  file-compare-leo-files:  23 compareLeoFiles
-                             file-delete:  44 deleteFile
-                         file-diff-files:  57 diff
-                             file-insert:  64 insertFile
-                       file-open-by-name:  49 openOutlineByName
-                               file-save:  82 saveFile
-enterModeCallback...
-                enter-quick-command-mode:   0 enterModeCallback
-fileCommands...
-                          check-leo-file:  27 checkLeoFile
-                     write-at-file-nodes:  46 writeAtFileNodes
-                   write-at-shadow-nodes:  46 writeAtShadowNodes
-               write-dirty-at-file-nodes:  30 writeDirtyAtFileNodes
-             write-dirty-at-shadow-nodes:  32 writeDirtyAtShadowNodes
-             write-missing-at-file-nodes:  30 writeMissingAtFileNodes
-                      write-outline-only:  59 writeOutlineOnly
-helpCommandsClass...
-                   apropos-abbreviations:  37 aproposAbbreviations
-                  apropos-autocompletion:  38 aproposAutocompletion
-                        apropos-bindings:  41 aproposBindings
-              apropos-debugging-commands:  51 aproposDebuggingCommands
-                   apropos-find-commands:  46 aproposFindCommands
-             apropos-regular-expressions:  46 aproposRegularExpressions
-                        help-for-command:  72 helpForCommand
-                     help-for-minibuffer:  57 helpForMinibuffer
-                         help-for-python:  72 pythonHelp
-                          print-settings: 307 printSettings
-keyHandlerClass...
-                          digit-argument:  28 digitArgument
-                         exit-named-mode:  19 exitNamedMode
-                            full-command:  35 fullCommand
-                           keyboard-quit: 117 keyboardQuit
-                               mode-help: 147 modeHelp
-                       negative-argument:  37 negativeArgument
-                          number-command:  35 numberCommand
-                        number-command-0:  25 numberCommand0
-                        number-command-1:  25 numberCommand1
-                        number-command-2:  25 numberCommand2
-                        number-command-3:  25 numberCommand3
-                        number-command-4:  25 numberCommand4
-                        number-command-5:  25 numberCommand5
-                        number-command-6:  25 numberCommand6
-                        number-command-7:  25 numberCommand7
-                        number-command-8:  25 numberCommand8
-                        number-command-9:  25 numberCommand9
-                          print-bindings:  43 printBindings
-                           print-buttons:  73 printButtons
-                          print-commands:  56 printCommands
-                     propagate-key-event:  12 propagateKeyEvent
-                  repeat-complex-command:  50 repeatComplexCommand
-                       set-command-state:  34 setCommandState
-                        set-insert-state:  33 setInsertState
-                     set-overwrite-state:  36 setOverwriteState
-                      toggle-input-state:  31 toggleInputState
-                      universal-argument:  32 universalArgument
-killBufferCommandsClass...
-                  backward-kill-sentence:  27 backwardKillSentence
-                      backward-kill-word:  23 backwardKillWord
-                         clear-kill-ring:  20 clearKillRing
-                               kill-line:  36 killLine
-                             kill-region:  24 killRegion
-                        kill-region-save:  61 killRegionSave
-                           kill-sentence:  40 killSentence
-                               kill-word:  36 killWord
-                                 kill-ws:  16 killWs
-                                    yank: 113 yank
-                                yank-pop:  39 yankPop
-                        zap-to-character:  62 zapToCharacter
-leoQtBody...
-                              add-editor:  36 addEditor
-                      cycle-editor-focus:  51 cycleEditorFocus
-                           delete-editor:  47 deleteEditor
-leoQtFrame...
-                     abort-edit-headline:  59 abortEditLabelCommand
-                         cascade-windows:  24 cascade
-                      contract-body-pane:  23 contractBodyPane
-                       contract-log-pane:  22 contractLogPane
-                   contract-outline-pane:  26 contractOutlinePane
-                           contract-pane:  27 contractPane
-                               copy-text:  56 copyText
-                                cut-text:  48 cutText
-                       end-edit-headline:  58 endEditLabelCommand
-                       equal-sized-panes:  51 equalSizedPanes
-                        expand-body-pane:  21 expandBodyPane
-                         expand-log-pane:  20 expandLogPane
-                     expand-outline-pane:  24 expandOutlinePane
-                             expand-pane:  25 expandPane
-                  fully-expand-body-pane:  27 fullyExpandBodyPane
-                   fully-expand-log-pane:  26 fullyExpandLogPane
-               fully-expand-outline-pane:  30 fullyExpandOutlinePane
-                       fully-expand-pane:  31 fullyExpandPane
-                          hide-body-pane:  34 hideBodyPane
-                           hide-log-pane:  33 hideLogPane
-                       hide-outline-pane:  37 hideOutlinePane
-                               hide-pane:  38 hidePane
-                    insert-headline-time:  62 insertHeadlineTime
-                            minimize-all:  27 minimizeAll
-                   open-offline-tutorial:  28 leoHelp
-                              paste-text: 117 pasteText
-                        resize-to-screen:  51 resizeToScreen
-                      toggle-active-pane:  52 toggleActivePane
-                  toggle-split-direction:  53 toggleSplitDirection
-leoQtLog...
-                         cycle-log-focus:  54 cycleTabFocus
-macroCommandsClass...
-                              macro-call:  43 callNamedMacro
-                         macro-call-last:  38 callLastMacro
-                     macro-end-recording:  24 endMacro
-                          macro-load-all:  34 loadMacros
-                         macro-name-last:  60 nameLastMacro
-                         macro-print-all:  51 printMacros
-                        macro-print-last:  31 printLastMacro
-                          macro-save-all:  34 saveMacros
-                   macro-start-recording:  46 startRecordingMacro
-minibufferCallback...
-                 @command-align-eq-signs:   0 minibufferCallback
-         @command-c-to-python-clean-docs:   0 minibufferCallback
-          @command-clean-all-blank-lines:   0 minibufferCallback
-                     @command-clean-body:   0 minibufferCallback
-                     @command-clean-diff:   0 minibufferCallback
-                 @command-clean-spellpyx:   0 minibufferCallback
-                            @command-cls:   0 minibufferCallback
-                    @command-count-pages:   0 minibufferCallback
-             @command-create-@auto-nodes:   0 minibufferCallback
-                @command-create-def-list:   0 minibufferCallback
-                 @command-flatten-script:   0 minibufferCallback
-                @command-join-node-above:   0 minibufferCallback
-                @command-join-node-below:   0 minibufferCallback
-   @command-join-selection-to-node-below:   0 minibufferCallback
-             @command-load-all-leo-files:   0 minibufferCallback
-                   @command-preview-node:   0 minibufferCallback
-                   @command-preview-tree:   0 minibufferCallback
-           @command-print-cmd-docstrings:   0 minibufferCallback
-                 @command-promote-bodies:   0 minibufferCallback
-                @command-remove-newlines:   0 minibufferCallback
-                     @command-split-defs:   0 minibufferCallback
-                          align-eq-signs:   0 minibufferCallback
-                 bookmarks-open-bookmark:   0 minibufferCallback
-                     bookmarks-open-node:   0 minibufferCallback
-                          bookmarks-show:   0 minibufferCallback
-                  c-to-python-clean-docs:   0 minibufferCallback
-                   clean-all-blank-lines:   0 minibufferCallback
-                              clean-body:   0 minibufferCallback
-                              clean-diff:   0 minibufferCallback
-                          clean-spellpyx:   0 minibufferCallback
-                            close-others:   0 minibufferCallback
-                                     cls:   0 minibufferCallback
-                      cm-external-editor: 119 minibufferCallback
-                             count-pages:   0 minibufferCallback
-                      create-@auto-nodes:   0 minibufferCallback
-                         create-def-list:   0 minibufferCallback
-                    ctrl-click-at-cursor:   0 minibufferCallback
-             delete-script-button-button:   0 minibufferCallback
-                             export-html:  67 minibufferCallback
-                      export-html-bullet:  67 minibufferCallback
-                        export-html-head:  67 minibufferCallback
-                        export-html-node:  67 minibufferCallback
-                 export-html-node-bullet:  67 minibufferCallback
-                   export-html-node-head:  67 minibufferCallback
-                 export-html-node-number:  67 minibufferCallback
-                      export-html-number:  67 minibufferCallback
-                              find-quick:   0 minibufferCallback
-                     find-quick-selected:   0 minibufferCallback
-                find-quick-test-failures:   0 minibufferCallback
-                     find-quick-timeline:   0 minibufferCallback
-                          flatten-script:   0 minibufferCallback
-                            focus-to-nav:   0 minibufferCallback
-                           global-search:  18 minibufferCallback
-                   graph-toggle-autoload:   0 minibufferCallback
-                       head-to-prev-node:  54 minibufferCallback
-                                 history:   0 minibufferCallback
-                         join-node-above:   0 minibufferCallback
-                         join-node-below:   0 minibufferCallback
-            join-selection-to-node-below:   0 minibufferCallback
-                           leoserv-start:   0 minibufferCallback
-                      load-all-leo-files:   0 minibufferCallback
-                             marked-list:  30 minibufferCallback
-                                open-url:   0 minibufferCallback
-                          open-with-idle:   0 minibufferCallback
-                   open-with-open office:   0 minibufferCallback
-                         open-with-scite:   0 minibufferCallback
-                              parse-body:   0 minibufferCallback
-                            preview-node:   0 minibufferCallback
-                            preview-tree:   0 minibufferCallback
-                    print-cmd-docstrings:   0 minibufferCallback
-                          project-wizard:  23 minibufferCallback
-                          promote-bodies:   0 minibufferCallback
-       quickmove_bookmark_to_first_child:   0 minibufferCallback
-        quickmove_bookmark_to_last_child:   0 minibufferCallback
-          quickmove_clone_to_first_child:   0 minibufferCallback
-           quickmove_clone_to_last_child:   0 minibufferCallback
-           quickmove_copy_to_first_child:   0 minibufferCallback
-            quickmove_copy_to_last_child:   0 minibufferCallback
-                       quickmove_jump_to:   0 minibufferCallback
-                     quickmove_link_from:   0 minibufferCallback
-                       quickmove_link_to:   0 minibufferCallback
-           quickmove_move_to_first_child:   0 minibufferCallback
-            quickmove_move_to_last_child:   0 minibufferCallback
-                         remove-newlines:   0 minibufferCallback
-                           script-button:  94 minibufferCallback
-                           session-clear:   0 minibufferCallback
-                          session-create:   0 minibufferCallback
-                         session-refresh:   0 minibufferCallback
-                         session-restore:   0 minibufferCallback
-                   session-snapshot-load:   0 minibufferCallback
-                   session-snapshot-save:   0 minibufferCallback
-                               show-html:  67 minibufferCallback
-                        show-html-bullet:  67 minibufferCallback
-                          show-html-head:  67 minibufferCallback
-                          show-html-node:  67 minibufferCallback
-                   show-html-node-bullet:  67 minibufferCallback
-                     show-html-node-head:  67 minibufferCallback
-                   show-html-node-number:  67 minibufferCallback
-                        show-html-number:  67 minibufferCallback
-                              split-defs:   0 minibufferCallback
-                              stickynote:  44 minibufferCallback
-                          stickynote-new:  44 minibufferCallback
-                             stickynoter:  44 minibufferCallback
-                          tab-cycle-next:  19 minibufferCallback
-                      tab-cycle-previous:  19 minibufferCallback
-                              tab-detach:  33 minibufferCallback
-                                  tabula:  74 minibufferCallback
-                           tabula-marked:  37 minibufferCallback
-                             tabula-show:   0 minibufferCallback
-                          tabula-subtree:  41 minibufferCallback
-                       tail-to-next-node:  54 minibufferCallback
-                            todo-dec-pri:   0 minibufferCallback
-                            todo-inc-pri:   0 minibufferCallback
-                                      vr:  30 minibufferCallback
-                                 vr-hide:  25 minibufferCallback
-                          vr-lock-toggle:  44 minibufferCallback
-                           vr-pause-play:  44 minibufferCallback
-                          vr-show-toggle:  32 minibufferCallback
-                               vr-update:  46 minibufferCallback
-                          vs-create-tree:  31 minibufferCallback
-                                 vs-dump:  39 minibufferCallback
-                                vs-reset:   0 minibufferCallback
-                               vs-update:   0 minibufferCallback
-rectangleCommandsClass...
-                         rectangle-clear:  66 clearRectangle
-                         rectangle-close:  60 closeRectangle
-                        rectangle-delete:  67 deleteRectangle
-                          rectangle-kill:  65 killRectangle
-                          rectangle-open: 147 openRectangle
-                        rectangle-string:  97 stringRectangle
-                          rectangle-yank:  70 yankRectangle
-registerCommandsClass...
-                      register-append-to:  83 appendToRegister
-              register-copy-rectangle-to: 112 copyRectangleToRegister
-                        register-copy-to:  83 copyToRegister
-                      register-increment:  77 incrementRegister
-                         register-insert:  90 insertRegister
-                        register-jump-to:  81 jumpToRegister
-                       register-point-to:  87 pointToRegister
-                     register-prepend-to:  84 prependToRegister
-                           register-view:  50 viewRegister
-rstCommands...
-                             code-to-rst: 267 code_to_rst_command
-                                    rst3:  21 rst3
-searchCommandsClass...
-                                  change:  69 findTabChange
-                              change-all:  73 changeAll
-                        change-then-find:  76 findTabChangeThenFind
-                          clone-find-all: 427 cloneFindAll
-                clone-find-all-flattened: 444 cloneFindAllFlattened
-                                find-all:  69 findAll
-                          find-clone-all: 427 cloneFindAll
-                find-clone-all-flattened: 444 cloneFindAllFlattened
-                               find-next:  72 findTabFindNext
-                               find-prev:  76 findTabFindPrev
-                           find-tab-hide:  18 hideFindTab
-                           find-tab-open:  34 openFindTab
-                        isearch-backward: 360 isearchBackward
-                 isearch-backward-regexp: 365 isearchBackwardRegexp
-                         isearch-forward: 350 isearchForward
-                  isearch-forward-regexp: 364 isearchForwardRegexp
-            isearch-with-present-options: 371 isearchWithPresentOptions
-                      re-search-backward:  26 reSearchBackward
-                       re-search-forward:  26 reSearchForward
-                          replace-string: 301 replaceString
-                            search-again: 224 findAgain
-                         search-backward:  27 searchBackward
-                          search-forward:  26 searchForward
-             search-with-present-options: 215 searchWithPresentOptions
-                     set-find-everywhere:  54 setFindScopeEveryWhere
-                      set-find-node-only:  49 setFindScopeNodeOnly
-                set-find-suboutline-only:  55 setFindScopeSuboutlineOnly
-                       show-find-options:  51 showFindOptions
-             toggle-find-collapses-nodes:  53 toggleFindCollapesNodes
-          toggle-find-ignore-case-option:  50 toggleIgnoreCaseOption
-              toggle-find-in-body-option:  47 toggleSearchBodyOption
-          toggle-find-in-headline-option:  54 toggleSearchHeadlineOption
-         toggle-find-mark-changes-option:  51 toggleMarkChangesOption
-           toggle-find-mark-finds-option:  49 toggleMarkFindsOption
-                toggle-find-regex-option:  45 toggleRegexOption
-                 toggle-find-word-option:  49 toggleWholeWordOption
-          toggle-find-wrap-around-option:  50 toggleWrapSearchOption
-                    word-search-backward:  31 wordSearchBackward
-                     word-search-forward:  30 wordSearchForward
-spellCommandsClass...
-                          hide-spell-tab:  19 hide
-                          open-spell-tab:  43 openSpellTab
-                            spell-change:  55 change
-                  spell-change-then-find:  61 changeThenFind
-                              spell-find:  53 find
-                            spell-ignore:  55 ignore
-undoer...
-                                    redo:  43 redo
-                                    undo:  52 undo
-676 commands
-.. @+node:ekr.20130413061407.10367: *5* Screencast style for plugins
-.. @+node:ekr.20130413061407.10368: *5* Screencast style for tutorials
-.. @+node:ekr.20130412022445.12388: *5* ?Use vr (and @wrap) to view all setting documentation
-.. @+node:ekr.20130408095053.10307: *5* guide for the next leaders
-# Use bookmarks?
-.. @+node:ekr.20130502071141.10576: *4* 4.11 Features
-.. @+node:ekr.20130413061407.10365: *5* ?Ignore @url lines and @rclick nodes in scripts
-.. @+node:ekr.20130502071141.10573: *4* 4.11 Installation
 .. @+node:ekr.20130503053253.10548: *3* Draft: unit testing tutorial
 @wrap
 @language rest
@@ -904,7 +126,239 @@ Traceback (most recent call last):
   File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
     name = w.leo_name
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20110921094450.6956: ** To do: 4.11
+.. @+node:ekr.20130408095053.10307: ** ** guide for the next leaders
+# Use bookmarks?
+.. @+node:ekr.20130501035328.12634: ** Use Leo for email?
+A script is in ekr-projects.leo.
+To be useful, it would have to strip off cruft.
+
+Another option: just use labels more effectively.
+.. @+node:ekr.20130503155210.24811: ** Waiting
+.. @+node:ekr.20130503095554.11930: *3* Change DNS record
+@nocolor-node
+
+Email sent to Speed.
+
+As for the optional subdomain thing, here's what a record for that would
+look like in BIND, if your brother is doing DNS himself:
+
+api        IN        CNAME        leo-editor.readthedocs.org.
+
+That will make http://api.leoeditor.com serve up all the content from
+http://leo-editor.readthedocs.org. Completely optional, but it looks a bit
+more professional if you can have something coming off of your own domain.
+.. @+node:ekr.20130502104323.10581: *3* Get github working
+Waiting on Pypi support ticket: https://sourceforge.net/p/pypi/support-requests/260/
+
+bzr ci => git commit -a
+bzr add => git add
+bzr push => git push
+bzr revert => git reset --hard
+.. @+node:ekr.20130503155210.24812: ** To do: 4.11
+.. @+node:ekr.20130503155210.24814: *3* Tutorials
+@nocolor-node
+
+** Screencast style for plugins docstrings.
+* Screencast style for help messages.
+* Screencast style for tutorials.
+.. @+node:ekr.20130502071141.10572: *3* Docs
+@language rest
+
+Every command should have a **complete** docstring.
+
+?Use vr (and @wrap) to view all setting documentation
+.. @+node:ekr.20130503155210.24816: *3* Installation
+@nocolor-node
+
+- Fix install bug.
+- Create one-click installer.
+.. @+node:ekr.20130503155210.24821: *4* Update installation docs
+@language rest
+
+https://code.google.com/p/maphew/source/browse/other/create-leobat.bat
+https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/bat$20file/leo-editor/li9ILUWuNAs/1zhjcNPWybEJ
+
+
+as noted in the other thread, you've stumbled over an omission in the docs. Here is the manual recipe for benefit of the thread archives:
+Installing Leo on Windows
+
+    Install Python from http://www.python.org/download/releases/
+
+    Install either Tk or Qt, as described above.
+
+    Install Leo. Get Leo’s .zip file from http://sourceforge.net/projects/leo/ You can unpack the .zip file anywhere, including Python’s site-packages folder, for example, C:\Python26\Lib\site-packages
+
+    [optional] Generate/update a junction link from unpacked leo folder to ...\site-packages\leo:
+
+    cd C:\Python26\Lib\site-packages\
+    junction leo leo-4-6-2-final
+
+    Create windows shortcut (edit paths as necessary):
+
+    Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
+    Start in =  D:\code
+
+    Associate .leo filetype batch file:
+
+    ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+    assoc .leo=LeoFile
+
+    [optional] Put this leo.bat in %PATH%:
+
+    @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
+
+For more information see:
+
+Junction links:
+    http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+    http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+ftype:
+    http://ss64.com/nt/ftype.html
+assoc:
+    http://ss64.com/nt/assoc.html
+
+
+From http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows (and http://www.maphew.com/How_To/Installing_Leo_Editor_on_Windows.html)
+.. @+node:ekr.20130503155210.24826: *4* Script: Add Windows handler for .leo files
+# https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
+
+@language python
+@tabwidth -4
+
+'''Tell Windows how to handle .leo files, enables double clicking on them to open.
+
+To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
+
+It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
+where python.exe and the Leo launch script is. It's the equivalent of:
+
+    assoc .leo=Leo.File
+    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
+       
+Requires elevated User Account Control (UAC) priviliges.
+See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
+'''
+
+pyexe = g.sys.executable
+leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+
+tmp = g.os.environ['TEMP']
+
+assoc_cmd = 'assoc .leo=Leo.File'
+ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
+
+g.es(leo)
+g.es(pyexe)
+
+g.es(tmp)
+g.es(assoc_cmd)
+g.es(ftype_cmd)
+
+from subprocess import Popen
+Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
+
+    cwd=tmp, shell=True)
+.. @+node:ekr.20130503155210.24827: *4* Console script: Install Leo from scratch on Windows 
+@language batch
+
+mkdir X:\testing
+pushd X:\testing
+
+wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
+SET OSGEO4W_ROOT=%~dp0\root
+apt setup
+apt update
+apt install pyqt4 sip
+
+call root\osgeo4w.bat
+
+wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
+python install-pip.py GO
+python install-pip.py GO
+
+pip install -i https://testpypi.python.org/pypi leo-editor
+
+python apps\Python27\Scripts\leo
+.. @+node:ekr.20130503155210.24817: *3* 4.11 Scripts
+@nocolor-node
+
+- Find a good place for recently contributed script.
+.. @+node:ekr.20130503155210.24820: *4* Create bat file
+:: https://code.google.com/p/maphew/source/browse/other/create-leobat.bat
+:: https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/bat$20file/leo-editor/li9ILUWuNAs/1zhjcNPWybEJ
+
+@language batch
+
+@echo off
+:: A batch file which generates other batch files to run the Leo Editor,
+:: adapted for the local machine. Optionally, it will also set the Windows
+:: filetype and association so .leo files can be opened from Explorer.
+::
+:: It needs to live in the same folder as "launchLeo.py"
+::
+:: Open Source X/MIT License
+:: initial version * 2012-Dec-13 * matt wilkie <maphew@gmail.com>
+
+if "%1"=="" goto :Usage
+
+call :pyCheck %1
+call :main %1
+if "%2"=="register" call :register %1
+goto :eof
+
+:main
+:: %1 is the path to folder containing python .exe's
+set pyexe=%~dp1\python.exe
+set pywexe=%~dp1\pythonw.exe
+echo.
+echo. Generating...
+echo.
+echo. Leo.bat - run leo in Windows mode
+echo. Leoc.bat - run leo and keep console window open
+echo.
+echo. These can be placed anywhere in PATH.
+echo.
+echo @"%pyexe%" "%~dp0\launchLeo.py" %%* > leoc.bat
+echo @"%pywexe%" "%~dp0\launchLeo.py" %%* > leo.bat
+goto :eof
+
+:register
+:: perms check courtesy of http://stackoverflow.com/questions/4051883
+:: batch-script-how-to-check-for-admin-rights
+net session >nul 2>&1
+if %errorlevel% == 0 (
+echo.
+echo. Setting .leo filetype and registering association with Windows
+echo.
+ftype LeoFile=%pywexe% "%~dp0\launchLeo.py" %%*
+assoc .leo=LeoFile
+) else (
+echo. Error: Can't set filetype and register association.
+echo. Please run from elevated shell to do that.
+echo.
+)
+goto :eof
+
+:pyCheck
+if not exist "%1" goto :Usage
+goto :eof
+
+:usage
+echo.
+echo. -=[%~nx0]=-
+echo.
+echo. Create batch files to launch Leo Editor that can be
+echo. placed and run from anywhere on this machine.
+echo.
+echo. and optionally register filetype with windows
+echo.
+echo. Usage:
+echo. %~n0 "c:\path\to\python.exe"
+echo. %~n0 "c:\path\to\python.exe" register
+echo.
+goto :eof
+
+.. @+node:ekr.20110921094450.6956: ** To do: 4.12
 @language rest
 
 This is the "will do" list.
