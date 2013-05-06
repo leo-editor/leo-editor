@@ -7,7 +7,7 @@
    contain the root `toctree` directive.
 
 Welcome to Leo's API documentation!
-===============================
+===================================
 
 Contents:
 
