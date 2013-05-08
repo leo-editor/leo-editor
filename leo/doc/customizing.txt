@@ -278,52 +278,51 @@ The body text contains a list of settings for a font.  For example::
 **Important**: you can use the show-fonts minibuffer command to guide you in making these settings.
 
 .. @+node:ekr.20090116094356.10: *5* \@menuat
-The form of this node is::
+\@menuat modifies the menu tree created by \@menus. This allows settings in
+myLeoSettings.leo to change menues without copying the entire menu tree from
+leoSettings.leo. This ensures you don’t miss out when new things are added in
+the @menus in leoSettings.leo, as you would if you replaced the @menus in
+leoSettings.leo with one in myLeoSettings.leo.
+
+\@menuat should occur in a \@settings tree, but not as a descendant of a \@menus
+tree. Its children are \@menu and \@item nodes as for the
+@menu setting.
+
+The @menuat setting has 2-3 parameters in its head text]::
 
     @menuat *<path>* *<action>* *[clipboard]*
 
-The @menuat setting has 2-3 parameters in its head text, its children are @menu and
-@item nodes as for the @menu setting.  @menuat modifies the menu tree created by @menus.
-It is intended to be used in myLeoSettings.leo to modify the menu tree created
-in leoSettings.leo. This allows you to change the menus without having to
-re-create the entire menu tree from leoSettings.leo, and ensures you don't miss
-out when new things are added in the @menus in leoSettings.leo, as you would if
-you replaced the @menus in leoSettings.leo with one in myLeoSettings.leo.
-@menuat should occur in a @settings tree, but not as a descendant of a @menus
-tree. There is an example of the use of the
-@menuat setting in the file .../leo/core/test/menuAtTest.leo.
+The path argument specifies a **target** in the menu tree as defined by
+\@menus and modified by earlier @menuat settings. The path takes the form::
 
-The **path** argument specifies a target location in the menu tree as defined by
-@menus and modified by earlier @menuat settings. The path takes the form
-/entry1/entry2/entry3 where each entry is the name of a menu or item with all
-text except a-z and 0-9 removed. Upper case letters are converted to lower case.
-So for example to use the `Outline->Move->Move Down` menu item as a target, you
-would specify a path as `/outline/move/movedown`.
+    /entry1/entry2/entry3
+    
+Each entry is the **cleaned** name of a menu or item. Cleaned names are a
+name with all text except a-z and 0-9 removed and upper case letters converted
+to lower case. For example, specify::
 
-The **action** argument specifies what the menu item does.
-There are 5 available actions:
+    Outline->Move->Move Down
+    
+as::
+    
+     /outline/move/movedown
 
-- **before**: The supplied items and sub menus will be inserted immediately
-  before the target menu or item.
+The action argument specifies what the menu item does. There are 5 available
+actions:
 
-- **after**: The supplied items and sub menus will be inserted immediately after
-  the target menu or item.
+- **before**: Insert items and sub menus immediately before the target.
+- **after**:  Insert items and sub menus immediately after the target.
+- **append**: Append items and sub menus at the end of the target menu or item.
+- **cut**:    Remove the target from the menu tree and save it to an internal clipboard.
+- **copy**:   Copy the target to an internal clipboard. Descendants of the @menuat setting are ignored.
 
-- **append**: The supplied items and sub menus will be appended at the end of
-  the menu containing the target menu or item.
+The cut and copy arguments ignore descendants of the @menuat setting .
 
-- **cut**: The target menu or item will be removed from the menu tree and saved
-  to an internal clipboard. This can be used for deleting menus or items.
-  Descendants of the @menuat setting are ignored.
-
-- **copy**: The target menu or item will be copied and saved to
-  an internal clipboard.  Descendants of the @menuat setting are ignored.
-
-The optional **clipboard** argument modifies the action of the before, after,
-and append actions. By default these actions insert the menus and items supplied
-as descendants of the @menuat setting. If you specify "clipboard" (without the
+The optional clipboard argument modifies the action of the before, after, and
+append actions. By default these actions insert the menus and items supplied as
+descendants of the @menuat setting. If you specify “clipboard” (without the
 quotes) as the source, the contents of the clipboard from a previous cut or copy
-action will be used instead. This parameter is optional and can be left blank.
+action will be used instead.
 .. @+node:ekr.20090116094356.9: *5* \@menus
 Leo creates its menus from the @menu, @item and @popup nodes in the @menus tree.
 Within @menus trees, @menu nodes create menus and @item nodes create menu items. 

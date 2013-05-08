@@ -2977,12 +2977,12 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c ; d = self.editorWidgets
         wrapper = c.frame.body.bodyCtrl
         w = wrapper.widget
-        name = w.leo_name
-        assert name
         # This seems not to be a valid assertion.
         # assert wrapper == d.get(name),'wrong wrapper'
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
+        name = w.leo_name
+        assert name
 
         if len(list(d.keys())) <= 1: return
 

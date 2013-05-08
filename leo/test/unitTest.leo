@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.61" body_secondary_ratio="0.57">
-	<global_window_position top="47" left="810" height="886" width="952"/>
+	<global_window_position top="76" left="298" height="886" width="952"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -151,7 +151,6 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -600,54 +599,6 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
-</t>
-<t tx="ekr.20080501121449.3">assert p.h == '@test insert node',repr(p.h)
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-try:
-    assert p.h == '@test insert node',repr(p.h)
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p.expand()
-    c.setCurrentPosition(p2)
-    p4 = c.insertHeadline()
-    assert p4 == c.p
-    p = c.p
-    assert p,'no p'
-    p.setHeadString('inserted')
-    assert p.back(),'no p.back(): %s' % (p)
-    assert p.back().h == 'A', 'fail 1'
-    assert p.next().h == 'B', 'fail 2'
-    c.undoer.undo()
-    # With the new undo logic, it takes 2 undoes.
-    # The first undo undoes the headline changes,
-    # the second undo undoes the insert node.
-    c.undoer.undo() 
-    p = c.p
-    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
-    assert p.next() == p3,  'fail 4'
-    c.undoer.redo()
-    p = c.p
-    assert p.back().h == 'A', 'fail 1-2'
-    assert p.next().h == 'B', 'fail 2-2'
-    c.undoer.undo()
-    p = c.p
-    assert p == p2,         'fail 3-2'
-    assert p.next() == p3,  'fail 3-2'
-    c.undoer.redo()
-    p = c.p
-    assert p.back().h == 'A', 'fail 1-3'
-    assert p.next().h == 'B', 'fail 2-3'
-
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
 </t>
 <t tx="ekr.20080907123324.2">@language python
 @tabwidth -4
