@@ -31,6 +31,9 @@ unlimited Undo/Redo and an integrated Python shell(IDLE) window.
 Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Requires PyQt and SIP preinstalled.
     """
+#@+node:maphew.20130508020338.1645: ** Get version
+import leo
+version = '{0}-build-{1}'.format(leo.core.leoVersion.version, leo.core.leoVersion.build)
 #@+node:ville.20090213231648.3: ** fullsplit
 import sys
 
@@ -111,7 +114,7 @@ datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.
 # https://testpypi.python.org/pypi?name=leo-editor&version=4.10-final&:action=submit_form
 setup(
     name = 'leo-editor',
-    version = "Leo-4.11-devel-build-5759",
+    version = version,
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     maintainer = 'Matt Wilkie',
