@@ -19,6 +19,18 @@ from distutils.core import setup
 from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
 import os,fnmatch
+#@+node:maphew.20130503222911.1635: ** Get description
+try:
+    long_description = open('README.TXT', 'rt').read()
+except IOError:
+    long_description = """
+Leo is an outline-oriented IDE written in 100% pure Python.
+Leo features a multi-window outlining editor, Python colorizing,
+powerful outline commands and many other things, including 
+unlimited Undo/Redo and an integrated Python shell(IDLE) window.
+Leo requires Python 2.6 or above.  Leo works with Python 3.x.
+Requires PyQt and SIP preinstalled.
+    """
 #@+node:ville.20090213231648.3: ** fullsplit
 import sys
 
@@ -107,14 +119,7 @@ setup(
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "Leonine Editor with Outlines",
-    long_description = """
-Leo is an outline-oriented IDE written in 100% pure Python.
-Leo features a multi-window outlining editor, Python colorizing,
-powerful outline commands and many other things, including 
-unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-Leo requires Python 2.6 or above.  Leo works with Python 3.x.
-Requires PyQt and SIP preinstalled.
-    """,
+    long_description = long_description,
     #keywords = [],
     platforms = ['linux','windows'],
     download_url = 'http://sourceforge.net/projects/leo/files/Leo/',
