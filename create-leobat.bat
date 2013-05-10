@@ -40,7 +40,7 @@ goto :eof
     echo. Setting .leo filetype and registering association with Windows
     echo.
     assoc .leo=Leo.File
-    ftype Leo.File=%pywexe% "%~dp0launchLeo.py" %%*
+    ftype Leo.File=%pywexe% "%~dp0launchLeo.py" "%%1" %%*
    ) else (
     echo. Error: Can't set filetype and register association.
     echo. Please run from elevated shell to do that.
