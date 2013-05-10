@@ -4471,7 +4471,6 @@ viewrendered.py
 # at_view.py
 # attrib_edit.py
 # backlink.py
-# baseNativeTree.py
 # bibtex.py
 # bookmarks.py
 # bzr_qcommands.py
@@ -4500,9 +4499,7 @@ viewrendered.py
 # initinclass.py
 # interact.py
 # ipython.py
-# ironPythonGui.py
 # jinjarender.py
-# leoOPML.py
 # leo_interface.py
 # leo_pdf.py
 # leo_to_html.py
@@ -4510,6 +4507,8 @@ viewrendered.py
 # leocursor.py
 # leofeeds.py
 # leomail.py
+# leomylyn.py
+# leoOPML.py
 # leoremote.py
 # leoscreen.py
 # lineNumbers.py
@@ -4531,15 +4530,14 @@ viewrendered.py
 # nested_splitter.py
 # niceNosent.py
 # nodeActions.py
+# notebook.py
 # open_shell.py
 # outline_export.py
 # paste_as_headlines.py
-# pluginsTest.py
 # plugins_menu.py
+# pluginsTest.py
 # pretty_print.py
 # projectwizard.py
-# qtGui.py
-# qt_main.py
 # qt_quicksearch.py
 # qtframecommands.py
 # quickMove.py
@@ -4549,6 +4547,8 @@ viewrendered.py
 # redirect_to_log.py
 # rst3.py
 # run_nodes.py
+# screen_capture.py
+# screencast.py
 # screenshots.py
 # script_io_to_body.py
 # scripts_menu.py
@@ -4558,7 +4558,6 @@ viewrendered.py
 # startfile.py
 # stickynotes.py
 # stickynotes_plus.py
-# swing_gui.py
 # systray.py
 # testRegisterCommand.py
 # textnode.py
@@ -4572,7 +4571,6 @@ viewrendered.py
 # vim.py
 # word_count.py
 # word_export.py
-# wxGui.py
 # xemacs.py
 # xml_edit.py
 # xsltWithNodes.py

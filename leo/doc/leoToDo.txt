@@ -36,12 +36,67 @@ After the release:
     - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
+
+1. Context.
+2. Time available.
+3. Energy available.
+4. Priorities.
+
+Priorities:
+
+- Organization.
+- Documentation.
+- Installation.
+- Bugs.
+.. @+node:ekr.20130508134143.10598: *3* Leo for portableapps?
+.. @+node:ekr.20130502104323.10581: *3* ** Get github working
+Used for Leo's blog.
+
+bzr ci => git commit -a
+bzr add => git add
+bzr push => git push
+bzr revert => git reset --hard
+.. @+node:ekr.20130506071114.15452: *3* ***Document Windows associations
+
+Installing Leo on Windows
+
+    Install Python from http://www.python.org/download/releases/
+
+    Install either Tk or Qt, as described above.
+
+    Install Leo. Get Leo’s .zip file from http://sourceforge.net/projects/leo/ You can unpack the .zip file anywhere, including Python’s site-packages folder, for example, C:\Python26\Lib\site-packages
+
+    [optional] Generate/update a junction link from unpacked leo folder to ...\site-packages\leo:
+
+    cd C:\Python26\Lib\site-packages\
+    junction leo leo-4-6-2-final
+
+    Create windows shortcut (edit paths as necessary):
+
+    Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
+    Start in =  D:\code
+
+    Associate .leo filetype batch file:
+
+    ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+    assoc .leo=LeoFile
+
+    [optional] Put this leo.bat in %PATH%:
+
+    @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
+
+For more information see:
+
+Junction links:
+    http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+    http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+ftype:
+    http://ss64.com/nt/ftype.html
+assoc:
+    http://ss64.com/nt/assoc.html
+
 .. @+node:ekr.20130502071141.10570: *3* * organize bugs
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
-.. @+node:ekr.20130503155210.24818: *3* * Organize email
-@nocolor-node
-
-Extract scripts from Leo/Scripts folder.
 .. @+node:ekr.20130503155210.24819: *3* Fix flattr button on Leo's home page
 .. @+node:ekr.20130503134311.13447: *3* Fix all pylint complaints
 @nocolor-node
@@ -126,6 +181,75 @@ Traceback (most recent call last):
   File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
     name = w.leo_name
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130506071114.15468: *3* Cool scripts to put **somewhere**
+.. @+node:ekr.20130506071114.15469: *4* push_to_Gist.txt
+# Leo button to publish selected node as Gist.
+# https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/KgejcZHiEl0
+
+import requests
+import json
+
+tmp = g.os.environ['TEMP']
+
+description = "published from Leo"
+public = True
+filename = p.h      # node headline
+content = p.b       # node body
+
+g.es(filename)
+print('\n\n--- %s ---' % filename)
+payload = {
+    'description': description,
+    'public': public,
+    'files': {
+        filename: {'content': content}
+        }
+    }
+           
+print (payload)
+r = requests.post('https://api.github.com/gists',  data=json.dumps(payload))
+print (r.status_code)
+print (r.text)
+.. @+node:ekr.20130508084413.10638: *4* cool hack: detach body editor
+http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
+
+This features a long an important discussion of using Leo with vim.
+.. @+node:ekr.20130508084413.10648: *4* Call hierarchy tracing (using python 'trace' module)
+@language python
+@tabwidth -4
+
+"""
+Analyzing program flow.
+
+Run (ctrl+b) this script after 
+
+cd ~/leo-editor
+python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
+
+"""
+
+tracefile = '~/leo-editor/trace.txt'
+
+import os
+
+tr = open(os.path.expanduser(tracefile))
+print tr
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+cur = None
+no = None
+for l in tr:
+    if l.startswith('***'):
+        cur = top.insertAsLastChild().copy()
+        cur.h = os.path.basename(l.split()[1])
+    elif l.startswith('  -->'):
+        no = cur.insertAsLastChild().copy()
+        no.h = os.path.basename(l.split()[1].strip())
+    else:
+        if no:
+            no.b += l.strip() + '\n'
+
+    print ".",
 .. @+node:ekr.20130408095053.10307: ** ** guide for the next leaders
 # Use bookmarks?
 .. @+node:ekr.20130501035328.12634: ** Use Leo for email?
@@ -133,40 +257,43 @@ A script is in ekr-projects.leo.
 To be useful, it would have to strip off cruft.
 
 Another option: just use labels more effectively.
-.. @+node:ekr.20130503155210.24811: ** Waiting
-.. @+node:ekr.20130503095554.11930: *3* Change DNS record
-@nocolor-node
-
-Email sent to Speed.
-
-As for the optional subdomain thing, here's what a record for that would
-look like in BIND, if your brother is doing DNS himself:
-
-api        IN        CNAME        leo-editor.readthedocs.org.
-
-That will make http://api.leoeditor.com serve up all the content from
-http://leo-editor.readthedocs.org. Completely optional, but it looks a bit
-more professional if you can have something coming off of your own domain.
-.. @+node:ekr.20130502104323.10581: *3* Get github working
-Waiting on Pypi support ticket: https://sourceforge.net/p/pypi/support-requests/260/
-
-bzr ci => git commit -a
-bzr add => git add
-bzr push => git push
-bzr revert => git reset --hard
 .. @+node:ekr.20130503155210.24812: ** To do: 4.11
-.. @+node:ekr.20130503155210.24814: *3* Tutorials
+.. @+node:ekr.20130508084413.10645: *3* Better find/replace dialog
+For newbies (and for power users too, for that matter), it may be helpful to
+have a "Find and Replace" dialog box similar to the one below:
+
+.. image: c:/prog/findReplace.jpg
+
+.. @+node:ekr.20130508084413.10634: *3* quickmove-jump-to adds button
+.. @+node:ekr.20130508084413.10631: *3* add g.etrace
+.. @+node:ekr.20130508084413.10630: *3* Add Leo to Wikipedia: comparison of text editors
+.. @+node:ekr.20130503155210.24814: *3* Tutorials/Screencasts
 @nocolor-node
 
 ** Screencast style for plugins docstrings.
 * Screencast style for help messages.
 * Screencast style for tutorials.
+* Create YouTube channel for Leo screencasts.
+
+Topics:
+- Minibuffer: alt-x, tab-completion.
+- @button.
+- @rclick
+- Find/Change (done)
+- execute-script.
+- bookmarks.py.
+
+    
 .. @+node:ekr.20130502071141.10572: *3* Docs
 @language rest
+
+** Create gallery of screen shots.
 
 Every command should have a **complete** docstring.
 
 ?Use vr (and @wrap) to view all setting documentation
+
+Fix all doc bugs & incompletions.
 .. @+node:ekr.20130503155210.24816: *3* Installation
 @nocolor-node
 
@@ -258,7 +385,7 @@ from subprocess import Popen
 Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
 
     cwd=tmp, shell=True)
-.. @+node:ekr.20130503155210.24827: *4* Console script: Install Leo from scratch on Windows 
+.. @+node:ekr.20130503155210.24827: *4* Console script: Install Leo from scratch on Windows
 @language batch
 
 mkdir X:\testing
