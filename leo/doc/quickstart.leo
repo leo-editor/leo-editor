@@ -392,112 +392,143 @@ vertical: body pane on the botton
 
 vertical is the default; you may prefer horizontal for small but wide screens (e.g. on laptops)</t>
 <t tx="ville.20090728003644.3957"># Leo loads plugins in the order they appear here.
-# File names may be indented as desired.
 
-# Standard plugins enabled in official distributions....
+# **Important**: to change these defaults, put
+# an @enabled-plugins node in myLeoSettings.leo.
+
+# Highly-recommended plugins:
 
 plugins_menu.py
+# free_layout.py
+    # Now loaded automatically.
+    # needs to be early
+
+# Recommended plugins:
+
+contextmenu.py
+    # This is required by the vim.py and xemacs.py plugins.
 leo_to_html.py
 mod_scripting.py
-quicksearch.py
-contextmenu.py
 nav_qt.py
+quicksearch.py
+stickynotes.py
+todo.py
+viewrendered.py
 
-# The plugins manager plugin does not
-# understand @enabled-plugins nodes.
-# plugin_manager.py
+# Alphabetical list of all Leo plugins.
 
-# The rst3 plugin is no longer needed.
-# It's code has been moved to Leo's core
-# rst3.py
-
-# These plugins used to be enabled when using the tk plugin.
-# cleo.py
-# hoist.py
-# image.py
-# nav_buttons.py
-# threading_colorizer.py
-
-# All other plugins.
-# Order is important for enabled plugins that
-# add items to the icon area.
-
-# ConceptualSort.py
-# EditAttributes.py
-# FileActions.py
-# Library.py
-# nodeActions.py
-# UASearch.py
-# URLloader.py
-# UniversalScrolling.py
-
+# active_path.py
 # add_directives.py
-# arrows.py
 # at_folder.py
+# at_produce.py
 # at_view.py
-# autotrees.py
-# base64Packager.py
+# attrib_edit.py
+# backlink.py
 # bibtex.py
+# bookmarks.py
+# bzr_qcommands.py
 # chapter_hoist.py
-# cleo.py
-# color_markup.py
+# codewisecompleter.py
+# colorize_headlines.py
+# contextmenu.py
+# ctagscompleter.py
+# cursesGui.py
 # datenodes.py
+# debugger_pudb.py
 # detect_urls.py
-# dyna_menu.py
-# fastGotoNode.py
-# footprints.py
-# groupOperations.py
-# hoist.py
-# image.py
+# dragdropgoodies.py
+# dtest.py
+# dump_globals.py
+# empty_leo_file.py
+# enable_gc.py
+# expfolder.py
+# FileActions.py
+# free_layout.py
+# ftp.py
+# geotag.py
+# gitarchive.py
+# graphcanvas.py
 # import_cisco_config.py
+# initinclass.py
+# interact.py
 # ipython.py
-# keybindings.py
-# leoOPML.py
+# jinjarender.py
+# leo_interface.py
+# leo_pdf.py
 # leo_to_html.py
 # leo_to_rtf.py
-# leoupdate.py
+# leocursor.py
+# leofeeds.py
+# leomail.py
+# leomylyn.py
+# leoOPML.py
+# leoremote.py
+# leoscreen.py
+# lineNumbers.py
 # macros.py
+# maximizeNewWindows.py
+# mime.py
+# mnplugins.py
 # mod_autosave.py
+# mod_framesize.py
 # mod_http.py
-# mod_labels.py
+# mod_leo2ascd.py
 # mod_read_dir_outline.py
-# mod_shadow.py
+# mod_scripting.py
+# mod_speedups.py
+# mod_tempfname.py
+# mod_timestamp.py
 # multifile.py
-# nav_buttons.py
-# newButtons.py
+# nav_qt.py
+# nested_splitter.py
 # niceNosent.py
-# nodebar.py
-# nodenavigator.py
+# nodeActions.py
+# notebook.py
 # open_shell.py
-# open_with.py
+# outline_export.py
 # paste_as_headlines.py
-# pie_menus.py
+# plugins_menu.py
+# pluginsTest.py
 # pretty_print.py
-# print_cp.py
+# projectwizard.py
+# qt_quicksearch.py
+# qtframecommands.py
 # quickMove.py
-# rClick.py
+# quicksearch.py
+# quit_leo.py
 # read_only_nodes.py
-# rowcol.py
+# redirect_to_log.py
+# rst3.py
 # run_nodes.py
-# s_menu.py
-# scheduler.py
-# searchbox.py
-# shortcut_button.py
+# screen_capture.py
+# screencast.py
+# screenshots.py
+# script_io_to_body.py
+# scripts_menu.py
+# setHomeDirectory.py
 # slideshow.py
-# table.py
-# templates.py
+# spydershell.py
+# startfile.py
+# stickynotes.py
+# stickynotes_plus.py
+# systray.py
+# testRegisterCommand.py
+# textnode.py
+# todo.py
+# tomboy_import.py
+# trace_gc_plugin.py
+# trace_keys.py
 # trace_tags.py
+# valuespace.py
+# viewrendered.py
 # vim.py
 # word_count.py
 # word_export.py
-# xcc_nodes.py
 # xemacs.py
+# xml_edit.py
 # xsltWithNodes.py
-# zodb.py
-# quicksearch.py
-# tomboy_import.py
-# ctagscompleter.py
-# colorize_headlines.py</t>
+# zenity_file_dialogs.py
+</t>
 <t tx="ville.20090806182306.6324">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
 <t tx="ville.20090806210322.1435">This tree containt some suggested "looks" for Leo.
