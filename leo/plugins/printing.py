@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20130513115943.16246: * @file printing.py
+#@+node:peckj.20130513193024.6320: * @file printing.py
 #@@language python
 #@@tabwidth -4
 
@@ -33,6 +33,7 @@ def init ():
 
     if ok:
         g.registerHandler(('new','open2'),onCreate)
+        g.plugin_signon(__name__)
 
     return ok
 #@+node:peckj.20130513115943.16248: ** onCreate
@@ -61,23 +62,30 @@ class printingController:
         # initialize
         self.stylesheet = self.construct_stylesheet()
         
-        print "self.stylesheet: %s" % self.stylesheet
-        
         # register commands
         ## selected node
+        c.k.registerCommand('print-selected-node-body',shortcut=None,func=self.print_selected_node_body)
+        c.k.registerCommand('print-preview-selected-node-body',
+                            shortcut=None,func=self.print_preview_selected_node_body)
         c.k.registerCommand('print-selected-node',shortcut=None,func=self.print_selected_node)
         c.k.registerCommand('print-preview-selected-node',
                             shortcut=None,func=self.print_preview_selected_node)
     #@+node:peckj.20130513115943.22457: *3* helpers
     #@+node:peckj.20130513115943.22458: *4* construct stylesheet
     def construct_stylesheet(self):
-        return 'pre {font-family: %s; font-size: %spx}' % (self.font_family, self.font_size)
+        s = 'h1 {font-family: %s}\n' % self.font_family
+        s += 'pre {font-family: %s; font-size: %spx}' % (self.font_family, self.font_size)
+        return s
     #@+node:peckj.20130513115943.22459: *4* construct document
-    def construct_document(self, text):
+    def construct_document(self, text, head=None):
         doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         text = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        contents = "<pre>%s<pre>" % text
+        if head:
+            head = head.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            contents = "<h1>%s</h1>\n<pre>%s</pre>" % (head, text)
+        else:
+            contents = "<pre>%s<pre>" % text
         doc.setHtml(contents)
         return doc
     #@+node:peckj.20130513115943.22661: *4* print dialog
@@ -91,17 +99,29 @@ class printingController:
         dialog.paintRequested.connect(doc.print_)
         dialog.exec_()
     #@+node:peckj.20130513115943.22666: *3* selected node
+    #@+node:peckj.20130513193024.6336: *4* print_selected_node_body
+    def print_selected_node_body (self,event=None):
+        ''' prints the selected node body'''
+        
+        doc = self.construct_document(self.c.p.b)
+        self.print_doc(doc)
+    #@+node:peckj.20130513193024.6337: *4* print_preview_selected_node_body
+    def print_preview_selected_node_body (self,event=None):
+        ''' print previews the selected node body'''
+        
+        doc = self.construct_document(self.c.p.b)
+        self.print_preview_doc(doc)
     #@+node:peckj.20130513115943.16251: *4* print_selected_node
     def print_selected_node (self,event=None):
         ''' prints the selected node '''
         
-        doc = self.construct_document(self.c.p.b)
+        doc = self.construct_document(self.c.p.b, head=self.c.p.h)
         self.print_doc(doc)
     #@+node:peckj.20130513115943.22456: *4* print_preview_selected_node
     def print_preview_selected_node (self,event=None):
-        ''' print previews the selected node '''
+        ''' prints the selected node '''
         
-        doc = self.construct_document(self.c.p.b)
+        doc = self.construct_document(self.c.p.b, head=self.c.p.h)
         self.print_preview_doc(doc)
     #@-others
 #@-others
