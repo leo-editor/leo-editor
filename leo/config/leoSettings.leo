@@ -4465,6 +4465,7 @@ quicksearch.py
 stickynotes.py
 todo.py
 viewrendered.py
+printing.py
 
 # Alphabetical list of all Leo plugins.
 
