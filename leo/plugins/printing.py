@@ -105,6 +105,7 @@ Settings
 #@+<< imports >>
 #@+node:peckj.20130513115943.16253: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.plugins.qtGui as qtGui
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 #@-<< imports >>
@@ -173,6 +174,9 @@ class printingController:
         c.k.registerCommand('print-marked-nodes',shortcut=None,func=self.print_marked_nodes)
         c.k.registerCommand('print-preview-marked-nodes',
                             shortcut=None,func=self.print_preview_marked_nodes)
+        
+        # register menu items
+        
     #@+node:peckj.20130513115943.22457: *3* helpers
     #@+node:peckj.20130513115943.22458: *4* construct stylesheet
     def construct_stylesheet(self):
