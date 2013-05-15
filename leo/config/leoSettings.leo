@@ -93,9 +93,9 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20061011082224" a="E"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20110611092035.16470"><vh>Appearance</vh>
+<v t="ekr.20110611092035.16470" a="E"><vh>Appearance</vh>
 <v t="ekr.20111024091133.16701"><vh>@@@int qt-tab-width = 40</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
@@ -103,7 +103,7 @@
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
+<v t="ekr.20110611092035.16471" a="E"><vh>Colorizer &amp; colors</vh>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 <v t="ekr.20081018053140.12"></v>
@@ -515,7 +515,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -527,7 +527,7 @@
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
 <v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
 </v>
-<v t="ekr.20110611092035.16470"></v>
+<v t="ekr.20110611092035.16470" a="E"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
@@ -536,7 +536,7 @@
 <v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16471"></v>
+<v t="ekr.20110611092035.16471" a="E"></v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
@@ -1389,7 +1389,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
@@ -1453,6 +1453,10 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
+<v t="peckj.20130514082859.5599" a="E"><vh>printing plugin</vh>
+<v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
+<v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
+</v>
 <v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
 <v t="ekr.20110611092035.16472"><vh>Don't change these unless you know what you are doing</vh>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
@@ -1462,7 +1466,7 @@
 </v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
-<v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
+<v t="ekr.20071213060239.1" a="E"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
 <v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
@@ -1487,7 +1491,7 @@
 <v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
 <v t="ekr.20090430075506.7"><vh>@bool rst3_generate_rst_header_comment = True</vh></v>
 </v>
-<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
+<v t="ekr.20071213060514.2" a="E"><vh>rst3 formatting options</vh>
 <v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
 <v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
 <v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
@@ -4461,6 +4465,7 @@ quicksearch.py
 stickynotes.py
 todo.py
 viewrendered.py
+printing.py
 
 # Alphabetical list of all Leo plugins.
 
@@ -9733,6 +9738,14 @@ quotes) as the source, the contents of the clipboard from a previous cut or copy
 action will be used instead.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
+<t tx="peckj.20130514082859.5599"></t>
+<t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
+
+Size is in px.  Default 12.</t>
+<t tx="peckj.20130514082859.5601">This determines the font family for print outs.  It's highly recommended
+to choose a monospaced font.
+
+Default: DejaVu Sans Mono</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to

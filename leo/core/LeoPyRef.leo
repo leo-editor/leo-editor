@@ -27,8 +27,7 @@
 expanded="ekr.20120329072206.9701,"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20100119205347.6015"
-marks="ekr.20111116103733.9818,"><vh>@file ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -42,7 +41,7 @@ marks="ekr.20111116103733.9818,"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
 </v>
-<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
@@ -51,7 +50,7 @@ marks="ekr.20111116103733.9818,"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
-<v t="ekr.20050710142719" a="E"
+<v t="ekr.20050710142719"
 expanded="ekr.20050920084036.13,ekr.20100901080826.6002,ekr.20100901080826.6155,ekr.20050920084036.53,ekr.20071114081313,ekr.20080108092811,"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
@@ -78,12 +77,13 @@ expanded="ekr.20050920084036.13,ekr.20100901080826.6002,ekr.20100901080826.6155,
 </v>
 <v t="ekr.20110605121601.17862" a="E"><vh>Qt gui</vh>
 <v t="ekr.20110605121601.17863"><vh>@file ../plugins/baseNativeTree.py</vh></v>
-<v t="ekr.20120419093256.10048" a="E"
+<v t="ekr.20120419093256.10048"
 expanded="ekr.20110318080425.14389,"><vh>@file ../plugins/free_layout.py</vh></v>
-<v t="ekr.20110605121601.17954" a="E"
+<v t="ekr.20110605121601.17954"
 expanded="tbrown.20120418121002.25711,ekr.20110605121601.17961,ekr.20110605121601.17966,ekr.20110605121601.17969,"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
-<v t="ekr.20110605121601.18002" a="E"><vh>@file ../plugins/qtGui.py</vh></v>
+<v t="ekr.20110605121601.18002" a="E"
+expanded="ekr.20110605121601.18136,ekr.20110605121601.18340,ekr.20110605121601.18342,ekr.20110605121601.18343,ekr.20110605121601.18354,ekr.20110605121601.18361,"><vh>@file ../plugins/qtGui.py</vh></v>
 <v t="ekr.20110605121601.18695"><vh>QDesigner files</vh>
 <v t="ekr.20110605121601.18696"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20110605121601.18698"><vh>@auto ../plugins/qt_main.py</vh></v>

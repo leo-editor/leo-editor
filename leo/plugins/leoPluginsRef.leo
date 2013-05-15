@@ -58,7 +58,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
 <v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
@@ -72,7 +72,9 @@
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
-<v t="ville.20130127035134.3685"><vh>@file internal_ipkernel.py</vh></v>
+<v t="ville.20130127035134.3685" a="O"><vh>@file internal_ipkernel.py</vh></v>
+<v t="peckj.20130514093558.4062" a="E"
+expanded="peckj.20130513115943.16249,"><vh>@file printing.py</vh></v>
 <v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
@@ -541,5 +543,6 @@ else:
 <t tx="ekr.20121126102050.10134"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
+<t tx="ville.20130127035134.3685"></t>
 </tnodes>
 </leo_file>
