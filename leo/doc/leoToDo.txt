@@ -37,26 +37,17 @@ After the release:
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
 
-1. Context.
-2. Time available.
-3. Energy available.
-4. Priorities.
-
 Priorities:
-
-- Organization.
-- Documentation.
-- Installation.
-- Bugs.
-.. @+node:ekr.20130508134143.10598: *3* Leo for portableapps?
-.. @+node:ekr.20130502104323.10581: *3* ** Get github working
-Used for Leo's blog.
-
-bzr ci => git commit -a
-bzr add => git add
-bzr push => git push
-bzr revert => git reset --hard
-.. @+node:ekr.20130506071114.15452: *3* ***Document Windows associations
+- Organization
+- Installation
+- Documentation
+- Bugs/Code
+.. @+node:ekr.20130510070942.10609: *3* Organization
+.. @+node:ekr.20130510070942.10603: *3* Ask
+.. @+node:ekr.20130411131638.10311: *4* * Ask the qt people about leaving foreground text unchanged
+.. @+node:ekr.20130510070942.10604: *4* * Ask NSIS people about install bug
+.. @+node:ekr.20130510070942.10602: *3* Docs
+.. @+node:ekr.20130506071114.15452: *4* ***Document Windows associations
 
 Installing Leo on Windows
 
@@ -95,31 +86,15 @@ ftype:
 assoc:
     http://ss64.com/nt/assoc.html
 
-.. @+node:ekr.20130502071141.10570: *3* * organize bugs
-.. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
-.. @+node:ekr.20130503155210.24819: *3* Fix flattr button on Leo's home page
-.. @+node:ekr.20130503134311.13447: *3* Fix all pylint complaints
-@nocolor-node
+.. @+node:ekr.20130502104323.10581: *4* ** Get github working
+Used for Leo's blog.
 
-************* Module leo.core.leoFrame
-E1101:1066,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'xyzzy22' member
-E1101:1069,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'def_stack' member
-
-************* Module leo.core.leoGlobals
-W0108:5375,0:find_constants_defined.<lambda>: Lambda may not be necessary
-
-************* Module leo.plugins.qtGui
-W0101:2781,0:leoQtBody.setEditorColors: Unreachable code
-W0403:7485,0:leoQtGui.runWithIpythonKernel:
-    Relative import 'internal_ipkernel', should be 'leo.plugins.internal_ipkernel'
-.. @+node:ekr.20130501035328.10473: *3* write about backward deductions
-Backward deductions are more local.  They can be used to deduce argument types.
-
-Backward deductions give *domains*; forward deductions give *ranges*.
-
-Ranges are more useful, but domains may simplify computations.
-.. @+node:ekr.20130501171351.10495: *3* Complete write-up of Leo sprint
-.. @+node:ekr.20130503053253.10548: *3* Draft: unit testing tutorial
+bzr ci => git commit -a
+bzr add => git add
+bzr push => git push
+bzr revert => git reset --hard
+.. @+node:ekr.20130503155210.24819: *4* Fix flattr button on Leo's home page
+.. @+node:ekr.20130503053253.10548: *4* Draft: unit testing tutorial
 @wrap
 @language rest
 
@@ -172,7 +147,26 @@ Running all tests is not necessary.  Just select::
 and then do Alt-4 (run-selected-unit-tests-locally).
 
 **Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
-.. @+node:ekr.20130502102046.10578: *3* Crash deleting body editor
+.. @+node:ekr.20130514082726.10612: *4* Document valuespace from Ville's blog
+http://leo-editor.github.io/valuespace-intro.html
+.. @+node:ekr.20130510070942.10605: *3* Install
+.. @+node:ekr.20130508134143.10598: *4* Leo for portableapps?
+.. @+node:ekr.20130510070942.10606: *3* Bugs
+.. @+node:ekr.20130503134311.13447: *4* Fix all pylint complaints
+@nocolor-node
+
+************* Module leo.core.leoFrame
+E1101:1066,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'xyzzy22' member
+E1101:1069,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'def_stack' member
+
+************* Module leo.core.leoGlobals
+W0108:5375,0:find_constants_defined.<lambda>: Lambda may not be necessary
+
+************* Module leo.plugins.qtGui
+W0101:2781,0:leoQtBody.setEditorColors: Unreachable code
+W0403:7485,0:leoQtGui.runWithIpythonKernel:
+    Relative import 'internal_ipkernel', should be 'leo.plugins.internal_ipkernel'
+.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
 # Trying to delete a second body editor.
 
 Traceback (most recent call last):
@@ -250,6 +244,10 @@ for l in tr:
             no.b += l.strip() + '\n'
 
     print ".",
+.. @+node:ekr.20130510070942.10611: *3* Can undo headline put focus in headline?
+This would fix a reported bug.
+.. @+node:ekr.20130514082726.10611: *3* does p.deletePositionsInList(thelist) actually work? 
+# https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/IR8tV9a99NY
 .. @+node:ekr.20130408095053.10307: ** ** guide for the next leaders
 # Use bookmarks?
 .. @+node:ekr.20130501035328.12634: ** Use Leo for email?
