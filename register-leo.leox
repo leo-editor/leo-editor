@@ -25,14 +25,15 @@ def register_leo(pyexe, launchLeo, icon):
     
     if g.os_path_exists(icon):
         g.es("Found:", icon)
-        
+        #@+<<filetype>>
+        #@+node:maphew.20130515233516.1659: *3* <<filetype>>
         try:
             leoKey = CreateKey(HKEY_CLASSES_ROOT, "Leo.File")
             iconKey = CreateKey(leoKey, "DefaultIcon")
             shellKey = CreateKey(leoKey, "Shell")
             openKey = CreateKey(shellKey, "Open")
             cmdKey = CreateKey(openKey, "Command")
-    
+
             SetValue(leoKey, None, REG_SZ, "Leo Editor File")
             SetValue(iconKey, None, REG_SZ, icon)
             SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pywexe, launchLeo))
@@ -41,10 +42,27 @@ def register_leo(pyexe, launchLeo, icon):
                 CloseKey(k)
                 
             g.es("Registered!")
-        
+
         except WindowsError as e:
             g.es("Failed:", e)
-    
+        #@-<<filetype>>
+        #@+<<association>>
+        #@+node:maphew.20130515233516.1660: *3* <<association>>
+        try:
+            leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leo")
+            SetValue(leoKey, None, REG_SZ, "Leo.File")
+            # SetValue(leoKey, "Content Type", REG_SZ, "text/xml")  #creates a sub_key instead of a value :(
+            CloseKey(leoKey)
+            
+            leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leox")
+            SetValue(leoKey, None, REG_SZ, "Leo.File")
+            CloseKey(leoKey)
+            
+            g.es(".leo, .leox files associated as 'Leo.File'")        
+
+        except WindowsError as e:
+            g.es("Failed:", e)
+        #@-<<association>>
     else:
         g.es("LeoDoc.ico not in expected location, can't continue.")  
 #@+node:maphew.20130510011223.1646: *3* sample registry outcome
@@ -56,6 +74,12 @@ regedit. The translated hex code is:
 '''
 #@+at
 # Windows Registry Editor Version 5.00
+# 
+# [HKEY_CLASSES_ROOT\.leo]
+# @="Leo.File"
+# 
+# [HKEY_CLASSES_ROOT\.leox]
+# @="Leo.File"
 # 
 # [HKEY_CLASSES_ROOT\Leo.File]
 # @="Leo Editor File"
