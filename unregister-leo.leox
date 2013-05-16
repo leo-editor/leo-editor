@@ -1,0 +1,21 @@
+#@+leo-ver=5-thin
+#@+node:maphew.20130515215727.1656: * @file unregister-leo.leox
+#@@language python
+#@@tabwidth -4
+
+'''Remove registry key for Leo file type'''    
+from _winreg import *
+
+# g.es("\nAttempting to un-register leo filetype with Windows...")            
+try:
+    leoKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
+    DeleteKey(leoKey, "Shell\\Open\\Command")
+    DeleteKey(leoKey, "Shell\\Open")
+    DeleteKey(leoKey, "Shell")
+    DeleteKey(leoKey, "DefaultIcon")
+    DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")        
+    CloseKey(leoKey)
+    g.es("Leo file type has been removed from registry")
+except WindowsError as e:
+    g.es("Unregistering Leo file type failed: ", e)  
+#@-leo
