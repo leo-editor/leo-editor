@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20130513115943.16246: * @file printing.py
+#@+node:peckj.20130514093558.4062: * @file printing.py
 #@@language python
 #@@tabwidth -4
 
@@ -270,7 +270,7 @@ class printingController:
         self.print_doc(doc)
     #@+node:peckj.20130514082859.5620: *4* print_preview_expanded_node
     def print_preview_expanded_node (self,event=None):
-        ''' prints the expanced selected node '''
+        ''' prints the expanded selected node '''
         
         p = self.c.p
         doc = self.construct_document(self.untangle(p), head=p.h)

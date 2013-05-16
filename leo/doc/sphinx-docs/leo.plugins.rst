@@ -644,6 +644,14 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`printing` Module
+----------------------
+
+.. automodule:: leo.plugins.printing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`projectwizard` Module
 ---------------------------
 
