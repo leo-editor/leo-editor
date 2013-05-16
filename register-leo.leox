@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130501121440.1885: * @file register-leo.leos
+#@+node:maphew.20130501121440.1885: * @file register-leo.leox
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -10,34 +10,41 @@ To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
         
 Requires elevated User Account Control (UAC) privileges.
 See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
+
+Resources used:
+   @url  http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
+   @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
 '''
 #@+node:maphew.20130509185752.1607: ** register_leo
 def register_leo(pyexe, launchLeo, icon):
-    '''Create registry key for Leo file type, set default icon, and launch command
-    
-    Resources:
-        http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
-        http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
+    '''Create registry key for Leo file type, set default icon and launch command    
     '''    
     g.es("\nAttempting to register leo filetype with Windows...")
+    g.es("Python:", pyexe)
+    g.es("Leo:", launchLeo)
     
     if g.os_path_exists(icon):
         g.es("Found:", icon)
         
-        leoKey = CreateKey(HKEY_CLASSES_ROOT, "Leo.File")
-        iconKey = CreateKey(leoKey, "DefaultIcon")
-        shellKey = CreateKey(leoKey, "Shell")
-        openKey = CreateKey(shellKey, "Open")
-        cmdKey = CreateKey(openKey, "Command")
-
-        SetValue(leoKey, None, REG_SZ, "Leo Editor File")
-        SetValue(iconKey, None, REG_SZ, icon)
-        SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pywexe, launchLeo))
+        try:
+            leoKey = CreateKey(HKEY_CLASSES_ROOT, "Leo.File")
+            iconKey = CreateKey(leoKey, "DefaultIcon")
+            shellKey = CreateKey(leoKey, "Shell")
+            openKey = CreateKey(shellKey, "Open")
+            cmdKey = CreateKey(openKey, "Command")
+    
+            SetValue(leoKey, None, REG_SZ, "Leo Editor File")
+            SetValue(iconKey, None, REG_SZ, icon)
+            SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pywexe, launchLeo))
+            
+            for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
+                CloseKey(k)
+                
+            g.es("Registered!")
         
-        for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
-            CloseKey(k)
-
-        g.es("Registered!")
+        except WindowsError as e:
+            g.es("Failed:", e)
+    
     else:
         g.es("LeoDoc.ico not in expected location, can't continue.")  
 #@+node:maphew.20130510011223.1646: *3* sample registry outcome
@@ -71,13 +78,13 @@ regedit. The translated hex code is:
 #@-others
 from _winreg import *
 
+# g.es("\n--- Running register-leo Leo script")
+
 pyexe = g.sys.executable
 pywexe = pyexe.replace('python.exe', 'pythonw.exe')
 launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
 icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
 
-g.es(pywexe)
-g.es(launchLeo)
-
+# use 'pywexe' instead to not open a console window when launching Leo
 register_leo(pyexe, launchLeo, icon)
 #@-leo
