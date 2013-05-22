@@ -10787,8 +10787,10 @@ class spellCommandsClass (baseEditCommandsClass):
         else:
             log.selectTab(tabName)
             self.handler = spellTabHandler(c,tabName)
-            if not self.handler.loaded:
-                log.deleteTab(tabName,force=True)
+
+        # Bug fix: 2013/05/22.
+        if not self.handler.loaded:
+            log.deleteTab(tabName,force=True)
     #@+node:ekr.20051025080420.1: *4* commands...(spellCommandsClass)
     # Just open the Spell tab if it has never been opened.
     # For minibuffer commands, we must also force the Spell tab to be visible.
@@ -10870,16 +10872,21 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.37: *5* add (spellTab)
     def add(self,event=None):
         """Add the selected suggestion to the dictionary."""
-
-        w = self.currentWord
-
-        if w:
-            self.spellController.add(w)
-            # self.dictionary[w] = 0
-            self.tab.onFindButton()
+        
+        # Bug fix: 2013/05/22.
+        if self.loaded:
+            w = self.currentWord
+            if w:
+                self.spellController.add(w)
+                # self.dictionary[w] = 0
+                self.tab.onFindButton()
     #@+node:ekr.20051025071455.38: *5* change (spellTab)
     def change(self,event=None):
         """Make the selected change to the text"""
+        
+        # Bug fix: 2013/05/22.
+        if not self.loaded:
+            return
 
         c = self.c ; body = self.body ; w = body.bodyCtrl
 
@@ -10910,6 +10917,10 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.40: *5* find & helpers
     def find (self,event=None):
         """Find the next unknown word."""
+        
+        # Bug fix: 2013/05/22.
+        if not self.loaded:
+            return
 
         c = self.c ; body = c.frame.body ; w = body.bodyCtrl
 
@@ -11019,21 +11030,17 @@ class spellTabHandler (leoFind.leoFind):
     def hide (self,event=None):
 
         self.c.frame.log.selectTab('Log')
-
-        # for message in self.messages:
-            # g.warning(message)
-
-        # self.messages = []
     #@+node:ekr.20051025071455.41: *5* ignore
     def ignore(self,event=None):
 
         """Ignore the incorrect word for the duration of this spell check session."""
-
-        w = self.currentWord
-
-        if w:
-            self.spellController.ignore(w)
-            self.tab.onFindButton()
+        
+        # Bug fix: 2013/05/22.
+        if self.loaded:
+            w = self.currentWord
+            if w:
+                self.spellController.ignore(w)
+                self.tab.onFindButton()
     #@-others
 #@+node:ekr.20100904095239.5914: *3* class EnchantClass
 class EnchantClass:
