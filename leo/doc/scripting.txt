@@ -67,6 +67,23 @@ scripts in several ways:
 .. _`Customizing Leo`:      customizing.html
 .. _`rst3 plugin`:          rstplugin3.html
 .. @+node:ekr.20101124083644.5047: *3* Basics
+.. @+node:ekr.20130521122236.15098: *4* Positions
+A **position** object represents a specific node in a Leo outline.
+Equivalently, a position represents the state of a Leo generator, that is,
+a specific node during a traversal of a Leo outline.
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.
+For any position p, **p.v** is the vnode at position p.
+A node's vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.
+
+**Positions become invalid when the outline changes.**
+You may save and and use positions *provided* the outline remains unchanged.
+Leo's generators deliver positions, one after each other, using a *single*
+(ever-changing) position. As a result, scripts must use p.copy() to create
+lists of positions. For example::
+
+    aList = [p.copy() for p in c.rootPosition().subtree()]
 .. @+node:ekr.20070120075236: *4* c, g and p
 All Leo scripts run with the execute-script command (Ctrl-B)
 have access to the following three **predefined objects**:
