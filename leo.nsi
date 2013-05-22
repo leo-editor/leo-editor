@@ -6,7 +6,7 @@
 !include LogicLib.nsh
 
 ;##version
-!define version         "4.10-final"
+!define version         "4.11-a1"
 
 ; These are *not* Python strings--backslashes are fine.
 
@@ -18,7 +18,7 @@
 !define license         "License.txt"
 !define name            "Leo"
 !define publisher       "Edward K. Ream"
-!define site            "http://webpages.charter.net/edreamleo/front.html"
+!define site            "http://leoeditor.com/"
 !define target_file     "LeoSetup-${version}.exe"
 !define uninst_key      "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
 

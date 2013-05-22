@@ -1,5 +1,5 @@
 ;@+leo-ver=5-thin
-;@+node:ekr.20101027115225.1494: * @thin nsi-boilerplate.txt
+;@+node:ekr.20101027115225.1494: * @file nsi-boilerplate.txt
 ;@@language nsi
 
 ; RequestExecutionLevel highest
@@ -27,11 +27,11 @@ WindowIcon on
 ShowInstDetails show
 ShowUnInstDetails show
 
-
 ; Locations
 Name "${name}"
 OutFile "${target_file}"
 InstallDir "$PROGRAMFILES\${name}-${version}"
+
 ; Just use the NSIS icon.
 ;Icon "${install_icon}"
 ;@-<< prolog >>
@@ -94,102 +94,70 @@ Var StartMenuFolder
 ;@+node:ekr.20101027115225.1497: ** onInit
 
 ; Set PythonDirectory to the top-level Python path.
+; For now, prefer Python 2.x to Python 3.x.
 Function .onInit
-
-    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.1\InstallPath" ""
-    StrCmp $9 "" tryPython30 ok
-tryPython30:
-    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.0\InstallPath" ""
-    StrCmp $9 "" tryPython27 ok
-tryPython27:
-    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
-    StrCmp $9 "" tryPython26 ok
-tryPython26:
-    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
-    StrCmp $9 "" oops ok
-oops:
-    MessageBox MB_OK "Python not found"
-    StrCpy $PythonDirectory ""
-    Goto done
-ok:
-    StrCpy $PythonDirectory $9
-done:
-
+    try27:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
+        StrCmp $9 "" try26 ok
+    try26:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
+        StrCmp $9 "" try33 ok
+    try33:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.3\InstallPath" ""
+        StrCmp $9 "" try32 ok
+    try32:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.2\InstallPath" ""
+        StrCmp $9 "" try31 ok
+    try31:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.1\InstallPath" ""
+        StrCmp $9 "" try30 ok
+    try30:
+        ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\3.0\InstallPath" ""
+        StrCmp $9 "" oops ok
+    oops:
+        MessageBox MB_OK "Python not found"
+        StrCpy $PythonDirectory ""
+        Goto done
+    ok:
+        StrCpy $PythonDirectory $9
+    done:
 FunctionEnd ; End .onInit
 ;@+node:ekr.20101027115225.1504: ** Section Leo
 
-; This section is called "Leo" because it defines the "Leo" component.
-
+; The name of this section must be "Leo".
 Section "Leo" SEC01
-
-; ---- Start of manifest-related data...
-
-!include nsi-install-files.txt
-
-; ---- End of manifest-related data...
-
-; End of "Leo" SEC01
+    ; Add all files and directories.
+    ; The make-leo button creates nsi-install-files.txt.
+    !include nsi-install-files.txt
 SectionEnd
 ;@+node:ekr.20101027115225.1499: ** Section File Association
 
 Section "${ext} File Association" SEC02
-
     SectionIn 1 2 3 4
-
-    ; back up old value of extension in case some other program was using it
-    ;;ReadRegStr $1 HKCR "${ext}" ""
-    ;; StrCmp $1 "" Label1
-    ;; StrCmp $1 "${name}File" Label1
-    ;; WriteRegStr HKCR "${ext}" "backup_val" $1
-;; Label1:
-
     WriteRegStr HKCR "${ext}" "" "${name}File"
     WriteRegStr HKCR "${name}File" "" "${name} File"
     WriteRegStr HKCR "${name}File\shell" "" "open"
+    ; The single quotes below appear to be required.
     WriteRegStr HKCR "${name}File\DefaultIcon" "" '"$INSTDIR\${app_icon}"'
-    WriteRegStr HKCR "${name}File\shell\open\command" "" \
-        '"${PythonExecutable}" "$INSTDIR\launchLeo.py %*"'
-
+    WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "$INSTDIR\launchLeo.py %*"'
 SectionEnd
 ;@+node:ekr.20101027115225.1498: ** Section Desktop Shortcut
 
 Section "${name} Desktop Shortcut" SEC03
-
-  ; Apparently, this sets the "Start in folder" box!!!"
+  ; This sets the "Start in folder" box!!!"
   SetOutPath "$INSTDIR\leo"
-
-  ; CreateShortcut.
-  ; link.lnk
-  ; target.file
-  ; [parameters]
-  ; [icon.file] [icon_index_number]
-  ;; [start_options] one of: SW_SHOWNORMAL, SW_SHOWMAXIMIZED, SW_SHOWMINIMIZED, or "". 
-  ;; [keyboard_shortcut]
-
-  CreateShortCut "$DESKTOP\${name}.lnk" \
-    '"${PythonExecutable}"' \
-    '"$INSTDIR\launchLeo.py"' \
-    '"$INSTDIR\${app_icon}"' 0
-
+  CreateShortCut "$DESKTOP\${name}.lnk" "${PythonExecutable}" "$INSTDIR\launchLeo.py""$INSTDIR\${app_icon}"
 SectionEnd
 ;@+node:ekr.20101027115225.1500: ** Section Start Menu
 
 Section "${name} Start Menu" SEC04
-
   CreateDirectory "$SMPROGRAMS\${name}"
-
-  CreateShortCut "$SMPROGRAMS\${name}\${name}.lnk" \
-        '"${PythonExecutable}"' \
-        '"$INSTDIR\launchLeo.py"' \ 
-        '"$INSTDIR\${app_icon}"' 0
-
+  CreateShortCut "$SMPROGRAMS\${name}\${name}.lnk" "${PythonExecutable}" "$INSTDIR\launchLeo.py" "$INSTDIR\${app_icon}"
   CreateShortCut "$SMPROGRAMS\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
-
 SectionEnd
 ;@+node:ekr.20101027115225.1501: ** Section -Post
 
 Section -Post
-
   WriteRegStr HKLM ${leo_hklm} "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr HKLM "${uninst_key}" "DisplayName" "${name}-${version} (remove only)"
@@ -197,47 +165,23 @@ Section -Post
   WriteRegStr HKLM "${uninst_key}" "DisplayVersion" "${version}"
   WriteRegStr HKLM "${uninst_key}" "URLInfoAbout" "${site}"
   WriteRegStr HKLM "${uninst_key}" "Publisher" "${publisher}"
-
 SectionEnd
 ;@+node:ekr.20101027115225.1503: ** Section Uninstall
 
 Section Uninstall
-
     DeleteRegKey HKLM "${leo_hklm}"
-
-    ; Delete files & directories only if we own them!
-    ;; ReadRegStr $1 HKCR "${ext}" ""
-    ;; StrCmp $1 "${name}File" 0 FinishUninstall
-
-    ; Delete files & directories only if there is no backup_val key.
-    ;; ReadRegStr $1 HKCR "${ext}" "backup_val"
-    ;; StrCmp $1 "" 0 DeleteKeysAndFiles
     DeleteRegKey HKCR "${ext}"
     DeleteRegKey HKCR "${name}File"
-
-    ; Goto FinishUninstall
-; DeleteKeysAndFiles:
-   ;; WriteRegStr HKCR "${ext}" "" $1
-   ;; DeleteRegValue HKCR "${ext}" "backup_val"
-
-; ---- Start of manifest-related data...
-
-!include nsi-uninstall-files.txt
-
-; ---- End of manifest related data.
-
-; FinishUninstall:
-
+    ; Savely removes all files and directories, including $INSTDIR.
+    ; The make-leo button creates nsi-uninstall-files.txt.
+    !include nsi-uninstall-files.txt
+    ; Remove links.
     Delete "$SMPROGRAMS\${name}\Uninstall.lnk"
     Delete "$SMPROGRAMS\${name}.lnk"
     RMDir  "$SMPROGRAMS\${name}-${version}"
-
     Delete "$DESKTOP\${name}.lnk"
-
-    ; "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
     DeleteRegKey HKLM "${uninst_key}" 
     SetAutoClose false
-
 SectionEnd ; end Uninstall section
 ;@-others
 ;@-leo

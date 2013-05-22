@@ -86,7 +86,7 @@
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494"><vh>@thin nsi-boilerplate.txt</vh></v>
+<v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -197,7 +197,7 @@ Platform: Windows, Linux
 Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
-http://webpages.charter.net/edreamleo/intro.html
+http://leoeditor.com/
 
 Leo 4.10 contains 9 months of intense work on Leo. Several very important
 features are subtle; you could almost call them Easter Eggs, so please read
@@ -670,8 +670,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.10-final' ##version
-
+version = '4.11-a1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -679,7 +678,6 @@ version = '4.10-final' ##version
 
 LeoMaker().run()
 # LeoMaker().copy_ref_files()
-
 g.es_print('@button make-leo done')
 </t>
 <t tx="ekr.20101027070126.1643">class LeoMaker:
@@ -908,7 +906,6 @@ def deleteTempFiles (self,lines):
     # Part 1: Delete top-level files.
     put('\n')
     put('; Uninstall files...\n\n')
-
     put('SetOutPath $Temp\n')
 
     # Get the list of top-level files.
@@ -924,38 +921,43 @@ def deleteTempFiles (self,lines):
     for fn in aList:
         # Always delete individual files.
         put('Delete "$INSTDIR\\%s"\n' % fn)
-
-    # Part 2: Delete files in lower directories.
-    for theDir in dirs:
-        if theDir:
-            dir2 = clean(theDir)
-            aList = dirDict.get(theDir,[])
-            if aList:
-                put('\n')
-                put('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
-                put('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
-                # Delete all files in any __pycache__ subdirectory.
-                put('Delete "$INSTDIR\\%s\\__pycache__\\*.pyc"\n' % (dir2))
-            for fn in aList:
-                put('Delete "$INSTDIR\\%s\\%s"\n' % (dir2,fn))
-            
-
-    # Part 3: Delete directories.
-    reverseDirs = dirs[:]
-    reverseDirs.reverse()
-    put('\n')
-    put('; Uninstall directories in reverse order\n')
-    for theDir in reverseDirs:
-        # Delete the directory even if it has files.
-        if theDir and theDir != '**top':
-            if not theDir.startswith('.bzr'):
-                put('RMDir "$INSTDIR\\%s\\__pycache__"\n' % (clean(theDir)))
-                put('RMDir "$INSTDIR\\%s"\n' % (clean(theDir)))
+        
+    if 1:
+        # Just delete the leo folder with /r option.
+        # This should be completely safe.
+        put('RMDir /r "$INSTDIR\\leo"\n')
+    else:
+        # Part 2: Delete files in lower directories.
+        for theDir in dirs:
+            if theDir:
+                dir2 = clean(theDir)
+                aList = dirDict.get(theDir,[])
+                if aList:
+                    put('\n')
+                    put('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                    put('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                    # Delete all files in any __pycache__ subdirectory.
+                    put('Delete "$INSTDIR\\%s\\__pycache__\\*.pyc"\n' % (dir2))
+                for fn in aList:
+                    put('Delete "$INSTDIR\\%s\\%s"\n' % (dir2,fn))
+    
+        # Part 3: Delete directories.
+        reverseDirs = dirs[:]
+        reverseDirs.reverse()
+        put('\n')
+        put('; Uninstall directories in reverse order\n')
+        for theDir in reverseDirs:
+            # Delete the directory even if it has files.
+            if theDir and theDir != '**top':
+                if not theDir.startswith('.bzr'):
+                    put('RMDir "$INSTDIR\\%s\\__pycache__"\n' % (clean(theDir)))
+                    put('RMDir "$INSTDIR\\%s"\n' % (clean(theDir)))
 
     # Delete the op-level folder.
     put('\n')
     put('; Delete the top-level directory.\n')
     put('RMDir "$INSTDIR"\n')
+        # Important: the /r option is not safe here!
 
     self.f.close()
 </t>
@@ -988,12 +990,10 @@ def deleteTempFiles (self,lines):
     #   del bzr-manifest.txt
     #   bzr ls -V -R &gt;bzr-manifest.txt
     #   dir bzr-manifest.txt
-
     commands = (
         (r'c:\Scripts\make-leo-manifest.bat',False),
             # This helper script does all the work.
     )
-
     for command,shell in commands:
         print('command: %s' % command)
         proc = subprocess.Popen(command,shell=shell) # ,stderr=subprocess.PIPE)
