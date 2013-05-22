@@ -2350,7 +2350,7 @@ def CreateOpenTreeMenu (tag,keywords):
         (tag=="start2") or
         (tag=="command2" and keywords.get("label")=="new")):
 
-        c = keyword.get('c')
+        c = keywords.get('c')
         exportMenu = c.frame.menu.getMenu('Open With')
         newEntries = (
             ("-",None,None),
