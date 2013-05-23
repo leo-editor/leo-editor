@@ -295,6 +295,22 @@ for l in tr:
             no.b += l.strip() + '\n'
 
     print ".",
+.. @+node:ekr.20130522131838.15047: *4* position script
+g.cls()
+root = g.findNodeAnywhere(c,'root')
+assert root
+line = 0
+for p in root.self_and_subtree():
+    line += 1
+    print('%s: %4s @ %d p._childIndex: %d p.stack: %s' % (
+        line,
+        p.cleanHeadString(),
+        id(p.v),
+        p._childIndex,
+        # p.level(),p.key(),
+        # p.stack,
+        '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
+    ))
 .. @+node:ekr.20130510070942.10611: *3* Can undo headline put focus in headline?
 This would fix a reported bug.
 .. @+node:ekr.20130408095053.10307: ** ** guide for the next leaders
