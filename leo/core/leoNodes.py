@@ -2468,6 +2468,28 @@ class vnode (baseVnode):
     #@+node:ville.20120502221057.7499: *4* v.childrenModified
     def childrenModified(self):
         g.childrenModifiedSet.add(self)
+    #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
+    def cloneAsNthChild(self,parent_v,n):
+        # Does not check for illegal clones!
+        v = self
+        v._linkAsNthChild(parent_v,n)
+        return v
+
+    def insertAsFirstChild(self):
+        v = self
+        return v.insertAsNthChild(0)
+        
+    def insertAsLastChild(self):
+        v = self
+        return v.insertAsNthChild(len(v.children))
+
+    def insertAsNthChild(self,n):
+        v = self
+        assert 0 <= n <= len(v.children)
+        v2 = vnode(v.context)
+        v2._linkAsNthChild(v,n)
+        assert v.children[n] == v2
+        return v2
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
     #@+node:ekr.20090706110836.6135: *4* v._addLink & helper
     def _addLink (self,childIndex,parent_v,adjust=True):

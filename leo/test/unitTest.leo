@@ -151,6 +151,11 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="ekr.20130524112342.4137"><vh>@test new vnodes methods</vh>
+<v t="ekr.20130524112342.4147"><vh>insertAsFirstChild</vh></v>
+<v t="ekr.20130524112342.4149"><vh>insertAsNthChild(1)</vh></v>
+<v t="ekr.20130524112342.4148"><vh>insertAsLastChild</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -566,7 +571,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1150,5 +1155,23 @@ finally:
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
 </t>
+<t tx="ekr.20130524112342.4137">parent_v = p.parent().v or c.hiddenRootNode
+while p.hasChildren():
+    p.firstChild().doDelete()
+# print(parent_v,p.childIndex())
+if 0: # passes
+    p.v.cloneAsNthChild(parent_v,p.childIndex())
+if 1:
+    v2 = p.v.insertAsFirstChild()
+    v2.h = 'insertAsFirstChild'
+    v2 = p.v.insertAsLastChild()
+    v2.h = 'insertAsLastChild'
+    v2 = p.v.insertAsNthChild(1)
+    v2.h = 'insertAsNthChild(1)'
+p.expand()
+c.redraw()</t>
+<t tx="ekr.20130524112342.4147"></t>
+<t tx="ekr.20130524112342.4148"></t>
+<t tx="ekr.20130524112342.4149"></t>
 </tnodes>
 </leo_file>
