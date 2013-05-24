@@ -32,8 +32,8 @@ Name "${name}"
 OutFile "${target_file}"
 InstallDir "$PROGRAMFILES\${name}-${version}"
 
-; Just use the NSIS icon.
-;Icon "${install_icon}"
+; Icons
+;!define MUI_ICON "${icon}"
 ;@-<< prolog >>
 ;@+<< pages >>
 ;@+node:ekr.20101027115225.1496: ** << pages >>
@@ -96,7 +96,7 @@ Var StartMenuFolder
 ; Set PythonDirectory to the top-level Python path.
 ; For now, prefer Python 2.x to Python 3.x.
 Function .onInit
-    try27:
+    ;try27:
         ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
         StrCmp $9 "" try26 ok
     try26:

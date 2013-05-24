@@ -12,8 +12,9 @@
 
 !define app_icon        "leo\Icons\LeoApp.ico"
 !define doc_icon        "leo\Icons\LeoDoc.ico"
+; This works, but the icon is too small.
+;!define icon            "C:\leo.repo\trunk\leo\Icons\SplashScreen.ico"
 !define ext             ".leo"
-;!define install_icon    "c:\leo.repo\trunk\leo\Icons\leo_inst.ico" ; Doesn't work
 !define leo_hklm        "SOFTWARE\EKR\Leo"
 !define license         "License.txt"
 !define name            "Leo"
