@@ -152,9 +152,9 @@
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20130524112342.4137"><vh>@test new vnodes methods</vh>
-<v t="ekr.20130524112342.4147"><vh>insertAsFirstChild</vh></v>
-<v t="ekr.20130524112342.4149"><vh>insertAsNthChild(1)</vh></v>
-<v t="ekr.20130524112342.4148"><vh>insertAsLastChild</vh></v>
+<v t="ekr.20130529084206.4145"><vh>insertAsFirstChild</vh></v>
+<v t="ekr.20130529084206.4147"><vh>insertAsNthChild(1)</vh></v>
+<v t="ekr.20130529084206.4146"><vh>insertAsLastChild</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -571,7 +571,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1170,8 +1170,8 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()</t>
-<t tx="ekr.20130524112342.4147"></t>
-<t tx="ekr.20130524112342.4148"></t>
-<t tx="ekr.20130524112342.4149"></t>
+<t tx="ekr.20130529084206.4145"></t>
+<t tx="ekr.20130529084206.4146"></t>
+<t tx="ekr.20130529084206.4147"></t>
 </tnodes>
 </leo_file>

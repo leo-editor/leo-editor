@@ -703,7 +703,15 @@ class scriptingController:
 
         # Command may be None.
         b = self.iconBar.add(text=truncatedText,command=command,bg=bg)
-        if not b: return None
+        if b:
+            if bg:
+                try:
+                    b.button.setStyleSheet("{background-color: %s }" % (bg))
+                except Exception:
+                    # g.es_exception()
+                    pass # Might not be a valid color.
+        else:
+            return None
 
         self.buttonsDict[b] = truncatedText
 
