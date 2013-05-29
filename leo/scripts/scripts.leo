@@ -74,7 +74,7 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
-expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6937,ekr.20120328102352.6938,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20051104082026,ekr.20120328102352.6937,ekr.20120328102352.6938,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -114,6 +114,7 @@ expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.2005022
 </v>
 </v>
 <v t="ekr.20130425050120.12671"><vh>Script: replace in directory</vh></v>
+<v t="ekr.20130526065545.18367"><vh>email import script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -1490,6 +1491,54 @@ for root, dirs, files in os.walk(path):
         if fn.endswith('.py'):
             fn = g.os_path_join(root,fn)
             fix(fn)
+print('done')
+</t>
+<t tx="ekr.20130526065545.18367"># https://groups.google.com/forum/?fromgroups#!searchin/leo-editor/imaplib/leo-editor/i_U-PBv0Ek0/c0XsmlI_UugJ
+
+import imaplib
+
+def munge(part):
+    s = g.toUnicode(repr(part[0][1]))
+    s = s.strip("'")
+    return s.replace('\\r\\n','\n')
+
+m = imaplib.IMAP4_SSL('imap.gmail.com',993) # Require SSL: Yes
+m.login(&lt;&lt; your login name&gt;&gt;,&lt;&lt; your password&gt;&gt;)
+print('connected to edreamleo@gmail.com')
+# for z in m.list():
+    # print(z)
+try:
+    box = 'Leo/Later' # 'INBOX'
+    m.select(box,True) # readonly.
+    ok, aList = m.search(None,'ALL')
+    if ok == 'OK':
+        parent = p.insertAsLastChild()
+        parent.h = box
+        aList = [g.toUnicode(z) for z in aList]
+        nums = aList[0].split()
+        for num in nums:
+            # ok,data = m.fetch(num,'(RFC822)') # Gets everything.
+            ok,part = m.fetch(num,"(UID BODY[TEXT])")
+            if ok != 'OK': continue
+            print('reading %s %s' % (box,num))
+            child = parent.insertAsLastChild()
+            body = munge(part)
+            ok,part = m.fetch(num,"(UID BODY[HEADER.FIELDS (FROM)])")
+            if ok == 'OK': body = munge(part) + body
+            child.b = '@nocolor\n\n' + body
+            ok,part = m.fetch(num,"(UID BODY[HEADER.FIELDS (SUBJECT)])")
+            if ok == 'OK':
+                head = munge(part)
+                tag = 'Subject: '
+                if head.startswith(tag): head = head[len(tag):]
+                child.h = head.replace('\n','')
+            else:
+                child.h = '%s %s' % (box,num)
+finally:
+    m.close()
+    m.logout()
+p.contract()
+c.redraw()
 print('done')
 </t>
 </tnodes>
