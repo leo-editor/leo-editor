@@ -36,13 +36,14 @@ After the release:
     - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
-
-Priorities:
-- Organization
-- Installation
-- Documentation
-- Bugs/Code
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
+.. @+node:ekr.20130502104323.10581: *3* ** Get github working
+Used for Leo's blog.
+
+bzr ci => git commit -a
+bzr add => git add
+bzr push => git push
+bzr revert => git reset --hard
 .. @+node:ekr.20130510070942.10602: *3* Docs
 .. @+node:ekr.20130506071114.15452: *4* ***Document Windows associations
 
@@ -83,67 +84,7 @@ ftype:
 assoc:
     http://ss64.com/nt/assoc.html
 
-.. @+node:ekr.20130502104323.10581: *4* ** Get github working
-Used for Leo's blog.
-
-bzr ci => git commit -a
-bzr add => git add
-bzr push => git push
-bzr revert => git reset --hard
 .. @+node:ekr.20130503155210.24819: *4* Fix flattr button on Leo's home page
-.. @+node:ekr.20130503053253.10548: *4* Draft: unit testing tutorial
-@wrap
-@language rest
-
-The following is a first draft of a unit-testing tutorial.  It will form the basis of a new help-for-unit-testing command, and will also become the introduction to Leo unit-testing chapter.
-
-All comments are welcome.  Please let me know if anything is unclear.
-
-
-------------------
-
-.. |br| raw:: html
-
-   <br />
-
-Leo makes it easy to create unit tests from individual outline nodes or trees.
-
-A node whose headline starts with @tests defines a unit test.
-
-The body text of the @test node contains a **self-contained** unit test.
-
-For example, this creates a complete unit test::
-
-    @test fails  (headline)
-    assert False (body text)
-
-To run this test, select the @test node and do: |br|
-<alt-x>run-selected-unit-tests-locally. |br|
-Leo will create and run the unit test automatically.
-
-To see all of Leo's unit testing commands, do: |br|
-<alt-x>run<tab>
-
-Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
-
-@test nodes may use section references and \@others
-as usual, but unit tests may also put test data 
-in child nodes.
-
-For more details about unit testing, see:
-http://leoeditor.com/unitTesting.html
-
-**Notes for Leo developers**
-
-leo/test/unitTest.leo contains all of Leo's own unit tests.
-
-Running all tests is not necessary.  Just select::
-
-    Active Unit Tests
-
-and then do Alt-4 (run-selected-unit-tests-locally).
-
-**Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
 .. @+node:ekr.20130514082726.10612: *4* Document valuespace from Ville's blog
 http://leo-editor.github.io/valuespace-intro.html
 .. @+node:ekr.20130521062549.10856: *4* Position tutorial
@@ -199,8 +140,6 @@ Leo's c.all_nodes() iterator will deliver 9 positions:
   The parent of position 5: B is A at childIndex 1 of Root.
   The parent of position 6: B is Root. The childIndex of 6: B is 2.
 
-.. @+node:ekr.20130510070942.10605: *3* Install
-.. @+node:ekr.20130508134143.10598: *4* Leo for portableapps?
 .. @+node:ekr.20130510070942.10606: *3* Bugs
 .. @+node:ekr.20130503134311.13447: *4* Fix all pylint complaints
 @nocolor-node
