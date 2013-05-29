@@ -296,7 +296,7 @@ class scriptingController:
 
         b = self.createAtButtonFromSettingHelper(h,script,statusLine)
     #@+node:ekr.20070926085149: *6* createAtButtonFromSettingHelper & callback
-    def createAtButtonFromSettingHelper (self,h,script,statusLine,bg='LightSteelBlue2'):
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,kind='at-button'):
 
         '''Create a button from an @button node.
 
@@ -309,7 +309,7 @@ class scriptingController:
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
         b = self.createIconButton(text=h,
-            command=None,statusLine=statusLine,bg=bg)
+            command=None,statusLine=statusLine,kind=kind)
         if not b: return None
 
         # Now that b is defined we can define the callback.
@@ -376,7 +376,7 @@ class scriptingController:
             text='run-script',
             command = self.runScriptCommand,
             statusLine='Run script in selected node',
-            bg='MistyRose1',
+            kind='run-script',
         )
     #@+node:ekr.20060328125248.21: *5* runScriptCommand (mod_scripting)
     def runScriptCommand (self,event=None):
@@ -401,7 +401,7 @@ class scriptingController:
             text='debug-script',
             command=self.runDebugScriptCommand,
             statusLine='Debug script in selected node',
-            bg='MistyRose1')
+            kind='debug-script')
     #@+node:ekr.20060522105937.1: *5* runDebugScriptCommand
     def runDebugScriptCommand (self,event=None):
 
@@ -473,7 +473,7 @@ class scriptingController:
             text='script-button',
             command = self.addScriptButtonCommand,
             statusLine='Make script button from selected node',
-            bg="#ffffcc")
+            kind="script-button-button")
     #@+node:ekr.20060328125248.23: *5* addScriptButtonCommand
     def addScriptButtonCommand (self,event=None):
 
@@ -485,7 +485,7 @@ class scriptingController:
         statusLine = "Run Script: %s" % buttonText
         if shortcut:
             statusLine = statusLine + " @key=" + shortcut
-        b = self.createAtButtonHelper(p,h,statusLine,bg='MistyRose1',verbose=True)
+        b = self.createAtButtonHelper(p,h,statusLine,kind='script-button',verbose=True)
         c.frame.bodyWantsFocus()
     #@+node:ekr.20060328125248.12: *4* handleAtButtonNode @button
     def handleAtButtonNode (self,p):
@@ -611,7 +611,7 @@ class scriptingController:
             s = s[:-1]
         return s.lower()
     #@+node:ekr.20060328125248.24: *4* createAtButtonHelper & callback
-    def createAtButtonHelper (self,p,h,statusLine,bg='LightSteelBlue1',verbose=True):
+    def createAtButtonHelper (self,p,h,statusLine,kind='at-button',verbose=True):
 
         '''Create a button from an @button node.
 
@@ -626,7 +626,8 @@ class scriptingController:
 
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
-        b = self.createIconButton(text=h,command=None,statusLine=statusLine,bg=bg)
+        b = self.createIconButton(text=h,command=None,statusLine=statusLine,
+                                  kind=kind)
         if not b: return None
 
         # Now that b is defined we can define the callback.
@@ -680,7 +681,7 @@ class scriptingController:
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@+node:ekr.20060328125248.17: *4* createIconButton
-    def createIconButton (self,text,command,statusLine,bg):
+    def createIconButton (self,text,command,statusLine,kind=None):
 
         '''Create an icon button.  All icon buttons get created using this utility.
 
@@ -702,15 +703,8 @@ class scriptingController:
             return None
 
         # Command may be None.
-        b = self.iconBar.add(text=truncatedText,command=command,bg=bg)
-        if b:
-            if bg:
-                try:
-                    b.button.setStyleSheet("{background-color: %s }" % (bg))
-                except Exception:
-                    # g.es_exception()
-                    pass # Might not be a valid color.
-        else:
+        b = self.iconBar.add(text=truncatedText,command=command,kind=kind)
+        if not b:
             return None
 
         self.buttonsDict[b] = truncatedText

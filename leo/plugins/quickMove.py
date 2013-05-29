@@ -327,7 +327,7 @@ class quickMove(object):
                 command = mb.moveCurrentNodeToTarget,
                 statusLine = 'Move current node to %s child of %s' % (
                     g.choose(first,'first','last'),v.h),
-                bg = "LightBlue"
+                kind = "quick-move"
             )
 
             if g.app.gui.guiName() == "qt":

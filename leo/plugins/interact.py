@@ -329,7 +329,7 @@ class InteractController:
                 text = mb.interactor.buttonText(),
                 command = mb.run,
                 statusLine = mb.interactor.statusText(),
-                bg = "LightBlue",
+                kind='interact',
             )
     #@-others
 #@+node:tbrown.20090603104805.4966: ** class InteractButton

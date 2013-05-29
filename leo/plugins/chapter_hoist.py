@@ -69,8 +69,7 @@ class chapterHoist:
         b = sc.createIconButton(
             text='save-hoist',
             command = saveHoistCallback,
-            statusLine='Create hoist button current node',
-            bg='LightSteelBlue1')
+            statusLine='Create hoist button current node')
 
         return b
     #@+node:ekr.20060328125925.9: *3* createDehoistButton
@@ -83,8 +82,7 @@ class chapterHoist:
         b = sc.createIconButton(
             text='dehoist',
             command=dehoistCallback,
-            statusLine='Dehoist',
-            bg='LightSteelBlue1')
+            statusLine='Dehoist')
 
         return b
     #@+node:ekr.20060328125925.10: *3* createChapterHoistButton
@@ -105,8 +103,7 @@ class chapterHoist:
         b = sc.createIconButton(
             text=buttonText,
             command=hoistButtonCallback,
-            statusLine=statusLine,
-            bg='LightSteelBlue1')
+            statusLine=statusLine)
     #@-others
 #@-others
 #@-leo

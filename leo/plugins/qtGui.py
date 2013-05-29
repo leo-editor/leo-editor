@@ -4166,7 +4166,7 @@ class leoQtFrame (leoFrame.leoFrame):
             if not text and not qaction:
                 g.es('bad toolbar item')
 
-            bg = keys.get('bg') or self.toolbar.buttonColor
+            kind = keys.get('kind') or 'generic-button'
 
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
@@ -4180,13 +4180,9 @@ class leoQtFrame (leoFrame.leoFrame):
                 def createWidget (self,parent):
                     # g.trace('leoIconBarButton',self.toolbar.buttonColor)
                     self.button = b = QtGui.QPushButton(self.text,parent)
-
-                    if 0: # 2011/06/01: don't set the color.  Use the stylesheet instead.
-                        g.app.gui.setWidgetColor(b,
-                            widgetKind='QPushButton',
-                            selector='background-color',
-                            colorName = bg,
-                        )
+                    
+                    self.button.setProperty('button_kind', kind)  # for styling
+                    
                     return b
 
             if qaction is None:

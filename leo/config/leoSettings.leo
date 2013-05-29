@@ -103,7 +103,7 @@
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16471" a="E"><vh>Colorizer &amp; colors</vh>
+<v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 <v t="ekr.20081018053140.12"></v>
@@ -536,7 +536,7 @@
 <v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16471" a="E"></v>
+<v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
@@ -1389,7 +1389,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
@@ -1523,7 +1523,7 @@
 <v t="ekr.20100910115903.8297"><vh>screenshot settings</vh>
 <v t="ekr.20100910115903.8299"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
-<v t="ekr.20060930111325"><vh>scripting plugin</vh>
+<v t="ekr.20060930111325" a="E"><vh>scripting plugin</vh>
 <v t="ekr.20060930111325.2"><vh>@bool scripting-at-button-nodes = True</vh></v>
 <v t="ekr.20060930111325.3"><vh>@bool scripting-at-commands-nodes = True</vh></v>
 <v t="ekr.20060930111325.4"><vh>@bool scripting-at-plugin-nodes = False</vh></v>
@@ -5753,7 +5753,22 @@ If there are more than this number, a new row is created.</t>
    needed for zoom in / out
    
    @font-size-body = 12px
-
+   
+   *color names*
+   @MistyRose1 = #FFE4E1
+   @LightSteelBlue1 = #CAE1FF
+   @LightBlue = #ADD8E6
+   
+   *button background colors*
+   @run-script-btn-bg = @MistyRose1
+   @debug-script-btn-bg = @MistyRose1
+   @script-button-button-btn-bg = #ffffcc
+   @script-button-btn-bg = @MistyRose1
+   @generic-button-btn-bg = @LightSteelBlue1
+   @quick-move-btn-bg = @LightSteelBlue1
+   @interact-btn-bg = @LightBlue
+   @at-button-btn-bg = @LightSteelBlue1
+       
 */
 
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
@@ -5942,7 +5957,7 @@ QLineEdit#status2 {
 
 /* Default colors for icons in the icon area. */
 QPushButton {
-    background-color: #CAE1FF; /* lightSteelBlue1 */
+    background-color: @LightSteelBlue1; /* lightSteelBlue1 */
     /* border: none; /* Needed to make background-color "stick" */
 }
 
@@ -5952,10 +5967,18 @@ QPushButton {
     the qtIconBarClass.add method in qtGui.py.
 */
 
+QPushButton[button_kind="run-script"] { background-color: @run-script-btn-bg; }
+QPushButton[button_kind="debug-script"] { background-color: @debug-script-btn-bg; }
+QPushButton[button_kind="generic-button"] { background-color: @generic-button-btn-bg; }
+QPushButton[button_kind="quick-move"] { background-color: @quick-move-btn-bg; }
+QPushButton[button_kind="interact"] { background-color: @interact-btn-bg; }
+QPushButton[button_kind="at-button"] { background-color: @at-button-btn-bg; }
+QPushButton[button_kind="script-button"] { background-color: @script-button-btn-bg; }
+
 /* Colors for the "script-button" button. */
-QPushButton#script-button-button {
-    background-color: #ffffcc;
-    /* border: none; /* Needed to make background-color "stick" */
+QPushButton[button_kind="script-button-button"] {
+    background-color: @script-button-button-btn-bg;
+    /* border: none; Needed to make background-color "stick" */
 }
 
 QPlainTextEdit#screencastcaption {
