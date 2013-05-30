@@ -37,6 +37,8 @@ After the release:
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
+.. @+node:ekr.20130529084731.12106: *3* Add link to Leo's readthedocs page 
+http://leo-editor.readthedocs.org/en/latest/
 .. @+node:ekr.20130502104323.10581: *3* ** Get github working
 Used for Leo's blog.
 
@@ -44,6 +46,61 @@ bzr ci => git commit -a
 bzr add => git add
 bzr push => git push
 bzr revert => git reset --hard
+.. @+node:ekr.20130503053253.10548: *3* Draft: unit testing tutorial
+@wrap
+@language rest
+
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/eHAxE5qLUG8
+
+The following is a first draft of a unit-testing tutorial.  It will form the basis of a new help-for-unit-testing command, and will also become the introduction to Leo unit-testing chapter.
+
+All comments are welcome.  Please let me know if anything is unclear.
+
+
+------------------
+
+.. |br| raw:: html
+
+   <br />
+
+Leo makes it easy to create unit tests from individual outline nodes or trees.
+
+A node whose headline starts with @tests defines a unit test.
+
+The body text of the @test node contains a **self-contained** unit test.
+
+For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do: |br|
+<alt-x>run-selected-unit-tests-locally. |br|
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do: |br|
+<alt-x>run<tab>
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+@test nodes may use section references and \@others
+as usual, but unit tests may also put test data 
+in child nodes.
+
+For more details about unit testing, see:
+http://leoeditor.com/unitTesting.html
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
 .. @+node:ekr.20130510070942.10602: *3* Docs
 .. @+node:ekr.20130506071114.15452: *4* ***Document Windows associations
 
@@ -327,6 +384,172 @@ for p in root.self_and_subtree():
         # p.stack,
         '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
     ))
+.. @+node:ekr.20130529084731.12105: *4* Magic refactor button
+https://groups.google.com/forum/?fromgroups#!searchin/leo-editor/magic$20refactor$20button/leo-editor/0hNJxS2r0GY/jWlSap7VxHAJ
+Terry Brown <terry_n_brown@yahoo.com>
+2/14/12
+		
+to leo-editor
+
+Ever find that you have a whole lot of:
+
+rec[f['analyte']] ... rec[f['sample_type']] ...
+
+expressions in your code, and now things have changed and you want them all to be:
+
+row.Analyte ... row.Sample_Type ...
+
+basically if str variable s was:
+
+rec[f['analyte']]
+
+then you want to perform:
+
+s = "row."+s.split("'")[1].title()
+
+on each one. In general it would be nice to be able to use a python expression when search and replace doesn't cut it.
+
+The button code below creates a button, fac, which, when pressed, creates another button, with some name you choose, which, when pressed, executes some python code to fix the selected text in the body.
+
+You can define the code to be executed in two ways, either in its own node:
+
+        insert a new node with a headline which describes the refactor
+        enter code in the node which modifies the string variable s, which is initially set to the selected text in the body
+        press the fac button, which creates a new button named after this code node
+        select each offending piece of text and press the button created in the previous step to fix
+
+or
+
+        type some code modifying s right in the body you're working on
+        press the fac button, which creates a new button named "fix"
+        select each offending piece of text and press the button created in the previous step to fix
+
+Note:
+
+        unlike regular button nodes, changing the code after the button's created (first option above) doesn't change the code executed by the button
+        replacing selection text makes Leo reposition the insert point at the top of the window, this is annoying but unrelated to this code
+
+Here's the button code:
+
+@button fac
+  from leo.plugins.mod_scripting import scriptingController
+
+  sc = scriptingController(c)
+
+  if c.frame.body.hasSelection():
+      code = c.frame.body.getSelectedText()
+      heading = 'fix'
+  else:
+      code = p.b
+      heading = p.h
+
+  def transform(c=c, code=code):
+      s = c.frame.body.getSelectedText()
+      g.es(s)
+      exec code
+      g.es(s)
+      c.frame.body.deleteTextSelection()
+      i = c.frame.body.getInsertPoint()
+      c.frame.body.insert(i, s)
+      p.b = c.frame.body.getAllText()
+      c.frame.body.setInsertPoint(i)
+
+  b = sc.createIconButton(
+      heading,
+      command = transform,
+      shortcut = None,
+      statusLine = 'Make filter button',
+      bg = "LightBlue"
+  )
+
+Edward K. Ream <edreamleo@gmail.com>
+	
+2/15/12
+		
+to leo-editor
+On Tue, Feb 14, 2012 at 8:34 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
+
+> The button code below creates a button, fac, which, when pressed, creates
+> another button, with some name you choose, which, when pressed, executes
+> some python code to fix the selected text in the body.
+
+Interesting.  I've got blinders on while I work on the new_config
+code, but I'll take a close look at this asap.  Thanks for this work.
+Kent Tenney <ktenney@gmail.com>
+	
+2/15/12
+		
+to leo-editor
+Cool. I'm changing the name to
+@adhoc
+
+Strikes me as 'macro' capability.
+With almost no overhead, define a filter for selected text, and
+persist it visually, no need for remembering!
+
+I'll put it into myLeoSettings.leo
+
+Thanks,
+Kent
+Terry Brown <terry_n_brown@yahoo.com>
+	
+2/15/12
+		
+to leo-editor
+On Wed, 15 Feb 2012 09:31:21 -0600
+Kent Tenney <ktenney@gmail.com> wrote:
+
+> Cool. I'm changing the name to
+> @adhoc
+
+That's equally as good as fac, the key thing is that both words are fun
+to say :-)
+
+> Strikes me as 'macro' capability.
+
+Yep, very much so.
+
+> With almost no overhead, define a filter for selected text, and
+> persist it visually, no need for remembering!
+
+The created buttons don't persist, I guess I'm assuming once you've
+fixed something with them they won't be useful in future sessions,
+although I know you like everything to persist :-)
+
+Cheers -Terry
+Kent Tenney <ktenney@gmail.com>
+	
+2/15/12
+		
+to leo-editor
+On Wed, Feb 15, 2012 at 10:17 AM, Terry Brown <terry_n_brown@yahoo.com> wrote:
+> On Wed, 15 Feb 2012 09:31:21 -0600
+> Kent Tenney <ktenney@gmail.com> wrote:
+>
+>> Cool. I'm changing the name to
+>> @adhoc
+>
+> That's equally as good as fac, the key thing is that both words are fun
+> to say :-)
+>
+>> Strikes me as 'macro' capability.
+>
+> Yep, very much so.
+>
+>> With almost no overhead, define a filter for selected text, and
+>> persist it visually, no need for remembering!
+>
+> The created buttons don't persist, I guess I'm assuming once you've
+> fixed something with them they won't be useful in future sessions,
+> although I know you like everything to persist :-)
+
+:-}
+
+Not here. As a macro, the cost to create is so low and it's so context specific,
+there's no inclination to persist. I like things to persist if I had
+to think about them.
+
+It would be annoying to have them persist.
 .. @+node:ekr.20130408095053.10307: ** ** guide for the next leaders
 # Use bookmarks?
 .. @+node:ekr.20130501035328.12634: ** Use Leo for email?
