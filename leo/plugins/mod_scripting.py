@@ -120,10 +120,8 @@ will set sys.argv to [u'a',u'b',u'c']
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoColor as leoColor
 import leo.core.leoGui as leoGui
-
-# May be set in init
-Pmw = None
 
 # import os
 import string
@@ -681,7 +679,7 @@ class scriptingController:
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@+node:ekr.20060328125248.17: *4* createIconButton
-    def createIconButton (self,text,command,statusLine,kind=None):
+    def createIconButton (self,text,command,statusLine,bg=None,kind=None):
 
         '''Create an icon button.  All icon buttons get created using this utility.
 
@@ -706,6 +704,19 @@ class scriptingController:
         b = self.iconBar.add(text=truncatedText,command=command,kind=kind)
         if not b:
             return None
+        if bg:
+            if not bg.startswith('#'):
+                d = leoColor.leo_color_database
+                bg2 = d.get(bg.lower())
+                if not bg2:
+                    print('bad color? %s' % bg)
+                bg = bg2
+            if bg:
+                try:
+                    b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
+                except Exception:
+                    # g.es_exception()
+                    pass # Might not be a valid color.
 
         self.buttonsDict[b] = truncatedText
 
