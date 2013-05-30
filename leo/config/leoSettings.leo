@@ -5758,6 +5758,21 @@ If there are more than this number, a new row is created.</t>
    @MistyRose1 = #FFE4E1
    @LightSteelBlue1 = #CAE1FF
    @LightBlue = #ADD8E6
+
+   Buttons may be styled by name:
+      QPushButton#&lt;button text&gt;-button { &lt;style&gt; }
+   or by kind:
+      QPushButton[button_kind="&lt;button kind&gt;"] { &lt;style&gt; }
+   Button kinds are:
+   'run-script' (the singleton run-script button),
+   'debug-script',
+   'script-button-button' (the singleton script-button button), 
+   'script-button' (buttons created by the script-button button),
+   'generic-button' (default), 
+   'quick-move' from the quickMove plugin,
+   'interact' from the interact plugin,
+   'at-button' (created from @button nodes)
+   Search 'button_kind' below for button styling examples.
    
    *button background colors*
    @run-script-btn-bg = @MistyRose1
@@ -5955,31 +5970,25 @@ QLineEdit#status2 {
     border-color: darkgrey;
 }
 
-/* Default colors for icons in the icon area. */
-QPushButton {
-    background-color: @LightSteelBlue1; /* lightSteelBlue1 */
-    /* border: none; /* Needed to make background-color "stick" */
-}
-
-/*
-    You may set colors for individual buttons by name.
-    To get a list of button names, enable tracing for
-    the qtIconBarClass.add method in qtGui.py.
-*/
-
-QPushButton[button_kind="run-script"] { background-color: @run-script-btn-bg; }
-QPushButton[button_kind="debug-script"] { background-color: @debug-script-btn-bg; }
-QPushButton[button_kind="generic-button"] { background-color: @generic-button-btn-bg; }
-QPushButton[button_kind="quick-move"] { background-color: @quick-move-btn-bg; }
-QPushButton[button_kind="interact"] { background-color: @interact-btn-bg; }
-QPushButton[button_kind="at-button"] { background-color: @at-button-btn-bg; }
-QPushButton[button_kind="script-button"] { background-color: @script-button-btn-bg; }
-
-/* Colors for the "script-button" button. */
-QPushButton[button_kind="script-button-button"] {
-    background-color: @script-button-button-btn-bg;
-    /* border: none; Needed to make background-color "stick" */
-}
+/* button_kind based button coloring */
+QPushButton[button_kind="run-script"] { 
+    background-color: @run-script-btn-bg; }
+QPushButton[button_kind="debug-script"] { 
+    background-color: @debug-script-btn-bg; }
+QPushButton[button_kind="generic-button"] { 
+    background-color: @generic-button-btn-bg; }
+QPushButton[button_kind="quick-move"] { 
+    background-color: @quick-move-btn-bg; }
+QPushButton[button_kind="interact"] { 
+    background-color: @interact-btn-bg; }
+QPushButton[button_kind="at-button"] { 
+    background-color: @at-button-btn-bg; }
+QPushButton[button_kind="script-button"] { 
+    background-color: @script-button-btn-bg; }
+/* example of name based button coloring.  Coincidentally, the
+   name and button_kind of this button are the same */
+QPushButton#script-button-button { 
+    background-color: @script-button-button-btn-bg; }
 
 QPlainTextEdit#screencastcaption {
     background-color: yellow;
