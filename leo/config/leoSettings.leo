@@ -93,9 +93,9 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20061011082224" a="E"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20110611092035.16470" a="E"><vh>Appearance</vh>
+<v t="ekr.20110611092035.16470"><vh>Appearance</vh>
 <v t="ekr.20111024091133.16701"><vh>@@@int qt-tab-width = 40</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
@@ -515,7 +515,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -527,7 +527,7 @@
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
 <v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
 </v>
-<v t="ekr.20110611092035.16470" a="E"></v>
+<v t="ekr.20110611092035.16470"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
@@ -1453,7 +1453,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="peckj.20130514082859.5599" a="E"><vh>printing plugin</vh>
+<v t="peckj.20130514082859.5599"><vh>printing plugin</vh>
 <v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
 <v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
 </v>
@@ -1466,7 +1466,7 @@
 </v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
-<v t="ekr.20071213060239.1" a="E"><vh>rst3 http options</vh>
+<v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
 <v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
@@ -1491,7 +1491,7 @@
 <v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
 <v t="ekr.20090430075506.7"><vh>@bool rst3_generate_rst_header_comment = True</vh></v>
 </v>
-<v t="ekr.20071213060514.2" a="E"><vh>rst3 formatting options</vh>
+<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
 <v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
 <v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
 <v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
@@ -1523,7 +1523,7 @@
 <v t="ekr.20100910115903.8297"><vh>screenshot settings</vh>
 <v t="ekr.20100910115903.8299"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
-<v t="ekr.20060930111325" a="E"><vh>scripting plugin</vh>
+<v t="ekr.20060930111325"><vh>scripting plugin</vh>
 <v t="ekr.20060930111325.2"><vh>@bool scripting-at-button-nodes = True</vh></v>
 <v t="ekr.20060930111325.3"><vh>@bool scripting-at-commands-nodes = True</vh></v>
 <v t="ekr.20060930111325.4"><vh>@bool scripting-at-plugin-nodes = False</vh></v>
@@ -2868,9 +2868,9 @@ fill-paragraph                      = Alt-q
 fill-region                         = None
 fill-region-as-paragraph            = None
 find-tab-hide                       = None
-change                              = Ctrl-=
-change-all                          = None  # Not recommended to bind this to a shortcut.
-change-then-find                    = Ctrl--
+replace                             = Ctrl-=
+replace-all                         = None  # Not recommended to bind this to a shortcut.
+replace-then-find                   = Ctrl--
 find-next                           = F3
 find-prev                           = F2
 find-tab-open                       = None
@@ -3132,9 +3132,9 @@ find-character                      = None
 find-character-extend-selection     = None
 find-clone-all                      = None
 find-next-clone                     = None
-change                              = None
-change-all                          = None
-change-then-find                    = None
+replace                             = None
+replace-all                         = None
+replace-then-find                   = None
 find-next                           = None
 find-all                            = None
 find-prev                           = None
@@ -3938,9 +3938,9 @@ hide-spell-tab
 Furthermore, the find commands are a good tool for using Leo without a mouse
 (More commands are coming)
 
-change
-change-all
-change-then-find
+replace
+replace-all
+replace-then-find
 find-next
 find-all
 find-prev
@@ -4053,9 +4053,9 @@ word-search-forward                 = None
 find-next                           = F3
 find-all                            = None
 find-prev                           = F2
-change                              = Ctrl-=
-change-all                          = None  # Not recommended to bind this to a shortcut.
-change-then-find                    = Ctrl--
+replace                              = Ctrl-=
+replace-all                         = None  # Not recommended to bind this to a shortcut.
+replace-then-find                   = Ctrl--
 
 set-find-everywhere                 = Alt-Ctrl-e
 set-find-node-only                  = Alt-Ctrl-n
@@ -7133,7 +7133,7 @@ do-nothing                          ! tree = Ctrl-p   #Does not work in headline
 
 #Replace and find next (user prompted) (search direction taken from last use of '/' or '?')
 enter-tree-replace-string-mode      ! tree = Alt-/    #Prompt for search &amp; replace string
-change-then-find                    ! tree = Alt-p    #Replace then search (use after Alt-/)
+replace-then-find                   ! tree = Alt-p    #Replace then search (use after Alt-/)
 
 #Node create/delete/copy/paste commands
 #--------------------------------------
@@ -7452,7 +7452,7 @@ enter-body-paste-then-find-mode     ! body = Ctrl-p   #Replace then find next fr
 
 #Replace and find next 'simple' string (search direction taken from last use of '/' or '?')
 enter-body-replace-string-mode      ! body = Alt-/    #Prompt for search &amp; replace string
-change-then-find                    ! body = Alt-p    #Replace then search (use after Alt-/)
+replace-then-find                   ! body = Alt-p    #Replace then search (use after Alt-/)
 
 #Mark and go to mark commands
 #----------------------------
