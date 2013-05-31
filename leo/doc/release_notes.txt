@@ -668,7 +668,7 @@ c.frame.onBodyChanged(v,"Change",oldText=oldText). Leo does not handle undo
 automatically. Indeed, Leo makes no assumptions whatever about what the change
 script really does.
 
-Leo executes the the change script repeatedly when you press the Change All
+Leo executes the the change script repeatedly when you press the Replace All
 button. Just as with the Find All command, Leo keeps executing the change script
 until app.searchDict["continue"] evaluates to false.
 
@@ -1138,7 +1138,7 @@ c.frame.onBodyChanged(v,"Change",oldText=oldText). Leo does not handle undo
 automatically. Indeed, Leo makes no assumptions whatever about what the change
 script really does.
 
-Leo executes the the change script repeatedly when you press the Change All
+Leo executes the the change script repeatedly when you press the Replace All
 button. Just as with the Find All command, Leo keeps executing the change script
 until app.searchDict["continue"] evaluates to false.
 

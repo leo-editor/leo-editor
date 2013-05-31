@@ -1949,9 +1949,6 @@ The main features of Leo 4.4 are:
     expand-pane
     find-again
     find-all
-    find-tab-change
-    find-tab-change-all
-    find-tab-change-then-find
     find-tab-find command
     find-tab-find-previous
     free-text-widgets

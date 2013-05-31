@@ -31,7 +31,7 @@
 # 
 # New in Leo 4.3: u.beforeChangeGroup and u.afterChangeGroup allow multiple calls
 # to u.beforeX and u.afterX methods to be treated as a single undoable entry. See
-# the code for the Change All, Sort, Promote and Demote commands for examples.
+# the code for the Replace All, Sort, Promote and Demote commands for examples.
 # u.before/afterChangeGroup substantially reduce the number of u.before/afterX
 # methods needed.
 # 

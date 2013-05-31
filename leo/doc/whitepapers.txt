@@ -375,7 +375,7 @@ script.  The change script is responsible for:
 Some details:
 
 - When executing the search and change scripts when the user selects the Find
-  All or Change All commands, Leo executes the find or change scripts repeatedly
+  All or Replace All commands, Leo executes the find or change scripts repeatedly
   only if app.searchDict.get("continue") evaluates to True. Otherwise these
   scripts are only executed once. Otherwise, scripts can use app.searchDict as
   they please.

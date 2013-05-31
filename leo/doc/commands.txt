@@ -1000,7 +1000,7 @@ to a string. The ``execute-script`` command sets app.scriptDict["script1"]
 to the value of the script before preprocessing, and sets
 app.scriptDict["script2"] to the value of the script after preprocessing.
 Scripts may examine and change app.scriptDict as they please.
-.. @+node:EKR.20040524104904.118: *4* Finding and changing text
+.. @+node:EKR.20040524104904.118: *4* Finding and replacing text
 .. @+node:ekr.20120319065417.8792: *5* Overview
 Leo supports a wide array of commands for searching and replacing
 text. The typical way to find text is with the
@@ -1032,19 +1032,19 @@ The ``find-all`` command prints all matches in the log pane. The
 called Found: *<your search pattern>*. This node contains clones of the
 found nodes. The ``clone-find-all-flattened`` commands includes all found
 nodes, even if they are also children of previously found nodes.
-.. @+node:ekr.20120319065417.8797: *5* Change commands
+.. @+node:ekr.20120319065417.8797: *5* Replace commands
 The ``replace-string`` (Ctrl-Shift-R) command prompts for a search string.
 Type <Return> to end the search string. The command will then prompt for
 the replacement string. Typing a second <Return> key will place both
 strings in the Find tab and executes a **find** command, that is,
 search-with-present-options.
 
-The ``change`` (Ctrl-=) command replaces the selected text with the
-'change' text in the Find tab. The ``change-then-find`` (Ctrl--) command
-replaces the selected text with the 'change' text in the Find tab, then
-executes the find command again. These commands can simulate any kind of
-query-replace command. The ``change-all`` changes all occurrences of the
-'find' text with the 'change' text.
+The ``replace`` (Ctrl-=) command replaces the selected text with the
+'change' text in the Find tab. The ``replace-then-find`` (Ctrl--)
+command replaces the selected text with the 'change' text in the Find
+tab, then executes the find command again. These commands can simulate
+any kind of query-replace command. The ``replace-all`` command changes
+all occurrences of the 'find' text with the 'change' text.
 .. @+node:ekr.20120319065417.8798: *5* Incremental find commands
 Incremental find commands move through the text as you type individual
 characters. Typing <BackSpace> backtracks the search. To repeat an

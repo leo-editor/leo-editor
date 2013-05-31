@@ -39,12 +39,12 @@ import re
 # 3. When incremental Find or Change commands succeed they must leave the Leo
 #    window in the proper state to execute another incremental command. We restore
 #    the Leo window as it was on entry whenever an incremental search fails and
-#    after any Find All and Change All command.
+#    after any Find All and Replace All command.
 # 
 # Initialization involves setting the c, p, in_headline, wrapping and s_ctrl
 # ivars. Setting in_headline is tricky; we must be sure to retain the state of the
 # outline pane until initialization is complete. Initializing the Find All and
-# Change All commands is much easier because such initialization does not depend
+# Replace All commands is much easier because such initialization does not depend
 # on the state of the Leo window.
 # 
 # Using Tk.Text widgets for both headlines and body text results in a huge
@@ -227,7 +227,7 @@ class leoFind:
         self.oops()
     #@+node:ekr.20060123065756.1: *3* Top Level Buttons
     #@+node:ekr.20031218072017.3057: *4* changeAllButton
-    # The user has pushed the "Change All" button from the find panel.
+    # The user has pushed the "Replace All" button from the find panel.
 
     def changeAllButton(self):
 
@@ -381,7 +381,7 @@ class leoFind:
 
         self.update_ivars()
     #@+node:ekr.20031218072017.3067: *3* Find/change utils
-    #@+node:ekr.20031218072017.2293: *4* batchChange (leoFind) (sets start of change-all group)
+    #@+node:ekr.20031218072017.2293: *4* batchChange (leoFind) (sets start of replace-all group)
     #@+at This routine performs a single batch change operation, updating the
     # head or body string of p and leaving the result in s_ctrl. We update
     # the body if we are changing the body text of c.currentVnode().
@@ -453,7 +453,7 @@ class leoFind:
 
         # g.trace('leoFind',g.callers())
 
-        c = self.c ; u = c.undoer ; undoType = 'Change All'
+        c = self.c ; u = c.undoer ; undoType = 'Replace All'
         current = c.p
         if not self.checkArgs(): return
         self.initInHeadline()
@@ -573,7 +573,7 @@ class leoFind:
 
     def doChangeAllScript (self):
 
-        """The user has just pressed the Change All button with script-change box checked.
+        """The user has just pressed the Replace All button with script-change box checked.
 
         N.B. Only this code is executed."""
 
@@ -1128,7 +1128,7 @@ class leoFind:
             val = False
         return val
     #@+node:ekr.20031218072017.3084: *4* initBatchCommands
-    # Initializes for the Find All and Change All commands.
+    # Initializes for the Find All and Replace All commands.
 
     def initBatchCommands (self):
 

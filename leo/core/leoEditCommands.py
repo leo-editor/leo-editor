@@ -7855,9 +7855,9 @@ class helpCommandsClass (baseEditCommandsClass):
         @bool show_only_find_tab_options = True
 
           When True (recommended), the Find tab
-          does not show the 'Find', 'Change',
-          'Change, Then Find', 'Find All' and
-          'Change All' buttons.
+          does not show the 'Find', 'Replace',
+          'Replace, Then Find', 'Find All' and
+          'Replace All' buttons.
 
         @bool minibufferSearchesShowFindTab = True
 
@@ -8014,12 +8014,12 @@ class helpCommandsClass (baseEditCommandsClass):
         side effect, because of the following
         commands...
 
-        change (Ctrl-=)
+        replace (Ctrl-=)
 
           Replaces the selected text with the
           'change' text in the Find tab.
 
-        change-then-find (Ctrl--)
+        replace-then-find (Ctrl--)
 
           Replaces the selected text with the
           'change' text in the Find tab, then
@@ -8029,9 +8029,9 @@ class helpCommandsClass (baseEditCommandsClass):
         can simulate any kind of query-replace
         command.
 
-        change-all
+        replaces-all
 
-          Changes all occurrences of the 'find'
+          Replaces all occurrences of the 'find'
           text with the 'change' text.
           Important: the radio buttons in the
           Find tab (Entire Outline, Suboutline
@@ -9833,7 +9833,7 @@ class minibufferFind (baseEditCommandsClass):
     #@+node:ekr.20070105123800: *4* changeAll (minibufferFind)
     def changeAll (self,event):
 
-        k = self.k ; tag = 'change-all' ; state = k.getState(tag)
+        k = self.k ; tag = 'replace-all' ; state = k.getState(tag)
 
         if state == 0:
             w = self.editWidget(event) # sets self.w
@@ -9841,12 +9841,12 @@ class minibufferFind (baseEditCommandsClass):
             # Bug fix: 2009-5-31.
             # None denotes that we use the present value of the option.
             self.setupArgs(forward=None,regexp=None,word=None)
-            k.setLabelBlue('Change All From: ',protect=True)
+            k.setLabelBlue('Replace All From: ',protect=True)
             k.getArg(event,tag,1,self.changeAll)
         elif state == 1:
             self._sString = k.arg
             self.updateFindList(k.arg)
-            s = 'Change All: %s With: ' % (self._sString)
+            s = 'Replace All: %s With: ' % (self._sString)
             k.setLabelBlue(s,protect=True)
             self.addChangeStringToLabel()
             k.getArg(event,tag,2,self.changeAll,completion=False,prefix=s)
@@ -10188,9 +10188,10 @@ class searchCommandsClass (baseEditCommandsClass):
             'clone-find-all':                       self.cloneFindAll,
             'clone-find-all-flattened':             self.cloneFindAllFlattened,
 
-            'change':                               self.findTabChange,
-            'change-all':                           self.changeAll,
-            'change-then-find':                     self.findTabChangeThenFind,
+            # These are now replace-xxx.
+            # 'change':                               self.findTabChange,
+            # 'change-all':                           self.changeAll,
+            # 'change-then-find':                     self.findTabChangeThenFind,
 
             'find-all':                             self.findAll,
             'find-clone-all':                       self.cloneFindAll, # Synonym.
@@ -10207,7 +10208,10 @@ class searchCommandsClass (baseEditCommandsClass):
             'isearch-backward-regexp':              self.isearchBackwardRegexp,
             'isearch-with-present-options':         self.isearchWithPresentOptions,
 
+            'replace':                              self.findTabChange,
+            'replace-all':                          self.changeAll,
             'replace-string':                       self.replaceString,
+            'replace-then-find':                    self.findTabChangeThenFind,
 
             're-search-forward':                    self.reSearchForward,
             're-search-backward':                   self.reSearchBackward,
@@ -10371,7 +10375,7 @@ class searchCommandsClass (baseEditCommandsClass):
         self.getHandler().toggleOption(ivar)
     #@+node:ekr.20060124093828: *5* Find wrappers
     def changeAll(self,event=None):
-        '''Execute the 'Change All' command with the settings shown in the Find tab.'''
+        '''Execute the 'Replace All' command with the settings shown in the Find tab.'''
         self.getHandler().changeAll(event)
 
     def cloneFindAll (self,event):

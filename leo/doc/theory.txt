@@ -182,13 +182,13 @@ handled properly. The following principles govern the LeoFind class:
 3.  When incremental Find or Change commands succeed they must leave the Leo
     window in the proper state to execute another incremental command. We
     restore the Leo window as it was on entry whenever an incremental search
-    fails and after any Find All and Change All command. Initialization involves
+    fails and after any Find All and Replace All command. Initialization involves
     setting the self.c, self.v, self.in_headline, self.wrapping and
     self.s_text ivars.
 
 Setting self.in_headline is tricky; we must be sure to retain the state of the
 outline pane until initialization is complete. Initializing the Find All and
-Change All commands is much easier because such initialization does not depend
+Replace All commands is much easier because such initialization does not depend
 on the state of the Leo window. Using the same kind of text widget for both
 headlines and body text results in a huge simplification of the code.
 

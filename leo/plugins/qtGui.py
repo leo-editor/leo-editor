@@ -9573,7 +9573,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
                 if trace: g.trace('clearing cache',g.callers())
                 self.c.p.v.colorCache = None # Kill the color caching.
-    #@+node:ekr.20110605121601.18568: *4* rehighlight  (leoQtSyntaxhighligher) ***
+    #@+node:ekr.20110605121601.18568: *4* rehighlight  (leoQtSyntaxhighligher) & helper
     def rehighlight (self,p):
 
         '''Override base rehighlight method'''
@@ -9609,7 +9609,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         if trace:
             g.trace('recolors: %4s %2.3f sec' % (
                 self.colorer.recolorCount-n,time.time()-t1))
-    #@+node:ekr.20121003051050.10201: *4* rehighlight_with_cache (leoQtSyntaxHighlighter)
+    #@+node:ekr.20121003051050.10201: *5* rehighlight_with_cache (leoQtSyntaxHighlighter)
     def rehighlight_with_cache (self,bunch):
 
         '''Rehighlight the block from bunch, without calling QSH.rehighlight.
