@@ -1,13 +1,9 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130415133445.2159: * @file leo-editor/setup.py
+#@+node:maphew.20130530154450.1707: * @file B:/apps/leo/trunk/setup.py
 #@@language python
 #@@tabwidth -4
 #@+others
 #@+node:ville.20090213231648.2: ** setup declarations
-
-#from setuptools import setup,find_packages
-
-
 #if 'install' in sys.argv:
 #    print "WARNING: 'setup.py install' is known to not work."
 #    print "Either use 'setup.py develop', or run launchLeo.py directly"
@@ -15,10 +11,12 @@
 
 # TODO: sanitize this list, not all needs to be installed
 
-from distutils.core import setup
+# from distutils.core import setup
 from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
 import os,fnmatch
+from setuptools import setup, find_packages
+
 #@+node:maphew.20130503222911.1635: ** Get description
 try:
     long_description = open('README.TXT', 'rt').read()
@@ -26,13 +24,13 @@ except IOError:
     long_description = """
 Leo is an outline-oriented IDE written in 100% pure Python.
 Leo features a multi-window outlining editor, Python colorizing,
-powerful outline commands and many other things, including 
+powerful outline commands and many other things, including
 unlimited Undo/Redo and an integrated Python shell(IDLE) window.
 Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Requires PyQt and SIP preinstalled.
     """
 #@+node:maphew.20130508020338.1645: ** Get version
-import leo
+import leo.core.leoVersion
 version = '{0}-build-{1}'.format(leo.core.leoVersion.version, leo.core.leoVersion.build)
 #@+node:ville.20090213231648.3: ** fullsplit
 import sys
@@ -74,12 +72,14 @@ for dirpath, dirnames, filenames in os.walk(leo_dir):
     # Ignore dirnames that start with '.'
     for i, dirname in enumerate(dirnames):
         if dirname.startswith('.'): del dirnames[i]
-    if '__init__.py' in filenames:
-        fsplit = fullsplit(dirpath)
-        packages.append('.'.join(fsplit))
-    elif filenames:
+    # if '__init__.py' in filenames:
+        # fsplit = fullsplit(dirpath)
+        # packages.append('.'.join(fsplit))
+    if filenames:
         if not any(pat in dirpath for pat in scrub_datafiles):
             data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
+
+packages = find_packages()
 
 import pprint
 print("data files")
@@ -96,8 +96,6 @@ print("packages (post-cleanup)")
 pprint.pprint(packages)
 
 #cleanup unwanted data files
-
-
 #@+node:ville.20090213231648.6: ** bdist_wininst hack
 # Small hack for working with bdist_wininst.
 # See http://mail.python.org/pipermail/distutils-sig/2004-August/004134.html
@@ -113,7 +111,7 @@ datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.
 # variable order matches order on pkg info page, but that's just a niceity
 # https://testpypi.python.org/pypi?name=leo-editor&version=4.10-final&:action=submit_form
 setup(
-    name = 'leo-editor',
+    name = 'leo',
     version = version,
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
@@ -132,7 +130,7 @@ setup(
     requires = ['docutils'],
 
     #provides = [],
-    #obsoletes= [],    
+    #obsoletes= [],
     classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Win32 (MS Windows)',
@@ -152,17 +150,17 @@ setup(
 
     packages = packages,
     data_files = data_files,
-    package_data = {'leo.plugins' : datapats },
-    scripts = ['leo/scripts/leo'],
+    #package_data = {'leo.plugins' : datapats },
+    package_data = {'' : datapats }, #no need to restrict to just plugins(?)
+    scripts = ['leo-install.py'],
 
-    #entry_points = {
-    #    'console_scripts': [
-    #    ],
-
-    #'gui_scripts' : [
-    # 'leo = leo.core.runLeo:run'
-    # ]
-    #    }
-
+    entry_points = {
+        'console_scripts': [
+        'leoc = leo.core.runLeo:run'
+        ],
+        'gui_scripts' : [
+        'leo = leo.core.runLeo:run'
+        ]
+       }
 )
 #@-leo
