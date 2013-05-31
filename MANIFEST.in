@@ -1,0 +1,17 @@
+include *.TXT
+include launchLeo.py
+include profileLeo.py
+include pylint-leo.bat
+include pylint-leo.py
+recursive-exclude leo *.pyc *.pyo
+
+# same as data_pat in setup.py
+recursive-include leo *.tix *.GIF *.dbm *.conf *.TXT *.xml *.gif *.leo *.def *.svg *.ini *.six *.bat *.cat *.pro *.sh *.xsl *.bmp *.js *.ui *.rix *.pmsp  *.pyd *.png *.alg *.php *.css *.ico *.txt *.html  *.iix  *.w
+
+# same as scrub_datafiles in setup.py
+prune leo/extensions 
+prune leo/test
+prune leo/plugins/test
+prune leo/doc/html
+prune leo/__pycache__
+prune leo/*/__pycache__
