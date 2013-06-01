@@ -21,15 +21,17 @@ very quickly jump around between nodes in a file using this.
 
 Nodes can be added and removed from the display with the following mouse actions:
     
-**left-click on node**
+**left-click on bookmark**
     Jump to that node.
 **left-click on background**
     Add a bookmark at the position clicked, unless already present,
     in which case the existing link is highlighted.
-**control-left-click on node**
-    Remove node.
-**alt-left-click on node**
-    Edit clicked node in bookmark list, to change link text.
+**control-left-click on bookmark**
+    Remove bookmark.
+**alt-left-click on bookmark**
+    Edit clicked bookmark in bookmark list, to change link text.
+**control-alt-left-click on bookmark**
+    Update clicked bookmark to point to current node.
 **alt-left-click on background**
     Edit bookmark list.
     
@@ -241,13 +243,14 @@ class BookMarkDisplay:
         
         def capture_modifiers(event, te=te, prev=te.mousePressEvent, owner=self):
             te.modifiers = event.modifiers()
-            if event.modifiers() & QtCore.Qt.AltModifier:
-                owner.edit_bookmark(te, event.pos())
-                return
-            if (not te.anchorAt(event.pos()) and
-                not QtCore.Qt.ControlModifier & te.modifiers):
-                owner.add_bookmark(te, event.pos())
-                return
+            te.pos = event.pos()
+            if not te.anchorAt(event.pos()):  # clicked body, not anchor
+                if event.modifiers() == QtCore.Qt.AltModifier:
+                    owner.edit_bookmark(te, event.pos())
+                    return
+                if int(te.modifiers) == 0:
+                    owner.add_bookmark(te, event.pos())
+                    return
 
             return prev(event)
         
@@ -255,11 +258,18 @@ class BookMarkDisplay:
         
         def anchorClicked(url, c=self.c, p=p, te=te, owner=self):
             
-            if QtCore.Qt.AltModifier & te.modifiers:
+            if (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier) == te.modifiers:
+                owner.update_bookmark(str(url.toString()))
                 return
-            if QtCore.Qt.ControlModifier & te.modifiers:
+                
+            if QtCore.Qt.AltModifier == te.modifiers:
+                owner.edit_bookmark(te, te.pos)
+                return
+                
+            if QtCore.Qt.ControlModifier == te.modifiers:
                 owner.delete_bookmark(str(url.toString()))
-            else:
+                
+            else:  # go to bookmark
                 url = str(url.toString())
                 # g.trace(url,te)
                 # if QtCore.Qt.ShiftModifier & te.modifiers():
@@ -314,6 +324,31 @@ class BookMarkDisplay:
                 p0.deletePositionsInList([p1])
                 self.c.redraw()
                 break
+        
+        return None  # do not stop processing the select1 hook
+    #@+node:tbrown.20130601104424.55363: *3* update_bookmark
+    def update_bookmark(self, old_url):
+        
+        new_url = '#'+self.c.p.get_UNL(with_file=False)
+        
+        # COPIED from add_bookmark
+        # check it's not already present
+        try:
+            self.already = [i[1] for i in self.current_list].index(new_url)
+        except ValueError:
+            self.already = -1
+        if self.already != -1:
+            g.es("Bookmark for this node already present")
+            return self.show_list(self.current_list)
+        
+        index = [i[1] for i in self.current_list].index(old_url)
+        
+        if index < 0:  # can't happen
+            return
+        
+        self.v.children[index].b = new_url
+        
+        g.es("Bookmark '%s' updated to current node" % self.v.children[index].h)
         
         return None  # do not stop processing the select1 hook
     #@+node:tbrown.20130222093439.30275: *3* edit_bookmark
