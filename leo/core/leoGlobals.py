@@ -4256,15 +4256,19 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     try:
         if g.app.inBridge:
             s = p.b
-        elif p1:
-            s = p.b # Bug fix: Leo 8.8.4.
-        elif p == c.p:
-            if useSelectedText and w.hasSelection():
-                s = w.getSelectedText()
-            else:
-                s = w.getAllText()
+        elif w and p == c.p and useSelectedText and w.hasSelection():
+            s = w.getSelectedText()
         else:
             s = p.b
+        # elif p1:
+            # s = p.b # Bug fix: Leo 8.8.4.
+        # elif p == c.p:
+            # if useSelectedText and w.hasSelection():
+                # s = w.getSelectedText()
+            # else:
+                # s = w.getAllText()
+        # else:
+            # s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():
