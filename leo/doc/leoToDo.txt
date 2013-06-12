@@ -37,12 +37,19 @@ After the release:
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
 
-
 * Fix menu problem with Ubuntu Unity.
     - Create a dummy tab when only one tab would otherwise be opened.
     
 * Fix critical bugs.
     - Is the syntax-coloring bug still around?
+
+    ** Fix p.deletePositionsInList
+        new_createThinChild4 read error v.h: Add link to Leo's readthedocs page
+        headline: Add link to Leo's readthedocs page
+
+An Illustrated Guide to the Science of Global Warming Impacts: How We Know Inaction Is the Gravest Threat Humanity Faces
+
+99 One-Liners Rebutting Denier Talking Points — With Links To The Full Climate Science
 .. @+node:ekr.20130530110446.12450: *3* Fix syntax coloring bug?
 
     
