@@ -1,5 +1,5 @@
 ./MANIFEST
-./setup.cfg
+#./setup.cfg
 ./build
 ./dist
 leo/test/unittest/rst_write_test.txt

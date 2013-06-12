@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130530154450.1707: * @file B:/apps/leo/trunk/setup.py
+#@+node:maphew.20130530154450.1707: * @file setup.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -24,7 +24,7 @@ except IOError:
     long_description = """
 Leo is an outline-oriented IDE written in 100% pure Python.
 Leo features a multi-window outlining editor, Python colorizing,
-powerful outline commands and many other things, including
+powerful outline commands and many other things, including 
 unlimited Undo/Redo and an integrated Python shell(IDLE) window.
 Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Requires PyQt and SIP preinstalled.

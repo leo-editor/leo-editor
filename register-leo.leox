@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130501121440.1885: * @file register-leo.leox
+#@+node:maphew.20130609224433.1740: * @file register-leo.leox
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -36,7 +36,7 @@ def register_leo(pyexe, launchLeo, icon):
 
             SetValue(leoKey, None, REG_SZ, "Leo Editor File")
             SetValue(iconKey, None, REG_SZ, icon)
-            SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pywexe, launchLeo))
+            SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo))
             
             for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
                 CloseKey(k)
@@ -110,5 +110,5 @@ launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
 icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
 
 # use 'pywexe' instead to not open a console window when launching Leo
-register_leo(pyexe, launchLeo, icon)
+register_leo(pywexe, launchLeo, icon)
 #@-leo
