@@ -72,9 +72,9 @@
 <v t="ekr.20111017085134.16114"><vh>@@button outlineToClipboard</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"
-expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20051104082026,ekr.20120328102352.6937,ekr.20120328102352.6938,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
+<v t="ekr.20051110111150" a="E"
+expanded="ekr.20060531090036,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6938,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 </v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -91,7 +91,7 @@ expanded="ekr.20040715105834,ekr.20040714055306,ekr.20040713123617.1,ekr.2005022
 </v>
 </v>
 <v t="ekr.20121013084734.16370"><vh>Recursive import script (with cleanups)</vh>
-<v t="ekr.20121013084734.16371"><vh>class ImportController</vh>
+<v t="ekr.20121013084734.16371" a="E"><vh>class ImportController</vh>
 <v t="ekr.20121013084734.16372"><vh>Pass 1: import_dir</vh></v>
 <v t="ekr.20121013084734.16373"><vh>Pass 2: clean_all &amp; helpers</vh>
 <v t="ekr.20121013084734.16374"><vh>clean</vh></v>

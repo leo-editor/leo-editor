@@ -344,6 +344,75 @@ g.es('Outline in ' + os.path.abspath(titlename))
 
 c.frame.top.setStyleSheet(p.b)
 
+#@+node:maphew.20130607222534.1739: *3* @@button Run Elevated
+''' An experimental leo button which executes the currently selected node as a
+python script after invoking User Account Control (UAC).
+
+You could easily bork all your data or even your computer with this: it runs
+code with admin privileges, no sanity checking, and very limited feedback. By
+default tracebacks etc. are silently swallowed. The only feedback you'll get is
+what you explicitly add, and only to gui widgets or files on disk at that, as
+Windows has probably hidden the console window.
+
+    1. Copy and paste the full text from below into any Leo outline pane 
+    2. save and reopen the workbook to create the button 
+    3. navigate to a node and push the [run-elevated] button, but for heavens
+        sake be careful!
+    
+Limitations: 
+    - if Leo was started with pythonw.exe instead of python.exe there
+    is zero feedback for syntax errors etc. 
+    - the node script must not have any doublequotes -- "
+    - there may be length limitations, likely about 8k characters
+'''
+@others
+#@+node:maphew.20130608014320.1743: *4* imports
+import os
+import sys
+import ctypes
+import tempfile
+#@+node:maphew.20130608014320.1744: *4* Leo preparation
+g.es('Run-elevated on:', p.h)
+
+params = r'-ic "{}" '.format(p.b)    # pass body of current node to python as command line script
+# g.es(params)
+#@+node:maphew.20130608014320.1745: *4* UAC Elevation
+hwnd = 0                # parent window
+lpOperation = 'runas'   # force elevated UAC prompt
+lpFile = sys.executable # path to python
+lpParameters = params   # arguments to pass to python
+lpDirectory = tempfile.gettempdir() # working dir
+nShowCmd = 1            # window visibility, must be 1 for Leo.
+
+print(lpFile, lpParameters)
+# g.es(lpFile, lpParameters)
+retcode = ctypes.windll.shell32.ShellExecuteA(hwnd, lpOperation, lpFile, lpParameters, lpDirectory, nShowCmd)
+msg = 'Exit code: {0} - {1}'.format(retcode, ctypes.FormatError(retcode))
+print(msg)
+g.es(msg)
+
+@
+Full command executed when script is complete will resemble:
+
+C:\Python27\python.exe -ic "import \ntestfile = 'foo'\n...\n#end of file"
+#@+node:maphew.20130608014320.1742: *4* Resources
+# adapted from:
+
+# @url http://blog.pythonaro.com/2011/09/python-wmi-services-and-uac.html
+# @url http://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
+# @url http://pypeelf.googlecode.com/svn/branches/third-party/winappdbg-1.3/winappdbg/win32/shell32.py
+
+# Launching Applications (ShellExecute, ShellExecuteEx, SHELLEXECUTEINFO)
+# @url http://msdn.microsoft.com/en-us/library/windows/desktop/bb776886%28v=vs.85%29.aspx
+#@+node:maphew.20130608014320.1741: *3* Run Elevated test
+import os, sys
+testfile = 'c:/windows/__delete_this_file__'
+f = open(testfile,'w')
+f.write('this is a dummy file for Leo run-elevated button script, please get rid of it\n')
+f.close()
+
+print('Look for {} and remove it. If it does not exist, the test has failed'.format(testfile))
+os.startfile('c:/windows')
 #@+node:ekr.20051110105946: ** Find scripts
 #@+node:ekr.20051110105027.159: *3* Find and replace all functions in leoGlobals.py
 import string
