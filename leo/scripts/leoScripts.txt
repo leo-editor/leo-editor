@@ -369,23 +369,27 @@ Limitations:
 #@+node:maphew.20130608014320.1743: *4* imports
 import os
 import sys
-import ctypes
-import tempfile
 #@+node:maphew.20130608014320.1744: *4* Leo preparation
 g.es('Run-elevated on:', p.h)
 
-params = r'-ic "{}" '.format(p.b)    # pass body of current node to python as command line script
+# -i : ask python interpreter to stay open when done, to see messages
+# -c : pass body of current node to python as command line script
+params = r'-ic "{}" '.format(p.b)
 # g.es(params)
 #@+node:maphew.20130608014320.1745: *4* UAC Elevation
+import ctypes
+import tempfile
+
 hwnd = 0                # parent window
 lpOperation = 'runas'   # force elevated UAC prompt
 lpFile = sys.executable # path to python
+lpFile = lpFile.replace('pythonw.exe', 'python.exe') # force console python, only way to see messages
 lpParameters = params   # arguments to pass to python
 lpDirectory = tempfile.gettempdir() # working dir
 nShowCmd = 1            # window visibility, must be 1 for Leo.
 
 print(lpFile, lpParameters)
-# g.es(lpFile, lpParameters)
+g.es(lpFile, lpParameters)
 retcode = ctypes.windll.shell32.ShellExecuteA(hwnd, lpOperation, lpFile, lpParameters, lpDirectory, nShowCmd)
 msg = 'Exit code: {0} - {1}'.format(retcode, ctypes.FormatError(retcode))
 print(msg)

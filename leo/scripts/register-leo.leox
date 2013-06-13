@@ -3,7 +3,7 @@
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:maphew.20130611235500.2659: ** docstring
+#@+node:maphew.20130510011223.1645: ** docstring
 '''Tell Windows how to handle .leo files, enables double clicking on them to open.
 
 To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
@@ -15,7 +15,7 @@ Resources used:
    @url  http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
    @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
 '''
-#@+node:maphew.20130611235500.2660: ** register_leo
+#@+node:maphew.20130509185752.1607: ** register_leo
 def register_leo(pyexe, launchLeo, icon):
     '''Create registry key for Leo file type, set default icon and launch command    
     '''    
@@ -26,7 +26,7 @@ def register_leo(pyexe, launchLeo, icon):
     if g.os_path_exists(icon):
         g.es("Found:", icon)
         #@+<<filetype>>
-        #@+node:maphew.20130611235500.2661: *3* <<filetype>>
+        #@+node:maphew.20130515233516.1659: *3* <<filetype>>
         try:
             leoKey = CreateKey(HKEY_CLASSES_ROOT, "Leo.File")
             iconKey = CreateKey(leoKey, "DefaultIcon")
@@ -47,7 +47,7 @@ def register_leo(pyexe, launchLeo, icon):
             g.es("Failed:", e)
         #@-<<filetype>>
         #@+<<association>>
-        #@+node:maphew.20130611235500.2662: *3* <<association>>
+        #@+node:maphew.20130515233516.1660: *3* <<association>>
         try:
             leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leo")
             SetValue(leoKey, None, REG_SZ, "Leo.File")
@@ -65,7 +65,7 @@ def register_leo(pyexe, launchLeo, icon):
         #@-<<association>>
     else:
         g.es("LeoDoc.ico not in expected location, can't continue.")  
-#@+node:maphew.20130611235500.2663: *3* sample registry outcome
+#@+node:maphew.20130510011223.1646: *3* sample registry outcome
 '''This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code is:
     
