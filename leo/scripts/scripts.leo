@@ -78,10 +78,7 @@ expanded="ekr.20060531090036,maphew.20130607222534.1739,ekr.20040713123617.1,ekr
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 <v t="maphew.20130612230051.2793" a="E"><vh>Windows</vh>
 <v t="maphew.20130613230258.2801" a="E"><vh>@file elevate.py</vh></v>
-<v t="maphew.20130612230051.2796"><vh>@file register-leo-elevated.leox</vh></v>
-<v t="maphew.20130613230258.2799"><vh>@file unregister-leo-elevated.leox</vh></v>
-<v t="maphew.20130611235500.2658"
-expanded="maphew.20130509185752.1607,"><vh>@file register-leo.leox</vh></v>
+<v t="maphew.20130611235500.2658"><vh>@file register-leo.leox</vh></v>
 <v t="maphew.20130611235500.2665"><vh>@file unregister-leo.leox</vh></v>
 </v>
 </v>
@@ -1549,6 +1546,6 @@ p.contract()
 c.redraw()
 print('done')
 </t>
-<t tx="maphew.20130612230051.2793"></t>
+<t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>
 </leo_file>
