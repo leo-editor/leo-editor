@@ -77,7 +77,9 @@
 expanded="ekr.20060531090036,maphew.20130607222534.1739,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6938,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 <v t="maphew.20130612230051.2793" a="E"><vh>Windows</vh>
-<v t="maphew.20130612230051.2796" a="E"><vh>@file register-leo-elevated.leox</vh></v>
+<v t="maphew.20130613230258.2801" a="E"><vh>@file elevate.py</vh></v>
+<v t="maphew.20130612230051.2796"><vh>@file register-leo-elevated.leox</vh></v>
+<v t="maphew.20130613230258.2799"><vh>@file unregister-leo-elevated.leox</vh></v>
 <v t="maphew.20130611235500.2658"
 expanded="maphew.20130509185752.1607,"><vh>@file register-leo.leox</vh></v>
 <v t="maphew.20130611235500.2665"><vh>@file unregister-leo.leox</vh></v>
