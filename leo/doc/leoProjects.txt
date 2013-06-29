@@ -3495,6 +3495,8 @@ The find/change text widgets span the second and third columns.
 #@+node:ekr.20130426101041.10499: *4* Fixed undo problems in headlines
 # The fix was simply to call c.endEdiing in undo and redo *before* getting the undo params.
 # This allows c.endEditing to properly set the undo stack.
+#@+node:ekr.20130612134617.12551: *4* Execute selected script now works again
+# The change was to g.getScript.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
