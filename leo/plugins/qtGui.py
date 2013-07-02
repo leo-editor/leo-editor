@@ -9539,7 +9539,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     def __init__ (self,c,w,colorizer):
 
         self.c = c
-        self.w = w
+        self.w = w # w is a LeoQTextBrowser.
 
         # print('leoQtSyntaxHighlighter.__init__',w)
 
