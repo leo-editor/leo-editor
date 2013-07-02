@@ -5,6 +5,8 @@
 
 '''qt gui plugin.'''
 
+NEW_COLORER = True
+
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
@@ -28,9 +30,10 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins
     # Uses leoPlugins.TryNext.
 
-
-
 import leo.plugins.baseNativeTree as baseNativeTree
+
+if NEW_COLORER:
+    import leo.core.qsyntaxhighlighter as qsh
 
 import datetime
 import os
@@ -9202,7 +9205,10 @@ class leoQtColorizer:
         self.showInvisibles = False # 2010/1/2
 
         # Step 2: create the highlighter.
-        self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
+        if NEW_COLORER:
+            self.highlighter = LeoSyntaxHighlighter(c,w,colorizer=self)
+        else:
+            self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
         self.colorer = self.highlighter.colorer
         w.leo_colorizer = self
 
@@ -9394,22 +9400,27 @@ class leoQtColorizer:
     #@+node:ekr.20110605121601.18561: *4* setHighlighter
     # Called *only* from leoTree.setBodyTextAfterSelect
 
+    # def setHighlighter (self,p):
+
+        # trace = False and not g.unitTesting
+        # if self.enabled:
+            # self.flag = self.updateSyntaxColorer(p)
+            # if self.flag:
+                # # Do a full recolor, but only if we aren't changing nodes.
+                # if self.c.currentPosition() == p:
+                    # self.highlighter.rehighlight(p)
+            # else:
+                # self.highlighter.rehighlight(p) # Do a full recolor (to black)
+        # else:
+            # self.highlighter.rehighlight(p) # Do a full recolor (to black)
+
+        # if trace: g.trace('enabled: %s flag: %s %s' % (
+            # self.enabled,self.flag,p.h),g.callers())
+            
     def setHighlighter (self,p):
 
-        trace = False and not g.unitTesting
         if self.enabled:
             self.flag = self.updateSyntaxColorer(p)
-            if self.flag:
-                # Do a full recolor, but only if we aren't changing nodes.
-                if self.c.currentPosition() == p:
-                    self.highlighter.rehighlight(p)
-            else:
-                self.highlighter.rehighlight(p) # Do a full recolor (to black)
-        else:
-            self.highlighter.rehighlight(p) # Do a full recolor (to black)
-
-        if trace: g.trace('enabled: %s flag: %s %s' % (
-            self.enabled,self.flag,p.h),g.callers())
     #@+node:ekr.20110605121601.18562: *4* updateSyntaxColorer
     def updateSyntaxColorer (self,p):
 
@@ -9641,6 +9652,123 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         if trace:
             g.trace('%2.3f sec %s' % (time.time()-t1))
     #@-others
+#@+node:ekr.20130702040231.12633: *3* LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter) NEW
+# This is c.frame.body.colorizer.highlighter
+
+if NEW_COLORER:
+
+    class LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter):
+    
+        '''A subclass of qsh.LeoSyntaxHighlighter that overrides
+        the highlightBlock and rehighlight methods.
+    
+        All actual syntax coloring is done in the jeditColorer class.'''
+    
+        #@+others
+        #@+node:ekr.20130702040231.12634: *4* ctor (LeoSyntaxHighlighter)
+        def __init__ (self,c,w,colorizer):
+
+            self.c = c
+            self.w = w # w is a LeoQTextBrowser.
+            assert isinstance(w,LeoQTextBrowser),w
+
+            # print('leoQtSyntaxHighlighter.__init__',w)
+
+            # Not all versions of Qt have the crucial currentBlock method.
+            self.hasCurrentBlock = hasattr(self,'currentBlock')
+
+            # Init the base class.
+            qsh.LeoSyntaxHighlighter.__init__(self,w)
+
+            self.colorizer = colorizer
+
+            self.colorer = jEditColorizer(c,
+                colorizer=colorizer,
+                highlighter=self,
+                w=c.frame.body.bodyCtrl)
+        #@+node:ekr.20130702040231.12635: *4* highlightBlock (LeoSyntaxHighlighter)
+        def highlightBlock (self,s):
+            """ Called by QSyntaxHiglighter """
+
+            trace = True and not g.unitTesting
+
+            if self.hasCurrentBlock and not self.colorizer.killColorFlag:
+                if g.isPython3:
+                    s = str(s)
+                else:
+                    s = unicode(s)
+                self.colorer.recolor(s)
+                v = self.c.p.v
+                if hasattr(v,'colorCache') and v.colorCache and not self.colorizer.changingText:
+                    if trace: g.trace('clearing cache',g.callers())
+                    self.c.p.v.colorCache = None # Kill the color caching.
+        #@+node:ekr.20130702040231.12636: *4* rehighlight  (LeoSyntaxHighligher) & helper
+        def rehighlight (self,p):
+
+            '''Override base rehighlight method'''
+
+            trace = False and not g.unitTesting
+            c = self.c ; tree = c.frame.tree
+            self.w = c.frame.body.bodyCtrl.widget
+            if trace: t1 = time.time()
+            # g.trace('(LeoSyntaxHighlighter)',g.callers())
+
+            # Call the base class method, but *only*
+            # if the crucial 'currentBlock' method exists.
+            n = self.colorer.recolorCount
+            if self.colorizer.enabled and self.hasCurrentBlock:
+                # Lock out onTextChanged.
+                old_selecting = tree.selecting
+                try:
+                    tree.selecting = True
+                    if False and (
+                        self.colorizer.colorCacheFlag
+                        and hasattr(p.v,'colorCache') and p.v.colorCache
+                        and not g.unitTesting
+                    ):
+                        # Should be no need to init the colorizer.
+                        self.rehighlight_with_cache(p.v.colorCache)
+                    else:
+                        self.colorer.init(p,p.b)
+                        qsh.LeoSyntaxHighlighter.rehighlight(self)
+                finally:
+                    tree.selecting = old_selecting
+
+            if trace:
+                g.trace('recolors: %4s %2.3f sec' % (
+                    self.colorer.recolorCount-n,time.time()-t1))
+        #@+node:ekr.20130702040231.12637: *5* rehighlight_with_cache (leoSyntaxHighlighter)
+        def rehighlight_with_cache (self,bunch):
+
+            '''Rehighlight the block from bunch, without calling QSH.rehighlight.
+
+            - bunch.aList: a list of bunch2 objects.
+            - bunch.n: a block (line) number.
+            - bunch.v: the vnode.
+                - bunch2.i: the index of the block.
+                - bunch2.s: the contents of the block.
+                - bunch2.ranges: a list of QTextLayout.FormatRange objects.
+            '''
+
+            trace = False and not g.unitTesting
+            w = self.c.frame.body.bodyCtrl.widget # a subclass of QTextEdit.
+            doc = w.document()
+            if bunch.n != doc.blockCount():
+                return g.trace('bad block count: expected %s got %s' % (
+                    bunch.n,doc.blockCount()))
+            if trace:
+                t1 = time.time()
+            for i,bunch2 in enumerate(bunch.aList):
+                b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
+                layout = b.layout() # a QTextLayout.
+                if bunch2.s == g.u(b.text()):
+                    layout.setAdditionalFormats(bunch2.ranges)
+                else:
+                    return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
+                        i,bunch2.s,g.u(b.text())))
+            if trace:
+                g.trace('%2.3f sec %s' % (time.time()-t1))
+        #@-others
 #@+node:ekr.20110605121601.18569: *3* class jeditColorizer
 # This is c.frame.body.colorizer.highlighter.colorer
 
