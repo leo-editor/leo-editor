@@ -37,18 +37,18 @@ After the release:
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
 
+** Fix p.deletePositionsInList
+    https://groups.google.com/forum/#!topic/leo-editor/IR8tV9a99NY
+    
+    - new_createThinChild4 read error v.h: Add link to Leo's readthedocs page
+    
+    - headline: Add link to Leo's readthedocs page
+    
 * Fix menu problem with Ubuntu Unity.
     - Create a dummy tab when only one tab would otherwise be opened.
 
-* Is the syntax-coloring bug still around?
 
-** Fix p.deletePositionsInList
-    https://groups.google.com/forum/#!topic/leo-editor/IR8tV9a99NY
-    new_createThinChild4 read error v.h: Add link to Leo's readthedocs page
-    headline: Add link to Leo's readthedocs page
-.. @+node:ekr.20130530110446.12450: *3* Fix syntax coloring bug?
-
-    
+.. @+node:ekr.20130530110446.12450: *3* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
 .. @+node:ekr.20130529084731.12106: *3* Add link to Leo's readthedocs page 
 http://leo-editor.readthedocs.org/en/latest/

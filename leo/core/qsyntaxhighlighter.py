@@ -293,7 +293,7 @@ class LeoSyntaxHighlighter:
         
         '''Reformat at most 100 blocks.  Queue _idleReformatBlocks if more remain.'''
 
-        # g.trace(block,endPosition,forceHighlightOfNextBlock)
+        # g.trace(self.apply_count,id(block),endPosition,forceHighlightOfNextBlock)
         count = 0
         while True:
             if (

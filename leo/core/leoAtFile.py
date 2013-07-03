@@ -1113,7 +1113,6 @@ class atFile:
             trailingLine = " " + lastLines[j]
             out[k] = tag + trailingLine.rstrip() ; j -= 1
     #@+node:ekr.20041005105605.71: *3* Reading (4.x)
-    #@+node:ekr.20041005105605.72: *4* at.old/new_createThinChild4
     #@+node:ekr.20041005105605.73: *4* at.findChild4
     def findChild4 (self,headline):
 
@@ -1495,15 +1494,16 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self ; c = at.c ; indices = g.app.nodeIndices
-        if trace: g.trace(n,len(parent.children),parent.h,
+        if trace: g.trace(n,len(parent.children),parent.h,' -> ',headline)
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
-            ' -> ',headline)
+            
         gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
         if v:
             if gnx == v.fileIndex:
-                if v.h != headline:
+                # Always use v.h, regardless of headline.
+                if trace and v.h != headline:
                     g.trace('read error v.h: %s headline: %s' % (v.h,headline))
                 child = v
                 if n >= len(parent.children):
