@@ -2117,14 +2117,13 @@ child21 = make(child2,0,'child21')
 child31 = make(child3,0,'child31')
 # Create some clones.
 child4 = clone(child31,root,3)
-
 for z in root.self_and_subtree():
     z.setVisited()
 for z in child2,child31: # These should be moved.
     z.clearVisited()
-
-c.atFileCommands.deleteUnvisitedNodes(root)
-
+if 1:
+    c.atFileCommands.deleteUnvisitedNodes(root)
+    c.redraw()
 if 1:
     r = g.findNodeAnywhere(c,'Resurrected Nodes')
     assert r,'r'
@@ -2137,8 +2136,7 @@ if 1:
 if 1:
     delete_r()
     delete_children()
-
-c.redraw_now()
+c.redraw()
 #@+node:ekr.20110615130436.3319: *5* @test writing a .leo file retains orphan bits
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
@@ -14109,6 +14107,25 @@ for p in c.all_positions():
     assert p.v.b == p.v.bodyString()
     assert p.h == p.headString()
     assert p.v.h == p.v.headString()
+#@+node:ekr.20130524112342.4137: *4* @test new vnodes methods
+parent_v = p.parent().v or c.hiddenRootNode
+while p.hasChildren():
+    p.firstChild().doDelete()
+# print(parent_v,p.childIndex())
+if 0: # passes
+    p.v.cloneAsNthChild(parent_v,p.childIndex())
+if 1:
+    v2 = p.v.insertAsFirstChild()
+    v2.h = 'insertAsFirstChild'
+    v2 = p.v.insertAsLastChild()
+    v2.h = 'insertAsLastChild'
+    v2 = p.v.insertAsNthChild(1)
+    v2.h = 'insertAsNthChild(1)'
+p.expand()
+c.redraw()
+#@+node:ekr.20130703140318.4147: *5* insertAsFirstChild
+#@+node:ekr.20130703140318.4149: *5* insertAsNthChild(1)
+#@+node:ekr.20130703140318.4148: *5* insertAsLastChild
 #@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
@@ -14205,6 +14222,53 @@ assert p.__eq__(copy) is True
 assert p.__ne__(copy) is False
 assert p.__eq__(root) is False
 assert p.__ne__(root) is True
+#@+node:ekr.20130703132516.4188: *4* @test p.deletePositionsInList
+p1 = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete()
+root = p.insertAsLastChild()
+root.h = 'root'
+# Top level
+a1 = root.insertAsLastChild()
+a1.h = 'a'
+a2 = a1.clone()
+d1 = a1.insertAfter()
+d1.h = 'd'
+b1 = root.insertAsLastChild()
+b1.h = 'b'
+# Children of a.
+b11 = b1.clone()
+b11.moveToLastChildOf(a1)
+b12 = b11.clone()
+c2 = b11.insertAfter()
+c2.h = 'c'
+# Children of d
+b11 = b1.clone()
+b11.moveToLastChildOf(d1)
+def parent(p):
+    return p.stack[-1][0].h
+n = root.level()
+aList = []
+nodes = 0
+for p in root.subtree():
+    nodes += 1
+    if p.h == 'b' and p.level()-n != 1:
+         # print('found',p.level()-n,p.h,'parent:',p.stack[-1][0].h)
+         aList.append(p.copy())
+n_aList = len(aList)
+assert n_aList == 5,n_aList
+try:
+    root.deletePositionsInList(aList,tree=root)
+    # Make sure exactly len(aList) nodes have been deleted.
+    nodes2 = 0
+    for p in root.subtree():
+        nodes2 += 1
+    assert nodes2 == nodes - n_aList
+finally:
+    if 1:
+        while p1.hasChildren():
+            p1.firstChild().doDelete()
+c.redraw()
 #@+node:ekr.20040712101754.209: *4* @test p.hasNextBack
 for p in c.all_positions():
 

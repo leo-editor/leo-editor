@@ -151,11 +151,7 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20130524112342.4137"><vh>@test new vnodes methods</vh>
-<v t="ekr.20130529084206.4145"><vh>insertAsFirstChild</vh></v>
-<v t="ekr.20130529084206.4147"><vh>insertAsNthChild(1)</vh></v>
-<v t="ekr.20130529084206.4146"><vh>insertAsLastChild</vh></v>
-</v>
+<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -571,7 +567,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -914,6 +910,68 @@ for z in files:
 
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 </t>
+<t tx="ekr.20100802220019.5795">def clone (p,parent,n):
+    p2 = p.clone()
+    p2.moveToNthChildOf(parent,n)
+    return p2
+
+def make (parent,n,h):
+    child = parent.insertAsNthChild(n)
+    child.h = h
+    return child
+
+def delete_r():
+    '''Delete all 'Resurrected Nodes' nodes.'''
+    while True:
+        r = g.findNodeAnywhere(c,'Resurrected Nodes')
+        if r: r.doDelete(newNode=p)
+        else: break
+
+def delete_children():
+    # Delete all children of p.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=p)
+
+def test(p,h,tag):
+    assert p,'p'
+    assert p.h == 'From root','p.h %s' % tag
+    assert p.numberOfChildren() == 1,'number of children %s' % tag
+    assert p.firstChild().h == h,'child.h %s' % tag
+
+delete_r()
+delete_children()
+
+# Create some children.
+root = make(p,0,'root')
+child1 = make(root,0,'child1')
+child2 = make(root,1,'child2')
+child3 = make(root,2,'child3')
+child11 = make(child1,0,'child11')
+child21 = make(child2,0,'child21')
+child31 = make(child3,0,'child31')
+# Create some clones.
+child4 = clone(child31,root,3)
+for z in root.self_and_subtree():
+    z.setVisited()
+for z in child2,child31: # These should be moved.
+    z.clearVisited()
+if 1:
+    c.atFileCommands.deleteUnvisitedNodes(root)
+    c.redraw()
+if 1:
+    r = g.findNodeAnywhere(c,'Resurrected Nodes')
+    assert r,'r'
+    r1 = r.firstChild()
+    r2 = r1.next()
+    r3 = r2.next()
+    test(r1,'child2','r1')
+    test(r2,'child31','r2')
+    assert root.numberOfChildren() == 3,'root.n'
+if 1:
+    delete_r()
+    delete_children()
+c.redraw()
+</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -1155,23 +1213,5 @@ finally:
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
 </t>
-<t tx="ekr.20130524112342.4137">parent_v = p.parent().v or c.hiddenRootNode
-while p.hasChildren():
-    p.firstChild().doDelete()
-# print(parent_v,p.childIndex())
-if 0: # passes
-    p.v.cloneAsNthChild(parent_v,p.childIndex())
-if 1:
-    v2 = p.v.insertAsFirstChild()
-    v2.h = 'insertAsFirstChild'
-    v2 = p.v.insertAsLastChild()
-    v2.h = 'insertAsLastChild'
-    v2 = p.v.insertAsNthChild(1)
-    v2.h = 'insertAsNthChild(1)'
-p.expand()
-c.redraw()</t>
-<t tx="ekr.20130529084206.4145"></t>
-<t tx="ekr.20130529084206.4146"></t>
-<t tx="ekr.20130529084206.4147"></t>
 </tnodes>
 </leo_file>

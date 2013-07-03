@@ -1126,39 +1126,66 @@ class position (object):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
     #@+node:ekr.20100802121531.5804: *4* p.deletePositionsInList
-    def deletePositionsInList (self,aList,callback=None):
+    def deletePositionsInList (self,aList,callback=None,tree=None):
 
-        '''Traverse the tree starting from self until all nodes in aList have been
-        found.
-
-        This method calls the callback for any position in aList found in the range,
-        excluding any node whose ancestor has already been passed to the callback.
+        '''Safely delete all positions in aList that appear in the given tree,
+        or that appear anywhere in the outline if 'tree' is None.
+        
+        If a callback is given, the callback is called for every node in the list.
+        
+        Positions are deleted (or the callback is called) in reverse outline order.
+        This ensures that deleting a position has no effect on non-yet-deleted positions.
 
         The callback takes one explicit argument, p. As usual, the callback can bind
         values using keyword arguments. The callback may delete p or move p out of
         the range. The callback **must not** move p within range of the traversal.
-        If no callback is given, this method deletes all found nodes.
         '''
+
+        if not aList:
+            return
 
         if callback is None:
             def callback_f(p):
                 p.doDelete(newNode=None)
         else:
             callback_f = callback # To keep pylint happy.
-
-        p = self.copy()
-        while p and aList:
-            # g.trace(repr(p))
-            if p in aList:
-                aList.remove(p)
-                for z in aList:
-                    if p.isAncestorOf(z):
-                        aList.remove(z)
-                next = p.nodeAfterTree()
-                callback_f(p.copy())
-                p = next
+            
+        if 0:
+            # Find the last node of the tree.
+            c = self.v.context
+            if tree:
+                p = tree.lastNode()
+                first = tree.copy()
             else:
-                p.moveToThreadNext()
+                p = c.rootPosition()
+                first = p.copy()
+                while p.hasNext():
+                    p.moveToNext()
+                while p.hasChildren():
+                    p.moveToLastChild()
+            # Delete positions in reverse order.
+            while p and p != first:
+                if p in aList:
+                    back = p.threadBack()
+                    aList.remove(p)
+                    callback_f(p)
+                    p = back
+                else:
+                    p.moveToThreadBack()
+        else: # old code.
+            p = self.copy()
+            while p and aList:
+                # g.trace(repr(p))
+                if p in aList:
+                    aList.remove(p)
+                    for z in aList:
+                        if p.isAncestorOf(z):
+                            aList.remove(z)
+                    next = p.nodeAfterTree()
+                    callback_f(p.copy())
+                    p = next
+                else:
+                    p.moveToThreadNext()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
     #@+at This is the main delete routine.
     # It deletes the receiver's entire tree from the screen.

@@ -37,12 +37,7 @@ After the release:
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
 
-** Fix p.deletePositionsInList
-    https://groups.google.com/forum/#!topic/leo-editor/IR8tV9a99NY
-    
-    - new_createThinChild4 read error v.h: Add link to Leo's readthedocs page
-    
-    - headline: Add link to Leo's readthedocs page
+- Add link to Leo's readthedocs page
     
 * Fix menu problem with Ubuntu Unity.
     - Create a dummy tab when only one tab would otherwise be opened.
@@ -236,82 +231,6 @@ Traceback (most recent call last):
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20130510070942.10611: *4* Can undo headline put focus in headline?
 This would fix a reported bug.
-.. @+node:ekr.20130521122236.10867: *4* Rewrite or eliminate p.deletePositionsInList
-# Deleting all childs of a node:
-# https://groups.google.com/forum/?fromgroups#!topic/leo-editor/IR8tV9a99NY
-.. @+node:ekr.20100802121531.5804: *5* p.deletePositionsInList
-def deletePositionsInList (self,aList,callback=None):
-
-    '''Traverse the tree starting from self until all nodes in aList have been
-    found.
-
-    This method calls the callback for any position in aList found in the range,
-    excluding any node whose ancestor has already been passed to the callback.
-
-    The callback takes one explicit argument, p. As usual, the callback can bind
-    values using keyword arguments. The callback may delete p or move p out of
-    the range. The callback **must not** move p within range of the traversal.
-    If no callback is given, this method deletes all found nodes.
-    '''
-
-    if callback is None:
-        def callback_f(p):
-            p.doDelete(newNode=None)
-    else:
-        callback_f = callback # To keep pylint happy.
-
-    p = self.copy()
-    while p and aList:
-        # g.trace(repr(p))
-        if p in aList:
-            aList.remove(p)
-            for z in aList:
-                if p.isAncestorOf(z):
-                    aList.remove(z)
-            next = p.nodeAfterTree()
-            callback_f(p.copy())
-            p = next
-        else:
-            p.moveToThreadNext()
-.. @+node:ekr.20130523083607.10680: *5* @@test p.deletePositionsInList
-g.cls()
-root = g.findNodeInTree(c,p,'root')
-def parent(p):
-    return p.stack[-1][0].h
-n = root.level()
-aList = []
-for p in root.subtree():
-    if p.h == 'b' and p.level()-n != 1:
-         # print('found',p.level()-n,p.h,'parent:',p.stack[-1][0].h)
-         aList.append(p.copy())
-for p in aList:
-    print(parent(p),p.h)
-p.deletePositionsInList(aList)
-c.redraw()
-.. @+node:ekr.20130523083607.10707: *6* root
-.. @+node:ekr.20130523083607.10714: *7* a
-.. @+node:ekr.20130523083607.10718: *8* b
-.. @+node:ekr.20130523083607.10716: *8* c
-.. @+node:ekr.20130523083607.10718: *8* b
-.. @+node:ekr.20130523083607.10712: *7* d
-.. @+node:ekr.20130523083607.10718: *8* b
-.. @+node:ekr.20130523083607.10714: *7* a
-.. @+node:ekr.20130523083607.10718: *8* b
-.. @+node:ekr.20130523083607.10716: *8* c
-.. @+node:ekr.20130523083607.10718: *8* b
-.. @+node:ekr.20130523083607.10718: *7* b
-.. @+node:ekr.20130523083607.10690: *6* root(original)
-.. @+node:ekr.20130523083607.10697: *7* a
-.. @+node:ekr.20130523083607.10701: *8* b
-.. @+node:ekr.20130523083607.10699: *8* c
-.. @+node:ekr.20130523083607.10701: *8* b
-.. @+node:ekr.20130523083607.10695: *7* d
-.. @+node:ekr.20130523083607.10701: *8* b
-.. @+node:ekr.20130523083607.10697: *7* a
-.. @+node:ekr.20130523083607.10701: *8* b
-.. @+node:ekr.20130523083607.10699: *8* c
-.. @+node:ekr.20130523083607.10701: *8* b
-.. @+node:ekr.20130523083607.10701: *7* b
 .. @+node:ekr.20130506071114.15468: *3* Cool scripts to put **somewhere**
 .. @+node:ekr.20130506071114.15469: *4* push_to_Gist.txt
 # Leo button to publish selected node as Gist.
