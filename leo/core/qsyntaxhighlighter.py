@@ -57,6 +57,11 @@ class LeoSyntaxHighlighter:
         self.rehighlightPending = False
         self.inReformatBlocks = False
         
+        # Delayed coloring.
+        self.delayedBlock = None
+        self.delayedForceHighlight = False
+        self.delayedEndPosition = None
+        
         # Debugging.
         self.apply_count = 0
         
@@ -263,35 +268,28 @@ class LeoSyntaxHighlighter:
                     g.trace(z.start,z.length,z.format.foreground().color().getRgb())
             layout.setAdditionalFormats(ranges)
             self.doc.markContentsDirty(cb.position(),cb.length())
-    #@+node:ekr.20130701072841.12698: *3* _q_delayedRehighlight
-    def _q_delayedRehighlight(self):
+    #@+node:ekr.20130701072841.12698: *3* _q_delayedRehighlight (not used)
+    # Called only from the single-shot.
+
+    # def _q_delayedRehighlight(self):
         
-        if self.rehighlightPending:
-            self.rehighlightPending = False
-            LeoSyntaxHighlighter.rehighlight(self)
+        # if self.rehighlightPending:
+            # self.rehighlightPending = False
+            # LeoSyntaxHighlighter.rehighlight(self)
     #@+node:ekr.20130701072841.12677: *3* _q_reformatBlocks
     def _q_reformatBlocks(self,pos1,charsRemoved,charsAdded):
         
-        '''An event handler.'''
+        '''The actual contentsChange event handler.'''
         
         if not self.inReformatBlocks:
+            # g.trace(pos1,charsRemoved,charsAdded)
             self._reformatBlocks(pos1,charsRemoved,charsAdded)
-    #@+node:ekr.20130701072841.12679: *3* _reformatBlock
-    def _reformatBlock(self,block):
-
-        if self._currentBlock:
-            assert not self._currentBlock.isValid(),self._currentBlock
-        self._currentBlock = block
-        ### Should this be -0 ?
-        self.formatChanges = [QtGui.QTextFormat()] * (block.length()-1)
-            # self.formatChanges.fill(QTextCharFormat(),block.length()-1)
-        # g.trace(g.toUnicode(block.text()))
-        self.highlightBlock(block.text())
-        self._applyFormatChanges()
-        self._currentBlock = QtGui.QTextBlock()
-    #@+node:ekr.20130701072841.12678: *3* _reformatBlocks
+    #@+node:ekr.20130701072841.12678: *3* _reformatBlocks & helper
     def _reformatBlocks(self,pos1,charsRemoved,charsAdded):
         
+        '''The helper for the contentsChange event handler.'''
+
+        self._clearDelayedFormat() # Essential.
         doc = self.doc
         rehighlightPending = False
         block = doc.findBlock(pos1)
@@ -301,13 +299,64 @@ class LeoSyntaxHighlighter:
                 endPosition = lastBlock.position() + lastBlock.length()
             else:
                 endPosition = doc.size() ### doc.docHandle().length()
-            forceHighlightOfNextBlock = False
-            while block.isValid() and (block.position() < endPosition or forceHighlightOfNextBlock):
-                stateBeforeHighlight = block.userState()
-                self._reformatBlock(block)
-                forceHighlightOfNextBlock = (block.userState() != stateBeforeHighlight)
-                block = block.next()
-            self.formatChanges = []
+            self._boundedReformatBlocks(block,endPosition,forceHighlightOfNextBlock=False)
+    #@+node:ekr.20130702174205.12637: *4* _boundedReformatBlocks
+    def _boundedReformatBlocks(self,block,endPosition,forceHighlightOfNextBlock):
+        
+        '''Reformat at most 100 blocks.  Queue _idleReformatBlocks if more remain.'''
+
+        count = 0
+        while block.isValid() and (block.position() < endPosition or forceHighlightOfNextBlock):
+            stateBeforeHighlight = block.userState()
+            self._reformatBlock(block)
+            forceHighlightOfNextBlock = (block.userState() != stateBeforeHighlight)
+            block = block.next()
+            count += 1
+            if count > 100:
+                self.delayedBlock = block
+                self.delayedForceHighlight = forceHighlightOfNextBlock
+                self.delayedEndPosition = endPosition
+                Qt.QTimer.singleShot(1000,self._idleReformatBlocks)
+                break
+        self.formatChanges = []
+    #@+node:ekr.20130702174205.12636: *4* _clearDelayedFormat
+    def _clearDelayedFormat(self):
+        
+        '''Disable any delayed redraw.'''
+        
+        self.delayedBlock = None
+        self.delayedForceHighlight = False
+        self.delayedEndPosition = None
+    #@+node:ekr.20130701072841.12679: *4* _reformatBlock
+    def _reformatBlock(self,block):
+
+        if self._currentBlock:
+            assert not self._currentBlock.isValid(),self._currentBlock
+        self._currentBlock = block
+        
+        self.formatChanges = [QtGui.QTextFormat()] * (block.length()-1)
+            ### Should this be -0 ?
+        # g.trace(g.toUnicode(block.text()))
+        self.highlightBlock(block.text())
+            # Calls the Leo-specifc coloring code, which calls setFormat.
+        self._applyFormatChanges()
+        self._currentBlock = QtGui.QTextBlock()
+    #@+node:ekr.20130702174205.12635: *4* _idleReformatBlocks
+    def _idleReformatBlocks(self):
+            
+        # Get the saved data.
+        block = self.delayedBlock
+        forceHighlightOfNextBlock = self.delayedForceHighlight
+        endPosition = self.delayedEndPosition
+        
+        # Clear the saved data.
+        self._clearDelayedFormat()
+        
+        # Continue coloring if possible.
+        if block:
+            if not g.unitTesting:
+                g.trace('block: %s' % id(block))
+            self._boundedReformatBlocks(block,endPosition,forceHighlightOfNextBlock)
     #@+node:ekr.20130701072841.12697: *3* _rehighlightCursor
     # This was the rehighlight method of the private class.
 
