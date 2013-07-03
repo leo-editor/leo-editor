@@ -316,7 +316,7 @@ class LeoSyntaxHighlighter:
                 self.delayedBlock = block
                 self.delayedForceHighlight = forceHighlightOfNextBlock
                 self.delayedEndPosition = endPosition
-                Qt.QTimer.singleShot(1000,self._idleReformatBlocks)
+                Qt.QTimer.singleShot(500,self._idleReformatBlocks)
                 break
         self.formatChanges = []
     #@+node:ekr.20130702174205.12636: *4* _clearDelayedFormat
@@ -354,8 +354,7 @@ class LeoSyntaxHighlighter:
         
         # Continue coloring if possible.
         if block:
-            if not g.unitTesting:
-                g.trace('block: %s' % id(block))
+            # if not g.unitTesting: g.trace('block: %s' % id(block))
             self._boundedReformatBlocks(block,endPosition,forceHighlightOfNextBlock)
     #@+node:ekr.20130701072841.12697: *3* _rehighlightCursor
     # This was the rehighlight method of the private class.
