@@ -5,7 +5,7 @@
 
 '''qt gui plugin.'''
 
-NEW_COLORER = False
+NEW_COLORER = True
 
 #@@language python
 #@@tabwidth -4
