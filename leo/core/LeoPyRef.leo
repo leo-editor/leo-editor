@@ -26,8 +26,7 @@
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20100119205347.6015"
-expanded="ekr.20130523083607.10707,ekr.20130523083607.10690,"><vh>@file ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -56,8 +55,7 @@ expanded="ekr.20130523083607.10707,ekr.20130523083607.10690,"><vh>@file ../doc/l
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20111116103733.9817"><vh>@file leoInspect.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
-<v t="ekr.20031218072017.3320"
-expanded="ekr.20031218072017.889,"><vh>@file leoNodes.py</vh></v>
+<v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
@@ -81,6 +79,7 @@ expanded="ekr.20031218072017.889,"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qtframecommands.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
+<v t="ekr.20130701072841.12673"><vh>@file qsyntaxhighlighter.py</vh></v>
 <v t="ekr.20110605121601.18695"><vh>QDesigner files</vh>
 <v t="ekr.20110605121601.18696"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20110605121601.18698"><vh>@auto ../plugins/qt_main.py</vh></v>
