@@ -3677,6 +3677,8 @@ def doTests(self,all=None,marked=None,verbosity=1):
         if g.app.unitTestDict.get('restoreSelectedNode',True):
             c.contractAllHeadlines()
             c.redraw(p1)
+        else:
+            c.recolor() # Needed when coloring is disabled in unit tests.
         g.unitTesting = g.app.unitTesting = False
 #@+node:ekr.20120912094259.10549: *6* get_suite_script
 def get_suite_script(self):

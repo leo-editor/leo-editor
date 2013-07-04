@@ -778,8 +778,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
-        trace = False and not g.unitTesting
-        verbose = True
+        trace = True and not g.unitTesting
+        verbose = False
         w = self
         c = self.c ; p = c.p
         tree = c.frame.tree
@@ -1322,28 +1322,25 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         Otherwise, the scrollbars are preserved.'''
 
         trace = False and not g.unitTesting
-        verbose = False
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
         colorer = highlighter.colorer
-
         # Set a hook for the colorer.
         colorer.initFlag = True
-
-        if trace and verbose: t1 = g.getTime()
-
+        if trace:
+            g.trace(w)
+            t1 = g.getTime()
         try:
-            self.changingText = True # Disable onTextChanged
-            colorizer.changingText = True
+            self.changingText = True # Disable onTextChanged.
+            colorizer.changingText = True # Disable colorizer.
             w.setReadOnly(False)
             w.setPlainText(s)
         finally:
             self.changingText = False
             colorizer.changingText = False
-
-        if trace and verbose: g.trace(g.timeSince(t1))
-
+        if trace:
+            g.trace(g.timeSince(t1))
     #@+node:ekr.20110605121601.18095: *5* setInsertPoint (leoQTextEditWidget)
     def setInsertPoint(self,i):
 
@@ -7462,7 +7459,7 @@ class leoQtGui(leoGui.leoGui):
         self.plainTextWidget = leoQtBaseTextWidget
         self.mGuiName = 'qt'
         
-        self.color_theme = g.app.config.getString('color_theme')
+        self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
 
         # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
@@ -9678,7 +9675,7 @@ if NEW_COLORER:
             self.hasCurrentBlock = hasattr(self,'currentBlock')
 
             # Init the base class.
-            qsh.LeoSyntaxHighlighter.__init__(self,w)
+            qsh.LeoSyntaxHighlighter.__init__(self,c,w)
 
             self.colorizer = colorizer
 
