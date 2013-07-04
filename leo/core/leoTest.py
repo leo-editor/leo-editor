@@ -783,6 +783,8 @@ class TestManager:
             if g.app.unitTestDict.get('restoreSelectedNode',True):
                 c.contractAllHeadlines()
                 c.redraw(p1)
+            else:
+                c.recolor() # Needed when coloring is disabled in unit tests.
             g.unitTesting = g.app.unitTesting = False
     #@+node:ekr.20120912094259.10549: *5* get_suite_script
     def get_suite_script(self):
