@@ -105,6 +105,8 @@
 </v>
 <v t="ekr.20110611092035.16471"><vh>Colorizer &amp; colors</vh>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
+<v t="ekr.20130705090546.10662"><vh>@int coloror_max_lines = 100</vh></v>
+<v t="ekr.20130705090546.10663"><vh>@int coloror_delay = 200</vh></v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 <v t="ekr.20081018053140.12"></v>
 <v t="ekr.20080326060254.3"><vh>@string target_language = plain</vh></v>
@@ -9768,6 +9770,8 @@ append actions. By default these actions insert the menus and items supplied as
 descendants of the @menuat setting. If you specify “clipboard” (without the
 quotes) as the source, the contents of the clipboard from a previous cut or copy
 action will be used instead.</t>
+<t tx="ekr.20130705090546.10662">The maximum number of lines to color at once, when NEW_COLORER is True</t>
+<t tx="ekr.20130705090546.10663">The delay, in milliseconds, to wait before resuming recoloring, when NEW_COLORER is True.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -56,6 +56,15 @@ class LeoSyntaxHighlighter:
         assert parent.document
         self.parent = parent
         
+        # Tunable parameters.
+        self.max_lines = c.config.getInt('coloror_max_lines')
+        if self.max_lines is None: self.max_lines = 100
+            # The max number of lines colored at once.
+        self.delay = c.config.getInt('coloror_delay')
+        if self.delay is None: self.delay = 200
+            # The number of milliseconds to delay queued coloring.
+        # g.trace('(LeoSyntaxHighlighter)',self.max_lines,self.delay)
+        
         # Was in private class.
         self.c = c
         self.doc = None
@@ -321,11 +330,13 @@ class LeoSyntaxHighlighter:
     #@+node:ekr.20130702174205.12637: *4* _boundedReformatBlocks
     def _boundedReformatBlocks(self,block,endPosition,forceHighlightOfNextBlock):
         
-        '''Reformat at most 100 blocks.  Queue _idleReformatBlocks if more remain.'''
+        '''Reformat at most self.n_max_lines blocks.
+        Queue _idleReformatBlocks if more blocks remain.'''
 
         trace = False and not g.unitTesting
         trace_block = False ; trace_delay = True ; trace_end = True
         count = 0
+        generation = self.generation
         while True:
             if (block and block.isValid() and (
                     block.position() < endPosition or
@@ -340,14 +351,18 @@ class LeoSyntaxHighlighter:
                 forceHighlightOfNextBlock = block.userState() != stateBeforeHighlight
                 block = block.next()
                 count += 1
-                if count > 100:
+                if count > self.max_lines:
+                    # g.app.gui.qtApp.processEvents();
+                    # if self.generation != generation:
+                        # if trace: g.trace('interrupt')
+                        # return
                     if block and block.isValid():
                         if trace and trace_delay: g.trace('delay %4s %s' % (
                             self.bounded_reformat_count,g.timeSince(self.t1)))
                         self.delayedBlock = block
                         self.delayedForceHighlight = forceHighlightOfNextBlock
                         self.delayedEndPosition = endPosition
-                        Qt.QTimer.singleShot(250,self._idleReformatBlocks)
+                        Qt.QTimer.singleShot(self.delay,self._idleReformatBlocks)
                     break
             else:
                 self.recolorAll = False
