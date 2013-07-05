@@ -57,10 +57,10 @@ class LeoSyntaxHighlighter:
         self.parent = parent
         
         # Tunable parameters.
-        self.max_lines = c.config.getInt('coloror_max_lines')
+        self.max_lines = c.config.getInt('colorer_max_lines')
         if self.max_lines is None: self.max_lines = 100
             # The max number of lines colored at once.
-        self.delay = c.config.getInt('coloror_delay')
+        self.delay = c.config.getInt('colorer_delay')
         if self.delay is None: self.delay = 200
             # The number of milliseconds to delay queued coloring.
         # g.trace('(LeoSyntaxHighlighter)',self.max_lines,self.delay)
