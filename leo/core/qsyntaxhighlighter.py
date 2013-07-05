@@ -38,7 +38,13 @@ corresponding paragraph of text is deleted.
 import leo.core.leoGlobals as g
 from PyQt4 import QtGui, QtCore, Qt
 from PyQt4.QtCore import Qt as QtConst
+import time
 #@-<< includes >>
+
+class LeoUserData(QtGui.QTextBlockUserData):
+    def __init__(self):
+        QtGui.QTextBlockUserData.__init__(self)
+        self.gen = None
 
 class LeoSyntaxHighlighter:
     #@+others
@@ -53,10 +59,13 @@ class LeoSyntaxHighlighter:
         # Was in private class.
         self.c = c
         self.doc = None
-        self.formatChanges = [] # QVector<QTextCharFormat>
+        self.formatChanges = [] # was QVector<QTextCharFormat>
         self._currentBlock = None
-        self.recolorAll = False # A new ivar.
+        self.generation = 0 # New ivar.
+        # self.interruptedFlag = False
+            # True if incremental highlighting interrupted a full recolor.
         self.inReformatBlocks = False
+        self.recolorAll = False # New ivar.
         
         # Delayed coloring.
         self.delayedBlock = None
@@ -100,10 +109,14 @@ class LeoSyntaxHighlighter:
         ''' Reapplies the highlighting to the whole document.'''
 
         if self.doc:
-            # g.trace('(qsyntaxhighter)',g.callers())
+            self.t1 = time.clock()
             self.recolorAll = True
+            self.generation += 1
+            self._clearDelayedFormat()
             cursor = QtGui.QTextCursor(self.doc)
             self._rehighlightCursor(cursor,QtGui.QTextCursor.End)
+            
+    # base_rehighlight = rehighlight
     #@+node:ekr.20130701072841.12686: ** rehighlightBlock
     def rehighlightBlock(self,block):
         
@@ -192,7 +205,7 @@ class LeoSyntaxHighlighter:
         
         cb = self._currentBlock
         if cb and cb.isValid():
-            sb.setUserData(data)
+            cb.setUserData(data)
     #@+node:ekr.20130701072841.12675: ** low-level private methods
     # All private methods start with '_'.  They all were in the private class.
     #@+node:ekr.20130701072841.12676: *3* _applyFormatChanges
@@ -264,17 +277,29 @@ class LeoSyntaxHighlighter:
                     g.trace(z.start,z.length,z.format.foreground().color().getRgb())
             layout.setAdditionalFormats(ranges)
             self.doc.markContentsDirty(cb.position(),cb.length())
-    #@+node:ekr.20130701072841.12677: *3* _q_reformatBlocks
+    #@+node:ekr.20130701072841.12677: *3* _q_reformatBlocks *
     def _q_reformatBlocks(self,pos1,charsRemoved,charsAdded):
         
         '''The actual contentsChange event handler.'''
         
         # This does incremental changes.
-        
-        if not self.inReformatBlocks:
-            if not self.c.frame.body.colorizer.changingText:
-                # g.trace(pos1,charsRemoved,charsAdded,g.callers())
-                self._reformatBlocks(pos1,charsRemoved,charsAdded)
+        trace = False and not g.unitTesting
+        if self.inReformatBlocks or  self.c.frame.body.colorizer.changingText:
+            return
+        # Do nothing if we haven't recolored the present block.
+        if self.recolorAll:
+            block = self.doc.findBlock(pos1)
+            if block and block.isValid():
+                data = block.userData()
+                if not (data and data.gen == self.generation):
+                    if trace: g.trace('ignoring interruption',data and data.gen)
+                    return
+        # g.trace(pos1,charsRemoved,charsAdded,g.callers())
+        # if self.recolorAll and self.delayedBlock:
+            # if trace: g.trace('ignoring interruption 2')
+            # self.interruptedFlag = True
+            # return
+        self._reformatBlocks(pos1,charsRemoved,charsAdded)
     #@+node:ekr.20130701072841.12678: *3* _reformatBlocks & helpers
     def _reformatBlocks(self,pos1,charsRemoved,charsAdded):
         
@@ -299,18 +324,16 @@ class LeoSyntaxHighlighter:
         '''Reformat at most 100 blocks.  Queue _idleReformatBlocks if more remain.'''
 
         trace = False and not g.unitTesting
-        trace_start = False ; trace_delay = True ; trace_end = True
+        trace_block = False ; trace_delay = True ; trace_end = True
         count = 0
         while True:
-            if (
-                block and block.isValid() and (
+            if (block and block.isValid() and (
                     block.position() < endPosition or
                     forceHighlightOfNextBlock or
-                    self.recolorAll
-                )
+                    self.recolorAll)
             ):
                 self.bounded_reformat_count += 1
-                if trace and trace_start: g.trace('%4s block: %s' % (
+                if trace and trace_block: g.trace('%4s block: %s' % (
                     self.bounded_reformat_count,id(block)))
                 stateBeforeHighlight = block.userState()
                 self._reformatBlock(block)
@@ -319,15 +342,21 @@ class LeoSyntaxHighlighter:
                 count += 1
                 if count > 100:
                     if block and block.isValid():
-                        if trace and trace_delay: g.trace('delay',self.bounded_reformat_count)
+                        if trace and trace_delay: g.trace('delay %4s %s' % (
+                            self.bounded_reformat_count,g.timeSince(self.t1)))
                         self.delayedBlock = block
                         self.delayedForceHighlight = forceHighlightOfNextBlock
                         self.delayedEndPosition = endPosition
-                        Qt.QTimer.singleShot(500,self._idleReformatBlocks)
+                        Qt.QTimer.singleShot(250,self._idleReformatBlocks)
                     break
             else:
                 self.recolorAll = False
-                if trace and trace_end: g.trace('done',self.bounded_reformat_count)
+                if trace and trace_end: g.trace('*done %4s %s' % (
+                    self.bounded_reformat_count,g.timeSince(self.t1)))
+                # if self.interruptedFlag:
+                    # self.interruptedFlag = False
+                    # if trace and trace_end: g.trace('redoing all highlighting')
+                    # Qt.QTimer.singleShot(1000,self.base_rehighlight)
                 break
         self.formatChanges = []
     #@+node:ekr.20130702174205.12636: *4* _clearDelayedFormat
@@ -355,16 +384,20 @@ class LeoSyntaxHighlighter:
         # Continue coloring if possible.
         if block and block.isValid():
             self._boundedReformatBlocks(block,endPosition,forceHighlightOfNextBlock)
-    #@+node:ekr.20130701072841.12679: *4* _reformatBlock
+    #@+node:ekr.20130701072841.12679: *4* _reformatBlock *
     def _reformatBlock(self,block):
 
         if self._currentBlock and self._currentBlock.isValid():
             g.trace('can not happen: recursive call to _reformatBlock')
         else:
             self._currentBlock = block
-            self.formatChanges = [QtGui.QTextFormat()] * (block.length()) ### Was -1
+            self.formatChanges = [QtGui.QTextFormat()] * (block.length())
             self.highlightBlock(block.text())
                 # Calls the Leo-specifc coloring code, which calls setFormat.
+            if block and block.isValid():
+                data = block.userData() or LeoUserData()
+                data.generation = self.generation
+            block.setUserData(data)
             self._applyFormatChanges()
             self._currentBlock = QtGui.QTextBlock()
     #@+node:ekr.20130701072841.12697: *4* _rehighlightCursor
