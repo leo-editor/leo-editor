@@ -716,24 +716,41 @@ class Commands (object):
 
         test(expected == got,'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke),repr(expected),repr(got)))
-    #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
-    def enableMenuBar(self):
+    #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
+    def deletePositionsInList (self,aList,callback=None):
 
-        '''A failed attempt to work around Ubuntu Unity memory bugs.'''
-
+        '''Delete all vnodes corresponding to the positions in aList.
+        If a callback is given, the callback is called for every node in the list.
+        
+        The callback takes one explicit argument, p. As usual, the callback can bind
+        values using keyword arguments.
+        '''
+        
+        trace = False and not g.unitTesting
         c = self
-
-        # g.trace(c.frame.title,g.callers())
-
-        if 0:
-            if c.frame.menu.isNull:
-                return
-
-            for frame in g.app.windowList:
-                if frame != c.frame:
-                    frame.menu.menuBar.setDisabled(True)
-
-            c.frame.menu.menuBar.setEnabled(True)
+        # Verify all positions *before* altering the tree.
+        aList2 = []
+        for p in aList:
+            if c.positionExists(p):
+                aList2.append(p.copy())
+            else:
+                g.trace('invalid position',p)
+        # Delete p.v, **if possible** for all positions p in aList2.
+        if callback:
+            for p in aList2:
+                callback(p)
+        else:
+            for p in aList2:
+                v = p.v
+                parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+                # import leo.core.leoNodes as leoNodes
+                # assert isinstance(parent_v,leoNodes.vnode),parent_v
+                if v in parent_v.children:
+                    childIndex = parent_v.children.index(v)
+                    if trace: g.trace('deleting',parent_v,childIndex,v)
+                    v._cutLink(childIndex,parent_v)
+                else:
+                    if trace: g.trace('already deleted',parent_v,v)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
@@ -956,6 +973,24 @@ class Commands (object):
                 ok = False
             if not ok: break
         return ok,d
+    #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
+    def enableMenuBar(self):
+
+        '''A failed attempt to work around Ubuntu Unity memory bugs.'''
+
+        c = self
+
+        # g.trace(c.frame.title,g.callers())
+
+        if 0:
+            if c.frame.menu.isNull:
+                return
+
+            for frame in g.app.windowList:
+                if frame != c.frame:
+                    frame.menu.menuBar.setDisabled(True)
+
+            c.frame.menu.menuBar.setEnabled(True)
     #@+node:ekr.20051106040126: *3* c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
 

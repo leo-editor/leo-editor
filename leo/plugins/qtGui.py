@@ -5,7 +5,7 @@
 
 '''qt gui plugin.'''
 
-NEW_COLORER = True
+PYTHON_COLORER = True
 
 #@@language python
 #@@tabwidth -4
@@ -32,7 +32,7 @@ import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.baseNativeTree as baseNativeTree
 
-if NEW_COLORER:
+if PYTHON_COLORER:
     import leo.core.qsyntaxhighlighter as qsh
 
 import datetime
@@ -9202,7 +9202,7 @@ class leoQtColorizer:
         self.showInvisibles = False # 2010/1/2
 
         # Step 2: create the highlighter.
-        if NEW_COLORER:
+        if PYTHON_COLORER:
             self.highlighter = LeoSyntaxHighlighter(c,w,colorizer=self)
         else:
             self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
@@ -9532,7 +9532,7 @@ class leoQtColorizer:
                 time.time()-t1,len(aList),c.p.v.h,))
     #@-others
 
-#@+node:ekr.20110605121601.18565: *3* leoQtSyntaxHighlighter
+#@+node:ekr.20110605121601.18565: *3* leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter)
 # This is c.frame.body.colorizer.highlighter
 
 class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
@@ -9549,7 +9549,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         self.c = c
         self.w = w # w is a LeoQTextBrowser.
 
-        # print('leoQtSyntaxHighlighter.__init__',w)
+        print('leoQtSyntaxHighlighter.__init__',w,self.setDocument)
 
         # Not all versions of Qt have the crucial currentBlock method.
         self.hasCurrentBlock = hasattr(self,'currentBlock')
@@ -9652,7 +9652,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 #@+node:ekr.20130702040231.12633: *3* LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter) NEW
 # This is c.frame.body.colorizer.highlighter
 
-if NEW_COLORER:
+if PYTHON_COLORER:
 
     class LeoSyntaxHighlighter(qsh.LeoSyntaxHighlighter):
     

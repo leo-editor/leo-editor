@@ -41,8 +41,6 @@ After the release:
     
 * Fix menu problem with Ubuntu Unity.
     - Create a dummy tab when only one tab would otherwise be opened.
-
-
 .. @+node:ekr.20130530110446.12450: *3* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
 .. @+node:ekr.20130529084731.12106: *3* Add link to Leo's readthedocs page 

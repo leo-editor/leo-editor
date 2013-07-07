@@ -642,65 +642,62 @@ class atFile:
         '''
 
         at = self
-
-        if not root.hasChildren():
-            return
-
-        # Carefully set up the arguments.
+        # Find the unvisited nodes.
         aList = [z.copy() for z in root.subtree() if not z.isVisited()]
-        if not aList: return
-
-        r = at.createResurrectedNodesNode()
-        assert r not in aList
-        callback=at.defineResurrectedNodeCallback(r,root)
-
-        # Now move the nodes.
-        root.firstChild().deletePositionsInList(aList,callback)
+        if aList:
+            r = at.createResurrectedNodesNode()
+            assert r not in aList
+            callback=at.defineResurrectedNodeCallback(r,root)
+            # Move the nodes using the callback.
+            at.c.deletePositionsInList(aList,callback)
     #@+node:ekr.20100803073751.5817: *6* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
 
         '''Create a 'Resurrected Nodes' node as the last top-level node.'''
 
         at = self ; c = at.c ; tag = 'Resurrected Nodes'
-
         # Find the last top-level node.
         last = c.rootPosition()
         while last.hasNext():
             last.moveToNext()
-
+        # Create the node after last if it doesn't exist.
         if last.h == tag:
-            # The 'Resurrected Nodes' node already exists.
             p = last
         else:
-            # Create the 'Resurrected Nodes' node after 'last'.
             p = last.insertAfter()
             p.setHeadString(tag)
-
         p.expand()
         return p
-    #@+node:ekr.20100803073751.5818: *6* defineResurrectedNodeCallback
+    #@+node:ekr.20100803073751.5818: *6* defineResurrectedNodeCallback **
     def defineResurrectedNodeCallback (self,r,root):
-
         '''Define a callback that moves node p as r's last child.'''
+        
+        trace = True and not g.unitTesting
 
         def callback(p,r=r.copy(),root=root):
-
             '''The resurrected nodes callback.'''
-
             child = r.insertAsLastChild()
             child.h = 'From %s' % root.h
-            p.moveToLastChildOf(child)
-
-            if g.unitTesting:
-                # g.trace(p.h,r.h)
-                pass 
-            else:
-                g.error('resurrected node:',p.h)
+            v = p.v
+            if 1: # new code: based on vnodes.
+                import leo.core.leoNodes as leoNodes
+                for parent_v in v.parents:
+                    assert isinstance(parent_v,leoNodes.vnode),parent_v
+                    if v in parent_v.children:
+                        childIndex = parent_v.children.index(v)
+                        if trace: g.trace('*moving*',parent_v,childIndex,v)
+                        v._cutLink(childIndex,parent_v)
+                        v._addLink(len(child.v.children),child.v)
+                    else:
+                        # This would be surprising.
+                        g.trace('**already deleted**',parent_v,v)
+            else: # old code, based on positions.
+                p.moveToLastChildOf(child)
+            if not g.unitTesting:
+                g.error('resurrected node:',v.h)
                 g.blue('in file:',root.h)
-
+        
         return callback
-
-
     #@+node:ekr.20041005105605.22: *5* at.initFileName
     def initFileName (self,fromString,importFileName,root):
 

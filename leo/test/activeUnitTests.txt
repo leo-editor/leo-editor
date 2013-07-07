@@ -2116,7 +2116,9 @@ child11 = make(child1,0,'child11')
 child21 = make(child2,0,'child21')
 child31 = make(child3,0,'child31')
 # Create some clones.
-child4 = clone(child31,root,3)
+if 0:
+    child4 = clone(child31,root,3)
+# Set all bits except for child2 & child31.
 for z in root.self_and_subtree():
     z.setVisited()
 for z in child2,child31: # These should be moved.
@@ -2132,11 +2134,16 @@ if 1:
     r3 = r2.next()
     test(r1,'child2','r1')
     test(r2,'child31','r2')
-    assert root.numberOfChildren() == 3,'root.n'
+    # assert root.numberOfChildren() == 3,'root.n'
 if 1:
     delete_r()
+if 1:
     delete_children()
 c.redraw()
+#@+node:ekr.20130706090700.4154: *6* root
+#@+node:ekr.20130706090700.4155: *7* child1
+#@+node:ekr.20130706090700.4158: *8* child11
+#@+node:ekr.20130706090700.4157: *7* child3
 #@+node:ekr.20110615130436.3319: *5* @test writing a .leo file retains orphan bits
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
@@ -14123,9 +14130,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20130703140318.4147: *5* insertAsFirstChild
-#@+node:ekr.20130703140318.4149: *5* insertAsNthChild(1)
-#@+node:ekr.20130703140318.4148: *5* insertAsLastChild
+#@+node:ekr.20130706072629.4958: *5* insertAsFirstChild
+#@+node:ekr.20130706072629.4960: *5* insertAsNthChild(1)
+#@+node:ekr.20130706072629.4959: *5* insertAsLastChild
 #@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
@@ -14252,18 +14259,14 @@ aList = []
 nodes = 0
 for p in root.subtree():
     nodes += 1
-    if p.h == 'b' and p.level()-n != 1:
-         # print('found',p.level()-n,p.h,'parent:',p.stack[-1][0].h)
-         aList.append(p.copy())
+    if p.h == 'b': # and p.level()-n != 1:
+        parent = p.stack[-1][0]
+        # print('found',p.level()-n,p.h,'childIndex',p.childIndex(),'parent:',parent.h)
+        aList.append(p.copy())
 n_aList = len(aList)
-assert n_aList == 5,n_aList
+assert n_aList == 6,n_aList
 try:
-    root.deletePositionsInList(aList,tree=root)
-    # Make sure exactly len(aList) nodes have been deleted.
-    nodes2 = 0
-    for p in root.subtree():
-        nodes2 += 1
-    assert nodes2 == nodes - n_aList
+    c.deletePositionsInList(aList)
 finally:
     if 1:
         while p1.hasChildren():

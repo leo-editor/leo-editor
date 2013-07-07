@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.61" body_secondary_ratio="0.57">
+<globals body_outline_ratio="0.61" body_secondary_ratio="0.48">
 	<global_window_position top="76" left="298" height="886" width="952"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -151,7 +151,15 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh></v>
+<v t="ekr.20130703132516.4188"><vh>@test p.deletePositionsInList</vh></v>
+<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh>
+<v t="ekr.20130706090700.4154"><vh>root</vh>
+<v t="ekr.20130706090700.4155"><vh>child1</vh>
+<v t="ekr.20130706090700.4158"><vh>child11</vh></v>
+</v>
+<v t="ekr.20130706090700.4157"><vh>child3</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -950,7 +958,9 @@ child11 = make(child1,0,'child11')
 child21 = make(child2,0,'child21')
 child31 = make(child3,0,'child31')
 # Create some clones.
-child4 = clone(child31,root,3)
+if 0:
+    child4 = clone(child31,root,3)
+# Set all bits except for child2 &amp; child31.
 for z in root.self_and_subtree():
     z.setVisited()
 for z in child2,child31: # These should be moved.
@@ -966,9 +976,10 @@ if 1:
     r3 = r2.next()
     test(r1,'child2','r1')
     test(r2,'child31','r2')
-    assert root.numberOfChildren() == 3,'root.n'
+    # assert root.numberOfChildren() == 3,'root.n'
 if 1:
     delete_r()
+if 1:
     delete_children()
 c.redraw()
 </t>
@@ -1213,5 +1224,52 @@ finally:
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
 </t>
+<t tx="ekr.20130703132516.4188">p1 = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete()
+root = p.insertAsLastChild()
+root.h = 'root'
+# Top level
+a1 = root.insertAsLastChild()
+a1.h = 'a'
+a2 = a1.clone()
+d1 = a1.insertAfter()
+d1.h = 'd'
+b1 = root.insertAsLastChild()
+b1.h = 'b'
+# Children of a.
+b11 = b1.clone()
+b11.moveToLastChildOf(a1)
+b12 = b11.clone()
+c2 = b11.insertAfter()
+c2.h = 'c'
+# Children of d
+b11 = b1.clone()
+b11.moveToLastChildOf(d1)
+def parent(p):
+    return p.stack[-1][0].h
+n = root.level()
+aList = []
+nodes = 0
+for p in root.subtree():
+    nodes += 1
+    if p.h == 'b': # and p.level()-n != 1:
+        parent = p.stack[-1][0]
+        # print('found',p.level()-n,p.h,'childIndex',p.childIndex(),'parent:',parent.h)
+        aList.append(p.copy())
+n_aList = len(aList)
+assert n_aList == 6,n_aList
+try:
+    c.deletePositionsInList(aList)
+finally:
+    if 1:
+        while p1.hasChildren():
+            p1.firstChild().doDelete()
+c.redraw()
+</t>
+<t tx="ekr.20130706090700.4154"></t>
+<t tx="ekr.20130706090700.4155"></t>
+<t tx="ekr.20130706090700.4157"></t>
+<t tx="ekr.20130706090700.4158"></t>
 </tnodes>
 </leo_file>
