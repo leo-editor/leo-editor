@@ -778,7 +778,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         w = self
         c = self.c ; p = c.p
