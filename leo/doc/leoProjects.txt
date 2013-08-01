@@ -4078,7 +4078,9 @@ This is a major step forward.  It is a much cleaner solution than exec(g.findTes
 #@+node:ekr.20130329063228.10304: *4* Allow periods before section names in headlines
 @nocolor-node
 
-Skip '.' before section names in headlines.
+Skip '.' before section names in v.matchHeadline.
+
+2013/08/01: bug fix: allow leading periods in at.isSectionName.
 #@+node:ekr.20130412141141.10332: *4* All @button nodes now show call tips
 @language rest
 
