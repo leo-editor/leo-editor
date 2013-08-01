@@ -4020,14 +4020,11 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self
-
         if not allow_cloned_sibs and p.v.isVisited():
             if trace: g.trace("previously visited",p.v.h)
             return False
-
         i = g.skip_ws(p.h,0)
         isSection,junk = at.isSectionName(p.h,i)
-
         if isSection:
             return False # A section definition node.
         elif at.sentinels or at.atAuto or at.toString:
@@ -4776,7 +4773,10 @@ class atFile:
     # returns (flag, end). end is the index of the character after the section name.
 
     def isSectionName(self,s,i):
-
+        
+        # 2013/08/01: bug fix: allow leading periods.
+        while i < len(s) and s[i] == '.':
+            i += 1
         if not g.match(s,i,"<<"):
             return False, -1
         i = g.find_on_line(s,i,">>")
