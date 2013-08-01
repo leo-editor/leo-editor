@@ -525,44 +525,34 @@ class LeoPluginsController:
 
         trace = False and not g.unitTesting
         verbose = True or verbose
-
         if not g.app.enablePlugins:
             if trace: g.trace('plugins disabled')
             return None
-
         if moduleOrFileName.startswith('@'):
             if trace: g.trace('ignoring Leo directive')
             return None
                 # Return None, not False, to keep pylint happy.
                 # Allow Leo directives in @enabled-plugins nodes.
-
         moduleName = self.regularizeName(moduleOrFileName)
-
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)
             if trace and verbose:
                 g.warning('loadOnePlugin: plugin',moduleName,'already loaded')
             return module
-
         assert g.app.loadDir
-
         moduleName = g.toUnicode(moduleName)
-
         # This import will typically result in calls to registerHandler.
         # if the plugin does _not_ use the init top-level function.
         self.loadingModuleNameStack.append(moduleName)
-
         try:
             __import__(moduleName)
             # need to look up through sys.modules, __import__ returns toplevel package
             result = sys.modules[moduleName]
-
         except g.UiTypeException:
             if trace or (not g.unitTesting and not g.app.batchMode):
                 g.es_print('Plugin %s does not support %s gui' % (
                     moduleName,g.app.gui.guiName()))
             result = None
-
         except ImportError:
             if trace or tag == 'open0': # Just give the warning once.
                 g.error('error importing plugin:',moduleName)
@@ -573,18 +563,14 @@ class LeoPluginsController:
                 g.error('syntax error importing plugin:',moduleName)
                 # g.es_exception()
             result = None
-
         except Exception:
             g.error('exception importing plugin ' + moduleName)
             g.es_exception()
             result = None
-
         self.loadingModuleNameStack.pop()
-
         if result:
             self.signonModule = result # for self.plugin_signon.
             self.loadingModuleNameStack.append(moduleName)
-
             if tag == 'unit-test-load':
                 pass # Keep the result, but do no more.
             elif hasattr(result,'init'):
@@ -608,7 +594,6 @@ class LeoPluginsController:
                 # No top-level init function.
                 # Guess that the module was loaded correctly,
                 # but do *not* load the plugin if we are unit testing.
-
                 if g.app.unitTesting:
                     result = None
                     self.loadedModules[moduleName] = None
@@ -616,7 +601,6 @@ class LeoPluginsController:
                     g.trace('no init()',moduleName)
                     self.loadedModules[moduleName] = result
             self.loadingModuleNameStack.pop()
-
         if g.app.batchMode or g.app.inBridge or g.unitTesting:
             pass
         elif result:
@@ -625,7 +609,6 @@ class LeoPluginsController:
         elif trace or self.warn_on_failure or (trace and verbose and not g.app.initing):
             if trace or tag == 'open0':
                 g.error('loadOnePlugin: can not load enabled plugin:',moduleName)
-
         return result
     #@+node:ekr.20031218072017.1318: *4* plugin_signon
     def plugin_signon(self,module_name,verbose=False):

@@ -150,7 +150,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20130703132516.4188"><vh>@test p.deletePositionsInList</vh></v>
 <v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh>
 <v t="ekr.20130706090700.4154"><vh>root</vh>
@@ -841,82 +840,6 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
-</t>
-<t tx="ekr.20100205235740.5392">import os
-
-# The files in leoGuiPlugins.leo.
-guiPluginsList = (
-    'cursesGui','ironPythonGui','swing_gui','tkGui','wxGui',
-)
-
-passList = (
-    '__init__','FileActions',
-    'active_path','add_directives','attrib_edit',
-    'backlink','baseNativeTree','bibtex','bookmarks',
-    'codewisecompleter','colorize_headlines','contextmenu',
-    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    # 'detect_urls',
-    'dtest','empty_leo_file','enable_gc','initinclass',
-    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
-    # 'leoN',
-    'leoOPML','leoremote','lineNumbers',
-    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
-    'mod_scripting','mod_speedups','mod_timestamp',
-    'nav_qt','niceNosent','nodeActions',
-    'open_shell','outline_export','quit_leo',
-    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qtGui','qt_main','qt_quicksearch','qtframecommands',
-    'quickMove','quicksearch','redirect_to_log','rst3','run_nodes',
-    'screenshots',
-    # 'scrolledmessage',
-    'setHomeDirectory','slideshow','spydershell','startfile',
-    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
-    'vim','xemacs',
-)
-core_files = (
-    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
-    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
-    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
-    'leoPlugins','leoShadow','leoTangle','leoUndo',
-)
-external_files = (
-    'ipy_leo','lproto',
-)
-
-recent = (
-    #'leo_interface',
-)
-
-# The files in scripts.leo.
-scriptsList = (
-    'convert_to_shadow','leoFindScript','LinixInstall',
-    'tangle_done','untangle_done',
-)
-
-table = (
-    ('plugins',recent),
-    ('plugins',passList),
-    ('plugins',guiPluginsList),
-    ('core',core_files),
-    ('external',external_files),
-    ('scripts',scriptsList),
-)
-files = []
-for theDir,aList in table:
-    for z in aList:
-        if not z.endswith('.py'): z = z + '.py'
-        fn = os.path.abspath(os.path.join('leo',theDir,z))
-        if os.path.exists(fn): files.append(fn)
-        else: print('*** file not found: %s' % (fn))
-
-failed = []
-for z in files:
-    fn = g.shortFileName(z)
-    s,e = g.readFileIntoString(z)
-    if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-        failed.append(fn)
-
-assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 </t>
 <t tx="ekr.20100802220019.5795">def clone (p,parent,n):
     p2 = p.clone()
