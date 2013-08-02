@@ -3501,6 +3501,8 @@ The find/change text widgets span the second and third columns.
 A shock: p.deletePositionsInList must be rethought and rewritten
 https://groups.google.com/forum/#!topic/leo-editor/IWMWhUlkos0
 #@+node:ekr.20130705200854.12456: *4* Rewrote and tested at.deleteUnvisitedNodes
+#@+node:edward.20130802134506.10431: *4* Created a dummy tab when only one tab would otherwise be opened
+This was a horrible kludge in LM.doPostPluginsInit
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
