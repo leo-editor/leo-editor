@@ -37,14 +37,11 @@ After the release:
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
 
-- Add link to Leo's readthedocs page
-    
+
 * Fix menu problem with Ubuntu Unity.
     - Create a dummy tab when only one tab would otherwise be opened.
 .. @+node:ekr.20130530110446.12450: *3* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
-.. @+node:ekr.20130529084731.12106: *3* Add link to Leo's readthedocs page 
-http://leo-editor.readthedocs.org/en/latest/
 .. @+node:ekr.20130502104323.10581: *3* ** Get github working
 Used for Leo's blog.
 
@@ -52,7 +49,8 @@ bzr ci => git commit -a
 bzr add => git add
 bzr push => git push
 bzr revert => git reset --hard
-.. @+node:ekr.20130503053253.10548: *3* Draft: unit testing tutorial
+.. @+node:ekr.20130802070139.12456: *3* Draft tutorials
+.. @+node:ekr.20130503053253.10548: *4* Draft: unit testing tutorial
 @wrap
 @language rest
 
@@ -107,50 +105,7 @@ Running all tests is not necessary.  Just select::
 and then do Alt-4 (run-selected-unit-tests-locally).
 
 **Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
-.. @+node:ekr.20130510070942.10602: *3* Docs
-.. @+node:ekr.20130506071114.15452: *4* ***Document Windows associations
-
-Installing Leo on Windows
-
-    Install Python from http://www.python.org/download/releases/
-
-    Install either Tk or Qt, as described above.
-
-    Install Leo. Get Leo’s .zip file from http://sourceforge.net/projects/leo/ You can unpack the .zip file anywhere, including Python’s site-packages folder, for example, C:\Python26\Lib\site-packages
-
-    [optional] Generate/update a junction link from unpacked leo folder to ...\site-packages\leo:
-
-    cd C:\Python26\Lib\site-packages\
-    junction leo leo-4-6-2-final
-
-    Create windows shortcut (edit paths as necessary):
-
-    Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
-    Start in =  D:\code
-
-    Associate .leo filetype batch file:
-
-    ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
-    assoc .leo=LeoFile
-
-    [optional] Put this leo.bat in %PATH%:
-
-    @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
-
-For more information see:
-
-Junction links:
-    http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
-    http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
-ftype:
-    http://ss64.com/nt/ftype.html
-assoc:
-    http://ss64.com/nt/assoc.html
-
-.. @+node:ekr.20130503155210.24819: *4* Fix flattr button on Leo's home page
-.. @+node:ekr.20130514082726.10612: *4* Document valuespace from Ville's blog
-http://leo-editor.github.io/valuespace-intro.html
-.. @+node:ekr.20130521062549.10856: *4* Position tutorial
+.. @+node:ekr.20130521062549.10856: *4* Draft: Position tutorial
 @language rest
 
 A **position** object represents a specific node in a Leo outline.
@@ -203,6 +158,48 @@ Leo's c.all_nodes() iterator will deliver 9 positions:
   The parent of position 5: B is A at childIndex 1 of Root.
   The parent of position 6: B is Root. The childIndex of 6: B is 2.
 
+.. @+node:ekr.20130510070942.10602: *3* Docs
+.. @+node:ekr.20130506071114.15452: *4* ***Document Windows associations
+
+Installing Leo on Windows
+
+    Install Python from http://www.python.org/download/releases/
+
+    Install either Tk or Qt, as described above.
+
+    Install Leo. Get Leo’s .zip file from http://sourceforge.net/projects/leo/ You can unpack the .zip file anywhere, including Python’s site-packages folder, for example, C:\Python26\Lib\site-packages
+
+    [optional] Generate/update a junction link from unpacked leo folder to ...\site-packages\leo:
+
+    cd C:\Python26\Lib\site-packages\
+    junction leo leo-4-6-2-final
+
+    Create windows shortcut (edit paths as necessary):
+
+    Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
+    Start in =  D:\code
+
+    Associate .leo filetype batch file:
+
+    ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+    assoc .leo=LeoFile
+
+    [optional] Put this leo.bat in %PATH%:
+
+    @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
+
+For more information see:
+
+Junction links:
+    http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+    http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+ftype:
+    http://ss64.com/nt/ftype.html
+assoc:
+    http://ss64.com/nt/assoc.html
+
+.. @+node:ekr.20130514082726.10612: *4* Document valuespace from Ville's blog
+http://leo-editor.github.io/valuespace-intro.html
 .. @+node:ekr.20130510070942.10606: *3* Bugs
 .. @+node:ekr.20130503134311.13447: *4* Fix all pylint complaints
 @nocolor-node
