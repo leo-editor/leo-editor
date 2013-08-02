@@ -206,8 +206,6 @@ for p in root.self_and_subtree():
         '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
     ))
 .. @+node:ekr.20130510070942.10606: *3* Bugs
-.. @+node:ekr.20130802103517.20483: *4* Fix menu problem with Ubuntu Unity.
-Create a dummy tab when only one tab would otherwise be opened.
 .. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
 # Trying to delete a second body editor.
