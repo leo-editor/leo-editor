@@ -36,11 +36,6 @@ After the release:
     - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
-
-
-* Fix menu problem with Ubuntu Unity.
-    - Create a dummy tab when only one tab would otherwise be opened.
-.. @+node:ekr.20130530110446.12450: *3* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
 .. @+node:ekr.20130802070139.12456: *3* Draft tutorials
 .. @+node:ekr.20130503053253.10548: *4* Draft: unit testing tutorial
@@ -211,6 +206,9 @@ for p in root.self_and_subtree():
         '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
     ))
 .. @+node:ekr.20130510070942.10606: *3* Bugs
+.. @+node:ekr.20130802103517.20483: *4* Fix menu problem with Ubuntu Unity.
+Create a dummy tab when only one tab would otherwise be opened.
+.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
 # Trying to delete a second body editor.
 
