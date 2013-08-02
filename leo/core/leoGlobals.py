@@ -5355,18 +5355,13 @@ def find_constants_defined(text):
     :Parameters:
     - `text`: text to search
     """
-
     pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
-    
     ans = {}
-    
     text = text.replace('\\\n', '')  # merge lines ending in \
-    
     for line in text.split('\n'):
         test = pattern.match(line)
         if test:
             ans.update([test.groups()])
-
     # constants may refer to other constants, de-reference here    
     change = True
     level = 0
@@ -5374,17 +5369,17 @@ def find_constants_defined(text):
         level += 1
         change = False
         for k in ans:
+            # pylint: disable=W0108
+            #   lambda may not be necessary (it is).
             # process longest first so @solarized-base0 is not replaced
             # when it's part of @solarized-base03
             for o in sorted(ans, key=lambda x:len(x), reverse=True):
                 if o in ans[k]:
                     change = True
                     ans[k] = ans[k].replace(o, ans[o])
-    
     if level == 10:
         print("Ten levels of recursion processing styles, abandoned.")
         g.es("Ten levels of recursion processing styles, abandoned.")
-        
     return ans
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod
 #@+at The following is taken from page 188 of the Python Cookbook.

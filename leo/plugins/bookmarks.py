@@ -230,12 +230,9 @@ class BookMarkDisplay:
         p = self.c.vnode2position(self.v)
         if not p:
             return
-        
         w = self.w
-        
         for i in range(w.layout().count()-1, -1, -1):
             w.layout().removeItem(w.layout().itemAt(i))
-       
         te = QtGui.QTextBrowser()
         w.layout().addWidget(te)
         te.setReadOnly(True)
@@ -251,24 +248,19 @@ class BookMarkDisplay:
                 if int(te.modifiers) == 0:
                     owner.add_bookmark(te, event.pos())
                     return
-
             return prev(event)
         
         te.mousePressEvent = capture_modifiers
         
         def anchorClicked(url, c=self.c, p=p, te=te, owner=self):
-            
             if (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier) == te.modifiers:
                 owner.update_bookmark(str(url.toString()))
                 return
-                
             if QtCore.Qt.AltModifier == te.modifiers:
                 owner.edit_bookmark(te, te.pos)
                 return
-                
             if QtCore.Qt.ControlModifier == te.modifiers:
                 owner.delete_bookmark(str(url.toString()))
-                
             else:  # go to bookmark
                 url = str(url.toString())
                 # g.trace(url,te)
@@ -279,22 +271,17 @@ class BookMarkDisplay:
                 g.handleUrl(url,c=c,p=p)
         
         te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)
-        
         html = []
-        
         for idx, name_link in enumerate(links):
             name, link = name_link
-            
             html.append("<a title='%s' href='%s' style='background: #%s; color: #%s; text-decoration: none;'>%s</a>"
                 % (link, link, 
                    self.color(name, dark=self.dark) if self.already != idx else "ff0000", 
-                   '073642' if not self.dark else '839496',  # FIXME, hardcoded, from solarized
+                   '073642' if not self.dark else '839496',
+                        # FIXME, hardcoded, from solarized
                    name.replace(' ', '&nbsp;')))
-                   
         self.already = -1  # clear error condition
-        
         html = '\n'.join(html)
-        
         te.setHtml(html)
     #@+node:tbrown.20110712100955.39218: *3* update
     def update(self, tag, keywords):

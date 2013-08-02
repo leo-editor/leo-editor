@@ -369,7 +369,7 @@ def hide_rendering_pane(event):
 close_rendering_pane = hide_rendering_pane
 #@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
-def lock_unlock_rendering_pane(event):
+def lock_rendering_pane(event):
     
     '''Pause or play a movie in the rendering pane.'''
 
@@ -410,7 +410,7 @@ def toggle_rendering_pane(event):
             viewrendered(event)
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
-def lock_unlock_rendering_pane(event):
+def unlock_rendering_pane(event):
     
     '''Pause or play a movie in the rendering pane.'''
 

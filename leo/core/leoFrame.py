@@ -1062,6 +1062,7 @@ class leoBody (HighLevelInterface):
     #@+node:ekr.20130303133655.10213: *3* leoBody.attribute_test
     def pyflake_test(self):
         
+        # pylint: disable=E1101
         # Pylint correctly finds attribute errors: xyzzy22 and def_stack.
         print(self.xyzzy22)
         

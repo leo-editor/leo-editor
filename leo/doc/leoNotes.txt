@@ -3921,6 +3921,13 @@ when the user executes a script with Pdb it:
 2. Executes pdb based off of that tmp file.
 
 that way you get all the goodness that pdb can offer.
+#@+node:ekr.20130502104323.10581: ** github notes
+Used for Leo's blog.
+
+bzr ci => git commit -a
+bzr add => git add
+bzr push => git push
+bzr revert => git reset --hard
 #@+node:ekr.20090105132011.6: ** Regex notes
 @nocolor-node
 

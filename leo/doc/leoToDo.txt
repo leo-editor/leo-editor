@@ -42,13 +42,6 @@ After the release:
     - Create a dummy tab when only one tab would otherwise be opened.
 .. @+node:ekr.20130530110446.12450: *3* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130411131638.10311: *3* * Ask the qt people about leaving foreground text unchanged
-.. @+node:ekr.20130502104323.10581: *3* ** Get github working
-Used for Leo's blog.
-
-bzr ci => git commit -a
-bzr add => git add
-bzr push => git push
-bzr revert => git reset --hard
 .. @+node:ekr.20130802070139.12456: *3* Draft tutorials
 .. @+node:ekr.20130503053253.10548: *4* Draft: unit testing tutorial
 @wrap
@@ -201,20 +194,6 @@ assoc:
 .. @+node:ekr.20130514082726.10612: *4* Document valuespace from Ville's blog
 http://leo-editor.github.io/valuespace-intro.html
 .. @+node:ekr.20130510070942.10606: *3* Bugs
-.. @+node:ekr.20130503134311.13447: *4* Fix all pylint complaints
-@nocolor-node
-
-************* Module leo.core.leoFrame
-E1101:1066,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'xyzzy22' member
-E1101:1069,0:leoBody.pyflake_test: Instance of 'leoBody' has no 'def_stack' member
-
-************* Module leo.core.leoGlobals
-W0108:5375,0:find_constants_defined.<lambda>: Lambda may not be necessary
-
-************* Module leo.plugins.qtGui
-W0101:2781,0:leoQtBody.setEditorColors: Unreachable code
-W0403:7485,0:leoQtGui.runWithIpythonKernel:
-    Relative import 'internal_ipkernel', should be 'leo.plugins.internal_ipkernel'
 .. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
 # Trying to delete a second body editor.
 

@@ -2776,45 +2776,34 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20110605121601.18187: *4* setEditorColors (qtBody)
     def setEditorColors (self,bg,fg):
         
-        return # handled by stylesheet
-
-        trace = False and not g.unitTesting
-
-        c = self.c
-
-        if c.use_focus_border:
-            return
-
-        # Deprecated.  This can cause unwanted scrolling.
-        obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
-
-        class_name = obj.__class__.__name__
-        if  class_name != 'LeoQTextBrowser':
-            if trace: g.trace('unexpected object',obj)
-            return
-
-        def check(color,kind,default):
-            if color in ('none','None',None):
+        if 0: # handled by stylesheet
+            trace = False and not g.unitTesting
+            c = self.c
+            if c.use_focus_border:
+                return
+            # Deprecated.  This can cause unwanted scrolling.
+            obj = self.bodyCtrl.widget # A QTextEditor or QTextBrowser.
+            class_name = obj.__class__.__name__
+            if  class_name != 'LeoQTextBrowser':
+                if trace: g.trace('unexpected object',obj)
+                return
+            def check(color,kind,default):
+                if color in ('none','None',None):
+                    return default
+                if QtGui.QColor(color).isValid():
+                    return color
+                if color not in self.badFocusColors:
+                    self.badFocusColors.append(color)
+                    g.warning('invalid body %s color: %s' % (kind,color))
                 return default
-            if QtGui.QColor(color).isValid():
-                return color
-            if color not in self.badFocusColors:
-                self.badFocusColors.append(color)
-                g.warning('invalid body %s color: %s' % (kind,color))
-            return default
-
-        bg = check(bg,'background','white')
-        fg = check(fg,'foreground','black')
-
-        if trace: g.trace(bg,fg,obj)
-
-        # Set the stylesheet only for the QTextBrowser itself,
-        # *not* the other child widgets:
-        # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
-
-        sheet = 'background-color: %s; color: %s' % (bg,fg)
-
-        g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
+            bg = check(bg,'background','white')
+            fg = check(fg,'foreground','black')
+            if trace: g.trace(bg,fg,obj)
+            # Set the stylesheet only for the QTextBrowser itself,
+            # *not* the other child widgets:
+            # See: http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
+            sheet = 'background-color: %s; color: %s' % (bg,fg)
+            g.app.gui.update_style_sheet(obj,'colors',sheet,selector='LeoQTextBrowser')
     #@+node:ekr.20110605121601.18190: *4* oops (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
@@ -7478,7 +7467,8 @@ class leoQtGui(leoGui.leoGui):
             self.frameFactory = SDIFrameFactory()
     #@+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
     def runWithIpythonKernel(self):
-        import internal_ipkernel as ipk        
+        # import internal_ipkernel as ipk
+        import leo.plugins.internal_ipkernel as ipk        
         g.app.ipk = ipk.InternalIPKernel()
         g.app.ipk.init_ipkernel('qt')
         ns = g.app.ipk.namespace
@@ -9701,9 +9691,9 @@ if PYTHON_COLORER:
                     self.c.p.v.colorCache = None # Kill the color caching.
         #@+node:ekr.20130702040231.12636: *4* rehighlight  (LeoSyntaxHighligher) & helper
         def rehighlight (self,p):
-
             '''Override base rehighlight method'''
-
+            # pylint: disable=W0221
+            # Arguments number differ from overridden method.
             trace = False and not g.unitTesting
             c = self.c ; tree = c.frame.tree
             self.w = c.frame.body.bodyCtrl.widget
@@ -9730,7 +9720,6 @@ if PYTHON_COLORER:
                         qsh.LeoSyntaxHighlighter.rehighlight(self)
                 finally:
                     tree.selecting = old_selecting
-
             if trace:
                 g.trace('recolors: %4s %2.3f sec' % (
                     self.colorer.recolorCount-n,time.time()-t1))
