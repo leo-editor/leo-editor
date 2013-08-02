@@ -193,90 +193,10 @@ assoc:
 
 .. @+node:ekr.20130514082726.10612: *4* Document valuespace from Ville's blog
 http://leo-editor.github.io/valuespace-intro.html
-.. @+node:ekr.20130510070942.10606: *3* Bugs
-.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
-# Trying to delete a second body editor.
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130510070942.10611: *4* Can undo headline put focus in headline?
-This would fix a reported bug.
-.. @+node:ekr.20130506071114.15468: *3* Cool scripts to put **somewhere**
-.. @+node:ekr.20130506071114.15469: *4* push_to_Gist.txt
-# Leo button to publish selected node as Gist.
-# https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/KgejcZHiEl0
-
-import requests
-import json
-
-tmp = g.os.environ['TEMP']
-
-description = "published from Leo"
-public = True
-filename = p.h      # node headline
-content = p.b       # node body
-
-g.es(filename)
-print('\n\n--- %s ---' % filename)
-payload = {
-    'description': description,
-    'public': public,
-    'files': {
-        filename: {'content': content}
-        }
-    }
-           
-print (payload)
-r = requests.post('https://api.github.com/gists',  data=json.dumps(payload))
-print (r.status_code)
-print (r.text)
-.. @+node:ekr.20130508084413.10638: *4* cool hack: detach body editor
-http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
-
-This features a long an important discussion of using Leo with vim.
-.. @+node:ekr.20130508084413.10648: *4* Call hierarchy tracing (using python 'trace' module)
-@language python
-@tabwidth -4
-
-"""
-Analyzing program flow.
-
-Run (ctrl+b) this script after 
-
-cd ~/leo-editor
-python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
-
-"""
-
-tracefile = '~/leo-editor/trace.txt'
-
-import os
-
-tr = open(os.path.expanduser(tracefile))
-print tr
-top = p.insertAsLastChild().copy()
-top.h = 'trace session'
-cur = None
-no = None
-for l in tr:
-    if l.startswith('***'):
-        cur = top.insertAsLastChild().copy()
-        cur.h = os.path.basename(l.split()[1])
-    elif l.startswith('  -->'):
-        no = cur.insertAsLastChild().copy()
-        no.h = os.path.basename(l.split()[1].strip())
-    else:
-        if no:
-            no.b += l.strip() + '\n'
-
-    print ".",
 .. @+node:ekr.20130522131838.15047: *4* position script
 g.cls()
-root = g.findNodeAnywhere(c,'root')
+# root = g.findNodeAnywhere(c,'root')
+root = c.rootPosition()
 assert root
 line = 0
 for p in root.self_and_subtree():
@@ -290,172 +210,18 @@ for p in root.self_and_subtree():
         # p.stack,
         '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
     ))
-.. @+node:ekr.20130529084731.12105: *4* Magic refactor button
-https://groups.google.com/forum/?fromgroups#!searchin/leo-editor/magic$20refactor$20button/leo-editor/0hNJxS2r0GY/jWlSap7VxHAJ
-Terry Brown <terry_n_brown@yahoo.com>
-2/14/12
-		
-to leo-editor
+.. @+node:ekr.20130510070942.10606: *3* Bugs
+.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
+# Trying to delete a second body editor.
 
-Ever find that you have a whole lot of:
-
-rec[f['analyte']] ... rec[f['sample_type']] ...
-
-expressions in your code, and now things have changed and you want them all to be:
-
-row.Analyte ... row.Sample_Type ...
-
-basically if str variable s was:
-
-rec[f['analyte']]
-
-then you want to perform:
-
-s = "row."+s.split("'")[1].title()
-
-on each one. In general it would be nice to be able to use a python expression when search and replace doesn't cut it.
-
-The button code below creates a button, fac, which, when pressed, creates another button, with some name you choose, which, when pressed, executes some python code to fix the selected text in the body.
-
-You can define the code to be executed in two ways, either in its own node:
-
-        insert a new node with a headline which describes the refactor
-        enter code in the node which modifies the string variable s, which is initially set to the selected text in the body
-        press the fac button, which creates a new button named after this code node
-        select each offending piece of text and press the button created in the previous step to fix
-
-or
-
-        type some code modifying s right in the body you're working on
-        press the fac button, which creates a new button named "fix"
-        select each offending piece of text and press the button created in the previous step to fix
-
-Note:
-
-        unlike regular button nodes, changing the code after the button's created (first option above) doesn't change the code executed by the button
-        replacing selection text makes Leo reposition the insert point at the top of the window, this is annoying but unrelated to this code
-
-Here's the button code:
-
-@button fac
-  from leo.plugins.mod_scripting import scriptingController
-
-  sc = scriptingController(c)
-
-  if c.frame.body.hasSelection():
-      code = c.frame.body.getSelectedText()
-      heading = 'fix'
-  else:
-      code = p.b
-      heading = p.h
-
-  def transform(c=c, code=code):
-      s = c.frame.body.getSelectedText()
-      g.es(s)
-      exec code
-      g.es(s)
-      c.frame.body.deleteTextSelection()
-      i = c.frame.body.getInsertPoint()
-      c.frame.body.insert(i, s)
-      p.b = c.frame.body.getAllText()
-      c.frame.body.setInsertPoint(i)
-
-  b = sc.createIconButton(
-      heading,
-      command = transform,
-      shortcut = None,
-      statusLine = 'Make filter button',
-      bg = "LightBlue"
-  )
-
-Edward K. Ream <edreamleo@gmail.com>
-	
-2/15/12
-		
-to leo-editor
-On Tue, Feb 14, 2012 at 8:34 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
-
-> The button code below creates a button, fac, which, when pressed, creates
-> another button, with some name you choose, which, when pressed, executes
-> some python code to fix the selected text in the body.
-
-Interesting.  I've got blinders on while I work on the new_config
-code, but I'll take a close look at this asap.  Thanks for this work.
-Kent Tenney <ktenney@gmail.com>
-	
-2/15/12
-		
-to leo-editor
-Cool. I'm changing the name to
-@adhoc
-
-Strikes me as 'macro' capability.
-With almost no overhead, define a filter for selected text, and
-persist it visually, no need for remembering!
-
-I'll put it into myLeoSettings.leo
-
-Thanks,
-Kent
-Terry Brown <terry_n_brown@yahoo.com>
-	
-2/15/12
-		
-to leo-editor
-On Wed, 15 Feb 2012 09:31:21 -0600
-Kent Tenney <ktenney@gmail.com> wrote:
-
-> Cool. I'm changing the name to
-> @adhoc
-
-That's equally as good as fac, the key thing is that both words are fun
-to say :-)
-
-> Strikes me as 'macro' capability.
-
-Yep, very much so.
-
-> With almost no overhead, define a filter for selected text, and
-> persist it visually, no need for remembering!
-
-The created buttons don't persist, I guess I'm assuming once you've
-fixed something with them they won't be useful in future sessions,
-although I know you like everything to persist :-)
-
-Cheers -Terry
-Kent Tenney <ktenney@gmail.com>
-	
-2/15/12
-		
-to leo-editor
-On Wed, Feb 15, 2012 at 10:17 AM, Terry Brown <terry_n_brown@yahoo.com> wrote:
-> On Wed, 15 Feb 2012 09:31:21 -0600
-> Kent Tenney <ktenney@gmail.com> wrote:
->
->> Cool. I'm changing the name to
->> @adhoc
->
-> That's equally as good as fac, the key thing is that both words are fun
-> to say :-)
->
->> Strikes me as 'macro' capability.
->
-> Yep, very much so.
->
->> With almost no overhead, define a filter for selected text, and
->> persist it visually, no need for remembering!
->
-> The created buttons don't persist, I guess I'm assuming once you've
-> fixed something with them they won't be useful in future sessions,
-> although I know you like everything to persist :-)
-
-:-}
-
-Not here. As a macro, the cost to create is so low and it's so context specific,
-there's no inclination to persist. I like things to persist if I had
-to think about them.
-
-It would be annoying to have them persist.
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130510070942.10611: *4* Can undo headline put focus in headline?
+This would fix a reported bug.
 .. @+node:ekr.20130408095053.10307: ** ** guide for the next leaders
 # Use bookmarks?
 .. @+node:ekr.20130501035328.12634: ** Use Leo for email?

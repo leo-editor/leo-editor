@@ -72,12 +72,11 @@
 <v t="ekr.20111017085134.16114"><vh>@@button outlineToClipboard</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
-<v t="ekr.20051110111150" a="E"
-expanded="ekr.20060531090036,maphew.20130607222534.1739,ekr.20040713123617.1,ekr.20050220091046,ekr.20050803075926.1,ekr.20050803075926.5,ekr.20120328102352.6938,ekr.20121013084734.16371,"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20061008055616"><vh>Scripts</vh>
+<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
-<v t="maphew.20130612230051.2793" a="E"><vh>Windows</vh>
-<v t="maphew.20130613230258.2801" a="E"><vh>@file elevate.py</vh></v>
+<v t="maphew.20130612230051.2793"><vh>Windows</vh>
+<v t="maphew.20130613230258.2801"><vh>@file elevate.py</vh></v>
 <v t="maphew.20130611235500.2658"><vh>@file register-leo.leox</vh></v>
 <v t="maphew.20130611235500.2665"><vh>@file unregister-leo.leox</vh></v>
 </v>
@@ -96,7 +95,7 @@ expanded="ekr.20060531090036,maphew.20130607222534.1739,ekr.20040713123617.1,ekr
 </v>
 </v>
 <v t="ekr.20121013084734.16370"><vh>Recursive import script (with cleanups)</vh>
-<v t="ekr.20121013084734.16371" a="E"><vh>class ImportController</vh>
+<v t="ekr.20121013084734.16371"><vh>class ImportController</vh>
 <v t="ekr.20121013084734.16372"><vh>Pass 1: import_dir</vh></v>
 <v t="ekr.20121013084734.16373"><vh>Pass 2: clean_all &amp; helpers</vh>
 <v t="ekr.20121013084734.16374"><vh>clean</vh></v>
@@ -118,8 +117,6 @@ expanded="ekr.20060531090036,maphew.20130607222534.1739,ekr.20040713123617.1,ekr
 <v t="ekr.20121013084734.16388"><vh>run</vh></v>
 </v>
 </v>
-<v t="ekr.20130425050120.12671"><vh>Script: replace in directory</vh></v>
-<v t="ekr.20130526065545.18367"><vh>email import script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -1464,87 +1461,6 @@ test_template = g.adjustTripleString(test_template,c.tab_width)
     for p in self.nodes:
         f.write(self.test_template % (self.clean(p.h),self.get_body(p)))
     f.close()
-</t>
-<t tx="ekr.20130425050120.12671">'''Replace a search pattern with a replacement pattern in a directory.'''
-# Adapted from 2to3's crlf fixer.
-
-g.cls()
-write = False
-path = g.os_path_finalize_join(g.app.loadDir,'..','extensions','docutils_modernize_bad')
-find = 'import six'
-change = 'from docutils.utils.u import u,text_type'
-import os
-
-def fix(filename):
-    if g.os_path_isdir(filename):
-        # print filename, "Directory!"
-        return
-    s = open(filename,"rb").read()
-    if '\0' in s:
-        print('binary: %s' % filename)
-        return
-    new_s = s.replace(find,change)
-    if new_s != s:
-        print('changed: %s' % g.shortFileName(filename,n=2))
-        if write:
-            f = open(filename,"wb")
-            f.write(new_s)
-            f.close()
-
-for root, dirs, files in os.walk(path):
-    for fn in files:
-        if fn.endswith('.py'):
-            fn = g.os_path_join(root,fn)
-            fix(fn)
-print('done')
-</t>
-<t tx="ekr.20130526065545.18367"># https://groups.google.com/forum/?fromgroups#!searchin/leo-editor/imaplib/leo-editor/i_U-PBv0Ek0/c0XsmlI_UugJ
-
-import imaplib
-
-def munge(part):
-    s = g.toUnicode(repr(part[0][1]))
-    s = s.strip("'")
-    return s.replace('\\r\\n','\n')
-
-m = imaplib.IMAP4_SSL('imap.gmail.com',993) # Require SSL: Yes
-m.login(&lt;&lt; your login name&gt;&gt;,&lt;&lt; your password&gt;&gt;)
-print('connected to edreamleo@gmail.com')
-# for z in m.list():
-    # print(z)
-try:
-    box = 'Leo/Later' # 'INBOX'
-    m.select(box,True) # readonly.
-    ok, aList = m.search(None,'ALL')
-    if ok == 'OK':
-        parent = p.insertAsLastChild()
-        parent.h = box
-        aList = [g.toUnicode(z) for z in aList]
-        nums = aList[0].split()
-        for num in nums:
-            # ok,data = m.fetch(num,'(RFC822)') # Gets everything.
-            ok,part = m.fetch(num,"(UID BODY[TEXT])")
-            if ok != 'OK': continue
-            print('reading %s %s' % (box,num))
-            child = parent.insertAsLastChild()
-            body = munge(part)
-            ok,part = m.fetch(num,"(UID BODY[HEADER.FIELDS (FROM)])")
-            if ok == 'OK': body = munge(part) + body
-            child.b = '@nocolor\n\n' + body
-            ok,part = m.fetch(num,"(UID BODY[HEADER.FIELDS (SUBJECT)])")
-            if ok == 'OK':
-                head = munge(part)
-                tag = 'Subject: '
-                if head.startswith(tag): head = head[len(tag):]
-                child.h = head.replace('\n','')
-            else:
-                child.h = '%s %s' % (box,num)
-finally:
-    m.close()
-    m.logout()
-p.contract()
-c.redraw()
-print('done')
 </t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>

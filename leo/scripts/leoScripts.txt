@@ -3001,7 +3001,7 @@ sc.createIconButton(
     bg = "LightBlue"
 )
 #@+node:ekr.20120328102352.6949: *4* << documentation >>
-@nocolor-node
+@language rest
 @
 http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
 
@@ -4656,6 +4656,40 @@ def stringToList(string):
 def listToString(list):
 
     return string.join(list,"")
+#@+node:ekr.20130802103517.20482: *3* Call hierarchy tracing (using python 'trace' module)
+@language python
+@tabwidth -4
+
+"""
+Create a Leo suboutline containing summary of a previous trace session.
+
+Run (ctrl+b) this script after::
+
+    cd ~/leo-editor
+    python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
+
+"""
+from __future__ import print_function
+import os
+g.cls()
+f = g.os_path_finalize_join(g.app.loadDir,'..','..','trace.txt')
+tr = open(os.path.expanduser(f))
+top = p.insertAfter()
+top.h = 'trace session'
+cur,no,n = None,None,0
+for l in tr:
+    if l.startswith('***'):
+        cur = top.insertAsLastChild().copy()
+        cur.h = os.path.basename(l.split()[1])
+    elif l.startswith('  -->'):
+        no = cur.insertAsLastChild().copy()
+        no.h = os.path.basename(l.split()[1].strip())
+    elif no:
+        no.b += l.strip() + '\n'
+    n += 1
+    if (n % 100) == 0:
+        print(".",end='')
+c.redraw()
 #@+node:ekr.20080229094736: *3* Catch mixed newlines in distribution files
 import glob
 
@@ -4866,6 +4900,10 @@ def findFunctionCalls (names,p,showEmptyArgs=False):
                 result.append((s0,s1,s2),)
         assert(end > start)
         start = end
+#@+node:ekr.20130802103517.20481: *3* cool hack: detach body editor
+http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
+
+This features a long an important discussion of using Leo with vim.
 #@+node:ekr.20070930042719: *3* Create @menus tree from Leo's internal menu tables
 # Convert standard tables to list of @item nodes
 m = c.frame.menu
@@ -5275,6 +5313,54 @@ def displayCalltree(p, callinfo):
        p = p.parent()
        levels = levels[0:-1]
 #@+node:ekr.20120328102352.6940: *5* trace session
+#@+node:ekr.20130526065545.18367: *3* email import script
+# https://groups.google.com/forum/?fromgroups#!searchin/leo-editor/imaplib/leo-editor/i_U-PBv0Ek0/c0XsmlI_UugJ
+
+import imaplib
+
+def munge(part):
+    s = g.toUnicode(repr(part[0][1]))
+    s = s.strip("'")
+    return s.replace('\\r\\n','\n')
+
+m = imaplib.IMAP4_SSL('imap.gmail.com',993) # Require SSL: Yes
+m.login(<< your login name>>,<< your password>>)
+print('connected to edreamleo@gmail.com')
+# for z in m.list():
+    # print(z)
+try:
+    box = 'Leo/Later' # 'INBOX'
+    m.select(box,True) # readonly.
+    ok, aList = m.search(None,'ALL')
+    if ok == 'OK':
+        parent = p.insertAsLastChild()
+        parent.h = box
+        aList = [g.toUnicode(z) for z in aList]
+        nums = aList[0].split()
+        for num in nums:
+            # ok,data = m.fetch(num,'(RFC822)') # Gets everything.
+            ok,part = m.fetch(num,"(UID BODY[TEXT])")
+            if ok != 'OK': continue
+            print('reading %s %s' % (box,num))
+            child = parent.insertAsLastChild()
+            body = munge(part)
+            ok,part = m.fetch(num,"(UID BODY[HEADER.FIELDS (FROM)])")
+            if ok == 'OK': body = munge(part) + body
+            child.b = '@nocolor\n\n' + body
+            ok,part = m.fetch(num,"(UID BODY[HEADER.FIELDS (SUBJECT)])")
+            if ok == 'OK':
+                head = munge(part)
+                tag = 'Subject: '
+                if head.startswith(tag): head = head[len(tag):]
+                child.h = head.replace('\n','')
+            else:
+                child.h = '%s %s' % (box,num)
+finally:
+    m.close()
+    m.logout()
+p.contract()
+c.redraw()
+print('done')
 #@+node:ekr.20051103072643: *3* Export to treepad
 # simple script to export current node and children as a treepad document
 # the file format for treepad 2.x is simple.
@@ -13726,6 +13812,30 @@ def run(fn,h,d):
 exec(g.findTestScript(c,'@common jinja code'))
 d = {'name':'Fred','rank':'colonel','serial_number':'3.14159'}
 run('fn','jinja test',d)
+#@+node:ekr.20130802103517.20480: *3* push_to_Gist.txt
+# Leo button to publish selected node as Gist.
+# https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/KgejcZHiEl0
+
+import requests
+import json
+tmp = g.os.environ['TEMP']
+description = "published from Leo"
+public = True
+filename = p.h      # node headline
+content = p.b       # node body
+g.es(filename)
+print('\n\n--- %s ---' % filename)
+payload = {
+    'description': description,
+    'public': public,
+    'files': {
+        filename: {'content': content}
+        }
+    } 
+print(payload)
+r = requests.post('https://api.github.com/gists',  data=json.dumps(payload))
+print(r.status_code)
+print(r.text)
 #@+node:ekr.20060209173725: *3* rst-to-leo
 '''A script to import rst files into Leo.
 
@@ -14176,6 +14286,39 @@ return [expr $x*10]
 # This is a comment
 set x 50 +
 return [expr $x*10]
+#@+node:ekr.20130425050120.12671: *3* Script: replace in directory
+'''Replace a search pattern with a replacement pattern in a directory.'''
+# Adapted from 2to3's crlf fixer.
+
+g.cls()
+write = False
+path = g.os_path_finalize_join(g.app.loadDir,'..','extensions','docutils_modernize_bad')
+find = 'import six'
+change = 'from docutils.utils.u import u,text_type'
+import os
+
+def fix(filename):
+    if g.os_path_isdir(filename):
+        # print filename, "Directory!"
+        return
+    s = open(filename,"rb").read()
+    if '\0' in s:
+        print('binary: %s' % filename)
+        return
+    new_s = s.replace(find,change)
+    if new_s != s:
+        print('changed: %s' % g.shortFileName(filename,n=2))
+        if write:
+            f = open(filename,"wb")
+            f.write(new_s)
+            f.close()
+
+for root, dirs, files in os.walk(path):
+    for fn in files:
+        if fn.endswith('.py'):
+            fn = g.os_path_join(root,fn)
+            fix(fn)
+print('done')
 #@+node:ekr.20050219075759: *3* Scripts demonstrating how to do anything with Leo menus
 #@+node:ekr.20050219071503: *4* Test of createMenuItemsFromTable
 def callback(*args,**keys): g.trace()
