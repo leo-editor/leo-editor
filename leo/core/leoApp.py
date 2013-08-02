@@ -2275,13 +2275,24 @@ class LoadManager:
 
         # g.trace(lm.files)
         if lm.files:
+            # A terrible kludge for Linux only:
+            # When using tabs, the first tab has no menu, so
+            # create a temp tab during loading and then delete it.
+            kludge = sys.platform.lower().startswith('linux') and g.app.qt_use_tabs
             c1 = None
+            if kludge:
+                c0 = g.app.newCommander(fileName='loading...',gui=g.app.gui,
+                    previousSettings=None)
             for fn in lm.files:
                 c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
                     # Will give a "not found" message.
                 # This can fail if the file is open in another instance of Leo.
                 # assert c
                 if not c1: c1 = c
+                if kludge:
+                    # Now destroy the dummy frame, leaving menus in all real frames.
+                    g.app.destroyWindow(c0.frame)
+                    kludge = False
         else:
             c = c1 = None
 
@@ -2975,7 +2986,7 @@ class RecentFilesManager:
         recentFilesMenu = menu.getMenu("Recent Files...")
 
         if not recentFilesMenu and not g.unitTesting:
-            g.trace('Recent Files Menu does not exist',g.callers())
+            # g.trace('Recent Files Menu does not exist',g.callers())
             return
 
         # Delete all previous entries.

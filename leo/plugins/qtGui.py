@@ -1955,16 +1955,12 @@ class DynamicWindow(QtGui.QMainWindow):
         # For qttabs gui, parent is a LeoTabbedTopLevel.
 
         # g.trace('(DynamicWindow)',g.callers())
-
         QtGui.QMainWindow.__init__(self,parent)
-
         self.leo_c = c
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
-
         c.font_size_delta = 0  # for adjusting font sizes dynamically
-
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
     #@+node:ekr.20110605121601.18139: *4* construct (DynamicWindow)
     def construct(self,master=None):
@@ -2167,13 +2163,10 @@ class DynamicWindow(QtGui.QMainWindow):
     def createMenuBar (self):
 
         MainWindow = self
-
         w = QtGui.QMenuBar(MainWindow)
         w.setGeometry(QtCore.QRect(0, 0, 957, 22))
         w.setObjectName("menubar")
-
         MainWindow.setMenuBar(w)
-
         # Official ivars.
         self.leo_menubar = w
     #@+node:ekr.20110605121601.18148: *6* createMiniBuffer
@@ -5655,6 +5648,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         menu = self.getMenu(menuName)
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
+        g.trace(menu)
         if menu:
             self.activateAllParentMenus(menu)
         else:       
@@ -5666,7 +5660,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         parent = menu.parent()
         action = menu.menuAction()
-
+        # g.trace(parent,action)
         if action:
             if parent and isinstance(parent,QtGui.QMenuBar):
                 parent.setActiveAction(action)
@@ -5678,15 +5672,13 @@ class leoQtMenu (leoMenu.leoMenu):
         else:
             g.trace('can not happen: no action for %s' % (menu))
     #@+node:ekr.20120922041923.10613: *4* leoQtMenu.deactivateMenuBar
-    def deactivateMenuBar (self):
+    # def deactivateMenuBar (self):
 
-        '''Activate the menu with the given name'''
+        # '''Activate the menu with the given name'''
 
-        menubar = self.c.frame.top.leo_menubar
-
-        menubar.setActiveAction(None)
-        menubar.repaint()
-
+        # menubar = self.c.frame.top.leo_menubar
+        # menubar.setActiveAction(None)
+        # menubar.repaint()
     #@+node:ekr.20110605121601.18362: *4* getMacHelpMenu
     def getMacHelpMenu (self,table):
 
@@ -6904,16 +6896,13 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         del kwargs['factory']
         QtGui.QTabWidget.__init__(self)
         self.detached = []
-
         self.setMovable(True)
 
         def tabContextMenu(point):
             index = self.tabBar().tabAt(point)
             if index < 0 or (self.count() < 2 and not self.detached):
                 return
-
             menu = QtGui.QMenu()
-
             if self.count() > 1:
                 a = menu.addAction("Detach")
                 a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.detach(index))
@@ -6924,7 +6913,6 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             if self.detached:
                 a = menu.addAction("Re-attach All")
                 a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
-
             menu.exec_(self.mapToGlobal(point))
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -7003,11 +6991,9 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         if i < 0: return
-
         s = self.tabText(i)
         s = g.u(s)
         # g.trace('LeoTabbedTopLevel',changed,repr(s),g.callers(5))
-
         if len(s) > 2:
             if changed:
                 if not s.startswith('* '):
@@ -7052,7 +7038,6 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         '''Select the tab for c.'''
 
         # g.trace(c,g.callers())
-
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
@@ -7185,7 +7170,7 @@ class SDIFrameFactory:
         dw.setWindowTitle(leoFrame.title)
 
         if 1:
-            # g.trace('(TabbedFrameFactor) adding bindings')
+            # g.trace('(SDIFrameFactory)',g.callers())
             dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
             dw.installEventFilter(dw.ev_filter)
 
@@ -7213,94 +7198,40 @@ class TabbedFrameFactory:
     """
 
     #@+others
-    #@+node:ekr.20110605121601.18465: *4* ctor (TabbedFrameFactory)
-    def __init__(self):
-
-        # will be created when first frame appears 
-
-        # DynamicWindow => Leo frame map
-        self.alwaysShowTabs = True
-            # Set to true to workaround a problem
-            # setting the window title when tabs are shown.
-        self.leoFrames = {}
-            # Keys are DynamicWindows, values are frames.
-        self.masterFrame = None
-        self.createTabCommands()
-
-        # g.trace('(TabbedFrameFactory)',g.callers())
     #@+node:ekr.20110605121601.18466: *4* createFrame (TabbedFrameFactory)
     def createFrame(self, leoFrame):
 
-        # g.trace('(TabbedFrameFactory)')
-
+        # g.trace('(TabbedFrameFactory)',g.callers())
         c = leoFrame.c
         if self.masterFrame is None:
             self.createMaster()
         tabw = self.masterFrame
         dw = DynamicWindow(c,tabw)
         self.leoFrames[dw] = leoFrame
-
         # Shorten the title.
-        fname = c.mFileName
-        if fname:
-            title = os.path.basename(fname)
-        else:
-            title = leoFrame.title
+        title = os.path.basename(c.mFileName) if c.mFileName else leoFrame.title
         tip = leoFrame.title
-
         dw.setWindowTitle(tip) # 2010/1/1
         idx = tabw.addTab(dw, title)
         if tip: tabw.setTabToolTip(idx, tip)
-
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
-
         if 1:
             # g.trace('(TabbedFrameFactor) adding bindings')
             dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
             dw.installEventFilter(dw.ev_filter)
-
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
-        tabw.tabBar().setVisible(
-            self.alwaysShowTabs or tabw.count() > 1)
-
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         dw.show()
         tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18467: *4* deleteFrame (TabbedFrameFactory)
-    def deleteFrame(self, wdg):
-
-        trace = False and not g.unitTesting
-        if not wdg: return
-
-        if wdg not in self.leoFrames:
-            # probably detached tab
-            self.masterFrame.delete(wdg)
-            return
-
-        if trace: g.trace('old',wdg.leo_c.frame.title)
-            # wdg is a DynamicWindow.
-
-        tabw = self.masterFrame
-        idx = tabw.indexOf(wdg)
-        tabw.removeTab(idx)
-        del self.leoFrames[wdg]
-
-        wdg2 = tabw.currentWidget()
-        if wdg2:
-            if trace: g.trace('new',wdg2 and wdg2.leo_c.frame.title)
-            g.app.selectLeoWindow(wdg2.leo_c)
-
-        tabw.tabBar().setVisible(
-            self.alwaysShowTabs or tabw.count() > 1)
     #@+node:ekr.20110605121601.18468: *4* createMaster (TabbedFrameFactory)
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
         #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
-
         try:
             tabbar.setTabsClosable(True)
             tabbar.connect(tabbar,
@@ -7308,11 +7239,9 @@ class TabbedFrameFactory:
                 self.slotCloseRequest)
         except AttributeError:
             pass # Qt 4.4 does not support setTabsClosable
-
         mf.connect(mf,
             QtCore.SIGNAL('currentChanged(int)'),
             self.slotCurrentChanged)
-
         if g.app.start_minimized:
             mf.showMinimized()
         elif g.app.start_maximized:
@@ -7321,58 +7250,6 @@ class TabbedFrameFactory:
             mf.showFullScreen()
         else:
             mf.show()
-    #@+node:ekr.20110605121601.18469: *4* setTabForCommander (TabbedFrameFactory)
-    def setTabForCommander (self,c):
-
-        tabw = self.masterFrame # a QTabWidget
-
-        for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
-            if dw.leo_c == c:
-                for i in range(tabw.count()):
-                    if tabw.widget(i) == dw:
-                        tabw.setCurrentIndex(i)
-                        break
-                break
-
-    #@+node:ekr.20110605121601.18470: *4* signal handlers (TabbedFrameFactory)
-    def slotCloseRequest(self,idx):
-
-        trace = False and not g.unitTesting
-        tabw = self.masterFrame
-        w = tabw.widget(idx)
-        f = self.leoFrames[w]
-        c = f.c
-        if trace: g.trace(f.title)
-        c.close(new_c=None)
-            # 2012/03/04: Don't set the frame here.
-            # Wait until the next slotCurrentChanged event.
-            # This keeps the log and the QTabbedWidget in sync.
-
-    def slotCurrentChanged(self, idx):
-
-        # Two events are generated, one for the tab losing focus,
-        # and another event for the tab gaining focus.
-        trace = False and not g.unitTesting
-        tabw = self.masterFrame
-        w = tabw.widget(idx)
-        f = self.leoFrames.get(w)
-        if f:
-            if trace: g.trace(f.title)
-            tabw.setWindowTitle(f.title)
-            g.app.selectLeoWindow(f.c)
-                # 2012/03/04: Set the frame now.
-    #@+node:ekr.20110605121601.18471: *4* focusCurrentBody (TabbedFrameFactory)
-    def focusCurrentBody(self):
-        """ Focus body control of current tab """
-        tabw = self.masterFrame
-        w = tabw.currentWidget()
-        w.setFocus()
-        f = self.leoFrames[w]
-        c = f.c
-        c.bodyWantsFocusNow()
-
-        # Fix bug 690260: correct the log.
-        g.app.log = f.log
     #@+node:ekr.20110605121601.18472: *4* createTabCommands (TabbedFrameFactory)
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
@@ -7427,6 +7304,93 @@ class TabbedFrameFactory:
             """ Cycle to next tab """
             tab_cycle(-1)
         #@-<< Commands for tabs >>
+    #@+node:ekr.20110605121601.18465: *4* ctor (TabbedFrameFactory)
+    def __init__(self):
+
+        # will be created when first frame appears 
+
+        # DynamicWindow => Leo frame map
+        self.alwaysShowTabs = True
+            # Set to true to workaround a problem
+            # setting the window title when tabs are shown.
+        self.leoFrames = {}
+            # Keys are DynamicWindows, values are frames.
+        self.masterFrame = None
+        self.createTabCommands()
+
+        # g.trace('(TabbedFrameFactory)',g.callers())
+    #@+node:ekr.20110605121601.18467: *4* deleteFrame (TabbedFrameFactory)
+    def deleteFrame(self, wdg):
+
+        trace = False and not g.unitTesting
+        if not wdg: return
+        if wdg not in self.leoFrames:
+            # probably detached tab
+            self.masterFrame.delete(wdg)
+            return
+        if trace: g.trace('old',wdg.leo_c.frame.title)
+            # wdg is a DynamicWindow.
+        tabw = self.masterFrame
+        idx = tabw.indexOf(wdg)
+        tabw.removeTab(idx)
+        del self.leoFrames[wdg]
+        wdg2 = tabw.currentWidget()
+        if wdg2:
+            if trace: g.trace('new',wdg2 and wdg2.leo_c.frame.title)
+            g.app.selectLeoWindow(wdg2.leo_c)
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+    #@+node:ekr.20110605121601.18471: *4* focusCurrentBody (TabbedFrameFactory)
+    def focusCurrentBody(self):
+        """ Focus body control of current tab """
+        tabw = self.masterFrame
+        w = tabw.currentWidget()
+        w.setFocus()
+        f = self.leoFrames[w]
+        c = f.c
+        c.bodyWantsFocusNow()
+
+        # Fix bug 690260: correct the log.
+        g.app.log = f.log
+    #@+node:ekr.20110605121601.18469: *4* setTabForCommander (TabbedFrameFactory)
+    def setTabForCommander (self,c):
+
+        tabw = self.masterFrame # a QTabWidget
+
+        for dw in self.leoFrames: # A dict whose keys are DynamicWindows.
+            if dw.leo_c == c:
+                for i in range(tabw.count()):
+                    if tabw.widget(i) == dw:
+                        tabw.setCurrentIndex(i)
+                        break
+                break
+
+    #@+node:ekr.20110605121601.18470: *4* signal handlers (TabbedFrameFactory)
+    def slotCloseRequest(self,idx):
+
+        trace = False and not g.unitTesting
+        tabw = self.masterFrame
+        w = tabw.widget(idx)
+        f = self.leoFrames[w]
+        c = f.c
+        if trace: g.trace(f.title)
+        c.close(new_c=None)
+            # 2012/03/04: Don't set the frame here.
+            # Wait until the next slotCurrentChanged event.
+            # This keeps the log and the QTabbedWidget in sync.
+
+    def slotCurrentChanged(self, idx):
+
+        # Two events are generated, one for the tab losing focus,
+        # and another event for the tab gaining focus.
+        trace = False and not g.unitTesting
+        tabw = self.masterFrame
+        w = tabw.widget(idx)
+        f = self.leoFrames.get(w)
+        if f:
+            if trace: g.trace(f.title)
+            tabw.setWindowTitle(f.title)
+            g.app.selectLeoWindow(f.c)
+                # 2012/03/04: Set the frame now.
     #@-others
 #@+node:ekr.20110605121601.18474: ** Gui wrapper
 #@+node:ekr.20110605121601.18475: *3* class leoQtGui
@@ -7447,12 +7411,9 @@ class leoQtGui(leoGui.leoGui):
         self.iconimages = {}
         self.plainTextWidget = leoQtBaseTextWidget
         self.mGuiName = 'qt'
-        
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
-
         # Communication between idle_focus_helper and activate/deactivate events.
         self.active = True
-
         # Put up the splash screen()
         if (g.app.use_splash_screen and
             not g.app.batchMode and
@@ -7460,7 +7421,6 @@ class leoQtGui(leoGui.leoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
-
         if g.app.qt_use_tabs:    
             self.frameFactory = TabbedFrameFactory()
         else:
@@ -8397,24 +8357,19 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
     def createSplashScreen (self):
 
+        qt = QtCore.Qt
+        splash = None
         for name in (
-            'SplashScreen.jpg',
-            'SplashScreen.png',
-            'SplashScreen.ico',
+            'SplashScreen.jpg','SplashScreen.png','SplashScreen.ico',
         ):
             fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
-
             if g.os_path_exists(fn):
-                qt = QtCore.Qt
                 pm = QtGui.QPixmap(fn)
-                splash = QtGui.QSplashScreen(pm,(qt.SplashScreen))
+                splash = QtGui.QSplashScreen(pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
                 splash.show()
-                # g.trace('found',fn)
+                # splash.repaint()
+                # self.qtApp.processEvents()
                 break
-            else:
-                # g.trace('not found',fn)
-                splash = None
-
         return splash
     #@+node:ekr.20110613103140.16424: *5* dismiss_splash_screen (qtGui)
     def dismiss_splash_screen (self):

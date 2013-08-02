@@ -60,7 +60,7 @@ import token    # for Check Python command
 #@-<< imports >>
 
 #@+others
-#@+node:ekr.20041118104831: ** class commands
+#@+node:ekr.20041118104831: ** class Commands
 class Commands (object):
     """A class that implements most of Leo's commands."""
     #@+others
