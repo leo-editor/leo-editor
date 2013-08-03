@@ -491,6 +491,17 @@ s = '\n'.join(result)
 g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + s)
 #@+node:ekr.20110406082808.18151: *3* @button rst3
 c.rstCommands.rst3()
+#@+node:ekr.20130803073926.17120: *3* @button clean-mail
+target = '-- \nYou received this message because'
+target = '--=20\nYou received this message because'
+
+while p:
+    s = p.b
+    i = s.find(target)
+    if i > -1:
+        p.b = s[:i]
+        g.es(p.h)
+    p.moveToThreadNext()
 #@+node:ekr.20080923181012.1: ** @@rst ../test/new-directory/test.html
 @ @rst-options
 code_mode=False
