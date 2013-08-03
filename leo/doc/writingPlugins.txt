@@ -52,7 +52,7 @@ The rest of this chapters discusses topics related specifically to plugins.
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
 .. _reStructuredText:     http://docutils.sourceforge.net/rst.html
-.. _SilverCity:           http://silvercity.sourceforge.net
+.. .. _SilverCity:           http://silvercity.sourceforge.net
 
 .. Relative links...
 .. _`Event handlers`:               scripting.html#event-handlers

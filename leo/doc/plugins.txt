@@ -39,7 +39,7 @@ instantly hooked.
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
 .. _reStructuredText:     http://docutils.sourceforge.net/rst.html
-.. _SilverCity:           http://silvercity.sourceforge.net
+.. .. _SilverCity:           http://silvercity.sourceforge.net
 
 .. Relative links...
 .. _`Specifying settings`:      customizing.html#specifying-settings

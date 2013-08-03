@@ -3,7 +3,7 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20130501035328.10475: ** desired outcomes for Leo
+.. @+node:ekr.20130501035328.10475: ** Desired outcomes for Leo
 @nocolor-node
 
 1. Newbies can install Leo without problems.
@@ -12,172 +12,8 @@
 4. Future project leaders (FPL's) know how to change Leo like I do.
     - Secondary: FPL's have the same general knowledge about Leo that I do.
 5. Fix important bugs.
-.. @+node:ekr.20130413061407.10366: ** The big picture
-@wrap
-
-Release the next version of Leo:
-
-    Rewrite in screencast-script style:
-    
-        - Docstrings for the most important plugins.
-        - All help-for-<topic> text.
-        - Leo's tutorials.
-    
-    - Fix the most important bugs, and little bugs that have hung around far too long.
-
-Concurrently with release-related matters:
-
-    - Use bookmarks to describe everything a future project leader needs to know about Leo.
-
-After the release:
-
-    - Revisit some of the worst parts of Leo's code, especially undo and headline editing.
-    
-    - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
-.. @+node:ekr.20130802070139.12456: *3* Draft tutorials
-.. @+node:ekr.20130503053253.10548: *4* Draft: unit testing tutorial
-@wrap
-@language rest
-
-https://groups.google.com/forum/?fromgroups#!topic/leo-editor/eHAxE5qLUG8
-
-The following is a first draft of a unit-testing tutorial.  It will form the basis of a new help-for-unit-testing command, and will also become the introduction to Leo unit-testing chapter.
-
-All comments are welcome.  Please let me know if anything is unclear.
-
-
-------------------
-
-.. |br| raw:: html
-
-   <br />
-
-Leo makes it easy to create unit tests from individual outline nodes or trees.
-
-A node whose headline starts with @tests defines a unit test.
-
-The body text of the @test node contains a **self-contained** unit test.
-
-For example, this creates a complete unit test::
-
-    @test fails  (headline)
-    assert False (body text)
-
-To run this test, select the @test node and do: |br|
-<alt-x>run-selected-unit-tests-locally. |br|
-Leo will create and run the unit test automatically.
-
-To see all of Leo's unit testing commands, do: |br|
-<alt-x>run<tab>
-
-Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
-
-@test nodes may use section references and \@others
-as usual, but unit tests may also put test data 
-in child nodes.
-
-For more details about unit testing, see:
-http://leoeditor.com/unitTesting.html
-
-**Notes for Leo developers**
-
-leo/test/unitTest.leo contains all of Leo's own unit tests.
-
-Running all tests is not necessary.  Just select::
-
-    Active Unit Tests
-
-and then do Alt-4 (run-selected-unit-tests-locally).
-
-**Note**: Some tests will likely fail on machines other than EKR's. You only need to be concerned about unit tests that start failing after you make your changes.
-.. @+node:ekr.20130521062549.10856: *4* Draft: Position tutorial
-@language rest
-
-A **position** object represents a specific node in a Leo outline.
-
-Equivalently, a position represents the state of a Leo generator, that is,
-a specific node during a traversal of a Leo outline.
-
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.**
-
-You may save and and use positions *provided* the outline remains unchanged.
-
-Leo's generators deliver positions, one after each other, using a *single*
-(ever-changing) position. As a result, scripts must use p.copy() to create
-lists of positions. For example::
-
-    aList = [p.copy() for p in c.rootPosition().subtree()]
-.. @+node:ekr.20130521122236.15095: *5* other info
-Consider this example, where nodes with the same names are clones of each other::
-
-+ Root
-    + A
-        - B
-    + A
-        - B
-    - B
-
-Leo's c.all_nodes() iterator will deliver 9 positions:
-
-    1: Root
-    2: A
-    3: B
-    4: A
-    5: B
-    6: B
-
-*All* positions returned by a traversal are distinct.  Some examples:
-
-- Position 2: A is different from position 4: A
-  The former is the first child of root; the latter is the second child of root.
-  
-- The parent of position 3: B is A at childIndex 0 of Root.
-  The parent of position 5: B is A at childIndex 1 of Root.
-  The parent of position 6: B is Root. The childIndex of 6: B is 2.
-
-.. @+node:ekr.20130510070942.10602: *3* Docs
-.. @+node:ekr.20130514082726.10612: *4* Document valuespace from Ville's blog
-http://leo-editor.github.io/valuespace-intro.html
-.. @+node:ekr.20130522131838.15047: *4* position script
-g.cls()
-# root = g.findNodeAnywhere(c,'root')
-root = c.rootPosition()
-assert root
-line = 0
-for p in root.self_and_subtree():
-    line += 1
-    print('%s: %4s @ %d p._childIndex: %d p.stack: %s' % (
-        line,
-        p.cleanHeadString(),
-        id(p.v),
-        p._childIndex,
-        # p.level(),p.key(),
-        # p.stack,
-        '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
-    ))
-.. @+node:ekr.20130510070942.10606: *3* Bugs
-.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
-.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
-# Trying to delete a second body editor.
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130510070942.10611: *4* Can undo headline put focus in headline?
-This would fix a reported bug.
 .. @+node:ekr.20130803073926.12442: ** Waiting
 * Waiting for answer reubuntu splashscreen
     http://qt-project.org/forums/viewthread/30837/
@@ -219,56 +55,11 @@ def dismiss_splash_screen (self):
         gui.splashScreen.hide()
         # gui.splashScreen.deleteLater()
         gui.splashScreen = None
-.. @+node:ekr.20130408095053.10307: ** ** guide for the next leaders
-# Use bookmarks?
-.. @+node:ekr.20130501035328.12634: ** Use Leo for email?
-A script is in ekr-projects.leo.
-To be useful, it would have to strip off cruft.
-
-Another option: just use labels more effectively.
 .. @+node:ekr.20130503155210.24812: ** To do: 4.11
-.. @+node:ekr.20130508084413.10645: *3* Better find/replace dialog
-For newbies (and for power users too, for that matter), it may be helpful to
-have a "Find and Replace" dialog box similar to the one below:
-
-.. image: c:/prog/findReplace.jpg
-
-.. @+node:ekr.20130508084413.10634: *3* quickmove-jump-to adds button
-.. @+node:ekr.20130508084413.10631: *3* add g.etrace
-.. @+node:ekr.20130508084413.10630: *3* Add Leo to Wikipedia: comparison of text editors
-.. @+node:ekr.20130503155210.24814: *3* Tutorials/Screencasts
-@nocolor-node
-
-** Screencast style for plugins docstrings.
-* Screencast style for help messages.
-* Screencast style for tutorials.
-* Create YouTube channel for Leo screencasts.
-
-Topics:
-- Minibuffer: alt-x, tab-completion.
-- @button.
-- @rclick
-- Find/Change (done)
-- execute-script.
-- bookmarks.py.
-
-    
-.. @+node:ekr.20130502071141.10572: *3* Docs
-@language rest
-
-** Create gallery of screen shots.
-
-Every command should have a **complete** docstring.
-
-?Use vr (and @wrap) to view all setting documentation
-
-Fix all doc bugs & incompletions.
-.. @+node:ekr.20130503155210.24816: *3* Installation
-@nocolor-node
-
-- Fix install bug.
-- Create one-click installer.
-.. @+node:ekr.20130503155210.24821: *4* Update installation docs
+.. @+node:ekr.20130510070942.10606: *3* Bugs
+.. @+node:ekr.20130503155210.24816: *4* * Fix install bug
+Ask the net.
+.. @+node:ekr.20130503155210.24821: *5* Update installation docs
 @language rest
 
 https://code.google.com/p/maphew/source/browse/other/create-leobat.bat
@@ -315,7 +106,7 @@ assoc:
 
 
 From http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows (and http://www.maphew.com/How_To/Installing_Leo_Editor_on_Windows.html)
-.. @+node:ekr.20130503155210.24826: *4* Script: Add Windows handler for .leo files
+.. @+node:ekr.20130503155210.24826: *5* Script: Add Windows handler for .leo files
 # https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
 
 @language python
@@ -354,7 +145,7 @@ from subprocess import Popen
 Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
 
     cwd=tmp, shell=True)
-.. @+node:ekr.20130503155210.24827: *4* Console script: Install Leo from scratch on Windows
+.. @+node:ekr.20130503155210.24827: *5* Console script: Install Leo from scratch on Windows
 @language batch
 
 mkdir X:\testing
@@ -375,89 +166,60 @@ python install-pip.py GO
 pip install -i https://testpypi.python.org/pypi leo-editor
 
 python apps\Python27\Scripts\leo
-.. @+node:ekr.20130503155210.24817: *3* 4.11 Scripts
+.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
+.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130510070942.10611: *4* Can undo headline put focus in headline?
+This would fix a reported bug.
+.. @+node:ekr.20130508084413.10645: *4* Better find/replace dialog
+For newbies (and for power users too, for that matter), it may be helpful to
+have a "Find and Replace" dialog box similar to the one below:
+
+.. image: c:/prog/findReplace.jpg
+
+.. @+node:ekr.20130508084413.10634: *3* quickmove-jump-to adds button
+.. @+node:ekr.20130803125244.17100: ** Docs: Next
+.. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots
+.. @+node:ekr.20130408095053.10307: *3* * Guide for the next leaders
+# Use bookmarks?
+.. @+node:ekr.20130503155210.24814: *3* * Tutorials/Screencasts
 @nocolor-node
 
-- Find a good place for recently contributed script.
-.. @+node:ekr.20130503155210.24820: *4* Create bat file
-:: https://code.google.com/p/maphew/source/browse/other/create-leobat.bat
-:: https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/bat$20file/leo-editor/li9ILUWuNAs/1zhjcNPWybEJ
+Rewrite in screencast-script style:
+- Docstrings for the most important plugins.
+- All help-for-<topic> text.
+- Leo's tutorials.
 
-@language batch
+** Screencast style for plugins docstrings.
+* Screencast style for help messages.
+* Screencast style for tutorials.
+* Create YouTube channel for Leo screencasts.
 
-@echo off
-:: A batch file which generates other batch files to run the Leo Editor,
-:: adapted for the local machine. Optionally, it will also set the Windows
-:: filetype and association so .leo files can be opened from Explorer.
-::
-:: It needs to live in the same folder as "launchLeo.py"
-::
-:: Open Source X/MIT License
-:: initial version * 2012-Dec-13 * matt wilkie <maphew@gmail.com>
+Topics:
+- Minibuffer: alt-x, tab-completion.
+- @button.
+- @rclick
+- Find/Change (done)
+- execute-script.
+- bookmarks.py.
 
-if "%1"=="" goto :Usage
-
-call :pyCheck %1
-call :main %1
-if "%2"=="register" call :register %1
-goto :eof
-
-:main
-:: %1 is the path to folder containing python .exe's
-set pyexe=%~dp1\python.exe
-set pywexe=%~dp1\pythonw.exe
-echo.
-echo. Generating...
-echo.
-echo. Leo.bat - run leo in Windows mode
-echo. Leoc.bat - run leo and keep console window open
-echo.
-echo. These can be placed anywhere in PATH.
-echo.
-echo @"%pyexe%" "%~dp0\launchLeo.py" %%* > leoc.bat
-echo @"%pywexe%" "%~dp0\launchLeo.py" %%* > leo.bat
-goto :eof
-
-:register
-:: perms check courtesy of http://stackoverflow.com/questions/4051883
-:: batch-script-how-to-check-for-admin-rights
-net session >nul 2>&1
-if %errorlevel% == 0 (
-echo.
-echo. Setting .leo filetype and registering association with Windows
-echo.
-ftype LeoFile=%pywexe% "%~dp0\launchLeo.py" %%*
-assoc .leo=LeoFile
-) else (
-echo. Error: Can't set filetype and register association.
-echo. Please run from elevated shell to do that.
-echo.
-)
-goto :eof
-
-:pyCheck
-if not exist "%1" goto :Usage
-goto :eof
-
-:usage
-echo.
-echo. -=[%~nx0]=-
-echo.
-echo. Create batch files to launch Leo Editor that can be
-echo. placed and run from anywhere on this machine.
-echo.
-echo. and optionally register filetype with windows
-echo.
-echo. Usage:
-echo. %~n0 "c:\path\to\python.exe"
-echo. %~n0 "c:\path\to\python.exe" register
-echo.
-goto :eof
-
+.. @+node:ekr.20130803125244.17099: *3* * Every command should have a **complete** docstring.
 .. @+node:ekr.20110921094450.6956: ** To do: 4.12
 @language rest
 
-This is the "will do" list.
+- Revisit some of the worst parts of Leo's code, especially undo and headline editing.
+    
+- Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
+
+.. @+node:ekr.20130803125244.17098: *3* Easy
+.. @+node:ekr.20130508084413.10631: *4* add g.etrace
 .. @+node:ekr.20130602065849.14314: *3* Add tag handler
 .. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
 .. @+node:ekr.20120613104401.10222: *4* Notes
@@ -8446,6 +8208,33 @@ commands to not increase the burden on the user while she is reading
 the (rendered) docs.
 .. @+node:ekr.20111011175652.15696: *4* Register a domain name like leo-editor.org
 .. @+node:ekr.20040123102724: ** Can't or won't do
+.. @+node:ekr.20130803125244.17077: *3* bug: web site for Leo google group is out of date
+@nocolor
+
+From: ne1uno <eltronis@gmail.com>
+
+http://groups.google.com/group/leo-editor/about
+
+still has the old home page webpages.charter.net
+though it also has leoeditor.com/ for discussions.
+
+The google docs state that it is not possible to change the web site for a google group.
+.. @+node:ekr.20130803125244.17078: *4* Re: update about Leo google group
+@nocolor
+
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+
+
+On Sat, May 11, 2013 at 9:58 PM, ne1uno <eltronis@gmail.com> wrote:
+
+> http://groups.google.com/group/leo-editor/about
+> still has the old home page
+> webpages.charter.net
+>
+
+Thanks for this.  At present, I don't see any way to change the old home
+page!  Anyone know how?
 .. @+node:ekr.20080815174457.5: *3* Consider deleting private shadow files
 @nocolor
 

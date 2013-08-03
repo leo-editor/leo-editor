@@ -422,22 +422,92 @@
 <v t="ekr.20130411023340.5983"><vh>The todo plugin</vh></v>
 </v>
 <v t="ekr.20130526065545.14924"><vh>To be documented (do not delete!!)</vh>
-<v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
-<v t="ekr.20130526065545.17612"><vh>update about Leo google group</vh>
-<v t="ekr.20130526065545.17613"><vh>Re: update about Leo google group</vh></v>
+<v t="ekr.20130803073926.17119"><vh>Wish list</vh>
+<v t="ekr.20130526065545.17507"><vh>Wish list: xiki window for leo</vh>
+<v t="ekr.20130526065545.17508"><vh>Re: Wish list: xiki window for leo</vh></v>
+<v t="ekr.20130526065545.17509"><vh>Re: Wish list: xiki window for leo</vh></v>
+<v t="ekr.20130526065545.17510"><vh>Re: Wish list: xiki window for leo</vh></v>
+<v t="ekr.20130526065545.17512"><vh>Re: Wish list: xiki window for leo</vh></v>
+<v t="ekr.20130526065545.17513"><vh>Re: Wish list: xiki window for leo</vh></v>
 </v>
-<v t="ekr.20130526065545.17605"><vh>link to PyEnchant is broken</vh></v>
-<v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
-<v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
-<v t="ekr.20130526065545.17606"><vh>Re: Outdated info in "rst3"</vh></v>
-<v t="ekr.20130526065545.17608"><vh>Re: Outdated info in "rst3"</vh></v>
+<v t="ekr.20130526065545.17564"><vh>Export Full Content</vh>
+<v t="ekr.20130526065545.17561"><vh>Re: Export Full Content</vh></v>
+<v t="ekr.20130526065545.17562"><vh>Re: Export Full Content</vh></v>
+<v t="ekr.20130526065545.17563"><vh>Re: Export Full Content</vh></v>
+<v t="ekr.20130526065545.17565"><vh>Re: Export Full Content</vh></v>
+<v t="ekr.20130526065545.17566"><vh>Re: Export Full Content</vh></v>
 </v>
-<v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh>
-<v t="ekr.20130526065545.17560"><vh>Re: Really @edit can expand nodes?</vh></v>
+<v t="ekr.20130526065545.17568"><vh>Automated playback</vh>
+<v t="ekr.20130526065545.17567"><vh>Re: Automated playback</vh></v>
+<v t="ekr.20130526065545.17569"><vh>Re: Automated playback</vh></v>
+<v t="ekr.20130526065545.17570"><vh>Re: Automated playback</vh></v>
+<v t="ekr.20130526065545.17571"><vh>Re: Automated playback</vh></v>
+<v t="ekr.20130526065545.17573"><vh>Re: Automated playback</vh></v>
+<v t="ekr.20130526065545.17574"><vh>Re: Automated playback</vh></v>
 </v>
-<v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
+<v t="ekr.20130526065545.17491"><vh>Idea/needed: system command queue</vh></v>
+<v t="ekr.20130526065545.17600"><vh>Parameterized template nodes</vh>
+<v t="ekr.20130526065545.17596"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20130526065545.17597"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20130526065545.17599"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20130526065545.17601"><vh>Re: Parameterized template nodes</vh></v>
+<v t="ekr.20130526065545.17602"><vh>Re: Parameterized template nodes</vh></v>
+</v>
+<v t="ekr.20130526065545.17603"><vh>Obstacles to using Leo, from a potential new user.</vh>
+<v t="ekr.20130526065545.17604"><vh>Re: Obstacles to using Leo, from a potential new user.</vh></v>
+</v>
+<v t="ekr.20130526065545.17555"><vh>Background Images in body pane?</vh>
+<v t="ekr.20130526065545.17556"><vh>Re: Background Images in body pane?</vh></v>
+<v t="ekr.20130526065545.17557"><vh>Re: Background Images in body pane?</vh></v>
+<v t="ekr.20130526065545.17558"><vh>Re: Background Images in body pane?</vh></v>
+</v>
+</v>
+<v t="ekr.20130803073926.17116"><vh>User comments</vh>
+<v t="ekr.20130526065545.14932"><vh>Leo as PIM and authoring tool</vh></v>
+<v t="ekr.20130526065545.17480"><vh>Blog on pelican and GH-pages: first light ;-)</vh>
+<v t="ekr.20130526065545.17466"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17467"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17468"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17469"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17470"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17471"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17475"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17476"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17477"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17478"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17479"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17481"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17482"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17483"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17484"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17485"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17486"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+</v>
+<v t="ekr.20130526065545.17537"><vh>Blog post about how Leo can improve organization of code bases</vh>
+<v t="ekr.20130526065545.17535"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130526065545.17536"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130526065545.17538"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130526065545.17539"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+</v>
+<v t="ekr.20130526065545.17543"><vh>why Leo</vh>
+<v t="ekr.20130526065545.17534"><vh>Fw: why Leo</vh>
+<v t="ekr.20130526065545.17533"><vh>Re: Fw: why Leo</vh></v>
+<v t="ekr.20130526065545.17540"><vh>Re: why Leo</vh></v>
+<v t="ekr.20130526065545.17541"><vh>Re: why Leo</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20130803073926.17117"><vh>Help</vh>
+<v t="ekr.20130526065545.17530"><vh>How to make body text insertion at cursor permanent?</vh>
+<v t="ekr.20130526065545.17527"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20130526065545.17528"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20130526065545.17529"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20130526065545.17531"><vh>Re: the workflow of write leo scripts?</vh></v>
+</v>
+<v t="ekr.20130526065545.17532"><vh>the workflow of write leo scripts?</vh></v>
 </v>
 <v t="ekr.20130803073926.17125"><vh>To document</vh>
+<v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh></v>
 <v t="ekr.20130526065545.17439"><vh>Create Pane For matplotlib chart</vh>
 <v t="ekr.20130526065545.17437"><vh>Re: Create Pane For matplotlib chart</vh></v>
 <v t="ekr.20130526065545.17438"><vh>Re: Create Pane For matplotlib chart</vh></v>
@@ -474,6 +544,7 @@
 <v t="ekr.20130526065545.17616"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 <v t="ekr.20130526065545.17617"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 </v>
+<v t="ekr.20130803125244.17094"><vh>Document valuespace from Ville's blog</vh></v>
 </v>
 <v t="ekr.20130526065545.17620"><vh>printing.py</vh>
 <v t="ekr.20130526065545.17621"><vh>Re: [ANN] New plugin - printing.py</vh></v>
@@ -493,6 +564,7 @@
 <v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
 <v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
 </v>
+<v t="ekr.20130803125244.17095"><vh>position script (put in scripting chapter?)</vh></v>
 </v>
 <v t="ekr.20130803073926.17113"><vh>Features</vh>
 <v t="ekr.20130526065545.14925"><vh>Full text searches</vh></v>
@@ -572,7 +644,9 @@
 <v t="ekr.20130526065545.17578"><vh>All about clone conflicts</vh>
 <v t="ekr.20130526065545.17579"><vh>Re: All about clone conflicts</vh></v>
 </v>
-<v t="ekr.20130526065545.17631"><vh>Tutorial for positions: comments please</vh></v>
+<v t="ekr.20130803125244.17092"><vh>Draft: Position tutorial</vh>
+<v t="ekr.20130803125244.17093"><vh>other info</vh></v>
+</v>
 </v>
 <v t="ekr.20130526065545.17629"><vh>How to call functions from LeoPyRef.Leo</vh>
 <v t="ekr.20130526065545.17625"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
@@ -583,91 +657,19 @@
 </v>
 <v t="ekr.20130526065545.17580"><vh>How to use leo to make mathematical notes?</vh></v>
 </v>
-<v t="ekr.20130803073926.17116"><vh>User comments</vh>
-<v t="ekr.20130526065545.14932"><vh>Leo as PIM and authoring tool</vh></v>
-<v t="ekr.20130526065545.17480"><vh>Blog on pelican and GH-pages: first light ;-)</vh>
-<v t="ekr.20130526065545.17466"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17467"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17468"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17469"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17470"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17471"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17475"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17476"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17477"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17478"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17479"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17481"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17482"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17483"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17484"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17485"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17486"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 </v>
-<v t="ekr.20130526065545.17537"><vh>Blog post about how Leo can improve organization of code bases</vh>
-<v t="ekr.20130526065545.17535"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17536"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17538"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17539"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
+<v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
+<v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
+<v t="ekr.20130526065545.17606"><vh>Re: Outdated info in "rst3"</vh></v>
+<v t="ekr.20130526065545.17608"><vh>Re: Outdated info in "rst3"</vh></v>
 </v>
-<v t="ekr.20130526065545.17543"><vh>why Leo</vh>
-<v t="ekr.20130526065545.17534"><vh>Fw: why Leo</vh>
-<v t="ekr.20130526065545.17533"><vh>Re: Fw: why Leo</vh></v>
-<v t="ekr.20130526065545.17540"><vh>Re: why Leo</vh></v>
-<v t="ekr.20130526065545.17541"><vh>Re: why Leo</vh></v>
+<v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh>
+<v t="ekr.20130526065545.17560"><vh>Re: Really @edit can expand nodes?</vh></v>
 </v>
+<v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
 </v>
-</v>
-<v t="ekr.20130803073926.17119"><vh>Wish list</vh>
-<v t="ekr.20130526065545.17507"><vh>Wish list: xiki window for leo</vh>
-<v t="ekr.20130526065545.17508"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17509"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17510"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17512"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17513"><vh>Re: Wish list: xiki window for leo</vh></v>
-</v>
-<v t="ekr.20130526065545.17564"><vh>Export Full Content</vh>
-<v t="ekr.20130526065545.17561"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17562"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17563"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17565"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17566"><vh>Re: Export Full Content</vh></v>
-</v>
-<v t="ekr.20130526065545.17568"><vh>Automated playback</vh>
-<v t="ekr.20130526065545.17567"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17569"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17570"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17571"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17573"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17574"><vh>Re: Automated playback</vh></v>
-</v>
-<v t="ekr.20130526065545.17491"><vh>Idea/needed: system command queue</vh></v>
-<v t="ekr.20130526065545.17600"><vh>Parameterized template nodes</vh>
-<v t="ekr.20130526065545.17596"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17597"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17599"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17601"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17602"><vh>Re: Parameterized template nodes</vh></v>
-</v>
-<v t="ekr.20130526065545.17603"><vh>Obstacles to using Leo, from a potential new user.</vh>
-<v t="ekr.20130526065545.17604"><vh>Re: Obstacles to using Leo, from a potential new user.</vh></v>
-</v>
-<v t="ekr.20130526065545.17555"><vh>Background Images in body pane?</vh>
-<v t="ekr.20130526065545.17556"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20130526065545.17557"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20130526065545.17558"><vh>Re: Background Images in body pane?</vh></v>
-</v>
-</v>
-<v t="ekr.20130803073926.17117"><vh>Help</vh>
-<v t="ekr.20130526065545.17530"><vh>How to make body text insertion at cursor permanent?</vh>
-<v t="ekr.20130526065545.17527"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17528"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17529"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17531"><vh>Re: the workflow of write leo scripts?</vh></v>
-</v>
-<v t="ekr.20130526065545.17532"><vh>the workflow of write leo scripts?</vh></v>
-</v>
-</v>
+<v t="ekr.20130803125244.17081"><vh>* Document ubuntu only menu kludge</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -8457,15 +8459,6 @@ Thanks for your comments.  Please feel free to continue this conversation.
 Edward
 
 </t>
-<t tx="ekr.20130526065545.17605">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-http://leoeditor.com/installing.html#installing-pyenchant
-
-use this?
-http://pythonhosted.org/pyenchant/download.html
-</t>
 <t tx="ekr.20130526065545.17606">@nocolor
 
 From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
@@ -8563,38 +8556,6 @@ but leolaunchleo.py doesnt even exist anymore (the post is old).
   workbook) at least until the user changes some config and prevents that
   from happening. Is there any "load previous tabs" functionality? (IE open
   the Leo files which where open when it was closed the last time)
-</t>
-<t tx="ekr.20130526065545.17612">@nocolor
-
-From: ne1uno &lt;eltronis@gmail.com&gt;
-
-http://groups.google.com/group/leo-editor/about
-
-still has the old home page
-webpages.charter.net
-though it also has leoeditor.com/ for discussions. assuming that is
-intentional, seems confusing,
-since the links point back to google groups.
-
-looks good. remember with the endless refinement, most people don't
-want to read first but do first so don't skimp on the usability.
-
-</t>
-<t tx="ekr.20130526065545.17613">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Sat, May 11, 2013 at 9:58 PM, ne1uno &lt;eltronis@gmail.com&gt; wrote:
-
-&gt; http://groups.google.com/group/leo-editor/about
-&gt; still has the old home page
-&gt; webpages.charter.net
-&gt;
-
-Thanks for this.  At present, I don't see any way to change the old home
-page!  Anyone know how?
 </t>
 <t tx="ekr.20130526065545.17614">@nocolor
 
@@ -9193,44 +9154,6 @@ work.  So the tool I've written may be the best approach to mapping
 Leo's runtime structure. Another thing it could do, try and map 'major'
 classes, or at least classes from leo.core.* - i.e. ignore the built in
 types.</t>
-<t tx="ekr.20130526065545.17631">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-Here is the first draft of a tutorial for positions.  It wasn't easy.  All 
-comments welcome.
-
-A **position** object represents a specific node in a Leo outline.
-
-Equivalently, a position represents the state of a Leo generator, that is,
-a specific node during a traversal of a Leo outline.
-
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.**
-
-You may save and and use positions *provided* the outline remains unchanged.
-
-Leo's generators deliver positions, one after each other, using a *single*
-(ever-changing) position. As a result, scripts must use p.copy() to create
-lists of positions. For example,
-
-    aList = [p.copy() for p in c.rootPosition().subtree()]
-
-Edward
-
-P.S.  I considered using an example outline containing clones,
-but I'm not sure that adds enough to be worth including in a precis.
-
-EKR
-
-</t>
 <t tx="ekr.20130526065545.17633">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -9475,6 +9398,117 @@ if __name__ == '__main__':
 <t tx="ekr.20130803073926.17123"></t>
 <t tx="ekr.20130803073926.17124"></t>
 <t tx="ekr.20130803073926.17125"></t>
+<t tx="ekr.20130803125244.17080">Installing Leo on Windows
+
+    Install Python from http://www.python.org/download/releases/
+
+    Install either Tk or Qt, as described above.
+
+    Install Leo. Get Leo’s .zip file from http://sourceforge.net/projects/leo/ You can unpack the .zip file anywhere, including Python’s site-packages folder, for example, C:\Python26\Lib\site-packages
+
+    [optional] Generate/update a junction link from unpacked leo folder to ...\site-packages\leo:
+
+    cd C:\Python26\Lib\site-packages\
+    junction leo leo-4-6-2-final
+
+    Create windows shortcut (edit paths as necessary):
+
+    Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
+    Start in =  D:\code
+
+    Associate .leo filetype batch file:
+
+    ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+    assoc .leo=LeoFile
+
+    [optional] Put this leo.bat in %PATH%:
+
+    @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
+
+For more information see:
+
+Junction links:
+    http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+    http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+ftype:
+    http://ss64.com/nt/ftype.html
+assoc:
+    http://ss64.com/nt/assoc.html
+
+</t>
+<t tx="ekr.20130803125244.17081"></t>
+<t tx="ekr.20130803125244.17092">@language rest
+
+A **position** object represents a specific node in a Leo outline.
+
+Equivalently, a position represents the state of a Leo generator, that is,
+a specific node during a traversal of a Leo outline.
+
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.
+
+For any position p, **p.v** is the vnode at position p.
+
+A node's vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.
+
+**Positions become invalid when the outline changes.**
+
+You may save and and use positions *provided* the outline remains unchanged.
+
+Leo's generators deliver positions, one after each other, using a *single*
+(ever-changing) position. As a result, scripts must use p.copy() to create
+lists of positions. For example::
+
+    aList = [p.copy() for p in c.rootPosition().subtree()]
+</t>
+<t tx="ekr.20130803125244.17093">Consider this example, where nodes with the same names are clones of each other::
+
++ Root
+    + A
+        - B
+    + A
+        - B
+    - B
+
+Leo's c.all_nodes() iterator will deliver 9 positions:
+
+    1: Root
+    2: A
+    3: B
+    4: A
+    5: B
+    6: B
+
+*All* positions returned by a traversal are distinct.  Some examples:
+
+- Position 2: A is different from position 4: A
+  The former is the first child of root; the latter is the second child of root.
+  
+- The parent of position 3: B is A at childIndex 0 of Root.
+  The parent of position 5: B is A at childIndex 1 of Root.
+  The parent of position 6: B is Root. The childIndex of 6: B is 2.
+
+</t>
+<t tx="ekr.20130803125244.17094">http://leo-editor.github.io/valuespace-intro.html
+</t>
+<t tx="ekr.20130803125244.17095">g.cls()
+# root = g.findNodeAnywhere(c,'root')
+root = c.rootPosition()
+assert root
+line = 0
+for p in root.self_and_subtree():
+    line += 1
+    print('%s: %4s @ %d p._childIndex: %d p.stack: %s' % (
+        line,
+        p.cleanHeadString(),
+        id(p.v),
+        p._childIndex,
+        # p.level(),p.key(),
+        # p.stack,
+        '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
+    ))
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
