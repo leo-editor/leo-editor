@@ -422,58 +422,65 @@
 <v t="ekr.20130411023340.5983"><vh>The todo plugin</vh></v>
 </v>
 <v t="ekr.20130526065545.14924"><vh>To be documented (do not delete!!)</vh>
-<v t="ekr.20130803073926.17116"><vh>To be documented</vh>
+<v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
+<v t="ekr.20130526065545.17612"><vh>update about Leo google group</vh>
+<v t="ekr.20130526065545.17613"><vh>Re: update about Leo google group</vh></v>
+</v>
+<v t="ekr.20130526065545.17605"><vh>link to PyEnchant is broken</vh></v>
 <v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
-<v t="ekr.20130526065545.14932"><vh>Leo as PIM and authoring tool</vh></v>
-<v t="ekr.20130526065545.17480"><vh>Blog on pelican and GH-pages: first light ;-)</vh>
-<v t="ekr.20130526065545.17466"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17467"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17468"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17469"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17470"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17471"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17475"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17476"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17477"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17478"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17479"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17481"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17482"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17483"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17484"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17485"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17486"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
+<v t="ekr.20130526065545.17606"><vh>Re: Outdated info in "rst3"</vh></v>
+<v t="ekr.20130526065545.17608"><vh>Re: Outdated info in "rst3"</vh></v>
 </v>
-<v t="ekr.20130526065545.17550"><vh>A beautiful pattern for composing large strings</vh>
-<v t="ekr.20130526065545.17547"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17548"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17549"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17551"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17552"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17553"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17554"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh>
+<v t="ekr.20130526065545.17560"><vh>Re: Really @edit can expand nodes?</vh></v>
 </v>
-<v t="ekr.20130526065545.17631"><vh>Tutorial for positions: comments please</vh></v>
-<v t="ekr.20130526065545.17537"><vh>Blog post about how Leo can improve organization of code bases</vh>
-<v t="ekr.20130526065545.17535"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17536"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17538"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17539"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
 </v>
-<v t="ekr.20130526065545.17543"><vh>why Leo</vh>
-<v t="ekr.20130526065545.17544"><vh>Re: why Leo</vh></v>
-<v t="ekr.20130526065545.17534"><vh>Fw: why Leo</vh>
-<v t="ekr.20130526065545.17533"><vh>Re: Fw: why Leo</vh></v>
-<v t="ekr.20130526065545.17540"><vh>Re: why Leo</vh></v>
-<v t="ekr.20130526065545.17541"><vh>Re: why Leo</vh></v>
+<v t="ekr.20130803073926.17125"><vh>To document</vh>
+<v t="ekr.20130526065545.17439"><vh>Create Pane For matplotlib chart</vh>
+<v t="ekr.20130526065545.17437"><vh>Re: Create Pane For matplotlib chart</vh></v>
+<v t="ekr.20130526065545.17438"><vh>Re: Create Pane For matplotlib chart</vh></v>
+<v t="ekr.20130526065545.17440"><vh>Re: Create Pane For matplotlib chart</vh></v>
+<v t="ekr.20130526065545.17441"><vh>Re: Create Pane For matplotlib chart</vh></v>
+</v>
+<v t="ekr.20130526065545.17516"><vh>Terry, how do you create the buttons with dropdown menus?</vh>
+<v t="ekr.20130526065545.17518"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17519"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17520"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17521"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17522"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17523"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17524"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17525"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17526" a="M"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+</v>
+<v t="ekr.20130803073926.17114"><vh>Plugins</vh>
+<v t="ekr.20130526065545.14926"><vh>bookmarks.py</vh></v>
+<v t="ekr.20130526065545.17435"><vh>screen_capture.py</vh>
+<v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17430"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17432"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17434"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17436"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+</v>
+<v t="ekr.20130803073926.17123"><vh>valuespace.py</vh>
+<v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
+<v t="ekr.20130526065545.17618"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
+<v t="ekr.20130526065545.17614"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
+<v t="ekr.20130526065545.17615"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
+<v t="ekr.20130526065545.17616"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
+<v t="ekr.20130526065545.17617"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 </v>
 </v>
-<v t="ekr.20130526065545.17578"><vh>All about clone conflicts</vh>
-<v t="ekr.20130526065545.17579"><vh>Re: All about clone conflicts</vh></v>
+<v t="ekr.20130526065545.17620"><vh>printing.py</vh>
+<v t="ekr.20130526065545.17621"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130526065545.17622"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130526065545.17623"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130526065545.17624"><vh>Re: [ANN] New plugin - printing.py</vh></v>
 </v>
-</v>
-<v t="ekr.20130526065545.14927"><vh>outline-otl Leo as a web app</vh>
-<v t="ekr.20130526065545.14928"><vh>NEW: LeoReader, as web app</vh></v>
 </v>
 <v t="ekr.20130803073926.17115"><vh>Scripts</vh>
 <v t="ekr.20130526065545.14929"><vh>Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha</vh></v>
@@ -486,19 +493,6 @@
 <v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
 <v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
 </v>
-</v>
-<v t="ekr.20130803073926.17114"><vh>Plugins</vh>
-<v t="ekr.20130526065545.14926"><vh>bookmarks plugin</vh></v>
-<v t="ekr.20130526065545.17435"><vh>ANN: screen_capture plugin pushed</vh>
-<v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17430"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17432"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17434"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17436"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-</v>
-<v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
 </v>
 <v t="ekr.20130803073926.17113"><vh>Features</vh>
 <v t="ekr.20130526065545.14925"><vh>Full text searches</vh></v>
@@ -553,6 +547,76 @@
 <v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh>
 <v t="ekr.20130526065545.17593"><vh>Re: @wrap now suppresses horizontal scrolling</vh></v>
 </v>
+<v t="ekr.20130526065545.17634"><vh>persistent state with json as a leo abbreviation</vh>
+<v t="ekr.20130526065545.17633"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17635"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17636"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+</v>
+<v t="ekr.20130526065545.14927"><vh>outline-otl Leo as a web app</vh>
+<v t="ekr.20130526065545.14928"><vh>NEW: LeoReader, as web app</vh></v>
+</v>
+<v t="ekr.20130526065545.17550"><vh>A beautiful pattern for composing large strings</vh>
+<v t="ekr.20130526065545.17547"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130526065545.17548"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130526065545.17549"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130526065545.17551"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130526065545.17552"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130526065545.17553"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130526065545.17554"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+</v>
+</v>
+<v t="ekr.20130803073926.17122"><vh>Tutorials</vh>
+<v t="ekr.20130526065545.17595"><vh>Draft: unit-testing tutorial</vh></v>
+<v t="ekr.20130526065545.17578"><vh>All about clone conflicts</vh>
+<v t="ekr.20130526065545.17579"><vh>Re: All about clone conflicts</vh></v>
+</v>
+<v t="ekr.20130526065545.17631"><vh>Tutorial for positions: comments please</vh></v>
+</v>
+<v t="ekr.20130526065545.17629"><vh>How to call functions from LeoPyRef.Leo</vh>
+<v t="ekr.20130526065545.17625"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20130526065545.17626"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20130526065545.17627"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20130526065545.17628"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+<v t="ekr.20130526065545.17630"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+</v>
+<v t="ekr.20130526065545.17580"><vh>How to use leo to make mathematical notes?</vh></v>
+</v>
+<v t="ekr.20130803073926.17116"><vh>User comments</vh>
+<v t="ekr.20130526065545.14932"><vh>Leo as PIM and authoring tool</vh></v>
+<v t="ekr.20130526065545.17480"><vh>Blog on pelican and GH-pages: first light ;-)</vh>
+<v t="ekr.20130526065545.17466"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17467"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17468"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17469"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17470"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17471"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17475"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17476"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17477"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17478"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17479"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17481"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17482"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17483"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17484"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17485"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+<v t="ekr.20130526065545.17486"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
+</v>
+<v t="ekr.20130526065545.17537"><vh>Blog post about how Leo can improve organization of code bases</vh>
+<v t="ekr.20130526065545.17535"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130526065545.17536"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130526065545.17538"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+<v t="ekr.20130526065545.17539"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+</v>
+<v t="ekr.20130526065545.17543"><vh>why Leo</vh>
+<v t="ekr.20130526065545.17534"><vh>Fw: why Leo</vh>
+<v t="ekr.20130526065545.17533"><vh>Re: Fw: why Leo</vh></v>
+<v t="ekr.20130526065545.17540"><vh>Re: why Leo</vh></v>
+<v t="ekr.20130526065545.17541"><vh>Re: why Leo</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20130803073926.17119"><vh>Wish list</vh>
 <v t="ekr.20130526065545.17507"><vh>Wish list: xiki window for leo</vh>
@@ -577,67 +641,10 @@
 <v t="ekr.20130526065545.17573"><vh>Re: Automated playback</vh></v>
 <v t="ekr.20130526065545.17574"><vh>Re: Automated playback</vh></v>
 </v>
-</v>
-<v t="ekr.20130803073926.17121"><vh>Installation</vh></v>
-<v t="ekr.20130803073926.17117"><vh>Help</vh>
-<v t="ekr.20130526065545.17439"><vh>Create Pane For matplotlib chart</vh>
-<v t="ekr.20130526065545.17437"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20130526065545.17438"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20130526065545.17440"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20130526065545.17441"><vh>Re: Create Pane For matplotlib chart</vh></v>
-</v>
-<v t="ekr.20130526065545.17448"><vh>IPython bridge: MultipleInstanceError</vh>
-<v t="ekr.20130526065545.17449"><vh>Re: IPython bridge: MultipleInstanceError</vh></v>
-<v t="ekr.20130526065545.17450"><vh>Re: IPython bridge: MultipleInstanceError</vh></v>
-</v>
-<v t="ekr.20130526065545.17516"><vh>Terry, how do you create the buttons with dropdown menus?</vh>
-<v t="ekr.20130526065545.17517"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17518"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17519"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17520"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17521"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17522"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17523"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17524"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17525"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17526"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-</v>
-<v t="ekr.20130526065545.17491"><vh>Idea/needed: system command queue</vh>
-<v t="ekr.20130526065545.17493"><vh>Re: Idea/needed: system command queue</vh></v>
-<v t="ekr.20130526065545.17492"><vh>Re: Idea/needed: system command queue</vh></v>
-</v>
-<v t="ekr.20130526065545.17530"><vh>How to make body text insertion at cursor permanent?</vh>
-<v t="ekr.20130526065545.17527"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17528"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17529"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17531"><vh>Re: the workflow of write leo scripts?</vh></v>
-</v>
-<v t="ekr.20130526065545.17532"><vh>the workflow of write leo scripts?</vh></v>
-<v t="ekr.20130526065545.17555"><vh>Background Images in body pane?</vh>
-<v t="ekr.20130526065545.17556"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20130526065545.17557"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20130526065545.17558"><vh>Re: Background Images in body pane?</vh></v>
-</v>
-<v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh>
-<v t="ekr.20130526065545.17560"><vh>Re: Really @edit can expand nodes?</vh></v>
-</v>
-<v t="ekr.20130526065545.17580"><vh>How to use leo to make mathematical notes?</vh>
-<v t="ekr.20130526065545.17581"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17582"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17583"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17584"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17585"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17586"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17587"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17588"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-</v>
-</v>
-<v t="ekr.20130803073926.17118"><vh>Not yet categorized</vh>
-<v t="ekr.20130526065545.17595"><vh>Draft: unit-testing tutorial</vh></v>
+<v t="ekr.20130526065545.17491"><vh>Idea/needed: system command queue</vh></v>
 <v t="ekr.20130526065545.17600"><vh>Parameterized template nodes</vh>
 <v t="ekr.20130526065545.17596"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17597"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17598"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17599"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17601"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17602"><vh>Re: Parameterized template nodes</vh></v>
@@ -645,44 +652,20 @@
 <v t="ekr.20130526065545.17603"><vh>Obstacles to using Leo, from a potential new user.</vh>
 <v t="ekr.20130526065545.17604"><vh>Re: Obstacles to using Leo, from a potential new user.</vh></v>
 </v>
-<v t="ekr.20130526065545.17605"><vh>link to PyEnchant is broken</vh></v>
-<v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
-<v t="ekr.20130526065545.17606"><vh>Re: Outdated info in "rst3"</vh></v>
-<v t="ekr.20130526065545.17608"><vh>Re: Outdated info in "rst3"</vh></v>
+<v t="ekr.20130526065545.17555"><vh>Background Images in body pane?</vh>
+<v t="ekr.20130526065545.17556"><vh>Re: Background Images in body pane?</vh></v>
+<v t="ekr.20130526065545.17557"><vh>Re: Background Images in body pane?</vh></v>
+<v t="ekr.20130526065545.17558"><vh>Re: Background Images in body pane?</vh></v>
 </v>
-<v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh>
-<v t="ekr.20130526065545.17609"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
-<v t="ekr.20130526065545.17611"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
 </v>
-<v t="ekr.20130526065545.17612"><vh>update about Leo google group</vh>
-<v t="ekr.20130526065545.17613"><vh>Re: update about Leo google group</vh></v>
+<v t="ekr.20130803073926.17117"><vh>Help</vh>
+<v t="ekr.20130526065545.17530"><vh>How to make body text insertion at cursor permanent?</vh>
+<v t="ekr.20130526065545.17527"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20130526065545.17528"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20130526065545.17529"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
+<v t="ekr.20130526065545.17531"><vh>Re: the workflow of write leo scripts?</vh></v>
 </v>
-<v t="ekr.20130526065545.17618"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
-<v t="ekr.20130526065545.17614"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-<v t="ekr.20130526065545.17615"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-<v t="ekr.20130526065545.17616"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-<v t="ekr.20130526065545.17617"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-</v>
-<v t="ekr.20130526065545.17620"><vh>[ANN] New plugin - printing.py</vh>
-<v t="ekr.20130526065545.17621"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17622"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17623"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17624"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-</v>
-<v t="ekr.20130526065545.17629"><vh>How to call functions from LeoPyRef.Leo</vh>
-<v t="ekr.20130526065545.17625"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17626"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17627"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17628"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17630"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-</v>
-<v t="ekr.20130526065545.17634"><vh>persistent state with json as a leo abbreviation</vh>
-<v t="ekr.20130526065545.17633"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17635"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17636"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-</v>
+<v t="ekr.20130526065545.17532"><vh>the workflow of write leo scripts?</vh></v>
 </v>
 </v>
 </vnodes>
@@ -3380,8 +3363,7 @@ Ctrl+= when you know your on the last entry of interest and don't want
 to just to the next.
 
 But you're right about the docs, something this basic should be clear.
-
-Cheers -Terry</t>
+</t>
 <t tx="ekr.20130526065545.14932">Josef &lt;joe_da@gmx.net&gt;
 7/30/12
 		
@@ -3411,7 +3393,6 @@ this? Offray Vladimir Luna Cárdenas offray@riseup.net via googlegroups.com
 	
 7/30/12
 		
-
 I have been using Leo to write my thesis. I didn't know about Docear, but
 my use was in some sense similar. I have a lot of @url links pointint to
 the pdfs files and in a subtree I cut and paste the text of the pdf I want
@@ -3445,10 +3426,8 @@ flexibility and deeper organic structure of the former.
 
 Offray
 
-
 Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-	
-7/30/12
+
 
 &gt; Recently I evaluated docear - a mind-mapping tool for collecting reference
 &gt; data (written in Java). It automatically extracts bookmarks and annotations
@@ -3504,7 +3483,6 @@ needed screen real estate.
 
 Cheers -Terry
 
-
 Josef &lt;joe_da@gmx.net&gt;
 7/30/12
 		
@@ -3547,27 +3525,25 @@ It seems that e.g. w/ foxit reader, you can open selected page from command
 line (-n 123). Abstracting this for other pdf readers that support such a
 thing should be no problem.
  
- 
 On Monday, July 30, 2012 8:08:23 PM UTC+2, Ville M. Vainio wrote:
-
      
     It seems that e.g. w/ foxit reader, you can open selected page from
     command line (-n 123). Abstracting this for other pdf readers that
     support such a thing should be no problem.
-     
-
+    
 Yes, I suppose one could translate from a canonical representation inside
 Leo to whatever the tool needs (using @setting). Ideally, one would even
 have a choice between opening the new page in a different or in the same
 PDF viewer instance as the last page, but few viewers support that (Okular
-does - but I don't know any cross-platform solution).</t>
+does - but I don't know any cross-platform solution).
+</t>
 <t tx="ekr.20130526065545.17427">@nocolor
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 (Possibly uninteresting ramblings)
 
-I\'m currently doing some stuff with Angular.js which is using Jasmine for
+I'm currently doing some stuff with Angular.js which is using Jasmine for
 test cases by default.
 
 Jasmine is using interesting "friendly" terminology for unit testing
@@ -3580,9 +3556,9 @@ it looks great in coffeescript:
 
 http://coffeescriptcookbook.com/chapters/testing/testing_with_jasmine
 
-describe \'Calculator\', -&gt; it \'can add two positive numbers\', -&gt; calculator
-= new Calculator() result = calculator.add 2, 3 expect(result).toBe 5 it \'can
-handle negative number addition\', -&gt; calculator = new Calculator() result
+describe 'Calculator', -&gt; it 'can add two positive numbers', -&gt; calculator
+= new Calculator() result = calculator.add 2, 3 expect(result).toBe 5 it 'can
+handle negative number addition', -&gt; calculator = new Calculator() result
 calculator.add -10, 5 expect(result).toBe -5
 
 </t>
@@ -3599,10 +3575,10 @@ having custom subclasses of unittest.TestCase.  This is a superb Leonine
 solution.  It is much than either
 
 a) @testclass nodes (which I never use) or
-b) "injecting" common test code using exec(g.findTestScript(c,\'@common 
-name-of-common-test-code\'))
+b) "injecting" common test code using exec(g.findTestScript(c,'@common 
+name-of-common-test-code'))
 
-Leo\'s test-execution code prepends the body text of an @testsetup node to 
+Leo's test-execution code prepends the body text of an @testsetup node to 
 all following @test and @suite nodes.  Multiple @testsetup nodes may appear 
 in an outline--the range of an @testsetup node extends over all following 
 @test and @suite nodes until the next @testsetup node is seen (in outline 
@@ -3625,12 +3601,12 @@ lewis &lt;lewisneal@operamail.com&gt; wrote:
 
 &gt; Hi Terry,
 &gt; 
-&gt; I just enabled the plugin and tried \'screen-capture-now\'. 
+&gt; I just enabled the plugin and tried 'screen-capture-now'. 
 &gt; It creates the folder C:\\Users\\lewis\\.leo\\screen_captures but there is no 
 &gt; png file written in the folder.
 &gt; I may have missed something? :)
 
-Thanks for the report, I just pushed the fix, you can\'t have \':\' in a
+Thanks for the report, I just pushed the fix, you can't have ':' in a
 Windows file name.
 
 As for the feedback appearing in the log rather than the console, do
@@ -3661,15 +3637,15 @@ Cheers -Terry
 
 From: lewis &lt;lewisneal@operamail.com&gt;
 
-Thanks it\'s working nicely :)
+Thanks it's working nicely :)
 I use console (sourceforge.net/projects/console ) to open leo. I run 
-launchleo.py from the leo directory so I\'m not sure if python.exe or pythonw.exe are used.
+launchleo.py from the leo directory so I'm not sure if python.exe or pythonw.exe are used.
 </t>
 <t tx="ekr.20130526065545.17431">@nocolor
 
 From: Matt Wilkie &lt;maphew@gmail.com&gt;
 
-if you start Leo (or any .py file) by double-clicking on it it\'s likely
+if you start Leo (or any .py file) by double-clicking on it it's likely
 `pythonw.exe` is being used. You can find out for sure with `assoc` and
 `ftype` from a command shell:
 
@@ -3722,7 +3698,7 @@ Settings
 
 From: lewis &lt;lewisneal@operamail.com&gt;
 
-I just enabled the plugin and tried \'screen-capture-now\'. 
+I just enabled the plugin and tried 'screen-capture-now'. 
 It creates the folder C:\\Users\\lewis\\.leo\\screen_captures but there is no 
 png file written in the folder.
 I may have missed something? :)
@@ -3757,22 +3733,18 @@ be updated ;-)
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-
 See http://leo-editor.github.io/screen_capture.html
 
 ... "screen_capture_now captures an image immediately,
 screen_capture_5sec waits five seconds, so you can position the
 pointer, open menus etc. The only feedback is in the console, as
 messages in the log would be distracting in the captured image."...
-
-Cheers -Terry
-
 </t>
 <t tx="ekr.20130526065545.17436">@nocolor
 
 From: tfer &lt;tfetherston@aol.com&gt;
 
-That\'s how I run Leo, (console is great for windows).  Unless you 
+That's how I run Leo, (console is great for windows).  Unless you 
 specifically call pythonw.exe it should use python.exe located through your 
 "Path" system enbironment variable.  Here is what I use in the shell 
 setting for a console "leo" tab:
@@ -3792,9 +3764,9 @@ On Wednesday, April 24, 2013 8:41:02 PM UTC-4, lewis wrote:
 &gt;
 &gt; Terry,
 &gt;
-&gt; Thanks it\'s working nicely :)
+&gt; Thanks it's working nicely :)
 &gt; I use console (sourceforge.net/projects/console ) to open leo. I run 
-&gt; launchleo.py from the leo directory so I\'m not sure if  \\python.exe or 
+&gt; launchleo.py from the leo directory so I'm not sure if  \\python.exe or 
 &gt; \\pythonw.exe are used.
 &gt;
 &gt; Regards
@@ -3829,11 +3801,11 @@ felix74 &lt;hjuucy@googlemail.com&gt; wrote:
 &gt;  
 &gt; *1/ How do I expose the widget within th leo python environment?* 
 
-If you were only going to have one and you weren\'t going to destroy it,
+If you were only going to have one and you weren't going to destroy it,
 you could just do something simple like c._matplot = self in its
 constrictor (assuming c was passed to the constructor).
 
-If you\'re going to have more than one and they may be destroyed, it
+If you're going to have more than one and they may be destroyed, it
 might be simplest to let the free_layout / nested_splitter system manage
 them.
 
@@ -3841,20 +3813,20 @@ ts = c.free_layout.get_top_splitter()
 matplotters = ts.findChildren(myMatplotWidget)
 
 should return a list of the widgets of your class in the layout, but
-only if they\'re in the main window, widgets in extra windows opened
+only if they're in the main window, widgets in extra windows opened
 from the "Open window" context menu item would be missed, I can add a
 find_children() method to complement the find_child() method the
 splitters already have to account for this.
 
-Detail: the above is just using Qt\'s QObject.findChildren(), the
+Detail: the above is just using Qt's QObject.findChildren(), the
 nested_splitter find_child() and (not yet written) find_children()
 versions search the extra windows as well.
 
 &gt; Here I have created a self.mat in your MatplotPaneProvider class to make 
-&gt; the windget accessible but it doesn\'t feel like the correct way to do this. 
+&gt; the windget accessible but it doesn't feel like the correct way to do this. 
 
-It should probably provide a fresh myMatplotWidget every time it\'s
-called, so don\'t construct one in the Provider\'s init, but in the
+It should probably provide a fresh myMatplotWidget every time it's
+called, so don't construct one in the Provider's init, but in the
 ns_provide method.
 
 &gt; from PyQt4 import QtGui
@@ -3862,42 +3834,36 @@ ns_provide method.
 &gt; def __init__(self, c):
 &gt;      self.c = c
 &gt;     * self.mat = myMatplotWidget()*
-&gt;      if hasattr(c, \'free_layout\'):
+&gt;      if hasattr(c, 'free_layout'):
 [snip]  
-&gt; *2/I would also like to make the widget accessible from any script within 
-&gt; leo. What\'s the leo way of doing this?*
+&gt; I would also like to make the widget accessible from any script within 
+&gt; leo. What's the leo way of doing this?*
 
 See above.
 
-&gt; *3/ If I create more than 1 pane containing these widgest. How do I switch 
+&gt; If I create more than 1 pane containing these widgest. How do I switch 
 &gt; between them in scripts?*
 
 Above again :-)
  
-&gt; *4/ Running this script more than once creates multiple items for Add 
+&gt; Running this script more than once creates multiple items for Add 
 &gt; Matplot when pressing the Action button. How do I stop this from happening? 
 &gt; I have alrewady tried returning a unique integer in * ns_provider_id *but 
 &gt; that did not work.*
 
 The value returned by ns_provider_id should be unique for the provider
 class, but constant.  So it can just return "matplotlib provider ver 1"
-or something.
-
-Cheers -Terry
-
-</t>
+or something.</t>
 <t tx="ekr.20130526065545.17438">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
 
 On Mon, Sep 17, 2012 at 11:46 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
 
 &gt; On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
 &gt; felix74 &lt;hjuucy@googlemail.com&gt; wrote:
 &gt;
-&gt; &gt; I\'m trying to create a interactive chart in a embedded in a new leo pane
+&gt; &gt; I'm trying to create a interactive chart in a embedded in a new leo pane
 &gt; &gt; using matplotlib. However, I am not sure about the the best way  to
 &gt; &gt; implement this. I would appreciate some guidance on this please? The
 &gt; &gt; questions I would like answered are:
@@ -3911,18 +3877,16 @@ On Mon, Sep 17, 2012 at 11:46 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wro
 
 [Snip]
 
-I\'m going to file this under Leo/To Document for now.
+I'm going to file this under Leo/To Document for now.
 
 Would this be a good blog item?  These blog items might eventually find
 their way into an ever-expanding "Topics" chapter.  What do you think?
-
-Edward
 </t>
 <t tx="ekr.20130526065545.17439">@nocolor
 
 From: felix74 &lt;hjuucy@googlemail.com&gt;
 
-I\'m trying to create a interactive chart in a embedded in a new leo pane 
+I'm trying to create a interactive chart in a embedded in a new leo pane 
 using matplotlib. However, I am not sure about the the best way  to 
 implement this. I would appreciate some guidance on this please? The 
 questions I would like answered are:
@@ -3935,7 +3899,7 @@ processing and visualization tool kit in leo. Like Excel but using nodes
 instead of columns. As such I have data in nodes and can create new data 
 nodes by applying python functions to data in existing nodes. The thing 
 missing is the visualization within a leo pane (I can easily launch a chart 
-in it\'s own window) .
+in it's own window) .
 
 </t>
 <t tx="ekr.20130526065545.17440">@nocolor
@@ -3952,21 +3916,21 @@ widget using scripts in leo. I am unsure about the following:
  
 *1/ How do I expose the widget within th leo python environment?* 
 Here I have created a self.mat in your MatplotPaneProvider class to make 
-the windget accessible but it doesn\'t feel like the correct way to do this. 
+the windget accessible but it doesn't feel like the correct way to do this. 
  
 from PyQt4 import QtGui
 class MatplotPaneProvider:
 def __init__(self, c):
      self.c = c
     * self.mat = myMatplotWidget()*
-     if hasattr(c, \'free_layout\'):
+     if hasattr(c, 'free_layout'):
          splitter = c.free_layout.get_top_splitter()
      if splitter:
          splitter.register_provider(self)
     def ns_provides(self):
-         return[(\'Add matplot\', \'_add_matplot_pane\')]
+         return[('Add matplot', '_add_matplot_pane')]
     def ns_provide(self, id_):
-         if id_ == \'_add_matplot_pane\':
+         if id_ == '_add_matplot_pane':
          c = self.c
          return self.mat
  
@@ -3983,7 +3947,7 @@ return "completely unique value here"
 *mat.mat.someOtherMethod()*
  
 *2/I would also like to make the widget accessible from any script within 
-leo. What\'s the leo way of doing this?*
+leo. What's the leo way of doing this?*
  
 *3/ If I create more than 1 pane containing these widgest. How do I switch 
 between them in scripts?*
@@ -4002,7 +3966,7 @@ On Monday, September 17, 2012 5:48:32 PM UTC+1, Terry wrote:
 &gt; On Sun, 16 Sep 2012 22:23:18 -0700 (PDT) 
 &gt; felix74 &lt;hju...@googlemail.com &lt;javascript:&gt;&gt; wrote: 
 &gt;
-&gt; &gt; I\'m trying to create a interactive chart in a embedded in a new leo pane 
+&gt; &gt; I'm trying to create a interactive chart in a embedded in a new leo pane 
 &gt; &gt; using matplotlib. However, I am not sure about the the best way  to 
 &gt; &gt; implement this. I would appreciate some guidance on this please? The 
 &gt; &gt; questions I would like answered are: 
@@ -4017,14 +3981,14 @@ On Monday, September 17, 2012 5:48:32 PM UTC+1, Terry wrote:
 &gt; class MatplotPaneProvider: 
 &gt;     def __init__(self, c): 
 &gt;         self.c = c 
-&gt;         if hasattr(c, \'free_layout\'): 
+&gt;         if hasattr(c, 'free_layout'): 
 &gt;             splitter = c.free_layout.get_top_splitter() 
 &gt;             if splitter: 
 &gt;                 splitter.register_provider(self) 
 &gt;     def ns_provides(self): 
-&gt;         return[(\'Add matplot\', \'_add_matplot_pane\')] 
+&gt;         return[('Add matplot', '_add_matplot_pane')] 
 &gt;     def ns_provide(self, id_): 
-&gt;         if id_ == \'_add_matplot_pane\': 
+&gt;         if id_ == '_add_matplot_pane': 
 &gt;             c = self.c 
 &gt;             w = QtGui.QSlider() 
 &gt;             return w 
@@ -4039,7 +4003,7 @@ On Monday, September 17, 2012 5:48:32 PM UTC+1, Terry wrote:
 &gt;
 &gt; Paste just as above and run the script.  Nothing happens.  Right click 
 &gt; on one of the pane dividers and select Insert.  A new pane with a 
-&gt; button \'Action\' appears.  Click it, and select "Add matplot" from the 
+&gt; button 'Action' appears.  Click it, and select "Add matplot" from the 
 &gt; context menu. 
 &gt;
 &gt; Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()" 
@@ -4053,7 +4017,7 @@ On Monday, September 17, 2012 5:48:32 PM UTC+1, Terry wrote:
 &gt; &gt; nodes by applying python functions to data in existing nodes. The thing 
 &gt; &gt; missing is the visualization within a leo pane (I can easily launch a 
 &gt; chart 
-&gt; &gt; in it\'s own window) . 
+&gt; &gt; in it's own window) . 
 &gt; &gt; 
 &gt;
 
@@ -4065,7 +4029,7 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
 felix74 &lt;hjuucy@googlemail.com&gt; wrote:
 
-&gt; I\'m trying to create a interactive chart in a embedded in a new leo pane 
+&gt; I'm trying to create a interactive chart in a embedded in a new leo pane 
 &gt; using matplotlib. However, I am not sure about the the best way  to 
 &gt; implement this. I would appreciate some guidance on this please? The 
 &gt; questions I would like answered are:
@@ -4079,14 +4043,14 @@ from PyQt4 import QtGui
 class MatplotPaneProvider:
     def __init__(self, c):
         self.c = c
-        if hasattr(c, \'free_layout\'):
+        if hasattr(c, 'free_layout'):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
     def ns_provides(self):
-        return[(\'Add matplot\', \'_add_matplot_pane\')]
+        return[('Add matplot', '_add_matplot_pane')]
     def ns_provide(self, id_):
-        if id_ == \'_add_matplot_pane\':
+        if id_ == '_add_matplot_pane':
             c = self.c
             w = QtGui.QSlider()
             return w
@@ -4101,7 +4065,7 @@ MatplotPaneProvider(c)
 
 Paste just as above and run the script.  Nothing happens.  Right click
 on one of the pane dividers and select Insert.  A new pane with a
-button \'Action\' appears.  Click it, and select "Add matplot" from the
+button 'Action' appears.  Click it, and select "Add matplot" from the
 context menu.
 
 Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()"
@@ -4114,7 +4078,7 @@ Cheers -Terry
 &gt; instead of columns. As such I have data in nodes and can create new data 
 &gt; nodes by applying python functions to data in existing nodes. The thing 
 &gt; missing is the visualization within a leo pane (I can easily launch a chart 
-&gt; in it\'s own window) .
+&gt; in it's own window) .
 &gt; 
 
 </t>
@@ -4126,27 +4090,27 @@ On Tue, 28 Aug 2012 08:48:54 -0500
 "Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
 
 &gt; 2. The same exec statement appears to allow the execution of arbitrary
-&gt; Python code.  I\'m not sure how comfortable I am with that.  Any
+&gt; Python code.  I'm not sure how comfortable I am with that.  Any
 &gt; comments?
 
-That\'s why enabling requires @bool scripting-at-script-nodes = True as
+That's why enabling requires @bool scripting-at-script-nodes = True as
 well as the abbreviation specific stuff.  The risk seems equivalent to
 the scripting-at-script-nodes = True risk.
 
-&gt; &gt; Here\'s a quick screencast of the template expansions:  
+&gt; &gt; Here's a quick screencast of the template expansions:  
 &gt; 
 &gt; I loved this screencast.  Could you tell us the tool chain that you
 &gt; used to produce it?
 
 I used (gtk-)recordmydesktop.  I used the non-gui version,
-recordmydesktop, with the window ID, after hitting some snag I can\'t
-remember with the gui version, gtk-recordmydesktop.  But I couldn\'t
+recordmydesktop, with the window ID, after hitting some snag I can't
+remember with the gui version, gtk-recordmydesktop.  But I couldn't
 work out avconv parameters to convert the ogv format to something more
 common, and although vimeo seemed to understand it well enough to
-upload the video and present the first frame, it wasn\'t viewable
+upload the video and present the first frame, it wasn't viewable
 there.  recordmydesktop "just worked", which was nice.
 
-I\'ll look at the Python 3 issues.
+I'll look at the Python 3 issues.
 
 Cheers -Terry
 
@@ -4216,10 +4180,10 @@ Abbreviations can, in the branch
 http://bazaar.launchpad.net/~terry-n-brown/+junk/leo_test
 include computed values and place holders which you can step through,
 filling in a template.  Edward, these changes involve some core code,
-although I think they\'re quite benign, but pls. see change notes at
+although I think they're quite benign, but pls. see change notes at
 the bottom of this email.
 
-Here\'s a quick screencast of the template expansions:
+Here's a quick screencast of the template expansions:
 http://www.greygreen.org/tmp/leoabbrev.ogv
 I tried uploading it to Vimeo, but that seems to have failed
 (http://www.vimeo.com/48019375)
@@ -4251,7 +4215,7 @@ place holder, and so on.
 They can also close XML tags, enter balanced indented markup for
 various languages, etc.
 
-Here\'s a list of `@settings` which relate to abbreviations.
+Here's a list of `@settings` which relate to abbreviations.
 
 @bool enable-abbreviations = False
     True: enable abbreviations
@@ -4260,7 +4224,7 @@ Here\'s a list of `@settings` which relate to abbreviations.
     Typically you would enable abbreviations in myLeoSettings.leo or in
 individual .leo files.
 @data global-abbreviations &amp; @data abbreviations
-    # Comments lines (lines starting with \'#\') are ignored.
+    # Comments lines (lines starting with '#') are ignored.
     # Non-comment lines should have the form::
     #
     #    name=definition
@@ -4315,7 +4279,7 @@ abbreviation nodes # in myLeoSettings.leo
         \\:    &lt;|code|&gt;
     
     This would expand with the `&lt;|condition|&gt;` selected, and `,,`,
-    if that\'s an abbreviation linked to next_place(), see 
+    if that's an abbreviation linked to next_place(), see 
     @@data abbreviations examples, would select `&lt;|code|&gt;`.
 @string abbreviations-place-end = \\|&gt;
     The end of a placeholder for template expansions, e.g.
@@ -4332,7 +4296,7 @@ http://bazaar.launchpad.net/~terry-n-brown/+junk/leo_test and look at
 it with `bzr qlog`.
 
 Some of the code is in masterCommand, which is why I wanted you to look
-at it, but it\'s guarded by if c.abbrev_subst_start:, so it won\'t do
+at it, but it's guarded by if c.abbrev_subst_start:, so it won't do
 anything unless enabled.
 
 Cheers -Terry
@@ -4359,117 +4323,6 @@ with `vlc` or some such to see them in action.
 Cheers -Terry
 
 </t>
-<t tx="ekr.20130526065545.17448">@nocolor
-
-From: wgw &lt;wgwinder@gmail.com&gt;
-
-I ran leoLauncher.py --ipython and everything seemed to work: the ipython 
-window popped up and no error messages. Just this comment in the startup 
-terminal: 
-
-
-[IPKernelApp] To connect another client to this kernel, use:
-
-[IPKernelApp] --existing kernel-16687.json
-
-When I tried to run some code from Leo (alt-I), I got an error (see 
-traceback below). But if I continued, sometimes printing would appear, and 
-sometimes I had to hit enter in the ipython console to get a line to print. 
-The function definitions did not seem to go at all. 
-
-
-Any suggestions?
-
-
-I am using the bzr version of Leo only, on Ubuntu Precise, python 2.7 : Leo 
-4.11 devel, build 5752, 2013-04-26 23:46:30
-
-exception executing command
-Traceback (most recent call last):
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoCommands.py", line 560, 
-in doCommand
-    val = command(event)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoCommands.py", line 1170, 
-in minibufferCallback
-    retval = function(keywords)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoIPython.py", line 876, in 
-pushToIPythonCommand
-    startIPython(event=event)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoIPython.py", line 864, in 
-startIPython
-    g_ipm.start_new_api()
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoIPython.py", line 289, in 
-start_new_api
-    ipapp.launch_new_instance()
-  File 
-"/usr/lib/python2.7/dist-packages/IPython/frontend/terminal/ipapp.py", line 
-401, in launch_new_instance
-    app = TerminalIPythonApp.instance()
-  File "/usr/lib/python2.7/dist-packages/IPython/config/configurable.py", 
-line 329, in instance
-    \'%s are being created.\' % cls.__name__
-MultipleInstanceError: Multiple incompatible subclass instances of 
-TerminalIPythonApp are being created.
-
-</t>
-<t tx="ekr.20130526065545.17449">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Try alt-x ipython-exec instead
-
-</t>
-<t tx="ekr.20130526065545.17450">@nocolor
-
-From: wgw &lt;wgwinder@gmail.com&gt;
-
-
-That got rid of the error message. A step in the right direction!
-
-Still, funny behavior: nothing comes out in the Leo log, and the output
-does not come out in the ipython console either; but when I hit enter in
-the ipython console, one line from the leo code prints out (the first). I
-can tell that the complete node is  going over to ipython because the
-function works in ipython (the testit function). Just no Out or printout on
-either end.
-
-My node has this body:
-
-x=3D"Wow!"
-print "new Bill", x
-
-def testit(x):
-    return x.upper()
-   
-testit(\'hello world\')
-
-Here is the ipython side. Notice the "new" in front of anything from Leo
-that does finally print out in the ipython console.
-
-Python 2.7.3 (default, Aug  1 2012, 05:16:07)
-Type "copyright", "credits" or "license" for more information.
-
-IPython 0.12.1 -- An enhanced Interactive Python.
-?         -&gt; Introduction and overview of IPython\'s features.
-%quickref -&gt; Quick reference.
-help      -&gt; Python\'s own help system.
-object?   -&gt; Details about \'object\', use \'object??\' for extra details.
-%guiref   -&gt; A brief reference about the graphical user interface.
-
-In [0]:
-new Bill Wow!
-
-In [0]:
-
-In [0]:
-
-In [1]: testit("wow")
-Out[1]: \'WOW\'
-
-In [1]: {ran again}
-new Bill Wow!
-
-</t>
 <t tx="ekr.20130526065545.17451">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -4481,7 +4334,7 @@ On Wed, Mar 27, 2013 at 8:06 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 &gt; I just pushed the solarized dark theme to trunk.
 
 
-Spectacular.  It looks like you\'ve completed the coding part of the
+Spectacular.  It looks like you've completed the coding part of the
 sprint.  Well done!
 
 Edward
@@ -4490,7 +4343,7 @@ Edward
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
-BTW, I\'m slightly bothered by the fact that color variable names have
+BTW, I'm slightly bothered by the fact that color variable names have
 "solarized" in them. You are supposed to create new themes by changing
 their values in the "config" node, after which the theme is not "solarized"
 any more.
@@ -4579,7 +4432,7 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Thu, 28 Mar 2013 22:08:19 +0200
 "Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
 
-&gt; BTW, I\'m slightly bothered by the fact that color variable names have
+&gt; BTW, I'm slightly bothered by the fact that color variable names have
 &gt; "solarized" in them. You are supposed to create new themes by changing
 &gt; their values in the "config" node, after which the theme is not "solarized"
 &gt; any more.
@@ -4587,15 +4440,15 @@ On Thu, 28 Mar 2013 22:08:19 +0200
 &gt; how about "@leotheme-c-0" (for color 0) etc.
 
 The variable replacement runs up to ten levels deep, after which it
-bails assuming you\'ve created a loop :-)
+bails assuming you've created a loop :-)
 
-So there\'s nothing wrong with 
+So there's nothing wrong with 
 
   @solarized-yellow = #abcdef
 
 the issue is that `@solarized-yellow` is used in the guts of the
-stylesheet definition.  Instead, ideally, but I didn\'t get to it, in
-the config node you\'d have
+stylesheet definition.  Instead, ideally, but I didn't get to it, in
+the config node you'd have
 
   @solarized-yellow = #abcdef
   ...
@@ -4604,12 +4457,12 @@ the config node you\'d have
 and then use `@highlight-hot` in the guts of the
 stylesheet definition.
 
-Note - you can\'t create new themes simply by editing the config
-node, it\'s not possible to create enough constants for every style
+Note - you can't create new themes simply by editing the config
+node, it's not possible to create enough constants for every style
 element that can be addressed by a stylesheet.
 
 But it would be nice to move all the color and numeric constants out of
-the stylesheet and into the config node as I\'ve described above, just a
+the stylesheet and into the config node as I've described above, just a
 find and replace operation.
 
 </t>
@@ -4622,7 +4475,7 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 On Thu, Mar 28, 2013 at 7:51 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
 
 
-&gt; Maybe the theme shouldn\'t be called \'solarized\', although the color
+&gt; Maybe the theme shouldn't be called 'solarized', although the color
 &gt; definitions in the config node may as well retain their names.
 
 
@@ -4637,7 +4490,7 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Wed, 27 Mar 2013 20:06:57 -0500
 Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
 
-&gt;  - see the README - if you\'re already running a dark theme there\'s a
+&gt;  - see the README - if you're already running a dark theme there's a
 &gt;    `base` node which can be switched to `@ignore base` to take more
 &gt;    advantage of your desktop theme.
 
@@ -4653,20 +4506,20 @@ Cheers -Terry
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 I just pushed the solarized dark theme to trunk.  There were some
-changes to core code, but nothing too major, and I\'ve been using it for
+changes to core code, but nothing too major, and I've been using it for
 some time.
 
-In leoSettings.leo there\'s a new top-level node called \'Themes\', which
+In leoSettings.leo there's a new top-level node called 'Themes', which
 contains a single theme node at the moment, you can copy that to you
 myLeoSettings.leo file under @settings.  Read the README node of the
 theme node for more instructions.
 
-The theme is far from perfect - it\'s relatively easy to get it looking
-ok if you\'re already running a dark desktop theme, which is what I\'m
+The theme is far from perfect - it's relatively easy to get it looking
+ok if you're already running a dark desktop theme, which is what I'm
 doing, but much harder if you want Leo dark in a light desktop theme,
 as you need to theme everything.
 
- - see the README - if you\'re already running a dark theme there\'s a
+ - see the README - if you're already running a dark theme there's a
    `base` node which can be switched to `@ignore base` to take more
    advantage of your desktop theme.
 
@@ -4687,9 +4540,9 @@ From: lewis &lt;lewisneal@operamail.com&gt;
 Hi Terry,
 
 Many thanks for your work on the dark theme.
-I noticed that the behaviour of the theme is affected by it\'s up/down 
+I noticed that the behaviour of the theme is affected by it's up/down 
 position in the @settings tree:
-If before \'Plugins\' it is pale (but boxes are dark), after \'Plugins\' it\'s 
+If before 'Plugins' it is pale (but boxes are dark), after 'Plugins' it's 
 dark all over as intended.
 It may be helpful to document the behaviour.
 
@@ -4719,17 +4572,17 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Sun, 14 Apr 2013 01:35:31 -0700 (PDT)
 lewis &lt;lewisneal@operamail.com&gt; wrote:
 
-&gt; I noticed that the behaviour of the theme is affected by it\'s up/down 
+&gt; I noticed that the behaviour of the theme is affected by it's up/down 
 &gt; position in the @settings tree:
-&gt; If before \'Plugins\' it is pale (but boxes are dark), after \'Plugins\' it\'s 
+&gt; If before 'Plugins' it is pale (but boxes are dark), after 'Plugins' it's 
 &gt; dark all over as intended.
 
 Thanks - the docs. in the theme node do mention moving other @data
-qt-gui-plugin-style-sheet and @color nodes out of the way, but I\'ve
+qt-gui-plugin-style-sheet and @color nodes out of the way, but I've
 added a couple of notes about putting it at the bottom of the @setting
 list to ensure it overrides other settings.  The problem is when the 
-default theme\'s @data qt-gui-plugin-style-sheet node comes after
-the dark theme\'s.
+default theme's @data qt-gui-plugin-style-sheet node comes after
+the dark theme's.
 
 Cheers -Terry
 
@@ -4747,25 +4600,25 @@ On Thu, 28 Mar 2013 05:33:45 -0500
 &gt; 
 &gt; Haha.  There is an interesting tie-in here.
 &gt; 
-&gt; At present, highlighted text doesn\'t have the correct colors.  To truly be
+&gt; At present, highlighted text doesn't have the correct colors.  To truly be
 &gt; called a solarized scheme, the foreground color of all text must *not*
 &gt; change when text is highlighted.  This is the insight and unifying
 
-Maybe the theme shouldn\'t be called \'solarized\', although the color
+Maybe the theme shouldn't be called 'solarized', although the color
 definitions in the config node may as well retain their names.  I
-wasn\'t really paying attention to the rules for the solarized system,
-just using it\'s palette.  It could be renamed \'leo_dark_zero\' or
+wasn't really paying attention to the rules for the solarized system,
+just using it's palette.  It could be renamed 'leo_dark_zero' or
 something.
 
 It did also reveal a code execution pathway anomaly.  When headline
 editing is initiated by keyboard (Insert, Ctrl-H) the font-styling on
-the edit widget is different than when it\'s initiated by double
+the edit widget is different than when it's initiated by double
 clicking.
 
 Cheers -Terry
 
 &gt; principle of the solarized scheme.  Presumably, this is possible with
-&gt; Terry\'s code.
+&gt; Terry's code.
 &gt; 
 &gt; The tie in is this:  the border colors *should* also be two of the
 &gt; solarized foreground colors: this would make them maximally contrasting
@@ -4780,10 +4633,10 @@ Cheers -Terry
 &gt; b) using the designated foreground colors for syntax-colored text.
 &gt; 
 &gt; Imo, this would significantly improve the appearance, and it would honor
-&gt; Ethan Schoonover\'s wishes.  When this happens, I\'m sure Ethan will put a
-&gt; screen shot of Leo\'s main window on his web site.
+&gt; Ethan Schoonover's wishes.  When this happens, I'm sure Ethan will put a
+&gt; screen shot of Leo's main window on his web site.
 &gt; 
-&gt; I won\'t be able to get around to this today, but I\'d like to do it asap.
+&gt; I won't be able to get around to this today, but I'd like to do it asap.
 &gt; Feel free to beat me to the punch ;-)
 &gt; 
 &gt; Edward
@@ -4802,11 +4655,11 @@ On Wed, Mar 27, 2013 at 8:35 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrot
 
 Haha.  There is an interesting tie-in here.
 
-At present, highlighted text doesn\'t have the correct colors.  To truly be
+At present, highlighted text doesn't have the correct colors.  To truly be
 called a solarized scheme, the foreground color of all text must *not*
 change when text is highlighted.  This is the insight and unifying
 principle of the solarized scheme.  Presumably, this is possible with
-Terry\'s code.
+Terry's code.
 
 The tie in is this:  the border colors *should* also be two of the
 solarized foreground colors: this would make them maximally contrasting
@@ -4821,10 +4674,10 @@ light for selected text and
 b) using the designated foreground colors for syntax-colored text.
 
 Imo, this would significantly improve the appearance, and it would honor
-Ethan Schoonover\'s wishes.  When this happens, I\'m sure Ethan will put a
-screen shot of Leo\'s main window on his web site.
+Ethan Schoonover's wishes.  When this happens, I'm sure Ethan will put a
+screen shot of Leo's main window on his web site.
 
-I won\'t be able to get around to this today, but I\'d like to do it asap.
+I won't be able to get around to this today, but I'd like to do it asap.
 Feel free to beat me to the punch ;-)
 </t>
 <t tx="ekr.20130526065545.17465">@nocolor
@@ -4837,8 +4690,8 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 On Wednesday, March 27, 2013 8:06:57 PM UTC-5, Terry wrote:
 &gt;
 &gt;
-&gt; The theme is far from perfect - it\'s relatively easy to get it looking 
-&gt; ok if you\'re already running a dark desktop theme, which is what I\'m 
+&gt; The theme is far from perfect - it's relatively easy to get it looking 
+&gt; ok if you're already running a dark desktop theme, which is what I'm 
 &gt; doing, but much harder if you want Leo dark in a light desktop theme, 
 &gt; as you need to theme everything. 
 &gt;
@@ -4846,7 +4699,7 @@ On Wednesday, March 27, 2013 8:06:57 PM UTC-5, Terry wrote:
 There is one glitch that I see.  It appears that the border around the body 
 pane has disappeared.  I think the border is always important, and the 
 proper border color will likely change in the solarized version.  But 
-perhaps this is an artifact of my settings--I really haven\'t investigated 
+perhaps this is an artifact of my settings--I really haven't investigated 
 properly yet. 
 
 &gt;
@@ -4881,7 +4734,7 @@ From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 
 
-Note that github rule won\'t work, since we need to commit to master branch,
+Note that github rule won't work, since we need to commit to master branch,
 not gh-pages branch. We need new make rule for this (cp, git add, commit,
 push)
 
@@ -4906,7 +4759,7 @@ On Sun, Apr 21, 2013 at 4:37 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrot
 maybe the ads can be configured?
 see this page:
 http://software-carpentry.org/4_0/invperc/
-it also use Disqus, but I can\'t find any ad...
+it also use Disqus, but I can't find any ad...
 </t>
 <t tx="ekr.20130526065545.17470">@nocolor
 
@@ -4939,9 +4792,9 @@ From: Matt Wilkie &lt;maphew@gmail.com&gt;
 
 It occurs to be me that an alternative to managing a list of committers
 would be to aggregate posts along the lines of
-http://www.planetdjango.org/(I\'ve no idea how that\'s put together or
+http://www.planetdjango.org/(I've no idea how that's put together or
 if it is indeed less work; just
-thought I\'d throw it out there).</t>
+thought I'd throw it out there).</t>
 <t tx="ekr.20130526065545.17476">@nocolor
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
@@ -4953,9 +4806,7 @@ On Fri, 19 Apr 2013 22:22:38 +0300
 
 So I made a post.  I could not work out how to get the STATIC_PATH
 mechanism working, despite RTFM and reading the source.  So I just
-v=CC=B6=CC=B6a=CC=B6=CC=B6n=CC=B6=CC=B6d=CC=B6=CC=B6a=CC=B6=CC=B6l=CC=B6=CC=
-=B6i=CC=B6=CC=B6z=CC=B6=CC=B6e=CC=B6=CC=B6d=CC=B6=CC=B6 modified the Makefi=
-le to copy static/* into output.
+modified the Makefile to copy static/* into output.
 
 Also in the source repo
 
@@ -4966,10 +4817,10 @@ so I just copied the output into the blog repo as Ville described - we
 need a better way of doing that.
 
 Finally it needs to handle images better, preferable a scaled version
-that expands to full size when clicked - but I\'m sure that\'s possible.
+that expands to full size when clicked - but I'm sure that's possible.
 
 Wondering what the relationship between posts about plugins and the
-plugin\'s docstring should be - I guess that can evolve over time.
+plugin's docstring should be - I guess that can evolve over time.
 
 Cheers -Terry
 
@@ -4978,49 +4829,14 @@ Cheers -Terry
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
-
 I checked on the STATIC_PATH thing, it works ok.
 
 The trick is that if you have e.g.
 
-STATIC_PATHS =3D [\'images\',\'mystatic\']
+STATIC_PATHS =3D ['images','mystatic']
 
-you need to put the static files under \'content\', i.e. in content/images
+you need to put the static files under 'content', i.e. in content/images
 and content/mystatic
-
-
-
-On Sat, Apr 20, 2013 at 7:14 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote=
-:
-
-&gt; On Fri, 19 Apr 2013 22:22:38 +0300
-&gt; "Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; http://leo-editor.github.io/
-&gt;
-&gt; So I made a post.  I could not work out how to get the STATIC_PATH
-&gt; mechanism working, despite RTFM and reading the source.  So I just
-&gt; v=CC=B6=CC=B6a=CC=B6=CC=B6n=CC=B6=CC=B6d=CC=B6=CC=B6a=CC=B6=CC=B6l=CC=B6=
-=CC=B6i=CC=B6=CC=B6z=CC=B6=CC=B6e=CC=B6=CC=B6d=CC=B6=CC=B6 modified the Mak=
-efile to copy static/* into
-&gt; output.
-&gt;
-&gt; Also in the source repo
-&gt;
-&gt; make github
-&gt; make: ghp-import: Command not found
-&gt;
-&gt; so I just copied the output into the blog repo as Ville described - we
-&gt; need a better way of doing that.
-&gt;
-&gt; Finally it needs to handle images better, preferable a scaled version
-&gt; that expands to full size when clicked - but I\'m sure that\'s possible.
-&gt;
-&gt; Wondering what the relationship between posts about plugins and the
-&gt; plugin\'s docstring should be - I guess that can evolve over time.
-&gt;
-&gt; Cheers -Terry
-
 </t>
 <t tx="ekr.20130526065545.17478">@nocolor
 
@@ -5032,8 +4848,6 @@ I propose working freely at least for the time being.
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
-
-
 I have now added "fabfile.py" with recipe for easy publishing. You need
 Fabric installed (usual pip stuff) to use it.
 
@@ -5041,7 +4855,7 @@ Your workflow will probably be:
 
 "make html"
 
-(or more likely, you\'ll have devserver running at all times for live
+(or more likely, you'll have devserver running at all times for live
 preview)
 
 When you are happy, do "fab publish" and this should publish the updated
@@ -5064,9 +4878,6 @@ On Fri, Apr 19, 2013 at 10:22 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrot
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
---089e014950ee5e874c04dabba498
-
-
 http://leo-editor.github.io/
 
 </t>
@@ -5083,12 +4894,12 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Sat, 20 Apr 2013 22:02:33 +0300
 "Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
 
-&gt; STATIC_PATHS = [\'images\',\'mystatic\']
+&gt; STATIC_PATHS = ['images','mystatic']
 &gt; 
-&gt; you need to put the static files under \'content\', i.e. in content/images
+&gt; you need to put the static files under 'content', i.e. in content/images
 &gt; and content/mystatic
 
-Ah, didn\'t think to try there, obvious though it is :-)
+Ah, didn't think to try there, obvious though it is :-)
 
 Cheers -Terry
 
@@ -5164,8 +4975,8 @@ On Fri, Apr 19, 2013 at 10:22 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrot
 
 From: HaveF &lt;iamaplayer@gmail.com&gt;
 
-That\'s great!
-I merged the Matt Wilkie\'s  first patch about the link in
+That's great!
+I merged the Matt Wilkie's  first patch about the link in
 README.md&lt;https://github.com/leo-editor/leo-blog/commit/546940be4337e90c1d18d297e516048e12c8dc27&gt;.
 (push merge button feels great ;-)
 
@@ -5180,14 +4991,14 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 Just pushed leo/external/leoftsindex.py:
 
-Stand alone GUI free index builder for Leo\'s full text search system::
+Stand alone GUI free index builder for Leo's full text search system::
 
   python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
 
-If &lt;file&gt; does not contain \'#\' it\'s assumed to be a .leo file
+If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
 to index, and is indexed.
 
-If &lt;file&gt; does contain \'#\' it\'s assumed to be a .leo file
+If &lt;file&gt; does contain '#' it's assumed to be a .leo file
 containing a list of .leo files to index, with the list in
 the node indicated by the UNL after the #, e.g.::
 
@@ -5197,12 +5008,12 @@ In the latter case, if the node identified by the UNL has children,
 the list of files to scan is built from the first line of the body
 of each child node of the identified node (works well with bookmarks.py).
 If the node identified by the UNL does not have children, the
-node\'s body is assumed to be a simple text listing of paths to .leo files).
+node's body is assumed to be a simple text listing of paths to .leo files).
 
 .. note::
     
     It may be necessary to quote the "file" on the command line,
-    as the \'#\' may be interpreted as a comment delimiter::
+    as the '#' may be interpreted as a comment delimiter::
         
         python leoftsindex.py "workbook.leo#Links"
 
@@ -5217,12 +5028,12 @@ On Mon, Apr 16, 2012 at 5:13 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 
 &gt; Just pushed leo/external/leoftsindex.py:
 &gt;
-&gt; Stand alone GUI free index builder for Leo\'s full text search system::
+&gt; Stand alone GUI free index builder for Leo's full text search system::
 &gt;
 &gt;   python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
 &gt;
 
-Should this be in the blog?  I\'ve filed this under Leo/To Document.
+Should this be in the blog?  I've filed this under Leo/To Document.
 
 Edward
 </t>
@@ -5240,16 +5051,16 @@ use g.procs.add(), like this ctrl+b script:
 def L(*args):
     g.es("callback", args)
 
-g.procs.add([\'sleep\', \'4\'], "que1")
-g.procs.add([\'sleep\', \'3\'], "que1", L)
-g.procs.add([\'sleep\', \'2\'], "que1")
-g.procs.add([\'sleep\', \'2\'], "que2")
+g.procs.add(['sleep', '4'], "que1")
+g.procs.add(['sleep', '3'], "que1", L)
+g.procs.add(['sleep', '2'], "que1")
+g.procs.add(['sleep', '2'], "que2")
 
 Note how que2 completes first. Idea is that commands in same queue depend
 on each other, and thus need to run in sequential order.
 
 This should make waiting for long lasting operations easier as the whole
-Leo won\'t freeze until they are over (but you can still use the stdout /
+Leo won't freeze until they are over (but you can still use the stdout /
 stderr output from these calls, thanks to the optional callback)
 
 API may change once I start using it (soon).
@@ -5262,7 +5073,7 @@ On Wed, Apr 17, 2013 at 2:48 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrot
 &gt; (first in, first out), capture their output, and allow browsing it, BUT not
 &gt; blocking Leo or ipython terminal.
 &gt;
-&gt; I\'d like to show stderr and stdout in g.es, or separate log page, and
+&gt; I'd like to show stderr and stdout in g.es, or separate log page, and
 &gt; provide callback after task has been completed.
 &gt;
 &gt; Unless anyone has something like this already, I plan to create it "later"
@@ -5281,13 +5092,13 @@ On Wed, 17 Apr 2013 14:48:59 +0300
 &gt; (first in, first out), capture their output, and allow browsing it, BUT not
 &gt; blocking Leo or ipython terminal.
 &gt; 
-&gt; I\'d like to show stderr and stdout in g.es, or separate log page, and
+&gt; I'd like to show stderr and stdout in g.es, or separate log page, and
 &gt; provide callback after task has been completed.
 
-There\'s the leoscreen stuff for integration with the GNU `screen`
+There's the leoscreen stuff for integration with the GNU `screen`
 terminal switcher / manager.  Push lines from the body to the terminal,
 pull lines back the other way.  But more for interactive interaction
-with terminal programs than batch oriented work.  Leo doesn\'t block.
+with terminal programs than batch oriented work.  Leo doesn't block.
 
 Cheers -Terry
 
@@ -5300,69 +5111,38 @@ Cheers -Terry
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
-
-
 Often, I find myself wanting to execute system commands in serial fashion
 (first in, first out), capture their output, and allow browsing it, BUT not
 blocking Leo or ipython terminal.
 
-I\'d like to show stderr and stdout in g.es, or separate log page, and
+I'd like to show stderr and stdout in g.es, or separate log page, and
 provide callback after task has been completed.
 
 Unless anyone has something like this already, I plan to create it "later"
-with QProcess.</t>
-<t tx="ekr.20130526065545.17492">@nocolor
+with QProcess.
 
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+===== Terry
+
+There's the leoscreen stuff for integration with the GNU `screen` terminal
+switcher / manager. Push lines from the body to the terminal, pull lines
+back the other way. But more for interactive interaction with terminal
+programs than batch oriented work. Leo doesn't block.
+
+===== Ville
 
 A challenge I can imagine with the "screen" workflow is detecting when a
 command has been executed (and capturing stderr/stdout). Do you have a
 solution for that in mind?
 
+===== Terry
 
-On Wed, Apr 17, 2013 at 5:21 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+I tried more direct communication (subprocess.Popen.communicate()) before
+the screen approach, it's hard and probably app. specific. leoscreen avoids
+that by basically being interactive, so it might not be a fit for your
+case. Basically it's leveraging the intelligence of the user to keep track
+of execution.
 
-&gt; On Wed, 17 Apr 2013 14:48:59 +0300
-&gt; "Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; Often, I find myself wanting to execute system commands in serial fashion
-&gt; &gt; (first in, first out), capture their output, and allow browsing it, BUT
-&gt; not
-&gt; &gt; blocking Leo or ipython terminal.
-&gt; &gt;
-&gt; &gt; I\'d like to show stderr and stdout in g.es, or separate log page, and
-&gt; &gt; provide callback after task has been completed.
-&gt;
-&gt; There\'s the leoscreen stuff for integration with the GNU `screen`
-&gt; terminal switcher / manager.  Push lines from the body to the terminal,
-&gt; pull lines back the other way.  But more for interactive interaction
-&gt; with terminal programs than batch oriented work.  Leo doesn\'t block.
-&gt;
-&gt; Cheers -Terry
-&gt;
-&gt; &gt; Unless anyone has something like this already, I plan to create it
-&gt; "later"
-&gt; &gt; with QProcess.
-&gt; &gt;
 </t>
-<t tx="ekr.20130526065545.17493">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 17 Apr 2013 18:19:48 +0300
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; A challenge I can imagine with the "screen" workflow is detecting when a
-&gt; command has been executed (and capturing stderr/stdout). Do you have a
-&gt; solution for that in mind?
-
-I tried more direct communication (subprocess.Popen.communicate())
-before the screen approach, it\'s hard and probably app. specific.
-leoscreen avoids that by basically being interactive, so it might not
-be a fit for your case.  Basically it\'s leveraging the intelligence of
-the user to keep track of execution.
-
-Cheers -Terry</t>
 <t tx="ekr.20130526065545.17494">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -5377,7 +5157,7 @@ On Thu, Apr 11, 2013 at 8:13 AM, Kent Tenney &lt;ktenney@gmail.com&gt; wrote:
 &gt;
 
 Absolutely.  I use the Alt-Ctrl bindings in the Find Tab all the time.  I
-don\'t often use Alt-Ctrl-A, but I wouldn\'t want to eliminate it.
+don't often use Alt-Ctrl-A, but I wouldn't want to eliminate it.
 
 Edward
 
@@ -5388,10 +5168,10 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 I just pushed two new commands, zoom-in and zoom-out, which increase
 or decrease the body text font size by one point size.  They probably
-deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-\'
+deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
 
 They leverage the new theme "engine" by manipulating a constant
-"@font-size-body".  I\'ve set it up in the default theme, anyone using
+"@font-size-body".  I've set it up in the default theme, anyone using
 the new dark theme will need to add
 
    @font-size-body = 18px
@@ -5412,7 +5192,7 @@ Cheers -Terry
 From: Jacob Peck &lt;gatesphere@gmail.com&gt;
 
 May I humbly suggest Ctrl-+ and Ctrl--, like so many other editors and 
-web browsers?  Unless those already have default keybindings that I\'m 
+web browsers?  Unless those already have default keybindings that I'm 
 unaware of.
 
 Also, does this work with the default theme?
@@ -5422,10 +5202,10 @@ Also, does this work with the default theme?
 On 4/11/2013 12:46 AM, Terry Brown wrote:
 &gt; I just pushed two new commands, zoom-in and zoom-out, which increase
 &gt; or decrease the body text font size by one point size.  They probably
-&gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-\'
+&gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
 &gt;
 &gt; They leverage the new theme "engine" by manipulating a constant
-&gt; "@font-size-body".  I\'ve set it up in the default theme, anyone using
+&gt; "@font-size-body".  I've set it up in the default theme, anyone using
 &gt; the new dark theme will need to add
 &gt;
 &gt;     @font-size-body = 18px
@@ -5453,7 +5233,7 @@ On Fri, Apr 12, 2013 at 12:52 AM, Kent Tenney &lt;ktenney@gmail.com&gt; wrote:
 &gt; Would you consider moving some bindings from config/leoSettings.leo to
 &gt; your myLeoSettings.leo?
 &gt;
-&gt; It would free up some bindings for folks, and it\'s one way to survey how
+&gt; It would free up some bindings for folks, and it's one way to survey how
 &gt; many others are using them :-]
 </t>
 <t tx="ekr.20130526065545.17498">@nocolor
@@ -5463,7 +5243,7 @@ From: Kent Tenney &lt;ktenney@gmail.com&gt;
 Would you consider moving some bindings from config/leoSettings.leo to
 your myLeoSettings.leo?
 
-It would free up some bindings for folks, and it\'s one way to survey how many
+It would free up some bindings for folks, and it's one way to survey how many
 others are using them :-]
 
 On Thu, Apr 11, 2013 at 1:14 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
@@ -5475,7 +5255,7 @@ On Thu, Apr 11, 2013 at 1:14 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrot
 &gt;
 &gt;
 &gt; Absolutely.  I use the Alt-Ctrl bindings in the Find Tab all the time.  I
-&gt; don\'t often use Alt-Ctrl-A, but I wouldn\'t want to eliminate it.
+&gt; don't often use Alt-Ctrl-A, but I wouldn't want to eliminate it.
 
 </t>
 <t tx="ekr.20130526065545.17499">@nocolor
@@ -5487,8 +5267,8 @@ From: Matt Wilkie &lt;maphew@gmail.com&gt;
 My vote is for Ctrl-plus/minus, and to Ctrl-scroll-wheel, because these are
 consistent across a great many other programs.
 
-It\'s unfortunate Ctrl-- is already used for for "replace and continue
-search", but like others I didn\'t know about it so haven\'t become
+It's unfortunate Ctrl-- is already used for for "replace and continue
+search", but like others I didn't know about it so haven't become
 habituated to it. Who experience pain if this was changed?
 
 -matt
@@ -5502,13 +5282,13 @@ On Thu, Apr 11, 2013 at 7:28 AM, Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
 &gt; May I humbly suggest Ctrl-+ and Ctrl--, like so many other editors and web
 &gt; browsers?  Unless those already have default keybindings
 
-I can\'t find the thread, but I thought we once discussed reducing the number
+I can't find the thread, but I thought we once discussed reducing the number
 of bindings defined by default.
 
-running &lt;alt-x&gt; print-bindings makes it clear why it\'s a challenge to identify
+running &lt;alt-x&gt; print-bindings makes it clear why it's a challenge to identify
 unused bindings.
 
-Maybe each binding has users, but I would expect that most don\'t.
+Maybe each binding has users, but I would expect that most don't.
 
 Is anyone depending on
 alt-ctrl-a = toggle-find-wrap-around-option ?
@@ -5533,10 +5313,10 @@ On Thu, Apr 11, 2013 at 7:46 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 
 &gt; I just pushed two new commands, zoom-in and zoom-out, which increase
 &gt; or decrease the body text font size by one point size.  They probably
-&gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-\'
+&gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
 &gt;
 &gt; They leverage the new theme "engine" by manipulating a constant
-&gt; "@font-size-body".  I\'ve set it up in the default theme, anyone using
+&gt; "@font-size-body".  I've set it up in the default theme, anyone using
 &gt; the new dark theme will need to add
 &gt;
 &gt;    @font-size-body = 18px
@@ -5563,7 +5343,7 @@ Well then.  Shows how much I use that feature... :p
 &gt;
 &gt; Cheers -Terry
 &gt;
-Good to know.  I\'ve been looking for a feature like this for a while.  
+Good to know.  I've been looking for a feature like this for a while.  
 Thanks!
 --&gt;Jake
 
@@ -5576,7 +5356,7 @@ On Thu, 11 Apr 2013 08:28:59 -0400
 Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
 
 &gt; May I humbly suggest Ctrl-+ and Ctrl--, like so many other editors and 
-&gt; web browsers?  Unless those already have default keybindings that I\'m 
+&gt; web browsers?  Unless those already have default keybindings that I'm 
 &gt; unaware of.
 
 Ctrl-- is replace...
@@ -5593,10 +5373,10 @@ Cheers -Terry
 &gt; On 4/11/2013 12:46 AM, Terry Brown wrote:
 &gt; &gt; I just pushed two new commands, zoom-in and zoom-out, which increase
 &gt; &gt; or decrease the body text font size by one point size.  They probably
-&gt; &gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-\'
+&gt; &gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
 &gt; &gt;
 &gt; &gt; They leverage the new theme "engine" by manipulating a constant
-&gt; &gt; "@font-size-body".  I\'ve set it up in the default theme, anyone using
+&gt; &gt; "@font-size-body".  I've set it up in the default theme, anyone using
 &gt; &gt; the new dark theme will need to add
 &gt; &gt;
 &gt; &gt;     @font-size-body = 18px
@@ -5629,9 +5409,9 @@ This can always be done in myLeoSettings.leo, but I share your concern.
 
 I have the lurking feeling that it would be possible to do some lightweight
 modes that define temporary bindings.  This is theoretically possible now
-with @mode, but I doubt anyone uses it.  I sure don\'t.
+with @mode, but I doubt anyone uses it.  I sure don't.
 
-This could be an important addition to Leo, but for now I\'ve filed it under
+This could be an important addition to Leo, but for now I've filed it under
 Leo/Later :-)
 
 Edward
@@ -5671,9 +5451,9 @@ to
 
   @focused-border-style = solid
 
-for the default theme, if you\'re using the dark theme, now known as
+for the default theme, if you're using the dark theme, now known as
 leo_dark_0, same deal but after editing as above remember to select
-and run the \'stylesheet &amp; source\' node of that theme.
+and run the 'stylesheet &amp; source' node of that theme.
 
 Cheers -Terry
 
@@ -5689,7 +5469,7 @@ Ville Vainio shared a post with Leo Editor.
 View:
 https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid=CIDgu4qX0bYCFapzTAod51wAAA&amp;path=%2F103097156557482112329%2Fposts%2F1GjKYTUSTMA&amp;dt=1366183753416&amp;ub=63
 
-You\'re receiving this email because you are subscribed to Leo Editor on  
+You're receiving this email because you are subscribed to Leo Editor on  
 Google+.
 
 Leo Editor
@@ -5698,7 +5478,6 @@ https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid
 <t tx="ekr.20130526065545.17507">@nocolor
 
 From: wgw &lt;wgwinder@gmail.com&gt;
-
 
 Xiki.org gives a demo of a "wiki" shell for command execution. Leo should 
 be able to do the same thing (and more!), in the sense that leoscreen, for 
@@ -5717,16 +5496,16 @@ From: wgw &lt;wgwinder@gmail.com&gt;
 
 
 Thanks for the tip -- it will take me a while to get my head around vspace
-(will keep an eye on Ville\'s blog post).
+(will keep an eye on Ville's blog post).
 
-I\'m just beginning to appreciate (or imagine) what Ipython, sublime text
+I'm just beginning to appreciate (or imagine) what Ipython, sublime text
 editor, leo, xiki, etc could mean for some kind of intelligent document
 workbench. Of course the big hurdle is not so much the string processing
 (sublime is a good example of how that can be done), but rather the syntax
 processing -- i.e. the docbench  (to coin a phrase) should understand the
 syntax of whatever is being input and then offer syntax-aware functions....
 Sorry, getting a little obscure: all I mean by syntax-aware is the ability
-to propose text completions (Leo\'s autocompletion is a good example --
+to propose text completions (Leo's autocompletion is a good example --
 everything should work like autocomplete!) and allow for intelligent text
 changes depending on a database of information (for example, a search and
 replace that would  know how to search on "caterpillar" and turn it into
@@ -5759,7 +5538,7 @@ Le dimanche 28 avril 2013 08:37:20 UTC-7, Terry a =E9crit :
 &gt; &gt; Just an idea for the Leo melting pot.
 &gt;
 &gt; In addition to the outline as a active data document functions of
-&gt; Ville\'s value-space plugin, I recently added some simple ;-) commands:
+&gt; Ville's value-space plugin, I recently added some simple ;-) commands:
 &gt;
 &gt; Alt+A vs-eval
 &gt; Alt+S vs-last
@@ -5775,8 +5554,8 @@ Le dimanche 28 avril 2013 08:37:20 UTC-7, Terry a =E9crit :
 &gt; does the same, but using pprint formatting.
 &gt;
 &gt; Ctrl-B also runs the script in the body, but not in a persistent
-&gt; namespace, running only the selected text doesn\'t seem to be working,
-&gt; and it doesn\'t work so hard to work out the output.
+&gt; namespace, running only the selected text doesn't seem to be working,
+&gt; and it doesn't work so hard to work out the output.
 &gt;
 &gt; I guess leoscreen would do the same things as the vs-* commands if you
 &gt; used it against a python shell.  The inspiration for the vs-* commands
@@ -5795,7 +5574,7 @@ On Sun, 28 Apr 2013 15:24:40 -0700 (PDT)
 wgw &lt;wgwinder@gmail.com&gt; wrote:
 
 &gt; Thanks for the tip -- it will take me a while to get my head around vspace
-&gt; (will keep an eye on Ville\'s blog post).
+&gt; (will keep an eye on Ville's blog post).
 
 Just to clarify, vs-eval, vs-last, vs-last-pretty are quite straight
 forward, as I described them below, and do not require comprehension of
@@ -5815,7 +5594,7 @@ a =3D 7
 b =3D 3
 a + b
 
-and place the cursor in front of the first \'a\'
+and place the cursor in front of the first 'a'
 
 execute (Alt-x or key binding) vs-eval 4 times
 
@@ -5831,14 +5610,14 @@ Cheers -Terry
 
 
 
-&gt; I\'m just beginning to appreciate (or imagine) what Ipython, sublime text
+&gt; I'm just beginning to appreciate (or imagine) what Ipython, sublime text
 &gt; editor, leo, xiki, etc could mean for some kind of intelligent document
 &gt; workbench. Of course the big hurdle is not so much the string processing
 &gt; (sublime is a good example of how that can be done), but rather the syntax
 &gt; processing -- i.e. the docbench  (to coin a phrase) should understand the
 &gt; syntax of whatever is being input and then offer syntax-aware functions....
 &gt; Sorry, getting a little obscure: all I mean by syntax-aware is the ability
-&gt; to propose text completions (Leo\'s autocompletion is a good example --
+&gt; to propose text completions (Leo's autocompletion is a good example --
 &gt; everything should work like autocomplete!) and allow for intelligent text
 &gt; changes depending on a database of information (for example, a search and
 &gt; replace that would  know how to search on "caterpillar" and turn it into
@@ -5871,7 +5650,7 @@ Cheers -Terry
 &gt; &gt; &gt; Just an idea for the Leo melting pot.
 &gt; &gt;
 &gt; &gt; In addition to the outline as a active data document functions of
-&gt; &gt; Ville\'s value-space plugin, I recently added some simple ;-) commands:
+&gt; &gt; Ville's value-space plugin, I recently added some simple ;-) commands:
 &gt; &gt;
 &gt; &gt; Alt+A vs-eval
 &gt; &gt; Alt+S vs-last
@@ -5887,8 +5666,8 @@ Cheers -Terry
 &gt; &gt; does the same, but using pprint formatting.
 &gt; &gt;
 &gt; &gt; Ctrl-B also runs the script in the body, but not in a persistent
-&gt; &gt; namespace, running only the selected text doesn\'t seem to be working,
-&gt; &gt; and it doesn\'t work so hard to work out the output.
+&gt; &gt; namespace, running only the selected text doesn't seem to be working,
+&gt; &gt; and it doesn't work so hard to work out the output.
 &gt; &gt;
 &gt; &gt; I guess leoscreen would do the same things as the vs-* commands if you
 &gt; &gt; used it against a python shell.  The inspiration for the vs-* commands
@@ -5921,7 +5700,7 @@ Le dimanche 28 avril 2013 16:03:52 UTC-7, Terry a =E9crit :
 &gt;
 &gt; &gt; Thanks for the tip -- it will take me a while to get my head around
 &gt; vspace
-&gt; &gt; (will keep an eye on Ville\'s blog post).
+&gt; &gt; (will keep an eye on Ville's blog post).
 &gt;
 &gt; Just to clarify, vs-eval, vs-last, vs-last-pretty are quite straight
 &gt; forward, as I described them below, and do not require comprehension of
@@ -5941,7 +5720,7 @@ Le dimanche 28 avril 2013 16:03:52 UTC-7, Terry a =E9crit :
 &gt; b =3D 3
 &gt; a + b
 &gt;
-&gt; and place the cursor in front of the first \'a\'
+&gt; and place the cursor in front of the first 'a'
 &gt;
 &gt; execute (Alt-x or key binding) vs-eval 4 times
 &gt;
@@ -5964,12 +5743,12 @@ Le dimanche 28 avril 2013 16:03:52 UTC-7, Terry a =E9crit :
 From: Jacob Peck &lt;gatesphere@gmail.com&gt;
 
 On 4/29/2013 4:42 AM, Ville M. Vainio wrote:
-&gt; Hey, it\'s not that esoteric ;-).
+&gt; Hey, it's not that esoteric ;-).
 &gt;
 &gt; (Really looking forward to writing that blog post, just have had a 
 &gt; horrible lack of spare time recently)
 &gt;
-I\'m really looking forward to it, as well!  But I hear you - time has 
+I'm really looking forward to it, as well!  But I hear you - time has 
 been disappearing lately.
 
 </t>
@@ -5990,7 +5769,7 @@ wgw &lt;wgwinder@gmail.com&gt; wrote:
 &gt; Just an idea for the Leo melting pot. 
 
 In addition to the outline as a active data document functions of
-Ville\'s value-space plugin, I recently added some simple ;-) commands:
+Ville's value-space plugin, I recently added some simple ;-) commands:
 
 Alt+A vs-eval
 Alt+S vs-last
@@ -6006,8 +5785,8 @@ vs-last inserts the last result into the body, and vs-last-pretty
 does the same, but using pprint formatting.
 
 Ctrl-B also runs the script in the body, but not in a persistent
-namespace, running only the selected text doesn\'t seem to be working,
-and it doesn\'t work so hard to work out the output.
+namespace, running only the selected text doesn't seem to be working,
+and it doesn't work so hard to work out the output.
 
 I guess leoscreen would do the same things as the vs-* commands if you
 used it against a python shell.  The inspiration for the vs-* commands
@@ -6041,35 +5820,20 @@ Link to G+: https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
-
 I have a note that it was an @rclick node handled by the context_menu.py 
 plugin, but I am not able to see code or documentation anywhere.  This 
 seems *well* hidden :-)
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17517">@nocolor
-
-From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-On 4/11/2013 3:24 PM, Terry Brown wrote:
-&gt; @string mod_scripting_subtext =3D =E2=96=BE
-Thanks for that.  That is really handy.
-
---&gt;Jake
-
 </t>
 <t tx="ekr.20130526065545.17518">From: Kent Tenney &lt;ktenney@gmail.com&gt;
 
-I don\'t have any visual indication of the existence of @rclick nodes,
+I don't have any visual indication of the existence of @rclick nodes,
 it would be nice.
 
-Something I\'ve found useful is adding a @click node like:
+Something I've found useful is adding a @click node like:
 @rclick -------------
 
 that separates my entries from the ever present
-\'Remove Button\' and \'Goto Script\' entries
+'Remove Button' and 'Goto Script' entries
 
 </t>
 <t tx="ekr.20130526065545.17519">@nocolor
@@ -6087,7 +5851,7 @@ On Thu, Apr 11, 2013 at 8:38 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 &gt; &gt;
 &gt; &gt; I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
 &gt; &gt;
-&gt; &gt; One more thing.  It\'s reasonable to have the top-level button just be a
+&gt; &gt; One more thing.  It's reasonable to have the top-level button just be a
 &gt; &gt; placeholder for subsidiary @rclick nodes.  To do that without getting a
 &gt; &gt; warning when clicking the top-level button, set its script to "empty
 &gt; &gt; string".
@@ -6109,7 +5873,7 @@ On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrot
 
 I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
 
-One more thing.  It\'s reasonable to have the top-level button just be a
+One more thing.  It's reasonable to have the top-level button just be a
 placeholder for subsidiary @rclick nodes.  To do that without getting a
 warning when clicking the top-level button, set its script to "empty
 string".
@@ -6127,9 +5891,9 @@ On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
 &gt; plugin, but I am not able to see code or documentation anywhere.  This 
 &gt; seems *well* hidden :-)
 
-:) It\'s in the core, not context_menu.py.  It was a long time ago, but
-I remember finding the @button code tricky, so I\'m not sure if it\'s an
-ideal implementation.  OTOH it hasn\'t broken for 1-2 years.
+:) It's in the core, not context_menu.py.  It was a long time ago, but
+I remember finding the @button code tricky, so I'm not sure if it's an
+ideal implementation.  OTOH it hasn't broken for 1-2 years.
 
 Cheers -Terry
 
@@ -6184,7 +5948,7 @@ On Thu, 11 Apr 2013 20:15:33 -0500
 &gt;
 &gt; I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
 &gt;
-&gt; One more thing.  It\'s reasonable to have the top-level button just be a
+&gt; One more thing.  It's reasonable to have the top-level button just be a
 &gt; placeholder for subsidiary @rclick nodes.  To do that without getting a
 &gt; warning when clicking the top-level button, set its script to "empty
 &gt; string".
@@ -6214,7 +5978,6 @@ EKR
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
-
 On Thu, Apr 11, 2013 at 7:29 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
 
 &gt; On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
@@ -6224,35 +5987,32 @@ On Thu, Apr 11, 2013 at 7:29 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 &gt; &gt; plugin, but I am not able to see code or documentation anywhere.  This
 &gt; &gt; seems *well* hidden :-)
 &gt;
-&gt; :) It\'s in the core, not context_menu.py.  It was a long time ago, but
-&gt; I remember finding the @button code tricky, so I\'m not sure if it\'s an
-&gt; ideal implementation.  OTOH it hasn\'t broken for 1-2 years.
+&gt; :) It's in the core, not context_menu.py.  It was a long time ago, but
+&gt; I remember finding the @button code tricky, so I'm not sure if it's an
+&gt; ideal implementation.  OTOH it hasn't broken for 1-2 years.
 &gt;
 
-Thanks.  I could have sworn I searched Leo\'s core for @rclick.  Must have
+Thanks.  I could have sworn I searched Leo's core for @rclick.  Must have
 been a searching failure :-)  The code is in
 qtIconBarClass.setCommandForButton.
 
-I\'ll add documentation for this, in leoSettings.leo and also in the
+I'll add documentation for this, in leoSettings.leo and also in the
 customizing Leo chapter.
-
-Edward
-
 </t>
 <t tx="ekr.20130526065545.17527">@nocolor
 
 From: SegundoBob &lt;bhossley@ieee.org&gt;
 
-I\'m sorry no one has suggested a better way to make the changes
+I'm sorry no one has suggested a better way to make the changes
 permanent.  How does Leo-Editor notice that typing has inserted a few
-more characters?  Couldn\'t the same mechanism be used here?
+more characters?  Couldn't the same mechanism be used here?
 
-On 04/17/2013 12:29 PM, Terry Brown wrote:&gt; I think that\'s the way,
+On 04/17/2013 12:29 PM, Terry Brown wrote:&gt; I think that's the way,
 see also:
 &gt;
 &gt; https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
 &gt;
-Thanks.  I vaguely remembered this thread, but I couldn\'t find it.
+Thanks.  I vaguely remembered this thread, but I couldn't find it.
 
 &gt; Depending on your use you might want to
 &gt;
@@ -6298,7 +6058,7 @@ SegundoBob &lt;bhossley@ieee.org&gt; wrote:
 &gt; 
 &gt; Is this recipe the right way to do it or is there a better way?
 
-I think that\'s the way, see also:
+I think that's the way, see also:
 
 https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
 
@@ -6327,14 +6087,14 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Wed, 17 Apr 2013 16:53:10 -0700 (PDT)
 SegundoBob &lt;bhossley@ieee.org&gt; wrote:
 
-&gt; I\'m sorry no one has suggested a better way to make the changes
+&gt; I'm sorry no one has suggested a better way to make the changes
 &gt; permanent.  How does Leo-Editor notice that typing has inserted a few
-&gt; more characters?  Couldn\'t the same mechanism be used here?
+&gt; more characters?  Couldn't the same mechanism be used here?
 
-I don\'t think Leo constantly updates p.b from w.getAllText(), but just
+I don't think Leo constantly updates p.b from w.getAllText(), but just
 does it when focus is lost - not sure about that though.
 
-Here\'s a thought for a higher level interface.
+Here's a thought for a higher level interface.
 
 c.get_edit_state() gives you an instance of a LeoEditState class with
 these attributes:
@@ -6361,24 +6121,24 @@ c.set_edit_state(les)
 which sets the editor text and p.b to les.all_text and sets up
 selection and insert position appropriately from the integers,
 
-or c.set_edit_state(les, mode=\'selection\')
-or c.set_edit_state(les, mode=\'cursor\')
+or c.set_edit_state(les, mode='selection')
+or c.set_edit_state(les, mode='cursor')
 
 which assembles things based on the selection or cursor text attributes.
 
 Thoughts?  So long since I wrote any emacs text manipulation stuff I
-can\'t remember the idiom it used.
+can't remember the idiom it used.
 
 Cheers -Terry
 
 
 
-&gt; On 04/17/2013 12:29 PM, Terry Brown wrote:&gt; I think that\'s the way,
+&gt; On 04/17/2013 12:29 PM, Terry Brown wrote:&gt; I think that's the way,
 &gt; see also:
 &gt; &gt;
 &gt; &gt; https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
 &gt; &gt;
-&gt; Thanks.  I vaguely remembered this thread, but I couldn\'t find it.
+&gt; Thanks.  I vaguely remembered this thread, but I couldn't find it.
 &gt; 
 &gt; &gt; Depending on your use you might want to
 &gt; &gt;
@@ -6435,7 +6195,7 @@ Your workflow make sense for the general case of doing any arbitrary
 thing with Leo.  For the specific case of manipulating text, I think
 the API could be improved, or, seeing the existing API make sense for
 what it is, we could have additional "easy text manipulation" API.
-So long since I used Emacs I can\'t really remember its model, and if it
+So long since I used Emacs I can't really remember its model, and if it
 would apply here.
 
 Cheers -Terry
@@ -6446,8 +6206,7 @@ Cheers -Terry
 From: HaveF &lt;iamaplayer@gmail.com&gt;
 
 I have read the scripting chapter of leo-editor, and already make my daily
-life easier with
-these quick dirty, but useful scripts.
+life easier with these quick dirty, but useful scripts.
 
 And I just want to know your workflow of writing leo scripts.
 
@@ -6468,28 +6227,21 @@ i,j = w.getSelectionRange(sort=True)
 s = w.getSelectedText()             # Return the selected text, if any.
 ]
 
-3. but I still don\'t know how to insert the text to body. So I search the
+3. but I still don't know how to insert the text to body. So I search the
 above function names in the scripts.leo to see the code.
 [ I find in
 scripts.leo#Scripts--&gt;@thin leoScripts.txt--&gt;Text editing scripts--&gt;insert
 begin/endUpdate
 ...
-w.insert(i,s1+\'\\n\\t\\t\\n\'+s2)
+w.insert(i,s1+'\\n\\t\\t\\n'+s2)
 ...
 seems to help
 ]
 
-4. test the scripts to see if it works, if it doesn\'t work, go to 3, to
+4. test the scripts to see if it works, if it doesn't work, go to 3, to
 find more example code.
 
-
-what\'s yours? any suggestion to improve this workflow?
-
--- 
---
-Sincerely,
-
-HaveF
+Any suggestion to improve this workflow?
 </t>
 <t tx="ekr.20130526065545.17533">@nocolor
 
@@ -6517,8 +6269,8 @@ On Sun, Apr 7, 2013 at 11:21 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 &gt; one, @rclick diff
 &gt;
 &gt;   selected = c.getSelectedPositions()
-&gt;   open(\'/tmp/a_diff\', \'w\').write(selected[0].b)
-&gt;   open(\'/tmp/b_diff\', \'w\').write(selected[1].b)
+&gt;   open('/tmp/a_diff', 'w').write(selected[0].b)
+&gt;   open('/tmp/b_diff', 'w').write(selected[1].b)
 &gt;   import os
 &gt;   os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
 &gt;
@@ -6527,10 +6279,10 @@ On Sun, Apr 7, 2013 at 11:21 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 &gt; diff capability, but also every future session which loads ~/.leo/t/gen.
 &gt;
 &gt; When you can go from wanting to having a feature in less time than it
-&gt; takes to write an email about it - well, that\'s "why Leo".
+&gt; takes to write an email about it - well, that's "why Leo".
 &gt;
 &gt; (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-&gt; handling SQL and an XML dialect I use a lot, it\'s a great way to manage
+&gt; handling SQL and an XML dialect I use a lot, it's a great way to manage
 &gt; little snippet functions)
 &gt;
 &gt; Cheers -Terry
@@ -6567,8 +6319,8 @@ with several @rclick children for commonly used tasks.  So I add a new
 one, @rclick diff
 
   selected = c.getSelectedPositions()
-  open(\'/tmp/a_diff\', \'w\').write(selected[0].b)
-  open(\'/tmp/b_diff\', \'w\').write(selected[1].b)
+  open('/tmp/a_diff', 'w').write(selected[0].b)
+  open('/tmp/b_diff', 'w').write(selected[1].b)
   import os
   os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
 
@@ -6577,10 +6329,10 @@ to write.  And now, not only does this Leo session have a visual node
 diff capability, but also every future session which loads ~/.leo/t/gen.
 
 When you can go from wanting to having a feature in less time than it
-takes to write an email about it - well, that\'s "why Leo".
+takes to write an email about it - well, that's "why Leo".
 
 (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-handling SQL and an XML dialect I use a lot, it\'s a great way to manage
+handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
 
 Cheers -Terry
@@ -6591,9 +6343,9 @@ From: Randy Kramer &lt;rhkramer@gmail.com&gt;
 
 Rickard,
 
-Very interesting--I\'m happy to see someone thinking about how to make 
-understanding code bases easier.  (I\'m a rather old wannabee programmer, so 
-I\'m not sure it will ever be of much use to me, nor that I can offer cogent 
+Very interesting--I'm happy to see someone thinking about how to make 
+understanding code bases easier.  (I'm a rather old wannabee programmer, so 
+I'm not sure it will ever be of much use to me, nor that I can offer cogent 
 comments.)
 
 I will add some comments or questions anyway: ;-)
@@ -6607,7 +6359,7 @@ the time) program using a literate programming approach.  I got it working to
 a degree, but eventually had to devote more time to other things so never got 
 it fully up to spec.
 
-   * Darn, I know I had another comment, but I won\'t remember it until 
+   * Darn, I know I had another comment, but I won't remember it until 
 sometime after I hit "send" ;-)
 
 The main purpose of my email is to encourage you--anything that can improve 
@@ -6638,9 +6390,9 @@ From: Rickard Lindberg &lt;ricli85@gmail.com&gt;
 On Sun, Feb 24, 2013 at 9:07 PM, Randy Kramer &lt;rhkramer@gmail.com&gt; wrote:
 &gt; Rickard,
 &gt;
-&gt; Very interesting--I\'m happy to see someone thinking about how to make
-&gt; understanding code bases easier.  (I\'m a rather old wannabee programmer, so
-&gt; I\'m not sure it will ever be of much use to me, nor that I can offer cogent
+&gt; Very interesting--I'm happy to see someone thinking about how to make
+&gt; understanding code bases easier.  (I'm a rather old wannabee programmer, so
+&gt; I'm not sure it will ever be of much use to me, nor that I can offer cogent
 &gt; comments.)
 
 Thank you. Glad you find it interesting.
@@ -6648,8 +6400,8 @@ Thank you. Glad you find it interesting.
 &gt;    * Are you familiar with the concept of literate programming as espoused by
 &gt; Donald Knuth and others?
 
-Yes. I\'ve read about literate programming and also tried it. I found that it
-didn\'t work so well for me for the following reasons (At least that\'s what I
+Yes. I've read about literate programming and also tried it. I found that it
+didn't work so well for me for the following reasons (At least that's what I
 remember. It was many years since I tried.):
 
 * Focus on text first instead of code made it harder for me to produce working
@@ -6669,7 +6421,7 @@ remember. It was many years since I tried.):
 &gt; it fully up to spec.
 
 It influenced me mostly in that I started to think about how to best present
-programs so that humans can understand them. I\'m not sure literate programming
+programs so that humans can understand them. I'm not sure literate programming
 like Knuth uses it is the best way (in particular, I think the programs are
 harder to modify), but I also think that a folder with just source code is not
 so good either.
@@ -6691,7 +6443,6 @@ of our code bases.
 
 If you are interested, you can read it over here: 
 http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
-
 </t>
 <t tx="ekr.20130526065545.17538">@nocolor
 
@@ -6701,8 +6452,8 @@ From: Matt Wilkie &lt;maphew@gmail.com&gt;
 
 Nice article Rickard, I think it captures the background problem well.
 
-I\'m not sure the images communicate clones effectively -- but don\'t really
-have an alternative suggestion that would be an improvement. It\'s just
+I'm not sure the images communicate clones effectively -- but don't really
+have an alternative suggestion that would be an improvement. It's just
 really hard to appreciate how well they work without experiencing them!
 
 cheers,
@@ -6740,7 +6491,7 @@ Rickard Lindberg &lt;ricli85@gmail.com&gt; wrote:
 Interesting - the python web application framework Django is really
 tough in that regard, you might simultaneously want to work on python,
 html template, css, java-script, url-dispatch, tests, model definitions.
-In fact I\'ve just made some updates to the bookmarks display plugin
+In fact I've just made some updates to the bookmarks display plugin
 which make using it effectively smoother, for a mouse user, anyway, to
 help with this.  Will push them soon.
 
@@ -6751,8 +6502,8 @@ Cheers -Terry
 
 From: Haroldo Stenger &lt;haroldo.stenger@gmail.com&gt;
 
-I\'m slowly trying to grok leo. I love meld, it\'s simply the best text
-comparison I\'ve ever seen. I wonder if a greater bit of integration between
+I'm slowly trying to grok leo. I love meld, it's simply the best text
+comparison I've ever seen. I wonder if a greater bit of integration between
 meld and leo is possible, and in which ways. Undoubtedly calling it as an
 external process is better than anything.
 </t>
@@ -6766,7 +6517,7 @@ Useful!
 For fun (and perhaps of some use), here is a brute compare of trees. I use
 meld, which has a great interface.
 
-I think I will set up a pyflakes button as well; I haven\'t seen it as part
+I think I will set up a pyflakes button as well; I haven't seen it as part
 of Leo, though the Leo error python messages are good.
 
 -----------------------
@@ -6780,8 +6531,8 @@ def add_text(nd):
     return text
 
 selected =3D c.getSelectedPositions()
-open(\'/tmp/a_diff\', \'w\').write(add_text(selected[0]).encode("utf-8"))
-open(\'/tmp/b_diff\', \'w\').write(add_text(selected[1]).encode("utf-8"))
+open('/tmp/a_diff', 'w').write(add_text(selected[0]).encode("utf-8"))
+open('/tmp/b_diff', 'w').write(add_text(selected[1]).encode("utf-8"))
 import os
 os.system("meld /tmp/a_diff /tmp/b_diff &amp;")
 
@@ -6798,8 +6549,8 @@ Le vendredi 1 f=E9vrier 2013 11:08:30 UTC-8, Terry a =E9crit :
 &gt; one, @rclick diff
 &gt;
 &gt;   selected =3D c.getSelectedPositions()
-&gt;   open(\'/tmp/a_diff\', \'w\').write(selected[0].b)
-&gt;   open(\'/tmp/b_diff\', \'w\').write(selected[1].b)
+&gt;   open('/tmp/a_diff', 'w').write(selected[0].b)
+&gt;   open('/tmp/b_diff', 'w').write(selected[1].b)
 &gt;   import os
 &gt;   os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
 &gt;
@@ -6809,10 +6560,10 @@ Le vendredi 1 f=E9vrier 2013 11:08:30 UTC-8, Terry a =E9crit :
 
 &gt;
 &gt; When you can go from wanting to having a feature in less time than it
-&gt; takes to write an email about it - well, that\'s "why Leo".
+&gt; takes to write an email about it - well, that's "why Leo".
 &gt;
 &gt; (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-&gt; handling SQL and an XML dialect I use a lot, it\'s a great way to manage=
+&gt; handling SQL and an XML dialect I use a lot, it's a great way to manage=
 
 &gt; little snippet functions)
 &gt;
@@ -6832,8 +6583,8 @@ with several @rclick children for commonly used tasks.  So I add a new
 one, @rclick diff
 
   selected = c.getSelectedPositions()
-  open(\'/tmp/a_diff\', \'w\').write(selected[0].b)
-  open(\'/tmp/b_diff\', \'w\').write(selected[1].b)
+  open('/tmp/a_diff', 'w').write(selected[0].b)
+  open('/tmp/b_diff', 'w').write(selected[1].b)
   import os
   os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
 
@@ -6842,29 +6593,11 @@ to write.  And now, not only does this Leo session have a visual node
 diff capability, but also every future session which loads ~/.leo/t/gen.
 
 When you can go from wanting to having a feature in less time than it
-takes to write an email about it - well, that\'s "why Leo".
+takes to write an email about it - well, that's "why Leo".
 
 (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-handling SQL and an XML dialect I use a lot, it\'s a great way to manage
+handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
-</t>
-<t tx="ekr.20130526065545.17544">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-
-
-+1  thanks Terry! :)
-
-On Fri, Feb 1, 2013 at 11:08 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; Because I have two nodes which were originally identical but are now
-&gt; different and I want to see the differences.
-&gt;
-...
-
-&gt; When you can go from wanting to having a feature in less time than it
-&gt; takes to write an email about it - well, that\'s "why Leo".
 </t>
 <t tx="ekr.20130526065545.17545">@nocolor
 
@@ -6874,7 +6607,7 @@ I tried this one and it seems to be very useful. What I would also like to
 have is a similar (or the same) script,
 that does the same on two different nodes of a leo file. I admit, the 
 changes should be minimal to be done by
-myself, but as I\'m not familiar with the internal leo api, I wanted to ask 
+myself, but as I'm not familiar with the internal leo api, I wanted to ask 
 for how to best do this changes.
 
 Probably somewhere here
@@ -6913,15 +6646,15 @@ to jump to the original(s).
 
 
 from leo.core.leoNodes import vnode
-if not hasattr(vnode, \'insertAsLastChild\'):
+if not hasattr(vnode, 'insertAsLastChild'):
     # add insertAsLastChild method to vnodes
     def ialc(self):
         vnode(self.context)._linkAsNthChild(self, len(self.children))
         return self.children[-1]
     vnode.insertAsLastChild = ialc
 
-from_filename = g.app.gui.runOpenFileDialog(\'From (old) file\', [(\'Leo\', \'*.leo\')])
-to_filename = g.app.gui.runOpenFileDialog(\'To (new) file\', [(\'Leo\', \'*.leo\')])
+from_filename = g.app.gui.runOpenFileDialog('From (old) file', [('Leo', '*.leo')])
+to_filename = g.app.gui.runOpenFileDialog('To (new) file', [('Leo', '*.leo')])
 
 # from_filename = "/mnt/shuttle/bkup/usr1/2012-07-13/home/tbrown/.leo/.todo.leo"
 # to_filename = "/mnt/shuttle/bkup/usr1/2012-07-15/home/tbrown/.leo/.todo.leo"
@@ -6938,7 +6671,7 @@ assert from_c != to_c
 
 nd = c.rootPosition().insertAfter()
 nd.copy().back().moveAfter(nd)
-nd.h = \'diff @bookmarks\'
+nd.h = 'diff @bookmarks'
 
 def text_match(a, b):
     return (a.h == b.h, 
@@ -6980,21 +6713,21 @@ def diff_trees(vf, vt, path):
             elif head_eq:
                 d = diff_trees(cf, ct, path+[vf.h])
                 if d:
-                    d.h = \'!v \'+d.h
+                    d.h = '!v '+d.h
                 else:
                     d = vnode(nd.v.context)
-                    d.h = \'!v \'+cf.h
+                    d.h = '!v '+cf.h
                 d.b = "file://%s/#%s\\n\\n%s" % (
                     from_filename, 
-                    \'--&gt;\'.join((path+[vf.h]+[cf.h])[1:]),
+                    '--&gt;'.join((path+[vf.h]+[cf.h])[1:]),
                     cf.b
                 )
                 diffs.append(d)
                 d = vnode(nd.v.context)
-                d.h = \'!^ \'+cf.h
+                d.h = '!^ '+cf.h
                 d.b = "file://%s/#%s\\n\\n%s" % (
                     to_filename, 
-                    \'--&gt;\'.join((path+[vt.h]+[ct.h])[1:]),
+                    '--&gt;'.join((path+[vt.h]+[ct.h])[1:]),
                     ct.b
                 )
                 diffs.append(d)
@@ -7029,12 +6762,12 @@ def diff_trees(vf, vt, path):
             vd.children.append(d)
     for f in fonly:
         n = vd.insertAsLastChild()
-        n.h = \'- \'+f.h
-        n.b = "file://%s/#%s" % (from_filename, \'--&gt;\'.join((path+[vf.h]+[f.h])[1:]))
+        n.h = '- '+f.h
+        n.b = "file://%s/#%s" % (from_filename, '--&gt;'.join((path+[vf.h]+[f.h])[1:]))
     for t in tonly:
         n = vd.insertAsLastChild()
-        n.h = \'+ \'+t.h
-        n.b = "file://%s/#%s" % (to_filename, \'--&gt;\'.join((path+[vf.h]+[t.h])[1:]))
+        n.h = '+ '+t.h
+        n.b = "file://%s/#%s" % (to_filename, '--&gt;'.join((path+[vf.h]+[t.h])[1:]))
         
     return vd
 
@@ -7067,21 +6800,21 @@ simplification.
 &gt;         ]
 &gt;
 
-This doesn\'t work!  aList won\'t have the proper indentation.  In 
-particular, the following won\'t work::
+This doesn't work!  aList won't have the proper indentation.  In 
+particular, the following won't work::
 
-    [[\'  \',z] for z in aList],
+    [['  ',z] for z in aList],
 
 flatten_list will add the two spaces before the line, that is, before a 
 newline. Instead, a hack is needed:
 
     return [
         div,
-        join_list(aList,indent=\'  \'),
-        \'\\n&lt;/div&gt;\'
+        join_list(aList,indent='  '),
+        '\\n&lt;/div&gt;'
     ]
 
-The new \'indent\' keyword tells flatten_list to add the given indentation 
+The new 'indent' keyword tells flatten_list to add the given indentation 
 (two spaces, here), to strings that start with a newline.  The new code in 
 flatten_list is::
 
@@ -7089,8 +6822,8 @@ flatten_list is::
             if leading:                  yield leading
             for s in flatten_list(item):
                 if indent:
-                    if s.startswith(\'\\n\'):
-                        yield \'\\n\'+indent+s[1:]
+                    if s.startswith('\\n'):
+                        yield '\\n'+indent+s[1:]
                     else:
                         yield s
                 else:
@@ -7117,10 +6850,10 @@ On Wednesday, January 2, 2013 2:01:17 PM UTC-6, Ville M. Vainio wrote:
 &gt;
 
 Thanks for these links.  Yes, there is a similarity.  However, the real 
-beauty of new pattern is the flatten_list method.  It\'s the combination of 
-the lists and flatten_list that gives the pattern real power.  We\'ve just 
-seen how the \'indent\' keyword hack allows sophisticated processing of the 
-lists.  I wouldn\'t expect more hacks to be needed, but I\'ve been surprised 
+beauty of new pattern is the flatten_list method.  It's the combination of 
+the lists and flatten_list that gives the pattern real power.  We've just 
+seen how the 'indent' keyword hack allows sophisticated processing of the 
+lists.  I wouldn't expect more hacks to be needed, but I've been surprised 
 before ;-)
 
 Edward
@@ -7141,8 +6874,8 @@ On Wed, Jan 2, 2013 at 3:03 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote
 
 &gt; I continue to work feverishly on various aspects of static type checking.
 &gt;
-&gt; That work lead to a discovery that may benefit you.  It\'s one of the most
-&gt; beautiful patterns I\'ve ever created: it allows a program to simply and
+&gt; That work lead to a discovery that may benefit you.  It's one of the most
+&gt; beautiful patterns I've ever created: it allows a program to simply and
 &gt; naturally build up huge strings without using any string operations.
 &gt; Generating an html file with minimal stress on the gc is an obvious
 &gt; application.  You could also say that the pattern creates a Pythonic way of
@@ -7159,8 +6892,8 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 I continue to work feverishly on various aspects of static type checking.
 
-That work lead to a discovery that may benefit you.  It\'s one of the most 
-beautiful patterns I\'ve ever created: it allows a program to simply and 
+That work lead to a discovery that may benefit you.  It's one of the most 
+beautiful patterns I've ever created: it allows a program to simply and 
 naturally build up huge strings without using any string operations.  
 Generating an html file with minimal stress on the gc is an obvious 
 application.  You could also say that the pattern creates a Pythonic way of 
@@ -7193,7 +6926,7 @@ From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 
 
-Yes, it\'s indeed an interesting pattern.
+Yes, it's indeed an interesting pattern.
 
 It would seem more useful in faster languages than python though; in
 python, string operations (and gc) are faster in comparison to executing
@@ -7208,7 +6941,7 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
 &gt;
-&gt; Yes, it\'s indeed an interesting pattern. 
+&gt; Yes, it's indeed an interesting pattern. 
 &gt;
 &gt; It would seem more useful in faster languages than python though; in 
 &gt; python, string operations (and gc) are faster in comparison to executing 
@@ -7217,15 +6950,15 @@ On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
 &gt; app when eliminating GC).
 &gt;
 
-Thanks for these remarks.  I\'ve enjoyed thinking about them.  A few 
+Thanks for these remarks.  I've enjoyed thinking about them.  A few 
 responses:
 
-1. This is a smallish pattern--it can\'t change the world, except insofar as 
+1. This is a smallish pattern--it can't change the world, except insofar as 
 something beautiful changes the world.
 
 2. Otoh, the pattern changes the way I think about lisp and lisp-like 
-patterns.  That\'s not nothing. For the first time, it makes list-oriented  
-programming pattern completely safe.  It does this because it doesn\'t 
+patterns.  That's not nothing. For the first time, it makes list-oriented  
+programming pattern completely safe.  It does this because it doesn't 
 matter what each component list contains, nor does it matter *at all* what 
 the shape of any part of the tree is.  This makes the pattern completely 
 flexible.
@@ -7246,7 +6979,7 @@ resulting tree.
 
 I suspect that these features are what appeal to lisp programmers ;-)
 
-4. I\'m not sure whether the pattern is more useful in "faster" languages or 
+4. I'm not sure whether the pattern is more useful in "faster" languages or 
 not.  True, anything that helps a feeble language like C++ will seem useful 
 :-)  But points 1-3 above have nothing to do with speed: they just make 
 programming simpler, more flexible, more powerful and more fun.
@@ -7314,7 +7047,7 @@ An example of the pattern in use::
     ]
 
 Similarly for span, etc. Thanks for pointing this out.  This is too good to
-ignore.  I\'ll do it soon.
+ignore.  I'll do it soon.
 
 Edward</t>
 <t tx="ekr.20130526065545.17555">@nocolor
@@ -7324,7 +7057,7 @@ From: tfer &lt;tfetherston@aol.com&gt;
 I was wondering if the Qt widget used for body text has a provision for 
 background images?
 
-I\'m thinking that it might be interesting to have some wallpapers/tiles to 
+I'm thinking that it might be interesting to have some wallpapers/tiles to 
 visually represent various categories of methods, e.g. initors, setters, 
 getters, etc.  Maybe ones that hint at the uses of a particular design 
 pattern.  Maybe us a uA to control setting?
@@ -7339,7 +7072,7 @@ On Fri, Jul 13, 2012 at 3:57 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
 &gt; background images?
 &gt;
 
-Sorry for the delay in responding.  Leo\'s body pane is a QTextBrowser:
+Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
 http://qt-project.org/doc/qt-4.8/qtextbrowser.html
 a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
 QWidget, so there *might* be a way to have a background image "leak"
@@ -7359,7 +7092,7 @@ On Wed, 1 May 2013 04:19:52 -0500
 &gt; &gt; background images?
 &gt; &gt;
 &gt; 
-&gt; Sorry for the delay in responding.  Leo\'s body pane is a QTextBrowser:
+&gt; Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
 &gt; http://qt-project.org/doc/qt-4.8/qtextbrowser.html
 &gt; a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
 &gt; QWidget, so there *might* be a way to have a background image "leak"
@@ -7368,15 +7101,15 @@ On Wed, 1 May 2013 04:19:52 -0500
 &gt; Edward
 &gt; 
 
-QTextEdit#richTextEdit { background-image: url(\'/home/tbrown/Desktop/cow2.jpg\'); }
+QTextEdit#richTextEdit { background-image: url('/home/tbrown/Desktop/cow2.jpg'); }
 
 in the stylesheet gives the effect attached (i.e. it works).
 
 If you wanted node specific backgrounds Leo would have to start setting
 an attribute on the body widget, probably the gnx, so you could do
 
-QTextEdit#richTextEdit[leo_gnx=\'tbrown.20130430222443.19340\'] { 
-  background-image: url(\'/home/tbrown/Desktop/cow2.jpg\'); 
+QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] { 
+  background-image: url('/home/tbrown/Desktop/cow2.jpg'); 
 }
 
 Cheers -Terry
@@ -7393,15 +7126,15 @@ On Wed, May 1, 2013 at 8:42 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrot
 &gt;
 &gt;
 &gt; QTextEdit#richTextEdit { background-image:
-&gt; url(\'/home/tbrown/Desktop/cow2.jpg\'); }
+&gt; url('/home/tbrown/Desktop/cow2.jpg'); }
 &gt;
 &gt; in the stylesheet gives the effect attached (i.e. it works).
 &gt;
 &gt; If you wanted node specific backgrounds Leo would have to start setting
 &gt; an attribute on the body widget, probably the gnx, so you could do
 &gt;
-&gt; QTextEdit#richTextEdit[leo_gnx=\'tbrown.20130430222443.19340\'] {
-&gt;   background-image: url(\'/home/tbrown/Desktop/cow2.jpg\');
+&gt; QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] {
+&gt;   background-image: url('/home/tbrown/Desktop/cow2.jpg');
 &gt; }
 &gt;
 
@@ -7409,7 +7142,7 @@ Wow!  Thanks for this.  LeoUser wrote a version of Leo in Jython (using the
 Swing classes), and he claimed that he could watch *movies* in the body
 pane :-)
 
-I\'ll add this to the Leo/To Document list.  Not sure yet how that list is
+I'll add this to the Leo/To Document list.  Not sure yet how that list is
 going to get translated into action.  Still reading Getting Things Done :-)
 </t>
 <t tx="ekr.20130526065545.17559">@nocolor
@@ -7447,7 +7180,7 @@ trying to save an @edit file with children:
     @edit nodes must not have children
     To save your work, convert @edit to @auto or @thin.
 
-I\'ll make a to-do item to fix this documentation bug.
+I'll make a to-do item to fix this documentation bug.
 </t>
 <t tx="ekr.20130526065545.17561">@nocolor
 
@@ -7456,9 +7189,9 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Wed, 12 Sep 2012 13:06:19 -0700 (PDT)
 Terry &lt;webtourist@gmail.com&gt; wrote:
 
-&gt; Can LEO generate OPML file ? I\'m looking at the tool theoutlinerofgiants
+&gt; Can LEO generate OPML file ? I'm looking at the tool theoutlinerofgiants
 
-There\'s a leoOPML plugin, I don\'t know what its status is, try
+There's a leoOPML plugin, I don't know what its status is, try
 enabling it... I think OPML support has been through several
 iterations, not sure if the plugin was the last of them.
 
@@ -7476,7 +7209,7 @@ On Tuesday, September 11, 2012 4:57:10 PM UTC-4, Terry wrote:
 &gt;
 
 
-Terry, how do i run it ?  I\'m guessing it\'s not at the cmdline like "python 
+Terry, how do i run it ?  I'm guessing it's not at the cmdline like "python 
 this_script.py" 
 thanks
 
@@ -7485,7 +7218,7 @@ thanks
 
 From: Terry &lt;webtourist@gmail.com&gt;
 
-Can LEO generate OPML file ? I\'m looking at the tool theoutlinerofgiants
+Can LEO generate OPML file ? I'm looking at the tool theoutlinerofgiants
 
 </t>
 <t tx="ekr.20130526065545.17564">@nocolor
@@ -7505,7 +7238,7 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Tue, 11 Sep 2012 13:33:16 -0700 (PDT)
 Terry &lt;webtourist@gmail.com&gt; wrote:
 
-&gt; I need to present to people who don\'t have leo installation, in easily 
+&gt; I need to present to people who don't have leo installation, in easily 
 &gt; readable format, the full content of a .leo file, not just the outline, but 
 &gt; all nodes and all contents.
 &gt; 
@@ -7532,43 +7265,43 @@ template = r"""H
 
 lines=[]
 exp_only = g.app.gui.runAskYesNoCancelDialog(
-    c, \'Expanded nodes only?\', \'Expanded nodes only?\')
-if exp_only == \'no\':
+    c, 'Expanded nodes only?', 'Expanded nodes only?')
+if exp_only == 'no':
     exp_only = False
     
-def export_text(p, indent=\'\'):
+def export_text(p, indent=''):
     
-    spaces = \' \'*(len(indent) - len(indent.lstrip(\' \')))
+    spaces = ' '*(len(indent) - len(indent.lstrip(' ')))
     
-    for line in template.split(\'\\n\'):
+    for line in template.split('\\n'):
         
-        if \'H\' in line:
-            lines.append(indent + line.replace(\'H\', p.h))
-        elif \'B\' in line and p.b.strip():
-            prefix = line[:line.find(\'B\')].replace(\'\\\\n\', \'\\n\')
-            for i in p.b.strip().split(\'\\n\'):
+        if 'H' in line:
+            lines.append(indent + line.replace('H', p.h))
+        elif 'B' in line and p.b.strip():
+            prefix = line[:line.find('B')].replace('\\\\n', '\\n')
+            for i in p.b.strip().split('\\n'):
                 lines.append(spaces + prefix + i)
-                prefix = line[:line.find(\'B\')].replace(\'\\\\n\', \'\')
-            if line.endswith(\'\\\\n\'):
-                lines.append(\'\')
-        elif \'C\' in line and (not exp_only or p.isExpanded()):
-            prefix = line[:line.find(\'C\')].replace(\'\\\\n\', \'\\n\')
+                prefix = line[:line.find('B')].replace('\\\\n', '')
+            if line.endswith('\\\\n'):
+                lines.append('')
+        elif 'C' in line and (not exp_only or p.isExpanded()):
+            prefix = line[:line.find('C')].replace('\\\\n', '\\n')
             for child in p.children():
                 export_text(child, indent=spaces + prefix)
-            if line.endswith(\'\\\\n\'):
-                lines.append(\'\')
-        elif \'C\' not in line and \'B\' not in line:
+            if line.endswith('\\\\n'):
+                lines.append('')
+        elif 'C' not in line and 'B' not in line:
             lines.append(line)
 
-if exp_only != \'cancel\':
+if exp_only != 'cancel':
     for i in c.getSelectedPositions():
         export_text(i)
     
-    filename = g.app.gui.runSaveFileDialog(\'Save to file\')
-    # filename = \'/home/tbrown/del.txt\'
+    filename = g.app.gui.runSaveFileDialog('Save to file')
+    # filename = '/home/tbrown/del.txt'
     
     if filename is not None:
-        open(filename,\'w\').write(\'\\n\'.join(lines))
+        open(filename,'w').write('\\n'.join(lines))
 ---cut here---
 
 </t>
@@ -7579,12 +7312,12 @@ From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 On Wed, 12 Sep 2012 06:31:09 -0700 (PDT)
 Terry &lt;webtourist@gmail.com&gt; wrote:
 
-&gt; Terry, how do i run it ?  I\'m guessing it\'s not at the cmdline like "python 
+&gt; Terry, how do i run it ?  I'm guessing it's not at the cmdline like "python 
 &gt; this_script.py" 
 
 Right.  Paste the content into a node, then click the script-button
-button to create a new button for running this script.  The button\'s
-name will be the node\'s name, what it is doesn\'t matter but \'export\'
+button to create a new button for running this script.  The button's
+name will be the node's name, what it is doesn't matter but 'export'
 would be an obvious choice.  Then select the node(s) you want exported
 - presumably not including the node containing the script :)
 
@@ -7617,11 +7350,11 @@ first script::
     s = p.b # This script.
     c = c.new()
     p = c.p
-    p.h = \'\'
+    p.h = ''
     n1,n2 = 0.01,0.2 # Small difference are important.
-    head_keys(\'This is headline text\',n1,n2)
-    body_keys(\'This is some body text.\\n\',0.0,0.0) # n1,n2)
-    body_keys(\'Some more body text.\\n\',0.0,0.0)
+    head_keys('This is headline text',n1,n2)
+    body_keys('This is some body text.\\n',0.0,0.0) # n1,n2)
+    body_keys('Some more body text.\\n',0.0,0.0)
     body_keys(s,0.0,0.0)
 
 The head_keys and body_keys (not shown) simulate typing, with a range of 
@@ -7629,17 +7362,17 @@ typing speed indicated by the n1 and n2 params.  The result is really fun
 to watch.  As you will see, there is a wait method that waits a variable 
 number of seconds.  This will be useful in other contexts.
 
-This is the most fun I\'ve had in quite awhile. It\'s becoming clear that 
+This is the most fun I've had in quite awhile. It's becoming clear that 
 being able to generate screencasts from scripts will be an excellent tool 
 for those trying to explain Leo.  Imo, creating screencasts from such 
 scripts will be *much* simpler than making slideshows.
 
-I\'ve got lots of ideas for improvements to screencasts.  I should have 
+I've got lots of ideas for improvements to screencasts.  I should have 
 something pretty cool to show in a week or so...
 
 Edward
 
-P.S.  The head_keys and body_keys methods cost me a *lot* of work.  It\'s 
+P.S.  The head_keys and body_keys methods cost me a *lot* of work.  It's 
 tricky to show the typing immediately without flash.  These are the first 
 of several planned helper methods for use in screencasts::
 
@@ -7700,27 +7433,27 @@ the dialog might go away after a few seconds, or remain until the use hits
 any key.
 
 The main question is, how easy will it be to create and edit playbacks?  
-I\'m not sure.  Any such playback capability would essentially be a 
+I'm not sure.  Any such playback capability would essentially be a 
 (detailed!) script.  We can imagine a script that is essentially Python:  
 Something like:
 
 goto_sibling_node(&lt;&lt;node name&gt;&gt;)
 dialog(&lt;&lt;dialog name&gt;&gt;,&lt;&lt; when dismissed&gt;&gt;)
 edit_headline
-type_individual_letters(\'This is the headline\',&lt;&lt;delay between letters&gt;&gt;)
-type_text(\'This is the headline\')
+type_individual_letters('This is the headline',&lt;&lt;delay between letters&gt;&gt;)
+type_text('This is the headline')
 insert_sibling_node()
 insert_child_node()
 select_find_tab()
 etc! etc!
 
 Leo already has most of the capability go generate this as we use Leo:  
-it\'s the so-called "lossage" history in k.masterKeyHandler.  I\'m thinking 
+it's the so-called "lossage" history in k.masterKeyHandler.  I'm thinking 
 that there is no urgent need to capture the mouse: we might as well 
 demonstrate mouseless Leo!
 
 Actually, we might forgo capturing actions altogether, and just write the 
-script directly.  We\'ll have to see whether that makes sense.
+script directly.  We'll have to see whether that makes sense.
 
 Your comments, please, Amigos.
 
@@ -7789,7 +7522,7 @@ On Fri, Sep 14, 2012 at 9:54 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrot
 &gt; taught me several things.  In the notes below, m is an instance of
 &gt; ScreenCastController.  m stands for "movie" :-)
 &gt;
-&gt; 1. It\'s probably best to not to open a new Leo window for screencasts.
+&gt; 1. It's probably best to not to open a new Leo window for screencasts.
 &gt; This avoid problems with w.repaint occurring in a another repaint
 &gt; operation, thereby freezing Leo.  This is not a major constraint: we
 &gt; typically will want to have screencasts operate on the local .leo file.
@@ -7826,7 +7559,7 @@ On Friday, September 14, 2012 9:31:33 AM UTC-5, HaveF wrote:
 
 But then how do you set the wait to zero? :-)
 
-Anyway, it\'s a minor point: now that manual play is coming the speed factor 
+Anyway, it's a minor point: now that manual play is coming the speed factor 
 will not be important.
 
 EKR
@@ -7848,7 +7581,7 @@ in screencast.py and the node "@command screencast @key=Alt-9" in test.leo
 taught me several things.  In the notes below, m is an instance of 
 ScreenCastController.  m stands for "movie" :-)
 
-1. It\'s probably best to not to open a new Leo window for screencasts.  
+1. It's probably best to not to open a new Leo window for screencasts.  
 This avoid problems with w.repaint occurring in a another repaint 
 operation, thereby freezing Leo.  This is not a major constraint: we 
 typically will want to have screencasts operate on the local .leo file.
@@ -7866,7 +7599,7 @@ the "closing" wait allows the user to read the new comment in the log pane
 before the next operation happens.
 
 3. The futzing with speed and waits convinces me that specifying waits "by 
-hand" isn\'t good enough.  Pre-specified waits will be useful only for an 
+hand" isn't good enough.  Pre-specified waits will be useful only for an 
 **unattended mode** that just plays the screencast from start to finish.  
 But for most presentations we want the presenter to switch from one 
 **scene** of the movie to the next by hitting the RightArrow key.  The 
@@ -7883,17 +7616,17 @@ state handler for the slideshow.
 
 At the design level,  the main idea is to treat every node under the main 
 @screencast node as a scene.  This natural division allows the screencast 
-to organize the material using all of Leo\'s organizational capabilities.
+to organize the material using all of Leo's organizational capabilities.
 
 The state handler will, when seeing the RightArrow key, "play" the next 
 scene merely by moving to the next node and then executing the script in 
-it\'s body text.  This script could contain *any* Leo script, but most often 
+it's body text.  This script could contain *any* Leo script, but most often 
 it will call ScreenCastController methods.   Moving to the previous scene 
-can be done by Leo\'s undo command, automatically managed by the 
+can be done by Leo's undo command, automatically managed by the 
 ScreenCastController.  This will be a bit tricky, but not hugely so.
 
-4. Putting comments in the log pane is ok for a prototype, but it\'s pretty 
-lame.  Instead, I\'d like to use some kind of popup that can be associated 
+4. Putting comments in the log pane is ok for a prototype, but it's pretty 
+lame.  Instead, I'd like to use some kind of popup that can be associated 
 with individual items on the screen and located with precision relative to 
 those items. The popup should be able to contain both text and graphics. 
 Does anyone have a suggestion for what Qt widget to use?
@@ -7941,7 +7674,7 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 On Wed, May 1, 2013 at 12:20 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
 
-Haven\'t looked at it hard enough to evaluate code, but it doesn\'t seem
+Haven't looked at it hard enough to evaluate code, but it doesn't seem
 &gt; too excessive for what it does.
 
 
@@ -7965,11 +7698,11 @@ I implemented something in a Leo outline yesterday, but I feel my code
 is absolutely atrocious.
 
 One of the ways I use Leo is as an information management/database for 
-when I\'m running tabletop RPGs.  Such games involve a fair amount of 
+when I'm running tabletop RPGs.  Such games involve a fair amount of 
 similarly structure data.  I set out to make a way of defining a 
 template, and providing macro expansions within the template, so that 
 the user could click a script button, be prompted for data, and be 
-rewarded with a fully-populated copy of the template.  I\'ve managed to 
+rewarded with a fully-populated copy of the template.  I've managed to 
 accomplish this with the code below:
 
 https://gist.github.com/gatesphere/2be5030506a364ee6ec1
@@ -7982,7 +7715,7 @@ How it works is like this:
 - Create a `@template` node.  This is the parent node for your template.
 
 - Create a `@destination` node as a child of the @template node. This 
-node\'s headline is the name of a top level node where your completed 
+node's headline is the name of a top level node where your completed 
 template will be placed.  `@destination Sessions` will place the 
 finished product under the top-level "Sessions" node.
 
@@ -7991,11 +7724,11 @@ their structure in the filled template.  Anything that needs to be a
 part of the final product has to be an @item node.
 
 All of that is fine and dandy if you just want to copy and paste... but 
-that\'s already baked into Leo.  So I added macro expansion.  The script 
+that's already baked into Leo.  So I added macro expansion.  The script 
 gathers up all instances of anything that fits the regex "&lt;\\$\\w+&gt;" is a 
 macro variable name.  Something like `&lt;$name&gt;` or `&lt;$date&gt;`.  The script 
 gathers up all of these variable names, and prompts the user (ala 
-todo.py\'s "Redistribute Priorities" function) for values for each of 
+todo.py's "Redistribute Priorities" function) for values for each of 
 them. They are global with respect to the template, so using the same 
 macro variable in multiple places in the same template will result in 
 all of them being filled in with the same value.
@@ -8005,16 +7738,16 @@ nodes - @default.  @default nodes provide a default value for a macro
 variable.  The node with a headline of `@default &lt;$name&gt;` and a body of 
 "This is my body" gives the `&lt;$name&gt;` macro a value of "This is my body" 
 everywhere within the template, and that macro will not be prompted for 
-a value.  This is handy if you\'re copying templates between Leo 
-worksheets, and want them flexible, but don\'t want them to fill in the 
+a value.  This is handy if you're copying templates between Leo 
+worksheets, and want them flexible, but don't want them to fill in the 
 same value for every single invocation of copy-template.
 
-Here\'s an example template:
+Here's an example template:
 
 @template &lt;$campaign&gt; Session #&lt;$num&gt; ($date)
        @destination Sessions
        @default &lt;$campaign&gt;
-       @item Who\'s Coming?
+       @item Who's Coming?
        @item In-World Start Date
        @item Log
        @item Threads
@@ -8024,15 +7757,15 @@ Here\'s an example template:
              @item Out of Character
              @item In Character
 
-The body of `@default &lt;$campaign&gt;` is "World of Ka\'rim".  The body of 
-`@item Who\'s Coming?` is "John, Jane, Jack, Jenny, Jeremy".
+The body of `@default &lt;$campaign&gt;` is "World of Ka'rim".  The body of 
+`@item Who's Coming?` is "John, Jane, Jack, Jenny, Jeremy".
 
 Running copy-template on this template, and filling the values prompted 
 for (&lt;$num&gt; and &lt;$date&gt;) gives the following under the top-level node 
 Sessions:
 
-World of Ka\'rim Session #1 (01 May 2013)
-       Who\'s Coming?
+World of Ka'rim Session #1 (01 May 2013)
+       Who's Coming?
        In-World Start Date
        Log
        Threads
@@ -8050,7 +7783,7 @@ So... two questions:
 1.) Did I re-implement something Leo already does?
 2.) Anyone have any suggestions on reducing the amount of code/any fixes?
 
-Also, hope someone else finds this useful.  Once it\'s cleaned up, I 
+Also, hope someone else finds this useful.  Once it's cleaned up, I 
 might do a leo-editor blog post about it.
 
 --&gt;Jake
@@ -8066,22 +7799,22 @@ Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
 &gt; similarly structure data.  I set out to make a way of defining a 
 &gt; template, and providing macro expansions within the template, so that 
 &gt; the user could click a script button, be prompted for data, and be 
-&gt; rewarded with a fully-populated copy of the template.  I\'ve managed to 
+&gt; rewarded with a fully-populated copy of the template.  I've managed to 
 &gt; accomplish this with the code below:
 [snip[
 &gt; 1.) Did I re-implement something Leo already does?
 &gt; 2.) Anyone have any suggestions on reducing the amount of code/any fixes?
 
-Haven\'t looked at it hard enough to evaluate code, but it doesn\'t seem
-too excessive for what it does.  I\'ve just been fiddling with the
-abbreviations code which does template expansion, but it\'s aimed at
+Haven't looked at it hard enough to evaluate code, but it doesn't seem
+too excessive for what it does.  I've just been fiddling with the
+abbreviations code which does template expansion, but it's aimed at
 being more interactive, not having the content stored in the outline,
 which makes more sense for you seeing you want to be able to re-run the
 template fill-in easily if you make a mistake, without entering
 everything again.
 
-I\'m not sure how much of this you could achieve with the value-space
-plugin, can\'t remember if that uses Jinja templates for something or
+I'm not sure how much of this you could achieve with the value-space
+plugin, can't remember if that uses Jinja templates for something or
 not.
 
 Cheers -Terry
@@ -8093,7 +7826,7 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 Some people seem to think that it is difficult to understand how Leo
 handles "clone wars":  differing values for a cloned nodes that appear
-in several external files.  That\'s not true.  The rule is::
+in several external files.  That's not true.  The rule is::
 
     **The last clone that Leo reads wins.**
 
@@ -8116,7 +7849,7 @@ Leo creates a "Recovered nodes" tree.  This tree contains all the
 various values for C, nicely formatted so that it is easy to determine
 where the differences are.
 
-2. I\'ve just refreshed my memory by looking at the code.  The relevant
+2. I've just refreshed my memory by looking at the code.  The relevant
 methods are:
 
     fc.getLeoFile # Reads the outline, then calls at.readAll to read
@@ -8169,7 +7902,7 @@ On Monday, January 16, 2012 6:26:58 AM UTC-6, Edward K. Ream wrote:
 &gt;
 &gt; Some people seem to think that it is difficult to understand how Leo 
 &gt; handles "clone wars":  differing values for a cloned nodes that appear 
-&gt; in several external files.  That\'s not true.  The rule is:: 
+&gt; in several external files.  That's not true.  The rule is:: 
 &gt;
 &gt;     **The last clone that Leo reads wins.** 
 &gt;
@@ -8192,7 +7925,7 @@ On Monday, January 16, 2012 6:26:58 AM UTC-6, Edward K. Ream wrote:
 &gt; various values for C, nicely formatted so that it is easy to determine 
 &gt; where the differences are. 
 &gt;
-&gt; 2. I\'ve just refreshed my memory by looking at the code.  The relevant 
+&gt; 2. I've just refreshed my memory by looking at the code.  The relevant 
 &gt; methods are: 
 &gt;
 &gt;     fc.getLeoFile # Reads the outline, then calls at.readAll to read 
@@ -8215,136 +7948,54 @@ On Monday, January 16, 2012 6:26:58 AM UTC-6, Edward K. Ream wrote:
 </t>
 <t tx="ekr.20130526065545.17580">@nocolor
 
-From: =?UTF-8?B?5Y2i5b+g5YuH?= &lt;lzyerste@gmail.com&gt;
+From: &lt;lzyerste@gmail.com&gt;
 
+If I want to use leo to make mathematical notes, how can I type in some
+special mathematical sysbols? Or is there a good way to make mathematical
+notes using leo?
 
-Hi, everyone. I\'m using the leo editor for just several days and find fun 
-in it. I have read some basic tutorials.
-Now, I have a question. If I want to use leo to make mathematical notes, 
-how can I type in some special mathematical sysbols? Or is there a good way 
-to make mathematical notes using leo?
-Thank you so much!
+===== Terry
 
-</t>
-<t tx="ekr.20130526065545.17581">@nocolor
+I use itex2MML with reStructuredText.  So within Leo you're looking at
+LaTeX math markup, and you get outputs in PDF and XHTML, with MathML in
+the latter.
 
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+===== &lt;jose.i.rojas@gmail.com&gt;
 
-On Fri, 9 Nov 2012 13:51:57 +1300
-Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+I've been doing this for about a year now.  I use the math docutils 
+directive.  A custom .XCompose file (for example: 
+https://github.com/kragen/xcompose)  also helps.
 
-&gt; On Thu, 8 Nov 2012 12:16:48 -0800 (PST)
-&gt; Jos=E9 Rojas Echenique &lt;jose.i.rojas@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; I\'ve been doing this for about a year now.  I use the math docutils
-&gt; &gt; directive.  A custom .XCompose file (for example:
-&gt; &gt; https://github.com/kragen/xcompose)  also helps. 
-&gt;
-&gt; I think math was added to docutils after I started using itex2mml,
-&gt; neater to use docutils built in math now I think.
+===== Terry
+
+I think math was added to docutils after I started using itex2mml,
+neater to use docutils built in math now I think.
 
 Although having said that, playing with docutils math a bit suggests
 itex2mml gives more complete support for both MathMML and perhaps LaTeX
 math (with the PDF target).
 
-Cheers -Terry
+===== jose
 
-</t>
-<t tx="ekr.20130526065545.17582">@nocolor
+Terry, your setup is probably more flexible, but I haven't had any problems with 
+docutils math. It seems to support all the syntax that I've found necessary.
 
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+I forgot to mention that the viewrendered plug-in doesn't display math 
+correctly.  I'm not sure what the problem is, I remember trying to figure 
+it out a while back, but I never got anywhere.  It's not really a big 
+problem though, I have scripts to compile nodes to html/pdfs and open them 
+in firefox/pdf reader; math works fine that way.
 
-"On Fri, Nov 9, 2012 at 2:03 PM, Jos=E9 Rojas Echenique
-&lt;jose.i.rojas@gmail.com&gt; wrote:
-&gt; Terry-
-&gt; Your setup is probably more flexible, but I haven't had any problems with docutils math. It seems to support all the syntax that I've found necessary.
-
-Thanks to all for this discussion.  If somebody here could summarize
-it I'll make it part of the FAQ.  I'm not the one to do the summary,
-because I don't use the features you have been discussing.
-
-Edward
-"</t>
-<t tx="ekr.20130526065545.17583">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 7 Nov 2012 16:48:26 -0800 (PST)
-=E5=8D=A2=E5=BF=A0=E5=8B=87 &lt;lzyerste@gmail.com&gt; wrote:
-
-&gt; Now, I have a question. If I want to use leo to make mathematical notes,
-&gt; how can I type in some special mathematical sysbols? Or is there a good way
-&gt; to make mathematical notes using leo?
-
-I use itex2MML with reStructuredText.  So within Leo you\'re looking at
-LaTeX math markup, and you get outputs in PDF and XHTML, with MathML in
-the latter.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17584">@nocolor
-
-From: offray@riseup.net
+===== From: offray@riseup.net
 
 Is not properly Leo, but is python related, tailored for math and with a
 web interface and has leo bindings, check Ipython:
 
 http://ipython.org/
 
-I\'m using it for all my math related writing and I think that point the
+I'm using it for all my math related writing and I think that point the
 future of interactive writing in Python. I dream of a body pane on leo
 with the features of the pyton qt console.
-</t>
-<t tx="ekr.20130526065545.17585">@nocolor
-
-From: =?UTF-8?Q?Jos=C3=A9_Rojas_Echenique?= &lt;jose.i.rojas@gmail.com&gt;
-
-
-I\'ve been doing this for about a year now.  I use the math docutils 
-directive.  A custom .XCompose file (for example: 
-https://github.com/kragen/xcompose)  also helps.
-
-</t>
-<t tx="ekr.20130526065545.17586">@nocolor
-
-From: =?UTF-8?Q?Jos=C3=A9_Rojas_Echenique?= &lt;jose.i.rojas@gmail.com&gt;
-
-
-I forgot to mention that the viewrendered plug-in doesn\'t display math 
-correctly.  I\'m not sure what the problem is, I remember trying to figure 
-it out a while back, but I never got anywhere.  It\'s not really a big 
-problem though, I have scripts to compile nodes to html/pdfs and open them 
-in firefox/pdf reader; math works fine that way.
-
-</t>
-<t tx="ekr.20130526065545.17587">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 8 Nov 2012 12:16:48 -0800 (PST)
-Jos=E9 Rojas Echenique &lt;jose.i.rojas@gmail.com&gt; wrote:
-
-&gt; I\'ve been doing this for about a year now.  I use the math docutils
-&gt; directive.  A custom .XCompose file (for example:
-&gt; https://github.com/kragen/xcompose)  also helps.
-
-I think math was added to docutils after I started using itex2mml,
-neater to use docutils built in math now I think.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17588">@nocolor
-
-From: =?UTF-8?Q?Jos=C3=A9_Rojas_Echenique?= &lt;jose.i.rojas@gmail.com&gt;
-
-
-Terry-
-
-Your setup is probably more flexible, but I haven\'t had any problems with 
-docutils math. It seems to support all the syntax that I\'ve found necessary.
-
 </t>
 <t tx="ekr.20130526065545.17589">@nocolor
 
@@ -8352,7 +8003,7 @@ From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 Trunk now has alt-x go-anywhere command handy
 
-It\'s in quicksearch.py, and works "sort of" like Nav bar. Also Nav bar now
+It's in quicksearch.py, and works "sort of" like Nav bar. Also Nav bar now
 does live search on headline (you have to press enter to force search of
 bodies as well)
 
@@ -8380,7 +8031,7 @@ On Tue, Nov 20, 2012 at 11:43 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrot
 
 &gt; Trunk now has alt-x go-anywhere command handy
 &gt;
-&gt; It\'s in quicksearch.py, and works "sort of" like Nav bar. Also Nav bar now
+&gt; It's in quicksearch.py, and works "sort of" like Nav bar. Also Nav bar now
 &gt; does live search on headline (you have to press enter to force search of
 &gt; bodies as well)
 &gt;
@@ -8403,7 +8054,7 @@ On Tue, Nov 20, 2012 at 3:43 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrot
 &gt; Trunk now has alt-x go-anywhere command handy
 
 
-Ah.  This answers the question I just asked.  I\'ll put this on the list of
+Ah.  This answers the question I just asked.  I'll put this on the list of
 things to document.
 
 Edward
@@ -8437,7 +8088,7 @@ The title pretty much says it all.  This is a significant improvement, and
 makes Leo suitable for authoring text.  It should have been done ages ago. 
 Please let me know immediately if this new behavior causes problems for you.
 
-There is one glitch.  If you add @wrap, the directive won\'t be in effect 
+There is one glitch.  If you add @wrap, the directive won't be in effect 
 until you leave the node and revisit it.
 
 Edward
@@ -8446,7 +8097,6 @@ Edward
 <t tx="ekr.20130526065545.17595">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
 
 The following is a first draft of a unit-testing tutorial.  It will form 
 the basis of a new help-for-unit-testing command, and may also become the 
@@ -8472,17 +8122,17 @@ To run this test, select the @test node and do:
 &lt;alt-x&gt;run-selected-unit-tests-locally.
 Leo will create and run the unit test automatically.
 
-To see all of Leo\'s unit testing commands, do:
+To see all of Leo's unit testing commands, do:
 &lt;alt-x&gt;run&lt;tab&gt;
 
-Leo pre-defines \'c\', \'g\' and \'p\' in unit tests just as in scripts.
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
 
 For more details about unit testing, see: 
 http://leoeditor.com/unitTesting.html
 
 **Notes for Leo developers**
 
-leo/test/unitTest.leo contains all of Leo\'s own unit tests.
+leo/test/unitTest.leo contains all of Leo's own unit tests.
 
 Running all tests is not necessary.  Just select::
 
@@ -8490,16 +8140,18 @@ Running all tests is not necessary.  Just select::
 
 and then do Alt-4 (run-selected-unit-tests-locally).
 
-**Note**: Some tests will likely fail on machines other than EKR\'s.
+**Note**: Some tests will likely fail on machines other than EKR's.
 You only need to be concerned about unit tests that start failing after you 
 make your changes.
 
 </t>
 <t tx="ekr.20130526065545.17596">@nocolor
 
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+From: &lt;fidelperez@gmail.com&gt;
 
-I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in that concept:
+I know a programming IDE
+&lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in
+that concept:
 
 You write "code Masks" and whenever you call a piece of code it will ask
 only for the parameters, and write the rest of the code. There are already
@@ -8511,27 +8163,14 @@ For instance, if you write:
 "window" it will add the window to the code and let you edit the params.
 
 Their functionality would be awesome in Leo and when I know a bit better I
-will try to emulate on it.
-Sticking to Leo tho since it has a much superior way of managing data.
-
-
-On Saturday, May 4, 2013 12:48:27 AM UTC+2, Jo=E3o Alexandre Toledo wrote:
-&gt;
-&gt; Hi,
-&gt;
-&gt; Sorry for the delay... I\'ll try it this weekend and see how it works.
-&gt;
-&gt; Thank you.
-&gt;
-&gt; Jo=E3o
-
+will try to emulate on it. Sticking to Leo tho since it has a much superior
+way of managing data.
 </t>
 <t tx="ekr.20130526065545.17597">@nocolor
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-On Sun, 5 May 2013 16:35:59 -0700 (PDT)
-Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
+On Sun, 5 May 2013 16:35:59 -0700 (PDT) &lt;fidelperez@gmail.com&gt; wrote:
 
 &gt; I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in that concept:
 &gt;
@@ -8543,7 +8182,7 @@ Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
 I suspect different people have different things in mind when they talk
 about templates.
 
-Leo\'s abbreviation system is already quite advanced when it comes to
+Leo's abbreviation system is already quite advanced when it comes to
 filling in skeletons of common code layouts.  I type
 
   def;;
@@ -8562,8 +8201,8 @@ and I get
 
 Two "parameters" are interactively requested, the function name, and
 the list of arguments.  The node name is presented as the default for
-the function name, and \'self\' is included in the list of arguments, so,
-assuming the node was already called \'foo\', all I type is this, that=3D3.
+the function name, and 'self' is included in the list of arguments, so,
+assuming the node was already called 'foo', all I type is this, that=3D3.
 The layout above is the rst form of the epydoc/sphinx docstring with
 formally identified parameters.
 
@@ -8571,7 +8210,7 @@ The cursor is positioned after Return, where the was an empty &lt;||&gt;
 placeholder.  Pressing ,, selects the next placeholder so that typing
 replaces it.
 
-There\'s more, see
+There's more, see
 https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
 and the screencast linked from there
 http://www.greygreen.org/tmp/leoabbrev.ogv
@@ -8579,38 +8218,18 @@ http://www.greygreen.org/tmp/leoabbrev.ogv
 Other people, Jacob etc. I think, have been talking about templates
 where the input parameters are stored in the outline, allowing for
 some of them to be altered and the template generation step re-run.
-More like generating a website from data etc.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17598">@nocolor
-
-From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
-
-Hi,
-
-Sorry for the delay... I\'ll try it this weekend and see how it works.
-
-Thank you.
-
-Jo=E3o
-
-</t>
+More like generating a website from data etc.</t>
 <t tx="ekr.20130526065545.17599">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
-
 On Wed, Nov 21, 2012 at 8:55 AM, Jo=E3o Alexandre Toledo &lt;
 jalexandretoledo@gmail.com&gt; wrote:
 
-&gt;
 &gt; As I use Leo to write PL/SQL code, I need to write similar text several
 &gt; times, changing only small parts of it. It would be great if I could create
 &gt; a node with the "template" and then clone it everywhere it should be
 &gt; written, and then providing the parameters to be used in this writing.
-&gt;
 
 Variants of this seem to be wanted by many people.  Most recently, there is
 the thread, "Templates with macro expansions",
@@ -8633,7 +8252,7 @@ times, changing only small parts of it. It would be great if I could create
 a node with the "template" and then clone it everywhere it should be
 written, and then providing the parameters to be used in this writing.
 
-Let me try to clarify it. I\'d like to create a tree like this:
+Let me try to clarify it. I'd like to create a tree like this:
 
  +- @file something.sql
            +- Section 1
@@ -8645,23 +8264,16 @@ In this tree, both "Clone" nodes would be generated from a template
 specified somewhere in the tree, and would have parts of its text replaced
 with values "A" and "B" in Section 1, and "C" and "D" in Section 2.
 
-I\'ve searched but couldn\'t find anything like this, then I\'ve thought of
-trying to write a hook to intercept the "save" command, but couldn\'t think
+I've searched but couldn't find anything like this, then I've thought of
+trying to write a hook to intercept the "save" command, but couldn't think
 of a way to pass the parameters; I think the obvious way would be to put
 the parameters after the "&lt;&lt; &gt;&gt;", but then all cloned nodes are changed, so
-it wouldn\'t work.
+it wouldn't work.
 
 Another alternative would be creating some kind of directive @something,
 but I have no idea of how to do that.
 
-
 Any ideas?
-
-By the way, Leo is great!
-Thanks.
-
-Jo=E3o
-
 </t>
 <t tx="ekr.20130526065545.17601">@nocolor
 
@@ -8691,7 +8303,7 @@ On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
 &gt; I suspect different people have different things in mind when they talk
 &gt; about templates.
 &gt;
-&gt; Leo\'s abbreviation system is already quite advanced when it comes to
+&gt; Leo's abbreviation system is already quite advanced when it comes to
 &gt; filling in skeletons of common code layouts.  I type
 &gt;
 &gt;   def;;
@@ -8710,8 +8322,8 @@ On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
 &gt;
 &gt; Two "parameters" are interactively requested, the function name, and
 &gt; the list of arguments.  The node name is presented as the default for
-&gt; the function name, and \'self\' is included in the list of arguments, so,
-&gt; assuming the node was already called \'foo\', all I type is this, that=3D3.
+&gt; the function name, and 'self' is included in the list of arguments, so,
+&gt; assuming the node was already called 'foo', all I type is this, that=3D3.
 &gt; The layout above is the rst form of the epydoc/sphinx docstring with
 &gt; formally identified parameters.
 &gt;
@@ -8719,7 +8331,7 @@ On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
 &gt; placeholder.  Pressing ,, selects the next placeholder so that typing
 &gt; replaces it.
 &gt;
-&gt; There\'s more, see
+&gt; There's more, see
 &gt; https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
 &gt; and the screencast linked from there
 &gt; http://www.greygreen.org/tmp/leoabbrev.ogv
@@ -8737,9 +8349,7 @@ On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
 
 From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
 
-Hi,
-
-I\'ve tried it and it\'s great, I think it will be useful, but it\'s not what
+I've tried it and it's great, I think it will be useful, but it's not what
 I was thinking of...
 
 Let me try to explain what I had tougth about... What I would like to do is:
@@ -8756,36 +8366,16 @@ schema=3DSCHEMA_NAME and table=3DTABLE_NAME
 template node.
 
 It would be important that, when I reopen the .leo file later, the macros
-in the @file node where shown as ${schema} and ${table}, and not as it\'s
+in the @file node where shown as ${schema} and ${table}, and not as it's
 substituted text.
 
-Now that I\'ve described it, I can\'t see how it would be done... The
+Now that I've described it, I can't see how it would be done... The
 ${macro} place holders should be on the contents of the @file node, so
 after substitution, how could we recover it?
 
-That\'s also why the code from Jacob is not what I need (but I\'m already
+That's also why the code from Jacob is not what I need (but I'm already
 thinking of other uses for it :) ): it will create a text when the button
 is pressed, but the generated nodes will be just static text.
-
-
-Thank you all.
-
-Leo is great!
-
-
-Jo=E3o
-
-
-On Friday, May 3, 2013 7:48:27 PM UTC-3, Jo=E3o Alexandre Toledo wrote:
-&gt;
-&gt; Hi,
-&gt;
-&gt; Sorry for the delay... I\'ll try it this weekend and see how it works.
-&gt;
-&gt; Thank you.
-&gt;
-&gt; Jo=E3o
-
 </t>
 <t tx="ekr.20130526065545.17603">@nocolor
 
@@ -8793,21 +8383,21 @@ From: Sheng &lt;jmmxwll@gmail.com&gt;
 
 Hello,
 I recently discovered Leo in my search for an editor or IDE for python 
-programming -- I\'m a beginner but am working on a larger project and trying 
+programming -- I'm a beginner but am working on a larger project and trying 
 out a modular approach requiring organisation of lots of files. Leo would 
 be an attractive option if not for various obstacles, including among 
 others the following:
 
-  1. Doesn\'t automatically open previously loaded workbooks, or by file 
+  1. Doesn't automatically open previously loaded workbooks, or by file 
 click
-     * Even when file directly clicked, doesn\'t open.
+     * Even when file directly clicked, doesn't open.
      * Only opens from File menu. Annoying &amp; inconvenient. 
   2. Same file as node opened in notepad then edited while still open in 
-Leo doesn\'t update, even on refresh.
+Leo doesn't update, even on refresh.
   3. Does not open python files in Idle with selection of menu item: File 
 --&gt; Open With --&gt; Idle
   
-I\'m on Windows 8. I\'ve already spent several hours solving other problems 
+I'm on Windows 8. I've already spent several hours solving other problems 
 and reading Leo documentation. Any links or tips to overcome these problems 
 quickly would be appreciated.
 
@@ -8826,17 +8416,17 @@ On Tue, May 7, 2013 at 2:09 AM, Sheng &lt;jmmxwll@gmail.com&gt; wrote:
 &gt; Leo would be an attractive option if not for various obstacles, including
 &gt; among others the following:
 &gt;
-&gt;   1. Doesn\'t automatically open previously loaded workbooks, or by file
+&gt;   1. Doesn't automatically open previously loaded workbooks, or by file
 &gt; click
-&gt;      * Even when file directly clicked, doesn\'t open.
+&gt;      * Even when file directly clicked, doesn't open.
 &gt;      * Only opens from File menu. Annoying &amp; inconvenient.
 &gt;
 
 You must set the file association manually, at present.  Getting this to
 happen automatically is a top priority.
 
-Hmm.  It seems like setting file associations isn\'t documented anywhere.
-That\'s a major hole.
+Hmm.  It seems like setting file associations isn't documented anywhere.
+That's a major hole.
 
 We are currently discussing this topic in this thread:
 Bat file launchers for nightly builds:
@@ -8844,10 +8434,10 @@ https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/li9ILUWuNAs
 Anyone want to summarize the results?
 
   2. Same file as node opened in notepad then edited while still open in
-&gt; Leo doesn\'t update, even on refresh.
+&gt; Leo doesn't update, even on refresh.
 &gt;
 
-The vim and xemacs plugins do an automatic refresh.  It won\'t be possible
+The vim and xemacs plugins do an automatic refresh.  It won't be possible
 to update Leo automagically from scite until you save the file in site.
 This could be called a bug: please feel free to file a bug report.
 
@@ -8859,7 +8449,7 @@ This could be called a bug: please feel free to file a bug report.
 OpenWith:Idle opens a Leo *node*, not a file.  However, you could use @edit
 to put an entire file into a node, and then open the @edit node with Idle.
 
-I personally never use Idle, which is probably why OpenWith:Idle isn\'t very
+I personally never use Idle, which is probably why OpenWith:Idle isn't very
 useful.  Instead, I use g.pdb.
 
 Thanks for your comments.  Please feel free to continue this conversation.
@@ -8871,19 +8461,10 @@ Edward
 
 From: HaveF &lt;iamaplayer@gmail.com&gt;
 
-
-
 http://leoeditor.com/installing.html#installing-pyenchant
 
 use this?
 http://pythonhosted.org/pyenchant/download.html
-
--- 
---
-Sincerely,
-
-HaveF
-
 </t>
 <t tx="ekr.20130526065545.17606">@nocolor
 
@@ -8908,8 +8489,7 @@ On Tuesday, May 7, 2013 7:16:08 PM UTC+2, Fidel P=E9rez wrote:
 </t>
 <t tx="ekr.20130526065545.17607">@nocolor
 
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-
+From: &lt;fidelperez@gmail.com&gt;
 
 Just reporting outdated information in the node "rst3" in the file 
 "leoPluginsRef.leo":
@@ -8918,7 +8498,6 @@ Im studying how to activate rst3 plugin, in this node ("rst3") it says to
 go to www.silvercity.sourceforge.net and download the release for my 
 python, but silvercity has python 2.4 as latest, and that project was last 
 edited in 2006.
-
 </t>
 <t tx="ekr.20130526065545.17608">@nocolor
 
@@ -8932,162 +8511,73 @@ On Tue, May 7, 2013 at 2:27 PM, Fidel P=C3=A9rez &lt;fidelperez@gmail.com&gt; wr
 &gt; file confused me big time.
 
 
-I\'ve put this on the list of things to document properly.  Not exactly the
+I've put this on the list of things to document properly.  Not exactly the
 right place, but it should suffice.
 
 Edward
 
 </t>
-<t tx="ekr.20130526065545.17609">@nocolor
-
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-
-
-  
-   - Also, quickstartguide should be open by default (instead of current
-   Leo workbook) at least until the user changes some config and prevents that
-   from happening. Is there any "load previous tabs" functionality? (IE open
-   the Leo files which where open when it was closed the last time)
-
-
-On Thursday, May 9, 2013 9:36:36 AM UTC+2, Fidel P=E9rez wrote:
-&gt;
-&gt; Hi:
-&gt;
-&gt;    - Im having trouble also linking Leo files to Leo. I have tried this:
-&gt;   
-&gt;
-&gt;       Associate .leo filetype batch file:
-&gt;&gt;           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
-&gt;&gt; packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
-&gt;
-&gt;
-&gt; Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
-&gt; but leolaunchleo.py doesnt even exist anymore (the post is old).
-&gt;
-&gt;
-&gt;    - I guess others have had this idea but It would be great to include a
-&gt;    small file within the Quickstart guide which would associate files
-&gt;    automatically. (Or maybe asking for imput, which can be done through a Leo
-&gt;    node and this way the user learns about its functionality).
-&gt;   
-&gt;
-&gt;
-&gt;    - Also, I miss some more buttons or scripts in quick start
-&gt;     guide, preferably before the "programming" section, so when a new
-&gt;    user opens it, he has had the opportunity to do Ctrl+B on several scripts
-&gt;    (for instance, showing in the log the name of all the nodes within the
-&gt;    selected one, having some subnodes with numbers and doing math on them and
-&gt;    showing the result on the log pane, and as much "silly" but visual
-&gt;    functions as possible so the user, by going pressing ctrl+b on each, gets a
-&gt;    bigger chance to understand what is Leo. In my oppinion some users will
-&gt;    just stop in the quickguide if they are not presented with such a thing
-&gt;    before going to docs.leo etc.
-&gt;   
-&gt;
-&gt;
-&gt;    - Another thing is the plugin activation, the description of the
-&gt;    plugins is not as accessible as it should be (opinions here, focusing
-&gt;    in new users, and as I always say, appreciating and fully grateful for Leo
-&gt;    as is now),and a script for activating them  easier, been a week using Leo
-&gt;    and still cant quite activate, find the descriptions or use them freely...
-&gt;    And if each plugin or script had an example of use that would be priceless,
-&gt;    for instance, including them all in quickstart (both scripts, plugins
-&gt;    branchs) and then the new user could just go through all clicking on the
-&gt;    examples and just seeing Leo work and show its potential. I know some of
-&gt;    those are done but as I said, after a week or so I still am very confused...
-&gt;   
-&gt;
-&gt; Thank you.
-&gt;
-
-</t>
 <t tx="ekr.20130526065545.17610">@nocolor
 
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+From: Fidel_P &lt;fidelperez@gmail.com&gt;
 
-Hi:
-
-   - Im having trouble also linking Leo files to Leo. I have tried this:
+- Im having trouble also linking Leo files to Leo. I have tried this:
   
 
       Associate .leo filetype batch file:
 &gt;           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
 &gt; packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
 
-
 Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
 but leolaunchleo.py doesnt even exist anymore (the post is old).
 
+- I guess others have had this idea but It would be great to include a
+  small file within the Quickstart guide which would associate files
+  automatically. (Or maybe asking for imput, which can be done through a
+  Leo node and this way the user learns about its functionality).
 
-   - I guess others have had this idea but It would be great to include a
-   small file within the Quickstart guide which would associate files
-   automatically. (Or maybe asking for imput, which can be done through a Leo
-   node and this way the user learns about its functionality).
-  
+- Also, I miss some more buttons or scripts in quick start guide,
+  preferably before the "programming" section, so when a new user opens it,
+  he has had the opportunity to do Ctrl+B on several scripts (for instance,
+  showing in the log the name of all the nodes within the selected one,
+  having some subnodes with numbers and doing math on them and showing the
+  result on the log pane, and as much "silly" but visual functions as
+  possible so the user, by going pressing ctrl+b on each, gets a bigger
+  chance to understand what is Leo. In my oppinion some users will just
+  stop in the quickguide if they are not presented with such a thing before
+  going to docs.leo etc.
 
+- Another thing is the plugin activation, the description of the plugins is
+  not as accessible as it should be (opinions here, focusing in new users,
+  and as I always say, appreciating and fully grateful for Leo as is
+  now),and a script for activating them easier, been a week using Leo and
+  still cant quite activate, find the descriptions or use them freely...
+  And if each plugin or script had an example of use that would be
+  priceless, for instance, including them all in quickstart (both scripts,
+  plugins branchs) and then the new user could just go through all clicking
+  on the examples and just seeing Leo work and show its potential. I know
+  some of those are done but as I said, after a week or so I still am very
+  confused...
 
-   - Also, I miss some more buttons or scripts in quick start
-    guide, preferably before the "programming" section, so when a new user
-   opens it, he has had the opportunity to do Ctrl+B on several scripts (for
-   instance, showing in the log the name of all the nodes within the selected
-   one, having some subnodes with numbers and doing math on them and showing
-   the result on the log pane, and as much "silly" but visual functions as
-   possible so the user, by going pressing ctrl+b on each, gets a bigger
-   chance to understand what is Leo. In my oppinion some users will just stop
-   in the quickguide if they are not presented with such a thing before going
-   to docs.leo etc.
-  
-
-
-   - Another thing is the plugin activation, the description of the plugins
-   is not as accessible as it should be (opinions here, focusing in new
-   users, and as I always say, appreciating and fully grateful for Leo as is
-   now),and a script for activating them  easier, been a week using Leo and
-   still cant quite activate, find the descriptions or use them freely... And
-   if each plugin or script had an example of use that would be priceless, for
-   instance, including them all in quickstart (both scripts, plugins branchs)
-   and then the new user could just go through all clicking on the examples
-   and just seeing Leo work and show its potential. I know some of those are
-   done but as I said, after a week or so I still am very confused...
-  
-
-Thank you.
-
-</t>
-<t tx="ekr.20130526065545.17611">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-On Thu, May 9, 2013 at 2:36 AM, Fidel P=C3=A9rez &lt;fidelperez@gmail.com&gt; wrote:
-
-&gt; Hi:
-&gt;
-&gt;    - Im having trouble also linking Leo files to Leo. I have tried this:
-&gt;
-&gt;
-[snip]
-
-Thanks for these detailed suggestions.  I\'ve put them on the list of
-improvements for documentation.
-
-Edward
-
+- Also, quickstartguide should be open by default (instead of current Leo
+  workbook) at least until the user changes some config and prevents that
+  from happening. Is there any "load previous tabs" functionality? (IE open
+  the Leo files which where open when it was closed the last time)
 </t>
 <t tx="ekr.20130526065545.17612">@nocolor
 
 From: ne1uno &lt;eltronis@gmail.com&gt;
 
 http://groups.google.com/group/leo-editor/about
+
 still has the old home page
 webpages.charter.net
 though it also has leoeditor.com/ for discussions. assuming that is
 intentional, seems confusing,
 since the links point back to google groups.
 
-looks good. remember with the endless refinement, most people don\'t
-want to read first but do first so don\'t skimp on the usability.
+looks good. remember with the endless refinement, most people don't
+want to read first but do first so don't skimp on the usability.
 
 </t>
 <t tx="ekr.20130526065545.17613">@nocolor
@@ -9103,7 +8593,7 @@ On Sat, May 11, 2013 at 9:58 PM, ne1uno &lt;eltronis@gmail.com&gt; wrote:
 &gt; webpages.charter.net
 &gt;
 
-Thanks for this.  At present, I don\'t see any way to change the old home
+Thanks for this.  At present, I don't see any way to change the old home
 page!  Anyone know how?
 </t>
 <t tx="ekr.20130526065545.17614">@nocolor
@@ -9113,7 +8603,7 @@ From: gatesphere &lt;gatesphere@gmail.com&gt;
 Looks really interesting, Ville!  Thanks for sharing, looking forward to 
 diving in.
 
-I\'m thinking of some uses for in a rulebook and a few blog posts I\'m 
+I'm thinking of some uses for in a rulebook and a few blog posts I'm 
 writing right now.  Being able to have my document be executable seems 
 awesome.
 
@@ -9132,11 +8622,11 @@ I need to read valuespace_example.leo to find more typical usage.
 On Tuesday, May 14, 2013 4:15:12 AM UTC+8, Ville M. Vainio wrote:
 &gt;
 &gt; This one is not "exhaustive", but in the interest of time management, I 
-&gt; decided to push it as is. I\'ll blog about more features later on.
+&gt; decided to push it as is. I'll blog about more features later on.
 &gt;
 &gt; http://leo-editor.github.io/valuespace-intro.html
 &gt;
-&gt; Hope it already helps alleviate the mystery of what it\'s all about :)
+&gt; Hope it already helps alleviate the mystery of what it's all about :)
 &gt;
 
 </t>
@@ -9147,7 +8637,7 @@ From: Matt Wilkie &lt;maphew@gmail.com&gt;
 Thank you so much Ville.
 
 That looks awesomely powerful. And I have a use for the json slurper right
-now! I can\'t wait to try it out.
+now! I can't wait to try it out.
 </t>
 <t tx="ekr.20130526065545.17617">@nocolor
 
@@ -9158,39 +8648,35 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 On Mon, May 13, 2013 at 3:15 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
 
 &gt; This one is not "exhaustive", but in the interest of time management, I
-&gt; decided to push it as is. I\'ll blog about more features later on.
+&gt; decided to push it as is. I'll blog about more features later on.
 &gt;
 &gt; http://leo-editor.github.io/valuespace-intro.html
 &gt;
 
-Thanks Ville, I\'ll look at it in detail later today.
+Thanks Ville, I'll look at it in detail later today.
 </t>
 <t tx="ekr.20130526065545.17618">@nocolor
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
-
-
 This one is not "exhaustive", but in the interest of time management, I
-decided to push it as is. I\'ll blog about more features later on.
+decided to push it as is. I'll blog about more features later on.
 
 http://leo-editor.github.io/valuespace-intro.html
 
-Hope it already helps alleviate the mystery of what it\'s all about :)
+Hope it already helps alleviate the mystery of what it's all about :)
 
 </t>
 <t tx="ekr.20130526065545.17620">@nocolor
 
 From: Jacob Peck &lt;gatesphere@gmail.com&gt;
 
-Hello all,
-
-I\'ve added a new plugin to Leo, that adds printing support when using 
+I've added a new plugin to Leo, that adds printing support when using 
 the Qt GUI.  Available from rev 5779.
 
-Here\'s the docscring:
+Here's the docscring:
 
-\'\'\'Supports printing from the Qt GUI.
+'''Supports printing from the Qt GUI.
 
 Jacob M. Peck, 2013
 
@@ -9274,7 +8760,7 @@ Settings
 - ``@string printing-font-size = 12``
    The font size for printing bodies, in px.  Due to limitations
    of PyQt, the size of headlines cannot be changed.
-\'\'\'
+'''
 
 To use it, be sure to add `printing.py` to your @enabled-plugins.
 
@@ -9297,19 +8783,19 @@ On 5/15/2013 9:04 AM, Kent Tenney wrote:
 &gt; Being able to preview is great, less paper wasted.
 &gt;
 &gt; I rely entirely on command completion as a memory aid, too
-&gt; bad the info listing commands also start with \'print\'. I would
-&gt; think that \'list-&lt;attribute&gt;\' would have nicely disambiguated the
+&gt; bad the info listing commands also start with 'print'. I would
+&gt; think that 'list-&lt;attribute&gt;' would have nicely disambiguated the
 &gt; situation now we have print.
 &gt;
 &gt; Too late?
 &gt;
-I agree completely w/r/t \'list-&lt;attribute&gt;\', but it most likely is too 
+I agree completely w/r/t 'list-&lt;attribute&gt;', but it most likely is too 
 late.  Those are probably in use by some script somewhere.  :(
 
 Thanks for the comments, though!  To be fair, this whole thing was crazy 
 simple to throw together - Qt does *all* the heavy lifting. Just throw 
 together an HTML string, wrap it in a QTextDocument, and call print_, 
-and Bob\'s your uncle.  I can see why Leo uses PyQt now... it\'s awesome.
+and Bob's your uncle.  I can see why Leo uses PyQt now... it's awesome.
 --&gt;Jake
 
 </t>
@@ -9324,12 +8810,12 @@ On Wednesday, May 15, 2013 2:41:19 PM UTC+2, Jacob Peck wrote:
 &gt;
 &gt; Hello all, 
 &gt;
-&gt; I\'ve added a new plugin to Leo, that adds printing support when using 
+&gt; I've added a new plugin to Leo, that adds printing support when using 
 &gt; the Qt GUI.  Available from rev 5779. 
 &gt;
-&gt; Here\'s the docscring: 
+&gt; Here's the docscring: 
 &gt;
-&gt; \'\'\'Supports printing from the Qt GUI. 
+&gt; '''Supports printing from the Qt GUI. 
 &gt;
 &gt; Jacob M. Peck, 2013 
 &gt;
@@ -9415,7 +8901,7 @@ On Wednesday, May 15, 2013 2:41:19 PM UTC+2, Jacob Peck wrote:
 &gt; - ``@string printing-font-size = 12`` 
 &gt;    The font size for printing bodies, in px.  Due to limitations 
 &gt;    of PyQt, the size of headlines cannot be changed. 
-&gt; \'\'\' 
+&gt; ''' 
 &gt;
 &gt; To use it, be sure to add `printing.py` to your @enabled-plugins. 
 &gt;
@@ -9439,7 +8925,7 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 On Wed, May 15, 2013 at 7:41 AM, Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
 
 &gt;
-&gt; I\'ve added a new plugin to Leo, that adds printing support when using the
+&gt; I've added a new plugin to Leo, that adds printing support when using the
 &gt; Qt GUI.  Available from rev 5779.
 &gt;
 
@@ -9453,8 +8939,8 @@ It just works! Nice.
 Being able to preview is great, less paper wasted.
 
 I rely entirely on command completion as a memory aid, too
-bad the info listing commands also start with \'print\'. I would
-think that \'list-&lt;attribute&gt;\' would have nicely disambiguated the
+bad the info listing commands also start with 'print'. I would
+think that 'list-&lt;attribute&gt;' would have nicely disambiguated the
 situation now we have print.
 
 Too late?
@@ -9488,19 +8974,19 @@ On Monday, May 20, 2013 3:47:35 PM UTC+2, Terry wrote:
 &gt; "editCommands"
 &gt; &gt; and the rest that they might exist.
 &gt;
-&gt; I\'m not aware of a general solution to the problem of finding the
-&gt; various pieces of Leo\'s class structure.  Basically there are all these
+&gt; I'm not aware of a general solution to the problem of finding the
+&gt; various pieces of Leo's class structure.  Basically there are all these
 &gt; classes defined in the source, and instances of these are attached to
 &gt; each other in a hierarchical network (with loops).
 &gt;
-&gt; I\'ve written an introspection function which lists the methods and
+&gt; I've written an introspection function which lists the methods and
 &gt; instance variables (and class variables) of an arbitrary object by name
 &gt; and by type.  I should release it.  It builds its lists in a Leo
 &gt; outline, so you can navigate around that outline and expand nodes by
 &gt; introspection as needed.
 &gt;
-&gt; It occurs to me that the same code could be used to search Leo\'s
-&gt; runtime object hierarchy for you, i.e. you enter \'insertIconFromFile\'
+&gt; It occurs to me that the same code could be used to search Leo's
+&gt; runtime object hierarchy for you, i.e. you enter 'insertIconFromFile'
 &gt; and it recursively searches for it.
 &gt;
 &gt; Cheers -Terry
@@ -9522,14 +9008,14 @@ On Mon, May 20, 2013 at 8:47 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 "editCommands"
 &gt; and the rest that they might exist.
 
-I\'m not aware of a general solution to the problem of finding the
-&gt; various pieces of Leo\'s class structure.  Basically there are all these
+I'm not aware of a general solution to the problem of finding the
+&gt; various pieces of Leo's class structure.  Basically there are all these
 &gt; classes defined in the source, and instances of these are attached to
 &gt; each other in a hierarchical network (with loops).
 &gt;
 
 I suppose you could say that there is no general solution, but the
-situation isn\'t really all that difficult.
+situation isn't really all that difficult.
 
 Start with c.  We know what that is:  it is a commander object representing
 an open outline.
@@ -9569,7 +9055,7 @@ yields::
 
 As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
 
-HTH.  I\'ve made a note to discuss official ivars in more detail in the
+HTH.  I've made a note to discuss official ivars in more detail in the
 scripting chapter.
 </t>
 <t tx="ekr.20130526065545.17627">@nocolor
@@ -9580,7 +9066,6 @@ Content-Transfer-Encoding: quoted-printable
 Ok, in order to print icons, the code is this:
 
 c.editCommands.insertIconFromFile(path)
-
 
 Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
 "inserting and deleting icons" section -_-
@@ -9618,8 +9103,7 @@ On Sunday, May 19, 2013 12:43:50 PM UTC+2, Fidel P=E9rez wrote:
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-On Mon, 20 May 2013 04:00:59 -0700 (PDT)
-Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
+On Mon, 20 May 2013 04:00:59 -0700 (PDT) &lt;fidelperez@gmail.com&gt; wrote:
 
 &gt; Ok, in order to print icons, the code is this:
 &gt;
@@ -9632,19 +9116,19 @@ Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
 &gt; where to find the list of classes that can be called such as "editCommands"
 &gt; and the rest that they might exist.
 
-I\'m not aware of a general solution to the problem of finding the
-various pieces of Leo\'s class structure.  Basically there are all these
+I'm not aware of a general solution to the problem of finding the
+various pieces of Leo's class structure.  Basically there are all these
 classes defined in the source, and instances of these are attached to
 each other in a hierarchical network (with loops).
 
-I\'ve written an introspection function which lists the methods and
+I've written an introspection function which lists the methods and
 instance variables (and class variables) of an arbitrary object by name
 and by type.  I should release it.  It builds its lists in a Leo
 outline, so you can navigate around that outline and expand nodes by
 introspection as needed.
 
-It occurs to me that the same code could be used to search Leo\'s
-runtime object hierarchy for you, i.e. you enter \'insertIconFromFile\'
+It occurs to me that the same code could be used to search Leo's
+runtime object hierarchy for you, i.e. you enter 'insertIconFromFile'
 and it recursively searches for it.
 
 Cheers -Terry
@@ -9652,10 +9136,9 @@ Cheers -Terry
 </t>
 <t tx="ekr.20130526065545.17629">@nocolor
 
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+From: &lt;fidelperez@gmail.com&gt;
 
-
-Hi, I am going through something similar Matt Wilkie went through in this 
+I am going through something similar Matt Wilkie went through in this
 post&lt;https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J&gt;
 .
 
@@ -9670,7 +9153,7 @@ How can I know how to call functions found in LeoPyRef.leo?
 
 Thanks!
 
-Pd: When I get that, I will already have a bookmarks importer from 
+Ps: When I get that, I will already have a bookmarks importer from 
 chrome/mozilla which will also import the icons of the links! x)
 I will prepare some more interesting utils (import mindmap, etc) then 
 release them together with manuals oriented to noob users.
@@ -9697,27 +9180,24 @@ Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
 &gt; &gt; where to find the list of classes that can be called such as "editCommands"
 &gt; &gt; and the rest that they might exist.
 &gt;
-&gt; I\'m not aware of a general solution to the problem of finding the
-&gt; various pieces of Leo\'s class structure.  Basically there are all these
+&gt; I'm not aware of a general solution to the problem of finding the
+&gt; various pieces of Leo's class structure.  Basically there are all these
 &gt; classes defined in the source, and instances of these are attached to
 &gt; each other in a hierarchical network (with loops).
 
-I didn\'t really finish the above para.  The problem is that it\'s hard
+I didn't really finish the above para.  The problem is that it's hard
 to guess what the names of the attachment points are, and the attaching
 is done in a variety of places, sometimes by factory functions which
 further obscure linkages.  Not a fault with Leo, just the way programs
-work.  So the tool I\'ve written may be the best approach to mapping
-Leo\'s runtime structure. Another thing it could do, try and map \'major\'
+work.  So the tool I've written may be the best approach to mapping
+Leo's runtime structure. Another thing it could do, try and map 'major'
 classes, or at least classes from leo.core.* - i.e. ignore the built in
-types.
-
-Cheers -Terry
-</t>
+types.</t>
 <t tx="ekr.20130526065545.17631">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
-Here is the first draft of a tutorial for positions.  It wasn\'t easy.  All 
+Here is the first draft of a tutorial for positions.  It wasn't easy.  All 
 comments welcome.
 
 A **position** object represents a specific node in a Leo outline.
@@ -9730,14 +9210,14 @@ so a node may appear at arbitrarily many positions in the outline.
 
 For any position p, **p.v** is the vnode at position p.
 
-A node\'s vnode never changes, regardless of where the node appears in the
+A node's vnode never changes, regardless of where the node appears in the
 outline, and regardless of whether the node is cloned or not.
 
 **Positions become invalid when the outline changes.**
 
 You may save and and use positions *provided* the outline remains unchanged.
 
-Leo\'s generators deliver positions, one after each other, using a *single*
+Leo's generators deliver positions, one after each other, using a *single*
 (ever-changing) position. As a result, scripts must use p.copy() to create
 lists of positions. For example,
 
@@ -9746,7 +9226,7 @@ lists of positions. For example,
 Edward
 
 P.S.  I considered using an example outline containing clones,
-but I\'m not sure that adds enough to be worth including in a precis.
+but I'm not sure that adds enough to be worth including in a precis.
 
 EKR
 
@@ -9759,41 +9239,41 @@ From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
 
-&gt; I\'ve added [an abbreviation] "persist;;"
+&gt; I've added [an abbreviation] "persist;;"
 
 
 [snip]
 
-How do you use the code inserted by the abbreviation?  I suspect I\'m not
-the only one who doesn\'t understand what you are trying to do...
+How do you use the code inserted by the abbreviation?  I suspect I'm not
+the only one who doesn't understand what you are trying to do...
 </t>
 <t tx="ekr.20130526065545.17634">@nocolor
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-I\'ve added an abbreviation to my myLeoSettings.leo abbreviations:
+I've added an abbreviation to my myLeoSettings.leo abbreviations:
 https://gist.github.com/tbnorth/5530059
 
-It\'s the abbreviation "persist;;" and when you type that you get:
+It's the abbreviation "persist;;" and when you type that you get:
 
 ---cut here---
 import json
 
 json_state_file = "cache_info_file.json"
 if not os.path.exists(json_state_file):
-    json.dump({\'cache_items\':{}}, open(json_state_file, \'w\'))
+    json.dump({'cache_items':{}}, open(json_state_file, 'w'))
 cache_info = json.load(open(json_state_file))
 
 def main():
 
     # do stuff with cache_info...
 
-if __name__ == \'__main__\':
+if __name__ == '__main__':
 
     try:
         main()
     except:
-        json.dump(cache_info, open(json_state_file, \'w\'))
+        json.dump(cache_info, open(json_state_file, 'w'))
 ---cut here---
 
 with appropriate interaction to customize all the parts which, in the
@@ -9805,9 +9285,6 @@ for what is barely 4 lines of actual code, but those 4 lines give you
 very handy robust persistence, so something like an editor abbreviation
 is the obvious way to make the available - nothing Leo specific here,
 except that only serious editors have abbreviation like that ;-).
-
-Cheers -Terry
-
 </t>
 <t tx="ekr.20130526065545.17635">@nocolor
 
@@ -9822,10 +9299,10 @@ On Fri, May 24, 2013 at 8:29 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 &gt;
 
 
-&gt; &gt; How do you use the code inserted by the abbreviation?  I suspect I\'m not
+&gt; &gt; How do you use the code inserted by the abbreviation?  I suspect I'm not
 &gt;
-&gt;  It\'s just a framework for providing a dictionary the contents of which
-&gt; persist between runs of the program.  I\'ve used it for code that\'s
+&gt;  It's just a framework for providing a dictionary the contents of which
+&gt; persist between runs of the program.  I've used it for code that's
 &gt; making lots of small url requests against a server, to cache the
 &gt; results so that during development the crash / debug / re-run cycle is
 &gt; faster because each piece of data is requested only once, ever, not once
@@ -9836,8 +9313,8 @@ On Fri, May 24, 2013 at 8:29 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrot
 &gt;
 &gt; So in the example below, the content of the cache_info dictionary is
 &gt; persistent, whatever main() does with it is seen next time the
-&gt; program\'s run.  Nothing Leo specific except that it\'s really just an
-&gt; import statement plus 5 lines of code and doesn\'t seem worth its own
+&gt; program's run.  Nothing Leo specific except that it's really just an
+&gt; import statement plus 5 lines of code and doesn't seem worth its own
 &gt; file, but is more than you want to re-type all the time either, so
 &gt; ideal for an abbreviation in your favorite editor.
 &gt;
@@ -9855,13 +9332,13 @@ On 5/24/2013 5:35 PM, Edward K. Ream wrote:
 &gt; On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com 
 &gt; &lt;mailto:terry_n_brown@yahoo.com&gt;&gt; wrote:
 &gt;
-&gt;     I\'ve added [an abbreviation] "persist;;"
+&gt;     I've added [an abbreviation] "persist;;"
 &gt;
 &gt;
 &gt; [snip]
 &gt;
-&gt; How do you use the code inserted by the abbreviation?  I suspect I\'m 
-&gt; not the only one who doesn\'t understand what you are trying to do...
+&gt; How do you use the code inserted by the abbreviation?  I suspect I'm 
+&gt; not the only one who doesn't understand what you are trying to do...
 &gt;
 &gt; Edward
 &gt;
@@ -9872,35 +9349,35 @@ Seconded.
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-p.s. the \'except:\' in the code below should have been \'finally:\', fixed
+p.s. the 'except:' in the code below should have been 'finally:', fixed
 on the gist now.
 
 On Thu, 23 May 2013 14:41:31 -0500
 Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
 
-&gt; I\'ve added an abbreviation to my myLeoSettings.leo abbreviations:
+&gt; I've added an abbreviation to my myLeoSettings.leo abbreviations:
 &gt; https://gist.github.com/tbnorth/5530059
 &gt; 
-&gt; It\'s the abbreviation "persist;;" and when you type that you get:
+&gt; It's the abbreviation "persist;;" and when you type that you get:
 &gt; 
 &gt; ---cut here---
 &gt; import json
 &gt; 
 &gt; json_state_file = "cache_info_file.json"
 &gt; if not os.path.exists(json_state_file):
-&gt;     json.dump({\'cache_items\':{}}, open(json_state_file, \'w\'))
+&gt;     json.dump({'cache_items':{}}, open(json_state_file, 'w'))
 &gt; cache_info = json.load(open(json_state_file))
 &gt; 
 &gt; def main():
 &gt; 
 &gt;     # do stuff with cache_info...
 &gt; 
-&gt; if __name__ == \'__main__\':
+&gt; if __name__ == '__main__':
 &gt; 
 &gt;     try:
 &gt;         main()
 &gt;     except:
-&gt;         json.dump(cache_info, open(json_state_file, \'w\'))
+&gt;         json.dump(cache_info, open(json_state_file, 'w'))
 &gt; ---cut here---
 &gt; 
 &gt; with appropriate interaction to customize all the parts which, in the
@@ -9926,19 +9403,19 @@ On Fri, 24 May 2013 16:35:59 -0500
 
 &gt; On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
 &gt; 
-&gt; &gt; I\'ve added [an abbreviation] "persist;;"
+&gt; &gt; I've added [an abbreviation] "persist;;"
 &gt; 
 &gt; 
 &gt; [snip]
 &gt; 
-&gt; How do you use the code inserted by the abbreviation?  I suspect I\'m not
+&gt; How do you use the code inserted by the abbreviation?  I suspect I'm not
 
 The corrected version is below for reference - I had `except` instead
 of `finally` in the first version, so you data was only saved if
 something went wrong :-)
 
-It\'s just a framework for providing a dictionary the contents of which
-persist between runs of the program.  I\'ve used it for code that\'s
+It's just a framework for providing a dictionary the contents of which
+persist between runs of the program.  I've used it for code that's
 making lots of small url requests against a server, to cache the
 results so that during development the crash / debug / re-run cycle is
 faster because each piece of data is requested only once, ever, not once
@@ -9949,12 +9426,12 @@ one run of the program which was identifying the issues.
 
 So in the example below, the content of the cache_info dictionary is
 persistent, whatever main() does with it is seen next time the
-program\'s run.  Nothing Leo specific except that it\'s really just an
-import statement plus 5 lines of code and doesn\'t seem worth its own
+program's run.  Nothing Leo specific except that it's really just an
+import statement plus 5 lines of code and doesn't seem worth its own
 file, but is more than you want to re-type all the time either, so
 ideal for an abbreviation in your favorite editor.
 
-I\'ve added a couple of comments in the version below.
+I've added a couple of comments in the version below.
 
 Cheers -Terry
 
@@ -9964,8 +9441,8 @@ import json
 # name for persistent data store
 json_state_file = "cache_info_file.json"   
 if not os.path.exists(json_state_file):
-    # create persistent data store if it doesn\'t exist
-    json.dump({\'cache_items\':{}}, open(json_state_file, \'w\'))
+    # create persistent data store if it doesn't exist
+    json.dump({'cache_items':{}}, open(json_state_file, 'w'))
 # load persistent data
 cache_info = json.load(open(json_state_file))
 
@@ -9973,16 +9450,16 @@ def main():
 
     # do stuff with cache_info...
 
-if __name__ == \'__main__\':
+if __name__ == '__main__':
 
     try:
         main()
     finally:
         # save altered persistent data
-        json.dump(cache_info, open(json_state_file, \'w\'), indent=4)
+        json.dump(cache_info, open(json_state_file, 'w'), indent=4)
 ---cut here---
 
-&gt; the only one who doesn\'t understand what you are trying to do...
+&gt; the only one who doesn't understand what you are trying to do...
 &gt; 
 &gt; Edward
 &gt; 
@@ -9993,9 +9470,11 @@ if __name__ == \'__main__\':
 <t tx="ekr.20130803073926.17115"></t>
 <t tx="ekr.20130803073926.17116"></t>
 <t tx="ekr.20130803073926.17117"></t>
-<t tx="ekr.20130803073926.17118"></t>
 <t tx="ekr.20130803073926.17119"></t>
-<t tx="ekr.20130803073926.17121"></t>
+<t tx="ekr.20130803073926.17122"></t>
+<t tx="ekr.20130803073926.17123"></t>
+<t tx="ekr.20130803073926.17124"></t>
+<t tx="ekr.20130803073926.17125"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
