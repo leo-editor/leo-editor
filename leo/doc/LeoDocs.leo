@@ -430,32 +430,36 @@
 <v t="ekr.20130526065545.14930"><vh>Revised recursive import script</vh></v>
 <v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
 <v t="ekr.20130526065545.14932"><vh>Leo as PIM and authoring tool</vh></v>
-</v>
-<v t="ekr.20130526065545.17426"><vh>To Document</vh>
+<v t="ekr.20130526065545.17428"><vh>Eureka! @testsetup</vh>
 <v t="ekr.20130526065545.17427"><vh>Re: Eureka! @testsetup</vh></v>
-<v t="ekr.20130526065545.17428"><vh>Eureka! @testsetup</vh></v>
+</v>
+<v t="ekr.20130526065545.17435"><vh>ANN: screen_capture plugin pushed</vh>
 <v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17430"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17432"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17434"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17435"><vh>ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17436"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+</v>
+<v t="ekr.20130526065545.17439"><vh>Create Pane For matplotlib chart</vh>
 <v t="ekr.20130526065545.17437"><vh>Re: Create Pane For matplotlib chart</vh></v>
 <v t="ekr.20130526065545.17438"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20130526065545.17439"><vh>Create Pane For matplotlib chart</vh></v>
 <v t="ekr.20130526065545.17440"><vh>Re: Create Pane For matplotlib chart</vh></v>
 <v t="ekr.20130526065545.17441"><vh>Re: Create Pane For matplotlib chart</vh></v>
+</v>
+<v t="ekr.20130526065545.17445"><vh>Major additions to abbreviations</vh>
 <v t="ekr.20130526065545.17442"><vh>Re: Major additions to abbreviations</vh></v>
 <v t="ekr.20130526065545.17443"><vh>Re: Major additions to abbreviations</vh></v>
 <v t="ekr.20130526065545.17444"><vh>Re: Major additions to abbreviations</vh></v>
-<v t="ekr.20130526065545.17445"><vh>Major additions to abbreviations</vh></v>
 <v t="ekr.20130526065545.17446"><vh>Re: Major additions to abbreviations</vh></v>
 <v t="ekr.20130526065545.17447"><vh>Re: IPython bridge: MultipleInstanceError</vh></v>
-<v t="ekr.20130526065545.17448"><vh>IPython bridge: MultipleInstanceError</vh></v>
+</v>
+<v t="ekr.20130526065545.17448"><vh>IPython bridge: MultipleInstanceError</vh>
 <v t="ekr.20130526065545.17449"><vh>Re: IPython bridge: MultipleInstanceError</vh></v>
 <v t="ekr.20130526065545.17450"><vh>Re: IPython bridge: MultipleInstanceError</vh></v>
+</v>
+<v t="ekr.20130526065545.17459"><vh>ANN: dark theme pushed to trunk</vh>
 <v t="ekr.20130526065545.17451"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17452"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17453"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
@@ -464,13 +468,14 @@
 <v t="ekr.20130526065545.17456"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17457"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17458"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17459"><vh>ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17460"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17461"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17462"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17463"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17464"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17465"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+</v>
+<v t="ekr.20130526065545.17480"><vh>Blog on pelican and GH-pages: first light ;-)</vh>
 <v t="ekr.20130526065545.17466"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17467"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17468"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
@@ -485,22 +490,24 @@
 <v t="ekr.20130526065545.17477"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17478"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17479"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17480"><vh>Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17481"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17482"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17483"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17484"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17485"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
 <v t="ekr.20130526065545.17486"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh></v>
+</v>
+<v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh>
 <v t="ekr.20130526065545.17488"><vh>Re: Indexing files for full text search</vh></v>
 <v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
 <v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
-<v t="ekr.20130526065545.17491"><vh>Idea/needed: system command queue</vh></v>
+</v>
+<v t="ekr.20130526065545.17491"><vh>Idea/needed: system command queue</vh>
 <v t="ekr.20130526065545.17492"><vh>Re: Idea/needed: system command queue</vh></v>
 <v t="ekr.20130526065545.17493"><vh>Re: Idea/needed: system command queue</vh></v>
+</v>
+<v t="ekr.20130526065545.17495"><vh>ANN: zoom-in/out commands</vh>
 <v t="ekr.20130526065545.17494"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17495"><vh>ANN: zoom-in/out commands</vh></v>
 <v t="ekr.20130526065545.17496"><vh>Re: ANN: zoom-in/out commands</vh></v>
 <v t="ekr.20130526065545.17497"><vh>Re: ANN: zoom-in/out commands</vh></v>
 <v t="ekr.20130526065545.17498"><vh>Re: ANN: zoom-in/out commands</vh></v>
@@ -511,17 +518,19 @@
 <v t="ekr.20130526065545.17503"><vh>Re: ANN: zoom-in/out commands</vh></v>
 <v t="ekr.20130526065545.17504"><vh>Re: ANN: zoom-in/out commands</vh></v>
 <v t="ekr.20130526065545.17505"><vh>body text zooming pushed</vh></v>
+</v>
 <v t="ekr.20130526065545.17506"><vh>[Leo Editor] Quick valuespace.py update: it now support...</vh></v>
-<v t="ekr.20130526065545.17507"><vh>Wish list: xiki window for leo</vh></v>
+<v t="ekr.20130526065545.17507"><vh>Wish list: xiki window for leo</vh>
 <v t="ekr.20130526065545.17508"><vh>Re: Wish list: xiki window for leo</vh></v>
 <v t="ekr.20130526065545.17509"><vh>Re: Wish list: xiki window for leo</vh></v>
 <v t="ekr.20130526065545.17510"><vh>Re: Wish list: xiki window for leo</vh></v>
 <v t="ekr.20130526065545.17511"><vh>Re: Wish list: xiki window for leo</vh></v>
 <v t="ekr.20130526065545.17512"><vh>Re: Wish list: xiki window for leo</vh></v>
 <v t="ekr.20130526065545.17513"><vh>Re: Wish list: xiki window for leo</vh></v>
+</v>
 <v t="ekr.20130526065545.17514"><vh>[Leo Editor] New theme in leoSettings.leo: Sublime Text...</vh></v>
 <v t="ekr.20130526065545.17515"><vh>ANN: Sublime Text 2 like dark theme</vh></v>
-<v t="ekr.20130526065545.17516"><vh>Terry, how do you create the buttons with dropdown menus?</vh></v>
+<v t="ekr.20130526065545.17516"><vh>Terry, how do you create the buttons with dropdown menus?</vh>
 <v t="ekr.20130526065545.17517"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
 <v t="ekr.20130526065545.17518"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
 <v t="ekr.20130526065545.17519"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
@@ -532,60 +541,73 @@
 <v t="ekr.20130526065545.17524"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
 <v t="ekr.20130526065545.17525"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
 <v t="ekr.20130526065545.17526"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
+</v>
+<v t="ekr.20130526065545.17530"><vh>How to make body text insertion at cursor permanent?</vh>
 <v t="ekr.20130526065545.17527"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
 <v t="ekr.20130526065545.17528"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
 <v t="ekr.20130526065545.17529"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17530"><vh>How to make body text insertion at cursor permanent?</vh></v>
 <v t="ekr.20130526065545.17531"><vh>Re: the workflow of write leo scripts?</vh></v>
+</v>
 <v t="ekr.20130526065545.17532"><vh>the workflow of write leo scripts?</vh></v>
-<v t="ekr.20130526065545.17533"><vh>Re: Fw: why Leo</vh></v>
-<v t="ekr.20130526065545.17534"><vh>Fw: why Leo</vh></v>
+<v t="ekr.20130526065545.17537"><vh>Blog post about how Leo can improve organization of code bases</vh>
 <v t="ekr.20130526065545.17535"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
 <v t="ekr.20130526065545.17536"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17537"><vh>Blog post about how Leo can improve organization of code bases</vh></v>
 <v t="ekr.20130526065545.17538"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
 <v t="ekr.20130526065545.17539"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
+</v>
+<v t="ekr.20130526065545.17543"><vh>why Leo</vh>
+<v t="ekr.20130526065545.17544"><vh>Re: why Leo</vh></v>
+<v t="ekr.20130526065545.17534"><vh>Fw: why Leo</vh>
+<v t="ekr.20130526065545.17533"><vh>Re: Fw: why Leo</vh></v>
 <v t="ekr.20130526065545.17540"><vh>Re: why Leo</vh></v>
 <v t="ekr.20130526065545.17541"><vh>Re: why Leo</vh></v>
 <v t="ekr.20130526065545.17542"><vh>Re: why Leo</vh></v>
-<v t="ekr.20130526065545.17543"><vh>why Leo</vh></v>
-<v t="ekr.20130526065545.17544"><vh>Re: why Leo</vh></v>
+</v>
+</v>
+<v t="ekr.20130526065545.17546"><vh>Tool for diffing Leo files</vh>
 <v t="ekr.20130526065545.17545"><vh>Re: Tool for diffing Leo files</vh></v>
-<v t="ekr.20130526065545.17546"><vh>Tool for diffing Leo files</vh></v>
+</v>
+<v t="ekr.20130526065545.17550"><vh>A beautiful pattern for composing large strings</vh>
 <v t="ekr.20130526065545.17547"><vh>Re: A beautiful pattern for composing large strings</vh></v>
 <v t="ekr.20130526065545.17548"><vh>Re: A beautiful pattern for composing large strings</vh></v>
 <v t="ekr.20130526065545.17549"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17550"><vh>A beautiful pattern for composing large strings</vh></v>
 <v t="ekr.20130526065545.17551"><vh>Re: A beautiful pattern for composing large strings</vh></v>
 <v t="ekr.20130526065545.17552"><vh>Re: A beautiful pattern for composing large strings</vh></v>
 <v t="ekr.20130526065545.17553"><vh>Re: A beautiful pattern for composing large strings</vh></v>
 <v t="ekr.20130526065545.17554"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17555"><vh>Background Images in body pane?</vh></v>
+</v>
+<v t="ekr.20130526065545.17555"><vh>Background Images in body pane?</vh>
 <v t="ekr.20130526065545.17556"><vh>Re: Background Images in body pane?</vh></v>
 <v t="ekr.20130526065545.17557"><vh>Re: Background Images in body pane?</vh></v>
 <v t="ekr.20130526065545.17558"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh></v>
+</v>
+<v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh>
 <v t="ekr.20130526065545.17560"><vh>Re: Really @edit can expand nodes?</vh></v>
+</v>
+<v t="ekr.20130526065545.17564"><vh>Export Full Content</vh>
 <v t="ekr.20130526065545.17561"><vh>Re: Export Full Content</vh></v>
 <v t="ekr.20130526065545.17562"><vh>Re: Export Full Content</vh></v>
 <v t="ekr.20130526065545.17563"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17564"><vh>Export Full Content</vh></v>
 <v t="ekr.20130526065545.17565"><vh>Re: Export Full Content</vh></v>
 <v t="ekr.20130526065545.17566"><vh>Re: Export Full Content</vh></v>
+</v>
+<v t="ekr.20130526065545.17568"><vh>Automated playback</vh>
 <v t="ekr.20130526065545.17567"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17568"><vh>Automated playback</vh></v>
 <v t="ekr.20130526065545.17569"><vh>Re: Automated playback</vh></v>
 <v t="ekr.20130526065545.17570"><vh>Re: Automated playback</vh></v>
 <v t="ekr.20130526065545.17571"><vh>Re: Automated playback</vh></v>
 <v t="ekr.20130526065545.17572"><vh>Re: Automated playback</vh></v>
 <v t="ekr.20130526065545.17573"><vh>Re: Automated playback</vh></v>
 <v t="ekr.20130526065545.17574"><vh>Re: Automated playback</vh></v>
+</v>
+<v t="ekr.20130526065545.17576"><vh>Templates with macro expansions</vh>
 <v t="ekr.20130526065545.17575"><vh>Re: Templates with macro expansions</vh></v>
-<v t="ekr.20130526065545.17576"><vh>Templates with macro expansions</vh></v>
 <v t="ekr.20130526065545.17577"><vh>Re: Templates with macro expansions</vh></v>
-<v t="ekr.20130526065545.17578"><vh>All about clone conflicts</vh></v>
+</v>
+<v t="ekr.20130526065545.17578"><vh>All about clone conflicts</vh>
 <v t="ekr.20130526065545.17579"><vh>Re: All about clone conflicts</vh></v>
-<v t="ekr.20130526065545.17580"><vh>How to use leo to make mathematical notes?</vh></v>
+</v>
+<v t="ekr.20130526065545.17580"><vh>How to use leo to make mathematical notes?</vh>
 <v t="ekr.20130526065545.17581"><vh>Re: How to use leo to make mathematical notes?</vh></v>
 <v t="ekr.20130526065545.17582"><vh>Re: How to use leo to make mathematical notes?</vh></v>
 <v t="ekr.20130526065545.17583"><vh>Re: How to use leo to make mathematical notes?</vh></v>
@@ -594,56 +616,68 @@
 <v t="ekr.20130526065545.17586"><vh>Re: How to use leo to make mathematical notes?</vh></v>
 <v t="ekr.20130526065545.17587"><vh>Re: How to use leo to make mathematical notes?</vh></v>
 <v t="ekr.20130526065545.17588"><vh>Re: How to use leo to make mathematical notes?</vh></v>
-<v t="ekr.20130526065545.17589"><vh>"Subject: go-anywhere a'la sublime text: first light"</vh></v>
+</v>
+<v t="ekr.20130526065545.17589"><vh>"Subject: go-anywhere a'la sublime text: first light"</vh>
 <v t="ekr.20130526065545.17590"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
 <v t="ekr.20130526065545.17591"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
 <v t="ekr.20130526065545.17592"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
+</v>
+<v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh>
 <v t="ekr.20130526065545.17593"><vh>Re: @wrap now suppresses horizontal scrolling</vh></v>
-<v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh></v>
+</v>
 <v t="ekr.20130526065545.17595"><vh>Draft: unit-testing tutorial</vh></v>
+<v t="ekr.20130526065545.17600"><vh>Parameterized template nodes</vh>
 <v t="ekr.20130526065545.17596"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17597"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17598"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17599"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17600"><vh>Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17601"><vh>Re: Parameterized template nodes</vh></v>
 <v t="ekr.20130526065545.17602"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17603"><vh>Obstacles to using Leo, from a potential new user.</vh></v>
+</v>
+<v t="ekr.20130526065545.17603"><vh>Obstacles to using Leo, from a potential new user.</vh>
 <v t="ekr.20130526065545.17604"><vh>Re: Obstacles to using Leo, from a potential new user.</vh></v>
+</v>
 <v t="ekr.20130526065545.17605"><vh>link to PyEnchant is broken</vh></v>
+<v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
 <v t="ekr.20130526065545.17606"><vh>Re: Outdated info in "rst3"</vh></v>
-<v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh></v>
 <v t="ekr.20130526065545.17608"><vh>Re: Outdated info in "rst3"</vh></v>
+</v>
+<v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh>
 <v t="ekr.20130526065545.17609"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
-<v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
 <v t="ekr.20130526065545.17611"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
-<v t="ekr.20130526065545.17612"><vh>update about Leo google group</vh></v>
+</v>
+<v t="ekr.20130526065545.17612"><vh>update about Leo google group</vh>
 <v t="ekr.20130526065545.17613"><vh>Re: update about Leo google group</vh></v>
+</v>
+<v t="ekr.20130526065545.17618"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
 <v t="ekr.20130526065545.17614"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 <v t="ekr.20130526065545.17615"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 <v t="ekr.20130526065545.17616"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 <v t="ekr.20130526065545.17617"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-<v t="ekr.20130526065545.17618"><vh>Blog post about valuespace up on leo-editor.github.io</vh></v>
+</v>
+<v t="ekr.20130526065545.17620"><vh>[ANN] New plugin - printing.py</vh>
 <v t="ekr.20130526065545.17619"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17620"><vh>[ANN] New plugin - printing.py</vh></v>
 <v t="ekr.20130526065545.17621"><vh>Re: [ANN] New plugin - printing.py</vh></v>
 <v t="ekr.20130526065545.17622"><vh>Re: [ANN] New plugin - printing.py</vh></v>
 <v t="ekr.20130526065545.17623"><vh>Re: [ANN] New plugin - printing.py</vh></v>
 <v t="ekr.20130526065545.17624"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+</v>
+<v t="ekr.20130526065545.17629"><vh>How to call functions from LeoPyRef.Leo</vh>
 <v t="ekr.20130526065545.17625"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
 <v t="ekr.20130526065545.17626"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
 <v t="ekr.20130526065545.17627"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
 <v t="ekr.20130526065545.17628"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17629"><vh>How to call functions from LeoPyRef.Leo</vh></v>
 <v t="ekr.20130526065545.17630"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
+</v>
 <v t="ekr.20130526065545.17631"><vh>Tutorial for positions: comments please</vh></v>
+<v t="ekr.20130526065545.17634"><vh>persistent state with json as a leo abbreviation</vh>
 <v t="ekr.20130526065545.17632"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 <v t="ekr.20130526065545.17633"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17634"><vh>persistent state with json as a leo abbreviation</vh></v>
 <v t="ekr.20130526065545.17635"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 <v t="ekr.20130526065545.17636"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 <v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 <v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -3521,8 +3555,6 @@ Leo to whatever the tool needs (using @setting). Ideally, one would even
 have a choice between opening the new page in a different or in the same
 PDF viewer instance as the last page, but few viewers support that (Okular
 does - but I don't know any cross-platform solution).</t>
-<t tx="ekr.20130526065545.17426">@language rest
-</t>
 <t tx="ekr.20130526065545.17427">@nocolor
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
@@ -12599,7 +12631,8 @@ For more options, visit https://groups.google.com/groups/opt_out.
 
 
 </t>
-<t tx="ekr.20130526065545.17530">@nocolor
+<t tx="ekr.20130526065545.17530">
+nocolor
 
 From: SegundoBob &lt;bhossley@ieee.org&gt;
 
