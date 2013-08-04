@@ -10254,8 +10254,8 @@ class jEditColorizer:
             fileName = g.os_path_join(path,'%s.py' % (language))
             if g.os_path_exists(fileName):
                 mode = g.importFromPath (language,path)
-            else: mode = None
-
+            else:
+                mode = None
             if mode:
                 # A hack to give modes/forth.py access to c.
                 if hasattr(mode,'pre_init_mode'):
@@ -10341,8 +10341,8 @@ class jEditColorizer:
         '''Initialize the keywords for the present language.
 
          Set self.word_chars ivar to string.letters + string.digits
-         plus any other character appearing in any keyword.'''
-
+         plus any other character appearing in any keyword.
+         '''
         # Add any new user keywords to leoKeywordsDict.
         d = self.keywordsDict
         keys = list(d.keys())
@@ -10350,28 +10350,24 @@ class jEditColorizer:
             key = '@' + s
             if key not in keys:
                 d [key] = 'leokeyword'
-
         # Create a temporary chars list.  It will be converted to a dict later.
         chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
-
         for key in list(d.keys()):
             for ch in key:
                 if ch not in chars:
                     chars.append(g.toUnicode(ch))
-
         # jEdit2Py now does this check, so this isn't really needed.
         # But it is needed for forth.py.
         for ch in (' ', '\t'):
             if ch in chars:
                 # g.es_print('removing %s from word_chars' % (repr(ch)))
                 chars.remove(ch)
-
         # g.trace(self.colorizer.language,[str(z) for z in chars])
-
         # Convert chars to a dict for faster access.
         self.word_chars = {}
         for z in chars:
             self.word_chars[z] = z
+        # g.trace(sorted(self.word_chars.keys()))
     #@+node:ekr.20110605121601.18584: *6* setModeAttributes
     def setModeAttributes (self):
 
@@ -10847,18 +10843,17 @@ class jEditColorizer:
         '''Succeed if seq matches s[i:]'''
 
         if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
-
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
         if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
         if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
             return 0
-
         if g.match(s,i,seq):
             j = len(s)
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
+            # g.trace(s[i:j])
             return j # (was j-1) With a delegate, this could clear state.
         else:
             return 0
@@ -10866,16 +10861,13 @@ class jEditColorizer:
     def match_eol_span_regexp (self,s,i,
         kind='',regexp='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
-        delegate='',exclude_match=False):
-
+        delegate='',exclude_match=False
+    ):
         '''Succeed if the regular expression regex matches s[i:].'''
-
         if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
-
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
         if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
-
         n = self.match_regexp_helper(s,i,regexp)
         if n > 0:
             j = len(s)
@@ -10897,28 +10889,27 @@ class jEditColorizer:
     #@+node:ekr.20110605121601.18614: *5* match_keywords
     # This is a time-critical method.
     def match_keywords (self,s,i):
-
-        '''Succeed if s[i:] is a keyword.'''
-
+        '''
+        Succeed if s[i:] is a keyword.
+        Returning -len(word) for failure greatly reduces the number of times this
+        method is called.
+        '''
         trace = False and not g.unitTesting
         traceFail = False
         self.totalKeywordsCalls += 1
-
-        # Important.  Return -len(word) for failure greatly reduces
-        # the number of times this method is called.
-
         # We must be at the start of a word.
         if i > 0 and s[i-1] in self.word_chars:
             # if trace: g.trace('not at word start',s[i-1])
             return 0
-
         # Get the word as quickly as possible.
-        j = i ; n = len(s) ; chars = self.word_chars
+        j = i ; n = len(s)
+        chars = self.word_chars
         while j < n and s[j] in chars:
             j += 1
-
         word = s[i:j]
-        assert word
+        if not word:
+            g.trace('can not happen',repr(s[i:max(j,i+1)]),repr(s[i:i+10]),g.callers())
+            return 0
         if self.ignore_case: word = word.lower()
         kind = self.keywordsDict.get(word)
         if kind:
@@ -11062,16 +11053,13 @@ class jEditColorizer:
     def match_seq_regexp (self,s,i,
         kind='',regexp='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
-        delegate=''):
-
+        delegate=''
+    ):
         '''Succeed if the regular expression regexp matches at s[i:].'''
-
         if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'regexp',regexp)
-
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
         if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
-
         n = self.match_regexp_helper(s,i,regexp)
         j = i + n
         assert (j-i == n)
@@ -11084,15 +11072,12 @@ class jEditColorizer:
         kind='',begin='',end='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
         delegate='',exclude_match=False,
-        no_escape=False,no_line_break=False,no_word_break=False):
-
+        no_escape=False,no_line_break=False,no_word_break=False
+    ):
         '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
-
         trace = False and not g.unitTesting
         if i >= len(s): return 0
-
         # g.trace(begin,end,no_escape,no_line_break,no_word_break)
-
         if at_line_start and i != 0 and s[i-1] != '\n':
             j = i
         elif at_whitespace_end and i != g.skip_ws(s,0):
@@ -11121,9 +11106,7 @@ class jEditColorizer:
                     self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
                 j = j2
                 self.prev = (i,j,kind)
-
         self.trace_match(kind,s,i,j)
-
         if j > len(s):
             j = len(s) + 1
             def boundRestartMatchSpan(s):
@@ -11132,29 +11115,25 @@ class jEditColorizer:
                     # Positional args, in alpha order
                     delegate,end,exclude_match,kind,
                     no_escape,no_line_break,no_word_break)
-
             self.setRestart(boundRestartMatchSpan,
-                # These must be keywords args.
+                # These must be keyword args.
                 delegate=delegate,end=end,
                 exclude_match=exclude_match,
                 kind=kind,
                 no_escape=no_escape,
                 no_line_break=no_line_break,
                 no_word_break=no_word_break)
-
-            if trace: g.trace('***Continuing',kind,i,j,len(s))
+            if trace: g.trace('***Continuing',kind,i,j,len(s),s[i:j])
         elif j != i:
             if trace: g.trace('***Ending',kind,i,j,s[i:j])
             self.clearState()
-
         return j - i # Correct, whatever j is.
     #@+node:ekr.20110605121601.18623: *6* match_span_helper
     def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break):
-
-        '''Return n >= 0 if s[i] ends with a non-escaped 'end' string.'''
-
+        '''
+        Return n >= 0 if s[i] ends with a non-escaped 'end' string.
+        '''
         esc = self.escape
-
         while 1:
             j = s.find(pattern,i)
             # g.trace(no_line_break,j,len(s))
@@ -11184,12 +11163,10 @@ class jEditColorizer:
     #@+node:ekr.20110605121601.18624: *6* restart_match_span
     def restart_match_span (self,s,
         delegate,end,exclude_match,kind,
-        no_escape,no_line_break,no_word_break):
-
+        no_escape,no_line_break,no_word_break
+    ):
         '''Remain in this state until 'end' is seen.'''
-
         trace = False and not g.unitTesting
-
         i = 0
         j = self.match_span_helper(s,i,end,no_escape,no_line_break,no_word_break)
         if j == -1:
@@ -11198,35 +11175,29 @@ class jEditColorizer:
             j2 = j
         else:
             j2 = j + len(end)
-
         if delegate:
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
-            self.colorRangeWithTag(s,j,j2,kind,delegate=None,    exclude_match=exclude_match)
+            self.colorRangeWithTag(s,j,j2,kind,delegate=None,exclude_match=exclude_match)
         else: # avoid having to merge ranges in addTagsToList.
             self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
         j = j2
-
         self.trace_match(kind,s,i,j)
-
         if j > len(s):
             def boundRestartMatchSpan(s):
                 return self.restart_match_span(s,
                     # Positional args, in alpha order
                     delegate,end,exclude_match,kind,
                     no_escape,no_line_break,no_word_break)
-
             self.setRestart(boundRestartMatchSpan,
                 # These must be keywords args.
                 delegate=delegate,end=end,kind=kind,
                 no_escape=no_escape,
                 no_line_break=no_line_break,
                 no_word_break=no_word_break)
-
-            if trace: g.trace('***Re-continuing',i,j,len(s),s,g.callers(5))
+            if trace: g.trace('***Re-continuing',i,j,len(s),s)
         else:
             if trace: g.trace('***ending',i,j,len(s),s)
             self.clearState()
-
         return j # Return the new i, *not* the length of the match.
     #@+node:ekr.20110605121601.18625: *5* match_span_regexp
     def match_span_regexp (self,s,i,
@@ -11235,11 +11206,10 @@ class jEditColorizer:
         delegate='',exclude_match=False,
         no_escape=False,no_line_break=False, no_word_break=False,
     ):
-
-        '''Succeed if s[i:] starts with 'begin' (a regular expression) and contains a following 'end'.'''
-
+        '''Succeed if s[i:] starts with 'begin' (a regular expression) and
+        contains a following 'end'.
+        '''
         if self.verbose: g.trace('begin',repr(begin),'end',repr(end),self.dump(s[i:]))
-
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
         if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
@@ -11277,23 +11247,18 @@ class jEditColorizer:
         kind1='',word='',
         kind2='',pattern='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
-        exclude_match=False):
-
+        exclude_match=False
+    ):
         '''Succeed if s[i:] matches pattern.'''
-
         if not self.allow_mark_prev: return 0
-
         if (False or self.verbose): g.trace(i,repr(s[i:i+20]))
-
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
         if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
         if at_word_start and i + len(word) + 1 < len(s) and s[i+len(word)] in self.word_chars:
             j = i
-
         if not g.match(s,i,word):
             return 0
-
         j = i + len(word)
         n = self.match_regexp_helper(s,j,pattern)
         if n == 0:
@@ -11494,16 +11459,13 @@ class jEditColorizer:
         traceMatch = True
         traceFail = False
         traceState = True
-        traceEndState = False
-
+        traceEndState = True
         if trace:
             if traceState:
                 g.trace('%s %-30s' % (self.language_name,
                     '** start: %s' % self.showState(n)),repr(s))
             else:
-                g.trace(self.language_name,repr(s))
-                    # Called from recolor.
-
+                g.trace(self.language_name,repr(s)) # Called from recolor.
         i = 0
         if n > -1:
             i = self.restart(n,s,trace and traceMatch)
@@ -11514,7 +11476,6 @@ class jEditColorizer:
             aList = self.rulesDict.get('<')
             for f in aList:
                 g.trace(f.__name__)
-
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i],[])
@@ -11541,7 +11502,6 @@ class jEditColorizer:
             else:
                 i += 1
             assert i > progress
-
         # Don't even *think* about clearing state here.
         # We remain in the starting state unless a match happens.
         if trace and traceEndState:

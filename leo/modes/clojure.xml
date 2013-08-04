@@ -1,0 +1,525 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<!--
+    This file is partially based on lisp.xml and mostly in
+    the documentation found at: http://clojure.org/
+
+    author: dsm
+    date:   24/10/08
+    version:0.1
+-->
+
+<MODE>
+    <PROPS>
+        <PROPERTY NAME="lineComment" VALUE=";" />
+        <PROPERTY NAME="noWordSep" VALUE=".*+!-_?/" />
+        <PROPERTY NAME="unalignedOpenBrackets" VALUE="(" />
+        <PROPERTY NAME="unalignedCloseBrackets" VALUE=")" />
+        <PROPERTY NAME="multipleBracketIndent" VALUE="true" />
+    </PROPS>
+    <RULES  IGNORE_CASE="FALSE"
+            HIGHLIGHT_DIGITS="TRUE"
+            NO_WORD_SEP=".*+!-_?/"
+            DIGIT_RE="([0-9]+)|(([0-9]*\.[0-9]+)M?)|([0-9]+/[0-9]+)">
+        <!-- S-exps / lists.
+             Quoted first so as to not break the normal ones.
+             This is highly repetitive, there must be a better way
+        -->
+        
+        <!-- comment out
+        <SPAN TYPE="MARKUP" DELEGATE="MAIN">
+            <BEGIN>#^(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>@(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>^(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>`(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>&apos;(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="FUNCTION" DELEGATE="MAIN">
+            <BEGIN>#(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="MARKUP" DELEGATE="MAIN">
+            <BEGIN>(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        -->
+
+        <!-- Vectors -->
+        <!-- comment out
+        <SPAN TYPE="MARKUP" DELEGATE="MAIN">
+            <BEGIN>#^[</BEGIN>
+            <END>]</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>@[</BEGIN>
+            <END>]</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>^[</BEGIN>
+            <END>]</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>&apos;[</BEGIN>
+            <END>]</END>
+        </SPAN>
+        <SPAN TYPE="LABEL" DELEGATE="MAIN">
+            <BEGIN>[</BEGIN>
+            <END>]</END>
+        </SPAN>
+        -->
+
+        <!-- Maps -->
+        <!-- comment out
+        <SPAN TYPE="MARKUP" DELEGATE="MAIN">
+            <BEGIN>#^{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>@{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>^{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>&apos;{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LABEL" DELEGATE="MAIN">
+            <BEGIN>{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        -->
+
+        <!-- Sets -->
+        <!-- comment out
+        <SPAN TYPE="MARKUP" DELEGATE="MAIN">
+            <BEGIN>#^#{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>@#{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>^#{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" DELEGATE="MAIN">
+            <BEGIN>&apos;#{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        <SPAN TYPE="LABEL" DELEGATE="MAIN">
+            <BEGIN>#{</BEGIN>
+            <END>}</END>
+        </SPAN>
+        -->
+
+        <!-- Quoted symbols -->
+        <SEQ AT_WORD_START="TRUE" TYPE="KEYWORD1">#&apos;</SEQ>
+        <MARK_FOLLOWING
+            AT_WORD_START="TRUE"
+            TYPE="LITERAL3">&apos;</MARK_FOLLOWING>
+            
+        <!-- Meta symbols -->
+        <!-- comment out  (mark following doesn't really work)
+        <MARK_FOLLOWING
+            AT_WORD_START="TRUE"
+            TYPE="LABEL">^</MARK_FOLLOWING>
+        -->
+        
+        <!-- Deref symbols -->
+        <MARK_FOLLOWING
+            AT_WORD_START="TRUE"
+            TYPE="LABEL">@</MARK_FOLLOWING>
+        <!-- Metadata -->
+        <MARK_FOLLOWING
+            AT_WORD_START="TRUE"
+            TYPE="MARKUP">#^</MARK_FOLLOWING>
+        -->
+
+        <!-- Based on convention discussed here:
+             http://www.gigamonkeys.com/book/syntax-and-semantics.html -->
+        <EOL_SPAN TYPE="COMMENT4">;;;;</EOL_SPAN>
+        <EOL_SPAN TYPE="COMMENT3">;;;</EOL_SPAN>
+        <EOL_SPAN TYPE="COMMENT2">;;</EOL_SPAN>
+        <EOL_SPAN TYPE="COMMENT1">;</EOL_SPAN>
+
+        <SPAN TYPE="LITERAL2" DELEGATE="REGEXPS" ESCAPE="\">
+            <BEGIN>#&quot;</BEGIN>
+            <END>&quot;</END>
+        </SPAN>
+
+        <SPAN TYPE="LITERAL1" DELEGATE="STRINGS" ESCAPE="\">
+            <BEGIN>&quot;</BEGIN>
+            <END>&quot;</END>
+        </SPAN>
+
+        <!-- Character literals -->
+        <!-- comment out
+        <SEQ_REGEXP
+                HASH_CHAR="\"
+                AT_WORD_START="TRUE"
+                TYPE="LITERAL2">\\(.|newline|space|tab)
+        </SEQ_REGEXP>
+        -->
+
+        <!-- The &apos;.&apos; special form -->
+        <!-- comment out
+        <SEQ AT_WORD_START="TRUE" TYPE="KEYWORD1">.</SEQ>
+        -->
+
+        <!-- Namespace separators -->
+        <!--
+        <MARK_PREVIOUS
+                TYPE="LITERAL4"
+                MATCH_TYPE="CONTEXT">/</MARK_PREVIOUS>
+        <MARK_PREVIOUS
+                TYPE="LITERAL4"
+                MATCH_TYPE="CONTEXT">.</MARK_PREVIOUS>
+        -->
+
+        <!-- Keywords -->
+        <!-- comment out
+        <MARK_FOLLOWING
+                AT_WORD_START="TRUE"
+                TYPE="KEYWORD4">:</MARK_FOLLOWING>
+        -->
+
+        <KEYWORDS>
+            <!-- Evaluation -->
+            <KEYWORD4>read</KEYWORD4>
+            <KEYWORD4>load</KEYWORD4>
+            <KEYWORD4>load-file</KEYWORD4>
+            <KEYWORD4>eval</KEYWORD4>
+            <KEYWORD4>apply</KEYWORD4>
+            <KEYWORD4>symbol</KEYWORD4>
+            <KEYWORD4>keyword</KEYWORD4>
+
+            <!-- Special Forms -->
+            <KEYWORD1>quote</KEYWORD1>
+            <KEYWORD1>monitor-enter</KEYWORD1>
+            <KEYWORD1>monitor-exit</KEYWORD1>
+            <KEYWORD1>locking</KEYWORD1>
+            <KEYWORD1>macroexpand-1</KEYWORD1>
+            <KEYWORD1>macroexpand</KEYWORD1>
+            <KEYWORD3>partial</KEYWORD3>
+            <KEYWORD3>complement</KEYWORD3>
+            <KEYWORD3>comparator</KEYWORD3>
+            <KEYWORD3>constantly</KEYWORD3>
+            <KEYWORD3>identity</KEYWORD3>
+            <KEYWORD3>comp</KEYWORD3>
+
+            <!-- Other functions -->
+            <KEYWORD1>map</KEYWORD1>
+            <KEYWORD1>mapcat</KEYWORD1>
+            <KEYWORD1>str</KEYWORD1>
+            <KEYWORD1>time</KEYWORD1>
+            <KEYWORD1>line-seq</KEYWORD1>
+            <KEYWORD1>reduce</KEYWORD1>
+
+            <!-- Printing -->
+            <KEYWORD1>pr</KEYWORD1>
+            <KEYWORD1>prn</KEYWORD1>
+            <KEYWORD1>print</KEYWORD1>
+            <KEYWORD1>println</KEYWORD1>
+            <KEYWORD1>pr-str</KEYWORD1>
+            <KEYWORD1>prn-str</KEYWORD1>
+            <KEYWORD1>print-str</KEYWORD1>
+            <KEYWORD1>println-str</KEYWORD1>
+            <KEYWORD2>with-out-str</KEYWORD2>
+            <KEYWORD2>with-open</KEYWORD2>
+            <LITERAL1>newline</LITERAL1>
+
+            <!-- RegExps -->
+            <KEYWORD1>re-matcher</KEYWORD1>
+            <KEYWORD1>re-find</KEYWORD1>
+            <KEYWORD1>re-matches</KEYWORD1>
+            <KEYWORD1>re-groups</KEYWORD1>
+            <KEYWORD1>re-seq</KEYWORD1>
+
+            <!-- Flow control -->
+            <KEYWORD2>do</KEYWORD2>
+            <KEYWORD2>dotimes</KEYWORD2>
+            <KEYWORD2>loop</KEYWORD2>
+            <KEYWORD2>recur</KEYWORD2>
+            <KEYWORD2>throw</KEYWORD2>
+            <KEYWORD2>try</KEYWORD2>
+            <KEYWORD2>catch</KEYWORD2>
+            <KEYWORD2>finally</KEYWORD2>
+            <KEYWORD2>when</KEYWORD2>
+            <KEYWORD2>when-not</KEYWORD2>
+            <KEYWORD2>cond</KEYWORD2>
+            <KEYWORD2>if</KEYWORD2>
+            <KEYWORD3>assert</KEYWORD3>
+            <KEYWORD3>for</KEYWORD3>
+            <KEYWORD3>doseq</KEYWORD3>
+            <KEYWORD3>dorun</KEYWORD3>
+            <KEYWORD3>doall</KEYWORD3>
+            <KEYWORD3>when-first</KEYWORD3>
+            <KEYWORD3>refer</KEYWORD3>
+            <KEYWORD3>import</KEYWORD3>
+            <KEYWORD3>in-ns</KEYWORD3>
+            <KEYWORD3>find-ns</KEYWORD3>
+            <KEYWORD3>all-ns</KEYWORD3>
+            <KEYWORD3>dosync</KEYWORD3>
+            <KEYWORD3>deref</KEYWORD3>
+            <KEYWORD3>ensure</KEYWORD3>
+            <KEYWORD3>alter</KEYWORD3>
+            <KEYWORD3>shutdown</KEYWORD3>
+            <KEYWORD3>send</KEYWORD3>
+            <KEYWORD3>send-off</KEYWORD3>
+            <KEYWORD3>await</KEYWORD3>
+            <KEYWORD3>await-for</KEYWORD3>
+            <KEYWORD3>doto</KEYWORD3>
+
+            <!-- Constructors -->
+            <FUNCTION>defmulti</FUNCTION>
+            <FUNCTION>defmethod</FUNCTION>
+            <FUNCTION>remove-method</FUNCTION>
+            <FUNCTION>meta</FUNCTION>
+            <FUNCTION>remove-ns</FUNCTION>
+            <FUNCTION>create-ns</FUNCTION>
+            <FUNCTION>binding</FUNCTION>
+            <FUNCTION>with-local-vars</FUNCTION>
+            <FUNCTION>ref</FUNCTION>
+            <FUNCTION>ref-set</FUNCTION>
+            <FUNCTION>commute</FUNCTION>
+            <FUNCTION>agent</FUNCTION>
+            <FUNCTION>deref</FUNCTION>
+            <FUNCTION>memfn</FUNCTION>
+            <FUNCTION>bean</FUNCTION>
+            <FUNCTION>proxy</FUNCTION>
+            <FUNCTION>make-array</FUNCTION>
+            <FUNCTION>list</FUNCTION>
+            <FUNCTION>sorted-map</FUNCTION>
+            <FUNCTION>sorted-map-by</FUNCTION>
+            <FUNCTION>hash-map</FUNCTION>
+            <FUNCTION>vector</FUNCTION>
+            <FUNCTION>create-struct</FUNCTION>
+            <FUNCTION>def</FUNCTION>
+            <FUNCTION>defstruct</FUNCTION>
+            <FUNCTION>defn</FUNCTION>
+            <FUNCTION>fn</FUNCTION>
+            <FUNCTION>defmacro</FUNCTION>
+            <FUNCTION>var</FUNCTION>
+            <FUNCTION>new</FUNCTION>
+            <FUNCTION>let</FUNCTION>
+            <FUNCTION>set!</FUNCTION>
+            <FUNCTION>struct-map</FUNCTION>
+            <FUNCTION>struct</FUNCTION>
+            <FUNCTION>array-map</FUNCTION>
+            <FUNCTION>hash-set</FUNCTION>
+            <FUNCTION>sorted-set</FUNCTION>
+            <FUNCTION>set</FUNCTION>
+            <FUNCTION>seq</FUNCTION>
+            <FUNCTION>cons</FUNCTION>
+            <FUNCTION>lazy-cons</FUNCTION>
+            <FUNCTION>set</FUNCTION>
+            <FUNCTION>int</FUNCTION>
+            <FUNCTION>long</FUNCTION>
+            <FUNCTION>double</FUNCTION>
+            <FUNCTION>char</FUNCTION>
+            <FUNCTION>boolean</FUNCTION>
+            <FUNCTION>short</FUNCTION>
+            <FUNCTION>byte</FUNCTION>
+            <FUNCTION>parse</FUNCTION>
+
+            <!-- Collections -->
+            <KEYWORD1>count</KEYWORD1>
+            <KEYWORD1>seq</KEYWORD1>
+            <KEYWORD1>peek</KEYWORD1>
+            <KEYWORD1>pop</KEYWORD1>
+            <KEYWORD1>assoc</KEYWORD1>
+            <KEYWORD1>dissoc</KEYWORD1>
+            <KEYWORD1>get</KEYWORD1>
+            <KEYWORD1>nth</KEYWORD1>
+            <KEYWORD1>rseq</KEYWORD1>
+            <KEYWORD1>subvec</KEYWORD1>
+            <KEYWORD1>find</KEYWORD1>
+            <KEYWORD1>select-keys</KEYWORD1>
+            <KEYWORD1>key</KEYWORD1>
+            <KEYWORD1>val</KEYWORD1>
+            <KEYWORD1>keys</KEYWORD1>
+            <KEYWORD1>vals</KEYWORD1>
+            <KEYWORD1>merge</KEYWORD1>
+            <KEYWORD1>merge-with</KEYWORD1>
+            <KEYWORD1>accessor</KEYWORD1>
+            <KEYWORD1>conj</KEYWORD1>
+            <KEYWORD1>disj</KEYWORD1>
+            <KEYWORD1>first</KEYWORD1>
+            <KEYWORD1>rest</KEYWORD1>
+            <KEYWORD1>ffirst</KEYWORD1>
+            <KEYWORD1>frest</KEYWORD1>
+            <KEYWORD1>rfirst</KEYWORD1>
+            <KEYWORD1>rrest</KEYWORD1>
+            <KEYWORD1>second</KEYWORD1>
+            <KEYWORD1>some</KEYWORD1>
+            <KEYWORD1>concat</KEYWORD1>
+            <KEYWORD1>filter</KEYWORD1>
+            <KEYWORD1>take</KEYWORD1>
+            <KEYWORD1>take-nth</KEYWORD1>
+            <KEYWORD1>take-while</KEYWORD1>
+            <KEYWORD1>drop</KEYWORD1>
+            <KEYWORD1>nthrest</KEYWORD1>
+            <KEYWORD1>drop-while</KEYWORD1>
+            <KEYWORD1>reverse</KEYWORD1>
+            <KEYWORD1>cycle</KEYWORD1>
+            <KEYWORD1>interleave</KEYWORD1>
+            <KEYWORD1>split-at</KEYWORD1>
+            <KEYWORD1>split-with</KEYWORD1>
+            <KEYWORD1>repeat</KEYWORD1>
+            <KEYWORD1>replicate</KEYWORD1>
+            <KEYWORD1>iterate</KEYWORD1>
+            <KEYWORD1>range</KEYWORD1>
+            <KEYWORD1>into</KEYWORD1>
+            <KEYWORD1>sort</KEYWORD1>
+            <KEYWORD1>sort-by</KEYWORD1>
+            <KEYWORD1>zipmap</KEYWORD1>
+            <KEYWORD1>fnseq</KEYWORD1>
+            <KEYWORD1>lazy-cons</KEYWORD1>
+            <KEYWORD1>lazy-cat</KEYWORD1>
+            <KEYWORD1>with-meta</KEYWORD1>
+            <KEYWORD1>ns-name</KEYWORD1>
+            <KEYWORD1>ns-map</KEYWORD1>
+            <KEYWORD1>ns-interns</KEYWORD1>
+            <KEYWORD1>ns-publics</KEYWORD1>
+            <KEYWORD1>ns-imports</KEYWORD1>
+            <KEYWORD1>ns-refers</KEYWORD1>
+            <KEYWORD1>ns-resolve</KEYWORD1>
+            <KEYWORD1>resolve</KEYWORD1>
+            <KEYWORD1>ns-unmap</KEYWORD1>
+            <KEYWORD1>name</KEYWORD1>
+            <KEYWORD1>namespace</KEYWORD1>
+            <KEYWORD1>find-var</KEYWORD1>
+            <KEYWORD1>var-get</KEYWORD1>
+            <KEYWORD1>var-set</KEYWORD1>
+            <KEYWORD1>put</KEYWORD1>
+            <KEYWORD1>agent-errors</KEYWORD1>
+            <KEYWORD1>clear-agent-errors</KEYWORD1>
+            <KEYWORD1>alength</KEYWORD1>
+            <KEYWORD1>aget</KEYWORD1>
+            <KEYWORD1>aset</KEYWORD1>
+            <KEYWORD1>to-array</KEYWORD1>
+            <KEYWORD1>into-array</KEYWORD1>
+            <KEYWORD1>to-array-2d</KEYWORD1>
+
+            <!-- Tests, operators and numerical fns -->
+            <KEYWORD4>-&gt;</KEYWORD4>
+            <KEYWORD4>instance?</KEYWORD4>
+            <KEYWORD4>every?</KEYWORD4>
+            <KEYWORD4>not-every?</KEYWORD4>
+            <KEYWORD4>not-any?</KEYWORD4>
+            <KEYWORD4>contains?</KEYWORD4>
+            <KEYWORD4>string?</KEYWORD4>
+            <KEYWORD4>symbol?</KEYWORD4>
+            <KEYWORD4>map?</KEYWORD4>
+            <KEYWORD4>seq?</KEYWORD4>
+            <KEYWORD4>vector?</KEYWORD4>
+            <KEYWORD4>identical?</KEYWORD4>
+            <KEYWORD4>pos?</KEYWORD4>
+            <KEYWORD4>neg?</KEYWORD4>
+            <KEYWORD4>zero?</KEYWORD4>
+            <KEYWORD4>nil?</KEYWORD4>
+            <KEYWORD4>false?</KEYWORD4>
+            <KEYWORD4>true?</KEYWORD4>
+            <KEYWORD4>inc</KEYWORD4>
+            <KEYWORD4>dec</KEYWORD4>
+            <KEYWORD4>+</KEYWORD4>
+            <KEYWORD4>-</KEYWORD4>
+            <KEYWORD4>=</KEYWORD4>
+            <KEYWORD4>==</KEYWORD4>
+            <KEYWORD4>not=</KEYWORD4>
+            <KEYWORD4>&lt;=</KEYWORD4>
+            <KEYWORD4>&gt;=</KEYWORD4>
+            <KEYWORD4>&lt;</KEYWORD4>
+            <KEYWORD4>&gt;</KEYWORD4>
+            <KEYWORD4>/</KEYWORD4>
+            <KEYWORD4>*</KEYWORD4>
+            <KEYWORD4>%</KEYWORD4>
+            <KEYWORD4>quot</KEYWORD4>
+            <KEYWORD4>inc</KEYWORD4>
+            <KEYWORD4>dec</KEYWORD4>
+            <KEYWORD4>rem</KEYWORD4>
+            <KEYWORD4>min</KEYWORD4>
+            <KEYWORD4>max</KEYWORD4>
+            <KEYWORD4>and</KEYWORD4>
+            <KEYWORD4>or</KEYWORD4>
+            <KEYWORD4>not</KEYWORD4>
+            <KEYWORD4>bit-and</KEYWORD4>
+            <KEYWORD4>bit-or</KEYWORD4>
+            <KEYWORD4>bit-not</KEYWORD4>
+            <KEYWORD4>bit-shift-right</KEYWORD4>
+            <KEYWORD4>bit-shift-left</KEYWORD4>
+            <KEYWORD4>union</KEYWORD4>
+            <KEYWORD4>diffference</KEYWORD4>
+            <KEYWORD4>intersection</KEYWORD4>
+            <KEYWORD4>select</KEYWORD4>
+            <KEYWORD4>index</KEYWORD4>
+            <KEYWORD4>rename</KEYWORD4>
+            <KEYWORD4>join</KEYWORD4>
+            <KEYWORD4>distinct</KEYWORD4>
+            <KEYWORD4>submit</KEYWORD4>
+
+            <!-- Pre-defined vars -->
+            <KEYWORD3>*ns*</KEYWORD3>
+            <KEYWORD3>*out*</KEYWORD3>
+            <KEYWORD3>*print-readably*</KEYWORD3>
+            <KEYWORD3>*print-readably*</KEYWORD3>
+            <KEYWORD3>*warn-on-reflection*</KEYWORD3>
+            <!-- Special symbols -->
+            <KEYWORD3>&amp;</KEYWORD3>
+
+            <!-- Literals -->
+            <LITERAL4>true</LITERAL4>
+            <LITERAL4>false</LITERAL4>
+            <LITERAL4>nil</LITERAL4>
+        </KEYWORDS>
+    </RULES>
+
+    <!-- comment out
+    <RULES  SET="STRINGS"
+            HIGHLIGHT_DIGITS="FALSE"
+            DEFAULT="LITERAL1"
+            IGNORE_CASE="TRUE">
+        <SEQ_REGEXP
+            HASH_CHAR="\"
+            AT_WORD_START="FALSE"
+            TYPE="LABEL">\\.</SEQ_REGEXP>
+        <KEYWORDS>
+            <INVALID>&quot;</INVALID>
+        </KEYWORDS>
+    </RULES>
+    -->
+
+    <!-- comment out
+    <RULES  SET="REGEXPS"
+            HIGHLIGHT_DIGITS="FALSE"
+            DEFAULT="LITERAL1"
+            IGNORE_CASE="TRUE">
+        <SEQ_REGEXP
+            HASH_CHAR="\"
+            AT_WORD_START="FALSE"
+            TYPE="LABEL">\\.</SEQ_REGEXP>
+        <KEYWORDS>
+            <INVALID>&quot;</INVALID>
+        </KEYWORDS>
+    </RULES>
+    -->
+</MODE>

@@ -4561,17 +4561,15 @@ def toEncodedString (s,encoding='utf-8',reportErrors=False):
 def toUnicode (s,encoding='utf-8',reportErrors=False):
 
     # The encoding is usually 'utf-8'
-    # but is may be different while importing or reading files.
-    if encoding is None:
+    # but it may be different while importing or reading files.
+    if not encoding:
         encoding = 'utf-8'
-
     if isPython3:
         f,mustConvert = str,g.isBytes
     else:
         f = unicode
         def mustConvert (s):
             return type(s) != types.UnicodeType
-
     if not s:
         s = g.u('')
     elif mustConvert(s):
@@ -4584,10 +4582,10 @@ def toUnicode (s,encoding='utf-8',reportErrors=False):
                 if reportErrors: g.reportBadChars(s,encoding)
             except Exception:
                 g.error('can not convert to unicode!',g.callers())
+                g.es_exception()
                 s = ''
     else:
         pass
-
     return s
 #@+node:ekr.20091206161352.6232: *3* g.u & g.ue
 if isPython3: # g.not defined yet.
