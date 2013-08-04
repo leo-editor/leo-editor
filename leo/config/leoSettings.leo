@@ -517,7 +517,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -10681,7 +10681,7 @@ LightSteelBlue1 # Good for testing.</t>
 <t tx="tbrown.20130411154439.14821">from leo.plugins.qtGui import expand_css_constants
 g.app.gui.frameFactory.masterFrame.setStyleSheet(
     expand_css_constants(p.b))
-print expand_css_constants(p.b)</t>
+print(expand_css_constants(p.b))</t>
 <t tx="tbrown.20130411155428.5767">/*
   AUTOMATICALLY GENERATED FROM:
   file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/zoom2/leo/config/leoSettings.leo#Themes--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
@@ -12587,7 +12587,7 @@ LightSteelBlue1 # Good for testing.</t>
 <t tx="ville.20130416213952.3878">from leo.plugins.qtGui import expand_css_constants
 g.app.gui.frameFactory.masterFrame.setStyleSheet(
     expand_css_constants(p.b))
-print expand_css_constants(p.b)</t>
+print(expand_css_constants(p.b))</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
