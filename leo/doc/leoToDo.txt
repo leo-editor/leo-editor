@@ -1119,59 +1119,43 @@ def exportHeadlines (self,event=None):
 .. @+node:ekr.20111123095018.13632: *5* Fix bug: expand Find tab as needed for bigger fonts
 .. @+node:ekr.20110605121601.18326: *6* createTab (leoQtLog)
 def createTab (self,tabName,createText=True,widget=None,wrap='none'):
-
-    """ Create a new tab in tab widget
-
+    """
+    Create a new tab in tab widget
     if widget is None, Create a QTextBrowser,
     suitable for log functionality.
     """
-
     trace = False and not g.unitTesting
     c = self.c
-
     if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
-
     if widget is None:
-
         widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
             # widget is subclass of QTextBrowser.
         contents = leoQTextEditWidget(widget=widget,name='log',c=c)
             # contents a wrapper.
         widget.leo_log_wrapper = contents
             # Inject an ivar into the QTextBrowser that points to the wrapper.
-
         if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-
-        widget.setWordWrapMode(
-            g.choose(self.wrap,
-                QtGui.QTextOption.WordWrap,
-                QtGui.QTextOption.NoWrap))
-
+        option = QtGui.QTextOption
+        widget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
         widget.setReadOnly(False) # Allow edits.
         self.logDict[tabName] = widget
         if tabName == 'Log':
             self.widget = contents # widget is an alias for logCtrl.
             widget.setObjectName('log-widget')
-
         if True: # 2011/05/28.
             # Set binding on all text widgets.
             theFilter = leoQtEventFilter(c,w=self,tag='log')
             self.eventFilters.append(theFilter) # Needed!
             widget.installEventFilter(theFilter)
-
         if True and tabName == 'Log':
-
             assert c.frame.top.__class__.__name__ == 'DynamicWindow'
             find_widget = c.frame.top.leo_find_widget
-
             # 2011/11/21: A hack: add an event filter.
             find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
             find_widget.installEventFilter(find_widget.leo_event_filter)
             if trace: g.trace('** Adding event filter for Find',find_widget)
-
             # 2011/11/21: A hack: make the find_widget an official log widget.
             self.contentsDict['Find']=find_widget
-
         self.contentsDict[tabName] = widget
         self.tabWidget.addTab(widget,tabName)
     else:
@@ -1180,15 +1164,12 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         widget.leo_log_wrapper = contents
             # The leo_log_wrapper is the widget itself.
         if trace: g.trace('** using',tabName,widget)
-
         if 1: # Now seems to work.
             theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
             self.eventFilters.append(theFilter) # Needed!
             widget.installEventFilter(theFilter)
-
         self.contentsDict[tabName] = contents
         self.tabWidget.addTab(contents,tabName)
-
     return contents
 .. @+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
 def createFindTab (self,parent,tab_widget):

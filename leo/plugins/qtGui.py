@@ -1933,6 +1933,9 @@ from PyQt4 import uic
 class DynamicWindow(QtGui.QMainWindow):
 
     '''A class representing all parts of the main Qt window.
+    
+    **Important**: when using tabs, the LeoTabbedTopLevel widget
+    is the top-level window, **not** this QMainWindow!
 
     c.frame.top is a DynamicWindow object.
 
@@ -1962,6 +1965,29 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_ui = None # Set in construct.
         c.font_size_delta = 0  # for adjusting font sizes dynamically
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
+    #@+node:ekr.20110605121601.18140: *4* closeEvent (DynamicWindow)
+    def closeEvent (self,event):
+
+        trace = False and not g.unitTesting
+
+        c = self.leo_c
+
+        if not c.exists:
+            # Fixes double-prompt bug on Linux.
+            if trace: g.trace('destroyed')
+            event.accept()
+            return
+
+        if c.inCommand:
+            if trace: g.trace('in command')
+            c.requestCloseWindow = True
+        else:
+            if trace: g.trace('closing')
+            ok = g.app.closeLeoWindow(c.frame)
+            if ok:
+                event.accept()
+            else:
+                event.ignore()
     #@+node:ekr.20110605121601.18139: *4* construct (DynamicWindow)
     def construct(self,master=None):
         """ Factor 'heavy duty' code out from ctor """
@@ -2002,29 +2028,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setStyleSheets()
         
         # self.setLeoWindowIcon()
-    #@+node:ekr.20110605121601.18140: *4* closeEvent (DynamicWindow)
-    def closeEvent (self,event):
-
-        trace = False and not g.unitTesting
-
-        c = self.leo_c
-
-        if not c.exists:
-            # Fixes double-prompt bug on Linux.
-            if trace: g.trace('destroyed')
-            event.accept()
-            return
-
-        if c.inCommand:
-            if trace: g.trace('in command')
-            c.requestCloseWindow = True
-        else:
-            if trace: g.trace('closing')
-            ok = g.app.closeLeoWindow(c.frame)
-            if ok:
-                event.accept()
-            else:
-                event.ignore()
     #@+node:ekr.20110605121601.18141: *4* createMainWindow & helpers
     # Called instead of uic.loadUi(ui_description_file, self)
 
@@ -2549,7 +2552,6 @@ class DynamicWindow(QtGui.QMainWindow):
         '''Select the window or tab for c.'''
 
         # self is c.frame.top
-
         if self.leo_master:
             # A LeoTabbedTopLevel.
             self.leo_master.select(c)
@@ -2557,6 +2559,29 @@ class DynamicWindow(QtGui.QMainWindow):
             w = c.frame.body.bodyCtrl
             g.app.gui.set_focus(c,w)
 
+    #@+node:ekr.20110605121601.18178: *4* setGeometry (DynamicWindow)
+    def setGeometry (self,rect):
+
+        '''Set the window geometry, but only once when using the qttabs gui.'''
+
+        # g.trace('(DynamicWindow)',rect,g.callers())
+
+        if g.app.qt_use_tabs:
+            m = self.leo_master
+            assert self.leo_master
+
+            # Only set the geometry once, even for new files.
+            if not hasattr(m,'leo_geom_inited'):
+                m.leo_geom_inited = True
+                self.leo_master.setGeometry(rect)
+                QtGui.QMainWindow.setGeometry(self,rect)
+        else:
+            QtGui.QMainWindow.setGeometry(self,rect)
+    #@+node:ekr.20110605121601.18177: *4* setLeoWindowIcon
+    def setLeoWindowIcon(self):
+        """ Set icon visible in title bar and task bar """
+        # xxx do not use 
+        self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@+node:ekr.20110605121601.18174: *4* setSplitDirection (DynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
@@ -2622,29 +2647,12 @@ class DynamicWindow(QtGui.QMainWindow):
         background-color: pink;
     }
     '''
-    #@+node:ekr.20110605121601.18177: *4* setLeoWindowIcon
-    def setLeoWindowIcon(self):
-        """ Set icon visible in title bar and task bar """
-        # xxx do not use 
-        self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
-    #@+node:ekr.20110605121601.18178: *4* setGeometry (DynamicWindow)
-    def setGeometry (self,rect):
-
-        '''Set the window geometry, but only once when using the qttabs gui.'''
-
-        # g.trace('(DynamicWindow)',rect,g.callers())
-
-        if g.app.qt_use_tabs:
-            m = self.leo_master
-            assert self.leo_master
-
-            # Only set the geometry once, even for new files.
-            if not hasattr(m,'leo_geom_inited'):
-                m.leo_geom_inited = True
-                self.leo_master.setGeometry(rect)
-                QtGui.QMainWindow.setGeometry(self,rect)
-        else:
-            QtGui.QMainWindow.setGeometry(self,rect)
+    #@+node:ekr.20130804061744.12425: *4* setWindowTitle (DynamicWindow)
+    if 0: # Override for debugging only.
+        def setWindowTitle (self,s):
+            g.trace('***(DynamicWindow)',s,self.parent())
+            # Call the base class method.
+            QtGui.QMainWindow.setWindowTitle(self,s)
     #@+node:ekr.20110605121601.18179: *4* splitter event handlers
     def onSplitter1Moved (self,pos,index):
 
@@ -4936,12 +4944,18 @@ class leoQtFrame (leoFrame.leoFrame):
         self.top.activateWindow()
         self.top.raise_()
     def getTitle (self):
-        s = g.u(self.top.windowTitle())
-        # g.trace('(qtFrame)',repr(s))
+        # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
+        # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
+        w = self.top.leo_master if g.app.qt_use_tabs else self.top
+        s = g.u(w.windowTitle())
         return s
     def setTitle (self,s):
-        # g.trace('(qtFrame)',repr(s))
-        if self.top: self.top.setWindowTitle(s)
+        # g.trace('**(qtFrame)',repr(s))
+        if self.top:
+            # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
+            # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
+            w = self.top.leo_master if g.app.qt_use_tabs else self.top
+            w.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
         # self.top is a DynamicWindow.
         # g.trace('(qtFrame)',x,y,w,h,self.top,g.callers())
@@ -5142,59 +5156,43 @@ class leoQtLog (leoFrame.leoLog):
             w.clear() # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *5* createTab (leoQtLog)
     def createTab (self,tabName,createText=True,widget=None,wrap='none'):
-
-        """ Create a new tab in tab widget
-
+        """
+        Create a new tab in tab widget
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
-
         trace = False and not g.unitTesting
         c = self.c
-
         if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
-
         if widget is None:
-
             widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
                 # widget is subclass of QTextBrowser.
             contents = leoQTextEditWidget(widget=widget,name='log',c=c)
                 # contents a wrapper.
             widget.leo_log_wrapper = contents
                 # Inject an ivar into the QTextBrowser that points to the wrapper.
-
             if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-
-            widget.setWordWrapMode(
-                g.choose(self.wrap,
-                    QtGui.QTextOption.WordWrap,
-                    QtGui.QTextOption.NoWrap))
-
+            option = QtGui.QTextOption
+            widget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
             widget.setReadOnly(False) # Allow edits.
             self.logDict[tabName] = widget
             if tabName == 'Log':
                 self.widget = contents # widget is an alias for logCtrl.
                 widget.setObjectName('log-widget')
-
             if True: # 2011/05/28.
                 # Set binding on all text widgets.
                 theFilter = leoQtEventFilter(c,w=self,tag='log')
                 self.eventFilters.append(theFilter) # Needed!
                 widget.installEventFilter(theFilter)
-
             if True and tabName == 'Log':
-
                 assert c.frame.top.__class__.__name__ == 'DynamicWindow'
                 find_widget = c.frame.top.leo_find_widget
-
                 # 2011/11/21: A hack: add an event filter.
                 find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
                 find_widget.installEventFilter(find_widget.leo_event_filter)
                 if trace: g.trace('** Adding event filter for Find',find_widget)
-
                 # 2011/11/21: A hack: make the find_widget an official log widget.
                 self.contentsDict['Find']=find_widget
-
             self.contentsDict[tabName] = widget
             self.tabWidget.addTab(widget,tabName)
         else:
@@ -5203,15 +5201,12 @@ class leoQtLog (leoFrame.leoLog):
             widget.leo_log_wrapper = contents
                 # The leo_log_wrapper is the widget itself.
             if trace: g.trace('** using',tabName,widget)
-
             if 1: # Now seems to work.
                 theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
                 self.eventFilters.append(theFilter) # Needed!
                 widget.installEventFilter(theFilter)
-
             self.contentsDict[tabName] = contents
             self.tabWidget.addTab(contents,tabName)
-
         return contents
     #@+node:ekr.20110605121601.18327: *5* cycleTabFocus (leoQtLog)
     def cycleTabFocus (self,event=None):
@@ -5266,15 +5261,9 @@ class leoQtLog (leoFrame.leoLog):
 
         '''Create the tab if necessary and make it active.'''
 
-        trace = False and not g.unitTesting
-        # w = self.tabWidget
-        if trace: g.trace(tabName,g.callers())
-        # Step 1: See if the tab exits.
-        ok = self.selectHelper(tabName)
-        if ok: return
-        # Step 2: create tab if necessary.
-        self.createTab(tabName,widget=widget,wrap=wrap)
-        self.selectHelper(tabName)
+        if not self.selectHelper(tabName):
+            self.createTab(tabName,widget=widget,wrap=wrap)
+            self.selectHelper(tabName)
     #@+node:ekr.20110605121601.18332: *6* selectHelper (leoQtLog)
     def selectHelper (self,tabName):
 
@@ -6897,7 +6886,6 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         QtGui.QTabWidget.__init__(self)
         self.detached = []
         self.setMovable(True)
-
         def tabContextMenu(point):
             index = self.tabBar().tabAt(point)
             if index < 0 or (self.count() < 2 and not self.detached):
@@ -6905,16 +6893,18 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             menu = QtGui.QMenu()
             if self.count() > 1:
                 a = menu.addAction("Detach")
-                a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.detach(index))
+                a.connect(a, QtCore.SIGNAL("triggered()"),
+                    lambda: self.detach(index))
                 a = menu.addAction("Horizontal tile")
-                a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.tile(index, orientation='H'))
+                a.connect(a, QtCore.SIGNAL("triggered()"),
+                    lambda: self.tile(index, orientation='H'))
                 a = menu.addAction("Vertical tile")
-                a.connect(a, QtCore.SIGNAL("triggered()"), lambda: self.tile(index, orientation='V'))
+                a.connect(a, QtCore.SIGNAL("triggered()"),
+                    lambda: self.tile(index, orientation='V'))
             if self.detached:
                 a = menu.addAction("Re-attach All")
                 a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
             menu.exec_(self.mapToGlobal(point))
-
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.connect(self,
             QtCore.SIGNAL("customContextMenuRequested(QPoint)"), tabContextMenu)
@@ -6984,25 +6974,28 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
         self.detached = [i for i in self.detached if i[1] != w]
-    #@+node:ekr.20110605121601.18453: *4* setChanged
+    #@+node:ekr.20110605121601.18453: *4* setChanged (LeoTabbedTopLevel)
     def setChanged (self,c,changed):
 
         # 2011/03/01: Find the tab corresponding to c.
+        trace = False and not g.unitTesting
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         if i < 0: return
         s = self.tabText(i)
         s = g.u(s)
-        # g.trace('LeoTabbedTopLevel',changed,repr(s),g.callers(5))
+        # g.trace('LeoTabbedTopLevel',changed,repr(s),g.callers())
         if len(s) > 2:
             if changed:
                 if not s.startswith('* '):
                     title = "* " + s
                     self.setTabText(i,title)
+                    if trace: g.trace(title)
             else:
                 if s.startswith('* '):
                     title = s[2:]
                     self.setTabText(i,title)
+                    if trace: g.trace(title)
     #@+node:ekr.20110605121601.18454: *4* setTabName (LeoTabbedTopLevel)
     def setTabName (self,c,fileName):
 
@@ -7037,15 +7030,12 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
 
         '''Select the tab for c.'''
 
-        # g.trace(c,g.callers())
+        # g.trace(c.frame.title,g.callers())
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
-
         # Fix bug 844953: tell Unity which menu to use.
         c.enableMenuBar()
-
-        # g.trace(i,c.frame.title,c.frame.menu.menuBar)
     #@-others
 #@+node:ekr.20110605121601.18458: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
@@ -7168,7 +7158,6 @@ class SDIFrameFactory:
         dw.construct()
         g.app.gui.attachLeoIcon(dw)
         dw.setWindowTitle(leoFrame.title)
-
         if 1:
             # g.trace('(SDIFrameFactory)',g.callers())
             dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
@@ -7182,7 +7171,6 @@ class SDIFrameFactory:
             dw.showFullScreen()
         else:
             dw.show()
-
         return dw
 
     def deleteFrame(self, wdg):
@@ -7201,7 +7189,7 @@ class TabbedFrameFactory:
     #@+node:ekr.20110605121601.18466: *4* createFrame (TabbedFrameFactory)
     def createFrame(self, leoFrame):
 
-        # g.trace('(TabbedFrameFactory)',g.callers())
+        # g.trace('*** (TabbedFrameFactory)')
         c = leoFrame.c
         if self.masterFrame is None:
             self.createMaster()
