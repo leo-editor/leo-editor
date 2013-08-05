@@ -2514,9 +2514,7 @@ class LoadManager:
 
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('lm.loadLocalFile: %s' % (fn))
-
         lm = self
-
         # Step 0: Return if the file is already open.
         fn = g.os_path_finalize(fn)
         if fn:
@@ -2524,12 +2522,10 @@ class LoadManager:
             if c:
                 if trace: g.trace('Already open: %s' % (fn))
                 return c
-
         # Step 1: get the previous settings.
         # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
         # Otherwise, get settings from leoSettings.leo, myLeoSettings.leo, or default settings.
         previousSettings = lm.getPreviousSettings(fn)
-
         # Step 2: open the outline in the requested gui.
         # For .leo files (and zipped .leo file) this opens the file a second time.
         c = lm.openFileByName(fn,gui,old_c,previousSettings)
@@ -2650,14 +2646,12 @@ class LoadManager:
 
     #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
     def initWrapperLeoFile (self,c,fn):
-
-        '''Create an empty file if the external fn is empty.
+        '''
+        Create an empty file if the external fn is empty.
 
         Otherwise, create an @edit or @file node for the external file.
         '''
-
         # lm = self
-
         # Use the config params to set the size and location of the window.
         frame = c.frame
         frame.setInitialWindowGeometry()
@@ -2665,7 +2659,6 @@ class LoadManager:
         frame.lift()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
             # Resize the _new_ frame.
-
         if not g.os_path_exists(fn):
             p = c.rootPosition()
             # Create an empty @edit node unless fn is an .leo file.
@@ -2681,17 +2674,18 @@ class LoadManager:
             s,e = g.readFileIntoString(fn)
             if s is None: return None
             p = c.rootPosition()
-            g.trace(p)
             if p:
                 p.setHeadString('@edit %s' % fn)
                 p.setBodyString(s)
                 c.selectPosition(p)
-
+        # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
+        c.mFileName = '%s.leo' % (fn)
+        c.frame.title = c.computeWindowTitle(c.mFileName)
+        c.frame.setTitle(c.frame.title)
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.config.getBool('use_chapters') and c.chapterController:
             c.chapterController.finishCreate()
-
         frame.c.setChanged(False)
             # Mark the outline clean.
             # This makes it easy to open non-Leo files for quick study.

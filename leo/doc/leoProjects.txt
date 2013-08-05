@@ -2875,6 +2875,16 @@ Another fix was setting c.frame.title in saveAs to::
     c.computeWindowTitle(c.mFileName)
     
 This ensures that all all window titles have the same format.
+
+I chose to do the bare minimum fix, confined to g.computeWindowTitle::
+
+    if os.sep in '/\\':
+        title = title.replace('/',os.sep).replace('\\',os.sep)
+
+I didn't have the nerve to put similar code in, say, g.os_path_join. The
+Python docs for os.path.join state, "In all cases, join(head, tail) returns
+a path to the same location as path (but the strings may differ)."
+
 #@+node:ekr.20120427064024.10062: *4* Fixed bug 711158: Warn if same .leo file open in another Leo instance
 @language python
 @language rest
@@ -3533,6 +3543,10 @@ Yes, this is a pretty horrible hack, but it seems necessary on Ubuntu
 Unity. Presumably this is a Qt or Unity problem, but there has been
 response to previous bug reports, so it seems that best that can be done.
 
+#@+node:ekr.20130805134749.12434: *4* Fixed bug 1184855: data loss with command line 'leo somefile.ext'
+https://bugs.launchpad.net/leo-editor/+bug/1184855
+
+The fix was to set the name of the .leo file to foobar.pyxxx.leo in LM.initWrapperLeoFile.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
