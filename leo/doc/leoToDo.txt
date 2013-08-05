@@ -184,6 +184,8 @@ have a "Find and Replace" dialog box similar to the one below:
 
 .. image: c:/prog/findReplace.jpg
 
+.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
 .. @+node:ekr.20130508084413.10634: *3* quickmove-jump-to adds button
 .. @+node:ekr.20130803125244.17100: ** Docs: Next
 .. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots

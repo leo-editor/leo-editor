@@ -5218,6 +5218,9 @@ def computeWindowTitle (fileName):
             title = fn + " in " + path
         else:
             title = fn
+        # Yet another fix for bug 1194209: regularize slashes.
+        if os.sep in '/\\':
+            title = title.replace('/',os.sep).replace('\\',os.sep)
         return title
 #@+node:ekr.20090516135452.5777: *3* g.ensureLeading/TrailingNewlines
 def ensureLeadingNewlines (s,n):

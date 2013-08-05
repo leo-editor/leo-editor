@@ -2825,50 +2825,56 @@ writers\latex2e\__init__.py
 writers\odf_odt\__init__.py
 writers\xetex\__init__.py
 #@+node:ekr.20120330040023.9780: *3* Bugs
-#@+node:ekr.20120330040023.9779: *4* Restore focus on window activation
-# Changed: onActivateEvent (qtGui), onDeactivateEvent (qtGui)
-#@+node:ekr.20120409074150.9940: *4* The @auto read code now catches failed asserts in import code.
+#@+node:ekr.20120925061642.13505: *4* Changes in rev 4163 caused the bug
 @nocolor-node
 
-If an assert fails, the entire file is read into a single node.
-#@+node:ekr.20120409182030.10028: *4* Fixed several problems with c-to-py command
+The problem is the call to w.setStyleSheet in g.app.gui.update_style_sheet.
+Apparently, this causes a layout-request event that spoils the scroll position.
+
+The fixes:
+    
+1. update_style_sheet does nothing if the new stylesheet is the same as the old.
+
+2. Added lockout to mouseReleaseEvent. update_style_sheet does nothing if
+   the lockout is set.
+   
+3. mouseReleaseEvent sets c.p.v.insertPoint if appropriate.
+
+Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point remains visible.
+#@+node:ekr.20120520055508.11872: *4* Clear previous focus-border after alt-tab
 @nocolor-node
 
-An assert failed during scanning in mungeAllFunctions.
+This was a recent problem.  Normally setInputState should *not* set the border.
 
-Added defensive code to mungeAllFunctions, dedentBlocks and
-replaceComments. The new code simply increments a pointer if a "progress"
-assert would fail. (The progress assert still exists, as a double-check.)
+Added code to eventFilter to call remove_border on focus out.
 
-Fixed bug: the call to u.afterChangeGroup in the go() method is called only once.
+set-xxx-state commands call setInputState with set_border = True.
+#@+node:edward.20130802134506.10431: *4* Created a dummy tab when only one tab would otherwise be opened
+This was a horrible kludge in LM.doPostPluginsInit
+#@+node:ekr.20121205091157.12223: *4* Don't horizontally scroll body pane if word wrapping
+The fix was in qtBody.setWrap.
+#@+node:ekr.20130612134617.12551: *4* Execute selected script now works again
+# The change was to g.getScript.
+#@+node:ekr.20120921145435.10607: *4* Fixed activateMenu
+@nocolor-node
+The trick is to find the wrapper first: it is *also* a QMenu.
+We can then call menuBar.setActiveAction on its action!!
+#@+node:ekr.20130804061744.12424: *4* Fixed bug 1194209: Inconsistent Window Titles
+@nocolor-node
 
-Suppress warning messages given by CPrettyPrinter.indent.
-#@+node:ekr.20120401144849.10036: *4* Fixed bug 971171: re .leoRecentFiles
-@language python
-@language rest
+https://bugs.launchpad.net/leo-editor/+bug/1194209
 
-If If $(HOME)/.leo/.leoRecentFiles.txt does not exist,
-the only recent file ever is the current file
-https://bugs.launchpad.net/leo-editor/+bug/971171
+save-as doesn't update the window title.  Changing tabs does.
 
-The fix: rf.writeRecentFilesFile creates $(HOME)/.leo/.leoRecentFiles.txt if it does not exist.
-#@+node:ekr.20120401144849.10035: *4* Fixed bugs 971166 & 979142 re copy/paste
-@language python
-@language rest
+The main fixes were to qtFrame.get/setTitle. When using tabs, the
+LeoTabbedTopLevel widget is the top-level window, *not* the DynamicWindow
+(a QMainWindow).
 
-These bugs are really the same bug
-
-Node body contents displayed is unpredictably incorrect
-https://bugs.launchpad.net/leo-editor/+bug/979142
-
-Prints to tabs in the Log Pane are UTF-8 encoded
-https://bugs.launchpad.net/leo-editor/+bug/971166
-
-The fix was:
-
-1. Use the "slow" code in leoQTextEditWidget.get.
-2. Use w.get/setAllText in leoFrame.pasteText.
-#@+node:ekr.20120413152012.10048: *4* Minimize scrolling during paste-text
+Another fix was setting c.frame.title in saveAs to::
+    
+    c.computeWindowTitle(c.mFileName)
+    
+This ensures that all all window titles have the same format.
 #@+node:ekr.20120427064024.10062: *4* Fixed bug 711158: Warn if same .leo file open in another Leo instance
 @language python
 @language rest
@@ -2883,24 +2889,6 @@ What I did:
   This allows us to used g.app.db even when --no-cache is in effect.
   
 - Added the three methods in app.Detecting already-open files.
-#@+node:ekr.20120520055508.11872: *4* Clear previous focus-border after alt-tab
-@nocolor-node
-
-This was a recent problem.  Normally setInputState should *not* set the border.
-
-Added code to eventFilter to call remove_border on focus out.
-
-set-xxx-state commands call setInputState with set_border = True.
-#@+node:ekr.20120520055508.11874: *4* Fixed special cases of auto-completion of commands
-@nocolor-node
-
-If the user has not typed anything in the minibuffer, <alt-x><tab> returns *all* completions.
-
-Otherwise, if there are no completions, the "Completions" tab is empty, *not* all completions.
-
-This behavior is much more intuitive than the old behavior.
-
-The fix was a new special case in k.computeCompletionList.
 #@+node:ekr.20111025141618.16484: *4* Fixed bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer
 @nocolor-node
 
@@ -3160,42 +3148,15 @@ if 0:
             print(repr(val))
             print(repr(val2))
     print('%s mismatches' % mismatches)
-#@+node:ekr.20120524082434.9920: *4* Fixed crash after viewrendered-hide
-#@+node:ekr.20120523095917.9905: *4* Fixed bug: elected node was not always restored properly
-@nocolor-node
+#@+node:ekr.20120401144849.10036: *4* Fixed bug 971171: re .leoRecentFiles
+@language python
+@language rest
 
-The bug was in chapter.findPositionInChapter.
-#@+node:ekr.20120525051746.9982: *4* Fixed bug 998090: save file as doesn't remove entry from open file list
-@nocolor-node
+If If $(HOME)/.leo/.leoRecentFiles.txt does not exist,
+the only recent file ever is the current file
+https://bugs.launchpad.net/leo-editor/+bug/971171
 
-https://bugs.launchpad.net/leo-editor/+bug/998090
-save file as doesn't remove entry from open file list
-
-Save file as leaves the file's previous path in g.app.db.openFiles, so
-that next time the original file's opened you get a "already open"
-message.
-#@+node:ekr.20120308120323.9864: *4* Wont Fix bug 903640: Import of Python files containing the strings "<<" and ">>" does not work
-@nocolor-node
-
-See: https://bugs.launchpad.net/leo-editor/+bug/903640
-Import of Python files containing the strings "<<" and ">>" does not work
-
-At present @auto can import .py files containing self.cprint("<<" + ret +
-">>\n")
-
-Furthermore, it's possible to write such files properly after changing
-them.
-
-Thus, this bug seems to have been completely fixed, as far as @auto goes.
-
-However, *importing* the file with Leo's import-file command does fail (an
-@ignore is inserted). This is expected: unlike @auto, the import command
-creates an @file node, so the "perfect import" check will complain that the
-section called << ret >> is undefined.
-
-I am going to close this item. I see no real need to support other section
-delimiters in external files. If there ever becomes a real need to do so, a
-separate wishlist item will be appropriate.
+The fix: rf.writeRecentFilesFile creates $(HOME)/.leo/.leoRecentFiles.txt if it does not exist.
 #@+node:ekr.20120418065452.10029: *4* Fixed bug 981849: incorrect body content shown
 @language python
 @language rest
@@ -3218,6 +3179,105 @@ See http://stackoverflow.com/questions/9554435/qtextedit-background-color-change
 
 
     
+#@+node:ekr.20120525051746.9982: *4* Fixed bug 998090: save file as doesn't remove entry from open file list
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/998090
+save file as doesn't remove entry from open file list
+
+Save file as leaves the file's previous path in g.app.db.openFiles, so
+that next time the original file's opened you get a "already open"
+message.
+#@+node:ekr.20120523095917.9905: *4* Fixed bug: elected node was not always restored properly
+@nocolor-node
+
+The bug was in chapter.findPositionInChapter.
+#@+node:ekr.20120401144849.10035: *4* Fixed bugs 971166 & 979142 re copy/paste
+@language python
+@language rest
+
+These bugs are really the same bug
+
+Node body contents displayed is unpredictably incorrect
+https://bugs.launchpad.net/leo-editor/+bug/979142
+
+Prints to tabs in the Log Pane are UTF-8 encoded
+https://bugs.launchpad.net/leo-editor/+bug/971166
+
+The fix was:
+
+1. Use the "slow" code in leoQTextEditWidget.get.
+2. Use w.get/setAllText in leoFrame.pasteText.
+#@+node:ekr.20120524082434.9920: *4* Fixed crash after viewrendered-hide
+#@+node:ekr.20121002123916.10203: *4* Fixed crasher in active_path.py
+#@+node:ekr.20121126194831.10147: *4* Fixed crasher in leoBridge
+@nocolor-node
+
+The crash happens only when the new readSettings argument to leoBridge.bridgeController is False.
+In that case, the global dicts were not inited properly.
+
+What I did:
+    
+- Created lm.createDefaultSettingsDicts, called by lm.readGlobalSettingsFiles.
+- leoBridge.initLeo calls lm.createDefaultSettingsDicts to set the global dicts.
+#@+node:ekr.20121126194831.10148: *5* report
+@nocolor-node
+
+Bug description:
+  --- Begin Python script to run from a console ------
+  import leo.core.leoBridge as b
+  bridge = b.controller(gui='nullGui',verbose=False,loadPlugins=False,readSettings=False)
+  c = bridge.openLeoFile(r'c:\users\edreamleo\test\minimal.leo')
+  --- End Python Script -----
+
+  The above script and minimal.leo are attached to this bug report.  Put
+  them in the same directory, open a console, set the current working
+  directory to the directory containing the script, and run the script.
+  You will see the this exception on the console:
+
+  2012-11-16 11:28:51 /home/ldi/tmp
+  $ python readSettingsFalse.py
+  Traceback (most recent call last):
+    File "readSettingsFalse.py", line 5, in <module>
+      cmdrUnl = bridge.openLeoFile('minimal.leo')
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 330, in openLeoFile
+      c = self.createFrame(fileName)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 367, in createFrame
+      c = g.openWithFileName(fileName)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoGlobals.py", line 1875, in openWithFileName
+      return g.app.loadManager.loadLocalFile(fileName,gui,old_c)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 2539, in loadLocalFile
+      previousSettings = lm.getPreviousSettings(fn)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1668, in getPreviousSettings
+      lm.globalSettingsDict,lm.globalShortcutsDict,localFlag=True)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1626, in computeLocalSettings
+      settings_d = settings_d.copy()
+  AttributeError: 'NoneType' object has no attribute 'copy'
+  2012-11-16 11:28:55 /home/ldi/tmp
+  $
+  ---------
+  I confirmed this bug on Leo-Editor revisions 5501 and 5505.
+#@+node:ekr.20121002082022.10183: *4* fixed crasher involving g.importFromPath
+@nocolor-node
+
+Note: happens only with Python 3.3.0.
+
+Here is a minor traceback when opening quickstart.leo
+
+Leo 4.11 devel, build 5468, 2012-09-30 13:02:59
+Python 3.3.0, qt version 4.8.3
+Windows 6, 1, 7601, 2, Service Pack 1
+reading: C:\Python33\Lib\site-packages\leo-editor\leo\doc\quickstart.leo
+unexpected exception in g.importFromPath(rest)
+Traceback (most recent call last):
+  File "C:\Python33\Lib\site-packages\leo-editor\leo\core\leoGlobals.py", line 5689, in importFromPath
+    data = imp.find_module(moduleName,[path]) # This can open the file.
+  File "C:\Python33\lib\imp.py", line 203, in find_module
+    package_directory = os.path.join(entry, name)
+  File "C:\Python33\lib\ntpath.py", line 171, in join
+    if b[:1] in seps:
+TypeError: Type str doesn't support the buffer API
+Can not import rest
 #@+node:ekr.20120602154454.10193: *4* Fixed import problems discovered by importing 2to3
 @language rest
 
@@ -3369,59 +3429,7 @@ able to complain about all constructions.
 Thus, some import mistakes can *only* be found by running tests.  For
 complex programs like 2to3, the only truly safe way to check imports
 is by running the 2to3 test suite.
-#@+node:ekr.20120921145435.10607: *4* Fixed activateMenu
-@nocolor-node
-The trick is to find the wrapper first: it is *also* a QMenu.
-We can then call menuBar.setActiveAction on its action!!
-#@+node:ekr.20120925061642.13505: *4* Changes in rev 4163 caused the bug
-@nocolor-node
-
-The problem is the call to w.setStyleSheet in g.app.gui.update_style_sheet.
-Apparently, this causes a layout-request event that spoils the scroll position.
-
-The fixes:
-    
-1. update_style_sheet does nothing if the new stylesheet is the same as the old.
-
-2. Added lockout to mouseReleaseEvent. update_style_sheet does nothing if
-   the lockout is set.
-   
-3. mouseReleaseEvent sets c.p.v.insertPoint if appropriate.
-
-Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point remains visible.
-#@+node:ekr.20120928142052.13477: *4* Fixed scrolling problem with scrollwheel
-@nocolor-node
-
-The maintain_scroll option is *evil*.
-#@+node:ekr.20121002023749.10191: *4* Fixed problems with scrolling when saving
-@nocolor-node
-
-LeoQTextBrowser.onSliderChanged must set v.scrollBarSpot only if "self" is actually the body pane.
-
-Othewise scrolling the log pane will scroll the body pane!
-#@+node:ekr.20121002123916.10203: *4* Fixed crasher in active_path.py
 #@+node:ekr.20121017074047.10103: *4* Fixed leoBridge problems
-#@+node:ekr.20121002082022.10183: *4* fixed crasher involving g.importFromPath
-@nocolor-node
-
-Note: happens only with Python 3.3.0.
-
-Here is a minor traceback when opening quickstart.leo
-
-Leo 4.11 devel, build 5468, 2012-09-30 13:02:59
-Python 3.3.0, qt version 4.8.3
-Windows 6, 1, 7601, 2, Service Pack 1
-reading: C:\Python33\Lib\site-packages\leo-editor\leo\doc\quickstart.leo
-unexpected exception in g.importFromPath(rest)
-Traceback (most recent call last):
-  File "C:\Python33\Lib\site-packages\leo-editor\leo\core\leoGlobals.py", line 5689, in importFromPath
-    data = imp.find_module(moduleName,[path]) # This can open the file.
-  File "C:\Python33\lib\imp.py", line 203, in find_module
-    package_directory = os.path.join(entry, name)
-  File "C:\Python33\lib\ntpath.py", line 171, in join
-    if b[:1] in seps:
-TypeError: Type str doesn't support the buffer API
-Can not import rest
 #@+node:ekr.20121126103128.10137: *4* Fixed missing search text bug
 @nocolor-node
 
@@ -3433,92 +3441,98 @@ The happy side effect of this change is that a lot of duplicate selection
 code in showSuccess disappears.
 
 Also converted two section references in leoTree.selectHelper to selectNewNode.
-#@+node:ekr.20121126194831.10147: *4* Fixed crasher in leoBridge
+#@+node:ekr.20121002023749.10191: *4* Fixed problems with scrolling when saving
 @nocolor-node
 
-The crash happens only when the new readSettings argument to leoBridge.bridgeController is False.
-In that case, the global dicts were not inited properly.
+LeoQTextBrowser.onSliderChanged must set v.scrollBarSpot only if "self" is actually the body pane.
 
-What I did:
-    
-- Created lm.createDefaultSettingsDicts, called by lm.readGlobalSettingsFiles.
-- leoBridge.initLeo calls lm.createDefaultSettingsDicts to set the global dicts.
-#@+node:ekr.20121126194831.10148: *5* report
+Othewise scrolling the log pane will scroll the body pane!
+#@+node:ekr.20120928142052.13477: *4* Fixed scrolling problem with scrollwheel
 @nocolor-node
 
-Bug description:
-  --- Begin Python script to run from a console ------
-  import leo.core.leoBridge as b
-  bridge = b.controller(gui='nullGui',verbose=False,loadPlugins=False,readSettings=False)
-  c = bridge.openLeoFile(r'c:\users\edreamleo\test\minimal.leo')
-  --- End Python Script -----
-
-  The above script and minimal.leo are attached to this bug report.  Put
-  them in the same directory, open a console, set the current working
-  directory to the directory containing the script, and run the script.
-  You will see the this exception on the console:
-
-  2012-11-16 11:28:51 /home/ldi/tmp
-  $ python readSettingsFalse.py
-  Traceback (most recent call last):
-    File "readSettingsFalse.py", line 5, in <module>
-      cmdrUnl = bridge.openLeoFile('minimal.leo')
-    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 330, in openLeoFile
-      c = self.createFrame(fileName)
-    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 367, in createFrame
-      c = g.openWithFileName(fileName)
-    File "/home/ldi/bzr/LeoLatest/leo/core/leoGlobals.py", line 1875, in openWithFileName
-      return g.app.loadManager.loadLocalFile(fileName,gui,old_c)
-    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 2539, in loadLocalFile
-      previousSettings = lm.getPreviousSettings(fn)
-    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1668, in getPreviousSettings
-      lm.globalSettingsDict,lm.globalShortcutsDict,localFlag=True)
-    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1626, in computeLocalSettings
-      settings_d = settings_d.copy()
-  AttributeError: 'NoneType' object has no attribute 'copy'
-  2012-11-16 11:28:55 /home/ldi/tmp
-  $
-  ---------
-  I confirmed this bug on Leo-Editor revisions 5501 and 5505.
-#@+node:ekr.20121205091157.12223: *4* Don't horizontally scroll body pane if word wrapping
-The fix was in qtBody.setWrap.
-#@+node:ekr.20130111082855.10176: *4* Running unit tests no longer change the selected tab
+The maintain_scroll option is *evil*.
+#@+node:ekr.20120409182030.10028: *4* Fixed several problems with c-to-py command
 @nocolor-node
 
+An assert failed during scanning in mungeAllFunctions.
 
-The fix was to set new_c=self.c in the call to c.close in createFileFromOutline.
+Added defensive code to mungeAllFunctions, dedentBlocks and
+replaceComments. The new code simply increments a pointer if a "progress"
+assert would fail. (The progress assert still exists, as a double-check.)
+
+Fixed bug: the call to u.afterChangeGroup in the go() method is called only once.
+
+Suppress warning messages given by CPrettyPrinter.indent.
+#@+node:ekr.20120520055508.11874: *4* Fixed special cases of auto-completion of commands
+@nocolor-node
+
+If the user has not typed anything in the minibuffer, <alt-x><tab> returns *all* completions.
+
+Otherwise, if there are no completions, the "Completions" tab is empty, *not* all completions.
+
+This behavior is much more intuitive than the old behavior.
+
+The fix was a new special case in k.computeCompletionList.
+#@+node:ekr.20130426101041.10499: *4* Fixed undo problems in headlines
+# The fix was simply to call c.endEdiing in undo and redo *before* getting the undo params.
+# This allows c.endEditing to properly set the undo stack.
 #@+node:ekr.20130410075228.10310: *4* Increased the width of find/change text
 @language rest
 
 dw.createFindTab now creates a third column with a minimum width.
 The find/change text widgets span the second and third columns.
-#@+node:ekr.20130426101041.10499: *4* Fixed undo problems in headlines
-# The fix was simply to call c.endEdiing in undo and redo *before* getting the undo params.
-# This allows c.endEditing to properly set the undo stack.
-#@+node:ekr.20130612134617.12551: *4* Execute selected script now works again
-# The change was to g.getScript.
+#@+node:ekr.20120413152012.10048: *4* Minimize scrolling during paste-text
+#@+node:ekr.20120330040023.9779: *4* Restore focus on window activation
+# Changed: onActivateEvent (qtGui), onDeactivateEvent (qtGui)
+#@+node:ekr.20130705200854.12456: *4* Rewrote and tested at.deleteUnvisitedNodes
 #@+node:ekr.20130521122236.10867: *4* Rewrote and tested p.deletePositionsInList
 A shock: p.deletePositionsInList must be rethought and rewritten
 https://groups.google.com/forum/#!topic/leo-editor/IWMWhUlkos0
-#@+node:ekr.20130705200854.12456: *4* Rewrote and tested at.deleteUnvisitedNodes
-#@+node:edward.20130802134506.10431: *4* Created a dummy tab when only one tab would otherwise be opened
-This was a horrible kludge in LM.doPostPluginsInit
-#@+node:ekr.20130804061744.12424: *4* Fixed bug 1194209: Inconsistent Window Titles
+#@+node:ekr.20130111082855.10176: *4* Running unit tests no longer change the selected tab
 @nocolor-node
 
-https://bugs.launchpad.net/leo-editor/+bug/1194209
 
-save-as doesn't update the window title.  Changing tabs does.
+The fix was to set new_c=self.c in the call to c.close in createFileFromOutline.
+#@+node:ekr.20120409074150.9940: *4* The @auto read code now catches failed asserts in import code.
+@nocolor-node
 
-The main fixes were to qtFrame.get/setTitle. When using tabs, the
-LeoTabbedTopLevel widget is the top-level window, *not* the DynamicWindow
-(a QMainWindow).
+If an assert fails, the entire file is read into a single node.
+#@+node:ekr.20120308120323.9864: *4* Wont Fix bug 903640: Import of Python files containing the strings "<<" and ">>" does not work
+@nocolor-node
 
-Another fix was setting c.frame.title in saveAs to::
-    
-    c.computeWindowTitle(c.mFileName)
-    
-This ensures that all all window titles have the same format.
+See: https://bugs.launchpad.net/leo-editor/+bug/903640
+Import of Python files containing the strings "<<" and ">>" does not work
+
+At present @auto can import .py files containing self.cprint("<<" + ret +
+">>\n")
+
+Furthermore, it's possible to write such files properly after changing
+them.
+
+Thus, this bug seems to have been completely fixed, as far as @auto goes.
+
+However, *importing* the file with Leo's import-file command does fail (an
+@ignore is inserted). This is expected: unlike @auto, the import command
+creates an @file node, so the "perfect import" check will complain that the
+section called << ret >> is undefined.
+
+I am going to close this item. I see no real need to support other section
+delimiters in external files. If there ever becomes a real need to do so, a
+separate wishlist item will be appropriate.
+#@+node:ekr.20130804194328.17062: *4* Added ubuntu only menu kludge
+@nocolor-node
+
+Rev 5840 adds support for hack that is active only on Ubuntu systems.
+
+When Leo starts up, it creates a commander (tab) called "loading..." before
+loading all tabs. This ensures that the first "real" .leo file loaded (into
+a tab) will have a menu area. This tab exists only until the first real
+.leo file is loaded.
+
+Yes, this is a pretty horrible hack, but it seems necessary on Ubuntu
+Unity. Presumably this is a Qt or Unity problem, but there has been
+response to previous bug reports, so it seems that best that can be done.
+
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -3572,6 +3586,10 @@ g.es now "redirects" colors using the following settings:
 @nocolor-node
 
 Help-for command translate !<command-name>! in the docstring to the binding for command-name.
+#@+node:ekr.20130501035328.10474: *4* Added leo/extensions/sh.py
+@nocolor-node
+
+Extensions is a convenient place: code can use g.importExtension to import it.
 #@+node:ekr.20120912094259.10550: *4* Added support for @testclass
 @nocolor-node
 @
@@ -3814,7 +3832,30 @@ def makeTestSuite (self,p,setup_script):
         print('\n%s: exception creating test cases for %s' % (fname,p.h))
         g.es_print_exception()
         return None
+#@+node:ekr.20130404060056.10454: *4* Added support for @testsetup
+@language rest
+
+This is a major step forward.  It is a much cleaner solution than exec(g.findTestScript)
+#@+node:ekr.20130803211208.12498: *4* Added support for clojure syntax coloring
+#@+node:ekr.20130413061407.10359: *4* Added vr-expand/contract commands
+#@+node:ekr.20130412141141.10332: *4* All @button nodes now show call tips
+@language rest
+
+These are generated from the @button node's docstring, if it exists.
 #@+node:ekr.20120524082434.9923: *4* All viewrended commands now start with vr
+#@+node:ekr.20130126062633.10184: *4* Allow cloned siblings
+@language rest
+
+A major change in Leo's read/write code.  The first "live" rev was 5584.
+At present, controlled by the allow_cloned_sibs switch in leoAtFile.py.
+
+Fixes the following bugs:
+
+clones sometimes not saved
+https://bugs.launchpad.net/leo-editor/+bug/882243
+
+When all clones of a node are in an @file subtree, they disappear on exit
+https://bugs.launchpad.net/leo-editor/+bug/1084661
 #@+node:ekr.20130117143204.10205: *4* Allow clones anywhere in @file nodes
 @language rest
 
@@ -3833,6 +3874,12 @@ What I did:
     
 The key invariant in createV5ThinNode:
     On exit from at.changeLevel, top of at.thinNodeStack is the parent.
+#@+node:ekr.20130329063228.10304: *4* Allow periods before section names in headlines
+@nocolor-node
+
+Skip '.' before section names in v.matchHeadline.
+
+2013/08/01: bug fix: allow leading periods in at.isSectionName.
 #@+node:ekr.20120409074150.9941: *4* baseNativeTree.onHeadChanged now truncates headlines
 @nocolor-node
 
@@ -3958,8 +4005,17 @@ Creates the enter-abc-mode command, but the prompt for the command is xyz.
 
 ParserBaseClass.createModeCommand creates this convention.
 Changed k.modeHelpHelper.
+#@+node:ekr.20130418080354.10716: *4* Help commands now use <pre> formatting if docutils is not available
 #@+node:ekr.20120524082434.12620: *4* help-for-command executes apropos commands
 Instead of just printing their docstrings.
+#@+node:ekr.20130412173637.11777: *4* help-for-python now uses vr window
+#@+node:ekr.20130126080923.10186: *4* Improved g.trace
+@language rest
+
+A few changes that should have been done long ago:
+
+- Added support for 'before' keyword.  Prints something before the function name.
+- Use g.shortFileName(__file__) instead of "<module>"
 #@+node:ekr.20120519114248.9885: *4* Improved incremental search commands
 @nocolor-node
 
@@ -4049,6 +4105,7 @@ http://ipython.org/ipython-doc/rel-0.12/api/index.html
 http://mail.scipy.org/pipermail/ipython-dev/
 #@+node:ekr.20120330110655.10026: *5* @url ipython.core.interactiveshell
 http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
+#@+node:ekr.20130508134143.10598: *4* Leo for portableapps?
 #@+node:ekr.20120415133744.10050: *4* Made sure tab completion only happens on explicit tab
 @language python
 
@@ -4069,49 +4126,6 @@ A simple change to k.computeCompletionList was all that was needed.
 Created vimoutlinerScanner.
 
 Created at.writeAtAutoOtlFile.
-#@+node:ekr.20130126062633.10184: *4* Allow cloned siblings
-@language rest
-
-A major change in Leo's read/write code.  The first "live" rev was 5584.
-At present, controlled by the allow_cloned_sibs switch in leoAtFile.py.
-
-Fixes the following bugs:
-
-clones sometimes not saved
-https://bugs.launchpad.net/leo-editor/+bug/882243
-
-When all clones of a node are in an @file subtree, they disappear on exit
-https://bugs.launchpad.net/leo-editor/+bug/1084661
-#@+node:ekr.20130126080923.10186: *4* Improved g.trace
-@language rest
-
-A few changes that should have been done long ago:
-
-- Added support for 'before' keyword.  Prints something before the function name.
-- Use g.shortFileName(__file__) instead of "<module>"
-#@+node:ekr.20130404060056.10454: *4* Added support for @testsetup
-@language rest
-
-This is a major step forward.  It is a much cleaner solution than exec(g.findTestScript)
-#@+node:ekr.20130329063228.10304: *4* Allow periods before section names in headlines
-@nocolor-node
-
-Skip '.' before section names in v.matchHeadline.
-
-2013/08/01: bug fix: allow leading periods in at.isSectionName.
-#@+node:ekr.20130412141141.10332: *4* All @button nodes now show call tips
-@language rest
-
-These are generated from the @button node's docstring, if it exists.
-#@+node:ekr.20130412173637.11777: *4* help-for-python now uses vr window
-#@+node:ekr.20130413061407.10359: *4* Added vr-expand/contract commands
-#@+node:ekr.20130418080354.10716: *4* Help commands now use <pre> formatting if docutils is not available
-#@+node:ekr.20130501035328.10474: *4* Added leo/extensions/sh.py
-@nocolor-node
-
-Extensions is a convenient place: code can use g.importExtension to import it.
-#@+node:ekr.20130508134143.10598: *4* Leo for portableapps?
-#@+node:ekr.20130803211208.12498: *4* Added support for clojure syntax coloring
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?
