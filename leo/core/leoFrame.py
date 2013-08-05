@@ -1509,11 +1509,12 @@ class leoFrame:
 
     def OnBodyRClick(self,event=None):
         pass
-    #@+node:ekr.20031218072017.3688: *4* getTitle & setTitle
+    #@+node:ekr.20031218072017.3688: *4* getTitle & setTitle (leoFrame)
     def getTitle (self):
         return self.title
 
     def setTitle (self,title):
+        # g.trace('**(leoFrame)',title)
         self.title = title
     #@+node:ekr.20081005065934.3: *4* initAfterLoad  & initCompleteHint (leoFrame)
     def initAfterLoad (self):

@@ -126,7 +126,6 @@ class Commands (object):
                 s += str(n)
             title = g.computeWindowTitle(s)
             g.app.numberOfUntitledWindows = n+1
-
         return title
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self):
@@ -979,17 +978,13 @@ class Commands (object):
         '''A failed attempt to work around Ubuntu Unity memory bugs.'''
 
         c = self
-
         # g.trace(c.frame.title,g.callers())
-
         if 0:
             if c.frame.menu.isNull:
                 return
-
             for frame in g.app.windowList:
                 if frame != c.frame:
                     frame.menu.menuBar.setDisabled(True)
-
             c.frame.menu.menuBar.setEnabled(True)
     #@+node:ekr.20051106040126: *3* c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
@@ -1734,8 +1729,8 @@ class Commands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
-        if inBody: p.saveCursorAndScroll()
-
+        if inBody:
+            p.saveCursorAndScroll()
         if g.unitTesting and g.app.unitTestDict.get('init_error_dialogs') is not None:
             # A kludge for unit testing:
             # indicated that c.init_error_dialogs and c.raise_error_dialogs
@@ -1743,18 +1738,14 @@ class Commands (object):
             c.init_error_dialogs()
             c.raise_error_dialogs(kind='write')
             return
-
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
             return
-
         c.init_error_dialogs()
-
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
             c.frame.title = ""
             c.mFileName = ""
-
         if c.mFileName:
             # Calls c.setChanged(False) if no error.
             c.fileCommands.save(c.mFileName)
@@ -1776,14 +1767,13 @@ class Commands (object):
                     title="Save",
                     filetypes=[("Leo files", "*.leo")],
                     defaultextension=".leo")
-
             c.bringToFront()
-
             if fileName:
                 # Don't change mFileName until the dialog has suceeded.
                 c.mFileName = g.ensure_extension(fileName, ".leo")
-                c.frame.title = c.mFileName
-                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+                c.frame.title = c.computeWindowTitle(c.mFileName)
+                c.frame.setTitle(c.computeWindowTitle(c.mFileName))
+                    # 2013/08/04: use c.computeWindowTitle.
                 c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                     # Bug fix in 4.4b2.
                 if g.app.qt_use_tabs and hasattr(c.frame,'top'):
@@ -1794,9 +1784,7 @@ class Commands (object):
 
         # Done in fileCommands.save.
         # c.redraw_after_icons_changed()
-
         c.raise_error_dialogs(kind='write')
-
         # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocus()
@@ -1827,32 +1815,29 @@ class Commands (object):
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
         if inBody: p.saveCursorAndScroll()
-
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
             return
-
         c.init_error_dialogs()
-
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
             c.frame.title = ""
-
         fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
             initialfile = c.mFileName,
             title="Save As",
             filetypes=[("Leo files", "*.leo")],
             defaultextension=".leo")
         c.bringToFront()
-
         if fileName:
             # Fix bug 998090: save file as doesn't remove entry from open file list.
             if c.mFileName:
                 g.app.forgetOpenFile(c.mFileName)
             # Don't change mFileName until the dialog has suceeded.
             c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
+            c.frame.title = title = c.computeWindowTitle(c.mFileName)
+            c.frame.setTitle(title)
+                # 2013/08/04: use c.computeWindowTitle.
             c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                 # Bug fix in 4.4b2.
             # Calls c.setChanged(False) if no error.
@@ -1864,9 +1849,7 @@ class Commands (object):
 
         # Done in fileCommands.saveAs.
         # c.redraw_after_icons_changed()
-
         c.raise_error_dialogs(kind='write')
-
         # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocus()
@@ -1901,18 +1884,14 @@ class Commands (object):
             filetypes=[("Leo files", "*.leo")],
             defaultextension=".leo")
         c.bringToFront()
-
         if fileName:
             fileName = g.ensure_extension(fileName, ".leo")
             c.fileCommands.saveTo(fileName)
             g.app.recentFilesManager.updateRecentFiles(fileName)
             g.chdir(fileName)
-
         # Does not change icons status.
         # c.redraw_after_icons_changed()
-
         c.raise_error_dialogs(kind='write')
-
         # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocus()
@@ -8021,40 +8000,37 @@ class Commands (object):
 
         trace = False and not g.unitTesting
         c = self
-        if not c.frame: return
+        if not c.frame:
+            return
         c.changed = changedFlag
-        if c.loading: return # don't update while loading.
-
-        if trace: g.trace(changedFlag,g.callers())
-
+        if c.loading:
+            return # don't update while loading.
         # Clear all dirty bits _before_ setting the caption.
         if not changedFlag:
             for v in c.all_unique_nodes():
                 if v.isDirty():
                     v.clearDirty()
-
         # Do nothing for null frames.
         assert c.gui
         if c.gui.guiName() == 'nullGui':
             return
-
         if not c.frame.top:
             return
-
-        if trace and not c.frame.top.leo_master:
-            g.trace(c.frame.top.leo_master)
-
         master = hasattr(c.frame.top,'leo_master') and c.frame.top.leo_master
-        if not master: return
-
-        master.setChanged(c,changedFlag)
-
+        if master:
+            # Call LeoTabbedTopLevel.setChanged.
+            master.setChanged(c,changedFlag)
         s = c.frame.getTitle()
+        if trace: g.trace(changedFlag,repr(s))
         if len(s) > 2:
             if changedFlag:
-                if s [0] != '*': c.frame.setTitle("* " + s)
+                if s [0] != '*':
+                    c.frame.setTitle("* " + s)
+                    if trace: g.trace('(c)',"* " + s)
             else:
-                if s[0:2]=="* ": c.frame.setTitle(s[2:])
+                if s[0:2]=="* ":
+                    c.frame.setTitle(s[2:])
+                    if trace: g.trace('(c)',s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 

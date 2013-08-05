@@ -1497,9 +1497,8 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.3043: *4* saveAs (leoFileCommands)
     def saveAs(self,fileName):
 
-        c = self.c ; v = c.currentVnode()
-
-        if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
+        c = self.c ; p = c.p
+        if not g.doHook("save1",c=c,p=p,v=p,fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName,changeName=True)
@@ -1511,16 +1510,13 @@ class baseFileCommands:
                     self.putSavedMessage(fileName)
             finally:
                 c.ignoreChangedPaths = True
-
             c.redraw_after_icons_changed()
-
-        g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+        g.doHook("save2",c=c,p=p,v=p,fileName=fileName)
     #@+node:ekr.20031218072017.3044: *4* saveTo (leoFileCommands)
     def saveTo (self,fileName):
 
-        c = self.c ; v = c.currentVnode()
-
-        if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
+        c = self.c ; p = c.p
+        if not g.doHook("save1",c=c,p=p,v=p,fileName=fileName):
             c.endEditing()# Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName,changeName=False)
@@ -1534,7 +1530,7 @@ class baseFileCommands:
 
             c.redraw_after_icons_changed()
 
-        g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+        g.doHook("save2",c=c,p=p,v=p,fileName=fileName)
     #@+node:ekr.20070413061552: *4* putSavedMessage
     def putSavedMessage (self,fileName):
 

@@ -3503,6 +3503,22 @@ https://groups.google.com/forum/#!topic/leo-editor/IWMWhUlkos0
 #@+node:ekr.20130705200854.12456: *4* Rewrote and tested at.deleteUnvisitedNodes
 #@+node:edward.20130802134506.10431: *4* Created a dummy tab when only one tab would otherwise be opened
 This was a horrible kludge in LM.doPostPluginsInit
+#@+node:ekr.20130804061744.12424: *4* Fixed bug 1194209: Inconsistent Window Titles
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/1194209
+
+save-as doesn't update the window title.  Changing tabs does.
+
+The main fixes were to qtFrame.get/setTitle. When using tabs, the
+LeoTabbedTopLevel widget is the top-level window, *not* the DynamicWindow
+(a QMainWindow).
+
+Another fix was setting c.frame.title in saveAs to::
+    
+    c.computeWindowTitle(c.mFileName)
+    
+This ensures that all all window titles have the same format.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
@@ -4095,6 +4111,7 @@ These are generated from the @button node's docstring, if it exists.
 
 Extensions is a convenient place: code can use g.importExtension to import it.
 #@+node:ekr.20130508134143.10598: *4* Leo for portableapps?
+#@+node:ekr.20130803211208.12498: *4* Added support for clojure syntax coloring
 #@+node:ekr.20120602062004.13335: *3* Scripts
 #@+node:ekr.20111019104425.15893: *4* Added jinja2 templating script to scripts.leo
 Should Leo support a standard template tool?

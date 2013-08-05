@@ -956,18 +956,14 @@ class LeoApp:
         trace = False and not g.unitTesting
         assert c
         if trace: g.trace(c.frame.title)
-
         frame = c.frame
         frame.deiconify()
         frame.lift()
         c.setLog()
-
         master = hasattr(frame.top,'leo_master') and frame.top.leo_master
-
         if master: # 2011/11/21: selecting the new tab ensures focus is set.
             # frame.top.leo_master is a TabbedTopLevel.
             master.select(c)
-
         c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ville.20090620122043.6275: *3* app.setGlobalDb
