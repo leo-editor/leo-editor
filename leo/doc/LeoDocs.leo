@@ -669,7 +669,6 @@
 </v>
 <v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
 </v>
-<v t="ekr.20130803125244.17081"><vh>* Document ubuntu only menu kludge</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -9436,7 +9435,6 @@ assoc:
     http://ss64.com/nt/assoc.html
 
 </t>
-<t tx="ekr.20130803125244.17081"></t>
 <t tx="ekr.20130803125244.17092">@language rest
 
 A **position** object represents a specific node in a Leo outline.

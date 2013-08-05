@@ -56,7 +56,7 @@ def dismiss_splash_screen (self):
         # gui.splashScreen.deleteLater()
         gui.splashScreen = None
 .. @+node:ekr.20130503155210.24812: ** To do: 4.11
-.. @+node:ekr.20130510070942.10606: *3* Bugs
+.. @+node:ekr.20130510070942.10606: *3* Bugs (4.11)
 .. @+node:ekr.20130503155210.24816: *4* * Fix install bug
 Ask the net.
 .. @+node:ekr.20130503155210.24821: *5* Update installation docs

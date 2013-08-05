@@ -4,7 +4,8 @@
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
 '''
 
-Creates a window for *live* rendering of images, movies, sounds, rst, html, etc.
+Creates a window for *live* rendering of reSTructuredText, markdown text,
+images, movies, sounds, rst, html, etc.
 
 Dependencies
 ============
@@ -102,10 +103,17 @@ specified by putting it in a ``@md`` node.
 Special Renderings
 ===================
 
-This plugin renders @image, @html, @movie, @networkx, @svg and @url nodes in special ways.
+As stated above, the rendering pane renders body text as reStructuredText
+by default, with all Leo directives removed. However, if the body text
+starts with ``<`` (after removing directives), the body text is rendered as
+html.
 
-For @image, @movie and @svg nodes, either the headline or the first line of body text may
+This plugin renders @md, @image, @html, @movie, @networkx and @svg nodes as follows:
+
+**Note**: For @image, @movie and @svg nodes, either the headline or the first line of body text may
 contain a filename.  If relative, the filename is resolved relative to Leo's load directory.
+
+- ``@md`` renderes the body text as markdown, as described above.
 
 - ``@graphics-script`` executes the script in the body text in a context containing
   two predefined variables:
@@ -133,7 +141,7 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
   the contents of body pane is taken to be an svg image.
 
-- ``@url`` is non-functional at present.
+.. - ``@url`` is non-functional at present.
 
 Settings
 ========
