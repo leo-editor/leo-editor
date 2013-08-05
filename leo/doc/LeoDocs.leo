@@ -659,6 +659,7 @@
 </v>
 </v>
 <v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
+<v t="ekr.20130805080841.17066"><vh>Update list of commands in the docs</vh></v>
 <v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
 <v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
 <v t="ekr.20130526065545.17606"><vh>Re: Outdated info in "rst3"</vh></v>
@@ -9507,6 +9508,53 @@ for p in root.self_and_subtree():
         '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
     ))
 </t>
+<t tx="ekr.20130805080841.17066">https://groups.google.com/forum/#!topic/leo-editor/zLYKksm4btM
+
+It appears that there are a lot of commands listed on the commands web
+page that do not exist (any longer?) in leo.
+
+For example:
+
+collect-garbage
+disable-gc-trace
+dump-all-objects
+dump-new-objects
+enable-gc-trace
+free-tree-widgets
+verbose-dump-objects
+apropos-autocompletion
+apropos-bindings
+apropos-find-commands
+
+enable-autocompleter
+            enable-calltips
+            enter-apropos-mode
+            enter-commands-mode
+            enter-edit-mode
+            enter-emacs-mode
+            enter-extract-mode
+            enter-file-mode
+            enter-gui-mode
+            enter-help-mode
+            enter-kill-mode
+            enter-modes-mode
+            enter-move-outline-mode
+            enter-outline-mode
+            enter-toggle-find-mode
+
+Also these appear to exist in leo but they do not appear in commands.html:
+
+   help-for-abbreviations
+   help-for-autocompletion
+   help-for-bindings
+   help-for-debugging-commands
+   help-for-find-commands
+   help-for-minibuffer
+   help-for-regular-expressions
+
+I am particularly interested in the various enter-x-mode commands. Have
+these been moved to @mode nodes in leoSettings files? Where can I find
+them? </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

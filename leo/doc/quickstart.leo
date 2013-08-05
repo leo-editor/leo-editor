@@ -166,10 +166,10 @@ import sys
 
 </t>
 <t tx="ville.20090627211608.10128">def init1():
-    print "init1"
+    print("init1")
 
 def init2():
-    print "init2"</t>
+    print("init2")</t>
 <t tx="ville.20090627211608.10129">If the sentinels in thin nodes are unacceptable for your workflow 
 (typically the case when you are the only one using Leo in a 
 particular project), you can use @auto nodes to "play well with 
@@ -249,10 +249,10 @@ See Leo's documentation for more detailed discussion.</t>
 </t>
 <t tx="ville.20090630145410.1510"></t>
 <t tx="ville.20090630145410.1511">def init1():
-    print "init1"
+    print("init1")
 
 def init2():
-    print "init2"</t>
+    print("init2")</t>
 <t tx="ville.20090630145410.1512">import os
 import sys
 
@@ -319,10 +319,10 @@ import sys
 
 </t>
 <t tx="ville.20090701175849.1546">def init1():
-    print "init1"
+    print("init1")
 
 def init2():
-    print "init2"</t>
+    print("init2")</t>
 <t tx="ville.20090701175849.1547">class Foo:
     &lt;&lt; docstring &gt;&gt;
     @others
