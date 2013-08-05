@@ -30,7 +30,7 @@
 <v t="ville.20090627211608.10128"><vh>init1, init2</vh></v>
 </v>
 <v t="ville.20090627211608.10122"><vh>class Foo</vh>
-<v t="ville.20090627211608.10123"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ville.20090630145410.1514"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ville.20090627211608.10124"><vh>spam</vh></v>
 <v t="ville.20090627211608.10125"><vh>eggs</vh></v>
 </v>
@@ -45,7 +45,6 @@
 <v t="ville.20090630145410.1511"><vh>init1, init2</vh></v>
 </v>
 <v t="ville.20090630145410.1513"><vh>class Foo</vh>
-<v t="ville.20090630145410.1514"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ville.20090630145410.1515"><vh>spam</vh></v>
 <v t="ville.20090630145410.1516"><vh>eggs</vh></v>
 </v>
@@ -149,10 +148,6 @@ Leo, for example, your C++ or Python source code files.</t>
 <t tx="ville.20090627211608.10122">class Foo:
     &lt;&lt; docstring &gt;&gt;
     @others
-
-
-</t>
-<t tx="ville.20090627211608.10123">""" Some sort of useful class """
 
 </t>
 <t tx="ville.20090627211608.10124">def spam(self):
@@ -258,7 +253,7 @@ import sys
 
 </t>
 <t tx="ville.20090630145410.1513">class Foo:
-    &lt;&lt; docstring &gt;&gt;
+    """ Some sort of useful class """
     @others
 
 
