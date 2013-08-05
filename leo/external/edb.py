@@ -1,9 +1,13 @@
 #! /usr/bin/env python3
 #@+leo-ver=5-thin
-#@+node:ekr.20110914171443.7239: * @file ../external/edb.py
+#@+node:ekr.20130805134749.12436: * @file ../external/edb.py
 #@@first
 
 # edb: pdb modified by EKR.
+
+# Fix bug: invalid syntax on print statement
+# https://bugs.launchpad.net/leo-editor/+bug/1184605
+from __future__ import print_function
 
 #@@language python
 #@@tabwidth -4
